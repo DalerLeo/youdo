@@ -22,8 +22,8 @@ Dillinger requires [Node.js](https://nodejs.org/) v4+ and [Yarn] to run.
 Install the dependencies and devDependencies and start the server.
 
 ```sh
-$ git clone http://gitlab.dst.uz/Tillakhanov/abwise-ui.git
-$ cd abwise-ui
+$ git clone https://gitlab.gapbor.com/fennecui/fennec_ui.git
+$ cd fennec_ui
 $ git checkout development
 $ yarn install
 $ yarn start
@@ -42,7 +42,7 @@ $ echo -e '#!/bin/sh\nyarn run lint' > .git/hooks/pre-push
 before push check lint automatic
 
 ### Development
-If you need change api url you need set API_HOST environment varaible
+If you need change api url you need set API_HOST environment variable
 ```sh
 $ export API_HOST=localhost:3000
 $ yarn start
