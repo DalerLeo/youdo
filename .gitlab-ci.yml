@@ -1,0 +1,46 @@
+before_script:
+  - "export PATH=$PATH:/opt/pgsql9.6/bin/:/usr/local/bin"
+  - "export PROJECT_DIR=/var/www/abwise-ui"
+
+  # Information
+  - "whoami"
+  - "echo \"Current location:\" `pwd`"
+  - "nvm --version"
+  - "nvm install 6 > /dev/null"
+  - "nvm use 6"
+  - "node --version"
+  - "npm install -g yarn > /dev/null"
+  - "yarn --version"
+
+stages:
+  - commit build
+  - build
+
+build:
+  stage: build
+  script:
+    - "export API_HOST=api.abwise.dst.uz"
+    - "export SOURCE_DIR=`pwd`"
+    - "yarn install > /dev/null"
+    - "yarn build"
+    - "yarn run lint"
+    - "rm -rf ${PROJECT_DIR}/*"
+    - "cp -r ${SOURCE_DIR}/dist/* ${PROJECT_DIR}/"
+  only:
+    - production
+  tags:
+    - ABWISE-TEST
+
+commit build:
+    stage: build
+    script:
+      - "export API_HOST=api.abwise.dst.uz"
+      - "export SOURCE_DIR=`pwd`"
+      - "yarn install > /dev/null"
+      - "yarn build"
+      - "yarn run lint"
+    except:
+      - production
+    tags:
+      - ABWISE-TEST
+

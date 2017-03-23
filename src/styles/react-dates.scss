@@ -1,0 +1,48 @@
+$react-dates-width-input: 44.8999999% !default;
+$react-dates-width-arrow: 12% !default;
+$react-dates-color-primary: #949696 !default;
+$react-dates-color-primary-dark: #444444 !default;
+$react-dates-color-primary-shade-1: #d3d3d3 !default;
+$react-dates-color-primary-shade-2: #c1c1c1 !default;
+$react-dates-color-primary-shade-3: #e5e5e5 !default;
+$react-dates-color-primary-shade-4: #efefef !default;
+$react-dates-color-secondary: #474b4c !default;
+$react-dates-color-border: #dbdbdb !default;
+$react-dates-color-border-light: #dce0e0 !default;
+$react-dates-color-border-medium: #c4c4c4 !default;
+$react-dates-color-placeholder-text: #757575 !default;
+$react-dates-color-text: #484848 !default;
+$react-dates-color-text-focus: #404647 !default;
+$react-dates-color-focus: #b3b3b3 !default;
+
+@import '~react-dates/css/variables.scss';
+@import '~react-dates/css/styles.scss';
+
+.DateRangePicker {
+  width: 100%;
+  .DateRangePickerInput {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    padding: 0 1px;
+    .DateInput {
+      text-align: center;
+      line-height: 23px;
+      padding: 2px;
+      .DateInput__display-text {
+        font-size: 14px;
+      }
+    }
+    .DateRangePickerInput__arrow {
+      width: 10%;
+      svg {
+        height: 24px;
+        width: 24px;
+      }
+    }
+  }
+}
+
+.CalendarMonth__caption {
+  height: 75px;
+}

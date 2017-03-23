@@ -1,0 +1,35 @@
+extends: standard
+parser: babel-eslint
+installedESLint: true
+plugins:
+  - standard
+  - promise
+  - flowtype
+  - react
+  - babel
+  - immutable
+rules:
+  indent: ["error", 4, {"SwitchCase": 1}]
+  quotes: ["error", "single"]
+  linebreak-style: ["error", "unix"]
+  # React
+  react/jsx-uses-react: "error"
+  react/jsx-uses-vars: "error"
+
+  # Babel
+  "babel/new-cap": "error"
+  "babel/object-curly-spacing": "error"
+  "babel/no-await-in-loop": "error"
+  "babel/no-invalid-this": "error"
+
+  # Immutable
+  "immutable/no-let": "error"
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+settings:
+  flowtype:
+    onlyFilesWithFlowAnnotation: false
+globals:
+  localStorage: true
+  sessionStorage: true

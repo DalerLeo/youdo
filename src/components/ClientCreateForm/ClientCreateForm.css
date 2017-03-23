@@ -1,0 +1,11 @@
+.AccountItems .ui.search {
+    width: 100%;
+}
+
+.AccountItems {
+    padding-right: 8px !important;
+}
+
+.SaveButtonGroup {
+    float: right;
+}
