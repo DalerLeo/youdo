@@ -52,7 +52,7 @@ $ yarn start
 For production release:
 ```sh
 $ git checkout production
-$ export API_HOST=api.apwise.dst.uz
+$ export API_HOST=api.gapbor.com
 $ yarn build
 ```
 
