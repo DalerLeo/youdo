@@ -9,6 +9,7 @@ import SingInLayout from '../../components/SingInLayout'
 import SignInForm from '../../components/SignInForm'
 import * as ROUTES from '../../constants/routes'
 import {toasterError} from '../../helpers/apiErrorsHandler'
+import Paper from 'material-ui/Paper'
 import './SignIn.css'
 
 const SignIn = (props) => {
@@ -30,19 +31,21 @@ const SignIn = (props) => {
             })
     }
 
+    const style = {
+        width: '300px',
+        margin: '0 auto',
+        padding: '15px',
+        textAlign: 'center',
+        display: 'inline-block',
+    };
+
     return (
         <SingInLayout>
             <Container className="signInContainer">
-                <Grid centered columns={2}>
-                    <Grid.Row>
-                        <Grid.Column>
-                            <Segment>
-                                <SignInForm isLoading={loading} onSubmit={onSubmit} />
-                            </Segment>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </Container>
+                <Paper style={style} zDepth={2}>
+                    <SignInForm isLoading={loading} onSubmit={onSubmit} />
+                </Paper>
+                </Container>
         </SingInLayout>
     )
 }
