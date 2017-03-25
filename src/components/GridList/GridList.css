@@ -1,0 +1,35 @@
+.grid__item {
+    height: 50px;
+    background: #fff;
+    border-bottom: 1px dotted #eee;
+    align-items: center;
+}
+
+.grid__navbar {
+    height: 50px;
+    background: #fff;
+    align-items: center;
+    padding: 0 5px;
+}
+
+.grid__header {
+    height: 50px;
+    align-items: center;
+    background: #5d6474;
+    font-weight: 700;
+    color: #fff;
+}
+
+.grid__checkbox {
+    margin-left: 5px;
+}
+
+.arrow::after {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid;
+    margin: 0 4px;
+    display: inline-block;
+}

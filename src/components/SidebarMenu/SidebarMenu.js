@@ -1,77 +1,92 @@
 import React from 'react'
-import {Link} from 'react-router'
-import * as ROUTES from '../../constants/routes'
-import {Sidebar, Divider, Menu, Icon} from 'semantic-ui-react'
+// import {Link} from 'react-router'
+// import * as ROUTES from '../../constants/routes'
+import IconButton from 'material-ui/IconButton'
+import TrendingUp from 'material-ui/svg-icons/action/trending-up'
+import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
+import Home from 'material-ui/svg-icons/action/home'
+import TV from 'material-ui/svg-icons/hardware/tv'
+import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
+import Settings from 'material-ui/svg-icons/action/settings'
 
-const SideBarMenu = ({visible}) => {
+import './SidebarMenu.css'
+
+const style = {
+    iconStyle: {
+        width: 30,
+        height: 30
+    },
+    style: {
+        width: 66,
+        height: 66,
+        padding: 16
+    }
+}
+
+const touch = true
+const tooltipPosition = 'top-right'
+
+const SideBarMenu = () => {
     return (
-        <Sidebar as={Menu}
-                 animation="push"
-                 className="left_sidebar"
-                 visible={visible}
-                 width="thin"
-                 icon="labeled"
-                 vertical
-                 inverted>
-            <Link to={ROUTES.DASHBOARD_URL}>
-                <Menu.Item name="Dashboard">
-                    <Icon name="dashboard"/>
-                    Dashboard
-                </Menu.Item>
-            </Link>
-            <Divider />
-            <Link to={ROUTES.SHOP_LIST_URL}>
-                <Menu.Item name="Shop">
-                    <Icon name="shop"/>
-                    Shop
-                </Menu.Item>
-            </Link>
-            <Divider />
-            <Link to={ROUTES.DAILY_ENTRY_LIST_URL}>
-                <Menu.Item name="Daily entry">
-                    <Icon name="wait"/>
-                    Daily entry
-                </Menu.Item>
-            </Link>
-            <Divider />
-            <Link to={ROUTES.DAILY_REPORT_LIST_URL}>
-                <Menu.Item name="Daily report">
-                    <Icon name="archive"/>
-                    Daily report
-                </Menu.Item>
-            </Link>
-            <Divider />
+        <div className="sidebar_menu">
+            <div className="sidebar_menu__logo">
+            </div>
+            <div className="sidebar_menu__items">
+                <IconButton
+                    iconStyle={style.iconStyle}
+                    style={style.style}
+                    touch={touch}
+                    tooltipPosition={tooltipPosition}
+                    tooltip="Metrics">
+                    <TrendingUp />
+                </IconButton>
 
-            <Link to={ROUTES.MONTHLY_REPORT_LIST_URL}>
-                <Menu.Item name="Monthly report">
-                    <Icon name="calendar"/>
-                    Monthly report
-                </Menu.Item>
-            </Link>
-            <Divider />
+                <IconButton
+                    iconStyle={style.iconStyle}
+                    style={style.style}
+                    touch={touch}
+                    tooltipPosition={tooltipPosition}
+                    tooltip="Sales">
+                    <AttachMoney />
+                </IconButton>
 
-            <Link to={ROUTES.CLIENT_LIST}>
-                <Menu.Item name="Client">
-                    <Icon name="user"/>
-                    Client
-                </Menu.Item>
-            </Link>
-            <Divider />
-            <Link to={ROUTES.BROKER_LIST_URL}>
-                <Menu.Item name="Broker">
-                    <Icon name="spy"/>
-                    Broker
-                </Menu.Item>
-            </Link>
-            <Divider />
-            <Link to={ROUTES.FUND_MANAGER_LIST_URL}>
-                <Menu.Item name="Fund Manager">
-                    <Icon name="travel"/>
-                    Fund Manager
-                </Menu.Item>
-            </Link>
-            <Divider />
-        </Sidebar>
+                <IconButton
+                    iconStyle={style.iconStyle}
+                    style={style.style}
+                    touch={touch}
+                    tooltipPosition={tooltipPosition}
+                    tooltip="Warehouse">
+                    <Home />
+                </IconButton>
+
+                <IconButton
+                    iconStyle={style.iconStyle}
+                    style={style.style}
+                    touch={touch}
+                    tooltipPosition={tooltipPosition}
+                    tooltip="Ads">
+                    <TV />
+                </IconButton>
+
+                <IconButton
+                    iconStyle={style.iconStyle}
+                    style={style.style}
+                    touch={touch}
+                    tooltipPosition={tooltipPosition}
+                    tooltip="Accounting">
+                    <AccountBalanceWallet />
+                </IconButton>
+
+                <IconButton
+                    iconStyle={style.iconStyle}
+                    style={style.style}
+                    touch={touch}
+                    tooltipPosition={tooltipPosition}
+                    tooltip="Settings">
+                    <Settings />
+                </IconButton>
+            </div>
+        </div>
     )
 }
 
