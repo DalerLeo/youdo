@@ -1,14 +1,11 @@
 import React from 'react'
 // import {reduxForm} from 'redux-form'
-import {Form} from 'semantic-ui-react'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Checkbox from 'material-ui/Checkbox';
-import LinearProgress from 'material-ui/LinearProgress';
+import CircularProgress from 'material-ui/CircularProgress';
+import Paper from 'material-ui/Paper'
 
-const style = {
-    'margin-bottom': 0
-};
 
 const checkboxStyle = {
     'text-align': 'left',
@@ -20,6 +17,7 @@ const inputStyle = {
     marginTop: -10
 };
 
+
 const LabelFocusStyle = {
     marginTop: 0,
     color: '#2196f3',
@@ -29,11 +27,26 @@ const LabelFocusStyle = {
 const SignInForm = (props) => {
     if (props.isLoading) {
         return (
-            <LinearProgress mode="indeterminate" />
+            <Paper style={{
+                width: '120px',
+                margin: '0 auto',
+                padding: '15px',
+                textAlign: 'center',
+                display: 'inline-block',
+            }} zDepth={2}>
+                <CircularProgress size={80} thickness={5}/>
+            </Paper>
         )
-    } else {
-        return (
-            <Form onSubmit={props.onSubmit}>
+    }
+    return (
+        <Paper style={{
+            width: '300px',
+            margin: '0 auto',
+            padding: '15px',
+            textAlign: 'center',
+            display: 'inline-block',
+        }} zDepth={2}>
+            <form onSubmit={props.onSubmit}>
                 <div className="signInHeader">
                     <div className="signInTitle">
                         ВХОД В СИСТЕМУ
@@ -67,9 +80,9 @@ const SignInForm = (props) => {
                     <RaisedButton type="submit" backgroundColor='#44637d' labelColor="#fff" label="Войти"
                                   fullWidth={true}/>
                 </div>
-            </Form>
-        )
-    }
+            </form>
+        </Paper>
+    )
 }
 
 export default SignInForm
