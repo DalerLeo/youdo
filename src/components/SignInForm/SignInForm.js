@@ -20,7 +20,8 @@ const inputStyle = {
 
 const LabelFocusStyle = {
     marginTop: 0,
-    color:'#2196f3'
+    color:'#2196f3',
+    borderColor:'#2196f3'
 };
 
 const SignInForm = (props) => {

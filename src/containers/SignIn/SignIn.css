@@ -4,9 +4,7 @@
     justify-content: center;
     flex-direction: column;
 }
-.signInContainer * {
-font-family: Roboto,"Helvetica Neue",sans-serif;
-}
+
 .signInHeader{
 
 }
