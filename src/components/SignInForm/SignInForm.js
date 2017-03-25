@@ -8,9 +8,9 @@ import Paper from 'material-ui/Paper'
 
 
 const checkboxStyle = {
-    'text-align': 'left',
-    'margin-bottom': '10px',
-    'margin-top': '10px'
+    textAlign: 'left',
+    marginBottom: '10px',
+    marginTop: '10px'
 };
 
 const inputStyle = {
@@ -56,7 +56,7 @@ const SignInForm = (props) => {
                     <TextField
                         floatingLabelText="Email"
                         name="username"
-                        fullWidth="true"
+                        fullWidth={true}
                         style={{height: 62}}
                         floatingLabelFocusStyle={LabelFocusStyle}
                         floatingLabelStyle={inputStyle}
@@ -64,7 +64,7 @@ const SignInForm = (props) => {
                     <TextField
                         floatingLabelText="Пароль"
                         name="password"
-                        fullWidth="true"
+                        fullWidth={true}
                         type="password"
                         style={{height: 62}}
                         floatingLabelFocusStyle={LabelFocusStyle}
