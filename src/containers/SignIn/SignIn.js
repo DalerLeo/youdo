@@ -12,38 +12,34 @@ import {toasterError} from '../../helpers/apiErrorsHandler'
 import './SignIn.css'
 
 const SignIn = (props) => {
-    const {dispatch, location, loading} = props
+    const {dispatch, location, loading, formValues} = props;
 
-    const onSubmit = (event, {formData}) => {
-        event.preventDefault()
-
-        dispatch(signInAction(formData))
+    const onSubmit = (event) => {
+        dispatch(signInAction(formValues))
             .then(() => {
-                const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
-
-                toastr.success('Success ', 'Welcome')
+                const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL;
+                toastr.success('Success ', 'Welcome');
                 hashHistory.push(redirectUrl)
             })
             .catch((error) => {
-                console.log(error)
                 toastr.error('Fail', toasterError(error))
             })
-    }
+    };
 
 
     return (
         <SingInLayout>
             <Container className="signInContainer">
-                <SignInForm isLoading={loading} onSubmit={onSubmit}/>
+                <SignInForm loading={loading} onSubmit={onSubmit} />
             </Container>
         </SingInLayout>
     )
-}
+};
 
 export default connect(state => {
     return {
         data: _.get(state, ['signIn', 'data']),
+        formValues: _.get(state, ['form', 'SignInForm', 'values']),
         loading: _.get(state, ['signIn', 'loading']),
-        failed: _.get(state, ['signIn', 'failed'])
     }
 })(SignIn)

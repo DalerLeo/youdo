@@ -26,6 +26,7 @@ export const signInAction = (params) => {
         })
         .catch((error) => {
             const data = _.get(error, ['response', 'data'])
+
             return Promise.reject(data || {'Network': ['Internet connection error']})
         })
 
