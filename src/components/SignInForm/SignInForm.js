@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Checkbox from 'material-ui/Checkbox';
 import CircularProgress from 'material-ui/CircularProgress';
 import Paper from 'material-ui/Paper'
-
+import { Field, reduxForm } from 'redux-form'
 
 const checkboxStyle = {
     textAlign: 'left',
@@ -24,8 +24,32 @@ const LabelFocusStyle = {
     borderColor: '#2196f3'
 };
 
+const renderTextField = ({ input, label, meta: { touched, error }, ...custom }) => (
+    <TextField floatingLabelText={label}
+               errorText={error}
+               style={{height: 62}}
+               floatingLabelFocusStyle={LabelFocusStyle}
+               floatingLabelStyle={inputStyle}
+               {...input}
+               {...custom}
+    />
+);
+
+const renderCheckbox = ({ input, label }) => (
+    <Checkbox label={label}
+              style={checkboxStyle}
+              checked={!!input.value}
+              onCheck={input.onChange}/>
+);
+
+
+
+
 const SignInForm = (props) => {
-    if (props.isLoading) {
+
+    const { onSubmit, loading} = props;
+
+    if (loading) {
         return (
             <Paper style={{
                 width: '120px',
@@ -38,6 +62,7 @@ const SignInForm = (props) => {
             </Paper>
         )
     }
+
     return (
         <Paper style={{
             width: '300px',
@@ -46,36 +71,16 @@ const SignInForm = (props) => {
             textAlign: 'center',
             display: 'inline-block',
         }} zDepth={2}>
-            <form onSubmit={props.onSubmit}>
+            <form onSubmit={onSubmit}>
                 <div className="signInHeader">
                     <div className="signInTitle">
                         ВХОД В СИСТЕМУ
                     </div>
                 </div>
                 <div className="signInInputs">
-                    <TextField
-                        floatingLabelText="Email"
-                        name="username"
-                        fullWidth={true}
-                        style={{height: 62}}
-                        floatingLabelFocusStyle={LabelFocusStyle}
-                        floatingLabelStyle={inputStyle}
-                    />
-                    <TextField
-                        floatingLabelText="Пароль"
-                        name="password"
-                        fullWidth={true}
-                        type="password"
-                        style={{height: 62}}
-                        floatingLabelFocusStyle={LabelFocusStyle}
-                        floatingLabelStyle={inputStyle}
-                    />
-
-                    <Checkbox
-                        style={checkboxStyle}
-                        name="rememberMe"
-                        label="Запомнить меня"
-                    />
+                    <Field name="username" component={renderTextField} label="Email"/>
+                    <Field name="password" component={renderTextField} label="Пароль"  type="password"/>
+                    <Field name="rememberMe" component={renderCheckbox} label="Запомнить меня" style={checkboxStyle}/>
 
                     <RaisedButton type="submit" backgroundColor='#44637d' labelColor="#fff" label="Войти"
                                   fullWidth={true}/>
@@ -85,4 +90,8 @@ const SignInForm = (props) => {
     )
 }
 
-export default SignInForm
+
+export default reduxForm({
+    form: 'SignInForm',  // a unique identifier for this form
+    // asyncValidate
+})(SignInForm)
