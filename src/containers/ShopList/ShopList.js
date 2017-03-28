@@ -83,7 +83,7 @@ const enhance = compose(
 )
 
 const ShopList = enhance((props) => {
-    const {list, location, loading, filter, layout} = props
+    const {list, location, loading, filter, layout, params} = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
     const fromDate = filter.getParam('fromDate')
@@ -118,6 +118,7 @@ const ShopList = enhance((props) => {
             <ShopListTable
                 filter={filter}
                 loading={loading}
+                itemId={parseInt(_.get(params, 'shopId'))}
                 data={_.get(list, 'results')}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}

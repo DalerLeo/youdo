@@ -23,12 +23,16 @@ const enhance = compose(
 )
 
 const GridListBody = enhance((props) => {
-    const {filter, list, onChecked} = props
+    const {filter, list, onChecked, id} = props
 
     const items = _.map(list, (item, index) => {
-        const key = _.get(item, 'key')
+        const key = parseInt(_.get(item, 'key'))
         const selectItems = filter.getSelects()
         const itemSelected = _.find(selectItems, (item) => item === key)
+
+        if (key === id) {
+            return <div key={index}>{item}</div>
+        }
 
         return (
             <div className="grid__item" key={index}>

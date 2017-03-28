@@ -19,8 +19,12 @@ const filter = (data, pathname, query = {}) => {
     }
 
     const getSelects = () => {
-        const rawSelectItems = _.split(getParam('select'), ',')
-        return _.filter(rawSelectItems, item => item)
+        return _
+            .chain(getParam('select'))
+            .split(',')
+            .filter(item => item)
+            .map((item) => parseInt(item))
+            .value()
     }
 
     const paramsToQueryUrl = (params) => {

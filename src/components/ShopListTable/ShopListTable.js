@@ -5,12 +5,11 @@ import React from 'react'
 import {Link} from 'react-router'
 import {Dimmer, Loader} from 'semantic-ui-react'
 import GridList from '../GridList'
-import Checkbox from 'material-ui/Checkbox'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 
 const ShopGridList = (props) => {
-    const {filter, loading, data} = props
+    const {filter, loading, data, itemId} = props
 
     const header = [
         {
@@ -46,15 +45,7 @@ const ShopGridList = (props) => {
 
     ]
 
-    const body = _.map(data, (item, index) => {
-        if (item === 6) {
-            return (
-                <Row className="grid__detail" key={index}>
-                    <div>Hello</div>
-                </Row>
-            )
-        }
-
+    const body = _.map(data, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const phone = _.get(item, 'phone')
@@ -62,6 +53,14 @@ const ShopGridList = (props) => {
         const guide = _.get(item, 'guide')
         const contactName = _.get(item, 'contact_name')
         const createdDate = moment(_.get(item, 'created_date')).format('DD.MM.YYYY')
+
+        if (id === itemId) {
+            return (
+                <Row className="grid__detail" key={id}>
+                    <div>Hello</div>
+                </Row>
+            )
+        }
 
         return (
             <Row key={id}>
@@ -83,7 +82,7 @@ const ShopGridList = (props) => {
                 <Loader size="large">Loading</Loader>
             </Dimmer>
 
-            <GridList filter={filter} header={header} list={body} />
+            <GridList id={itemId} filter={filter} header={header} list={body} />
         </div>
     )
 }

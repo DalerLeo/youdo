@@ -61,8 +61,8 @@ export default {
         },
 
         {
-            path: ROUTES.SHOP_CREATE_URL,
-            component: userIsAuth(BalanceCreate)
+            path: ROUTES.SHOP_ITEM_URL,
+            component: userIsAuth(ShopList)
         },
 
         // Daily entry
