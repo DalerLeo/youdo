@@ -30,18 +30,11 @@ const SignIn = (props) => {
             })
     }
 
+
     return (
         <SingInLayout>
             <Container className="signInContainer">
-                <Grid centered columns={2}>
-                    <Grid.Row>
-                        <Grid.Column>
-                            <Segment>
-                                <SignInForm isLoading={loading} onSubmit={onSubmit} />
-                            </Segment>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
+                <SignInForm isLoading={loading} onSubmit={onSubmit}/>
             </Container>
         </SingInLayout>
     )

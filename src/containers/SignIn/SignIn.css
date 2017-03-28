@@ -4,3 +4,25 @@
     justify-content: center;
     flex-direction: column;
 }
+
+.signInHeader{
+
+}
+.signInInputs{
+    width: 220px;
+    margin:0 auto;
+}
+.signInTitle{
+    padding-top: 5px;
+    padding-bottom: 22px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-bottom: #e2e4e9 1px dashed;
+    text-align: center;
+    color: #647994;
+}
+#wrapper{
+    background: #1b456c;
+
+}
