@@ -18,6 +18,11 @@ const filter = (data, pathname, query = {}) => {
         return _.assign({}, params, newParams)
     }
 
+    const getSelects = () => {
+        const rawSelectItems = _.split(getParam('select'), ',')
+        return _.filter(rawSelectItems, item => item)
+    }
+
     const paramsToQueryUrl = (params) => {
         if (_.isEmpty(params)) {
             return null
@@ -139,6 +144,7 @@ const filter = (data, pathname, query = {}) => {
         getParams,
         getCurrentPage,
         getSortingType,
+        getSelects,
         sortingURL,
         createURL,
         prevPage,

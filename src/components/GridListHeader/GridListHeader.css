@@ -1,0 +1,23 @@
+.grid__header {
+    position: absolute;
+    top: 50px;
+    width: 100%;
+    height: 50px;
+    align-items: center;
+    background: #5d6474;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;
+}
+.grid__header .row {
+    width: 100%;
+}
+.grid__header__sorting__button, .grid__header__sorting__button:hover {
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.grid__checkbox {
+    margin-left: 10px;
+}

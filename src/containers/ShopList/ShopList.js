@@ -95,8 +95,6 @@ const ShopList = enhance((props) => {
         }
     }
 
-    console.log(_.get(list, 'results'))
-
     const filterDialog = {
         initialValues,
         filterLoading: loading,

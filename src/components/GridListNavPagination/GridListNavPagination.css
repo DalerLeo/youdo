@@ -1,0 +1,15 @@
+.grid__navbar__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    color: #5d6474;
+}
+
+.grid__navbar__pagination__count {
+    margin-right: 20px;
+}
+
+.grid__navbar__pagination__nav {
+    display: flex;
+    align-items: center;
+}

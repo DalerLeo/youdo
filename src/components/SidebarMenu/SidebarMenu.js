@@ -1,6 +1,6 @@
 import React from 'react'
-// import {Link} from 'react-router'
-// import * as ROUTES from '../../constants/routes'
+import {Link} from 'react-router'
+import * as ROUTES from '../../constants/routes'
 import IconButton from 'material-ui/IconButton'
 import TrendingUp from 'material-ui/svg-icons/action/trending-up'
 import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
@@ -32,14 +32,16 @@ const SideBarMenu = () => {
             <div className="sidebar_menu__logo">
             </div>
             <div className="sidebar_menu__items">
-                <IconButton
-                    iconStyle={style.iconStyle}
-                    style={style.style}
-                    touch={touch}
-                    tooltipPosition={tooltipPosition}
-                    tooltip="Metrics">
-                    <TrendingUp />
-                </IconButton>
+                <Link to={ROUTES.SHOP_LIST_URL}>
+                    <IconButton
+                        iconStyle={style.iconStyle}
+                        style={style.style}
+                        touch={touch}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Metrics">
+                        <TrendingUp />
+                    </IconButton>
+                </Link>
 
                 <IconButton
                     iconStyle={style.iconStyle}
