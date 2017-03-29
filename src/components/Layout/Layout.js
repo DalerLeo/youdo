@@ -5,10 +5,11 @@ import SideBarMenu from '../SidebarMenu'
 import './Layout.css'
 
 const Layout = (props) => {
+    const {visible, setVisible, handleSignOut} = props
     return (
         <div className="layout">
             <div className="layout__sidenav">
-                <SideBarMenu />
+                <SideBarMenu handleSignOut={handleSignOut} />
             </div>
             <div className="layout__content">
                 {props.children}
