@@ -8,6 +8,7 @@ import Home from 'material-ui/svg-icons/action/home'
 import TV from 'material-ui/svg-icons/hardware/tv'
 import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
 import Settings from 'material-ui/svg-icons/action/settings'
+import SettingsPower from 'material-ui/svg-icons/action/settings-power'
 
 import './SidebarMenu.css'
 
@@ -26,7 +27,9 @@ const style = {
 const touch = true
 const tooltipPosition = 'top-right'
 
-const SideBarMenu = () => {
+const SideBarMenu = (props) => {
+    const {handleSignOut} = props
+
     return (
         <div className="sidebar_menu">
             <div className="sidebar_menu__logo">
@@ -87,6 +90,18 @@ const SideBarMenu = () => {
                     tooltip="Settings">
                     <Settings />
                 </IconButton>
+
+            </div>
+            <div className="sidebar_menu__logout">
+            <IconButton
+                iconStyle={style.iconStyle}
+                style={style.style}
+                touch={touch}
+                tooltipPosition={tooltipPosition}
+                tooltip="Log out"
+                onClick={handleSignOut}>
+                <SettingsPower />
+            </IconButton>
             </div>
         </div>
     )
