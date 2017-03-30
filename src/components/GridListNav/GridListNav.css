@@ -1,4 +1,4 @@
-.grid__navbar {
+.grid__navbar > div {
     height: 50px;
     background: #fff;
     align-items: center;
@@ -19,4 +19,12 @@
     border-top: 5px solid;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
+}
+
+.grid__navbar__actions {
+    background: #ccc !important;
+}
+.grid__navbar__actions__buttons > div {
+    display: flex;
+    justify-content: flex-end;
 }

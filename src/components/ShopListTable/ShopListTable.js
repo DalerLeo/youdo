@@ -4,12 +4,15 @@ import sprintf from 'sprintf'
 import React from 'react'
 import {Link} from 'react-router'
 import {Dimmer, Loader} from 'semantic-ui-react'
-import GridList from '../GridList'
 import {Row, Col} from 'react-flexbox-grid'
+import IconButton from 'material-ui/IconButton'
+import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import GridList from '../GridList'
 import * as ROUTES from '../../constants/routes'
 
 const ShopGridList = (props) => {
-    const {filter, loading, data, itemId} = props
+    const {filter, loading, list, detailId} = props
 
     const header = [
         {
@@ -45,7 +48,19 @@ const ShopGridList = (props) => {
 
     ]
 
-    const body = _.map(data, (item) => {
+    const actions = (
+        <div>
+            <IconButton onClick={() => console.log('Click to edit')}>
+                <ModEditorIcon />
+            </IconButton>
+
+            <IconButton onClick={() => console.log('Click to delete')}>
+                <DeleteIcon />
+            </IconButton>
+        </div>
+    )
+
+    const body = _.map(list, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const phone = _.get(item, 'phone')
@@ -54,11 +69,9 @@ const ShopGridList = (props) => {
         const contactName = _.get(item, 'contact_name')
         const createdDate = moment(_.get(item, 'created_date')).format('DD.MM.YYYY')
 
-        if (id === itemId) {
+        if (id === detailId) {
             return (
-                <Row className="grid__detail" key={id}>
-                    <div>Hello</div>
-                </Row>
+                <div key={id}>Hello</div>
             )
         }
 
@@ -82,7 +95,13 @@ const ShopGridList = (props) => {
                 <Loader size="large">Loading</Loader>
             </Dimmer>
 
-            <GridList id={itemId} filter={filter} header={header} list={body} />
+            <GridList
+                filter={filter}
+                actions={actions}
+                detailId={detailId}
+                header={header}
+                list={body}
+            />
         </div>
     )
 }
@@ -90,7 +109,7 @@ const ShopGridList = (props) => {
 ShopGridList.propTypes = {
     filter: React.PropTypes.object,
     loading: React.PropTypes.bool.isRequired,
-    data: React.PropTypes.array
+    list: React.PropTypes.array
 }
 
 export default ShopGridList

@@ -88,6 +88,7 @@ const ShopList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
     const fromDate = filter.getParam('fromDate')
     const toDate = filter.getParam('toDate')
+    const detailId = parseInt(_.get(params, 'shopId') || 0)
     const initialValues = {
         fromToDate: {
             startDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
@@ -118,8 +119,8 @@ const ShopList = enhance((props) => {
             <ShopListTable
                 filter={filter}
                 loading={loading}
-                itemId={parseInt(_.get(params, 'shopId'))}
-                data={_.get(list, 'results')}
+                detailId={detailId}
+                list={_.get(list, 'results')}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
             />

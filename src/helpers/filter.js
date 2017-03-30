@@ -4,26 +4,22 @@ import sprintf from 'sprintf'
 
 const filter = (data, pathname, query = {}) => {
     const params = query
-    const currentPage = _.toNumber(_.get(params, 'page')) || 1
-    const pageRange = _.get(data, 'range') || 10
+    const currentPage = _.toInteger(_.get(params, 'page') || 1)
+    const pageRange = _.toInteger(_.get(data, 'range') || 10)
     const itemsCount = _.get(data, 'count')
 
     const pageCount = Math.ceil(itemsCount / pageRange)
 
-    const getParam = (paramName) => {
-        return _.get(params, paramName)
-    }
+    const getParam = (paramName) => _.get(params, paramName)
 
-    const getParams = (newParams) => {
-        return _.assign({}, params, newParams)
-    }
+    const getParams = (newParams) => _.assign({}, params, newParams)
 
     const getSelects = () => {
         return _
             .chain(getParam('select'))
             .split(',')
             .filter(item => item)
-            .map((item) => parseInt(item))
+            .map((item) => _.toInteger(item))
             .value()
     }
 
@@ -87,7 +83,6 @@ const filter = (data, pathname, query = {}) => {
 
         return _.isUndefined(columnType) ? null : columnType
     }
-
     const sortingURL = (columnSortingName) => {
         const currentOrdering = _.get(params, 'ordering')
         const columnList = _
@@ -119,17 +114,15 @@ const filter = (data, pathname, query = {}) => {
         return createURL({ordering})
     }
 
-    const getCurrentPage = () => {
-        return currentPage
-    }
+    const getCounts = () => itemsCount
 
-    const pageItemList = () => {
-        return _.range(1, pageCount + 1)
-    }
+    const getPageRange = () => pageRange
 
-    const hasPagination = () => {
-        return pageCount > 1
-    }
+    const getCurrentPage = () => currentPage
+
+    const pageItemList = () => _.range(1, pageCount + 1)
+
+    const hasPagination = () => pageCount > 1
 
     const filterBy = (newParams) => {
         hashHistory.push({
@@ -146,6 +139,8 @@ const filter = (data, pathname, query = {}) => {
         filterBy,
         getParam,
         getParams,
+        getCounts,
+        getPageRange,
         getCurrentPage,
         getSortingType,
         getSelects,

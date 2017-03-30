@@ -1,43 +1,60 @@
 import _ from 'lodash'
 import {hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
+import {Row} from 'react-flexbox-grid'
 import React from 'react'
 import Checkbox from 'material-ui/Checkbox'
 import './GridListBody.css'
 
 const enhance = compose(
     withHandlers({
-        onChecked: props => (itemKey) => {
+        onChecked: props => (id) => {
             return (event, isChecked) => {
                 const {filter} = props
-                const selectItems = filter.getSelects()
+                const selects = filter.getSelects()
+                const selectsInChecked = _
+                    .chain(selects)
+                    .union([id])
+                    .uniq()
+                    .value()
+                const selectsUnChecked = _
+                    .chain(selects)
+                    .filter(item => id !== item)
+                    .value()
 
-                const data = isChecked ? _.uniq(_.union([itemKey], selectItems)) : _.filter(selectItems, (item) => {
-                    return item !== itemKey
-                })
+                const newSelects = isChecked ? selectsInChecked : selectsUnChecked
+                const url = filter.createURL({select: _.join(newSelects, ',')})
 
-                hashHistory.push(filter.createURL({select: _.join(data, ',')}))
+                hashHistory.push(url)
             }
         }
     })
 )
 
 const GridListBody = enhance((props) => {
-    const {filter, list, onChecked, id} = props
+    const {filter, list, onChecked, detailId} = props
 
     const items = _.map(list, (item, index) => {
-        const key = parseInt(_.get(item, 'key'))
-        const selectItems = filter.getSelects()
-        const itemSelected = _.find(selectItems, (item) => item === key)
+        const id = _.toInteger(_.get(item, 'key'))
+        const selects = filter.getSelects()
+        const checkboxChecked = _
+            .chain(selects)
+            .find(item => item === id)
+            .isNumber()
+            .value()
 
-        if (key === id) {
-            return <div key={index}>{item}</div>
+        if (id === detailId) {
+            return (
+                <Row className="grid__detail" key={index}>
+                    {item}
+                </Row>
+            )
         }
 
         return (
             <div className="grid__item" key={index}>
                 <div className="grid__checkbox">
-                    <Checkbox onCheck={onChecked(key)} checked={Boolean(itemSelected)} />
+                    <Checkbox onCheck={onChecked(id)} checked={checkboxChecked} />
                 </div>
                 {item}
             </div>

@@ -7,61 +7,6 @@
     margin-right: 0 !important;
 }
 
-.grid__navbar {
-    height: 50px;
-    background: #fff;
-    align-items: center;
-    padding: 0 5px;
-    margin-bottom: 50px;
-    box-shadow: rgba(0, 0, 0, 0.156863) 0 3px 10px, rgba(0, 0, 0, 0.227451) 0 3px 10px;
-}
-
-.grid__arrow {
-    padding-right: 14px;
-    position: relative;
-}
-.grid__arrow::after {
-    content: "";
-    position: absolute;
-    top: 8px;
-    right: 0;
-    border-top: 5px solid;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-}
-
-.grid__item {
-    height: 50px;
-    background: #fff;
-    border-bottom: 1px dotted #eee;
-    align-items: center;
-    display: flex;
-    box-shadow: rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px;
-
-}
-
-.grid__item .row {
-    width: 100%;
-
-}
-
-.grid__item .row > div{
-    padding-left: 15px;
-}
-
-.grid .grid__detail.row {
-    padding: 15px;
-    height: 300px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: -15px !important;
-    margin-right: -15px !important;
-    background: #fff;
-    border-bottom: 1px dotted #eee;
-    align-items: center;
-    box-shadow: rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px;
-}
-
 .grid__checkbox {
     margin-left: 10px;
 }

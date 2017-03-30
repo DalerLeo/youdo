@@ -22,13 +22,15 @@ const enhance = compose(
 const GridListNavPagination = enhance(({onChange, filter}) => {
     const prev = filter.prevPage()
     const next = filter.nextPage()
-    const pageSize = _.get(filter.getParams(), 'pageSize') || 10
+    const pageSize = _.toInteger(_.get(filter.getParams(), 'pageSize') || 10)
+    const startPage = (filter.getPageRange() * (filter.getCurrentPage() - 1)) + 1
+    const startEnd = Math.floor(filter.getCounts() / pageSize) + (filter.getCounts() % pageSize)
 
     return (
         <div className="grid__navbar__pagination">
             <div className="grid__navbar__pagination__count">
                 <SelectField
-                    value={parseInt(pageSize)}
+                    value={pageSize}
                     onChange={onChange}>
                     <MenuItem value={10} primaryText="10" />
                     <MenuItem value={50} primaryText="50" />
@@ -36,7 +38,7 @@ const GridListNavPagination = enhance(({onChange, filter}) => {
                 </SelectField>
             </div>
             <div className="grid__navbar__pagination__nav">
-                <div>1 - 30 from 400</div>
+                <div>{startPage} - {startEnd} from {filter.getCounts()}</div>
                 <div>
                     <IconButton
                         disabled={Boolean(next)}
