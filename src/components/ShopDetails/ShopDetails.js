@@ -145,7 +145,7 @@ const ShopDetails = (props) => {
 }
 
 ShopDetails.propTypes = {
-    itemId: React.PropTypes.number.isRequired
+    item: React.PropTypes.object.isRequired
 }
 
 
