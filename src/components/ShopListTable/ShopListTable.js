@@ -10,6 +10,7 @@ import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import GridList from '../GridList'
 import * as ROUTES from '../../constants/routes'
+import ShopDetails from '../ShopDetails/ShopDetails'
 
 const ShopGridList = (props) => {
     const {filter, loading, list, detailId} = props
@@ -71,7 +72,7 @@ const ShopGridList = (props) => {
 
         if (id === detailId) {
             return (
-                <div key={id}>Hello</div>
+                <ShopDetails key={id} item={item} />
             )
         }
 
