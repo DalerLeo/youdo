@@ -8,13 +8,13 @@ import './GridListNav.css'
 
 const GridListNav = ({filter, actions}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
-    const showFilterUrl = filter.createURL({filter: true})
+    const showFilterUrl = filter.createURL({filter: 'true'})
 
     return (
         <div className="grid__navbar">
             {selectIsEmpty && <Row>
                 <Col xs={4}>
-                    <Link href={`#${showFilterUrl}`} className="grid__arrow">Show filter</Link>
+                    <Link to={showFilterUrl} className="grid__arrow">Show filter</Link>
                 </Col>
                 <Col xs={4}>
                     <GridListNavSearch filter={filter} />

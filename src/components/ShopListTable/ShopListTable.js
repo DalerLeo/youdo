@@ -3,7 +3,6 @@ import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
 import {Link} from 'react-router'
-import {Dimmer, Loader} from 'semantic-ui-react'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -67,8 +66,8 @@ const ShopGridList = (props) => {
         const phone = _.get(item, 'phone')
         const address = _.get(item, 'address')
         const guide = _.get(item, 'guide')
-        const contactName = _.get(item, 'contact_name')
-        const createdDate = moment(_.get(item, 'created_date')).format('DD.MM.YYYY')
+        const contactName = _.get(item, 'contactName')
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
 
         if (id === detailId) {
             return (
@@ -92,9 +91,9 @@ const ShopGridList = (props) => {
 
     return (
         <div>
-            <Dimmer active={loading} inverted>
-                <Loader size="large">Loading</Loader>
-            </Dimmer>
+            <div data={loading}>
+                <div>Loading</div>
+            </div>
 
             <GridList
                 filter={filter}

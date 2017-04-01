@@ -1,97 +1,92 @@
+import _ from 'lodash'
 import React from 'react'
-// import {reduxForm} from 'redux-form'
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import Checkbox from 'material-ui/Checkbox';
-import CircularProgress from 'material-ui/CircularProgress';
+import {compose} from 'recompose'
+import RaisedButton from 'material-ui/RaisedButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
-import { Field, reduxForm } from 'redux-form'
+import {Field, reduxForm} from 'redux-form'
+import injectSheet from 'react-jss'
+import {CheckBox, TextField} from '../ReduxForm'
 
-const checkboxStyle = {
-    textAlign: 'left',
-    marginBottom: '10px',
-    marginTop: '10px'
-};
+const enhance = compose(
+    injectSheet({
+        loader: {
+            width: '120px',
+            margin: '0 auto',
+            padding: '15px',
+            textAlign: 'center',
+            display: 'inline-block'
+        },
+        wrapper: {
+            width: '320px',
+            margin: '0 auto',
+            padding: '25px 55px 25px 45px',
+            textAlign: 'center',
+            display: 'inline-block'
+        },
+        title: {
+            paddingTop: '5px',
+            paddingBottom: '22px',
+            fontSize: '14px',
+            fontWeight: '700',
+            textTransform: 'uppercase',
+            borderBottom: '1px dashed #e2e4e9',
+            textAlign: 'center',
+            color: '#647994'
+        },
+        rememberMe: {
+            marginBottom: '20px !important',
+            marginTop: '20px !important'
+        },
+        nonFieldErrors: {
+            color: 'red',
+            fontSize: '12px',
+            marginTop: '12px'
+        }
+    }),
+    reduxForm({
+        form: 'SignInForm',
+        validate: (values, form) => form.errors
+    })
+)
 
-const inputStyle = {
-    marginTop: -10
-};
-
-
-const LabelFocusStyle = {
-    marginTop: 0,
-    color: '#2196f3',
-    borderColor: '#2196f3'
-};
-
-const renderTextField = ({ input, label, meta: { touched, error }, ...custom }) => (
-    <TextField floatingLabelText={label}
-               errorText={error}
-               style={{height: 62}}
-               floatingLabelFocusStyle={LabelFocusStyle}
-               floatingLabelStyle={inputStyle}
-               {...input}
-               {...custom}
-    />
-);
-
-const renderCheckbox = ({ input, label }) => (
-    <Checkbox label={label}
-              style={checkboxStyle}
-              checked={!!input.value}
-              onCheck={input.onChange}/>
-);
-
-
-
-
-const SignInForm = (props) => {
-
-    const { onSubmit, loading} = props;
+const SignInForm = enhance((props) => {
+    const {classes, onSubmit, loading, errors} = props
+    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
 
     if (loading) {
         return (
-            <Paper style={{
-                width: '120px',
-                margin: '0 auto',
-                padding: '15px',
-                textAlign: 'center',
-                display: 'inline-block',
-            }} zDepth={2}>
+            <Paper className={classes.loader} zDepth={2}>
                 <CircularProgress size={80} thickness={5}/>
             </Paper>
         )
     }
 
     return (
-        <Paper style={{
-            width: '300px',
-            margin: '0 auto',
-            padding: '15px',
-            textAlign: 'center',
-            display: 'inline-block',
-        }} zDepth={2}>
+        <Paper className={classes.wrapper} zDepth={2}>
             <form onSubmit={onSubmit}>
-                <div className="signInHeader">
-                    <div className="signInTitle">
-                        ВХОД В СИСТЕМУ
+                <div>
+                    <div className={classes.title}>
+                        ENTER TO SYSTEM
                     </div>
                 </div>
-                <div className="signInInputs">
-                    <Field name="username" component={renderTextField} label="Email"/>
-                    <Field name="password" component={renderTextField} label="Пароль"  type="password"/>
-                    <Field name="rememberMe" component={renderCheckbox} label="Запомнить меня" style={checkboxStyle}/>
+                <div>
+                    <div className={classes.nonFieldErrors}>{nonFieldErrors}</div>
 
-                    <RaisedButton type="submit" backgroundColor='#44637d' labelColor="#fff" label="Войти"
-                                  fullWidth={true}/>
+                    <Field name="username" component={TextField} label="Login" fullWidth={true} />
+                    <Field name="password" component={TextField} label="Password" type="password" fullWidth={true} />
+                    <Field name="rememberMe" component={CheckBox} label="Remember me" className={classes.rememberMe} />
+
+                    <RaisedButton
+                        type="submit"
+                        label="Enter"
+                        primary={true}
+                        fullWidth={true}
+                    />
                 </div>
             </form>
         </Paper>
     )
-}
+})
 
-
-export default reduxForm({
-    form: 'SignInForm',  // a unique identifier for this form
-    // asyncValidate
-})(SignInForm)
+export default SignInForm

@@ -120,7 +120,7 @@ const ShopList = enhance((props) => {
                 filter={filter}
                 loading={loading}
                 detailId={detailId}
-                list={_.get(list, 'results')}
+                list={_.get(list, 'results') || []}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
             />

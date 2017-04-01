@@ -1,4 +1,5 @@
 import createReducer from './createReducer'
+import toCamelCase from './toCamelCase'
 
 const defaultState = {
     data: null,
@@ -18,7 +19,7 @@ const createThunkReducer = (actionName) => {
         [`${actionName}_FULFILLED`] (state, action) {
             return {
                 ...state,
-                data: action.payload,
+                data: toCamelCase(action.payload),
                 error: null,
                 loading: false,
                 failed: false
@@ -28,7 +29,7 @@ const createThunkReducer = (actionName) => {
             return {
                 ...state,
                 data: null,
-                error: action.payload,
+                error: toCamelCase(action.payload),
                 loading: false,
                 failed: true
             }

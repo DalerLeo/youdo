@@ -1,45 +1,48 @@
 import React from 'react'
 import _ from 'lodash'
+import {compose} from 'recompose'
 import {hashHistory} from 'react-router'
 import {connect} from 'react-redux'
-import {toastr} from 'react-redux-toastr'
-import {Container, Grid, Segment} from 'semantic-ui-react'
+import injectSheet from 'react-jss'
 import {signInAction} from '../../actions/signIn'
-import SingInLayout from '../../components/SingInLayout'
 import SignInForm from '../../components/SignInForm'
 import * as ROUTES from '../../constants/routes'
-import {toasterError} from '../../helpers/apiErrorsHandler'
-import './SignIn.css'
 
-const SignIn = (props) => {
-    const {dispatch, location, loading, formValues} = props;
+const enhance = compose(
+    injectSheet({
+        container: {
+            height: '100%',
+            display: 'flex !important',
+            justifyContent: 'center',
+            flexDirection: 'column'
+        }
+    }),
+    connect(state => {
+        return {
+            data: _.get(state, ['signIn', 'data']),
+            error: _.get(state, ['signIn', 'error']),
+            formValues: _.get(state, ['form', 'SignInForm', 'values']),
+            loading: _.get(state, ['signIn', 'loading'])
+        }
+    })
+)
 
-    const onSubmit = (event) => {
+const SignIn = enhance((props) => {
+    const {classes, dispatch, location, loading, formValues, error} = props
+
+    const onSubmit = () => {
         dispatch(signInAction(formValues))
             .then(() => {
-                const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL;
-                toastr.success('Success ', 'Welcome');
+                const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
                 hashHistory.push(redirectUrl)
             })
-            .catch((error) => {
-                toastr.error('Fail', toasterError(error))
-            })
-    };
-
+    }
 
     return (
-        <SingInLayout>
-            <Container className="signInContainer">
-                <SignInForm loading={loading} onSubmit={onSubmit} />
-            </Container>
-        </SingInLayout>
+        <div className={classes.container}>
+            <SignInForm errors={error} loading={loading} onSubmit={onSubmit} />
+        </div>
     )
-};
+})
 
-export default connect(state => {
-    return {
-        data: _.get(state, ['signIn', 'data']),
-        formValues: _.get(state, ['form', 'SignInForm', 'values']),
-        loading: _.get(state, ['signIn', 'loading']),
-    }
-})(SignIn)
+export default SignIn

@@ -1,8 +1,9 @@
 import {hashHistory} from 'react-router'
+import {userIsAuth} from '../permissions'
+import {getToken} from '../helpers/storage'
 import * as ROUTES from '../constants/routes'
 import App from '../containers/App'
 import SignIn from '../containers/SignIn'
-import Dashboard from '../containers/Dashboard'
 import ShopList from '../containers/ShopList'
 import BalanceList from '../containers/BalanceList'
 import BalanceCreate from '../containers/BalanceCreate'
@@ -11,8 +12,6 @@ import DailyEntryCreate from '../containers/DailyEntryCreate'
 import DailyEntryItem from '../containers/DailyEntryItem'
 import DailyReportList from '../containers/DailyReportList'
 import NotFound from '../containers/NotFound'
-import {userIsAuth} from '../permissions'
-import {getToken} from '../helpers/storage'
 import ClientList from '../containers/ClientList'
 import ClientCreate from '../containers/ClientCreate'
 import BrokerList from '../containers/BrokerList'
@@ -24,7 +23,6 @@ import MonthlyReportEdit from '../containers/MonthlyReportEdit'
 import FundManagerList from '../containers/FundManagerList'
 import FundManagerCreate from '../containers/FundManagerCreate'
 import FundManagerEdit from '../containers/FundManagerEdit'
-
 
 export default {
     path: '/',
