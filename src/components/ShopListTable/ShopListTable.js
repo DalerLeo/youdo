@@ -90,19 +90,14 @@ const ShopGridList = (props) => {
     })
 
     return (
-        <div>
-            <div data={loading}>
-                <div>Loading</div>
-            </div>
-
-            <GridList
-                filter={filter}
-                actions={actions}
-                detailId={detailId}
-                header={header}
-                list={body}
-            />
-        </div>
+        <GridList
+            filter={filter}
+            loading={loading}
+            actions={actions}
+            detailId={detailId}
+            header={header}
+            list={body}
+        />
     )
 }
 
