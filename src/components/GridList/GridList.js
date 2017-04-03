@@ -7,17 +7,19 @@ import GridListBody from '../GridListBody'
 import CircularProgress from 'material-ui/CircularProgress'
 
 const GridList = (props) => {
-    const {classes, filter, loading, header, list, actions, detailId} = props
+    const {classes, filter, filterDialog, loading, header, list, actions, detailId} = props
     const listIds = _.map(list, item => _.toInteger(_.get(item, 'key')))
 
     return (
         <div className={classes.wrapper}>
-            <GridListNav filter={filter} actions={actions} />
-            <GridListHeader listIds={listIds} filter={filter} column={header} />
-            {!loading && <GridListBody detailId={detailId} filter={filter} list={list} />}
+            <div className={classes.header}>
+                <GridListNav filterDialog={filterDialog} filter={filter} actions={actions} />
+                <GridListHeader listIds={listIds} filter={filter} column={header} />
+            </div>
             {loading && <div className={classes.loader}>
                 <CircularProgress size={100} thickness={6} />
             </div>}
+            {!loading && <GridListBody detailId={detailId} filter={filter} list={list} />}
         </div>
     )
 }
@@ -25,6 +27,9 @@ const GridList = (props) => {
 export default injectSheet({
     wrapper: {
         position: 'relative'
+    },
+    header: {
+        height: '100px'
     },
     loader: {
         background: '#fff',
