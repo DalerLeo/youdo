@@ -51,7 +51,7 @@ const ShopDetails = enhance((props) => {
 
     return (
         <div className={classes.main} key={itemId}>
-            <Row><Col className="shop__left_block" xs={6} md={4}>
+            <Col className="shop__left_block" xs={6} md={4}>
                 <div className={classes.shop_title}>
                     <div className="shop__title_label">
                         OOO Jrem Vkusn
@@ -163,7 +163,6 @@ const ShopDetails = enhance((props) => {
 
                     </div>
                 </Col>
-            </Row>
         </div>
     )
 })
