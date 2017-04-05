@@ -19,7 +19,6 @@ const enhance = compose(
     }),
     connect(state => {
         return {
-            data: _.get(state, ['signIn', 'data']),
             error: _.get(state, ['signIn', 'error']),
             formValues: _.get(state, ['form', 'SignInForm', 'values']),
             loading: _.get(state, ['signIn', 'loading'])

@@ -24,13 +24,15 @@ const GridListNavPagination = enhance(({onChange, filter}) => {
     const next = filter.nextPage()
     const pageSize = _.toInteger(_.get(filter.getParams(), 'pageSize') || 10)
     const startPage = (filter.getPageRange() * (filter.getCurrentPage() - 1)) + 1
-    const startEnd = Math.floor(filter.getCounts() / pageSize) + (filter.getCounts() % pageSize)
+    const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
 
     return (
         <div className="grid__navbar__pagination">
             <div className="grid__navbar__pagination__count">
                 <SelectField
                     value={pageSize}
+                    style={{width: '60px', marginTop: '10px'}}
+                    underlineStyle={{border: '0px solid'}}
                     onChange={onChange}>
                     <MenuItem value={10} primaryText="10" />
                     <MenuItem value={50} primaryText="50" />

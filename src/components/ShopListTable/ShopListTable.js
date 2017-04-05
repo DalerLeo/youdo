@@ -9,7 +9,8 @@ import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import GridList from '../GridList'
 import * as ROUTES from '../../constants/routes'
-import ShopDetails from '../ShopDetails/ShopDetails'
+import ShopDetails from '../ShopDetails'
+import ShopFilter from '../ShopFilter'
 
 const ShopGridList = (props) => {
     const {filter, loading, list, detailId} = props
@@ -60,6 +61,10 @@ const ShopGridList = (props) => {
         </div>
     )
 
+    const filterDialog = (
+        <ShopFilter onSubmit={() => console.log('filtering')} />
+    )
+
     const body = _.map(list, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -90,19 +95,15 @@ const ShopGridList = (props) => {
     })
 
     return (
-        <div>
-            <div data={loading}>
-                <div>Loading</div>
-            </div>
-
-            <GridList
-                filter={filter}
-                actions={actions}
-                detailId={detailId}
-                header={header}
-                list={body}
-            />
-        </div>
+        <GridList
+            filter={filter}
+            filterDialog={filterDialog}
+            loading={loading}
+            actions={actions}
+            detailId={detailId}
+            header={header}
+            list={body}
+        />
     )
 }
 
