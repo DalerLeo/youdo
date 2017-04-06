@@ -35,7 +35,8 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.createURL() !== nextProps.filter.createURL()
+        console.log(props.filter.filterRequest(), nextProps.filter.filterRequest())
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(shopListFetchAction(filter))
     }),

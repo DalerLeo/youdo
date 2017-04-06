@@ -124,6 +124,10 @@ const filter = (data, pathname, query = {}) => {
 
     const hasPagination = () => pageCount > 1
 
+    const filterRequest = () => {
+        return paramsToQueryUrl(_.assign({}, params, {select: null, openFilterDialog: null}))
+    }
+
     const filterBy = (newParams) => {
         hashHistory.push({
             pathname,
@@ -145,6 +149,7 @@ const filter = (data, pathname, query = {}) => {
         getSortingType,
         getSelects,
         sortingURL,
+        filterRequest,
         createURL,
         prevPage,
         nextPage,
