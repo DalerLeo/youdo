@@ -5,19 +5,16 @@ import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import GridListNavPagination from '../GridListNavPagination'
 import GridListNavSearch from '../GridListNavSearch'
-import toBoolean from '../../helpers/toBoolean'
 
-const GridListNav = ({classes, filter, filterDialog, actions}) => {
+const GridListNav = ({classes, filter, filterDialog, actions, handleOpenFilterDialog}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
-    const showFilterUrl = filter.createURL({filter: 'true'})
-    const showFilter = toBoolean(filter.getParam('filter'))
 
     return (
         <div className={classes.wrapper}>
             {selectIsEmpty && <Row>
                 <Col xs={4}>
-                    {showFilter && filterDialog}
-                    <Link to={showFilterUrl} className={classes.arrow}>Show filter</Link>
+                    {filterDialog}
+                    <Link onTouchTap={handleOpenFilterDialog} className={classes.arrow}>Show filter</Link>
                 </Col>
                 <Col xs={4}>
                     <GridListNavSearch filter={filter} />

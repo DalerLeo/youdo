@@ -7,6 +7,8 @@ const Pagination = ({filter}) => {
     const prev = filter.prevPage()
     const next = filter.nextPage()
 
+    console.log(prev, next)
+
     const pageItems = _.map(filter.pageItemList(), (item, index) => {
         const pageNumber = index + 1
         const url = filter.createURL({page: pageNumber})
@@ -16,7 +18,7 @@ const Pagination = ({filter}) => {
             <Menu.Item
                 key={index}
                 active={active}
-                onClick={() => hashHistory.push(url)}>
+                onTouchTap={() => hashHistory.push(url)}>
                 {pageNumber}
             </Menu.Item>
         )
@@ -30,13 +32,13 @@ const Pagination = ({filter}) => {
         <Menu pagination>
             <Menu.Item
                 icon={true}
-                onClick={() => prev && hashHistory.push(prev)}>
+                onTouchTap={() => prev && hashHistory.push(prev)}>
                 <Icon name="left chevron" />
             </Menu.Item>
             {pageItems}
             <Menu.Item
                 icon={true}
-                onClick={() => next && hashHistory.push(next)}>
+                onTouchTap={() => next && hashHistory.push(next)}>
                 <Icon name="right chevron" />
             </Menu.Item>
         </Menu>

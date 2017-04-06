@@ -1,7 +1,7 @@
-import _ from 'lodash'
 import React from 'react'
 import {hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
+import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
@@ -10,6 +10,23 @@ import ArrowRightIcon from './ArrowRightIcon'
 import './GridListNavPagination.css'
 
 const enhance = compose(
+    injectSheet({
+        wrapper: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            color: '#5d6474'
+        },
+
+        count: {
+            marginRight: '20px'
+        },
+
+        nav: {
+            display: 'flex',
+            alignItems: 'center'
+        }
+    }),
     withHandlers({
         onChange: props => (event, index, value) => {
             const {filter} = props
@@ -19,18 +36,17 @@ const enhance = compose(
         }
     })
 )
-const GridListNavPagination = enhance(({onChange, filter}) => {
+const GridListNavPagination = enhance(({classes, onChange, filter}) => {
     const prev = filter.prevPage()
     const next = filter.nextPage()
-    const pageSize = _.toInteger(_.get(filter.getParams(), 'pageSize') || 10)
     const startPage = (filter.getPageRange() * (filter.getCurrentPage() - 1)) + 1
     const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
 
     return (
-        <div className="grid__navbar__pagination">
-            <div className="grid__navbar__pagination__count">
+        <div className={classes.wrapper}>
+            <div className={classes.count}>
                 <SelectField
-                    value={pageSize}
+                    value={filter.getPageRange()}
                     style={{width: '60px', marginTop: '10px'}}
                     underlineStyle={{border: '0px solid'}}
                     onChange={onChange}>
@@ -39,20 +55,20 @@ const GridListNavPagination = enhance(({onChange, filter}) => {
                     <MenuItem value={100} primaryText="100" />
                 </SelectField>
             </div>
-            <div className="grid__navbar__pagination__nav">
+            <div className={classes.nav}>
                 <div>{startPage} - {startEnd} from {filter.getCounts()}</div>
                 <div>
                     <IconButton
-                        disabled={Boolean(next)}
-                        iconStyle={{color: '#ccc'}}
-                        onClick={() => prev && hashHistory.push(prev)}>
+                        disabled={Boolean(!prev)}
+                        iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}
+                        onTouchTap={() => prev && hashHistory.push(prev)}>
                         <ArrowLeftIcon />
                     </IconButton>
 
                     <IconButton
-                        disabled={Boolean(next)}
-                        iconStyle={{color: '#ccc'}}
-                        onClick={() => next && hashHistory.push(next)}>
+                        disabled={Boolean(!next)}
+                        iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}
+                        onTouchTap={() => next && hashHistory.push(next)}>
                         <ArrowRightIcon />
                     </IconButton>
                 </div>

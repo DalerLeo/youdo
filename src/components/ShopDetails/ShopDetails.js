@@ -1,101 +1,95 @@
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Tabs, Tab} from 'material-ui/Tabs'
-
-
 import IconButton from 'material-ui/IconButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import AddAPhoto from 'material-ui/svg-icons/image/add-a-photo'
 import Edit from 'material-ui/svg-icons/image/edit'
-import {Col, Row} from 'react-flexbox-grid';
-
+import {Col} from 'react-flexbox-grid'
 
 const enhance = compose(
     injectSheet({
         wrapper: {
             width: '100%',
-            display: 'flex',
+            display: 'flex'
         },
-        leftSide:{
+        leftSide: {
             boxSizing: 'border-box',
-            background: "#fbfbfc",
-            padding: '20px 35px',
+            background: '#fbfbfc',
+            padding: '20px 35px'
         },
-        rightSide:{
+        rightSide: {
             boxShadow: '-5px 0px 5px #E0E0E0;',
             padding: '0 25px'
         },
         title: {
-            padding:'20px 0',
+            padding: '20px 0',
             display: 'flex',
             position: 'relative',
-            borderBottom: "dashed 1px",
+            borderBottom: 'dashed 1px'
         },
-        titleLabel:{
-            color: "#333333",
+        titleLabel: {
+            color: '#333333',
             fontWeight: 'bold',
             fontSize: '18px'
         },
-        titleButtons:{
+        titleButtons: {
             position: 'absolute',
             right: '0',
             marginTop: '-25px',
             marginRight: '-20px'
         },
-        top:{
+        top: {
             borderBottom: 'dashed 1px',
             padding: '15px 0'
         },
-        miniTitle:{
-            fontWeight:'bold',
-            marginBottom: '5px',
+        miniTitle: {
+            fontWeight: 'bold',
+            marginBottom: '5px'
         },
-        item:{
+        item: {
             display: 'flex',
-            marginBottom: '5px',
+            marginBottom: '5px'
         },
-        typeLabel:{
+        typeLabel: {
             width: '40%',
-            color: '#5d6474',
+            color: '#5d6474'
         },
-        typeValue:{
+        typeValue: {
             width: '80%'
         },
-        bottom:{
+        bottom: {
             padding: '15px 0'
         },
-        category:{
+        category: {
             display: 'flex',
             listStyle: 'none',
             borderBottom: '1px solid #e8e8e8',
             paddingLeft: 0,
-            '& li':{
+            '& li': {
                 padding: '5px 15px',
                 '&:hover': {
                     color: 'blue',
                     borderBottom: '2px solid blue'
-                },
+                }
             }
         },
 
-        active:{
+        active: {
             color: 'blue',
             borderBottom: '2px solid blue'
         },
-        imgContent:{
-            '& img':{
+        imgContent: {
+            '& img': {
                 width: '33%',
-                margin: '1px',
+                margin: '1px'
             },
             height: '400px',
             boxSizing: 'border-box',
-            overflowY: 'scroll',
-        },
-
+            overflowY: 'scroll'
+        }
     })
 )
-
 
 const ShopDetails = enhance((props) => {
     const {classes, itemId} = props
@@ -117,7 +111,6 @@ const ShopDetails = enhance((props) => {
     return (
         <div className={classes.wrapper} key={itemId}>
             <Col className={classes.leftSide} xs={6} md={4}>
-            {/*<Col className="shop__left_block" xs={6} md={4}>*/}
                 <div className={classes.title}>
                     <div className={classes.titleLabel}>
                         OOO Jrem Vkusn
@@ -246,8 +239,7 @@ const ShopDetails = enhance((props) => {
 })
 
 ShopDetails.propTypes = {
-    item: React.PropTypes.object.isRequired
+    data: React.PropTypes.object.isRequired
 }
-
 
 export default ShopDetails

@@ -14,16 +14,20 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
+        const detail = _.get(state, ['shop', 'detail', 'data'])
+        const detailLoading = _.get(state, ['shop', 'detail', 'loading'])
         const list = _.get(state, ['shop', 'list', 'data'])
-        const loading = _.get(state, ['shop', 'list', 'loading'])
+        const listLoading = _.get(state, ['shop', 'list', 'loading'])
         const csvData = _.get(state, ['shop', 'csv', 'data'])
         const csvLoading = _.get(state, ['shop', 'csv', 'loading'])
-        const filterForm = _.get(state, ['form', 'BalanceFilterForm'])
+        const filterForm = _.get(state, ['form', 'ShopFilterForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
             list,
-            loading,
+            listLoading,
+            detail,
+            detailLoading,
             csvData,
             csvLoading,
             filter,
@@ -39,6 +43,14 @@ const enhance = compose(
     withState('openCSVDialog', 'setOpenCSVDialog', false),
 
     withHandlers({
+        handleActionEdit: props => () => {
+            console.log('action edit')
+        },
+
+        handleActionDelete: props => () => {
+            console.log('action delete')
+        },
+
         handleOpenCSVDialog: props => () => {
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
@@ -68,13 +80,11 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'fromToDate', 'startDate']) || null
-            const toDate = _.get(filterForm, ['values', 'fromToDate', 'endDate']) || null
-            const client = _.get(filterForm, ['values', 'client', 'id'])
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 openFilterDialog: false,
-                client,
                 fromDate: fromDate && fromDate.format('YYYY-MM-DD'),
                 toDate: toDate && toDate.format('YYYY-MM-DD')
             })
@@ -83,22 +93,27 @@ const enhance = compose(
 )
 
 const ShopList = enhance((props) => {
-    const {list, location, loading, filter, layout, params} = props
+    const {location, list, listLoading, detail, detailLoading, filter, layout, params} = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
     const fromDate = filter.getParam('fromDate')
     const toDate = filter.getParam('toDate')
     const detailId = parseInt(_.get(params, 'shopId') || 0)
     const initialValues = {
-        fromToDate: {
-            startDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-            endDate: toDate && moment(toDate, 'YYYY-MM-DD')
+        date: {
+            fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
+            toDate: toDate && moment(toDate, 'YYYY-MM-DD')
         }
+    }
+
+    const actionsDialog = {
+        handleActionEdit: props.handleActionEdit,
+        handleActionDelete: props.handleActionDelete
     }
 
     const filterDialog = {
         initialValues,
-        filterLoading: loading,
+        filterLoading: false,
         openFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,
         handleCloseFilterDialog: props.handleCloseFilterDialog,
@@ -114,13 +129,24 @@ const ShopList = enhance((props) => {
         handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
+    const listData = {
+        data: _.get(list, 'results'),
+        loading: listLoading
+    }
+
+    const detailData = {
+        id: detailId,
+        data: detail,
+        loading: detailLoading
+    }
+
     return (
         <Layout {...layout}>
             <ShopListTable
                 filter={filter}
-                loading={loading}
-                detailId={detailId}
-                list={_.get(list, 'results') || []}
+                listData={listData}
+                detailData={detailData}
+                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
             />

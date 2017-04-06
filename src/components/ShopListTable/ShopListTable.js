@@ -10,62 +10,74 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import GridList from '../GridList'
 import * as ROUTES from '../../constants/routes'
 import ShopDetails from '../ShopDetails'
-import ShopFilter from '../ShopFilter'
+import ShopFilterForm from '../ShopFilterForm'
+
+const listHeader = [
+    {
+        sorting: true,
+        name: 'name',
+        title: 'Name'
+    },
+    {
+        sorting: true,
+        name: 'phone',
+        title: 'Phone'
+    },
+    {
+        sorting: true,
+        name: 'address',
+        title: 'Address'
+    },
+    {
+        sorting: true,
+        name: 'guide',
+        title: 'Guide'
+    },
+    {
+        sorting: true,
+        name: 'contactName',
+        title: 'Contact name'
+    },
+    {
+        sorting: true,
+        name: 'createdDate',
+        title: 'Created date'
+    }
+]
 
 const ShopGridList = (props) => {
-    const {filter, loading, list, detailId} = props
-
-    const header = [
-        {
-            sorting: true,
-            name: 'name',
-            title: 'Name'
-        },
-        {
-            sorting: true,
-            name: 'phone',
-            title: 'Phone'
-        },
-        {
-            sorting: true,
-            name: 'address',
-            title: 'Address'
-        },
-        {
-            sorting: true,
-            name: 'guide',
-            title: 'Guide'
-        },
-        {
-            sorting: true,
-            name: 'contactName',
-            title: 'Contact name'
-        },
-        {
-            sorting: true,
-            name: 'createdDate',
-            title: 'Created date'
-        }
-
-    ]
+    const {filter, filterDialog, actionsDialog, listData, detailData} = props
 
     const actions = (
         <div>
-            <IconButton onClick={() => console.log('Click to edit')}>
+            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
                 <ModEditorIcon />
             </IconButton>
 
-            <IconButton onClick={() => console.log('Click to delete')}>
+            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
                 <DeleteIcon />
             </IconButton>
         </div>
     )
 
-    const filterDialog = (
-        <ShopFilter onSubmit={() => console.log('filtering')} />
+    const shopFilterDialog = (
+        <ShopFilterForm
+            initialValues={filterDialog.initialValues}
+            open={filterDialog.openFilterDialog}
+            onSubmit={filterDialog.handleSubmitFilterDialog}
+            onClose={filterDialog.handleCloseFilterDialog}
+        />
     )
 
-    const body = _.map(list, (item) => {
+    const shopDetail = (
+        <ShopDetails
+            key={_.get(detailData, 'id')}
+            data={_.get(detailData, 'data')}
+            loading={_.get(detailData, 'loading')}
+        />
+    )
+
+    const shopList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const phone = _.get(item, 'phone')
@@ -73,12 +85,6 @@ const ShopGridList = (props) => {
         const guide = _.get(item, 'guide')
         const contactName = _.get(item, 'contactName')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-
-        if (id === detailId) {
-            return (
-                <ShopDetails key={id} item={item} />
-            )
-        }
 
         return (
             <Row key={id}>
@@ -94,23 +100,45 @@ const ShopGridList = (props) => {
         )
     })
 
+    const list = {
+        header: listHeader,
+        list: shopList,
+        loading: _.get(listData, 'loading')
+    }
+
     return (
         <GridList
             filter={filter}
-            filterDialog={filterDialog}
-            loading={loading}
-            actions={actions}
-            detailId={detailId}
-            header={header}
-            list={body}
+            list={list}
+            detail={shopDetail}
+            handleOpenFilterDialog={filterDialog.handleOpenFilterDialog}
+            actionsDialog={actions}
+            filterDialog={shopFilterDialog}
         />
     )
 }
 
+ShopGridList.defaultProps = {
+    detailData: {},
+    listData: {}
+}
+
 ShopGridList.propTypes = {
-    filter: React.PropTypes.object,
-    loading: React.PropTypes.bool.isRequired,
-    list: React.PropTypes.array
+    filter: React.PropTypes.object.isRequired,
+    listData: React.PropTypes.object.isRequired,
+    detailData: React.PropTypes.object.isRequired,
+    actionsDialog: React.PropTypes.shape({
+        handleActionEdit: React.PropTypes.func.isRequired,
+        handleActionDelete: React.PropTypes.func.isRequired
+    }).isRequired,
+    filterDialog: React.PropTypes.shape({
+        initialValues: React.PropTypes.object,
+        filterLoading: React.PropTypes.bool,
+        openFilterDialog: React.PropTypes.bool.isRequired,
+        handleOpenFilterDialog: React.PropTypes.func.isRequired,
+        handleCloseFilterDialog: React.PropTypes.func.isRequired,
+        handleSubmitFilterDialog: React.PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default ShopGridList

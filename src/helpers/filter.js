@@ -5,7 +5,7 @@ import sprintf from 'sprintf'
 const filter = (data, pathname, query = {}) => {
     const params = query
     const currentPage = _.toInteger(_.get(params, 'page') || 1)
-    const pageRange = _.toInteger(_.get(data, 'range') || 10)
+    const pageRange = _.toInteger(_.get(params, 'pageSize') || 10)
     const itemsCount = _.get(data, 'count')
 
     const pageCount = Math.ceil(itemsCount / pageRange)

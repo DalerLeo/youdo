@@ -15,13 +15,15 @@ export const listFilterSerializer = (data) => {
     const {...defaultData} = data
 
     return {
-        ...defaultData,
+        'created_date_0': _.get(defaultData, 'fromDate'),
+        'created_date_1': _.get(defaultData, 'toDate'),
+        'page_size': _.get(defaultData, 'pageSize'),
         'ordering': orderingSnakeCase(_.get(data, 'ordering'))
     }
 }
 
 export const csvFilterSerializer = (data) => {
-    const {...defaultData} = data
+    const {...defaultData} = listFilterSerializer(data)
 
     return {
         ...defaultData,

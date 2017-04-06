@@ -22,10 +22,15 @@ const muiTheme = getMuiTheme({
     fontFamily: 'Roboto, sans-serif',
     palette: {
         primary1Color: '#5d6474',
-        categoryColor: 'white',
+        primary2Color: '#5d6474',
+        primary3Color: '#5d6474',
+        accent1Color: '#5d6474',
+        accent2Color: '#fff',
+        accent3Color: '#fff'
     },
     appBar: {
-        height: 50
+        height: 50,
+        textColor: 'white'
     }
 })
 

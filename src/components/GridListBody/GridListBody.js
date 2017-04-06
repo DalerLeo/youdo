@@ -1,12 +1,39 @@
 import _ from 'lodash'
+import React from 'react'
 import {hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
 import {Row} from 'react-flexbox-grid'
-import React from 'react'
+import injectSheet from 'react-jss'
 import Checkbox from 'material-ui/Checkbox'
-import './GridListBody.css'
+// import './GridListBody.css'
 
 const enhance = compose(
+    injectSheet({
+        checkbox: {
+            marginLeft: '10px'
+        },
+        item: {
+            height: '50px',
+            background: '#fff',
+            borderBottom: '1px dotted #eee',
+            alignItems: 'center',
+            display: 'flex',
+            boxShadow: 'rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px',
+            '& .row': {
+                width: '100%'
+            },
+            '& .row > div': {
+                paddingLeft: '15px'
+            }
+        },
+        detail: {
+            margin: '20px -15px !important',
+            background: '#fff',
+            borderBottom: '1px dotted #eee',
+            alignItems: 'center',
+            boxShadow: 'rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px'
+        }
+    }),
     withHandlers({
         onChecked: props => (id) => {
             return (event, isChecked) => {
@@ -32,10 +59,11 @@ const enhance = compose(
 )
 
 const GridListBody = enhance((props) => {
-    const {filter, list, onChecked, detailId} = props
+    const {classes, filter, list, onChecked, detail} = props
 
     const items = _.map(list, (item, index) => {
         const id = _.toInteger(_.get(item, 'key'))
+        const detailId = _.toInteger(_.get(detail, 'key'))
         const selects = filter.getSelects()
         const checkboxChecked = _
             .chain(selects)
@@ -45,15 +73,15 @@ const GridListBody = enhance((props) => {
 
         if (id === detailId) {
             return (
-                <Row className="grid__detail" key={index}>
-                    {item}
+                <Row className={classes.detail} key={index}>
+                    {detail}
                 </Row>
             )
         }
 
         return (
-            <div className="grid__item" key={index}>
-                <div className="grid__checkbox">
+            <div className={classes.item} key={index}>
+                <div className={classes.checkbox}>
                     <Checkbox onCheck={onChecked(id)} checked={checkboxChecked} />
                 </div>
                 {item}
