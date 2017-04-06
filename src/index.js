@@ -21,7 +21,8 @@ injectTapEventPlugin()
 const muiTheme = getMuiTheme({
     fontFamily: 'Roboto, sans-serif',
     palette: {
-        primary1Color: '#5d6474'
+        primary1Color: '#5d6474',
+        categoryColor: 'white',
     },
     appBar: {
         height: 50
