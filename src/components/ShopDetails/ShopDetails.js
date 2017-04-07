@@ -9,6 +9,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import {Col} from 'react-flexbox-grid'
+import ShopDetailsImg from '../ShopDetailsImg'
 
 const iconStyle = {
     icon: {
@@ -63,11 +64,11 @@ const enhance = compose(
         },
         miniTitle: {
             fontWeight: 'bold',
-            marginBottom: '5px'
+            marginBottom: '10px'
         },
         item: {
             display: 'flex',
-            marginBottom: '5px'
+            marginBottom: '10px'
         },
         typeLabel: {
             width: '40%',
@@ -278,14 +279,14 @@ const ShopDetails = enhance((props) => {
                         <Tab label="Активность" value={2} />
                         <Tab label="Фотографии" value={3} />
                     </Tabs>
-
-                    <div className={classes.imgContent}>
-                        <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
-                        <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
-                        <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
-                        <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
-                        <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
-                    </div>
+                    <ShopDetailsImg data="data" loading="loading"/>
+                    {/*<div className={classes.imgContent}>*/}
+                        {/*<img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>*/}
+                        {/*<img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>*/}
+                        {/*<img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>*/}
+                        {/*<img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>*/}
+                        {/*<img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>*/}
+                    {/*</div>*/}
                 </div>
             </Col>
         </div>
