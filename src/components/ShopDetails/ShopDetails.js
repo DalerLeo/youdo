@@ -1,104 +1,117 @@
+import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Tabs, Tab} from 'material-ui/Tabs'
-
-
 import IconButton from 'material-ui/IconButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import AddAPhoto from 'material-ui/svg-icons/image/add-a-photo'
 import Edit from 'material-ui/svg-icons/image/edit'
-import {Col, Row} from 'react-flexbox-grid'
+import CircularProgress from 'material-ui/CircularProgress'
+import {Col} from 'react-flexbox-grid'
 
+const iconStyle = {
+    icon: {
+        width: 30,
+        height: 30
+    },
+    button: {
+        width: 66,
+        height: 66,
+        padding: 0
+    }
+}
+
+const tooltipPosition = 'bottom-center'
 
 const enhance = compose(
     injectSheet({
         wrapper: {
             width: '100%',
-            display: 'flex',
+            display: 'flex'
         },
-        leftSide:{
+        leftSide: {
             boxSizing: 'border-box',
-            background: "#fbfbfc",
-            padding: '20px 35px',
+            background: '#fbfbfc',
+            padding: '20px 35px'
         },
-        rightSide:{
+        rightSide: {
             boxShadow: '-5px 0px 5px #E0E0E0;',
             padding: '0 25px'
         },
         title: {
-            paddingBottom:'20px',
+            paddingBottom: '20px',
+            padding: '20px 0',
             display: 'flex',
             position: 'relative',
-            borderBottom: "dashed 1px",
+            borderBottom: 'dashed 1px'
         },
-        titleLabel:{
-            color: "#333333",
+        titleLabel: {
+            color: '#333333',
             fontWeight: 'bold',
             fontSize: '18px'
         },
-        titleButtons:{
+        titleButtons: {
             position: 'absolute',
             right: '0',
             marginTop: '-20px',
             marginRight: '-25px'
         },
-        top:{
+        top: {
             borderBottom: 'dashed 1px',
             padding: '15px 0'
         },
-        miniTitle:{
-            fontWeight:'bold',
-            marginBottom: '5px',
+        miniTitle: {
+            fontWeight: 'bold',
+            marginBottom: '5px'
         },
-        item:{
+        item: {
             display: 'flex',
-            marginBottom: '5px',
+            marginBottom: '5px'
         },
-        typeLabel:{
+        typeLabel: {
             width: '40%',
-            color: '#5d6474',
+            color: '#5d6474'
         },
-        typeValue:{
+        typeValue: {
             width: '80%'
         },
-        bottom:{
+        bottom: {
             padding: '15px 0'
         },
-        category:{
+        category: {
             display: 'flex',
             listStyle: 'none',
             borderBottom: '1px solid #e8e8e8',
             paddingLeft: 0,
-            '& li':{
+            '& li': {
                 padding: '5px 15px',
                 '&:visited': {
                     color: 'blue',
                     borderBottom: '2px solid blue'
-                },
+                }
             }
         },
 
-        active:{
+        active: {
             color: 'blue',
             borderBottom: '2px solid blue'
         },
-        imgContent:{
-            '& img':{
+        imgContent: {
+            '& img': {
                 width: '33%',
-                margin: '1px',
+                margin: '1px'
             },
             height: '400px',
             boxSizing: 'border-box',
-            overflowY: 'scroll',
+            overflowY: 'scroll'
         },
-        colorCat:{
+        colorCat: {
             borderBottom: '2px solid #e8e8e8',
             marginBottom: '20px',
             '& > div': {
-                width: '60% !important',
+                width: '60% !important'
             },
-            '& > div:nth-child(2) > div':{
+            '& > div:nth-child(2) > div': {
                 marginTop: '0px !important',
                 marginBottom: '-2px',
                 backgroundColor: 'blue !important'
@@ -106,44 +119,56 @@ const enhance = compose(
             // '& > div:nth-child(2)':{
             //     backgroundColor: '#e8e8e8'
             // },
-            '& button':{
+            '& button': {
                 color: 'black !important',
                 backgroundColor: 'white !important'
             },
-            '& button > span:first-line':{
+            '& button > span:first-line': {
                 color: 'blue'
             },
-            '& button div:nthChild(2)':{
+            '& button div:nthChild(2)': {
                 backgroundColor: 'white !important'
-            },
-
+            }
+        },
+        loader: {
+            width: '100%',
+            background: '#fff',
+            height: '400px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         }
     })
 )
 
 const ShopDetails = enhance((props) => {
-    const {classes, itemId} = props
+    const {classes, loading, data} = props
+    const name = _.get(data, 'name') || 'N/A'
+    const type = _.get(data, 'categoryName') || 'N/A'
+    const address = _.get(data, 'address') || 'N/A'
+    const guide = _.get(data, 'guide') || 'N/A'
+    const phone = _.get(data, 'phone') || 'N/A'
+    const contactName = _.get(data, 'contactName') || 'N/A'
+    const agentName = _.get(data, 'agentName') || 'N/A'
+    const agentPhone = _.get(data, 'agentPhone') || 'N/A'
+    const agentEmail = _.get(data, 'agentEmail') || 'N/A'
 
-    const tooltipPosition = 'bottom-center'
-
-    const iconStyle = {
-        icon: {
-            width: 30,
-            height: 30
-        },
-        button: {
-            width: 66,
-            height: 66,
-            padding: 0
-        }
+    if (loading) {
+        return (
+            <div className={classes.loader}>
+                <div>
+                    <CircularProgress size={100} thickness={6} />
+                </div>
+            </div>
+        )
     }
 
     return (
-        <div className={classes.wrapper} key={itemId}>
+        <div className={classes.wrapper}>
             <Col className={classes.leftSide} xs={6} md={4}>
                 <div className={classes.title}>
                     <div className={classes.titleLabel}>
-                        OOO Jrem Vkusn
+                        {name}
                     </div>
                     <div className={classes.titleButtons}>
                         <IconButton
@@ -180,7 +205,7 @@ const ShopDetails = enhance((props) => {
                                 Тип заведения
                             </div>
                             <div className={classes.typeValue}>
-                                Суппер маркет
+                                {type}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -188,7 +213,7 @@ const ShopDetails = enhance((props) => {
                                 Адрес
                             </div>
                             <div className={classes.typeValue}>
-                                Ziyo said kochasi166-uy
+                                {address}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -196,7 +221,7 @@ const ShopDetails = enhance((props) => {
                                 Ориентир
                             </div>
                             <div className={classes.typeValue}>
-                                Напротив кинотеатра Казахстан
+                                {guide}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -204,7 +229,7 @@ const ShopDetails = enhance((props) => {
                                 Телефон
                             </div>
                             <div className={classes.typeValue}>
-                                +98935000755
+                                {phone}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -212,7 +237,7 @@ const ShopDetails = enhance((props) => {
                                 Контактное лицо
                             </div>
                             <div className={classes.typeValue}>
-                                Жасур Эргашевич
+                                {contactName}
                             </div>
                         </div>
                     </div>
@@ -225,7 +250,7 @@ const ShopDetails = enhance((props) => {
                                 Фамилия и имя
                             </div>
                             <div className={classes.typeValue}>
-                                Нигматуллаев Нигматулла
+                                {agentName}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -233,7 +258,7 @@ const ShopDetails = enhance((props) => {
                                 Телефон
                             </div>
                             <div className={classes.typeValue}>
-                                +98935000755
+                                {agentPhone}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -241,7 +266,7 @@ const ShopDetails = enhance((props) => {
                                 Email
                             </div>
                             <div className={classes.typeValue}>
-                                nigmatulla.n@gmail.com
+                                {agentEmail}
                             </div>
                         </div>
                     </div>
@@ -270,8 +295,8 @@ const ShopDetails = enhance((props) => {
 })
 
 ShopDetails.propTypes = {
-    item: React.PropTypes.object.isRequired
+    data: React.PropTypes.object.isRequired,
+    loading: React.PropTypes.bool.isRequired
 }
-
 
 export default ShopDetails

@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import injectSheet from 'react-jss'
 import {Row, Col} from 'react-flexbox-grid'
 import {Link, hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
@@ -7,24 +8,49 @@ import ArrowUpIcon from './ArrowUpIcon'
 import ArrowDownIcon from './ArrowDownIcon'
 import Checkbox from 'material-ui/Checkbox'
 import FlatButton from 'material-ui/FlatButton'
-import './GridListHeader.css'
-
-const iconStyle = {
-    height: '15px',
-    position: 'absolute',
-    top: '10px',
-    right: '0px',
-    color: '#fff'
-}
-
-const buttonColor = {
-    color: '#fff',
-    minWidth: 'auto',
-    padding: '0px 30px 0px 10px',
-    position: 'relative'
-}
 
 const enhance = compose(
+    injectSheet({
+        checkbox: {
+            marginLeft: '10px'
+        },
+        header: {
+            position: 'absolute',
+            top: '50px',
+            width: '100%',
+            height: '50px',
+            alignItems: 'center',
+            background: '#5d6474',
+            fontWeight: '700',
+            color: '#fff',
+            display: 'flex',
+            boxShadow: 'rgba(0, 0, 0, 0.156863) 0 3px 10px, rgba(0, 0, 0, 0.227451) 0 3px 10px',
+            '& .row': {
+                width: '100%'
+            }
+        },
+        sortingButton: {
+            color: '#ffffff',
+            cursor: 'pointer',
+            '& hover': {
+                color: '#ffffff',
+                cursor: 'pointer'
+            }
+        },
+        icon: {
+            height: '15px !important',
+            position: 'absolute !important',
+            top: '10px !important',
+            right: '0px !important',
+            color: '#fff !important'
+        },
+        button: {
+            color: '#fff !important',
+            minWidth: 'auto !important',
+            padding: '0px 30px 0px 10px !important',
+            position: 'relative !important'
+        }
+    }),
     withHandlers({
         onChecked: props => (event, isChecked) => {
             const {filter, listIds} = props
@@ -48,7 +74,7 @@ const enhance = compose(
 )
 
 const GridListHeader = enhance((props) => {
-    const {filter, column, listIds, onChecked} = props
+    const {classes, filter, column, listIds, onChecked} = props
 
     // Calculate row size for correct showing grid list
     const rowSize = 12
@@ -70,15 +96,15 @@ const GridListHeader = enhance((props) => {
             const name = _.get(item, 'name')
             const sortingType = filter.getSortingType(name)
             const Icon = !_.isNull(sortingType) ? sortingType ? (
-                <ArrowUpIcon style={iconStyle} />
-            ) : (<ArrowDownIcon style={iconStyle} />) : null
+                <ArrowUpIcon className={classes.icon} />
+            ) : (<ArrowDownIcon className={classes.icon} />) : null
 
             return (
                 <Col xs={xs} key={index}>
                     <Link
-                        className="grid__header__sorting__button"
-                        onClick={() => hashHistory.push(filter.sortingURL(name))}>
-                        <FlatButton style={buttonColor}>
+                        className={classes.sortingButton}
+                        onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
+                        <FlatButton className={classes.button}>
                             <span>{_.get(item, 'title')}</span> {Icon}
                         </FlatButton>
                     </Link>
@@ -92,8 +118,8 @@ const GridListHeader = enhance((props) => {
     })
 
     return (
-        <div className="grid__header">
-            <div className="grid__checkbox">
+        <div className={classes.header}>
+            <div className={classes.checkbox}>
                 <Checkbox onCheck={onChecked} checked={checkboxChecked} />
             </div>
             <Row>

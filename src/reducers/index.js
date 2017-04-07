@@ -24,6 +24,7 @@ const rootReducer = combineReducers({
     shop: combineReducers({
         create: createThunkReducer(actionTypes.SHOP_CREATE),
         list: createThunkReducer(actionTypes.SHOP_LIST),
+        item: createThunkReducer(actionTypes.SHOP_ITEM),
         csv: createThunkReducer(actionTypes.SHOP_LIST_CSV)
     }),
     balance: combineReducers({
