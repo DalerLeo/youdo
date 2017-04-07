@@ -7,6 +7,7 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import AddAPhoto from 'material-ui/svg-icons/image/add-a-photo'
 import Edit from 'material-ui/svg-icons/image/edit'
 import CircularProgress from 'material-ui/CircularProgress'
+import {Tabs, Tab} from 'material-ui/Tabs'
 import {Col} from 'react-flexbox-grid'
 
 const iconStyle = {
