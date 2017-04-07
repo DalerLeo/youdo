@@ -8,7 +8,7 @@ import IconButton from 'material-ui/IconButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import AddAPhoto from 'material-ui/svg-icons/image/add-a-photo'
 import Edit from 'material-ui/svg-icons/image/edit'
-import {Col, Row} from 'react-flexbox-grid';
+import {Col, Row} from 'react-flexbox-grid'
 
 
 const enhance = compose(
@@ -27,7 +27,7 @@ const enhance = compose(
             padding: '0 25px'
         },
         title: {
-            padding:'20px 0',
+            paddingBottom:'20px',
             display: 'flex',
             position: 'relative',
             borderBottom: "dashed 1px",
@@ -40,8 +40,8 @@ const enhance = compose(
         titleButtons:{
             position: 'absolute',
             right: '0',
-            marginTop: '-25px',
-            marginRight: '-20px'
+            marginTop: '-20px',
+            marginRight: '-25px'
         },
         top:{
             borderBottom: 'dashed 1px',
@@ -72,7 +72,7 @@ const enhance = compose(
             paddingLeft: 0,
             '& li':{
                 padding: '5px 15px',
-                '&:hover': {
+                '&:visited': {
                     color: 'blue',
                     borderBottom: '2px solid blue'
                 },
@@ -92,10 +92,34 @@ const enhance = compose(
             boxSizing: 'border-box',
             overflowY: 'scroll',
         },
+        colorCat:{
+            borderBottom: '2px solid #e8e8e8',
+            marginBottom: '20px',
+            '& > div': {
+                width: '60% !important',
+            },
+            '& > div:nth-child(2) > div':{
+                marginTop: '0px !important',
+                marginBottom: '-2px',
+                backgroundColor: 'blue !important'
+            },
+            // '& > div:nth-child(2)':{
+            //     backgroundColor: '#e8e8e8'
+            // },
+            '& button':{
+                color: 'black !important',
+                backgroundColor: 'white !important'
+            },
+            '& button > span:first-line':{
+                color: 'blue'
+            },
+            '& button div:nthChild(2)':{
+                backgroundColor: 'white !important'
+            },
 
+        }
     })
 )
-
 
 const ShopDetails = enhance((props) => {
     const {classes, itemId} = props
@@ -117,7 +141,6 @@ const ShopDetails = enhance((props) => {
     return (
         <div className={classes.wrapper} key={itemId}>
             <Col className={classes.leftSide} xs={6} md={4}>
-            {/*<Col className="shop__left_block" xs={6} md={4}>*/}
                 <div className={classes.title}>
                     <div className={classes.titleLabel}>
                         OOO Jrem Vkusn
@@ -226,12 +249,13 @@ const ShopDetails = enhance((props) => {
             </Col>
             <Col className={classes.rightSide} xs={6} md={8}>
                 <div>
-                    <ul className={classes.category}>
-                        <li className={classes.active}>Карта</li>
-                        <li>Статистика</li>
-                        <li>Активность</li>
-                        <li>Фотографии</li>
-                    </ul>
+                    <Tabs className={classes.colorCat}>
+                        <Tab label="Карта" value={0} />
+                        <Tab label="Статистика" value={1} />
+                        <Tab label="Активность" value={2} />
+                        <Tab label="Фотографии" value={3} />
+                    </Tabs>
+
                     <div className={classes.imgContent}>
                         <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
                         <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
