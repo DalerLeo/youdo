@@ -1,9 +1,0 @@
-.SortingTableCell {
-    cursor: pointer;
-}
-.SortingTableCell i {
-    position: absolute;
-    padding-left: 5px;
-    margin-top: 7px !important;
-    cursor: pointer;
-}
