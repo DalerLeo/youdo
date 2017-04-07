@@ -6,7 +6,7 @@ import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import ShopGridList from '../../components/ShopGridList'
-import {shopListFetchAction, shopCSVFetchAction, shopItemFetchAction} from '../../actions/shop'
+import {shopCreateAction, shopListFetchAction, shopCSVFetchAction, shopItemFetchAction} from '../../actions/shop'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 
@@ -16,6 +16,7 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['shop', 'item', 'data'])
         const detailLoading = _.get(state, ['shop', 'item', 'loading'])
+        const createLoading = _.get(state, ['shop', 'create', 'loading'])
         const list = _.get(state, ['shop', 'list', 'data'])
         const listLoading = _.get(state, ['shop', 'list', 'loading'])
         const csvData = _.get(state, ['shop', 'csv', 'data'])
@@ -28,6 +29,7 @@ const enhance = compose(
             listLoading,
             detail,
             detailLoading,
+            createLoading,
             csvData,
             csvLoading,
             filter,
@@ -96,14 +98,37 @@ const enhance = compose(
                 fromDate: fromDate && fromDate.format('YYYY-MM-DD'),
                 toDate: toDate && toDate.format('YYYY-MM-DD')
             })
+        },
+
+        handleOpenCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({openCreateDialog: true})})
+        },
+
+        handleCloseCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({openCreateDialog: false})})
+        },
+
+        handleSubmitCreateDialog: props => () => {
+            const {dispatch, filterForm} = props
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+
+            dispatch(shopCreateAction({
+                openFilterDialog: false,
+                fromDate: fromDate && fromDate.format('YYYY-MM-DD'),
+                toDate: toDate && toDate.format('YYYY-MM-DD')
+            }))
         }
     })
 )
 
 const ShopList = enhance((props) => {
-    const {location, list, listLoading, detail, detailLoading, filter, layout, params} = props
+    const {location, list, listLoading, detail, detailLoading, createLoading, filter, layout, params} = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
+    const openCreateDialog = toBoolean(_.get(location, ['query', 'openCreateDialog']))
     const fromDate = filter.getParam('fromDate')
     const toDate = filter.getParam('toDate')
     const detailId = parseInt(_.get(params, 'shopId') || 0)
@@ -117,6 +142,14 @@ const ShopList = enhance((props) => {
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
         handleActionDelete: props.handleActionDelete
+    }
+
+    const createDialog = {
+        createLoading,
+        openCreateDialog,
+        handleOpenFilterDialog: props.handleOpenCreateDialog,
+        handleCloseFilterDialog: props.handleCloseCreateDialog,
+        handleSubmitFilterDialog: props.handleSubmitCreateDialog
     }
 
     const filterDialog = {
@@ -139,13 +172,13 @@ const ShopList = enhance((props) => {
 
     const listData = {
         data: _.get(list, 'results'),
-        loading: listLoading
+        listLoading
     }
 
     const detailData = {
         id: detailId,
         data: detail,
-        loading: detailLoading
+        detailLoading
     }
 
     return (
@@ -154,6 +187,7 @@ const ShopList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
+                createDialog={createDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}

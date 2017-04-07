@@ -9,8 +9,10 @@ import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import GridList from '../GridList'
 import * as ROUTES from '../../constants/routes'
-import ShopDetails from '../ShopDetails'
+import Container from '../Container'
 import ShopFilterForm from '../ShopFilterForm'
+import ShopDetails from '../ShopDetails'
+import ShopCreateDialog from '../ShopCreateDialog'
 
 const listHeader = [
     {
@@ -46,7 +48,7 @@ const listHeader = [
 ]
 
 const ShopGridList = (props) => {
-    const {filter, filterDialog, actionsDialog, listData, detailData} = props
+    const {filter, createDialog, filterDialog, actionsDialog, listData, detailData} = props
 
     const actions = (
         <div>
@@ -73,17 +75,17 @@ const ShopGridList = (props) => {
         <ShopDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
-            loading={_.get(detailData, 'loading')}
+            loading={_.get(detailData, 'detailLoading')}
         />
     )
 
     const shopList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const phone = _.get(item, 'phone')
-        const address = _.get(item, 'address')
-        const guide = _.get(item, 'guide')
-        const contactName = _.get(item, 'contactName')
+        const phone = _.get(item, 'phone') || 'N/A'
+        const address = _.get(item, 'address') || 'N/A'
+        const guide = _.get(item, 'guide') || 'N/A'
+        const contactName = _.get(item, 'contactName') || 'N/A'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
 
         return (
@@ -103,18 +105,27 @@ const ShopGridList = (props) => {
     const list = {
         header: listHeader,
         list: shopList,
-        loading: _.get(listData, 'loading')
+        loading: _.get(listData, 'listLoading')
     }
 
     return (
-        <GridList
-            filter={filter}
-            list={list}
-            detail={shopDetail}
-            handleOpenFilterDialog={filterDialog.handleOpenFilterDialog}
-            actionsDialog={actions}
-            filterDialog={shopFilterDialog}
-        />
+        <Container>
+            <GridList
+                filter={filter}
+                list={list}
+                detail={shopDetail}
+                handleOpenFilterDialog={filterDialog.handleOpenFilterDialog}
+                actionsDialog={actions}
+                filterDialog={shopFilterDialog}
+            />
+            <ShopCreateDialog
+                title={'Create shop'}
+                open={createDialog.openCreateDialog}
+                loading={createDialog.createLoading}
+                onSubmit={createDialog.handleSubmitFilterDialog}
+                onClose={createDialog.handleCloseFilterDialog}
+            />
+        </Container>
     )
 }
 
