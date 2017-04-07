@@ -116,9 +116,6 @@ const enhance = compose(
                 marginBottom: '-2px',
                 backgroundColor: 'blue !important'
             },
-            // '& > div:nth-child(2)':{
-            //     backgroundColor: '#e8e8e8'
-            // },
             '& button': {
                 color: 'black !important',
                 backgroundColor: 'white !important'
