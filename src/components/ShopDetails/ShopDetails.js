@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
@@ -5,7 +6,22 @@ import IconButton from 'material-ui/IconButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import AddAPhoto from 'material-ui/svg-icons/image/add-a-photo'
 import Edit from 'material-ui/svg-icons/image/edit'
+import CircularProgress from 'material-ui/CircularProgress'
 import {Col} from 'react-flexbox-grid'
+
+const iconStyle = {
+    icon: {
+        width: 30,
+        height: 30
+    },
+    button: {
+        width: 66,
+        height: 66,
+        padding: 0
+    }
+}
+
+const tooltipPosition = 'bottom-center'
 
 const enhance = compose(
     injectSheet({
@@ -87,33 +103,46 @@ const enhance = compose(
             height: '400px',
             boxSizing: 'border-box',
             overflowY: 'scroll'
+        },
+        loader: {
+            width: '100%',
+            background: '#fff',
+            height: '400px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         }
     })
 )
 
 const ShopDetails = enhance((props) => {
-    const {classes, itemId} = props
+    const {classes, loading, data} = props
+    const name = _.get(data, 'name') || 'N/A'
+    const type = _.get(data, 'categoryName') || 'N/A'
+    const address = _.get(data, 'address') || 'N/A'
+    const guide = _.get(data, 'guide') || 'N/A'
+    const phone = _.get(data, 'phone') || 'N/A'
+    const contactName = _.get(data, 'contactName') || 'N/A'
+    const agentName = _.get(data, 'agentName') || 'N/A'
+    const agentPhone = _.get(data, 'agentPhone') || 'N/A'
+    const agentEmail = _.get(data, 'agentEmail') || 'N/A'
 
-    const tooltipPosition = 'bottom-center'
-
-    const iconStyle = {
-        icon: {
-            width: 30,
-            height: 30
-        },
-        button: {
-            width: 66,
-            height: 66,
-            padding: 0
-        }
+    if (loading) {
+        return (
+            <div className={classes.loader}>
+                <div>
+                    <CircularProgress size={100} thickness={6} />
+                </div>
+            </div>
+        )
     }
 
     return (
-        <div className={classes.wrapper} key={itemId}>
+        <div className={classes.wrapper}>
             <Col className={classes.leftSide} xs={6} md={4}>
                 <div className={classes.title}>
                     <div className={classes.titleLabel}>
-                        OOO Jrem Vkusn
+                        {name}
                     </div>
                     <div className={classes.titleButtons}>
                         <IconButton
@@ -150,7 +179,7 @@ const ShopDetails = enhance((props) => {
                                 Тип заведения
                             </div>
                             <div className={classes.typeValue}>
-                                Суппер маркет
+                                {type}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -158,7 +187,7 @@ const ShopDetails = enhance((props) => {
                                 Адрес
                             </div>
                             <div className={classes.typeValue}>
-                                Ziyo said kochasi166-uy
+                                {address}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -166,7 +195,7 @@ const ShopDetails = enhance((props) => {
                                 Ориентир
                             </div>
                             <div className={classes.typeValue}>
-                                Напротив кинотеатра Казахстан
+                                {guide}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -174,7 +203,7 @@ const ShopDetails = enhance((props) => {
                                 Телефон
                             </div>
                             <div className={classes.typeValue}>
-                                +98935000755
+                                {phone}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -182,7 +211,7 @@ const ShopDetails = enhance((props) => {
                                 Контактное лицо
                             </div>
                             <div className={classes.typeValue}>
-                                Жасур Эргашевич
+                                {contactName}
                             </div>
                         </div>
                     </div>
@@ -195,7 +224,7 @@ const ShopDetails = enhance((props) => {
                                 Фамилия и имя
                             </div>
                             <div className={classes.typeValue}>
-                                Нигматуллаев Нигматулла
+                                {agentName}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -203,7 +232,7 @@ const ShopDetails = enhance((props) => {
                                 Телефон
                             </div>
                             <div className={classes.typeValue}>
-                                +98935000755
+                                {agentPhone}
                             </div>
                         </div>
                         <div className={classes.item}>
@@ -211,7 +240,7 @@ const ShopDetails = enhance((props) => {
                                 Email
                             </div>
                             <div className={classes.typeValue}>
-                                nigmatulla.n@gmail.com
+                                {agentEmail}
                             </div>
                         </div>
                     </div>
@@ -239,7 +268,8 @@ const ShopDetails = enhance((props) => {
 })
 
 ShopDetails.propTypes = {
-    data: React.PropTypes.object.isRequired
+    data: React.PropTypes.object.isRequired,
+    loading: React.PropTypes.bool.isRequired
 }
 
 export default ShopDetails

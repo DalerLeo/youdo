@@ -2,10 +2,10 @@ import _ from 'lodash'
 import {compose} from 'recompose'
 import React from 'react'
 import injectSheet from 'react-jss'
+import CircularProgress from 'material-ui/CircularProgress'
 import GridListNav from '../GridListNav'
 import GridListHeader from '../GridListHeader'
 import GridListBody from '../GridListBody'
-import CircularProgress from 'material-ui/CircularProgress'
 
 const enhance = compose(
     injectSheet({

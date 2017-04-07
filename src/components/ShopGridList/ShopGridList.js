@@ -72,7 +72,7 @@ const ShopGridList = (props) => {
     const shopDetail = (
         <ShopDetails
             key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data')}
+            data={_.get(detailData, 'data') || {}}
             loading={_.get(detailData, 'loading')}
         />
     )

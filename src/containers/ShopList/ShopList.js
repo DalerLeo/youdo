@@ -5,8 +5,8 @@ import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
-import ShopListTable from '../../components/ShopListTable'
-import {shopListFetchAction, shopCSVFetchAction} from '../../actions/shop'
+import ShopGridList from '../../components/ShopGridList'
+import {shopListFetchAction, shopCSVFetchAction, shopItemFetchAction} from '../../actions/shop'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 
@@ -14,8 +14,8 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['shop', 'detail', 'data'])
-        const detailLoading = _.get(state, ['shop', 'detail', 'loading'])
+        const detail = _.get(state, ['shop', 'item', 'data'])
+        const detailLoading = _.get(state, ['shop', 'item', 'loading'])
         const list = _.get(state, ['shop', 'list', 'data'])
         const listLoading = _.get(state, ['shop', 'list', 'loading'])
         const csvData = _.get(state, ['shop', 'csv', 'data'])
@@ -35,10 +35,17 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        console.log(props.filter.filterRequest(), nextProps.filter.filterRequest())
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(shopListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const shopId = _.get(nextProps, ['params', 'shopId'])
+        return shopId && _.get(props, ['params', 'shopId']) !== shopId
+    }, ({dispatch, params}) => {
+        const shopId = _.toInteger(_.get(params, 'shopId'))
+        dispatch(shopItemFetchAction(shopId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -143,7 +150,7 @@ const ShopList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <ShopListTable
+            <ShopGridList
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
