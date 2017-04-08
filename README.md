@@ -1,4 +1,5 @@
 # Abwise UI
+[![build status](https://gitlab.gapbor.com/fennecui/fennec_ui/badges/master/build.svg)](https://gitlab.gapbor.com/fennecui/fennec_ui/commits/master)
 
 Front side Abwise application.
 
