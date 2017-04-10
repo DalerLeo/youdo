@@ -1,10 +1,13 @@
 import _ from 'lodash'
 import moment from 'moment'
+import sprintf from 'sprintf'
 import React from 'react'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import * as ROUTER from '../../constants/routes'
+import * as SHOP from '../../constants/shop'
 import ShopGridList from '../../components/ShopGridList'
 import {shopListFetchAction, shopCSVFetchAction, shopItemFetchAction} from '../../actions/shop'
 import filterHelper from '../../helpers/filter'
@@ -81,6 +84,11 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({openFilterDialog: false})})
         },
 
+        handleTabChange: props => (tab) => {
+            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+            hashHistory.push({pathname: sprintf(ROUTER.SHOP_ITEM_TAB_PATH, shopId, tab)})
+        },
+
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
             hashHistory.push({pathname, query: {}})
@@ -106,7 +114,9 @@ const ShopList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
     const fromDate = filter.getParam('fromDate')
     const toDate = filter.getParam('toDate')
-    const detailId = parseInt(_.get(params, 'shopId') || 0)
+    const detailId = _.toInteger(_.get(params, 'shopId') || 0)
+    const tab = _.get(params, 'tab') || SHOP.SHOP_TAB_IMAGE
+
     const initialValues = {
         date: {
             fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
@@ -137,6 +147,11 @@ const ShopList = enhance((props) => {
         handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
+    const tabData = {
+        tab,
+        handleTabChange: props.handleTabChange
+    }
+
     const listData = {
         data: _.get(list, 'results'),
         loading: listLoading
@@ -154,6 +169,7 @@ const ShopList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
+                tabData={tabData}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}

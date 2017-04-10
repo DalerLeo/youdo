@@ -46,7 +46,7 @@ const listHeader = [
 ]
 
 const ShopGridList = (props) => {
-    const {filter, filterDialog, actionsDialog, listData, detailData} = props
+    const {filter, filterDialog, actionsDialog, listData, detailData, tabData} = props
 
     const actions = (
         <div>
@@ -74,6 +74,7 @@ const ShopGridList = (props) => {
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             loading={_.get(detailData, 'loading')}
+            tabData={tabData}
         />
     )
 
@@ -127,6 +128,7 @@ ShopGridList.propTypes = {
     filter: React.PropTypes.object.isRequired,
     listData: React.PropTypes.object.isRequired,
     detailData: React.PropTypes.object.isRequired,
+    tabData: React.PropTypes.object.isRequired,
     actionsDialog: React.PropTypes.shape({
         handleActionEdit: React.PropTypes.func.isRequired,
         handleActionDelete: React.PropTypes.func.isRequired

@@ -36,6 +36,11 @@ export default {
         },
 
         {
+            path: ROUTES.SHOP_ITEM_TAB_URL,
+            component: userIsAuth(ShopList)
+        },
+
+        {
             path: '*',
             component: NotFound
         }

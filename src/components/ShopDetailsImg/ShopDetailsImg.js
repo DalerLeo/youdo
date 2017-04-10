@@ -1,6 +1,3 @@
-/**
- * Created by Otabek on 07.04.2017.
- */
 import React from 'react'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -13,17 +10,9 @@ const enhance = compose(
                 width: '33%',
                 margin: '1px'
             },
-            height: '400px',
+            height: '390px',
             boxSizing: 'border-box',
             overflowY: 'scroll'
-        },
-        loader: {
-            width: '100%',
-            background: '#fff',
-            height: '400px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
         }
     })
 )
@@ -41,8 +30,8 @@ const ShopDetailsImg = enhance((props) => {
     )
 })
 ShopDetailsImg.propTypes = {
-    data: React.PropTypes.object.isRequired,
-    loading: React.PropTypes.bool.isRequired
+    // data: React.PropTypes.object.isRequired,
+    // loading: React.PropTypes.bool.isRequired
 }
 
 export default ShopDetailsImg

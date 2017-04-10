@@ -9,6 +9,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import {Col} from 'react-flexbox-grid'
+import * as SHOP from '../../constants/shop'
 import ShopDetailsImg from '../ShopDetailsImg'
 
 const iconStyle = {
@@ -45,7 +46,8 @@ const enhance = compose(
             padding: '20px 0',
             display: 'flex',
             position: 'relative',
-            borderBottom: 'dashed 1px'
+            borderBottom: 'dashed 1px',
+            marginTop: '-25px'
         },
         titleLabel: {
             color: '#333333',
@@ -60,25 +62,27 @@ const enhance = compose(
         },
         top: {
             borderBottom: 'dashed 1px',
-            padding: '15px 0'
+            paddingTop: '20px'
         },
         miniTitle: {
             fontWeight: 'bold',
-            marginBottom: '10px'
+            marginBottom: '20px',
+            color: '#333333'
         },
         item: {
             display: 'flex',
-            marginBottom: '10px'
+            marginBottom: '20px'
         },
         typeLabel: {
             width: '40%',
             color: '#5d6474'
         },
         typeValue: {
-            width: '80%'
+            width: '80%',
+            color: '#1d1d1d'
         },
         bottom: {
-            padding: '15px 0'
+            paddingTop: '20px'
         },
         category: {
             display: 'flex',
@@ -89,23 +93,9 @@ const enhance = compose(
                 padding: '5px 15px',
                 '&:visited': {
                     color: 'blue',
-                    borderBottom: '2px solid blue'
+                    borderBottom: '2px solid #a6dff7'
                 }
             }
-        },
-
-        active: {
-            color: 'blue',
-            borderBottom: '2px solid blue'
-        },
-        imgContent: {
-            '& img': {
-                width: '33%',
-                margin: '1px'
-            },
-            height: '400px',
-            boxSizing: 'border-box',
-            overflowY: 'scroll'
         },
         colorCat: {
             borderBottom: '2px solid #e8e8e8',
@@ -116,17 +106,14 @@ const enhance = compose(
             '& > div:nth-child(2) > div': {
                 marginTop: '0px !important',
                 marginBottom: '-2px',
-                backgroundColor: 'blue !important'
+                backgroundColor: '#a6dff7 !important'
             },
             '& button': {
                 color: 'black !important',
                 backgroundColor: 'white !important'
             },
             '& button > span:first-line': {
-                color: 'blue'
-            },
-            '& button div:nthChild(2)': {
-                backgroundColor: 'white !important'
+                color: '#a6dff7'
             }
         },
         loader: {
@@ -141,7 +128,8 @@ const enhance = compose(
 )
 
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data} = props
+    const {classes, loading, data, tabData} = props
+    const tab = _.get(tabData, 'tab')
     const name = _.get(data, 'name') || 'N/A'
     const type = _.get(data, 'categoryName') || 'N/A'
     const address = _.get(data, 'address') || 'N/A'
@@ -273,20 +261,16 @@ const ShopDetails = enhance((props) => {
             </Col>
             <Col className={classes.rightSide} xs={6} md={8}>
                 <div>
-                    <Tabs className={classes.colorCat}>
-                        <Tab label="Карта" value={0} />
+                    <Tabs
+                        className={classes.colorCat}
+                        onChange={(value) => tabData.handleTabChange(value)}>
+                        <Tab label="Карта" value={SHOP.SHOP_TAB_MAP}/>
                         <Tab label="Статистика" value={1} />
                         <Tab label="Активность" value={2} />
-                        <Tab label="Фотографии" value={3} />
+                        <Tab label="Фотографии" value={SHOP.SHOP_TAB_IMAGE} />
                     </Tabs>
-                    <ShopDetailsImg data="data" loading="loading"/>
-                    {/*<div className={classes.imgContent}>*/}
-                        {/*<img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>*/}
-                        {/*<img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>*/}
-                        {/*<img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>*/}
-                        {/*<img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>*/}
-                        {/*<img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>*/}
-                    {/*</div>*/}
+                        {SHOP.SHOP_TAB_MAP === tab && <ShopDetailsImg />}
+                        {SHOP.SHOP_TAB_IMAGE === tab && <ShopDetailsImg />}
                 </div>
             </Col>
         </div>
@@ -295,7 +279,13 @@ const ShopDetails = enhance((props) => {
 
 ShopDetails.propTypes = {
     data: React.PropTypes.object.isRequired,
-    loading: React.PropTypes.bool.isRequired
+    loading: React.PropTypes.bool.isRequired,
+    tabData: React.PropTypes.shape({
+        tab: React.PropTypes.string.isRequired,
+        handleTabChange: React.PropTypes.func.isRequired
+    })
+
 }
 
 export default ShopDetails
+
