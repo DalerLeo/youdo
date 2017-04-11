@@ -21,17 +21,12 @@ const ShopDetailsImg = enhance((props) => {
     const {classes} = props
     return (
         <div className={classes.imgContent}>
-            <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
-            <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
-            <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
-            <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
-            <img src="https://thumb9.shutterstock.com/display_pic_with_logo/1637849/350102345/stock-photo-shopping-cart-full-of-food-in-the-supermarket-aisle-high-internal-view-horizontal-composition-350102345.jpg" alt=""/>
+            Detail Img content
+            <img alt="" onLoad={console.log('img load')}/>
         </div>
     )
 })
 ShopDetailsImg.propTypes = {
-    // data: React.PropTypes.object.isRequired,
-    // loading: React.PropTypes.bool.isRequired
 }
 
 export default ShopDetailsImg

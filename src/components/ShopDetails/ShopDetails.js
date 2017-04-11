@@ -11,6 +11,9 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import {Col} from 'react-flexbox-grid'
 import * as SHOP from '../../constants/shop'
 import ShopDetailsImg from '../ShopDetailsImg'
+import ShopDetailsMap from '../ShopDetailsMap'
+import ShopDetailsActivity from '../ShopDetailsActivity'
+import ShopDetailsStatistics from '../ShopDetailsStatistics'
 
 const iconStyle = {
     icon: {
@@ -139,6 +142,8 @@ const ShopDetails = enhance((props) => {
     const agentName = _.get(data, 'agentName') || 'N/A'
     const agentPhone = _.get(data, 'agentPhone') || 'N/A'
     const agentEmail = _.get(data, 'agentEmail') || 'N/A'
+    const lat = _.get(data, 'lat')
+    const lng = _.get(data, 'lon')
 
     if (loading) {
         return (
@@ -263,13 +268,20 @@ const ShopDetails = enhance((props) => {
                 <div>
                     <Tabs
                         className={classes.colorCat}
+                        value={tab}
                         onChange={(value) => tabData.handleTabChange(value)}>
-                        <Tab label="Карта" value={SHOP.SHOP_TAB_MAP}/>
-                        <Tab label="Статистика" value={1} />
-                        <Tab label="Активность" value={2} />
-                        <Tab label="Фотографии" value={SHOP.SHOP_TAB_IMAGE} />
+                        <Tab label="Map" value={SHOP.SHOP_TAB_MAP}/>
+                        <Tab label="Statistics" value={SHOP.SHOP_TAB_STATISTICS} />
+                        <Tab label="Activity" value={SHOP.SHOP_TAB_ACTIVITY} />
+                        <Tab label="Images" value={SHOP.SHOP_TAB_IMAGE} />
                     </Tabs>
-                        {SHOP.SHOP_TAB_MAP === tab && <ShopDetailsImg />}
+                        {SHOP.SHOP_TAB_MAP === tab && <ShopDetailsMap
+                            // loading={loading}
+                            lat={lat}
+                            lng={lng}
+                        />}
+                        {SHOP.SHOP_TAB_STATISTICS === tab && <ShopDetailsStatistics />}
+                        {SHOP.SHOP_TAB_ACTIVITY === tab && <ShopDetailsActivity />}
                         {SHOP.SHOP_TAB_IMAGE === tab && <ShopDetailsImg />}
                 </div>
             </Col>

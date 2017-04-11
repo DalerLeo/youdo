@@ -140,7 +140,7 @@ const ShopList = enhance((props) => {
     const fromDate = filter.getParam('fromDate')
     const toDate = filter.getParam('toDate')
     const detailId = _.toInteger(_.get(params, 'shopId') || 0)
-    const tab = _.get(params, 'tab') || SHOP.SHOP_TAB_IMAGE
+    const tab = _.get(params, 'tab') || SHOP.SHOP_TAB_MAP
 
     const initialValues = {
         date: {

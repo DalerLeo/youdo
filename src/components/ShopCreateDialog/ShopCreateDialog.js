@@ -35,7 +35,7 @@ const ShopDetails = enhance(({title, open, onClose, onSubmit}) => {
     )
 })
 
-ShopDetails.propTypes = {
+ShopDetails.propTyeps = {
     title: React.PropTypes.string.isRequired,
     open: React.PropTypes.bool.isRequired,
     onClose: React.PropTypes.func.isRequired,

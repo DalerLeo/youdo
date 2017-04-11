@@ -1,6 +1,7 @@
 import React from 'react'
 import injectSheet from 'react-jss'
 import SideBarMenu from '../SidebarMenu'
+import AddMarketAndListMarket from '../AddMarketAndListMarket'
 
 const Layout = ({classes, handleSignOut, children}) => {
     return (
@@ -9,6 +10,7 @@ const Layout = ({classes, handleSignOut, children}) => {
                 <SideBarMenu handleSignOut={handleSignOut} />
             </div>
             <div className={classes.content}>
+                <AddMarketAndListMarket/>
                 {children}
             </div>
         </div>

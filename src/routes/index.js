@@ -27,17 +27,18 @@ export default {
         // Shop
         {
             path: ROUTES.SHOP_LIST_URL,
-            component: userIsAuth(ShopList)
-        },
+            component: userIsAuth(ShopList),
+            childRoutes: [
+                {
+                    path: ROUTES.SHOP_ITEM_URL,
+                    component: userIsAuth(ShopList)
+                },
 
-        {
-            path: ROUTES.SHOP_ITEM_URL,
-            component: userIsAuth(ShopList)
-        },
-
-        {
-            path: ROUTES.SHOP_ITEM_TAB_URL,
-            component: userIsAuth(ShopList)
+                {
+                    path: ROUTES.SHOP_ITEM_TAB_URL,
+                    component: userIsAuth(ShopList)
+                }
+            ]
         },
 
         {

@@ -1280,6 +1280,10 @@ camelcase@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-3.0.0.tgz#32fc4b9fcdaf845fcdf7e73bb97cac2261f0ab0a"
 
+can-use-dom@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/can-use-dom/-/can-use-dom-0.1.0.tgz#22cc4a34a0abc43950f42c6411024a3f6366b45a"
+
 caniuse-db@^1.0.30000604:
   version "1.0.30000604"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000604.tgz#bc139270a777564d19c0aadcd832b491d093bda5"
@@ -2233,7 +2237,7 @@ event-emitter@~0.3.4:
     d "~0.1.1"
     es5-ext "~0.10.7"
 
-eventemitter3@1.x.x, eventemitter3@^1.1.1:
+eventemitter3@1.x.x, eventemitter3@^1.1.0, eventemitter3@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
 
@@ -2342,7 +2346,7 @@ fbjs@0.1.0-alpha.10:
     promise "^7.0.3"
     whatwg-fetch "^0.9.0"
 
-fbjs@^0.8.0-alpha.3, fbjs@^0.8.1, fbjs@^0.8.4, fbjs@^0.8.6:
+fbjs@^0.8.0-alpha.3, fbjs@^0.8.1, fbjs@^0.8.3, fbjs@^0.8.4, fbjs@^0.8.6:
   version "0.8.8"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.8.tgz#02f1b6e0ea0d46c24e0b51a2d24df069563a5ad6"
   dependencies:
@@ -2613,6 +2617,19 @@ globule@^1.0.0:
     glob "~7.1.1"
     lodash "~4.16.4"
     minimatch "~3.0.2"
+
+google-map-react@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/google-map-react/-/google-map-react-0.23.0.tgz#0e97bf89fa2df5abb6dfcf0f3361740dd7dae692"
+  dependencies:
+    eventemitter3 "^1.1.0"
+    fbjs "^0.8.3"
+    point-geometry "0.0.0"
+    scriptjs "^2.5.7"
+
+google-maps-infobox@^1.1.13:
+  version "1.1.15"
+  resolved "https://registry.yarnpkg.com/google-maps-infobox/-/google-maps-infobox-1.1.15.tgz#22a28a97cf72a2cd8493eef755c71fc1a2995170"
 
 graceful-fs@^4.1.2:
   version "4.1.11"
@@ -3455,7 +3472,7 @@ lodash.throttle@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
 
-lodash@^4.0.0, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.16.4, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
+lodash@^4.0.0, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.16.2, lodash@^4.16.4, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -3498,6 +3515,10 @@ macaddress@^0.2.8:
 map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
+
+marker-clusterer-plus@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/marker-clusterer-plus/-/marker-clusterer-plus-2.1.4.tgz#f8eff74d599dab3b7d0e3fed5264ea0e704f5d67"
 
 material-ui@^0.17.1:
   version "0.17.1"
@@ -4082,6 +4103,10 @@ pluralize@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-1.2.1.tgz#d1a21483fd22bb41e58a12fa3421823140897c45"
 
+point-geometry@0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/point-geometry/-/point-geometry-0.0.0.tgz#6fcbcad7a803b6418247dd6e49c2853c584daff7"
+
 postcss-calc@^5.2.0:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/postcss-calc/-/postcss-calc-5.3.1.tgz#77bae7ca928ad85716e2fda42f261bf7c1d65b5e"
@@ -4528,6 +4553,10 @@ react-dates@^6.0.1:
     react-moment-proptypes "^1.2.1"
     react-portal "^3.0.0"
 
+react-display-name@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-display-name/-/react-display-name-0.2.0.tgz#0e1f7086e45a32d07764df35ed32ff16f1259790"
+
 react-document-title@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/react-document-title/-/react-document-title-2.0.2.tgz#1e42b672d300f8f90d8d05544b0d71f0ca7860aa"
@@ -4556,6 +4585,21 @@ react-flexbox-grid@^1.0.2:
   dependencies:
     flexboxgrid "^6.3.0"
 
+react-google-maps@beta:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/react-google-maps/-/react-google-maps-6.0.1.tgz#8d2c57631a8bc3a8d65257d7b3f95738f33476bc"
+  dependencies:
+    babel-runtime "^6.11.6"
+    can-use-dom "^0.1.0"
+    google-maps-infobox "^1.1.13"
+    invariant "^2.2.1"
+    lodash "^4.16.2"
+    marker-clusterer-plus "^2.1.4"
+    react-display-name "^0.2.0"
+    react-prop-types-element-of-type "^2.2.0"
+    scriptjs "^2.5.8"
+    warning "^3.0.0"
+
 react-jss@^5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/react-jss/-/react-jss-5.4.0.tgz#7e2bbe329358ab00816aa9f62ccbc4a9bab2ad2c"
@@ -4579,6 +4623,10 @@ react-onclickoutside@^5.7.1:
 react-portal@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/react-portal/-/react-portal-3.0.0.tgz#9304fce836e8a3216b22588f8dc91b447728f0ae"
+
+react-prop-types-element-of-type@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-prop-types-element-of-type/-/react-prop-types-element-of-type-2.2.0.tgz#bcc332d3903c2259cf68c28a81c4a663faba59ac"
 
 react-redux-toastr@^5.0.0:
   version "5.0.0"
@@ -5002,6 +5050,10 @@ sass-loader@^5.0.0:
 sax@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.1.tgz#7b8e656190b228e81a66aea748480d828cd2d37a"
+
+scriptjs@^2.5.7, scriptjs@^2.5.8:
+  version "2.5.8"
+  resolved "https://registry.yarnpkg.com/scriptjs/-/scriptjs-2.5.8.tgz#d0c43955c2e6bad33b6e4edf7b53b8965aa7ca5f"
 
 semantic-ui-css@^2.2.4:
   version "2.2.4"

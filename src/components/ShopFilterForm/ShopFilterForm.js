@@ -6,6 +6,7 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import DateToDateField from '../ReduxForm/DateToDateField'
+// import AutoComplete from 'material-ui/AutoComplete';
 import CloseIcon from '../CloseIcon'
 
 const enhance = compose(
@@ -39,6 +40,11 @@ const enhance = compose(
 )
 
 const ShopFilterForm = enhance(({classes, open, onSubmit, onClose}) => {
+    // const searchText = ''
+    // const handleUpdateInput = (searchText) => {
+    //     // searchText = searchText
+    // }
+
     if (!open) {
         return null
     }
@@ -63,6 +69,17 @@ const ShopFilterForm = enhance(({classes, open, onSubmit, onClose}) => {
                         buttonStyle={{color: '#fff'}}>
                         Apply
                     </RaisedButton>
+                </div>
+                <div>
+                    {/*<AutoComplete*/}
+                        {/*hintText="Type 'r', case insensitive"*/}
+                        {/*searchText={searchText}*/}
+                        {/*onUpdateInput={handleUpdateInput}*/}
+                        {/*onNewRequest={this.handleNewRequest}*/}
+                        {/*dataSource={colors}*/}
+                        {/*filter={(searchText, key) => (key.indexOf(searchText) !== -1)}*/}
+                        {/*openOnFocus={true}*/}
+                    {/*/>*/}
                 </div>
             </form>
         </Paper>
