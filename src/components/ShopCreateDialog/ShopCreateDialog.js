@@ -3,6 +3,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
+import ShopDetailsMap from "../ShopDetailsMap/ShopDetailsMap";
 
 const enhance = compose(
     injectSheet()

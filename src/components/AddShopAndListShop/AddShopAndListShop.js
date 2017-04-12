@@ -10,7 +10,7 @@ const enhance = compose(
         wrapper: {
             position: 'relative',
             width: '100%',
-            height: '50px',
+            height: '50px'
         },
         addButton: {
             float: 'right',
@@ -40,18 +40,22 @@ const enhance = compose(
     })
 )
 
-const AddMarketAndListMarket = enhance((props) => {
-    const {classes} = props
+const ShopCreateButton = enhance((props) => {
+    const {classes, handleOpenFilterDialog} = props
     return (
         <div className={classes.wrapper}>
-            <FloatingActionButton mini={true} className={classes.addButton}>
+            <FloatingActionButton
+                mini={true}
+                className={classes.addButton}
+                onTouchTap={handleOpenFilterDialog}>
                 <ContentAdd />
             </FloatingActionButton>
             <span className={classes.labelAdd}>Add market</span>
         </div>
     )
 })
-AddMarketAndListMarket.propTypes = {
+ShopCreateButton.propTypes = {
+    handleOpenFilterDialog: React.PropTypes.bool.isRequired
 }
 
-export default AddMarketAndListMarket
+export default ShopCreateButton
