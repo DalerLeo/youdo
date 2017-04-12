@@ -141,7 +141,6 @@ const enhance = compose(
         }
     })
 )
-
 const ShopDetails = enhance((props) => {
     const {classes, loading, data} = props
     const name = _.get(data, 'name') || 'N/A'
@@ -294,6 +293,7 @@ const ShopDetails = enhance((props) => {
         </div>
     )
 })
+
 
 ShopDetails.propTypes = {
     data: React.PropTypes.object.isRequired,
