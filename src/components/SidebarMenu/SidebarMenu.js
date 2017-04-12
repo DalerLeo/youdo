@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router'
-import * as ROUTES from '../../constants/routes'
+import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import TrendingUp from 'material-ui/svg-icons/action/trending-up'
 import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
@@ -9,8 +9,7 @@ import TV from 'material-ui/svg-icons/hardware/tv'
 import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
 import Settings from 'material-ui/svg-icons/action/settings'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
-
-import './SidebarMenu.css'
+import * as ROUTES from '../../constants/routes'
 
 const style = {
     iconStyle: {
@@ -28,13 +27,13 @@ const touch = true
 const tooltipPosition = 'top-right'
 
 const SideBarMenu = (props) => {
-    const {handleSignOut} = props
+    const {classes, handleSignOut} = props
 
     return (
-        <div className="sidebar_menu">
-            <div className="sidebar_menu__logo">
+        <div className={classes.wrapper}>
+            <div className={classes.logo}>
             </div>
-            <div className="sidebar_menu__items">
+            <div className={classes.items}>
                 <Link to={ROUTES.SHOP_LIST_URL}>
                     <IconButton
                         iconStyle={style.iconStyle}
@@ -92,19 +91,48 @@ const SideBarMenu = (props) => {
                 </IconButton>
 
             </div>
-            <div className="sidebar_menu__logout">
-            <IconButton
-                iconStyle={style.iconStyle}
-                style={style.style}
-                touch={touch}
-                tooltipPosition={tooltipPosition}
-                tooltip="Log out"
-                onClick={handleSignOut}>
-                <SettingsPower />
-            </IconButton>
+
+            <div className={classes.logout}>
+                <IconButton
+                    iconStyle={style.iconStyle}
+                    style={style.style}
+                    touch={touch}
+                    tooltipPosition={tooltipPosition}
+                    tooltip="Log out"
+                    onClick={handleSignOut}>
+                    <SettingsPower />
+                </IconButton>
             </div>
         </div>
     )
 }
 
-export default SideBarMenu
+export default injectSheet({
+    wrapper: {
+        height: '100%',
+        display: 'flex',
+        backgroundColor: '#2d3037',
+        boxShadow: '0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12)'
+    },
+
+    logo: {
+        padding: '40px 0'
+    },
+
+    items: {
+        '& svg': {
+            fontSize: '24px',
+            color: '#abacb0 !important'
+        }
+    },
+
+    logout: {
+        position: 'absolute',
+        bottom: 0,
+
+        '& svg': {
+            fontSize: '24px',
+            color: '#abacb0 !important'
+        }
+    }
+})(SideBarMenu)

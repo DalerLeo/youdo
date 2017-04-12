@@ -7,7 +7,6 @@ import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import ArrowLeftIcon from './ArrowLeftIcon'
 import ArrowRightIcon from './ArrowRightIcon'
-import './GridListNavPagination.css'
 
 const enhance = compose(
     injectSheet({
@@ -32,7 +31,7 @@ const enhance = compose(
             const {filter} = props
             event.preventDefault()
 
-            hashHistory.push(filter.createURL({pageSize: value}))
+            hashHistory.push(filter.createURL({pageSize: value, page: 1}))
         }
     })
 )

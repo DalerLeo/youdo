@@ -4,12 +4,13 @@ const packageJSON = require('./package.json')
 const _ = require('lodash')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+const process = process || {}
 const NODE_ENV = process.env.NODE_ENV || 'development'
-const API_HOST = NODE_ENV !== 'development' || process.env.API_HOST ? process.env.API_HOST : 'localhost:8000'
+const API_HOST = NODE_ENV !== 'development' || process.env.API_HOST ? process.env.API_HOST : 'api.gapbor.com'
 
 // Package build for compilation
-const developmentPackage = _.without(_.keys(packageJSON.dependencies), 'semantic-ui-css')
-const productionPackage = _.without(_.keys(packageJSON.dependencies), 'semantic-ui-css', 'redux-logger')
+const developmentPackage = packageJSON.dependencies
+const productionPackage = _.without(_.keys(packageJSON.dependencies), 'redux-logger')
 const vendorPackages = NODE_ENV === 'development' ?  developmentPackage : productionPackage
 
 let webpackConfig = {
@@ -36,7 +37,6 @@ let webpackConfig = {
     module: {
         loaders: [
             { test: /\.css$/, loader: "style-loader!css-loader" },
-            { test: /\.scss/, loader: "style-loader!css-loader!sass-loader" },
             { test: /\.(eot|woff|woff2|svg|png|ttf)([\?]?.*)$/, loader: 'file-loader' },
             { test: /\.js?$/, loader: 'babel-loader', include: path.join(__dirname, 'src')}
         ]

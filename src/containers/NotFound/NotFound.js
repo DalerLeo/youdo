@@ -1,21 +1,30 @@
 import React from 'react'
+import injectJSS from 'react-jss'
 import SingInLayout from '../../components/SingInLayout'
-import {Container, Segment} from 'semantic-ui-react'
-import './NotFound.css'
+import Container from '../../components/Container'
 
-const NotFound = () => {
+const NotFound = ({classes}) => {
     return (
         <SingInLayout>
-            <Container className="blockCenter">
-                <Segment>
-                    <h1 className="notFoundText">
-                        404 <br/>
-                        Page not found
-                    </h1>
-                </Segment>
+            <Container className={classes.wrapper}>
+                <h1 className={classes.content}>
+                    404 <br/>
+                    Page not found
+                </h1>
             </Container>
         </SingInLayout>
     )
 }
 
-export default NotFound
+export default injectJSS({
+    wrapper: {
+        height: '100%',
+        display: 'flex !important',
+        justifyContent: 'center',
+        flexDirection: 'column'
+    },
+
+    content: {
+        textAlign: 'center'
+    }
+})(NotFound)

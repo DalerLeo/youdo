@@ -1,12 +1,29 @@
 import React from 'react'
 import {compose, withState, withHandlers} from 'recompose'
 import {hashHistory} from 'react-router'
+import injectSheet from 'react-jss'
 import TextField from 'material-ui/TextField'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
-import './GridListNavSearch.css'
 
 const enhance = compose(
+    injectSheet({
+        search: {
+            position: 'relative',
+            display: 'flex',
+            maxWidth: '300px',
+            margin: '0 auto',
+
+            '& > div': {
+                paddingRight: '35px'
+            }
+        },
+
+        searchButton: {
+            position: 'absolute !important',
+            right: '-10px'
+        }
+    }),
     withState('search', 'setSearch', ''),
     withHandlers({
         onSubmit: props => (event) => {
@@ -18,18 +35,21 @@ const enhance = compose(
     })
 )
 
-const GridListNavSearch = enhance(({setSearch, onSubmit}) => {
+const GridListNavSearch = enhance(({classes, filter, setSearch, onSubmit}) => {
+    const search = filter.getParam('search')
+
     return (
         <form onSubmit={onSubmit}>
-            <div className="grid__navbar__search">
+            <div className={classes.search}>
                 <TextField
                     fullWidth={true}
                     hintText="Search"
+                    value={search}
                     onChange={(event) => setSearch(event.target.value)}
                 />
                 <IconButton
                     iconStyle={{color: '#ccc'}}
-                    className="grid__navbar__search__button"
+                    className={classes.searchButton}
                     onClick={onSubmit}>
                     <SearchIcon />
                 </IconButton>
