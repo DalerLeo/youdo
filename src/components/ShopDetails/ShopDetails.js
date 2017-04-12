@@ -129,7 +129,6 @@ const enhance = compose(
         }
     })
 )
-
 const ShopDetails = enhance((props) => {
     const {classes, loading, data, tabData} = props
     const tab = _.get(tabData, 'tab')
@@ -275,11 +274,13 @@ const ShopDetails = enhance((props) => {
                         <Tab label="Activity" value={SHOP.SHOP_TAB_ACTIVITY} />
                         <Tab label="Images" value={SHOP.SHOP_TAB_IMAGE} />
                     </Tabs>
-                        {SHOP.SHOP_TAB_MAP === tab && <ShopDetailsMap
+                        {SHOP.SHOP_TAB_MAP === tab &&
+                        <div style={{width: '100%', height: '400px'}}>
+                            <ShopDetailsMap
                             // loading={loading}
                             lat={lat}
-                            lng={lng}
-                        />}
+                            lng={lng}/>
+                        </div>}
                         {SHOP.SHOP_TAB_STATISTICS === tab && <ShopDetailsStatistics />}
                         {SHOP.SHOP_TAB_ACTIVITY === tab && <ShopDetailsActivity />}
                         {SHOP.SHOP_TAB_IMAGE === tab && <ShopDetailsImg />}
@@ -288,6 +289,7 @@ const ShopDetails = enhance((props) => {
         </div>
     )
 })
+
 
 ShopDetails.propTypes = {
     data: React.PropTypes.object.isRequired,
