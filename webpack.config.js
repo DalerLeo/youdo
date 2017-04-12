@@ -4,12 +4,11 @@ const packageJSON = require('./package.json')
 const _ = require('lodash')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-const process = process || {}
 const NODE_ENV = process.env.NODE_ENV || 'development'
 const API_HOST = NODE_ENV !== 'development' || process.env.API_HOST ? process.env.API_HOST : 'api.gapbor.com'
 
 // Package build for compilation
-const developmentPackage = packageJSON.dependencies
+const developmentPackage = _.keys(packageJSON.dependencies)
 const productionPackage = _.without(_.keys(packageJSON.dependencies), 'redux-logger')
 const vendorPackages = NODE_ENV === 'development' ?  developmentPackage : productionPackage
 
