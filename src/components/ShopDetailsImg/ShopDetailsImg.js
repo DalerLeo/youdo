@@ -26,7 +26,5 @@ const ShopDetailsImg = enhance((props) => {
         </div>
     )
 })
-ShopDetailsImg.propTypes = {
-}
 
 export default ShopDetailsImg

@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
 import React from 'react'
+import PropTypes from 'prop-types'
 import DatePickerDialog from 'material-ui/DatePicker/DatePickerDialog'
 import MUITextField from 'material-ui/TextField'
 
@@ -90,7 +91,7 @@ DateToDateField.defaultProps = {
 }
 
 DateToDateField.propTypes = {
-    format: React.PropTypes.string
+    format: PropTypes.string
 }
 
 export default DateToDateField

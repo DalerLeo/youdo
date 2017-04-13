@@ -1,12 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import {Col, Row} from 'react-flexbox-grid'
 import {TextField} from '../ReduxForm'
-import SelectField from 'material-ui/SelectField'
-import MenuItem from 'material-ui/MenuItem'
 import {Field, reduxForm} from 'redux-form'
 import ShopDetailsMap from '../ShopDetailsMap/ShopDetailsMap'
 
@@ -50,7 +49,7 @@ const enhance = compose(
     })
 )
 
-const ShopDetails = enhance(({title, open, onClose, onSubmit, classes}) => {
+const ShopDetails = enhance(({open, onClose, onSubmit, classes}) => {
     const actions = [
         <FlatButton
             label="Cancel"
@@ -78,22 +77,17 @@ const ShopDetails = enhance(({title, open, onClose, onSubmit, classes}) => {
                   <div>
                     <h4 className={classes.dialogTitle}>Добавление магазина</h4>
                   </div>
-                  <div className={classes.fieldContent}>
+                  <div>
                     <Field name="placeName" component={TextField} label="Наименование" fullWidth={true} className={classes.topMargin}/>
                     <Field name="placeAddress" component={TextField} label="Адрес" fullWidth={true} className={classes.topMargin} />
                     <Field name="placeOrient" component={TextField} label="Ориентир" fullWidth={true} className={classes.topMargin} />
                     <Field name="placePhone" component={TextField} label="Телефон" fullWidth={true} className={classes.topMargin} />
                     <Field name="placeContact" component={TextField} label="Контактное лицо" fullWidth={true} className={classes.topMargin} />
-                    <Field name="placeType" component={SelectField} label="Агент" fullWidth={true} >
-                        <MenuItem value={'1'} />
-                        <MenuItem value={'2'} />
-                        <MenuItem value={'3'} />
-                    </Field>
                   </div>
                 </Col>
                 <Col className={classes.leftSide} xs={7}>
                   <div className={classes.mapContent} >
-                    <ShopDetailsMap lat={12} lng={23}></ShopDetailsMap>
+                    <ShopDetailsMap lat={12} lng={23} />
                   </div>
                 </Col>
               </Row>
@@ -103,11 +97,10 @@ const ShopDetails = enhance(({title, open, onClose, onSubmit, classes}) => {
 })
 
 ShopDetails.propTyeps = {
-    title: React.PropTypes.string.isRequired,
-    open: React.PropTypes.bool.isRequired,
-    onClose: React.PropTypes.func.isRequired,
-    onSubmit: React.PropTypes.func.isRequired,
-    loading: React.PropTypes.bool.isRequired
+    open: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired
 }
 
 export default ShopDetails

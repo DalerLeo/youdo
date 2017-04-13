@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import {compose} from 'recompose'
 import React from 'react'
+import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import GridListNav from '../GridListNav'
@@ -73,15 +74,15 @@ const GridList = enhance((props) => {
 })
 
 GridList.propTypes = {
-    filter: React.PropTypes.object.isRequired,
-    list: React.PropTypes.shape({
-        header: React.PropTypes.array.isRequired,
-        list: React.PropTypes.array.isRequired,
-        loading: React.PropTypes.bool.isRequired
+    filter: PropTypes.object.isRequired,
+    list: PropTypes.shape({
+        header: PropTypes.array.isRequired,
+        list: PropTypes.array.isRequired,
+        loading: PropTypes.bool.isRequired
     }),
-    detail: React.PropTypes.node.isRequired,
-    actionsDialog: React.PropTypes.node.isRequired,
-    filterDialog: React.PropTypes.node.isRequired
+    detail: PropTypes.node.isRequired,
+    actionsDialog: PropTypes.node.isRequired,
+    filterDialog: PropTypes.node.isRequired
 }
 
 export default GridList

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
 
@@ -35,8 +36,8 @@ const ToolTip = enhance(({classes, text, children, visible, setVisible}) => {
 })
 
 ToolTip.propTypes = {
-    position: React.PropTypes.string.isRequired,
-    text: React.PropTypes.string.isRequired
+    position: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired
 }
 
 export default ToolTip

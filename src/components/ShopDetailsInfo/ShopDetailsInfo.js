@@ -1,4 +1,6 @@
+import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Col} from 'react-flexbox-grid'
@@ -196,7 +198,7 @@ const ShopDetailsInfo = enhance((props) => {
     )
 })
 ShopDetailsInfo.propTypes = {
-    data: React.PropTypes.object.isRequired
+    data: PropTypes.object.isRequired
 }
 
 export default ShopDetailsInfo

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
@@ -77,7 +78,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter}) => {
 })
 
 GridListNavPagination.propTypes = {
-    filter: React.PropTypes.object.isRequired
+    filter: PropTypes.object.isRequired
 }
 
 export default GridListNavPagination

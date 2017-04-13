@@ -2,6 +2,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
+import PropTypes from 'prop-types'
 import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
@@ -13,7 +14,7 @@ import Container from '../Container'
 import ShopFilterForm from '../ShopFilterForm'
 import ShopDetails from '../ShopDetails'
 import ShopCreateDialog from '../ShopCreateDialog'
-import DeliveryList from '../DeliveryList'
+import SubMenu from '../SubMenu'
 
 const listHeader = [
     {
@@ -112,9 +113,7 @@ const ShopGridList = (props) => {
 
     return (
         <Container>
-            <DeliveryList
-                handleOpenFilterDialog={createDialog.handleOpenFilterDialog}
-            />
+            <SubMenu handleOpenCreateDialog={createDialog.handleOpenCreateDialog} />
 
             <GridList
                 filter={filter}
@@ -126,11 +125,10 @@ const ShopGridList = (props) => {
             />
 
             <ShopCreateDialog
-                title={'Create shop'}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
-                onSubmit={createDialog.handleSubmitFilterDialog}
-                onClose={createDialog.handleCloseFilterDialog}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
             />
         </Container>
     )
@@ -142,28 +140,28 @@ ShopGridList.defaultProps = {
 }
 
 ShopGridList.propTypes = {
-    filter: React.PropTypes.object.isRequired,
-    listData: React.PropTypes.object.isRequired,
-    detailData: React.PropTypes.object.isRequired,
-    tabData: React.PropTypes.object.isRequired,
-    createDialog: React.PropTypes.shape({
-        createLoading: React.PropTypes.bool.isRequired,
-        openCreateDialog: React.PropTypes.bool.isRequired,
-        handleOpenFilterDialog: React.PropTypes.func.isRequired,
-        handleCloseFilterDialog: React.PropTypes.func.isRequired,
-        handleSubmitFilterDialog: React.PropTypes.func.isRequired
+    filter: PropTypes.object.isRequired,
+    listData: PropTypes.object.isRequired,
+    detailData: PropTypes.object.isRequired,
+    tabData: PropTypes.object.isRequired,
+    createDialog: PropTypes.shape({
+        createLoading: PropTypes.bool.isRequired,
+        openCreateDialog: PropTypes.bool.isRequired,
+        handleOpenCreateDialog: PropTypes.func.isRequired,
+        handleCloseCreateDialog: PropTypes.func.isRequired,
+        handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
-    actionsDialog: React.PropTypes.shape({
-        handleActionEdit: React.PropTypes.func.isRequired,
-        handleActionDelete: React.PropTypes.func.isRequired
+    actionsDialog: PropTypes.shape({
+        handleActionEdit: PropTypes.func.isRequired,
+        handleActionDelete: PropTypes.func.isRequired
     }).isRequired,
-    filterDialog: React.PropTypes.shape({
-        initialValues: React.PropTypes.object,
-        filterLoading: React.PropTypes.bool,
-        openFilterDialog: React.PropTypes.bool.isRequired,
-        handleOpenFilterDialog: React.PropTypes.func.isRequired,
-        handleCloseFilterDialog: React.PropTypes.func.isRequired,
-        handleSubmitFilterDialog: React.PropTypes.func.isRequired
+    filterDialog: PropTypes.shape({
+        initialValues: PropTypes.object,
+        filterLoading: PropTypes.bool,
+        openFilterDialog: PropTypes.bool.isRequired,
+        handleOpenFilterDialog: PropTypes.func.isRequired,
+        handleCloseFilterDialog: PropTypes.func.isRequired,
+        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

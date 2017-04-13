@@ -1,8 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
-
 import ShopDetailsTab from '../ShopDetailsTab'
 import ShopDetailsInfo from '../ShopDetailsInfo'
 
@@ -37,19 +37,18 @@ const ShopDetails = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <ShopDetailsInfo data={data}></ShopDetailsInfo>
-            <ShopDetailsTab tabData={tabData} data={data}></ShopDetailsTab>
+            <ShopDetailsInfo data={data} />
+            <ShopDetailsTab tabData={tabData} data={data} />
         </div>
     )
 })
 
-
 ShopDetails.propTypes = {
-    data: React.PropTypes.object.isRequired,
-    loading: React.PropTypes.bool.isRequired,
-    tabData: React.PropTypes.shape({
-        tab: React.PropTypes.string.isRequired,
-        handleTabChange: React.PropTypes.func.isRequired
+    data: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    tabData: PropTypes.shape({
+        tab: PropTypes.string.isRequired,
+        handleTabChange: PropTypes.func.isRequired
     })
 
 }

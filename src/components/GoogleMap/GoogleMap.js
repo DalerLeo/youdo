@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import Marker from 'react-google-maps/lib/Marker'
 import {withGoogleMap, GoogleMap as GoogleMapWrapper} from 'react-google-maps'
@@ -27,8 +28,8 @@ const GoogleMap = enhance((props) => {
 })
 
 GoogleMap.propTypes = {
-    center: React.PropTypes.object.isRequired,
-    markers: React.PropTypes.object.isRequired
+    center: PropTypes.object.isRequired,
+    markers: PropTypes.object.isRequired
 }
 
 export default GoogleMap

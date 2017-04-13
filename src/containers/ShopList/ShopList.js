@@ -158,9 +158,9 @@ const ShopList = enhance((props) => {
     const createDialog = {
         createLoading,
         openCreateDialog,
-        handleOpenFilterDialog: props.handleOpenCreateDialog,
-        handleCloseFilterDialog: props.handleCloseCreateDialog,
-        handleSubmitFilterDialog: props.handleSubmitCreateDialog
+        handleOpenCreateDialog: props.handleOpenCreateDialog,
+        handleCloseCreateDialog: props.handleCloseCreateDialog,
+        handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
     const filterDialog = {

@@ -1,6 +1,7 @@
 import React from 'react'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
+import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
@@ -76,9 +77,9 @@ const ShopFilterForm = enhance(({classes, open, onSubmit, onClose}) => {
 })
 
 ShopFilterForm.propTypes = {
-    open: React.PropTypes.bool.isRequired,
-    onSubmit: React.PropTypes.func.isRequired,
-    onClose: React.PropTypes.func.isRequired
+    open: PropTypes.bool.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired
 }
 
 export default ShopFilterForm

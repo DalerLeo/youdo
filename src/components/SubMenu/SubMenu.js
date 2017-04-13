@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
@@ -65,7 +66,8 @@ const enhance = compose(
 )
 
 const SubMenu = enhance((props) => {
-    const {classes, handleOpenFilterDialog} = props
+    const {classes, handleOpenCreateDialog} = props
+
     return (
         <div className={classes.wrapper}>
             <div className={classes.listWrapper}>
@@ -81,7 +83,7 @@ const SubMenu = enhance((props) => {
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
-                        onTouchTap={handleOpenFilterDialog}>
+                        onTouchTap={handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
                 </ToolTip>
@@ -91,7 +93,7 @@ const SubMenu = enhance((props) => {
 })
 
 SubMenu.propTypes = {
-    handleOpenFilterDialog: React.PropTypes.func.isRequired
+    handleOpenCreateDialog: PropTypes.func.isRequired
 }
 
 export default SubMenu

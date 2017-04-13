@@ -1,4 +1,6 @@
+import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Col} from 'react-flexbox-grid'
@@ -68,10 +70,10 @@ const ShopDetailsTab = enhance((props) => {
     )
 })
 ShopDetailsTab.propTypes = {
-    data: React.PropTypes.object.isRequired,
-    tabData: React.PropTypes.shape({
-        tab: React.PropTypes.string.isRequired,
-        handleTabChange: React.PropTypes.func.isRequired
+    data: PropTypes.object.isRequired,
+    tabData: PropTypes.shape({
+        tab: PropTypes.string.isRequired,
+        handleTabChange: PropTypes.func.isRequired
     })
 }
 

@@ -19,8 +19,7 @@ const ShopDetailsStatistics = enhance((props) => {
     )
 })
 ShopDetailsStatistics.propTypes = {
-    // data: React.PropTypes.object.isRequired,
-    // loading: React.PropTypes.bool.isRequired
+
 }
 
 export default ShopDetailsStatistics

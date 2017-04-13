@@ -4,9 +4,7 @@ import {compose} from 'recompose'
 
 const enhance = compose(
     injectSheet({
-
-        activityContent: {
-        }
+        activityContent: {}
     })
 )
 
@@ -18,9 +16,5 @@ const ShopDetailsActivity = enhance((props) => {
         </div>
     )
 })
-ShopDetailsActivity.propTypes = {
-    // data: React.PropTypes.object.isRequired,
-    // loading: React.PropTypes.bool.isRequired
-}
 
 export default ShopDetailsActivity

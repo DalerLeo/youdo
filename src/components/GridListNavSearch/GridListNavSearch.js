@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {compose, withState, withHandlers} from 'recompose'
 import {hashHistory} from 'react-router'
 import injectSheet from 'react-jss'
@@ -59,7 +60,7 @@ const GridListNavSearch = enhance(({classes, filter, setSearch, onSubmit}) => {
 })
 
 GridListNavSearch.propTypes = {
-    filter: React.PropTypes.object.isRequired
+    filter: PropTypes.object.isRequired
 }
 
 export default GridListNavSearch

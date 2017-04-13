@@ -1,5 +1,6 @@
 import React from 'react'
 import GoogleMap from '../GoogleMap'
+import PropTypes from 'prop-types'
 
 const ShopDetailsMap = (props) => {
     const {lat, lng} = props
@@ -18,8 +19,8 @@ const ShopDetailsMap = (props) => {
 }
 
 ShopDetailsMap.propTypes = {
-    lat: React.PropTypes.number.isRequired,
-    lng: React.PropTypes.number.isRequired
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired
 }
 
 export default ShopDetailsMap

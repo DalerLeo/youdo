@@ -1,6 +1,7 @@
 /* global Blob, URL */
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import {compose, withState, withPropsOnChange} from 'recompose'
 import {Modal, Dimmer, Loader} from 'semantic-ui-react'
 import './DownloadDialog.css'
@@ -46,9 +47,9 @@ const DownloadDialog = enhance((props) => {
 })
 
 DownloadDialog.propTypes = {
-    loading: React.PropTypes.bool.isRequired,
-    file: React.PropTypes.any,
-    filename: React.PropTypes.string.isRequired
+    loading: PropTypes.bool.isRequired,
+    file: PropTypes.any,
+    filename: PropTypes.string.isRequired
 }
 
 export default DownloadDialog

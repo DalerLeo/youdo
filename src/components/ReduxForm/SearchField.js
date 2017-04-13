@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose, withPropsOnChange, withReducer} from 'recompose'
 import MUIAutoComplete from 'material-ui/AutoComplete'
@@ -114,11 +115,11 @@ SearchField.defaultGetValue = (value) => {
 }
 
 SearchField.propTypes = {
-    getText: React.PropTypes.func.isRequired,
-    getValue: React.PropTypes.func.isRequired,
-    getOptions: React.PropTypes.func.isRequired,
-    getItemText: React.PropTypes.func.isRequired,
-    getItem: React.PropTypes.func.isRequired
+    getText: PropTypes.func.isRequired,
+    getValue: PropTypes.func.isRequired,
+    getOptions: PropTypes.func.isRequired,
+    getItemText: PropTypes.func.isRequired,
+    getItem: PropTypes.func.isRequired
 }
 
 export default SearchField

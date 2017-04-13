@@ -1,3 +1,3 @@
-import DeliveryList from './DeliveryList'
+import SubMenu from './SubMenu'
 
-export default DeliveryList
+export default SubMenu

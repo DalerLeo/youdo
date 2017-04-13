@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
@@ -37,8 +38,8 @@ const GridListNav = ({classes, filter, filterDialog, actions, handleOpenFilterDi
 }
 
 GridListNav.propTypes = {
-    filter: React.PropTypes.object.isRequired,
-    actions: React.PropTypes.node.isRequired
+    filter: PropTypes.object.isRequired,
+    actions: PropTypes.node.isRequired
 }
 
 export default injectSheet({
