@@ -19,9 +19,9 @@ const GoogleMap = enhance((props) => {
             defaultCenter={center}
             onClick={_.noop}>
             {props.children}
-            <Marker
-                    position={markers}
-            />
+            {center !== undefined &&
+                <Marker position={markers}
+            />}
         </GoogleMapWrapper>
     )
 })

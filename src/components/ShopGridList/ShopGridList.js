@@ -13,7 +13,7 @@ import Container from '../Container'
 import ShopFilterForm from '../ShopFilterForm'
 import ShopDetails from '../ShopDetails'
 import ShopCreateDialog from '../ShopCreateDialog'
-import AddShopAndListShop from '../AddShopAndListShop'
+import DeliveryList from '../DeliveryList'
 
 const listHeader = [
     {
@@ -112,9 +112,10 @@ const ShopGridList = (props) => {
 
     return (
         <Container>
-            <AddShopAndListShop
+            <DeliveryList
                 handleOpenFilterDialog={createDialog.handleOpenFilterDialog}
             />
+
             <GridList
                 filter={filter}
                 list={list}
@@ -123,6 +124,7 @@ const ShopGridList = (props) => {
                 actionsDialog={actions}
                 filterDialog={shopFilterDialog}
             />
+
             <ShopCreateDialog
                 title={'Create shop'}
                 open={createDialog.openCreateDialog}
