@@ -6,6 +6,7 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import DateToDateField from '../ReduxForm/DateToDateField'
+import CategorySearchField from '../CategorySearchField'
 import CloseIcon from '../CloseIcon'
 
 const enhance = compose(
@@ -52,6 +53,10 @@ const ShopFilterForm = enhance(({classes, open, onSubmit, onClose}) => {
                 </IconButton>
             </div>
             <form onSubmit={onSubmit}>
+                <div>
+                    <Field name="category" component={CategorySearchField} label="Category" />
+                </div>
+
                 <div>
                     <Field name="date" component={DateToDateField} label="Date to Date" fullWidth={true} />
                 </div>

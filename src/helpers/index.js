@@ -5,12 +5,14 @@ import filter from './filter'
 import currencyFormat from './currencyFormat'
 import createThunkReducer from './createThunkReducer'
 import createReducer from './createReducer'
+import excludeObj from './excludeObj'
 // import apiErrorsHandler from './apiErrorsHandler'
 import axios from './axios'
 
 export default {
     toCamelCase,
     toBoolean,
+    excludeObj,
     filter,
     currencyFormat,
     createThunkReducer,

@@ -10,11 +10,14 @@ import GridListBody from '../GridListBody'
 const enhance = compose(
     injectSheet({
         wrapper: {
-            position: 'relative'
+            position: 'relative',
+            paddingBottom: '35px'
         },
+
         header: {
             height: '100px'
         },
+
         loader: {
             background: '#fff',
             height: '400px',

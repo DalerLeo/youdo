@@ -1,6 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
+import Rx from 'rxjs'
+import rxjsconfig from 'recompose/rxjsObservableConfig'
+import {setObservableConfig} from 'recompose'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
@@ -17,6 +20,12 @@ const store = createStore()
 const history = syncHistoryWithStore(hashHistory, store)
 
 injectTapEventPlugin()
+
+setObservableConfig({
+    // Converts a plain ES observable to an RxJS 5 observable
+    fromESObservable: Rx.Observable.from
+})
+setObservableConfig(rxjsconfig)
 
 const muiTheme = getMuiTheme({
     fontFamily: 'Roboto, sans-serif',

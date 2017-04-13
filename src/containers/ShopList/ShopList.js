@@ -44,10 +44,11 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const shopId = _.get(nextProps, ['params', 'shopId'])
+
         return shopId && _.get(props, ['params', 'shopId']) !== shopId
     }, ({dispatch, params}) => {
         const shopId = _.toInteger(_.get(params, 'shopId'))
-        dispatch(shopItemFetchAction(shopId))
+        shopId && dispatch(shopItemFetchAction(shopId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -92,9 +93,11 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const category = _.get(filterForm, ['values', 'category', 'value']) || null
 
             filter.filterBy({
                 openFilterDialog: false,
+                category,
                 fromDate: fromDate && fromDate.format('YYYY-MM-DD'),
                 toDate: toDate && toDate.format('YYYY-MM-DD')
             })
@@ -111,15 +114,9 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const {dispatch} = props
 
-            dispatch(shopCreateAction({
-                openFilterDialog: false,
-                fromDate: fromDate && fromDate.format('YYYY-MM-DD'),
-                toDate: toDate && toDate.format('YYYY-MM-DD')
-            }))
+            dispatch(shopCreateAction({}))
         }
     })
 )
@@ -129,10 +126,14 @@ const ShopList = enhance((props) => {
 
     const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
     const openCreateDialog = toBoolean(_.get(location, ['query', 'openCreateDialog']))
+    const category = _.toInteger(filter.getParam('category') || 0)
     const fromDate = filter.getParam('fromDate')
     const toDate = filter.getParam('toDate')
-    const detailId = parseInt(_.get(params, 'shopId') || 0)
+    const detailId = _.toInteger(_.get(params, 'shopId') || 0)
     const initialValues = {
+        category: {
+            value: category
+        },
         date: {
             fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
             toDate: toDate && moment(toDate, 'YYYY-MM-DD')

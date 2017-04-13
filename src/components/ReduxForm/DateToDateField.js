@@ -51,14 +51,26 @@ class DateToDateField extends React.Component {
         return ''
     }
 
+    getMinDate = () => {
+        const {input} = this.props
+        const fromDate = _.get(input, ['value', 'fromDate'])
+        const toDate = _.get(input, ['value', 'toDate'])
+
+        if (fromDate && !toDate) {
+            return fromDate.toDate()
+        }
+    }
+
     render () {
         const {label, meta: {error}} = this.props
+
         return (
             <div>
                 <DatePickerDialog
                     ref={(element) => {
                         this.datePicker = element
                     }}
+                    minDate={this.getMinDate()}
                     onAccept={this.handleOnAccept}
                     firstDayOfWeek={0}
                 />
