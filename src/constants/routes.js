@@ -15,9 +15,11 @@ export const BALANCE_LIST_URL = `/${BALANCE}/list`
 
 export const SHOP = 'shop'
 export const SHOP_CREATE_URL = `/${SHOP}/create`
-export const SHOP_LIST_URL = `/${SHOP}/list`
-export const SHOP_ITEM_URL = `/${SHOP}/:shopId`
+export const SHOP_LIST_URL = `/${SHOP}`
+export const SHOP_ITEM_URL = `${SHOP_LIST_URL}/:shopId`
+export const SHOP_ITEM_TAB_URL = `${SHOP_ITEM_URL}/:tab`
 export const SHOP_ITEM_PATH = `/${SHOP}/%d`
+export const SHOP_ITEM_TAB_PATH = `/${SHOP}/%d/%s`
 
 export const DAILY_REPORT = 'daily-report'
 export const DAILY_REPORT_CREATE_URL = `/${DAILY_REPORT}/create`

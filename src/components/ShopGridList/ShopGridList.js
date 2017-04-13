@@ -13,6 +13,7 @@ import Container from '../Container'
 import ShopFilterForm from '../ShopFilterForm'
 import ShopDetails from '../ShopDetails'
 import ShopCreateDialog from '../ShopCreateDialog'
+import AddShopAndListShop from '../AddShopAndListShop'
 
 const listHeader = [
     {
@@ -48,7 +49,7 @@ const listHeader = [
 ]
 
 const ShopGridList = (props) => {
-    const {filter, createDialog, filterDialog, actionsDialog, listData, detailData} = props
+    const {filter, createDialog, filterDialog, actionsDialog, listData, detailData, tabData} = props
 
     const actions = (
         <div>
@@ -76,6 +77,7 @@ const ShopGridList = (props) => {
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             loading={_.get(detailData, 'detailLoading')}
+            tabData={tabData}
         />
     )
 
@@ -110,6 +112,9 @@ const ShopGridList = (props) => {
 
     return (
         <Container>
+            <AddShopAndListShop
+                handleOpenFilterDialog={createDialog.handleOpenFilterDialog}
+            />
             <GridList
                 filter={filter}
                 list={list}
@@ -138,6 +143,14 @@ ShopGridList.propTypes = {
     filter: React.PropTypes.object.isRequired,
     listData: React.PropTypes.object.isRequired,
     detailData: React.PropTypes.object.isRequired,
+    tabData: React.PropTypes.object.isRequired,
+    createDialog: React.PropTypes.shape({
+        createLoading: React.PropTypes.bool.isRequired,
+        openCreateDialog: React.PropTypes.bool.isRequired,
+        handleOpenFilterDialog: React.PropTypes.func.isRequired,
+        handleCloseFilterDialog: React.PropTypes.func.isRequired,
+        handleSubmitFilterDialog: React.PropTypes.func.isRequired
+    }).isRequired,
     actionsDialog: React.PropTypes.shape({
         handleActionEdit: React.PropTypes.func.isRequired,
         handleActionDelete: React.PropTypes.func.isRequired

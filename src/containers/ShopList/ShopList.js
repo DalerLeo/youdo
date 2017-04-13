@@ -1,10 +1,13 @@
 import _ from 'lodash'
 import moment from 'moment'
+import sprintf from 'sprintf'
 import React from 'react'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import * as ROUTER from '../../constants/routes'
+import * as SHOP from '../../constants/shop'
 import ShopGridList from '../../components/ShopGridList'
 import {shopCreateAction, shopListFetchAction, shopCSVFetchAction, shopItemFetchAction} from '../../actions/shop'
 import filterHelper from '../../helpers/filter'
@@ -84,6 +87,11 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({openFilterDialog: false})})
         },
 
+        handleTabChange: props => (tab) => {
+            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+            hashHistory.push({pathname: sprintf(ROUTER.SHOP_ITEM_TAB_PATH, shopId, tab)})
+        },
+
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
             hashHistory.push({pathname, query: {}})
@@ -130,6 +138,8 @@ const ShopList = enhance((props) => {
     const fromDate = filter.getParam('fromDate')
     const toDate = filter.getParam('toDate')
     const detailId = _.toInteger(_.get(params, 'shopId') || 0)
+    const tab = _.get(params, 'tab') || SHOP.SHOP_TAB_MAP
+
     const initialValues = {
         category: {
             value: category
@@ -171,6 +181,11 @@ const ShopList = enhance((props) => {
         handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
+    const tabData = {
+        tab,
+        handleTabChange: props.handleTabChange
+    }
+
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -188,10 +203,11 @@ const ShopList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
+                tabData={tabData}
                 createDialog={createDialog}
-                actionsDialog={actionsDialog}
+                actionsDialog={actionsDialog}W
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
+                csvDialog={csvDialog}WW
             />
         </Layout>
     )

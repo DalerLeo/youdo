@@ -54,7 +54,7 @@ const enhance = compose(
         const {dispatch, getItem, getItemText} = props
         const id = _.get(props, ['input', 'value', 'value'])
 
-        getItem(id)
+        id && getItem(id)
             .then(data => getItemText(data))
             .then(data => dispatch({text: data}))
     })

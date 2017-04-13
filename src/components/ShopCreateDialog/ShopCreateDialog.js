@@ -3,6 +3,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
+import ShopDetailsMap from "../ShopDetailsMap/ShopDetailsMap";
 
 const enhance = compose(
     injectSheet()
@@ -35,7 +36,7 @@ const ShopDetails = enhance(({title, open, onClose, onSubmit}) => {
     )
 })
 
-ShopDetails.propTypes = {
+ShopDetails.propTyeps = {
     title: React.PropTypes.string.isRequired,
     open: React.PropTypes.bool.isRequired,
     onClose: React.PropTypes.func.isRequired,

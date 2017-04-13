@@ -7,6 +7,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import DateToDateField from '../ReduxForm/DateToDateField'
 import CategorySearchField from '../CategorySearchField'
+
 import CloseIcon from '../CloseIcon'
 
 const enhance = compose(
