@@ -8,7 +8,6 @@ const enhance = compose(
 const ShopDetailsMap = enhance((props) => {
     const {lat, lng} = props
     const center = {lat: lat, lng: lng}
-    console.log(center)
     return (
             <GoogleMap
                 center={center}

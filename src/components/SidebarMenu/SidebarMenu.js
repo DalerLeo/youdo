@@ -9,6 +9,7 @@ import TV from 'material-ui/svg-icons/hardware/tv'
 import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
 import Settings from 'material-ui/svg-icons/action/settings'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
+import ToolTip from '../ToolTip'
 
 import './SidebarMenu.css'
 
@@ -93,15 +94,15 @@ const SideBarMenu = (props) => {
 
             </div>
             <div className="sidebar_menu__logout">
-            <IconButton
-                iconStyle={style.iconStyle}
-                style={style.style}
-                touch={touch}
-                tooltipPosition={tooltipPosition}
-                tooltip="Log out"
-                onClick={handleSignOut}>
-                <SettingsPower />
-            </IconButton>
+                <ToolTip position="left" text="Log out">
+                    <IconButton
+                        iconStyle={style.iconStyle}
+                        style={style.style}
+                        touch={touch}
+                        onClick={handleSignOut}>
+                        <SettingsPower />
+                    </IconButton>
+                </ToolTip>
             </div>
         </div>
     )
