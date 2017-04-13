@@ -129,7 +129,6 @@ const enhance = compose(
         }
     })
 )
-
 const ShopDetails = enhance((props) => {
     const {classes, loading, data, tabData} = props
     const tab = _.get(tabData, 'tab')
@@ -288,6 +287,7 @@ const ShopDetails = enhance((props) => {
         </div>
     )
 })
+
 
 ShopDetails.propTypes = {
     data: React.PropTypes.object.isRequired,
