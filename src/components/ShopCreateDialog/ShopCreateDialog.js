@@ -72,25 +72,30 @@ const ShopDetails = enhance(({open, onClose, onSubmit, classes}) => {
             onRequestClose={onClose}
             className={classes.dialog}>
             <div className={classes.dialogBody}>
-              <Row>
-                <Col className={classes.leftSide} xs={5}>
-                  <div>
-                    <h4 className={classes.dialogTitle}>Добавление магазина</h4>
-                  </div>
-                  <div>
-                    <Field name="placeName" component={TextField} label="Наименование" fullWidth={true} className={classes.topMargin}/>
-                    <Field name="placeAddress" component={TextField} label="Адрес" fullWidth={true} className={classes.topMargin} />
-                    <Field name="placeOrient" component={TextField} label="Ориентир" fullWidth={true} className={classes.topMargin} />
-                    <Field name="placePhone" component={TextField} label="Телефон" fullWidth={true} className={classes.topMargin} />
-                    <Field name="placeContact" component={TextField} label="Контактное лицо" fullWidth={true} className={classes.topMargin} />
-                  </div>
-                </Col>
-                <Col className={classes.leftSide} xs={7}>
-                  <div className={classes.mapContent} >
-                    <ShopDetailsMap lat={12} lng={23} />
-                  </div>
-                </Col>
-              </Row>
+                <Row>
+                    <Col className={classes.leftSide} xs={5}>
+                        <div>
+                            <h4 className={classes.dialogTitle}>Добавление магазина</h4>
+                        </div>
+                        <div>
+                            <Field name="placeName" component={TextField} label="Наименование" fullWidth={true}
+                                   className={classes.topMargin}/>
+                            <Field name="placeAddress" component={TextField} label="Адрес" fullWidth={true}
+                                   className={classes.topMargin}/>
+                            <Field name="placeOrient" component={TextField} label="Ориентир" fullWidth={true}
+                                   className={classes.topMargin}/>
+                            <Field name="placePhone" component={TextField} label="Телефон" fullWidth={true}
+                                   className={classes.topMargin}/>
+                            <Field name="placeContact" component={TextField} label="Контактное лицо" fullWidth={true}
+                                   className={classes.topMargin}/>
+                        </div>
+                    </Col>
+                    <Col className={classes.leftSide} xs={7}>
+                        <div className={classes.mapContent}>
+                            <ShopDetailsMap lat={12} lng={23}/>
+                        </div>
+                    </Col>
+                </Row>
             </div>
         </Dialog>
     )

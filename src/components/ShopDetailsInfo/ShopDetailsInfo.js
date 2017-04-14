@@ -90,9 +90,7 @@ const ShopDetailsInfo = enhance((props) => {
     return (
         <Col className={classes.leftSide} xs={6} md={4}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>
-                    {name}
-                </div>
+                <div className={classes.titleLabel}>{name}</div>
                 <div className={classes.titleButtons}>
                     <IconButton
                         iconStyle={iconStyle.icon}

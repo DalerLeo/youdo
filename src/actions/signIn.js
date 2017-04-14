@@ -25,9 +25,11 @@ export const signInAction = (params) => {
             return token
         })
         .catch((error) => {
-            const data = _.get(error, ['response', 'data'])
+            const errorData = _.get(error, ['response', 'data'])
 
-            return Promise.reject(data || {'Network': ['Internet connection error']})
+            return Promise.reject(
+                errorData || {'Network': ['Internet connection error']}
+            )
         })
 
     return {
@@ -43,8 +45,8 @@ export const signOutAction = () => {
             sessionStorage.removeItem(TOKEN_KEY)
         })
         .catch((error) => {
-            const data = _.get(error, ['response', 'data'])
-            return Promise.reject(data)
+            const errorData = _.get(error, ['response', 'data'])
+            return Promise.reject(errorData)
         })
 
     return {

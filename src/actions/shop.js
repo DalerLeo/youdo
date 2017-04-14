@@ -6,9 +6,9 @@ import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/shopSerializer'
 
 export const shopCreateAction = (formValues) => {
-    const data = serializers.createSerializer(formValues)
+    const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .post(API.SHOP_CREATE, data)
+        .post(API.SHOP_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })

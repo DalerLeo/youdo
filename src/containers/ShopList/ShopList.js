@@ -58,11 +58,11 @@ const enhance = compose(
 
     withHandlers({
         handleActionEdit: props => () => {
-            console.log('action edit')
+            return null
         },
 
         handleActionDelete: props => () => {
-            console.log('action delete')
+            return null
         },
 
         handleOpenCSVDialog: props => () => {
@@ -134,10 +134,10 @@ const ShopList = enhance((props) => {
 
     const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
     const openCreateDialog = toBoolean(_.get(location, ['query', 'openCreateDialog']))
-    const category = _.toInteger(filter.getParam('category') || 0)
+    const category = _.toInteger(filter.getParam('category'))
     const fromDate = filter.getParam('fromDate')
     const toDate = filter.getParam('toDate')
-    const detailId = _.toInteger(_.get(params, 'shopId') || 0)
+    const detailId = _.toInteger(_.get(params, 'shopId'))
     const tab = _.get(params, 'tab') || SHOP.SHOP_TAB_MAP
 
     const initialValues = {
@@ -205,9 +205,9 @@ const ShopList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
-                actionsDialog={actionsDialog}W
+                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}WW
+                csvDialog={csvDialog}
             />
         </Layout>
     )

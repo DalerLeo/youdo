@@ -1,9 +1,14 @@
+/* eslint no-invalid-this: 0 */
+/* eslint no-undefined: 0 */
+
 import _ from 'lodash'
 import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import DatePickerDialog from 'material-ui/DatePicker/DatePickerDialog'
 import MUITextField from 'material-ui/TextField'
+
+const DELAY = 300
 
 class DateToDateField extends React.Component {
     datePicker = null
@@ -16,7 +21,7 @@ class DateToDateField extends React.Component {
     }
 
     handleOnFocus = () => {
-        _.delay(() => this.datePicker.show(), 300)
+        _.delay(() => this.datePicker.show(), DELAY)
     }
 
     handleOnAccept = (value) => {
@@ -26,7 +31,7 @@ class DateToDateField extends React.Component {
         if (!fromDate || !this.state.starting) {
             input.onChange({fromDate: moment(value)})
             this.setState({starting: true})
-            _.delay(() => this.datePicker.show(), 300)
+            _.delay(() => this.datePicker.show(), DELAY)
         } else {
             input.onChange({
                 fromDate: _.get(input, ['value', 'fromDate']),
@@ -60,6 +65,8 @@ class DateToDateField extends React.Component {
         if (fromDate && !toDate) {
             return fromDate.toDate()
         }
+
+        return undefined
     }
 
     render () {

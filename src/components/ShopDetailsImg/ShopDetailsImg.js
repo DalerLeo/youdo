@@ -22,7 +22,7 @@ const ShopDetailsImg = enhance((props) => {
     return (
         <div className={classes.imgContent}>
             Detail Img content
-            <img alt="" onLoad={console.log('img load')}/>
+            <img alt="" />
         </div>
     )
 })

@@ -6,6 +6,8 @@ import {compose, withState, withPropsOnChange} from 'recompose'
 import {Modal, Dimmer, Loader} from 'semantic-ui-react'
 import './DownloadDialog.css'
 
+const WAIT_TIME_FOR_USER_DOWNLOAD_CAN_REVOKE = 500
+
 const enhance = compose(
     withState('downloadFile', 'setDownloadFile', null),
 
@@ -22,7 +24,7 @@ const enhance = compose(
         return !nextProps.open && props.open !== nextProps.open && nextProps.file
     }, (props) => {
         const {downloadFile} = props
-        downloadFile && _.delay(() => URL.revokeObjectURL(downloadFile), 500)
+        downloadFile && _.delay(() => URL.revokeObjectURL(downloadFile), WAIT_TIME_FOR_USER_DOWNLOAD_CAN_REVOKE)
     }),
 )
 

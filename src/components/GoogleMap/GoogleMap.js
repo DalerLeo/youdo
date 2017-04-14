@@ -20,7 +20,7 @@ const GoogleMap = enhance((props) => {
             defaultCenter={center}
             onClick={_.noop}>
             {props.children}
-            {center !== undefined &&
+            {!_.isUndefined(center) &&
                 <Marker position={markers}
             />}
         </GoogleMapWrapper>

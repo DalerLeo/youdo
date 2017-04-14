@@ -11,7 +11,7 @@ const Checkbox = ({input, meta, label, ...defaultProps}) => (
     <MUICheckbox
         label={label}
         style={checkboxStyle}
-        checked={!!input.value}
+        checked={Boolean(input.value)}
         onCheck={input.onChange}
         {...defaultProps}
     />

@@ -89,8 +89,9 @@ const GridListHeader = enhance((props) => {
         .isEqual(_.sortBy(listIds, itemId => itemId))
         .value()
 
+    const firstIndex = 0
     const items = _.map(column, (item, index) => {
-        const xs = index === 0 ? firstColumnSize : defaultColumnSize
+        const xs = index === firstIndex ? firstColumnSize : defaultColumnSize
 
         if (_.get(item, 'sorting')) {
             const name = _.get(item, 'name')

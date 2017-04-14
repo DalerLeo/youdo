@@ -39,7 +39,8 @@ const enhance = compose(
 const GridListNavPagination = enhance(({classes, onChange, filter}) => {
     const prev = filter.prevPage()
     const next = filter.nextPage()
-    const startPage = (filter.getPageRange() * (filter.getCurrentPage() - 1)) + 1
+    const firstPage = 1
+    const startPage = (filter.getPageRange() * (filter.getCurrentPage() - firstPage)) + firstPage
     const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
 
     return (

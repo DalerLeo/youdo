@@ -6,7 +6,10 @@ const axiosRequest = () => {
     const TOKEN = storageHelper.getToken()
 
     axios.defaults.baseURL = API_URL
-    axios.defaults.headers.common['Authorization'] = TOKEN ? `Token ${TOKEN}` : undefined
+
+    if (TOKEN) {
+        axios.defaults.headers.common.Authorization = `Token ${TOKEN}`
+    }
 
     return axios
 }

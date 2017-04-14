@@ -8,6 +8,8 @@ import SearchIcon from 'material-ui/svg-icons/action/search'
 import CircularProgress from 'material-ui/CircularProgress'
 import excludeObjKey from '../../helpers/excludeObjKey'
 
+const DELAY_FOR_TYPE_ATTACK = 300
+
 const errorStyle = {
     textAlign: 'left'
 }
@@ -45,7 +47,7 @@ const enhance = compose(
             .then((data) => {
                 dispatch({dataSource: data, loading: false})
             })
-    }, 300)),
+    }, DELAY_FOR_TYPE_ATTACK)),
 
     withPropsOnChange((props, nextProps) => {
         const value = _.get(props, ['input', 'value', 'value'])
@@ -56,7 +58,9 @@ const enhance = compose(
         const id = _.get(props, ['input', 'value', 'value'])
 
         id && getItem(id)
-            .then(data => getItemText(data))
+            .then(data => {
+                return getItemText(data)
+            })
             .then(data => dispatch({text: data}))
     })
 )
@@ -73,8 +77,9 @@ const SearchField = enhance((props) => {
     } = props
 
     const autoCompleteProps = excludeObjKey(defaultProps, [
-        'sheet', 'timeElapsed', 'getText', 'getValue', 'getOptions', 'getItem', 'getItemText'
+        'sheet', 'getText', 'getValue', 'getOptions', 'getItem', 'getItemText'
     ])
+    const inputAutoComplete = excludeObjKey(input, ['value', 'onChange'])
 
     return (
         <div className={classes.wrapper}>
@@ -89,7 +94,7 @@ const SearchField = enhance((props) => {
                 onNewRequest={value => input.onChange(value)}
                 openOnFocus={true}
                 filter={() => true}
-                {...input}
+                {...inputAutoComplete}
                 {...autoCompleteProps}
             />
             {!state.loading && <div className={classes.icon}>

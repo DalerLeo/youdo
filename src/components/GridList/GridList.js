@@ -35,8 +35,8 @@ const GridList = enhance((props) => {
     const listItems = _.get(list, 'list')
     const loading = _.get(list, 'loading')
     const listIds = _.map(listItems, item => _.toInteger(_.get(item, 'key')))
-    const loaderOrList = (loading) => {
-        if (loading) {
+    const loaderOrList = (listLoading) => {
+        if (listLoading) {
             return (
                 <div className={classes.loader}>
                     <CircularProgress size={100} thickness={6} />

@@ -4,8 +4,10 @@ import sprintf from 'sprintf'
 
 const filter = (data, pathname, query = {}) => {
     const params = query
-    const currentPage = _.toInteger(_.get(params, 'page') || 1)
-    const pageRange = _.toInteger(_.get(params, 'pageSize') || 10)
+    const first = 1
+    const defaultPageRange = 10
+    const currentPage = _.toInteger(_.get(params, 'page') || first)
+    const pageRange = _.toInteger(_.get(params, 'pageSize') || defaultPageRange)
     const itemsCount = _.get(data, 'count')
 
     const pageCount = Math.ceil(itemsCount / pageRange)
@@ -23,18 +25,18 @@ const filter = (data, pathname, query = {}) => {
             .value()
     }
 
-    const paramsToQueryUrl = (params) => {
-        if (_.isEmpty(params)) {
+    const paramsToQueryUrl = (paramsItems) => {
+        if (_.isEmpty(paramsItems)) {
             return null
         }
 
         const url = _
-            .chain(params)
+            .chain(paramsItems)
             .keys()
             .map((key) => {
                 return {
                     key: key,
-                    value: params[key]
+                    value: paramsItems[key]
                 }
             })
             .filter((item) => !_.isEmpty(item.value) || _.isNumber(item.value))
@@ -55,18 +57,20 @@ const filter = (data, pathname, query = {}) => {
     }
 
     const prevPage = () => {
-        if (currentPage <= 1) {
+        const prevPageNumber = currentPage + first
+        if (currentPage <= first) {
             return null
         }
 
-        return createURL({page: currentPage - 1})
+        return createURL({page: prevPageNumber})
     }
 
     const nextPage = () => {
-        if (pageCount < currentPage + 1) {
+        const nextPageNumber = currentPage + first
+        if (pageCount < nextPageNumber) {
             return null
         }
-        return createURL({page: currentPage + 1})
+        return createURL({page: nextPageNumber})
     }
 
     const getSortingType = (columnSortingName) => {
@@ -120,9 +124,9 @@ const filter = (data, pathname, query = {}) => {
 
     const getCurrentPage = () => currentPage
 
-    const pageItemList = () => _.range(1, pageCount + 1)
+    const pageItemList = () => _.range(first, pageCount + first)
 
-    const hasPagination = () => pageCount > 1
+    const hasPagination = () => pageCount > first
 
     const filterRequest = () => {
         return paramsToQueryUrl(_.assign({}, params, {select: null, openFilterDialog: null}))
@@ -133,7 +137,7 @@ const filter = (data, pathname, query = {}) => {
             pathname,
             query: {
                 ...params,
-                page: 1,
+                page: first,
                 ...newParams
             }
         })

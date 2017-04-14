@@ -10,7 +10,6 @@ import ToolTip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
-
         wrapper: {
             position: 'relative',
             width: '100%',

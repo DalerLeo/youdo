@@ -5,7 +5,6 @@ import {compose, withHandlers} from 'recompose'
 import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import Checkbox from 'material-ui/Checkbox'
-// import './GridListBody.css'
 
 const enhance = compose(
     injectSheet({
@@ -67,7 +66,7 @@ const GridListBody = enhance((props) => {
         const selects = filter.getSelects()
         const checkboxChecked = _
             .chain(selects)
-            .find(item => item === id)
+            .find(selectId => selectId === id)
             .isNumber()
             .value()
 
