@@ -5,9 +5,11 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import {Col, Row} from 'react-flexbox-grid'
-import {TextField} from '../ReduxForm'
 import {Field, reduxForm} from 'redux-form'
-import ShopDetailsMap from '../ShopDetailsMap/ShopDetailsMap'
+import {Marker} from 'react-google-maps'
+import validate from '../../helpers/validate'
+import {TextField} from '../ReduxForm'
+import GoogleMap from '../GoogleMap'
 
 const enhance = compose(
     injectSheet({
@@ -21,7 +23,8 @@ const enhance = compose(
                 }
             }
         },
-        dialogTitle: {
+
+        title: {
             width: '220px',
             margin: '0 auto',
             padding: '10px 0',
@@ -31,81 +34,127 @@ const enhance = compose(
             position: 'relative',
             top: '-34px'
         },
-        dialogBody: {
+
+        body: {
             marginTop: '10px',
             marginBottom: '-30px'
         },
+
         topMargin: {
             marginTop: '-15px !important'
         },
-        mapContent: {
+
+        map: {
             margin: '-35px -24px -35px 0',
             height: '500px'
         }
     }),
     reduxForm({
-        form: 'ShopCreateDalog',
-        validate: (values, form) => form.errors
+        form: 'ShopCreateForm'
     })
 )
 
-const ShopDetails = enhance(({open, onClose, onSubmit, classes}) => {
-    const actions = [
-        <FlatButton
-            label="Cancel"
-            primary={true}
-            onTouchTap={onClose}
-        />,
-        <FlatButton
-            label="Apply"
-            primary={true}
-            keyboardFocused={true}
-            onTouchTap={onSubmit}
-        />
-    ]
+const ShopCreateDialog = enhance((props) => {
+    const {open, handleSubmit, onClose, classes} = props
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+
+    const center = {
+        lat: 41.3076492,
+        lng: 69.2705497
+    }
 
     return (
         <Dialog
-            actions={actions}
             modal={false}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}>
-            <div className={classes.dialogBody}>
-                <Row>
-                    <Col className={classes.leftSide} xs={5}>
-                        <div>
-                            <h4 className={classes.dialogTitle}>Добавление магазина</h4>
-                        </div>
-                        <div>
-                            <Field name="placeName" component={TextField} label="Наименование" fullWidth={true}
-                                   className={classes.topMargin}/>
-                            <Field name="placeAddress" component={TextField} label="Адрес" fullWidth={true}
-                                   className={classes.topMargin}/>
-                            <Field name="placeOrient" component={TextField} label="Ориентир" fullWidth={true}
-                                   className={classes.topMargin}/>
-                            <Field name="placePhone" component={TextField} label="Телефон" fullWidth={true}
-                                   className={classes.topMargin}/>
-                            <Field name="placeContact" component={TextField} label="Контактное лицо" fullWidth={true}
-                                   className={classes.topMargin}/>
-                        </div>
-                    </Col>
-                    <Col className={classes.leftSide} xs={7}>
-                        <div className={classes.mapContent}>
-                            <ShopDetailsMap lat={12} lng={23}/>
-                        </div>
-                    </Col>
-                </Row>
+            <div className={classes.body}>
+                <form onSubmit={onSubmit}>
+                    <Row>
+                        <Col xs={5}>
+                            <div>
+                                <h4 className={classes.title}>Добавление магазина</h4>
+                            </div>
+                            <div>
+                                <div>
+                                    <Field
+                                        name="name"
+                                        component={TextField}
+                                        label="Наименование"
+                                        fullWidth={true}
+                                        className={classes.topMargin}
+                                    />
+
+                                    <Field
+                                        name="address"
+                                        component={TextField}
+                                        label="Адрес"
+                                        fullWidth={true}
+                                        className={classes.topMargin}
+                                    />
+
+                                    <Field
+                                        name="guide"
+                                        component={TextField}
+                                        label="Ориентир"
+                                        fullWidth={true}
+                                        className={classes.topMargin}
+                                    />
+
+                                    <Field
+                                        name="phone"
+                                        component={TextField}
+                                        label="Телефон"
+                                        fullWidth={true}
+                                        className={classes.topMargin}
+                                    />
+
+                                    <Field
+                                        name="contactName"
+                                        component={TextField}
+                                        label="Контактное лицо"
+                                        fullWidth={true}
+                                        className={classes.topMargin}
+                                    />
+                                </div>
+
+                                <div>
+                                    <FlatButton
+                                        label="Cancel"
+                                        primary={true}
+                                        onTouchTap={onClose}
+                                    />
+
+                                    <FlatButton
+                                        label="Apply"
+                                        primary={true}
+                                        type="submit"
+                                        keyboardFocused={true}
+                                    />
+                                </div>
+                            </div>
+                        </Col>
+                        <Col xs={7}>
+                            <div className={classes.map}>
+                                <GoogleMap center={center}>
+                                    <Marker position={center} />
+                                </GoogleMap>
+                            </div>
+                        </Col>
+                    </Row>
+                </form>
             </div>
         </Dialog>
     )
 })
 
-ShopDetails.propTyeps = {
+ShopCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
+    errors: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
-export default ShopDetails
+export default ShopCreateDialog

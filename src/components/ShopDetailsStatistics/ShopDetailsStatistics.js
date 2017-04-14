@@ -12,6 +12,7 @@ const enhance = compose(
 
 const ShopDetailsStatistics = enhance((props) => {
     const {classes} = props
+
     return (
         <div className={classes.imgContent}>
             Shop Details Statistics content

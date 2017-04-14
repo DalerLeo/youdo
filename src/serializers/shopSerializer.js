@@ -2,12 +2,18 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
-    const client = _.get(data, ['client', 'id'])
-    const amount = parseFloat(_.get(data, 'amount'))
+    const name = _.get(data, ['name'])
+    const address = _.get(data, ['address'])
+    const guid = _.get(data, ['guid'])
+    const phone = _.get(data, ['phone'])
+    const contact = _.get(data, ['contact'])
 
     return {
-        client,
-        amount
+        name,
+        address,
+        guid,
+        phone,
+        contact
     }
 }
 

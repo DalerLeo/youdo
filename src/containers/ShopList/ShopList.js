@@ -20,11 +20,13 @@ const enhance = compose(
         const detail = _.get(state, ['shop', 'item', 'data'])
         const detailLoading = _.get(state, ['shop', 'item', 'loading'])
         const createLoading = _.get(state, ['shop', 'create', 'loading'])
+        const createErrors = _.get(state, ['shop', 'create', 'error'])
         const list = _.get(state, ['shop', 'list', 'data'])
         const listLoading = _.get(state, ['shop', 'list', 'loading'])
         const csvData = _.get(state, ['shop', 'csv', 'data'])
         const csvLoading = _.get(state, ['shop', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'ShopFilterForm'])
+        const createForm = _.get(state, ['form', 'ShopCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -33,10 +35,12 @@ const enhance = compose(
             detail,
             detailLoading,
             createLoading,
+            createErrors,
             csvData,
             csvLoading,
             filter,
-            filterForm
+            filterForm,
+            createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -122,15 +126,26 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch} = props
+            const {dispatch, createForm} = props
 
-            dispatch(shopCreateAction({}))
+            return dispatch(shopCreateAction(_.get(createForm, ['values'])))
         }
     })
 )
 
 const ShopList = enhance((props) => {
-    const {location, list, listLoading, detail, detailLoading, createLoading, filter, layout, params} = props
+    const {
+        location,
+        list,
+        listLoading,
+        detail,
+        detailLoading,
+        createLoading,
+        createErrors,
+        filter,
+        layout,
+        params
+    } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
     const openCreateDialog = toBoolean(_.get(location, ['query', 'openCreateDialog']))
@@ -158,6 +173,7 @@ const ShopList = enhance((props) => {
     const createDialog = {
         createLoading,
         openCreateDialog,
+        createErrors,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog

@@ -129,7 +129,9 @@ const filter = (data, pathname, query = {}) => {
     const hasPagination = () => pageCount > first
 
     const filterRequest = () => {
-        return paramsToQueryUrl(_.assign({}, params, {select: null, openFilterDialog: null}))
+        return paramsToQueryUrl(_.assign({}, params, {
+            select: null, openFilterDialog: null, openCreateDialog: null
+        }))
     }
 
     const filterBy = (newParams) => {

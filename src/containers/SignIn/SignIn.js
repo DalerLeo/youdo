@@ -19,7 +19,6 @@ const enhance = compose(
     }),
     connect(state => {
         return {
-            error: _.get(state, ['signIn', 'error']),
             formValues: _.get(state, ['form', 'SignInForm', 'values']),
             loading: _.get(state, ['signIn', 'loading'])
         }
@@ -27,10 +26,10 @@ const enhance = compose(
 )
 
 const SignIn = enhance((props) => {
-    const {classes, dispatch, location, loading, formValues, error} = props
+    const {classes, dispatch, location, loading, formValues} = props
 
     const onSubmit = () => {
-        dispatch(signInAction(formValues))
+        return dispatch(signInAction(formValues))
             .then(() => {
                 const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
                 hashHistory.push(redirectUrl)
@@ -39,7 +38,7 @@ const SignIn = enhance((props) => {
 
     return (
         <div className={classes.container}>
-            <SignInForm errors={error} loading={loading} onSubmit={onSubmit} />
+            <SignInForm loading={loading} onSubmit={onSubmit} />
         </div>
     )
 })

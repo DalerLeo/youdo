@@ -5,7 +5,7 @@ const errorStyle = {
     textAlign: 'left'
 }
 
-const TextField = ({input, label, meta: {touched, error}, ...defaultProps}) => {
+const TextField = ({input, label, meta: {error}, ...defaultProps}) => {
     return (
         <MUITextField
             errorText={error}

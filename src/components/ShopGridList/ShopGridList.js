@@ -127,6 +127,7 @@ const ShopGridList = (props) => {
             <ShopCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
+                errors={createDialog.createErrors}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
