@@ -15,6 +15,12 @@ import ShopFilterForm from '../ShopFilterForm'
 import ShopDetails from '../ShopDetails'
 import ShopCreateDialog from '../ShopCreateDialog'
 import SubMenu from '../SubMenu'
+import injectSheet from 'react-jss'
+import {compose} from 'recompose'
+import ToolTip from '../ToolTip'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+
 
 const listHeader = [
     {
@@ -49,8 +55,28 @@ const listHeader = [
     }
 ]
 
-const ShopGridList = (props) => {
-    const {filter, createDialog, filterDialog, actionsDialog, listData, detailData, tabData} = props
+
+const enhance = compose(
+    injectSheet({
+        addButton: {
+            position: 'relative',
+            transform: 'translate(0,20%)',
+            '& button': {
+                backgroundColor: '#275482 !important'
+            }
+        },
+        addButtonWrapper: {
+            position: 'absolute',
+            top:0,
+            right: '0',
+            marginBottom: '0px'
+        }
+    })
+)
+
+
+const ShopGridList = enhance((props) => {
+    const {filter, createDialog, filterDialog, actionsDialog, listData, detailData, tabData, classes} = props
 
     const actions = (
         <div>
@@ -113,8 +139,17 @@ const ShopGridList = (props) => {
 
     return (
         <Container>
-            <SubMenu handleOpenCreateDialog={createDialog.handleOpenCreateDialog} />
-
+            <SubMenu />
+            <div className={classes.addButtonWrapper}>
+                <ToolTip position="left" text="Add marker">
+                    <FloatingActionButton
+                        mini={true}
+                        className={classes.addButton}
+                        onTouchTap={createDialog.handleOpenCreateDialog}>
+                        <ContentAdd />
+                    </FloatingActionButton>
+                </ToolTip>
+            </div>
             <GridList
                 filter={filter}
                 list={list}
@@ -132,7 +167,7 @@ const ShopGridList = (props) => {
             />
         </Container>
     )
-}
+})
 
 ShopGridList.defaultProps = {
     detailData: {},

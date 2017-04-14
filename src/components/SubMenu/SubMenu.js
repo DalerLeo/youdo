@@ -2,11 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
 import Home from 'material-ui/svg-icons/action/home'
 import HardwareKeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
-import ToolTip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -65,7 +62,7 @@ const enhance = compose(
 )
 
 const SubMenu = enhance((props) => {
-    const {classes, handleOpenCreateDialog} = props
+    const {classes} = props
 
     return (
         <div className={classes.wrapper}>
@@ -77,22 +74,10 @@ const SubMenu = enhance((props) => {
                     <span className={classes.labelList}>Список поставщиков</span>
                 </div>
             </div>
-            <div className={classes.addButtonWrapper}>
-                <ToolTip position="left" text="Add marker">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </ToolTip>
-            </div>
+
         </div>
     )
 })
 
-SubMenu.propTypes = {
-    handleOpenCreateDialog: PropTypes.func.isRequired
-}
 
 export default SubMenu
