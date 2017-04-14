@@ -203,9 +203,6 @@ rules:
 parserOptions:
   ecmaFeatures:
     jsx: true
-settings:
-  flowtype:
-    onlyFilesWithFlowAnnotation: false
 globals:
   localStorage: true
   sessionStorage: true

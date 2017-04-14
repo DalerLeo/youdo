@@ -21,7 +21,6 @@ import ToolTip from '../ToolTip'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 
-
 const listHeader = [
     {
         sorting: true,
@@ -55,7 +54,6 @@ const listHeader = [
     }
 ]
 
-
 const enhance = compose(
     injectSheet({
         addButton: {
@@ -67,13 +65,12 @@ const enhance = compose(
         },
         addButtonWrapper: {
             position: 'absolute',
-            top:0,
+            top: 0,
             right: '0',
             marginBottom: '0px'
         }
     })
 )
-
 
 const ShopGridList = enhance((props) => {
     const {filter, createDialog, filterDialog, actionsDialog, listData, detailData, tabData, classes} = props

@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Home from 'material-ui/svg-icons/action/home'
@@ -78,6 +77,5 @@ const SubMenu = enhance((props) => {
         </div>
     )
 })
-
 
 export default SubMenu
