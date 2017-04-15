@@ -8,10 +8,16 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import * as SHOP from '../../constants/shop'
-import ShopGridList from '../../components/ShopGridList'
-import {shopCreateAction, shopListFetchAction, shopCSVFetchAction, shopItemFetchAction} from '../../actions/shop'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import ShopGridList from '../../components/ShopGridList'
+import {
+    shopCreateAction,
+    shopListFetchAction,
+    shopCSVFetchAction,
+    shopItemFetchAction
+} from '../../actions/shop'
+import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
@@ -126,9 +132,15 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm} = props
+            const {dispatch, createForm, filter} = props
 
             return dispatch(shopCreateAction(_.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                })
+                .then(() => {
+                    hashHistory.push({query: filter.getParams({openCreateDialog: false})})
+                })
         }
     })
 )

@@ -4,6 +4,7 @@ import {routerReducer} from 'react-router-redux'
 import {combineReducers} from 'redux'
 import createThunkReducer from '../helpers/createThunkReducer'
 import * as actionTypes from '../constants/actionTypes'
+import snackbarReducer from './snackbarReducer'
 
 const rootReducer = combineReducers({
     signIn: createThunkReducer(actionTypes.SIGN_IN),
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.SHOP_ITEM),
         csv: createThunkReducer(actionTypes.SHOP_LIST_CSV)
     }),
+    snackbar: snackbarReducer(),
     form: formReducer,
     toastr: toastrReducer,
     routing: routerReducer

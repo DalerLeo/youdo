@@ -1,15 +1,27 @@
+import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import {Col, Row} from 'react-flexbox-grid'
-import {Field, reduxForm} from 'redux-form'
-import {Marker} from 'react-google-maps'
-import validate from '../../helpers/validate'
-import {TextField} from '../ReduxForm'
-import GoogleMap from '../GoogleMap'
+import {Col} from 'react-flexbox-grid'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
+import toCamelCase from '../../helpers/toCamelCase'
+import {TextField, LocationField} from '../ReduxForm'
+import CategorySearchField from '../CategorySearchField'
+
+const validate = (data) => {
+    const errors = toCamelCase(data)
+    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'This location is required.'
+
+    throw new SubmissionError({
+        ...errors,
+        latLng,
+        _error: nonFieldErrors
+    })
+}
 
 const enhance = compose(
     injectSheet({
@@ -24,6 +36,12 @@ const enhance = compose(
             }
         },
 
+        body: {
+            maxHeight: '600px !important',
+            padding: '0 0 0 15px !important',
+            overflow: 'hidden !important'
+        },
+
         title: {
             width: '220px',
             margin: '0 auto',
@@ -31,22 +49,16 @@ const enhance = compose(
             textAlign: 'center',
             background: '#12aaeb',
             color: '#fff',
-            position: 'relative',
-            top: '-34px'
+            position: 'relative'
         },
 
-        body: {
-            marginTop: '10px',
-            marginBottom: '-30px'
-        },
-
-        topMargin: {
-            marginTop: '-15px !important'
+        form: {
+            display: 'flex'
         },
 
         map: {
-            margin: '-35px -24px -35px 0',
-            height: '500px'
+            height: '600px',
+            paddingRight: '0'
         }
     }),
     reduxForm({
@@ -58,93 +70,94 @@ const ShopCreateDialog = enhance((props) => {
     const {open, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
-    const center = {
-        lat: 41.3076492,
-        lng: 69.2705497
-    }
-
     return (
         <Dialog
-            modal={false}
+            modal={true}
             open={open}
             onRequestClose={onClose}
-            className={classes.dialog}>
-            <div className={classes.body}>
-                <form onSubmit={onSubmit}>
-                    <Row>
-                        <Col xs={5}>
-                            <div>
-                                <h4 className={classes.title}>Добавление магазина</h4>
-                            </div>
-                            <div>
-                                <div>
-                                    <Field
-                                        name="name"
-                                        component={TextField}
-                                        label="Наименование"
-                                        fullWidth={true}
-                                        className={classes.topMargin}
-                                    />
+            className={classes.dialog}
+            bodyClassName={classes.body}>
+            <form onSubmit={onSubmit} className={classes.form}>
+                <Col xs={5}>
+                    <div>
+                        <h4 className={classes.title}>Add Shop</h4>
+                    </div>
+                    <div>
+                        <div>
+                            <Field
+                                name="name"
+                                component={TextField}
+                                label="Name"
+                                fullWidth={true}
+                            />
 
-                                    <Field
-                                        name="address"
-                                        component={TextField}
-                                        label="Адрес"
-                                        fullWidth={true}
-                                        className={classes.topMargin}
-                                    />
+                            <Field
+                                name="category"
+                                component={CategorySearchField}
+                                label="Category"
+                                fullWidth={true}
+                            />
 
-                                    <Field
-                                        name="guide"
-                                        component={TextField}
-                                        label="Ориентир"
-                                        fullWidth={true}
-                                        className={classes.topMargin}
-                                    />
+                            <Field
+                                name="address"
+                                component={TextField}
+                                label="Address"
+                                fullWidth={true}
+                            />
 
-                                    <Field
-                                        name="phone"
-                                        component={TextField}
-                                        label="Телефон"
-                                        fullWidth={true}
-                                        className={classes.topMargin}
-                                    />
+                            <Field
+                                name="guide"
+                                component={TextField}
+                                label="Guide"
+                                fullWidth={true}
+                            />
 
-                                    <Field
-                                        name="contactName"
-                                        component={TextField}
-                                        label="Контактное лицо"
-                                        fullWidth={true}
-                                        className={classes.topMargin}
-                                    />
-                                </div>
+                            <Field
+                                name="phone"
+                                component={TextField}
+                                label="Phone"
+                                fullWidth={true}
+                            />
 
-                                <div>
-                                    <FlatButton
-                                        label="Cancel"
-                                        primary={true}
-                                        onTouchTap={onClose}
-                                    />
+                            <Field
+                                name="contactName"
+                                component={TextField}
+                                label="Contact name"
+                                fullWidth={true}
+                            />
 
-                                    <FlatButton
-                                        label="Apply"
-                                        primary={true}
-                                        type="submit"
-                                        keyboardFocused={true}
-                                    />
-                                </div>
-                            </div>
-                        </Col>
-                        <Col xs={7}>
-                            <div className={classes.map}>
-                                <GoogleMap center={center}>
-                                    <Marker position={center} />
-                                </GoogleMap>
-                            </div>
-                        </Col>
-                    </Row>
-                </form>
-            </div>
+                            <Field
+                                name="official"
+                                component={TextField}
+                                label="Official"
+                                fullWidth={true}
+                            />
+                        </div>
+
+                        <div>
+                            <FlatButton
+                                label="Cancel"
+                                primary={true}
+                                onTouchTap={onClose}
+                            />
+
+                            <FlatButton
+                                label="Apply"
+                                primary={true}
+                                type="submit"
+                                keyboardFocused={true}
+                            />
+                        </div>
+                    </div>
+                </Col>
+                <Col xs={7} className={classes.map}>
+                    <Field
+                        name="latLng"
+                        component={LocationField}
+                        fullWidth={true}
+                    />
+                </Col>
+            </form>
         </Dialog>
     )
 })
