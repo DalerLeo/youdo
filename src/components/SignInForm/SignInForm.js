@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -6,6 +5,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import {Field, reduxForm} from 'redux-form'
 import injectSheet from 'react-jss'
+import validate from '../../helpers/validate'
 import {CheckBox, TextField} from '../ReduxForm'
 
 const enhance = compose(
@@ -17,6 +17,7 @@ const enhance = compose(
             textAlign: 'center',
             display: 'inline-block'
         },
+
         wrapper: {
             width: '320px',
             margin: '0 auto',
@@ -24,6 +25,7 @@ const enhance = compose(
             textAlign: 'center',
             display: 'inline-block'
         },
+
         title: {
             paddingTop: '5px',
             paddingBottom: '22px',
@@ -34,25 +36,27 @@ const enhance = compose(
             textAlign: 'center',
             color: '#647994'
         },
+
         rememberMe: {
             marginBottom: '20px !important',
             marginTop: '20px !important'
         },
-        nonFieldErrors: {
+
+        error: {
             color: 'red',
             fontSize: '12px',
             marginTop: '12px'
         }
     }),
+
     reduxForm({
-        form: 'SignInForm',
-        validate: (values, form) => form.errors
+        form: 'SignInForm'
     })
 )
 
 const SignInForm = enhance((props) => {
-    const {classes, onSubmit, loading, errors} = props
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+    const {classes, handleSubmit, loading, error} = props
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     if (loading) {
         return (
@@ -71,7 +75,7 @@ const SignInForm = enhance((props) => {
                     </div>
                 </div>
                 <div>
-                    <div className={classes.nonFieldErrors}>{nonFieldErrors}</div>
+                    <div className={classes.error}>{error}</div>
 
                     <Field name="username" component={TextField} label="Login" fullWidth={true} />
                     <Field name="password" component={TextField} label="Password" type="password" fullWidth={true} />

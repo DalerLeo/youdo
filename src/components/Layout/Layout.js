@@ -1,6 +1,7 @@
 import React from 'react'
 import injectSheet from 'react-jss'
 import SideBarMenu from '../SidebarMenu'
+import SnakeBar from '../Snackbar'
 
 const Layout = ({classes, handleSignOut, children}) => {
     return (
@@ -11,6 +12,8 @@ const Layout = ({classes, handleSignOut, children}) => {
             <div className={classes.content}>
                 {children}
             </div>
+
+            <SnakeBar />
         </div>
     )
 }

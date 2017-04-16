@@ -28,7 +28,7 @@ export const signInAction = (params) => {
             const errorData = _.get(error, ['response', 'data'])
 
             return Promise.reject(
-                errorData || {'Network': ['Internet connection error']}
+                errorData || {'nonFieldErrors': ['Internet connection error']}
             )
         })
 

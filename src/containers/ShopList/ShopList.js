@@ -8,10 +8,16 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import * as SHOP from '../../constants/shop'
-import ShopGridList from '../../components/ShopGridList'
-import {shopCreateAction, shopListFetchAction, shopCSVFetchAction, shopItemFetchAction} from '../../actions/shop'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import ShopGridList from '../../components/ShopGridList'
+import {
+    shopCreateAction,
+    shopListFetchAction,
+    shopCSVFetchAction,
+    shopItemFetchAction
+} from '../../actions/shop'
+import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
@@ -20,11 +26,13 @@ const enhance = compose(
         const detail = _.get(state, ['shop', 'item', 'data'])
         const detailLoading = _.get(state, ['shop', 'item', 'loading'])
         const createLoading = _.get(state, ['shop', 'create', 'loading'])
+        const createErrors = _.get(state, ['shop', 'create', 'error'])
         const list = _.get(state, ['shop', 'list', 'data'])
         const listLoading = _.get(state, ['shop', 'list', 'loading'])
         const csvData = _.get(state, ['shop', 'csv', 'data'])
         const csvLoading = _.get(state, ['shop', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'ShopFilterForm'])
+        const createForm = _.get(state, ['form', 'ShopCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -33,10 +41,12 @@ const enhance = compose(
             detail,
             detailLoading,
             createLoading,
+            createErrors,
             csvData,
             csvLoading,
             filter,
-            filterForm
+            filterForm,
+            createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -122,15 +132,32 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch} = props
+            const {dispatch, createForm, filter} = props
 
-            dispatch(shopCreateAction({}))
+            return dispatch(shopCreateAction(_.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                })
+                .then(() => {
+                    hashHistory.push({query: filter.getParams({openCreateDialog: false})})
+                })
         }
     })
 )
 
 const ShopList = enhance((props) => {
-    const {location, list, listLoading, detail, detailLoading, createLoading, filter, layout, params} = props
+    const {
+        location,
+        list,
+        listLoading,
+        detail,
+        detailLoading,
+        createLoading,
+        createErrors,
+        filter,
+        layout,
+        params
+    } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
     const openCreateDialog = toBoolean(_.get(location, ['query', 'openCreateDialog']))
@@ -158,6 +185,7 @@ const ShopList = enhance((props) => {
     const createDialog = {
         createLoading,
         openCreateDialog,
+        createErrors,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
