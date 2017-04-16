@@ -1,6 +1,8 @@
 import React from 'react'
+import _ from 'lodash'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
+import ReactTooltip from 'react-tooltip'
 import {compose, withState} from 'recompose'
 
 const enhance = compose(
@@ -8,29 +10,27 @@ const enhance = compose(
         wrapper: {
             position: 'relative'
         },
-        toolTip: {
-            backgroundColor: '#464646',
-            color: 'white',
-            padding: '5px 10px',
-            borderRadius: '2px',
-            marginRight: '5px',
-            position: 'absolute',
-            left: '-60px',
-            top: '28px',
-            zIndex: '9999'
+        tooltip:{
+            '&.place-left': {
+                '&:after':{
+                    right: '-5px !important'
+                }
+            }
         }
     }),
     withState('visible', 'setVisible', false)
 )
 
-const ToolTip = enhance(({classes, text, children, visible, setVisible}) => {
+const ToolTip = enhance(({classes, text, children, position}) => {
+    const uniqId = _.uniqueId('tooltip_');
     return (
-        <div
-            className={classes.wrapper}
-            onMouseEnter={() => setVisible(true)}
-            onMouseLeave={() => setVisible(false)}>
-            {visible && <div className={classes.toolTip}>{text}</div>}
-            {children}
+        <div>
+            <div data-tip data-for={uniqId}>
+                    {children}
+            </div>
+            <ReactTooltip place={position} id={uniqId} type="dark" effect="solid" className={classes.tooltip}>
+                {text}
+            </ReactTooltip>
         </div>
     )
 })
