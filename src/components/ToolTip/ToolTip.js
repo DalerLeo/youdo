@@ -15,7 +15,7 @@ const enhance = compose(
             borderRadius: '2px',
             marginRight: '5px',
             position: 'absolute',
-            right: '-60px',
+            left: '-60px',
             top: '28px',
             zIndex: '9999'
         }

@@ -139,7 +139,7 @@ const ShopGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu />
+            <SubMenu id={6} />
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text="Add marker">
                     <FloatingActionButton
