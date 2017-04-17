@@ -9,6 +9,8 @@ import {MenuItems} from '../SidebarMenu/MenuItems'
 import ToolTip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 
+const NOT_FOUND = -1
+
 const enhance = compose(
     injectSheet({
         wrapper: {
@@ -28,28 +30,28 @@ const enhance = compose(
         },
         active: {
             extend: 'item',
-            borderBottom: '1px dotted #44637e',
+            borderBottom: '1px dotted #44637e'
         }
     })
 )
 
-
 const SubMenu = enhance((props) => {
     const {classes, id} = props
 
-    const parent = _.chain(MenuItems)
+    const parent = _
+        .chain(MenuItems)
         .find((item) => {
-            return (_.findIndex(item.childs, (ch) => ch.id == id) > -1)
+            return (_.findIndex(item.childs, (ch) => ch.id === id) > NOT_FOUND)
         })
-        .value();
+        .value()
 
     const items = _.map(parent.childs, (item, index) => {
         return (
             <Link to={item.url} key={index}>
-                <span className={item.id == id ? classes.active : classes.item}> {item.name}</span>
+                <span className={item.id === id ? classes.active : classes.item}> {item.name}</span>
             </Link>
         )
-    });
+    })
 
     return (
         <div className={classes.wrapper}>
@@ -62,15 +64,14 @@ const SubMenu = enhance((props) => {
                     </IconButton>
                 </ToolTip>
             </Link>
-            <HardwareKeyboardArrowRight style={{color: '#66696f', height: '12px', marginRight: '15px', width:'auto'}}/>
+            <HardwareKeyboardArrowRight style={{color: '#66696f', height: '12px', marginRight: '15px', width: 'auto'}} />
             {items}
         </div>
     )
 })
 
 SubMenu.propTypes = {
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired
 }
-
 
 export default SubMenu

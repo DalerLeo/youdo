@@ -7,11 +7,10 @@ import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-w
 import Map from 'material-ui/svg-icons/maps/map'
 import Settings from 'material-ui/svg-icons/action/settings'
 
-
 export const MenuItems = [
     {
         id: 1,
-        name: "Метрика",
+        name: 'Метрика',
         url: ROUTES.SHOP_LIST_URL,
         icon: (<TrendingUp />),
         childs: [
@@ -19,17 +18,17 @@ export const MenuItems = [
     },
     {
         id: 2,
-        name: "Продажи",
+        name: 'Продажи',
         icon: (<AttachMoney />),
         url: ROUTES.SHOP_LIST_URL,
         childs: [
-            {id: 7, name: "Торговые точки", url: ROUTES.SHOP_LIST_URL},
-            {id: 8, name: "История заказов", url: ROUTES.ORDER_HISTORY_LIST_URL}
+            {id: 7, name: 'Торговые точки', url: ROUTES.SHOP_LIST_URL},
+            {id: 8, name: 'История заказов', url: ROUTES.ORDER_HISTORY_LIST_URL}
         ]
     },
     {
         id: 3,
-        name: "Склад",
+        name: 'Склад',
         icon: (<Home />),
         url: ROUTES.SHOP_LIST_URL,
         childs: [
@@ -37,7 +36,7 @@ export const MenuItems = [
     },
     {
         id: 4,
-        name: "Бухгалтерия",
+        name: 'Бухгалтерия',
         icon: (<AccountBalanceWallet />),
         url: ROUTES.SHOP_LIST_URL,
         childs: [
@@ -45,7 +44,7 @@ export const MenuItems = [
     },
     {
         id: 5,
-        name: "Карта",
+        name: 'Карта',
         icon: (<Map />),
         url: ROUTES.SHOP_LIST_URL,
         childs: [
@@ -53,10 +52,10 @@ export const MenuItems = [
     },
     {
         id: 6,
-        name: "Настройки",
+        name: 'Настройки',
         icon: (<Settings />),
         url: ROUTES.SHOP_LIST_URL,
         childs: [
         ]
     }
-];
+]

@@ -20,26 +20,23 @@ const style = {
 }
 
 const touch = true
-const tooltipPosition = 'top-right'
 
 const SideBarMenu = (props) => {
     const {classes, handleSignOut} = props
-    const items = _.chain(MenuItems)
-        .map(function (item) {
-            return (
-                <Link to={item.url} key={item.id}>
-                    <ToolTip position="right" text={item.name}>
-                        <IconButton
-                            iconStyle={style.iconStyle}
-                            style={style.style}
-                            touch={touch}>
-                            {item.icon}
-                        </IconButton>
-                    </ToolTip>
-                </Link>
-            );
-        })
-        .value();
+    const items = _.map(MenuItems, (item) => {
+        return (
+            <Link to={item.url} key={item.id}>
+                <ToolTip position="right" text={item.name}>
+                    <IconButton
+                        iconStyle={style.iconStyle}
+                        style={style.style}
+                        touch={touch}>
+                        {item.icon}
+                    </IconButton>
+                </ToolTip>
+            </Link>
+        )
+    })
 
     return (
         <div className={classes.wrapper}>

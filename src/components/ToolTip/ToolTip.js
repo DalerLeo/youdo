@@ -10,9 +10,9 @@ const enhance = compose(
         wrapper: {
             position: 'relative'
         },
-        tooltip:{
+        tooltip: {
             '&.place-left': {
-                '&:after':{
+                '&:after': {
                     right: '-5px !important'
                 }
             }
@@ -22,13 +22,18 @@ const enhance = compose(
 )
 
 const ToolTip = enhance(({classes, text, children, position}) => {
-    const uniqId = _.uniqueId('tooltip_');
+    const uniqId = _.uniqueId('tooltip_')
     return (
         <div>
             <div data-tip data-for={uniqId}>
-                    {children}
+                {children}
             </div>
-            <ReactTooltip place={position} id={uniqId} type="dark" effect="solid" className={classes.tooltip}>
+            <ReactTooltip
+                place={position}
+                id={uniqId}
+                type="dark"
+                effect="solid"
+                className={classes.tooltip}>
                 {text}
             </ReactTooltip>
         </div>
