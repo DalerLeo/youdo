@@ -17,10 +17,9 @@ import ShopCreateDialog from '../ShopCreateDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import ToolTip from '../ToolTip'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-
+import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
@@ -57,15 +56,13 @@ const listHeader = [
 const enhance = compose(
     injectSheet({
         addButton: {
-            position: 'relative',
-            transform: 'translate(0,20%)',
             '& button': {
                 backgroundColor: '#275482 !important'
             }
         },
         addButtonWrapper: {
             position: 'absolute',
-            top: 0,
+            top: '10px',
             right: '0',
             marginBottom: '0px'
         }
@@ -136,16 +133,16 @@ const ShopGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu id={6} />
+            <SubMenu id={7} />
             <div className={classes.addButtonWrapper}>
-                <ToolTip position="left" text="Add marker">
+                <Tooltip position="left" text="Добавить магазин">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </ToolTip>
+                </Tooltip>
             </div>
             <GridList
                 filter={filter}

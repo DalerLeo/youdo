@@ -1,11 +1,15 @@
 import _ from 'lodash'
 import React from 'react'
+import {Link} from 'react-router'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import Home from 'material-ui/svg-icons/action/home'
 import HardwareKeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
-import * as ROUTES from '../../constants/routes'
+import {MenuItems} from '../SidebarMenu/MenuItems'
+import ToolTip from '../ToolTip'
+import IconButton from 'material-ui/IconButton'
+
+const NOT_FOUND = -1
 
 const enhance = compose(
     injectSheet({
@@ -26,57 +30,48 @@ const enhance = compose(
         },
         active: {
             extend: 'item',
-            borderBottom: '1px solid #44637e',
+            borderBottom: '1px dotted #44637e'
         }
     })
 )
 
-
 const SubMenu = enhance((props) => {
     const {classes, id} = props
 
-    const menuItems = [
-        {
-            id: 1,
-            name: "Metrika",
-            childs: [
-                {id: 3, name: "Plan"},
-                {id: 4, name: "Prodaji"},
-                {id: 5, name: "Merchendayzing"}
-            ]
-        },
-        {
-            id: 2,
-            name: "Prodaji",
-            childs: [
-                {id: 6, name: "Торговые точки", url: ROUTES.SHOP_LIST_URL},
-                {id: 7, name: "История заказов", url: ROUTES.ORDER_HISTORY_LIST_URL}
-            ]
-        }
-    ];
-
-    const parent = _.chain(menuItems)
-        .find((item) => { return (_.findIndex(item.childs, (ch) => ch.id == id) > -1)})
-        .value();
+    const parent = _
+        .chain(MenuItems)
+        .find((item) => {
+            return (_.findIndex(item.childs, (ch) => ch.id === id) > NOT_FOUND)
+        })
+        .value()
 
     const items = _.map(parent.childs, (item, index) => {
         return (
-            <span key={index} className={item.id == id ? classes.active : classes.item}> {item.name}</span>
+            <Link to={item.url} key={index}>
+                <span className={item.id === id ? classes.active : classes.item}> {item.name}</span>
+            </Link>
         )
-    });
+    })
 
     return (
         <div className={classes.wrapper}>
-                    <Home style={{color: '#66696f'}}/>
-                    <HardwareKeyboardArrowRight style={{color: '#66696f', height: '12px', marginRight:'5px'}}/>
-                    {items}
+            <Link to={parent.url}>
+                <ToolTip position="right" text={parent.name}>
+                    <IconButton
+                        iconStyle={{color: '#66696f'}}
+                        touch={true}>
+                        {parent.icon}
+                    </IconButton>
+                </ToolTip>
+            </Link>
+            <HardwareKeyboardArrowRight style={{color: '#66696f', height: '12px', marginRight: '15px', width: 'auto'}} />
+            {items}
         </div>
     )
 })
 
 SubMenu.propTypes = {
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired
 }
-
 
 export default SubMenu

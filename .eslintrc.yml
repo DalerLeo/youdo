@@ -4,7 +4,6 @@ installedESLint: true
 plugins:
   - standard
   - promise
-  - flowtype
   - react
   - babel
   - immutable
