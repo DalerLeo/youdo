@@ -57,7 +57,7 @@ const filter = (data, pathname, query = {}) => {
     }
 
     const prevPage = () => {
-        const prevPageNumber = currentPage + first
+        const prevPageNumber = currentPage - first
         if (currentPage <= first) {
             return null
         }
@@ -87,6 +87,7 @@ const filter = (data, pathname, query = {}) => {
 
         return _.isUndefined(columnType) ? null : columnType
     }
+
     const sortingURL = (columnSortingName) => {
         const currentOrdering = _.get(params, 'ordering')
         const columnList = _
@@ -130,7 +131,11 @@ const filter = (data, pathname, query = {}) => {
 
     const filterRequest = () => {
         return paramsToQueryUrl(_.assign({}, params, {
-            select: null, openFilterDialog: null, openCreateDialog: null, openDeleteDialog: null
+            select: null,
+            openFilterDialog: null,
+            openCreateDialog: null,
+            openDeleteDialog: null,
+            openUpdateDialog: null
         }))
     }
 
@@ -146,7 +151,6 @@ const filter = (data, pathname, query = {}) => {
     }
 
     return {
-        filterBy,
         getParam,
         getParams,
         getCounts,
@@ -155,6 +159,7 @@ const filter = (data, pathname, query = {}) => {
         getSortingType,
         getSelects,
         sortingURL,
+        filterBy,
         filterRequest,
         createURL,
         prevPage,

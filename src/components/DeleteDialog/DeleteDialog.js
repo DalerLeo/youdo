@@ -6,6 +6,8 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import {reduxForm} from 'redux-form'
 
+export const DELETE_DIALOG_OPEN = 'openDeleteDialog'
+
 const enhance = compose(
     injectSheet({
         dialog: {

@@ -10,7 +10,7 @@ We use:
 * [React] - A javascript library for building user interfaces
 * [React-Router] - Declarative routing for React
 * [Redux] - Predictable state container for JavaScript apps.
-* [Semantic-UI-React] - Semantic-UI-React is the official React integration for Semantic UI
+* [Material-UI] - Material-UI A Set of React Components that Implement Google's Material Design
 * [Webpack] - A bundler for javascript
 * [Yarn] - Fast, reliable, and secure dependency management
 
@@ -60,7 +60,7 @@ $ yarn build
    [React]: <http://angularjs.org>
    [React-Router]: <https://github.com/reactjs/redux>
    [Redux]: <https://github.com/reactjs/redux>
-   [Semantic-UI-React]: <http://react.semantic-ui.com>
+   [Material-UI]: <http://www.material-ui.com>
    [Webpack]: <https://webpack.js.org>
    [Yarn]: <https://yarnpkg.com>
 

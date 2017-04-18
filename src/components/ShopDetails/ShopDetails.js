@@ -9,7 +9,6 @@ import {Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
-import ConfirmDialog from '../ConfirmDialog'
 
 const enhance = compose(
     injectSheet({
@@ -91,8 +90,7 @@ const iconStyle = {
 const tooltipPosition = 'bottom-center'
 
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data, tabData, confirmDialog} = props
-
+    const {classes, loading, data, tabData, confirmDialog, handleOpenUpdateDialog} = props
     const name = _.get(data, 'name') || 'N/A'
     const type = _.get(data, 'categoryName') || 'N/A'
     const address = _.get(data, 'address') || 'N/A'
@@ -115,13 +113,6 @@ const ShopDetails = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <ConfirmDialog
-                type="Delete"
-                message={name}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />
             <Col className={classes.leftSide} xs={6} md={4}>
                 <div className={classes.title}>
                     <div className={classes.titleLabel}>{name}</div>
@@ -131,9 +122,11 @@ const ShopDetails = enhance((props) => {
                             style={iconStyle.button}
                             touch={true}
                             tooltipPosition={tooltipPosition}
+                            onTouchTap={handleOpenUpdateDialog}
                             tooltip="Edit">
                             <Edit />
                         </IconButton>
+
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -220,6 +213,7 @@ const ShopDetails = enhance((props) => {
                     </div>
                 </div>
             </Col>
+
             <ShopDetailsTab tabData={tabData} data={data} />
         </div>
     )
@@ -237,7 +231,8 @@ ShopDetails.propTypes = {
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired
-    })
+    }),
+    handleOpenUpdateDialog: PropTypes.func.isRequired
 
 }
 

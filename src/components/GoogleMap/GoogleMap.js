@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -12,9 +11,9 @@ const enhance = compose(
     withGoogleMap
 )
 
-const GoogleMapWrapper = enhance((props) => {
+const GoogleMapWrapper = enhance(({onMapLoad, ...props}) => {
     return (
-        <DefaultGoogleMap {...props}>
+        <DefaultGoogleMap ref={onMapLoad} {...props}>
             {props.children}
         </DefaultGoogleMap>
     )
@@ -35,10 +34,8 @@ const GoogleMap = (props) => {
             loadingElement={<Loader />}
             containerElement={<div style={{height: '100%'}} />}
             mapElement={<div style={{height: '100%'}} />}
-            ref={_.noop}
             defaultZoom={15}
             radius="500"
-            onClick={_.noop}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>
@@ -46,7 +43,8 @@ const GoogleMap = (props) => {
 }
 
 GoogleMap.propTypes = {
-    center: PropTypes.object.isRequired
+    center: PropTypes.object.isRequired,
+    onMapLoad: PropTypes.func
 }
 
 export default GoogleMap

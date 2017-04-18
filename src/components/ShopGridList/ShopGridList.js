@@ -15,12 +15,14 @@ import ShopFilterForm from '../ShopFilterForm'
 import ShopDetails from '../ShopDetails'
 import ShopCreateDialog from '../ShopCreateDialog'
 import DeleteDialog from '../DeleteDialog'
+import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+
 const listHeader = [
     {
         sorting: true,
@@ -71,8 +73,19 @@ const enhance = compose(
 )
 
 const ShopGridList = enhance((props) => {
-    const {filter, createDialog, deleteDialog, filterDialog, actionsDialog,
-        listData, confirmDialog, detailData, tabData, classes} = props
+    const {
+        filter,
+        createDialog,
+        updateDialog,
+        filterDialog,
+        actionsDialog,
+        confirmDialog,
+        deleteDialog,
+        listData,
+        detailData,
+        tabData,
+        classes
+    } = props
 
     const actions = (
         <div>
@@ -89,9 +102,8 @@ const ShopGridList = enhance((props) => {
     const shopFilterDialog = (
         <ShopFilterForm
             initialValues={filterDialog.initialValues}
-            open={filterDialog.openFilterDialog}
-            onSubmit={filterDialog.handleSubmitFilterDialog}
-            onClose={filterDialog.handleCloseFilterDialog}
+            filter={filter}
+            filterDialog={filterDialog}
         />
     )
 
@@ -103,6 +115,7 @@ const ShopGridList = enhance((props) => {
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             tabData={tabData}
+            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
         />
     )
 
@@ -118,7 +131,10 @@ const ShopGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={2}>
-                    <Link to={sprintf(ROUTES.SHOP_ITEM_PATH, id)}>{name}</Link>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>{name}</Link>
                 </Col>
                 <Col xs={2}>{phone}</Col>
                 <Col xs={2}>{address}</Col>
@@ -138,6 +154,7 @@ const ShopGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu id={7}/>
+
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить магазин">
                     <FloatingActionButton
@@ -148,26 +165,43 @@ const ShopGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
+
             <GridList
                 filter={filter}
                 list={list}
                 detail={shopDetail}
-                handleOpenFilterDialog={filterDialog.handleOpenFilterDialog}
                 actionsDialog={actions}
                 filterDialog={shopFilterDialog}
             />
+
             <ShopCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
-                errors={createDialog.createErrors}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
+
+            <ShopCreateDialog
+                initialValues={updateDialog.initialValues}
+                open={updateDialog.openUpdateDialog}
+                loading={updateDialog.updateLoading}
+                onClose={updateDialog.handleCloseUpdateDialog}
+                onSubmit={updateDialog.handleSubmitUpdateDialog}
+            />
+
             <DeleteDialog
                 filter={filter}
                 open={deleteDialog.openDeleteDialog}
                 onClose={deleteDialog.handleCloseDeleteDialog}
             />
+
+            {detailData && <ConfirmDialog
+                type="Delete"
+                message={_.get(detailData, 'name')}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.handleSendConfirmDialog}
+                open={confirmDialog.openConfirmDialog}
+            />}
         </Container>
     )
 })
@@ -199,6 +233,13 @@ ShopGridList.propTypes = {
         openDeleteDialog: PropTypes.bool.isRequired,
         handleOpenDeleteDialog: PropTypes.func.isRequired,
         handleCloseDeleteDialog: PropTypes.func.isRequired
+    }).isRequired,
+    updateDialog: PropTypes.shape({
+        updateLoading: PropTypes.bool.isRequired,
+        openUpdateDialog: PropTypes.bool.isRequired,
+        handleOpenCreateDialog: PropTypes.func.isRequired,
+        handleCloseCreateDialog: PropTypes.func.isRequired,
+        handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,

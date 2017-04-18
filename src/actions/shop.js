@@ -38,6 +38,23 @@ export const shopDeleteAction = (id) => {
     }
 }
 
+export const shopUpdateAction = (id, formValues) => {
+    const requestData = serializers.createSerializer(formValues)
+    const payload = axios()
+        .put(sprintf(API.SHOP_ITEM, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHOP_UPDATE,
+        payload
+    }
+}
+
 export const shopListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
