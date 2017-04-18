@@ -30,7 +30,7 @@ const enhance = compose(
 )
 
 const GridList = enhance((props) => {
-    const {classes, list, detail, filter, handleOpenFilterDialog, filterDialog, actionsDialog} = props
+    const {classes, list, detail, filter, filterDialog, actionsDialog} = props
     const header = _.get(list, 'header')
     const listItems = _.get(list, 'list')
     const loading = _.get(list, 'loading')
@@ -60,7 +60,6 @@ const GridList = enhance((props) => {
                     filter={filter}
                     filterDialog={filterDialog}
                     actions={actionsDialog}
-                    handleOpenFilterDialog={handleOpenFilterDialog}
                 />
                 <GridListHeader
                     filter={filter}

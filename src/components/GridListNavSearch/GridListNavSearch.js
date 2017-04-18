@@ -25,7 +25,7 @@ const enhance = compose(
             right: '-10px'
         }
     }),
-    withState('search', 'setSearch', ''),
+    withState('search', 'setSearch', ({filter}) => filter.getParam('search')),
     withHandlers({
         onSubmit: props => (event) => {
             const {search, filter} = props
@@ -36,9 +36,7 @@ const enhance = compose(
     })
 )
 
-const GridListNavSearch = enhance(({classes, filter, setSearch, onSubmit}) => {
-    const search = filter.getParam('search')
-
+const GridListNavSearch = enhance(({classes, search, setSearch, onSubmit}) => {
     return (
         <form onSubmit={onSubmit}>
             <div className={classes.search}>

@@ -90,9 +90,7 @@ const ShopGridList = enhance((props) => {
     const shopFilterDialog = (
         <ShopFilterForm
             initialValues={filterDialog.initialValues}
-            open={filterDialog.openFilterDialog}
-            onSubmit={filterDialog.handleSubmitFilterDialog}
-            onClose={filterDialog.handleCloseFilterDialog}
+            filterDialog={filterDialog}
         />
     )
 
@@ -117,7 +115,10 @@ const ShopGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={2}>
-                    <Link to={sprintf(ROUTES.SHOP_ITEM_PATH, id)}>{name}</Link>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>{name}</Link>
                 </Col>
                 <Col xs={2}>{phone}</Col>
                 <Col xs={2}>{address}</Col>
@@ -147,11 +148,11 @@ const ShopGridList = enhance((props) => {
                     </FloatingActionButton>
                 </ToolTip>
             </div>
+
             <GridList
                 filter={filter}
                 list={list}
                 detail={shopDetail}
-                handleOpenFilterDialog={filterDialog.handleOpenFilterDialog}
                 actionsDialog={actions}
                 filterDialog={shopFilterDialog}
             />
