@@ -1,7 +1,7 @@
+import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import sprintf from 'sprintf'
-import React from 'react'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -15,6 +15,7 @@ import {
     shopCreateAction,
     shopListFetchAction,
     shopCSVFetchAction,
+    shopDeleteAction,
     shopItemFetchAction
 } from '../../actions/shop'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -65,13 +66,10 @@ const enhance = compose(
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
-            return null
-        },
-
-        handleActionDelete: props => () => {
             return null
         },
 
@@ -85,6 +83,26 @@ const enhance = compose(
         handleCloseCSVDialog: props => () => {
             const {setOpenCSVDialog} = props
             setOpenCSVDialog(false)
+        },
+
+        handleOpenConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(true)
+        },
+
+        handleCloseConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(false)
+        },
+        handleSendConfirmDialog: props => () => {
+            const {dispatch, detail, setOpenConfirmDialog} = props
+            dispatch(shopDeleteAction(detail.id))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                })
+                .then(() => {
+                    setOpenConfirmDialog(false)
+                })
         },
 
         handleOpenFilterDialog: props => () => {
@@ -119,6 +137,18 @@ const enhance = compose(
                 fromDate: fromDate && fromDate.format('YYYY-MM-DD'),
                 toDate: toDate && toDate.format('YYYY-MM-DD')
             })
+        },
+        handleOpenDeleteDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({openDeleteDialog: 'yes'})
+            })
+        },
+
+        handleCloseDeleteDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
         handleOpenCreateDialog: props => () => {
@@ -161,6 +191,8 @@ const ShopList = enhance((props) => {
 
     const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
     const openCreateDialog = toBoolean(_.get(location, ['query', 'openCreateDialog']))
+    const openDeleteDialog = toBoolean(_.get(location, ['query', 'openDeleteDialog']))
+
     const category = _.toInteger(filter.getParam('category'))
     const fromDate = filter.getParam('fromDate')
     const toDate = filter.getParam('toDate')
@@ -179,7 +211,7 @@ const ShopList = enhance((props) => {
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleActionDelete
+        handleActionDelete: props.handleOpenDeleteDialog
     }
 
     const createDialog = {
@@ -189,6 +221,19 @@ const ShopList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+
+    const deleteDialog = {
+        openDeleteDialog,
+        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
+        handleCloseDeleteDialog: props.handleCloseDeleteDialog
+    }
+
+    const confirmDialog = {
+        openConfirmDialog: props.openConfirmDialog,
+        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
+        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
+        handleSendConfirmDialog: props.handleSendConfirmDialog
     }
 
     const filterDialog = {
@@ -233,6 +278,8 @@ const ShopList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
+                deleteDialog={deleteDialog}
+                confirmDialog={confirmDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}

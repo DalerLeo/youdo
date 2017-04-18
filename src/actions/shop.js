@@ -22,6 +22,22 @@ export const shopCreateAction = (formValues) => {
     }
 }
 
+export const shopDeleteAction = (id) => {
+    const payload = axios()
+        .delete(sprintf(API.SHOP_DELETE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHOP_DELETE,
+        payload
+    }
+}
+
 export const shopListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
