@@ -16,3 +16,4 @@ export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
+export const SHOP_DELETE = `/${SHOP}/%d/`

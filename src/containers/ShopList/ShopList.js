@@ -1,7 +1,7 @@
+import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import sprintf from 'sprintf'
-import React from 'react'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -13,12 +13,14 @@ import toBoolean from '../../helpers/toBoolean'
 import ShopGridList from '../../components/ShopGridList'
 import {SHOP_CREATE_DIALOG_OPEN} from '../../components/ShopCreateDialog'
 import {SHOP_UPDATE_DIALOG_OPEN} from '../../components/ShopUpdateDialog'
+import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {SHOP_FILTER_KEY, SHOP_FILTER_OPEN} from '../../components/ShopFilterForm'
 import {
     shopCreateAction,
     shopUpdateAction,
     shopListFetchAction,
     shopCSVFetchAction,
+    shopDeleteAction,
     shopItemFetchAction
 } from '../../actions/shop'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -69,13 +71,10 @@ const enhance = compose(
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
-            return null
-        },
-
-        handleActionDelete: props => () => {
             return null
         },
 
@@ -89,6 +88,26 @@ const enhance = compose(
         handleCloseCSVDialog: props => () => {
             const {setOpenCSVDialog} = props
             setOpenCSVDialog(false)
+        },
+
+        handleOpenConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(true)
+        },
+
+        handleCloseConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(false)
+        },
+        handleSendConfirmDialog: props => () => {
+            const {dispatch, detail, setOpenConfirmDialog} = props
+            dispatch(shopDeleteAction(detail.id))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                })
+                .then(() => {
+                    setOpenConfirmDialog(false)
+                })
         },
 
         handleOpenFilterDialog: props => () => {
@@ -123,6 +142,18 @@ const enhance = compose(
                 [SHOP_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [SHOP_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
+        },
+        handleOpenDeleteDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({openDeleteDialog: 'yes'})
+            })
+        },
+
+        handleCloseDeleteDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
         handleOpenCreateDialog: props => () => {
@@ -163,10 +194,13 @@ const enhance = compose(
 
             return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values'])))
                 .then(() => {
+                    return dispatch(shopItemFetchAction(shopId))
+                })
+                .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[SHOP_UPDATE_DIALOG_OPEN]: false})})
+                    hashHistory.push(filter.createURL({[SHOP_UPDATE_DIALOG_OPEN]: false}))
                 })
         }
     })
@@ -189,6 +223,7 @@ const ShopList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', SHOP_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', SHOP_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', SHOP_UPDATE_DIALOG_OPEN]))
+    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const category = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CATEGORY))
     const fromDate = filter.getParam(SHOP_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(SHOP_FILTER_KEY.TO_DATE)
@@ -197,7 +232,7 @@ const ShopList = enhance((props) => {
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleActionDelete
+        handleActionDelete: props.handleOpenDeleteDialog
     }
 
     const createDialog = {
@@ -206,6 +241,19 @@ const ShopList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+
+    const deleteDialog = {
+        openDeleteDialog,
+        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
+        handleCloseDeleteDialog: props.handleCloseDeleteDialog
+    }
+
+    const confirmDialog = {
+        openConfirmDialog: props.openConfirmDialog,
+        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
+        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
+        handleSendConfirmDialog: props.handleSendConfirmDialog
     }
 
     const updateDialog = {
@@ -230,7 +278,7 @@ const ShopList = enhance((props) => {
                 }
             }
         })(),
-        updateLoading,
+        updateLoading: detailLoading || updateLoading,
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
@@ -287,6 +335,8 @@ const ShopList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
+                deleteDialog={deleteDialog}
+                confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}

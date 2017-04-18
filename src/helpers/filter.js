@@ -131,7 +131,11 @@ const filter = (data, pathname, query = {}) => {
 
     const filterRequest = () => {
         return paramsToQueryUrl(_.assign({}, params, {
-            select: null, openFilterDialog: null, openCreateDialog: null
+            select: null,
+            openFilterDialog: null,
+            openCreateDialog: null,
+            openDeleteDialog: null,
+            openUpdateDialog: null
         }))
     }
 

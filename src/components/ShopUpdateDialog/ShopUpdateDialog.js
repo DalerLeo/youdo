@@ -12,7 +12,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, LocationField} from '../ReduxForm'
 import CategorySearchField from '../CategorySearchField'
 
-export const SHOP_UPDATE_DIALOG_OPEN = 'shopUpdateOpenDialog'
+export const SHOP_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)

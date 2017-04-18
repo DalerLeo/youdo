@@ -14,6 +14,8 @@ import Container from '../Container'
 import ShopFilterForm from '../ShopFilterForm'
 import ShopDetails from '../ShopDetails'
 import ShopCreateDialog from '../ShopCreateDialog'
+import DeleteDialog from '../DeleteDialog'
+import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -77,6 +79,8 @@ const ShopGridList = enhance((props) => {
         updateDialog,
         filterDialog,
         actionsDialog,
+        confirmDialog,
+        deleteDialog,
         listData,
         detailData,
         tabData,
@@ -107,6 +111,8 @@ const ShopGridList = enhance((props) => {
         <ShopDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
+            deleteDialog={deleteDialog}
+            confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             tabData={tabData}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
@@ -147,7 +153,8 @@ const ShopGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu id={7} />
+            <SubMenu id={7}/>
+
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить магазин">
                     <FloatingActionButton
@@ -181,6 +188,20 @@ const ShopGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
+
+            <DeleteDialog
+                filter={filter}
+                open={deleteDialog.openDeleteDialog}
+                onClose={deleteDialog.handleCloseDeleteDialog}
+            />
+
+            {detailData && <ConfirmDialog
+                type="Delete"
+                message={_.get(detailData, 'name')}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.handleSendConfirmDialog}
+                open={confirmDialog.openConfirmDialog}
+            />}
         </Container>
     )
 })
@@ -201,6 +222,17 @@ ShopGridList.propTypes = {
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
+    deleteDialog: PropTypes.shape({
+        openDeleteDialog: PropTypes.bool.isRequired,
+        handleOpenDeleteDialog: PropTypes.func.isRequired,
+        handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
