@@ -90,6 +90,7 @@ const ShopGridList = enhance((props) => {
     const shopFilterDialog = (
         <ShopFilterForm
             initialValues={filterDialog.initialValues}
+            filter={filter}
             filterDialog={filterDialog}
         />
     )

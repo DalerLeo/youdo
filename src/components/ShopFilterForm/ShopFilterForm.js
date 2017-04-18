@@ -1,5 +1,6 @@
+import _ from 'lodash'
 import React from 'react'
-import {compose} from 'recompose'
+import {compose, withHandlers} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
@@ -7,10 +8,18 @@ import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
-import ClearIcon from 'material-ui/svg-icons/navigation/close'
+import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
 import CategorySearchField from '../CategorySearchField'
 import CloseIcon from '../CloseIcon'
+
+export const FILTER_OPEN = 'openFilterDialog'
+
+export const FILTER_KEY = {
+    CATEGORY: 'category',
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate'
+}
 
 const enhance = compose(
     injectSheet({
@@ -23,6 +32,10 @@ const enhance = compose(
             left: 0,
             borderRadius: 0,
             padding: '10px 20px 10px 20px'
+        },
+        afterFilter: {
+            display: 'flex',
+            alignItems: 'center'
         },
         arrow: {
             paddingRight: '14px',
@@ -53,13 +66,41 @@ const enhance = compose(
     reduxForm({
         form: 'ShopFilterForm',
         enableReinitialize: true
+    }),
+    withHandlers({
+        getCount: props => () => {
+            const {filter} = props
+            return _(FILTER_KEY)
+                .values()
+                .filter(item => item !== FILTER_KEY.FROM_DATE)
+                .filter(item => filter.getParam(item))
+                .value()
+                .length
+        }
     })
 )
 
 const ShopFilterForm = enhance((props) => {
-    const {classes, filterDialog} = props
+    const {classes, filterDialog, getCount} = props
+    const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
+        if (filterCounts) {
+            return (
+                <div className={classes.afterFilter}>
+                    <div>Filter counts: {filterCounts}</div>
+
+                    <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
+                        <BorderColorIcon />
+                    </IconButton>
+
+                    <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
+                        <CloseIcon />
+                    </IconButton>
+                </div>
+            )
+        }
+
         return (
             <div>
                 <Link
@@ -67,10 +108,6 @@ const ShopFilterForm = enhance((props) => {
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
                     Show filter
                 </Link>
-
-                <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
-                    <ClearIcon />
-                </IconButton>
             </div>
         )
     }
@@ -108,6 +145,7 @@ const ShopFilterForm = enhance((props) => {
 })
 
 ShopFilterForm.propTypes = {
+    filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
         openFilterDialog: PropTypes.bool.isRequired,

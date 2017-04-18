@@ -11,6 +11,7 @@ import * as SHOP from '../../constants/shop'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import ShopGridList from '../../components/ShopGridList'
+import {FILTER_KEY, FILTER_OPEN} from '../../components/ShopFilterForm'
 import {
     shopCreateAction,
     shopListFetchAction,
@@ -89,12 +90,12 @@ const enhance = compose(
 
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openFilterDialog: true})})
+            hashHistory.push({pathname, query: filter.getParams({[FILTER_OPEN]: true})})
         },
 
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openFilterDialog: false})})
+            hashHistory.push({pathname, query: filter.getParams({[FILTER_OPEN]: false})})
         },
 
         handleTabChange: props => (tab) => {
@@ -114,10 +115,10 @@ const enhance = compose(
             const category = _.get(filterForm, ['values', 'category', 'value']) || null
 
             filter.filterBy({
-                openFilterDialog: false,
-                category,
-                fromDate: fromDate && fromDate.format('YYYY-MM-DD'),
-                toDate: toDate && toDate.format('YYYY-MM-DD')
+                [FILTER_OPEN]: false,
+                [FILTER_KEY.CATEGORY]: category,
+                [FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
 
@@ -159,13 +160,13 @@ const ShopList = enhance((props) => {
         params
     } = props
 
-    const openFilterDialog = toBoolean(_.get(location, ['query', 'openFilterDialog']))
+    const openFilterDialog = toBoolean(_.get(location, ['query', FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', 'openCreateDialog']))
-    const category = _.toInteger(filter.getParam('category'))
-    const fromDate = filter.getParam('fromDate')
-    const toDate = filter.getParam('toDate')
+    const category = _.toInteger(filter.getParam(FILTER_KEY.CATEGORY))
+    const fromDate = filter.getParam(FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'shopId'))
-    const tab = _.get(params, 'tab') || SHOP.SHOP_TAB_MAP
+    const tab = _.get(params, 'tab') || SHOP.DEFAULT_TAB
 
     const initialValues = {
         category: {
