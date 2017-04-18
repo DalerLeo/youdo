@@ -14,12 +14,14 @@ import Container from '../Container'
 import ShopFilterForm from '../ShopFilterForm'
 import ShopDetails from '../ShopDetails'
 import ShopCreateDialog from '../ShopCreateDialog'
+import ShopUpdateDialog from '../ShopUpdateDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+
 const listHeader = [
     {
         sorting: true,
@@ -70,7 +72,17 @@ const enhance = compose(
 )
 
 const ShopGridList = enhance((props) => {
-    const {filter, createDialog, filterDialog, actionsDialog, listData, detailData, tabData, classes} = props
+    const {
+        filter,
+        createDialog,
+        updateDialog,
+        filterDialog,
+        actionsDialog,
+        listData,
+        detailData,
+        tabData,
+        classes
+    } = props
 
     const actions = (
         <div>
@@ -98,6 +110,7 @@ const ShopGridList = enhance((props) => {
             data={_.get(detailData, 'data') || {}}
             loading={_.get(detailData, 'detailLoading')}
             tabData={tabData}
+            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
         />
     )
 
@@ -158,9 +171,16 @@ const ShopGridList = enhance((props) => {
             <ShopCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
-                errors={createDialog.createErrors}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
+            />
+
+            <ShopCreateDialog
+                initialValues={updateDialog.initialValues}
+                open={updateDialog.openUpdateDialog}
+                loading={updateDialog.updateLoading}
+                onClose={updateDialog.handleCloseUpdateDialog}
+                onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
         </Container>
     )
@@ -179,6 +199,13 @@ ShopGridList.propTypes = {
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
+        handleOpenCreateDialog: PropTypes.func.isRequired,
+        handleCloseCreateDialog: PropTypes.func.isRequired,
+        handleSubmitCreateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    updateDialog: PropTypes.shape({
+        updateLoading: PropTypes.bool.isRequired,
+        openUpdateDialog: PropTypes.bool.isRequired,
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired

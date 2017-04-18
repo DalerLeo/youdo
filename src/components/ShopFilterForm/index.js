@@ -1,4 +1,4 @@
-import ShopFilterForm, {FILTER_KEY, FILTER_OPEN} from './ShopFilterForm'
+import ShopFilterForm, {SHOP_FILTER_KEY, SHOP_FILTER_OPEN} from './ShopFilterForm'
 
-export {FILTER_KEY, FILTER_OPEN}
+export {SHOP_FILTER_KEY, SHOP_FILTER_OPEN}
 export default ShopFilterForm

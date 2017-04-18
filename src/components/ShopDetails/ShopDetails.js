@@ -23,7 +23,7 @@ const enhance = compose(
     })
 )
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data, tabData} = props
+    const {classes, loading, data, tabData, handleOpenUpdateDialog} = props
 
     if (loading) {
         return (
@@ -37,7 +37,7 @@ const ShopDetails = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <ShopDetailsInfo data={data} />
+            <ShopDetailsInfo data={data} handleOpenUpdateDialog={handleOpenUpdateDialog} />
             <ShopDetailsTab tabData={tabData} data={data} />
         </div>
     )
@@ -49,7 +49,8 @@ ShopDetails.propTypes = {
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired
-    })
+    }),
+    handleOpenUpdateDialog: PropTypes.func.isRequired
 
 }
 

@@ -12,6 +12,7 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.SHOP_CREATE),
         list: createThunkReducer(actionTypes.SHOP_LIST),
         item: createThunkReducer(actionTypes.SHOP_ITEM),
+        update: createThunkReducer(actionTypes.SHOP_UPDATE),
         csv: createThunkReducer(actionTypes.SHOP_LIST_CSV)
     }),
     snackbar: snackbarReducer(),

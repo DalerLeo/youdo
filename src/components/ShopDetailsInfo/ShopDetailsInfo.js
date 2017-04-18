@@ -77,7 +77,7 @@ const enhance = compose(
 )
 
 const ShopDetailsInfo = enhance((props) => {
-    const {classes, data} = props
+    const {classes, data, handleOpenUpdateDialog} = props
     const name = _.get(data, 'name') || 'N/A'
     const type = _.get(data, 'categoryName') || 'N/A'
     const address = _.get(data, 'address') || 'N/A'
@@ -97,9 +97,11 @@ const ShopDetailsInfo = enhance((props) => {
                         style={iconStyle.button}
                         touch={true}
                         tooltipPosition={tooltipPosition}
+                        onTouchTap={handleOpenUpdateDialog}
                         tooltip="Edit">
                         <Edit />
                     </IconButton>
+
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
@@ -108,6 +110,7 @@ const ShopDetailsInfo = enhance((props) => {
                         tooltip="Add a photo">
                         <AddAPhoto />
                     </IconButton>
+
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}

@@ -12,7 +12,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, LocationField} from '../ReduxForm'
 import CategorySearchField from '../CategorySearchField'
 
-export const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const SHOP_UPDATE_DIALOG_OPEN = 'shopUpdateOpenDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -78,8 +78,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ShopCreateForm',
-        enableReinitialize: true
+        form: 'ShopCreateForm'
     })
 )
 
@@ -189,6 +188,7 @@ ShopCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
+    errors: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired
 }
 

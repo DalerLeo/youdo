@@ -6,14 +6,17 @@ import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
-import * as ROUTER from '../../constants/routes'
 import * as SHOP from '../../constants/shop'
+import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import ShopGridList from '../../components/ShopGridList'
-import {FILTER_KEY, FILTER_OPEN} from '../../components/ShopFilterForm'
+import {SHOP_CREATE_DIALOG_OPEN} from '../../components/ShopCreateDialog'
+import {SHOP_UPDATE_DIALOG_OPEN} from '../../components/ShopUpdateDialog'
+import {SHOP_FILTER_KEY, SHOP_FILTER_OPEN} from '../../components/ShopFilterForm'
 import {
     shopCreateAction,
+    shopUpdateAction,
     shopListFetchAction,
     shopCSVFetchAction,
     shopItemFetchAction
@@ -27,7 +30,7 @@ const enhance = compose(
         const detail = _.get(state, ['shop', 'item', 'data'])
         const detailLoading = _.get(state, ['shop', 'item', 'loading'])
         const createLoading = _.get(state, ['shop', 'create', 'loading'])
-        const createErrors = _.get(state, ['shop', 'create', 'error'])
+        const updateLoading = _.get(state, ['shop', 'update', 'loading'])
         const list = _.get(state, ['shop', 'list', 'data'])
         const listLoading = _.get(state, ['shop', 'list', 'loading'])
         const csvData = _.get(state, ['shop', 'csv', 'data'])
@@ -42,7 +45,7 @@ const enhance = compose(
             detail,
             detailLoading,
             createLoading,
-            createErrors,
+            updateLoading,
             csvData,
             csvLoading,
             filter,
@@ -90,12 +93,12 @@ const enhance = compose(
 
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[FILTER_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_FILTER_OPEN]: true})})
         },
 
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[FILTER_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_FILTER_OPEN]: false})})
         },
 
         handleTabChange: props => (tab) => {
@@ -115,21 +118,21 @@ const enhance = compose(
             const category = _.get(filterForm, ['values', 'category', 'value']) || null
 
             filter.filterBy({
-                [FILTER_OPEN]: false,
-                [FILTER_KEY.CATEGORY]: category,
-                [FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [SHOP_FILTER_OPEN]: false,
+                [SHOP_FILTER_KEY.CATEGORY]: category,
+                [SHOP_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [SHOP_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
 
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openCreateDialog: true})})
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: true})})
         },
 
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openCreateDialog: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
@@ -140,7 +143,30 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({openCreateDialog: false})})
+                    hashHistory.push({query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
+                })
+        },
+
+        handleOpenUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitUpdateDialog: props => () => {
+            const {dispatch, createForm, filter} = props
+            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+
+            return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                })
+                .then(() => {
+                    hashHistory.push({query: filter.getParams({[SHOP_UPDATE_DIALOG_OPEN]: false})})
                 })
         }
     })
@@ -154,29 +180,20 @@ const ShopList = enhance((props) => {
         detail,
         detailLoading,
         createLoading,
-        createErrors,
+        updateLoading,
         filter,
         layout,
         params
     } = props
 
-    const openFilterDialog = toBoolean(_.get(location, ['query', FILTER_OPEN]))
-    const openCreateDialog = toBoolean(_.get(location, ['query', 'openCreateDialog']))
-    const category = _.toInteger(filter.getParam(FILTER_KEY.CATEGORY))
-    const fromDate = filter.getParam(FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(FILTER_KEY.TO_DATE)
+    const openFilterDialog = toBoolean(_.get(location, ['query', SHOP_FILTER_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', SHOP_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', SHOP_UPDATE_DIALOG_OPEN]))
+    const category = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CATEGORY))
+    const fromDate = filter.getParam(SHOP_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(SHOP_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'shopId'))
     const tab = _.get(params, 'tab') || SHOP.DEFAULT_TAB
-
-    const initialValues = {
-        category: {
-            value: category
-        },
-        date: {
-            fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-            toDate: toDate && moment(toDate, 'YYYY-MM-DD')
-        }
-    }
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -186,14 +203,50 @@ const ShopList = enhance((props) => {
     const createDialog = {
         createLoading,
         openCreateDialog,
-        createErrors,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
+    const updateDialog = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            }
+
+            return {
+                name: _.get(detail, 'name'),
+                category: {
+                    value: _.get(detail, 'category')
+                },
+                address: _.get(detail, 'address'),
+                guide: _.get(detail, 'guide'),
+                phone: _.get(detail, 'phone'),
+                contactName: _.get(detail, 'contactName'),
+                official: _.get(detail, 'official'),
+                latLng: {
+                    lat: _.get(detail, 'lat'),
+                    lng: _.get(detail, 'lon')
+                }
+            }
+        })(),
+        updateLoading,
+        openUpdateDialog,
+        handleOpenUpdateDialog: props.handleOpenUpdateDialog,
+        handleCloseUpdateDialog: props.handleCloseUpdateDialog,
+        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
+    }
+
     const filterDialog = {
-        initialValues,
+        initialValues: {
+            category: {
+                value: category
+            },
+            date: {
+                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
+                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            }
+        },
         filterLoading: false,
         openFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,
@@ -234,6 +287,7 @@ const ShopList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
+                updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}

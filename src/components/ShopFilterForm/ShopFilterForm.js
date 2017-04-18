@@ -13,9 +13,9 @@ import DateToDateField from '../ReduxForm/DateToDateField'
 import CategorySearchField from '../CategorySearchField'
 import CloseIcon from '../CloseIcon'
 
-export const FILTER_OPEN = 'openFilterDialog'
+export const SHOP_FILTER_OPEN = 'openFilterDialog'
 
-export const FILTER_KEY = {
+export const SHOP_FILTER_KEY = {
     CATEGORY: 'category',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
@@ -70,9 +70,9 @@ const enhance = compose(
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(FILTER_KEY)
+            return _(SHOP_FILTER_KEY)
                 .values()
-                .filter(item => item !== FILTER_KEY.FROM_DATE)
+                .filter(item => item !== SHOP_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
