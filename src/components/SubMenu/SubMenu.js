@@ -1,8 +1,15 @@
+import _ from 'lodash'
 import React from 'react'
+import {Link} from 'react-router'
+import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import Home from 'material-ui/svg-icons/action/home'
 import HardwareKeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
+import {MenuItems} from '../SidebarMenu/MenuItems'
+import ToolTip from '../ToolTip'
+import IconButton from 'material-ui/IconButton'
+
+const NOT_FOUND = -1
 
 const enhance = compose(
     injectSheet({
@@ -11,71 +18,60 @@ const enhance = compose(
             width: '100%',
             height: '60px',
             marginTop: '-25px',
-            display: 'flex'
-        },
-        addButton: {
-            position: 'relative',
-            transform: 'translate(0,20%)',
-            '& button': {
-                backgroundColor: '#275482 !important'
-            }
-        },
-        labelList: {
-            color: '#44637e',
-            position: 'relative',
-            top: '20%',
-            '&:hover': {
-                borderBottom: '1px solid #44637e',
-                cursor: 'pointer'
-            }
-        },
-        valueList: {
-            color: '#44637e',
-            position: 'relative',
-            top: '20%',
-            '&:hover': {
-                borderBottom: '1px solid #44637e',
-                cursor: 'pointer'
-            }
-        },
-        listWrapper: {
             display: 'flex',
-            position: 'relative',
-            top: '50%',
-            transform: 'translate(0,-50%)',
-            '& *': {
-                marginRight: '15px'
+            alignItems: 'center'
+        },
+        item: {
+            color: '#44637e',
+            marginRight: '15px',
+            '&:hover': {
+                cursor: 'pointer'
             }
         },
-        addButtonWrapper: {
-            position: 'absolute',
-            right: '0',
-            marginBottom: '0px'
-        },
-        verticalCenter: {
-            position: 'relative',
-            top: '50%',
-            transform: 'translate(0,-50%)'
+        active: {
+            extend: 'item',
+            borderBottom: '1px dotted #44637e'
         }
     })
 )
 
 const SubMenu = enhance((props) => {
-    const {classes} = props
+    const {classes, id} = props
+
+    const parent = _
+        .chain(MenuItems)
+        .find((item) => {
+            return (_.findIndex(item.childs, (ch) => ch.id === id) > NOT_FOUND)
+        })
+        .value()
+
+    const items = _.map(parent.childs, (item, index) => {
+        return (
+            <Link to={item.url} key={index}>
+                <span className={item.id === id ? classes.active : classes.item}> {item.name}</span>
+            </Link>
+        )
+    })
 
     return (
         <div className={classes.wrapper}>
-            <div className={classes.listWrapper}>
-                <div>
-                    <Home className={classes.verticalCenter}/>
-                    <HardwareKeyboardArrowRight className={classes.verticalCenter} />
-                    <span className={classes.valueList}>Поставки</span>
-                    <span className={classes.labelList}>Список поставщиков</span>
-                </div>
-            </div>
-
+            <Link to={parent.url}>
+                <ToolTip position="right" text={parent.name}>
+                    <IconButton
+                        iconStyle={{color: '#66696f'}}
+                        touch={true}>
+                        {parent.icon}
+                    </IconButton>
+                </ToolTip>
+            </Link>
+            <HardwareKeyboardArrowRight style={{color: '#66696f', height: '12px', marginRight: '15px', width: 'auto'}} />
+            {items}
         </div>
     )
 })
+
+SubMenu.propTypes = {
+    id: PropTypes.number.isRequired
+}
 
 export default SubMenu
