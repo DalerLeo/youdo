@@ -9,6 +9,7 @@ const axiosRequest = () => {
 
     if (TOKEN) {
         axios.defaults.headers.common.Authorization = `Token ${TOKEN}`
+        axios.defaults.headers.common['cache-control'] = 'no-cache'
     }
 
     return axios

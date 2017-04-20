@@ -23,6 +23,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 
+
 const listHeader = [
     {
         sorting: true,
@@ -153,7 +154,7 @@ const ShopGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu id={7}/>
+            <SubMenu url={ROUTES.SHOP_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить магазин">

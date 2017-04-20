@@ -36,19 +36,19 @@ const enhance = compose(
 )
 
 const SubMenu = enhance((props) => {
-    const {classes, id} = props
+    const {classes, url} = props
 
     const parent = _
         .chain(MenuItems)
         .find((item) => {
-            return (_.findIndex(item.childs, (ch) => ch.id === id) > NOT_FOUND)
+            return (_.findIndex(item.childs, (ch) => ch.url === url) > NOT_FOUND)
         })
         .value()
 
     const items = _.map(parent.childs, (item, index) => {
         return (
             <Link to={item.url} key={index}>
-                <span className={item.id === id ? classes.active : classes.item}> {item.name}</span>
+                <span className={item.url === url ? classes.active : classes.item}> {item.name}</span>
             </Link>
         )
     })
@@ -71,7 +71,7 @@ const SubMenu = enhance((props) => {
 })
 
 SubMenu.propTypes = {
-    id: PropTypes.number.isRequired
+    url: PropTypes.string.isRequired
 }
 
 export default SubMenu
