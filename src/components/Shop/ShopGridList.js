@@ -196,9 +196,9 @@ const ShopGridList = enhance((props) => {
                 onClose={deleteDialog.handleCloseDeleteDialog}
             />
 
-            {detailData && <ConfirmDialog
+            {detailData.data && <ConfirmDialog
                 type="delete"
-                message={_.get(detailData, 'name')}
+                message={_.get(detailData, ['data', 'name'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
@@ -207,15 +207,10 @@ const ShopGridList = enhance((props) => {
     )
 })
 
-ShopGridList.defaultProps = {
-    detailData: {},
-    listData: {}
-}
-
 ShopGridList.propTypes = {
     filter: PropTypes.object.isRequired,
-    listData: PropTypes.object.isRequired,
-    detailData: PropTypes.object.isRequired,
+    listData: PropTypes.object,
+    detailData: PropTypes.object,
     tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
@@ -238,9 +233,9 @@ ShopGridList.propTypes = {
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
         openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
+        handleOpenUpdateDialog: PropTypes.func.isRequired,
+        handleCloseUpdateDialog: PropTypes.func.isRequired,
+        handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
