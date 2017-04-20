@@ -23,7 +23,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 
-
 const listHeader = [
     {
         sorting: true,
