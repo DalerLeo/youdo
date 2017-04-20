@@ -78,7 +78,7 @@ const enhance = compose(
         },
         title: {
             fontSize: '15px',
-            color: '#6ec3f0'
+            color: '#5d6474'
         },
         submit: {
             color: '#fff !important'
