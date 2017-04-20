@@ -153,7 +153,7 @@ const ShopGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu id={7}/>
+            <SubMenu url={ROUTES.SHOP_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить магазин">
