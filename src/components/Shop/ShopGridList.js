@@ -11,9 +11,9 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import ShopFilterForm from '../ShopFilterForm'
-import ShopDetails from '../ShopDetails'
-import ShopCreateDialog from '../ShopCreateDialog'
+import ShopFilterForm from './ShopFilterForm'
+import ShopDetails from './ShopDetails'
+import ShopCreateDialog from './ShopCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -196,7 +196,7 @@ const ShopGridList = enhance((props) => {
             />
 
             {detailData && <ConfirmDialog
-                type="Delete"
+                type="delete"
                 message={_.get(detailData, 'name')}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}

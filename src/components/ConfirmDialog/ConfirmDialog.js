@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -43,10 +44,13 @@ const enhance = compose(
 
 const ConfirmDialog = enhance((props) => {
     const {open, onClose, classes, type, message, onSubmit} = props
-    const types = {
-        Delete: {name: 'Подтверждение удаления', submitName: 'Удалить'}
+    const typesList = {
+        delete: {
+            name: 'Подтверждение удаления', submitName: 'Удалить'
+        }
     }
-    const curType = types[type]
+    const title = _.get(typesList, [type, 'name'])
+    const buttonLabel = _.get(typesList, [type, 'submitName'])
 
     return (
         <Dialog
@@ -56,7 +60,7 @@ const ConfirmDialog = enhance((props) => {
             className={classes.dialog}
             bodyClassName={classes.body}>
             <div>
-                <h4 className={classes.title}>{curType.name}</h4>
+                <h4 className={classes.title}>{title}</h4>
             </div>
             {message}
             <div>
@@ -68,7 +72,7 @@ const ConfirmDialog = enhance((props) => {
                         keyboardFocused={true}
                     />
                     <FlatButton
-                        label={curType.submitName}
+                        label={buttonLabel}
                         primary={true}
                         onTouchTap={onSubmit}
                     />
@@ -79,13 +83,11 @@ const ConfirmDialog = enhance((props) => {
 })
 
 ConfirmDialog.propTypes = {
-    type: PropTypes.oneOf(['Delete']).isRequired,
+    type: PropTypes.oneOf(['delete']).isRequired,
     message: PropTypes.string.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired
-    // Errors: PropTypes.object.isRequired,
-    // Loading: PropTypes.bool.isRequired
 }
 
 export default ConfirmDialog

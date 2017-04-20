@@ -10,11 +10,14 @@ import * as SHOP from '../../constants/shop'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import ShopGridList from '../../components/ShopGridList'
-import {SHOP_CREATE_DIALOG_OPEN} from '../../components/ShopCreateDialog'
-import {SHOP_UPDATE_DIALOG_OPEN} from '../../components/ShopUpdateDialog'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
-import {SHOP_FILTER_KEY, SHOP_FILTER_OPEN} from '../../components/ShopFilterForm'
+import {
+    SHOP_CREATE_DIALOG_OPEN,
+    SHOP_UPDATE_DIALOG_OPEN,
+    SHOP_FILTER_KEY,
+    SHOP_FILTER_OPEN,
+    ShopGridList
+} from '../../components/Shop'
 import {
     shopCreateAction,
     shopUpdateAction,

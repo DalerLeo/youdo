@@ -6,10 +6,10 @@ import {compose} from 'recompose'
 import {Col} from 'react-flexbox-grid'
 import * as SHOP from '../../constants/shop'
 import {Tabs, Tab} from 'material-ui/Tabs'
-import ShopDetailsImg from '../ShopDetailsImg'
-import ShopDetailsMap from '../ShopDetailsMap'
-import ShopDetailsActivity from '../ShopDetailsActivity'
-import ShopDetailsStatistics from '../ShopDetailsStatistics'
+import ShopDetailsImg from './ShopDetailsImg'
+import ShopDetailsMap from './ShopDetailsMap'
+import ShopDetailsActivity from './ShopDetailsActivity'
+import ShopDetailsStatistics from './ShopDetailsStatistics'
 
 const enhance = compose(
     injectSheet({

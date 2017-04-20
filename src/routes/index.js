@@ -4,7 +4,7 @@ import {getToken} from '../helpers/storage'
 import * as ROUTES from '../constants/routes'
 import App from '../containers/App'
 import SignIn from '../containers/SignIn'
-import ShopList from '../containers/ShopList'
+import {ShopList} from '../containers/Shop'
 import NotFound from '../containers/NotFound'
 
 export default {
