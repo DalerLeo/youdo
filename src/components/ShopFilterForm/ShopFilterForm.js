@@ -34,8 +34,26 @@ const enhance = compose(
             padding: '10px 20px 10px 20px'
         },
         afterFilter: {
+            width: '268px',
+            alignItems: 'center',
             display: 'flex',
-            alignItems: 'center'
+            backgroundColor: '#efefef',
+            position: 'relative',
+            padding: '16px',
+            marginLeft: '-13px',
+            '& > div:nth-child(2)': {
+                position: 'absolute',
+                right: '0'
+            },
+            '& > div:nth-child(1)': {
+                color: '#666666'
+            },
+            '& button': {
+                borderLeft: '1px solid white !important'
+            }
+        },
+        icon: {
+            color: '#8f8f8f !important'
         },
         arrow: {
             paddingRight: '14px',
@@ -53,11 +71,14 @@ const enhance = compose(
         header: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            '& button': {
+                marginRight: '-12px !important'
+            }
         },
         title: {
             fontSize: '15px',
-            color: '#5d6474'
+            color: '#6ec3f0'
         },
         submit: {
             color: '#fff !important'
@@ -89,14 +110,14 @@ const ShopFilterForm = enhance((props) => {
             return (
                 <div className={classes.afterFilter}>
                     <div>Filter counts: {filterCounts}</div>
-
-                    <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
-                        <BorderColorIcon />
-                    </IconButton>
-
-                    <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
-                        <CloseIcon />
-                    </IconButton>
+                    <div>
+                        <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
+                            <BorderColorIcon color="#8f8f8f" />
+                        </IconButton>
+                        <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
+                            <CloseIcon className={classes.icon}/>
+                        </IconButton>
+                    </div>
                 </div>
             )
         }
@@ -118,16 +139,16 @@ const ShopFilterForm = enhance((props) => {
                 <div className={classes.header}>
                     <span className={classes.title}>Filter</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
-                        <CloseIcon />
+                        <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field name="category" component={CategorySearchField} label="Category" />
+                        <Field name="category" component={CategorySearchField} label="Category"/>
                     </div>
 
                     <div>
-                        <Field name="date" component={DateToDateField} label="Date to Date" fullWidth={true} />
+                        <Field name="date" component={DateToDateField} label="Date to Date" fullWidth={true}/>
                     </div>
 
                     <div>
