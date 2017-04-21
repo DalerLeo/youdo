@@ -9,7 +9,6 @@ import Settings from 'material-ui/svg-icons/action/settings'
 
 export const MenuItems = [
     {
-        id: 1,
         name: 'Метрика',
         url: ROUTES.SHOP_LIST_URL,
         icon: (<TrendingUp />),
@@ -17,25 +16,23 @@ export const MenuItems = [
         ]
     },
     {
-        id: 2,
         name: 'Продажи',
         icon: (<AttachMoney />),
         url: ROUTES.SHOP_LIST_URL,
         childs: [
-            {id: 7, name: 'Торговые точки', url: ROUTES.SHOP_LIST_URL},
-            {id: 8, name: 'История заказов', url: ROUTES.ORDER_HISTORY_LIST_URL}
+            {name: 'Торговые точки', url: ROUTES.SHOP_LIST_URL},
+            {name: 'История заказов', url: ROUTES.ORDER_HISTORY_LIST_URL}
         ]
     },
     {
-        id: 3,
         name: 'Склад',
         icon: (<Home />),
-        url: ROUTES.SHOP_LIST_URL,
+        url: ROUTES.PRODUCT_LIST_URL,
         childs: [
+            {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL}
         ]
     },
     {
-        id: 4,
         name: 'Бухгалтерия',
         icon: (<AccountBalanceWallet />),
         url: ROUTES.SHOP_LIST_URL,
@@ -43,7 +40,6 @@ export const MenuItems = [
         ]
     },
     {
-        id: 5,
         name: 'Карта',
         icon: (<Map />),
         url: ROUTES.SHOP_LIST_URL,
@@ -51,7 +47,6 @@ export const MenuItems = [
         ]
     },
     {
-        id: 6,
         name: 'Настройки',
         icon: (<Settings />),
         url: ROUTES.SHOP_LIST_URL,

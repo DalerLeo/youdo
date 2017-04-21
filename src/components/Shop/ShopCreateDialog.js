@@ -9,8 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, LocationField} from '../ReduxForm'
-import CategorySearchField from '../CategorySearchField'
+import {TextField, LocationField, CategorySearchField} from '../ReduxForm'
 
 export const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
 

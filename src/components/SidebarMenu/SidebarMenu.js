@@ -23,9 +23,9 @@ const touch = true
 
 const SideBarMenu = (props) => {
     const {classes, handleSignOut} = props
-    const items = _.map(MenuItems, (item) => {
+    const items = _.map(MenuItems, (item, index) => {
         return (
-            <Link to={item.url} key={item.id}>
+            <Link to={item.url} key={index}>
                 <ToolTip position="right" text={item.name}>
                     <IconButton
                         iconStyle={style.iconStyle}

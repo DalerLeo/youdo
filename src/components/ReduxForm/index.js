@@ -3,11 +3,19 @@ import CheckBox from './CheckBox'
 import DateToDateField from './DateToDateField'
 import SearchField from './SearchField'
 import LocationField from './LocationField'
+import CategorySearchField from './CategorySearchField'
+import ProductTypeSearchField from './ProductTypeSearchField'
+import BrandSearchField from './BrandSearchField'
+import MeasurementSearchField from './MeasurementSearchField'
 
 export {
     CheckBox,
     TextField,
     DateToDateField,
     LocationField,
-    SearchField
+    SearchField,
+    CategorySearchField,
+    ProductTypeSearchField,
+    BrandSearchField,
+    MeasurementSearchField
 }

@@ -10,6 +10,11 @@ export const SHOP_UPDATE = 'SHOP_UPDATE'
 export const SHOP_CREATE = 'SHOP_CREATE'
 export const SHOP_DELETE = 'SHOP_DELETE'
 
+export const PRODUCT_LIST = 'PRODUCT_LIST'
+export const PRODUCT_UPDATE = 'SHOP_UPDATE'
+export const PRODUCT_CREATE = 'SHOP_CREATE'
+export const PRODUCT_DELETE = 'SHOP_DELETE'
+
 export const SNACKBAR = 'SNACKBAR'
 export const SNACKBAR_OPEN = `${SNACKBAR}_OPEN`
 export const SNACKBAR_CLOSE = `${SNACKBAR}_CLOSE`

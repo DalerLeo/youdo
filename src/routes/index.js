@@ -5,6 +5,7 @@ import * as ROUTES from '../constants/routes'
 import App from '../containers/App'
 import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
+import {ProductList} from '../containers/Product'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -38,6 +39,13 @@ export default {
                     path: ROUTES.SHOP_ITEM_TAB_URL,
                     component: userIsAuth(ShopList)
                 }
+            ]
+        },
+        // Product
+        {
+            path: ROUTES.PRODUCT_LIST_URL,
+            component: userIsAuth(ProductList),
+            childRoutes: [
             ]
         },
 

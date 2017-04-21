@@ -9,16 +9,14 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import DateToDateField from '../ReduxForm/DateToDateField'
-import {CategorySearchField} from '../ReduxForm'
+import {ProductTypeSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 
-export const SHOP_FILTER_OPEN = 'openFilterDialog'
+export const PRODUCT_FILTER_OPEN = 'openFilterDialog'
 
-export const SHOP_FILTER_KEY = {
-    CATEGORY: 'category',
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+export const PRODUCT_FILTER_KEY = {
+    BRAND: 'brand',
+    TYPE: 'type'
 }
 
 const enhance = compose(
@@ -85,15 +83,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ShopFilterForm',
+        form: 'ProductFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(SHOP_FILTER_KEY)
+            return _(PRODUCT_FILTER_KEY)
                 .values()
-                .filter(item => item !== SHOP_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== PRODUCT_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -101,7 +99,7 @@ const enhance = compose(
     })
 )
 
-const ShopFilterForm = enhance((props) => {
+const ProductFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
 
@@ -144,13 +142,14 @@ const ShopFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field name="category" component={CategorySearchField} label="Category"/>
+                        <Field name="product_type" component={ProductTypeSearchField} label="Product Type"/>
                     </div>
-
                     <div>
-                        <Field name="date" component={DateToDateField} label="Date to Date" fullWidth={true}/>
+                        <Field name="measurement" component={MeasurementSearchField} label="Meaurement"/>
                     </div>
-
+                    <div>
+                        <Field name="brand" component={BrandSearchField} label="Brand"/>
+                    </div>
                     <div>
                         <RaisedButton
                             type="submit"
@@ -165,7 +164,7 @@ const ShopFilterForm = enhance((props) => {
     )
 })
 
-ShopFilterForm.propTypes = {
+ProductFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -176,4 +175,4 @@ ShopFilterForm.propTypes = {
     })
 }
 
-export default ShopFilterForm
+export default ProductFilterForm

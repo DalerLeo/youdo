@@ -11,7 +11,7 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, LocationField, CategorySearchField} from '../ReduxForm'
 
-export const SHOP_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
+export const PRODUCT_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -77,11 +77,11 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ShopCreateForm'
+        form: 'ProductCreateForm'
     })
 )
 
-const ShopCreateDialog = enhance((props) => {
+const ProductCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -100,7 +100,7 @@ const ShopCreateDialog = enhance((props) => {
                 <div className={classes.fields}>
                     <Col xs={5}>
                         <div>
-                            <h4 className={classes.title}>Add Shop</h4>
+                            <h4 className={classes.title}>Add Product</h4>
                         </div>
                         <div>
                             <div>
@@ -183,7 +183,7 @@ const ShopCreateDialog = enhance((props) => {
     )
 })
 
-ShopCreateDialog.propTyeps = {
+ProductCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -191,4 +191,4 @@ ShopCreateDialog.propTyeps = {
     loading: PropTypes.bool.isRequired
 }
 
-export default ShopCreateDialog
+export default ProductCreateDialog
