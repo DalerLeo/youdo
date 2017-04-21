@@ -7,6 +7,7 @@ import CategorySearchField from './CategorySearchField'
 import ProductTypeSearchField from './ProductTypeSearchField'
 import BrandSearchField from './BrandSearchField'
 import MeasurementSearchField from './MeasurementSearchField'
+import ImageUploadField from './ImageUploadField'
 
 export {
     CheckBox,
@@ -17,5 +18,6 @@ export {
     CategorySearchField,
     ProductTypeSearchField,
     BrandSearchField,
-    MeasurementSearchField
+    MeasurementSearchField,
+    ImageUploadField
 }

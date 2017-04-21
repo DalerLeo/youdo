@@ -55,7 +55,7 @@ const enhance = compose(
             filterForm,
             createForm
         }
-}),
+    }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {

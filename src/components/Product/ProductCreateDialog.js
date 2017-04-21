@@ -3,13 +3,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Col} from 'react-flexbox-grid'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, LocationField, CategorySearchField} from '../ReduxForm'
+import {TextField, ProductTypeSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
 
 export const PRODUCT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -99,7 +98,6 @@ const ProductCreateDialog = enhance((props) => {
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.fields}>
-                    <Col xs={5}>
                         <div>
                             <h4 className={classes.title}>Add Product</h4>
                         </div>
@@ -108,51 +106,31 @@ const ProductCreateDialog = enhance((props) => {
                                 <Field
                                     name="name"
                                     component={TextField}
-                                    label="Name"
+                                    label="Наимование"
                                     fullWidth={true}
                                 />
 
                                 <Field
-                                    name="category"
-                                    component={CategorySearchField}
-                                    label="Category"
+                                    name="type"
+                                    component={ProductTypeSearchField}
+                                    label="Тип продукта"
                                     fullWidth={true}
                                 />
 
                                 <Field
-                                    name="address"
-                                    component={TextField}
-                                    label="Address"
+                                    name="brand"
+                                    component={BrandSearchField}
+                                    label="Бранд"
                                     fullWidth={true}
                                 />
 
                                 <Field
-                                    name="guide"
-                                    component={TextField}
-                                    label="Guide"
+                                    name="measurement"
+                                    component={MeasurementSearchField}
+                                    label="Мера"
                                     fullWidth={true}
                                 />
 
-                                <Field
-                                    name="phone"
-                                    component={TextField}
-                                    label="Phone"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="contactName"
-                                    component={TextField}
-                                    label="Contact name"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="official"
-                                    component={TextField}
-                                    label="Official"
-                                    fullWidth={true}
-                                />
                             </div>
 
                             <div>
@@ -170,14 +148,6 @@ const ProductCreateDialog = enhance((props) => {
                                 />
                             </div>
                         </div>
-                    </Col>
-                    <Col xs={7} className={classes.map}>
-                        <Field
-                            name="latLng"
-                            component={LocationField}
-                            fullWidth={true}
-                        />
-                    </Col>
                 </div>
             </form>
         </Dialog>

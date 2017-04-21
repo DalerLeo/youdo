@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose, withPropsOnChange, withReducer, lifecycle} from 'recompose'
+import {compose, withPropsOnChange, withReducer} from 'recompose'
 import MUIAutoComplete from 'material-ui/AutoComplete'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -12,34 +12,6 @@ const DELAY_FOR_TYPE_ATTACK = 300
 
 const errorStyle = {
     textAlign: 'left'
-}
-
-const fetchList = _.debounce(({state, dispatch, getOptions, getText, getValue}) => {
-    dispatch({loading: true})
-
-    getOptions(state.text)
-        .then((data) => {
-            return _.map(data, (item) => {
-                return {
-                    text: getText(item),
-                    value: getValue(item)
-                }
-            })
-        })
-        .then((data) => {
-            dispatch({dataSource: data, loading: false})
-        })
-}, DELAY_FOR_TYPE_ATTACK)
-
-const fetchItem = (props) => {
-    const {dispatch, getItem, getItemText} = props
-    const id = _.get(props, ['input', 'value', 'value'])
-
-    id && getItem(id)
-        .then(data => {
-            return getItemText(data)
-        })
-        .then(data => dispatch({text: data}))
 }
 
 const enhance = compose(
@@ -60,13 +32,37 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
-    }, fetchList),
+    }, _.debounce(({state, dispatch, getOptions, getText, getValue}) => {
+        dispatch({loading: true})
+
+        getOptions(state.text)
+            .then((data) => {
+                return _.map(data, (item) => {
+                    return {
+                        text: getText(item),
+                        value: getValue(item)
+                    }
+                })
+            })
+            .then((data) => {
+                dispatch({dataSource: data, loading: false})
+            })
+    }, DELAY_FOR_TYPE_ATTACK)),
 
     withPropsOnChange((props, nextProps) => {
         const value = _.get(props, ['input', 'value', 'value'])
         const nextValue = _.get(nextProps, ['input', 'value', 'value'])
         return nextValue && value !== nextValue
-    }, fetchItem)
+    }, (props) => {
+        const {dispatch, getItem, getItemText} = props
+        const id = _.get(props, ['input', 'value', 'value'])
+
+        id && getItem(id)
+            .then(data => {
+                return getItemText(data)
+            })
+            .then(data => dispatch({text: data}))
+    })
 )
 
 const SearchField = enhance((props) => {
