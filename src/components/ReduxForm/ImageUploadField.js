@@ -1,6 +1,8 @@
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import {FileUpload} from 'redux-file-upload'
+import {API_URL} from '../../constants/api'
 
 const enhance = compose(
     injectSheet({
@@ -27,15 +29,19 @@ const enhance = compose(
 )
 
 const ImageUploadField = ({classes, location, setLocation, input, meta: {error}}) => {
-    const handleImageChange = (pointer) => {
-        input.onChange({lat: pointer.latLng.lat(), lng: pointer.latLng.lng()})
-        setLocation({lat: pointer.latLng.lat(), lng: pointer.latLng.lng()})
-    }
-    const imagePreview = ''
+
     return (
         <div className={classes.wrapper}>
-            <input type="file" onChange={handleImageChange} />
-            {imagePreview}
+            <FileUpload
+                allowedFileTypes={['jpg', 'pdf']}
+                data={{type: 'picture'}}
+                dropzoneId="fileUpload"
+                url={API_URL + '/api/v1/file/file/'}
+            >
+                <button>
+                    Click or drag here
+                </button>
+            </FileUpload>
         </div>
     )
 }
