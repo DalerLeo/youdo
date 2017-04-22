@@ -97,8 +97,8 @@ const GridListHeader = enhance((props) => {
             const name = _.get(item, 'name')
             const sortingType = filter.getSortingType(name)
             const Icon = !_.isNull(sortingType) ? sortingType ? (
-                <ArrowUpIcon className={classes.icon} />
-            ) : (<ArrowDownIcon className={classes.icon} />) : null
+                        <ArrowUpIcon className={classes.icon}/>
+                    ) : (<ArrowDownIcon className={classes.icon}/>) : null
 
             return (
                 <Col xs={xs} key={index}>
@@ -121,7 +121,7 @@ const GridListHeader = enhance((props) => {
     return (
         <div className={classes.header}>
             <div className={classes.checkbox}>
-                <Checkbox onCheck={onChecked} checked={checkboxChecked} />
+                <Checkbox onCheck={onChecked} checked={checkboxChecked}/>
             </div>
             <Row>
                 {items}

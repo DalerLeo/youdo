@@ -16,3 +16,7 @@ export const ORDER_HISTORY_LIST_URL = `/${ORDER}/history`
 export const PRODUCT = 'product'
 export const PRODUCT_LIST_URL = `/${PRODUCT}`
 export const PRODUCT_ITEM_PATH = `/${PRODUCT}/%d`
+
+export const CATEGORY = 'category'
+export const CATEGORY_LIST_URL = `/${CATEGORY}`
+export const CATEGORY_ITEM_PATH = `/${CATEGORY}/%d`
