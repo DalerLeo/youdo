@@ -1,8 +1,8 @@
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {FileUpload} from 'redux-file-upload'
 import {API_URL} from '../../constants/api'
+import Dropzone from 'react-dropzone'
 
 const enhance = compose(
     injectSheet({
@@ -29,19 +29,21 @@ const enhance = compose(
 )
 
 const ImageUploadField = ({classes, location, setLocation, input, meta: {error}}) => {
-
     return (
         <div className={classes.wrapper}>
-            <FileUpload
-                allowedFileTypes={['jpg', 'pdf']}
-                data={{type: 'picture'}}
-                dropzoneId="fileUpload"
-                url={API_URL + '/api/v1/file/file/'}
-            >
-                <button>
-                    Click or drag here
-                </button>
-            </FileUpload>
+            <Dropzone onDrop={}>
+                {({isDragActive, isDragReject, acceptedFiles, rejectedFiles}) => {
+                    if (isDragActive) {
+                        return 'This file is authorized'
+                    }
+                    if (isDragReject) {
+                        return 'This file is not authorized'
+                    }
+                    return acceptedFiles.length || rejectedFiles.length
+                        ? `Accepted ${acceptedFiles.length}, rejected ${rejectedFiles.length} files`
+                        : 'Try dropping some files'
+                }}
+            </Dropzone>
         </div>
     )
 }
