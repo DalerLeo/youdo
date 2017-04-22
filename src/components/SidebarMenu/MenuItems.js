@@ -49,8 +49,9 @@ export const MenuItems = [
     {
         name: 'Настройки',
         icon: (<Settings />),
-        url: ROUTES.SHOP_LIST_URL,
+        url: ROUTES.CATEGORY_LIST_URL,
         childs: [
+            {name: 'Категории', url: ROUTES.CATEGORY_LIST_URL}
         ]
     }
 ]

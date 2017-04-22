@@ -1,9 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
-import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -11,8 +9,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import ProductFilterForm from './ProductFilterForm'
-import ProductCreateDialog from './ProductCreateDialog'
+import CategoryCreateDialog from './CategoryCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -25,26 +22,19 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
+        name: 'id',
+        xs: 2,
+        title: 'Id'
+    },
+    {
+        sorting: true,
         name: 'name',
+        xs: 6,
         title: 'Наименование'
     },
     {
         sorting: true,
-        name: 'type',
-        title: 'Тип товара'
-    },
-    {
-        sorting: true,
-        name: 'brand',
-        title: 'Бренд'
-    },
-    {
-        sorting: true,
-        name: 'measurement',
-        title: 'Мера'
-    },
-    {
-        sorting: true,
+        xs: 4,
         name: 'created_date',
         title: 'Дата создания'
     }
@@ -66,12 +56,11 @@ const enhance = compose(
     })
 )
 
-const ProductGridList = enhance((props) => {
+const CategoryGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
-        filterDialog,
         actionsDialog,
         confirmDialog,
         deleteDialog,
@@ -92,51 +81,34 @@ const ProductGridList = enhance((props) => {
         </div>
     )
 
-    const productFilterDialog = (
-        <ProductFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
-    )
-
-    const productDetail = (
+    const categoryDetail = (
         <span>a</span>
     )
 
-    const productList = _.map(_.get(listData, 'data'), (item) => {
+    const categoryList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const type = _.get(item, 'type') || 'N/A'
-        const brand = _.get(item, ['brand', 'name']) || 'N/A'
-        const image = _.get(item, 'image') || ''
-        const measurement = _.get(item, 'measurement') || ''
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
             <Row key={id}>
-                <Col xs={4}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.PRODUCT_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}> {image} {name}</Link>
+                <Col xs={2}>{id}</Col>
+                <Col xs={6}>
+                        {name}
                 </Col>
-                <Col xs={2}>{type}</Col>
-                <Col xs={2}>{brand}</Col>
-                <Col xs={2}>{measurement}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={4}>{createdDate}</Col>
             </Row>
         )
     })
 
     const list = {
         header: listHeader,
-        list: productList,
+        list: categoryList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.PRODUCT_LIST_URL}/>
+            <SubMenu url={ROUTES.CATEGORY_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить продукт">
                     <FloatingActionButton
@@ -151,19 +123,18 @@ const ProductGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={productDetail}
+                detail={categoryDetail}
                 actionsDialog={actions}
-                filterDialog={productFilterDialog}
             />
 
-            <ProductCreateDialog
+            <CategoryCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <ProductCreateDialog
+            <CategoryCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -188,7 +159,7 @@ const ProductGridList = enhance((props) => {
     )
 })
 
-ProductGridList.propTypes = {
+CategoryGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -221,15 +192,7 @@ ProductGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
-    filterDialog: PropTypes.shape({
-        initialValues: PropTypes.object,
-        filterLoading: PropTypes.bool,
-        openFilterDialog: PropTypes.bool.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default ProductGridList
+export default CategoryGridList

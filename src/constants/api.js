@@ -8,7 +8,7 @@ export const SIGN_IN = `/${USER}/auth/`
 export const SIGN_OUT = `/${USER}/unauth/`
 
 export const CATEGORY = 'dist/category'
-export const CATEGORY_CREATE = `/${CATEGORY}/add/`
+export const CATEGORY_CREATE = `/${CATEGORY}/`
 export const CATEGORY_LIST = `/${CATEGORY}/`
 export const CATEGORY_ITEM = `/${CATEGORY}/%d/`
 
