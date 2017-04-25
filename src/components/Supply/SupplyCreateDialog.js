@@ -23,6 +23,11 @@ import {reduxForm, SubmissionError} from 'redux-form'
 import TextField from 'material-ui/TextField'
 import DeleteIcon from '../DeleteIcon'
 import CloseIcon2 from '../CloseIcon2'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
+import SupplySearchField from '../ReduxForm/SupplySearchField'
+import StockSearchField from '../ReduxForm/StockSearchField'
+import DateToDateField from '../ReduxForm/DateToDateField'
+import PaymentTypeSearchField from '../ReduxForm/PaymentTypeSearchField'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -344,51 +349,45 @@ const SupplyCreateDialog = enhance((props) => {
                         <div className={classes.left}>
                             <div className={classes.title}>Choose supplier</div>
                             <div className={classes.selectContent}>
-                                <SelectField
-                                    floatingLabelText="Supplier"
-                                    value="Logistic">
-                                    <MenuItem value={null} primaryText=''/>
-                                    <MenuItem value={false} primaryText="Logistic"/>
-                                    <MenuItem value={true} primaryText="Logistic"/>
-                                </SelectField>
+                                <Field
+                                    name="deliveryComp"
+                                    component={SupplySearchField}
+                                    label="Поставщик"
+                                    fullWidth={true}/>
+                                <RadioButtonGroup name="delivery" defaultSelected="not_light"
+                                                  className={classes.radioButton}>
+                                    <RadioButton
+                                        value="light"
+                                        label="Tursunov Bohodir"
+                                    />
+                                    <RadioButton
+                                        value="not_light"
+                                        label="Ashurov Anvar"
+                                    />
+                                </RadioButtonGroup>
+                                <Field
+                                    name="nameStock"
+                                    component={StockSearchField}
+                                    label="Склад назначения"
+                                    fullWidth={true}/>
                             </div>
-                            <RadioButtonGroup name="shipSpeed" defaultSelected="not_light"
-                                              className={classes.radioButton}>
-                                <RadioButton
-                                    value="light"
-                                    label="Tursunov Bohodir"
-                                />
-                                <RadioButton
-                                    value="not_light"
-                                    label="Ashurov Anvar"
-                                />
-                            </RadioButtonGroup>
-                            <div className={classes.title}>Delivery Conditions</div>
+                            <div className={classes.title}>Условия доставки</div>
                             <div className={classes.selectContent}>
-                                <SelectField
-                                    floatingLabelText="Name Store"
-                                    value="No"
-                                >
-                                    <MenuItem value={null} primaryText=""/>
-                                    <MenuItem value={false} primaryText="No"/>
-                                    <MenuItem value={true} primaryText="Yes"/>
-                                </SelectField>
-                                <SelectField
-                                    floatingLabelText="Date Supply"
-                                    value="No"
-                                >
-                                    <MenuItem value={null} primaryText=""/>
-                                    <MenuItem value={false} primaryText="No"/>
-                                    <MenuItem value={true} primaryText="Yes"/>
-                                </SelectField>
-                                <SelectField
-                                    floatingLabelText="Payment type"
-                                    value="No"
-                                >
-                                    <MenuItem value={null} primaryText=""/>
-                                    <MenuItem value={false} primaryText="No"/>
-                                    <MenuItem value={true} primaryText="Yes"/>
-                                </SelectField>
+                                <Field
+                                    name="nameStock"
+                                    component={StockSearchField}
+                                    label="Склад назначения"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="toDate"
+                                    component={DateToDateField}
+                                    label="Дата поставки "
+                                    fullWidth={true}/>
+                                <Field
+                                    name="paymentType"
+                                    component={PaymentTypeSearchField}
+                                    label="Валюта оплаты "
+                                    fullWidth={true}/>
                             </div>
                         </div>
                     </Col>
