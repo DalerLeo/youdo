@@ -18,6 +18,12 @@ export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
+export const SUPPLY = 'dist/supply'
+export const SUPPLY_CREATE = `/${SUPPLY}/`
+export const SUPPLY_LIST = `/${SUPPLY}/`
+export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
+export const SUPPLY_DELETE = `/${SUPPLY}/%d/`
+
 export const PRODUCT = 'dist/product'
 export const PRODUCT_CREATE = `/${PRODUCT}/`
 export const PRODUCT_LIST = `/${PRODUCT}/`
