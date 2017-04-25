@@ -51,7 +51,8 @@ export const MenuItems = [
         icon: (<Settings />),
         url: ROUTES.CATEGORY_LIST_URL,
         childs: [
-            {name: 'Категории', url: ROUTES.CATEGORY_LIST_URL}
+            {name: 'Категории', url: ROUTES.CATEGORY_LIST_URL},
+            {name: 'Бренд', url: ROUTES.BRAND_LIST_URL}
         ]
     }
 ]
