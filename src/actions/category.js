@@ -91,7 +91,7 @@ export const categoryCSVFetchAction = (filter) => {
 
 export const categoryItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.SHOP_ITEM, id))
+        .get(sprintf(API.CATEGORY_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -100,7 +100,7 @@ export const categoryItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.SHOP_ITEM,
+        type: actionTypes.CATEGORY_ITEM,
         payload
     }
 }
