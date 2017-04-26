@@ -6,6 +6,7 @@ import App from '../containers/App'
 import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
 import {ProductList} from '../containers/Product'
+import {CategoryList} from '../containers/Category'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -46,6 +47,17 @@ export default {
             path: ROUTES.PRODUCT_LIST_URL,
             component: userIsAuth(ProductList),
             childRoutes: [
+            ]
+        },
+        // Category
+        {
+            path: ROUTES.CATEGORY_LIST_URL,
+            component: userIsAuth(CategoryList),
+            childRoutes: [
+                {
+                    path: ROUTES.CATEGORY_ITEM_URL,
+                    component: userIsAuth(CategoryList)
+                }
             ]
         },
 

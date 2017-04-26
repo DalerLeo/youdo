@@ -47,7 +47,6 @@ const enhance = compose(
                     .chain(selects)
                     .filter(item => id !== item)
                     .value()
-
                 const newSelects = isChecked ? selectsInChecked : selectsUnChecked
                 const url = filter.createURL({select: _.join(newSelects, ',')})
 
@@ -58,7 +57,7 @@ const enhance = compose(
 )
 
 const GridListBody = enhance((props) => {
-    const {classes, filter, list, onChecked, detail} = props
+    const {classes, filter, list, onChecked, detail, withoutCheckboxes} = props
 
     const items = _.map(list, (item, index) => {
         const id = _.toInteger(_.get(item, 'key'))
@@ -80,9 +79,11 @@ const GridListBody = enhance((props) => {
 
         return (
             <div className={classes.item} key={index}>
-                <div className={classes.checkbox}>
-                    <Checkbox onCheck={onChecked(id)} checked={checkboxChecked} />
-                </div>
+                    <div className={classes.checkbox}>
+                        {withoutCheckboxes &&
+                        <Checkbox onCheck={onChecked(id)} checked={checkboxChecked}/>
+                        }
+                    </div>
                 {item}
             </div>
         )

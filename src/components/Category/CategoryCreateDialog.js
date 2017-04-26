@@ -3,15 +3,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Col} from 'react-flexbox-grid'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, LocationField, CategorySearchField} from '../ReduxForm'
+import {TextField} from '../ReduxForm'
 
-export const SHOP_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
+export const CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -77,12 +76,13 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ShopCreateForm'
+        form: 'CategoryCreateForm',
+        enableReinitialize: true
     })
 )
 
-const ShopCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+const CategoryCreateDialog = enhance((props) => {
+    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -98,97 +98,49 @@ const ShopCreateDialog = enhance((props) => {
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.fields}>
-                    <Col xs={5}>
                         <div>
-                            <h4 className={classes.title}>Add Shop</h4>
+                            <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
                         </div>
                         <div>
                             <div>
                                 <Field
                                     name="name"
                                     component={TextField}
-                                    label="Name"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="category"
-                                    component={CategorySearchField}
-                                    label="Category"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="address"
-                                    component={TextField}
-                                    label="Address"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="guide"
-                                    component={TextField}
-                                    label="Guide"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="phone"
-                                    component={TextField}
-                                    label="Phone"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="contactName"
-                                    component={TextField}
-                                    label="Contact name"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="official"
-                                    component={TextField}
-                                    label="Official"
+                                    label="Наимование"
                                     fullWidth={true}
                                 />
                             </div>
-
                             <div>
                                 <FlatButton
-                                    label="Cancel"
+                                    label="Отменить"
                                     primary={true}
                                     onTouchTap={onClose}
                                 />
 
                                 <FlatButton
-                                    label="Apply"
+                                    label="Отправить"
                                     primary={true}
                                     type="submit"
                                     keyboardFocused={true}
                                 />
                             </div>
                         </div>
-                    </Col>
-                    <Col xs={7} className={classes.map}>
-                        <Field
-                            name="latLng"
-                            component={LocationField}
-                            fullWidth={true}
-                        />
-                    </Col>
                 </div>
             </form>
         </Dialog>
     )
 })
 
-ShopCreateDialog.propTyeps = {
+CategoryCreateDialog.propTypes = {
+    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    errors: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
-export default ShopCreateDialog
+CategoryCreateDialog.defaultProps = {
+    isUpdate: false
+}
+
+export default CategoryCreateDialog
