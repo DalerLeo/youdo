@@ -21,3 +21,8 @@ export const CATEGORY = 'category'
 export const CATEGORY_LIST_URL = `/${CATEGORY}`
 export const CATEGORY_ITEM_URL = `${CATEGORY_LIST_URL}/:categoryId`
 export const CATEGORY_ITEM_PATH = `${CATEGORY}/%d`
+
+export const PROVIDER = 'provider'
+export const PROVIDER_LIST_URL = `/${PROVIDER}`
+export const PROVIDER_ITEM_URL = `${PROVIDER_LIST_URL}/:providerId`
+export const PROVIDER_ITEM_PATH = `${PROVIDER}/%d`
