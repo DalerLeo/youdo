@@ -1,10 +1,11 @@
 import React from 'react'
-import {compose} from 'recompose'
+import _ from 'lodash'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import * as PATH from '../../constants/api'
 import Dropzone from 'react-dropzone'
 import axios from '../../helpers/axios'
-import toCamelCase from '../../helpers/toCamelCase'
+import CircularProgress from 'material-ui/CircularProgress'
 
 const enhance = compose(
     injectSheet({
@@ -28,31 +29,43 @@ const enhance = compose(
             color: 'red'
         }
     }),
+    withState('fileUploadLoading', 'setFileUploadLoading', false),
+    withState('fileUploadErrors', 'setFileUploadErrors', [])
 )
-const onDrop = () => {
-    return axios().put(PATH.FILE_UPLOAD)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
-        })
-}
 
-const ImageUploadField = ({classes, location, setLocation, input, meta: {error}}) => {
+const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, setFileUploadErrors, fileUploadErrors}) => {
+    const onDrop = (files) => {
+        const formData = new FormData()
+        const firstElement = 0
+        setFileUploadLoading(true)
+        formData.append('a', files[firstElement])
+        return axios().post(PATH.FILE_UPLOAD, formData)
+            .then((response) => {
+                setFileUploadLoading(false)
+                setFileUploadErrors([])
+            }).catch((error) => {
+                const errorData = _.get(error, ['response', 'data'])
+                setFileUploadErrors(errorData)
+                setFileUploadLoading(false)
+            })
+    }
+
+    const dropZoneView = ({acceptedFiles, rejectedFiles}) => {
+        if (fileUploadLoading) {
+            return (<CircularProgress size={80} thickness={5}/>)
+        }
+
+        return acceptedFiles.length || rejectedFiles.length
+            ? `Accepted ${acceptedFiles.length}, rejected ${rejectedFiles.length} files`
+            : 'Try dropping some files'
+    }
+
     return (
         <div className={classes.wrapper}>
             <Dropzone
                 onDrop={onDrop}
                 accept="image/jpeg, image/png">
-                {({isDragActive, isDragReject, acceptedFiles, rejectedFiles}) => {
-                    if (isDragActive) {
-                        return 'This file is authorized'
-                    }
-                    if (isDragReject) {
-                        return 'This file is not authorized'
-                    }
-                    return acceptedFiles.length || rejectedFiles.length
-                        ? `Accepted ${acceptedFiles.length}, rejected ${rejectedFiles.length} files`
-                        : 'Try dropping some files'
-                }}
+                {dropZoneView}
             </Dropzone>
         </div>
     )
