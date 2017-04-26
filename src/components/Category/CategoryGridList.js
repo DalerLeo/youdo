@@ -102,7 +102,7 @@ const CategoryGridList = enhance((props) => {
         const iconButton = (
             <IconButton style={{padding: '0 12px', height: 'auto'}}>
                 <MoreVertIcon />
-            </IconButton>    
+            </IconButton>
         )
         return (
             <Row key={id} style={{alignItems: 'center'}}>
