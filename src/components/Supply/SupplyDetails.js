@@ -91,7 +91,7 @@ const tooltipPosition = 'bottom-center'
 
 const SupplyDetails = enhance((props) => {
     const {classes, loading, data, tabData, confirmDialog, handleOpenUpdateDialog} = props
-    const name = _.get(data, 'name') || 'N/A'
+    const deliveryComp = _.get(data, 'deliveryComp') || 'N/A'
     const type = _.get(data, 'categoryName') || 'N/A'
     const address = _.get(data, 'address') || 'N/A'
     const guide = _.get(data, 'guide') || 'N/A'
@@ -115,7 +115,7 @@ const SupplyDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <Col className={classes.leftSide} xs={6} md={4}>
                 <div className={classes.title}>
-                    <div className={classes.titleLabel}>{name}</div>
+                    <div className={classes.titleLabel}>{deliveryComp}</div>
                     <div className={classes.titleButtons}>
                         <IconButton
                             iconStyle={iconStyle.icon}

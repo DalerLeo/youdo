@@ -4,12 +4,12 @@ import {orderingSnakeCase} from '../helpers/serializer'
 export const createSerializer = (data) => {
     const deliveryComp = _.get(data, ['deliveryComp'])
     const delivery = _.get(data, ['delivery'])
-    const numberStock = _.get(data, ['numberStock'])
-    const deliveryDate = _.get(data, ['deliveryDate'])
+    const nameStock = _.get(data, ['nameStock'])
+    const toDate = _.get(data, ['toDate'])
     const typePayment = _.get(data, ['typePayment'])
     const additionalDescription = _.get(data, ['additionalDescription'])
-    const additionalExpensive = _.get(data, ['additionalExpensive'])
-    const additionalTypePayment = _.get(data, ['additionalTypePayment'])
+    const additionalCost = _.get(data, ['additionalExpensive'])
+    const additionalPaymentType = _.get(data, ['additionalPaymentType'])
     const productList = _.get(data, ['productList'])
 
     return {
@@ -19,8 +19,8 @@ export const createSerializer = (data) => {
         toDate,
         typePayment,
         additionalDescription,
-        additionalExpensive,
-        additionalTypePayment,
+        additionalCost,
+        additionalPaymentType,
         productList
     }
 }

@@ -4,10 +4,9 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import {Col} from 'react-flexbox-grid'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
-import SelectField from 'material-ui/SelectField'
-import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import FlatButton from 'material-ui/FlatButton'
@@ -19,25 +18,22 @@ import {
     TableRow,
     TableRowColumn
 } from 'material-ui/Table'
-import {reduxForm, SubmissionError} from 'redux-form'
-import TextField from 'material-ui/TextField'
 import DeleteIcon from '../DeleteIcon'
 import CloseIcon2 from '../CloseIcon2'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
 import SupplySearchField from '../ReduxForm/SupplySearchField'
 import StockSearchField from '../ReduxForm/StockSearchField'
+import ProductTypeSearchField from '../ReduxForm/ProductTypeSearchField'
 import DateToDateField from '../ReduxForm/DateToDateField'
 import PaymentTypeSearchField from '../ReduxForm/PaymentTypeSearchField'
+import {TextField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
     throw new SubmissionError({
         ...errors,
-        latLng,
         _error: nonFieldErrors
     })
 }
@@ -118,10 +114,19 @@ const enhance = compose(
             marginTop: '20px',
             '& > div': {
                 marginTop: '-20px !important',
-                marginRight: '20px'
+                marginRight: '20px',
+                height: '72px !important',
+                '& input': {
+                    height: '75px !important'
+                }
             },
-            '& > div:first-child': {
-                width: '110% !important'
+            '& > button > div > span': {
+                padding: '0 !important',
+                textTransform: 'inherit !important',
+                fontSize: '16px'
+            },
+            '& > div:last-child': {
+                width: '100% !important'
             },
             '& button': {
                 marginTop: '10px !important'
@@ -196,6 +201,14 @@ const enhance = compose(
         right: {
             borderLeft: '1px solid #efefef',
             padding: '0 0 10px 20px'
+        },
+        span: {
+            '& div > span': {
+                padding: '0 5px !important',
+                textTransform: 'inherit !important',
+                fontSize: '16px !important',
+                color: '#12aaeb !important'
+            }
         }
     }),
     withState('state', 'setState', false),
@@ -208,120 +221,45 @@ const tableData = [
     {
         name: 'John Smith',
         status: 'Employed',
-        selected: true,
+        selected: true
     },
     {
         name: 'Randal White',
-        status: 'Unemployed',
+        status: 'Unemployed'
     },
     {
         name: 'Stephanie Sanders',
         status: 'Employed',
-        selected: true,
+        selected: true
     },
     {
         name: 'Steve Brown',
-        status: 'Employed',
+        status: 'Employed'
     },
     {
         name: 'Joyce Whitten',
-        status: 'Employed',
+        status: 'Employed'
     },
     {
         name: 'Samuel Roberts',
-        status: 'Employed',
+        status: 'Employed'
     },
     {
         name: 'Randal White',
-        status: 'Unemployed',
+        status: 'Unemployed'
     },
     {
         name: 'Stephanie Sanders',
         status: 'Employed',
-        selected: true,
+        selected: true
     },
     {
         name: 'Steve Brown',
-        status: 'Employed',
-    },
-    {
-        name: 'Joyce Whitten',
-        status: 'Employed',
-    },
-    {
-        name: 'Samuel Roberts',
-        status: 'Employed',
-    },
-    {
-        name: 'Randal White',
-        status: 'Unemployed',
-    },
-    {
-        name: 'Stephanie Sanders',
-        status: 'Employed',
-        selected: true,
-    },
-    {
-        name: 'Steve Brown',
-        status: 'Employed',
-    },
-    {
-        name: 'Joyce Whitten',
-        status: 'Employed',
-    },
-    {
-        name: 'Samuel Roberts',
-        status: 'Employed',
-    },
-    {
-        name: 'Randal White',
-        status: 'Unemployed',
-    },
-    {
-        name: 'Stephanie Sanders',
-        status: 'Employed',
-        selected: true,
-    },
-    {
-        name: 'Steve Brown',
-        status: 'Employed',
-    },
-    {
-        name: 'Joyce Whitten',
-        status: 'Employed',
-    },
-    {
-        name: 'Samuel Roberts',
-        status: 'Employed',
-    },
-    {
-        name: 'Randal White',
-        status: 'Unemployed',
-    },
-    {
-        name: 'Stephanie Sanders',
-        status: 'Employed',
-        selected: true,
-    },
-    {
-        name: 'Steve Brown',
-        status: 'Employed',
-    },
-    {
-        name: 'Joyce Whitten',
-        status: 'Employed',
-    },
-    {
-        name: 'Samuel Roberts',
-        status: 'Employed',
-    },
-    {
-        name: 'Adam Moore',
-        status: 'Employed',
+        status: 'Employed'
     }
 ]
 const customContentStyle = {
-    width: '900px',
+    width: '1000px',
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
@@ -394,25 +332,26 @@ const SupplyCreateDialog = enhance((props) => {
                     <Col md={8} className={classes.right}>
                         <div>
                             <div className={classes.title}>List of production</div>
-                            <FlatButton label="+ add product" style={{color: '#12aaeb'}} onClick={() => setState(!state)} />
+                            <FlatButton
+                                label="+ добавить товар"
+                                style={{color: '#12aaeb'}}
+                                onClick={() => setState(!state)}
+                                className={classes.span}/>
                         </div>
                         {state && <div className={classes.background}>
-                            <SelectField
-                                floatingLabelText="Payment type"
-                                value="No">
-                                <MenuItem value={null} primaryText=""/>
-                                <MenuItem value={false} primaryText="No"/>
-                                <MenuItem value={true} primaryText="Yes"/>
-                            </SelectField>
-                            <TextField
-                                hintText="Amount"
-                                floatingLabelText="Amount"
-                            />
-                            <TextField
-                                hintText="Total Cost"
-                                floatingLabelText="Total Cost"
-                            />
-                            <FlatButton label="Apply" style={{color: '#12aaeb'}}/>
+                            <Field
+                                name="nameProduct"
+                                component={ProductTypeSearchField}
+                                label="Наименование товара"/>
+                            <Field
+                                name="amount"
+                                component={TextField}
+                                label="Кол-во"/>
+                            <Field
+                                name="cost"
+                                component={TextField}
+                                label="Сумма(UZS)"/>
+                            <FlatButton label="Применить" style={{color: '#12aaeb'}}/>
                         </div>}
                         <div className={classes.table}>
                             <Table
@@ -425,9 +364,10 @@ const SupplyCreateDialog = enhance((props) => {
                                     enableSelectAll={false}
                                     className={classes.title}>
                                     <TableRow className={classes.tableRow}>
-                                        <TableHeaderColumn className={classes.tableTitle}>Name</TableHeaderColumn>
-                                        <TableHeaderColumn className={classes.tableTitle}>Status</TableHeaderColumn>
-                                        <TableHeaderColumn className={classes.tableTitle}>Cost</TableHeaderColumn>
+                                        <TableHeaderColumn
+                                            className={classes.tableTitle}>Наименование</TableHeaderColumn>
+                                        <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
+                                        <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
                                         <TableHeaderColumn className={classes.tableTitle}></TableHeaderColumn>
                                     </TableRow>
                                 </TableHeader>
@@ -455,31 +395,34 @@ const SupplyCreateDialog = enhance((props) => {
                 </div>
                 <div className={classes.bottom}>
                     <div>
-                        <span className={classes.title}>Additional delivery costs</span>
-                        <FlatButton label="+ Add expense" style={{color: '#12aaeb'}}></FlatButton>
+                        <span className={classes.title}>Дополнительные раскоды по поставке</span>
+                        <FlatButton
+                            label="+ Добавить расход"
+                            style={{color: '#12aaeb'}}
+                            className={classes.span}/>
                     </div>
                     <div className={classes.background}>
-                        <TextField
-                            hintText="Flow description"
-                            floatingLabelText="Flow description"
-                        />
-                        <TextField
-                            hintText="Total Cost"
-                            floatingLabelText="Total Cost"
-                        />
-                        <SelectField
-                            floatingLabelText="Currency"
-                            value="USA">
-                            <MenuItem value={null} primaryText=""/>
-                            <MenuItem value={false} primaryText="UZS"/>
-                            <MenuItem value={true} primaryText="USA"/>
-                        </SelectField>
-                        <FlatButton label="Apply" style={{color: '#12aaeb'}}/>
+                        <Field
+                            name="additionalDescription"
+                            component={TextField}
+                            label="Описания раскода"/>
+                        <Field
+                            name="additionalCost"
+                            component={TextField}
+                            label="Сумма"/>
+                        <Field
+                            name="additionalPaymentType"
+                            component={PaymentTypeSearchField}
+                            label="Валюта"/>
+                        <FlatButton
+                            label="Применить"
+                            style={{color: '#12aaeb'}}
+                            className={classes.span}/>
                     </div>
                     <div className={classes.total}>
                         <div>
-                            <div className={classes.title}>Description</div>
-                            <span className={classes.title}>Total Cost</span>
+                            <div className={classes.title}>Описание</div>
+                            <span className={classes.title}>Сумма</span>
                         </div>
                         <div>
                             <div>asjdlakj lkjslj asdas das da asd</div>
@@ -487,7 +430,10 @@ const SupplyCreateDialog = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.checkout}>
-                        <FlatButton label="Checkout" style={{color: '#12aaeb'}}/>
+                        <FlatButton
+                            label="Оформить заказ"
+                            type="submit"
+                            className={classes.span}/>
                     </div>
                 </div>
             </form>
