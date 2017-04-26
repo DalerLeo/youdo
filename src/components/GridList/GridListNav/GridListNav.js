@@ -8,18 +8,28 @@ import GridListNavSearch from '../GridListNavSearch'
 
 const GridListNav = ({classes, filter, filterDialog, actions}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
+    const filterIsEmpty = _.isEmpty(filterDialog)
 
     return (
         <div className={classes.wrapper}>
-            {selectIsEmpty && <Row>
+            {(selectIsEmpty && filterIsEmpty) && <Row>
+                <Col xs={6}>
+                    <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>
+                </Col>
+                <Col xs={6}>
+                    <GridListNavPagination filter={filter}/>
+                </Col>
+            </Row>}
+
+            {(selectIsEmpty && !filterIsEmpty) && <Row>
                 <Col xs={4}>
                     {filterDialog}
                 </Col>
                 <Col xs={4}>
-                    <GridListNavSearch filter={filter} />
+                    <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>
                 </Col>
                 <Col xs={4}>
-                    <GridListNavPagination filter={filter} />
+                    <GridListNavPagination filter={filter}/>
                 </Col>
             </Row>}
 

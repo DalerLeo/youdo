@@ -60,7 +60,6 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const categoryId = _.get(nextProps, ['params', 'categoryId'])
-
         return categoryId && _.get(props, ['params', 'categoryId']) !== categoryId
     }, ({dispatch, params}) => {
         const categoryId = _.toInteger(_.get(params, 'categoryId'))
@@ -147,9 +146,12 @@ const enhance = compose(
                 })
         },
 
-        handleOpenUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CATEGORY_UPDATE_DIALOG_OPEN]: true})})
+        handleOpenUpdateDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.CATEGORY_ITEM_PATH, id),
+                query: filter.getParams({[CATEGORY_UPDATE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseUpdateDialog: props => () => {
@@ -226,21 +228,8 @@ const CategoryList = enhance((props) => {
             if (!detail) {
                 return {}
             }
-
             return {
-                name: _.get(detail, 'name'),
-                category: {
-                    value: _.get(detail, 'category')
-                },
-                address: _.get(detail, 'address'),
-                guide: _.get(detail, 'guide'),
-                phone: _.get(detail, 'phone'),
-                contactName: _.get(detail, 'contactName'),
-                official: _.get(detail, 'official'),
-                latLng: {
-                    lat: _.get(detail, 'lat'),
-                    lng: _.get(detail, 'lon')
-                }
+                name: _.get(detail, 'name')
             }
         })(),
         updateLoading: detailLoading || updateLoading,

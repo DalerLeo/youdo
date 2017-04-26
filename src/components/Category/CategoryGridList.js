@@ -19,6 +19,11 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Edit from 'material-ui/svg-icons/image/edit'
+
 const listHeader = [
     {
         sorting: true,
@@ -34,9 +39,15 @@ const listHeader = [
     },
     {
         sorting: true,
-        xs: 4,
+        xs: 3,
         name: 'created_date',
         title: 'Дата создания'
+    },
+    {
+        sorting: false,
+        xs: 1,
+        name: 'actions',
+        title: ''
     }
 ]
 
@@ -90,12 +101,21 @@ const CategoryGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
-            <Row key={id}>
+            <Row key={id} style={{alignItems: 'center'}}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={6}>
                         {name}
                 </Col>
-                <Col xs={4}>{createdDate}</Col>
+                <Col xs={3}>{createdDate}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>
+                    <IconMenu
+                        iconButtonElement={<IconButton style={{padding: '0 12px', height: 'auto'}}><MoreVertIcon /></IconButton>}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}} >
+                        <MenuItem primaryText="Изменить" leftIcon={<Edit />} onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }} />
+                        <MenuItem primaryText="Удалить " leftIcon={<DeleteIcon />} onTouchTap={confirmDialog.handleOpenConfirmDialog} />
+                    </IconMenu>
+                </Col>
             </Row>
         )
     })
@@ -135,6 +155,7 @@ const CategoryGridList = enhance((props) => {
             />
 
             <CategoryCreateDialog
+                isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}

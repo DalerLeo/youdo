@@ -19,4 +19,5 @@ export const PRODUCT_ITEM_PATH = `/${PRODUCT}/%d`
 
 export const CATEGORY = 'category'
 export const CATEGORY_LIST_URL = `/${CATEGORY}`
-export const CATEGORY_ITEM_PATH = `/${CATEGORY}/%d`
+export const CATEGORY_ITEM_URL = `${CATEGORY_LIST_URL}/:categoryId`
+export const CATEGORY_ITEM_PATH = `${CATEGORY}/%d`

@@ -82,7 +82,7 @@ const enhance = compose(
 )
 
 const CategoryCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -99,7 +99,7 @@ const CategoryCreateDialog = enhance((props) => {
                 </div>
                 <div className={classes.fields}>
                         <div>
-                            <h4 className={classes.title}>Add Category</h4>
+                            <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
                         </div>
                         <div>
                             <div>
@@ -112,13 +112,13 @@ const CategoryCreateDialog = enhance((props) => {
                             </div>
                             <div>
                                 <FlatButton
-                                    label="Cancel"
+                                    label="Отменить"
                                     primary={true}
                                     onTouchTap={onClose}
                                 />
 
                                 <FlatButton
-                                    label="Apply"
+                                    label="Отправить"
                                     primary={true}
                                     type="submit"
                                     keyboardFocused={true}
@@ -131,11 +131,16 @@ const CategoryCreateDialog = enhance((props) => {
     )
 })
 
-CategoryCreateDialog.propTyeps = {
+CategoryCreateDialog.propTypes = {
+    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
+}
+
+CategoryCreateDialog.defaultProps = {
+    isUpdate: false
 }
 
 export default CategoryCreateDialog

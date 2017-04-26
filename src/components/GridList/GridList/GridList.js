@@ -14,7 +14,6 @@ const enhance = compose(
             position: 'relative',
             paddingBottom: '35px'
         },
-
         header: {
             height: '100px'
         },
@@ -30,7 +29,7 @@ const enhance = compose(
 )
 
 const GridList = enhance((props) => {
-    const {classes, list, detail, filter, filterDialog, actionsDialog} = props
+    const {classes, list, detail, filter, filterDialog, actionsDialog, withoutCheckboxes} = props
     const header = _.get(list, 'header')
     const listItems = _.get(list, 'list')
     const loading = _.get(list, 'loading')
@@ -49,6 +48,7 @@ const GridList = enhance((props) => {
                 filter={filter}
                 list={listItems}
                 detail={detail}
+                withoutCheckboxes={withoutCheckboxes}
             />
         )
     }
@@ -64,6 +64,7 @@ const GridList = enhance((props) => {
                 <GridListHeader
                     filter={filter}
                     listIds={listIds}
+                    withoutCheckboxes={withoutCheckboxes}
                     column={header}
                 />
             </div>
@@ -74,6 +75,7 @@ const GridList = enhance((props) => {
 
 GridList.propTypes = {
     filter: PropTypes.object.isRequired,
+    withoutCheckboxes: PropTypes.bool,
     list: PropTypes.shape({
         header: PropTypes.array.isRequired,
         list: PropTypes.array.isRequired,
@@ -81,7 +83,11 @@ GridList.propTypes = {
     }),
     detail: PropTypes.node.isRequired,
     actionsDialog: PropTypes.node.isRequired,
-    filterDialog: PropTypes.node.isRequired
+    filterDialog: PropTypes.node
+}
+
+GridList.defaultProps = {
+    withoutCheckboxes: false
 }
 
 export default GridList

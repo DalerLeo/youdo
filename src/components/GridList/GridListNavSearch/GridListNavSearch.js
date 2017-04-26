@@ -19,6 +19,10 @@ const enhance = compose(
                 paddingRight: '35px'
             }
         },
+        filterEmptySearch: {
+            extend: 'search',
+            margin: '0 0 0 10px'
+        },
 
         searchButton: {
             position: 'absolute !important',
@@ -36,10 +40,10 @@ const enhance = compose(
     })
 )
 
-const GridListNavSearch = enhance(({classes, search, setSearch, onSubmit}) => {
+const GridListNavSearch = enhance(({classes, search, setSearch, onSubmit, filterIsEmpty}) => {
     return (
         <form onSubmit={onSubmit}>
-            <div className={classes.search}>
+            <div className={filterIsEmpty ? classes.filterEmptySearch : classes.search}>
                 <TextField
                     fullWidth={true}
                     hintText="Search"
@@ -58,7 +62,8 @@ const GridListNavSearch = enhance(({classes, search, setSearch, onSubmit}) => {
 })
 
 GridListNavSearch.propTypes = {
-    filter: PropTypes.object.isRequired
+    filter: PropTypes.object.isRequired,
+    filterIsEmpty: PropTypes.bool.isRequired
 }
 
 export default GridListNavSearch
