@@ -38,3 +38,5 @@ export const MEASUREMENT = 'dist/measurement'
 export const MEASUREMENT_CREATE = `/${MEASUREMENT}/add/`
 export const MEASUREMENT_LIST = `/${MEASUREMENT}/`
 export const MEASUREMENT_ITEM = `/${MEASUREMENT}/%d/`
+
+export const FILE_UPLOAD = '/file/file/'

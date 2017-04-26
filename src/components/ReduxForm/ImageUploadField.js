@@ -1,8 +1,10 @@
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {API_URL} from '../../constants/api'
+import * as PATH from '../../constants/api'
 import Dropzone from 'react-dropzone'
+import axios from '../../helpers/axios'
+import toCamelCase from '../../helpers/toCamelCase'
 
 const enhance = compose(
     injectSheet({
@@ -27,11 +29,19 @@ const enhance = compose(
         }
     }),
 )
+const onDrop = () => {
+    return axios().put(PATH.FILE_UPLOAD)
+        .then(({data}) => {
+            return Promise.resolve(toCamelCase(data))
+        })
+}
 
 const ImageUploadField = ({classes, location, setLocation, input, meta: {error}}) => {
     return (
         <div className={classes.wrapper}>
-            <Dropzone onDrop={}>
+            <Dropzone
+                onDrop={onDrop}
+                accept="image/jpeg, image/png">
                 {({isDragActive, isDragReject, acceptedFiles, rejectedFiles}) => {
                     if (isDragActive) {
                         return 'This file is authorized'
