@@ -50,10 +50,11 @@ export const STOCK_CREATE = `/${STOCK}/add/`
 export const STOCK_LIST = `/${STOCK}/`
 export const STOCK_ITEM = `/${STOCK}/%d/`
 
-export const PAYMNET_TYPE = 'dist/payment'
-export const PAYMNET_TYPE_CREATE = `/${PAYMNET_TYPE}/add/`
-export const PAYMNET_TYPE_LIST = `/${PAYMNET_TYPE}/`
-export const PAYMNET_TYPE_ITEM = `/${PAYMNET_TYPE}/%d/`
+export const CURRENCY = 'currency/currencies'
+export const CURRENCY_CREATE = `/${CURRENCY}/add/`
+export const CURRENCY_LIST = `/${CURRENCY}/`
+export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
 
 export const PROVIDER = 'dist/provider'
 export const PROVIDER_LIST = `/${PROVIDER}/`
+export const PROVIDER_ITEM = `/${PROVIDER}/%d/`

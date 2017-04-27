@@ -20,12 +20,7 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../DeleteIcon'
 import CloseIcon2 from '../CloseIcon2'
-import ProviderSearchField from '../ReduxForm/ProviderSearchField'
-import StockSearchField from '../ReduxForm/StockSearchField'
-import ProductTypeSearchField from '../ReduxForm/ProductTypeSearchField'
-import DateToDateField from '../ReduxForm/DateToDateField'
-import PaymentTypeSearchField from '../ReduxForm/PaymentTypeSearchField'
-import {TextField} from '../ReduxForm'
+import {CurrencySearchField, ProviderSearchField, StockSearchField, TextField, DateField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -288,7 +283,7 @@ const SupplyCreateDialog = enhance((props) => {
                             <div className={classes.title}>Выбор поставщика</div>
                             <div className={classes.selectContent}>
                                 <Field
-                                    name="deliveryComp"
+                                    name="provider"
                                     component={ProviderSearchField}
                                     label="Поставщик"
                                     fullWidth={true}/>
@@ -303,28 +298,23 @@ const SupplyCreateDialog = enhance((props) => {
                                         label="Ashurov Anvar"
                                     />
                                 </RadioButtonGroup>
-                                <Field
-                                    name="nameStock"
-                                    component={StockSearchField}
-                                    label="Склад назначения"
-                                    fullWidth={true}/>
                             </div>
                             <div className={classes.title}>Условия доставки</div>
                             <div className={classes.selectContent}>
                                 <Field
-                                    name="nameStock"
+                                    name="stock"
                                     component={StockSearchField}
                                     label="Склад назначения"
                                     fullWidth={true}/>
                                 <Field
                                     name="toDate"
-                                    component={DateToDateField}
-                                    label="Дата поставки "
+                                    component={DateField}
+                                    hintText="Дата поставки "
                                     fullWidth={true}/>
                                 <Field
                                     name="paymentType"
-                                    component={PaymentTypeSearchField}
-                                    label="Валюта оплаты "
+                                    component={CurrencySearchField}
+                                    label="Валюта оплаты"
                                     fullWidth={true}/>
                             </div>
                         </div>
@@ -411,8 +401,8 @@ const SupplyCreateDialog = enhance((props) => {
                             component={TextField}
                             label="Сумма"/>
                         <Field
-                            name="additionalPaymentType"
-                            component={PaymentTypeSearchField}
+                            name="additionalCurrency"
+                            component={CurrencySearchField}
                             label="Валюта"/>
                         <FlatButton
                             label="Применить"

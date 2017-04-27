@@ -13,7 +13,7 @@ const getOptions = (search) => {
 }
 
 const getItem = (id) => {
-    return axios().get(sprintf(PATH.SUPPLY_ITEM, id))
+    return axios().get(sprintf(PATH.PROVIDER_ITEM, id))
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))
         })
