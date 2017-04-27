@@ -21,3 +21,8 @@ export const CATEGORY = 'category'
 export const CATEGORY_LIST_URL = `/${CATEGORY}`
 export const CATEGORY_ITEM_URL = `${CATEGORY_LIST_URL}/:categoryId`
 export const CATEGORY_ITEM_PATH = `${CATEGORY}/%d`
+
+export const CURRENCY = 'currency'
+export const CURRENCY_LIST_URL = `/${CURRENCY}`
+export const CURRENCY_ITEM_URL = `${CURRENCY_LIST_URL}/:currencyId`
+export const CURRENCY_ITEM_PATH = `${CURRENCY}/%d`

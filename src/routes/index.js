@@ -7,6 +7,7 @@ import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
+import {CurrencyList} from '../containers/Currency'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -57,6 +58,17 @@ export default {
                 {
                     path: ROUTES.CATEGORY_ITEM_URL,
                     component: userIsAuth(CategoryList)
+                }
+            ]
+        },
+        // Currency
+        {
+            path: ROUTES.CURRENCY_LIST_URL,
+            component: userIsAuth(CurrencyList),
+            childRoutes: [
+                {
+                    path: ROUTES.CURRENCY_ITEM_URL,
+                    component: userIsAuth(CurrencyList)
                 }
             ]
         },
