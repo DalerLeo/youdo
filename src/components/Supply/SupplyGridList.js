@@ -120,7 +120,7 @@ const SupplyGridList = enhance((props) => {
     )
 
     const supplyList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id') || -1
+        const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const phone = _.get(item, 'phone') || 'N/A'
         const address = _.get(item, 'address') || 'N/A'

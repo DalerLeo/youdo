@@ -12,8 +12,10 @@ import ProviderSearchField from './ProviderSearchField'
 import StockSearchField from './StockSearchField'
 import ImageUploadField from './ImageUploadField'
 import DateField from './DateField'
+import ProductSearchField from './ProductSearchField'
 
 export {
+    ProductSearchField,
     DateField,
     CheckBox,
     TextField,

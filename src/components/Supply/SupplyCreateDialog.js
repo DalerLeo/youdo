@@ -20,7 +20,7 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../DeleteIcon'
 import CloseIcon2 from '../CloseIcon2'
-import {CurrencySearchField, ProviderSearchField, StockSearchField, TextField, DateField} from '../ReduxForm'
+import {CurrencySearchField, ProviderSearchField, StockSearchField, TextField, DateField, ProductSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -331,7 +331,7 @@ const SupplyCreateDialog = enhance((props) => {
                         {state && <div className={classes.background}>
                             <Field
                                 name="nameProduct"
-                                component={ProductTypeSearchField}
+                                component={ProductSearchField}
                                 label="Наименование товара"/>
                             <Field
                                 name="amount"
