@@ -61,6 +61,3 @@ export const CURRENCY_CREATE = `/${CURRENCY}/add/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
 
-export const PROVIDER = 'dist/provider'
-export const PROVIDER_LIST = `/${PROVIDER}/`
-export const PROVIDER_ITEM = `/${PROVIDER}/%d/`
