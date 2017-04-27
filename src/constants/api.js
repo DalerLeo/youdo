@@ -24,6 +24,12 @@ export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
+export const SUPPLY = 'dist/supply'
+export const SUPPLY_CREATE = `/${SUPPLY}/`
+export const SUPPLY_LIST = `/${SUPPLY}/`
+export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
+export const SUPPLY_DELETE = `/${SUPPLY}/%d/`
+
 export const PRODUCT = 'dist/product'
 export const PRODUCT_CREATE = `/${PRODUCT}/`
 export const PRODUCT_LIST = `/${PRODUCT}/`
@@ -44,3 +50,17 @@ export const MEASUREMENT = 'dist/measurement'
 export const MEASUREMENT_CREATE = `/${MEASUREMENT}/add/`
 export const MEASUREMENT_LIST = `/${MEASUREMENT}/`
 export const MEASUREMENT_ITEM = `/${MEASUREMENT}/%d/`
+
+export const STOCK = 'dist/stock'
+export const STOCK_CREATE = `/${STOCK}/add/`
+export const STOCK_LIST = `/${STOCK}/`
+export const STOCK_ITEM = `/${STOCK}/%d/`
+
+export const CURRENCY = 'currency/currencies'
+export const CURRENCY_CREATE = `/${CURRENCY}/add/`
+export const CURRENCY_LIST = `/${CURRENCY}/`
+export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
+
+export const PROVIDER = 'dist/provider'
+export const PROVIDER_LIST = `/${PROVIDER}/`
+export const PROVIDER_ITEM = `/${PROVIDER}/%d/`

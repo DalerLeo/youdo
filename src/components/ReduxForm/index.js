@@ -7,9 +7,17 @@ import CategorySearchField from './CategorySearchField'
 import ProductTypeSearchField from './ProductTypeSearchField'
 import BrandSearchField from './BrandSearchField'
 import MeasurementSearchField from './MeasurementSearchField'
+import CurrencySearchField from './CurrencySearchField'
+import ProviderSearchField from './ProviderSearchField'
+import StockSearchField from './StockSearchField'
 import ImageUploadField from './ImageUploadField'
+import DateField from './DateField'
+import ProductSearchField from './ProductSearchField'
+import SupplyListProductField from './SupplyListProductField'
 
 export {
+    ProductSearchField,
+    DateField,
     CheckBox,
     TextField,
     DateToDateField,
@@ -19,5 +27,9 @@ export {
     ProductTypeSearchField,
     BrandSearchField,
     MeasurementSearchField,
-    ImageUploadField
+    ImageUploadField,
+    CurrencySearchField,
+    ProviderSearchField,
+    StockSearchField,
+    SupplyListProductField
 }
