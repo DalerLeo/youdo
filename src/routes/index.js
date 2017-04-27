@@ -71,6 +71,10 @@ export default {
             path: ROUTES.CATEGORY_LIST_URL,
             component: userIsAuth(CategoryList),
             childRoutes: [
+                {
+                    path: ROUTES.CATEGORY_ITEM_URL,
+                    component: userIsAuth(CategoryList)
+                }
             ]
         },
 

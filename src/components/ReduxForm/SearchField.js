@@ -10,6 +10,34 @@ import excludeObjKey from '../../helpers/excludeObjKey'
 
 const DELAY_FOR_TYPE_ATTACK = 300
 
+const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
+    dispatch({loading: true})
+
+    getOptions(state.text)
+        .then((data) => {
+            return _.map(data, (item) => {
+                return {
+                    text: getText(item),
+                    value: getValue(item)
+                }
+            })
+        })
+        .then((data) => {
+            dispatch({dataSource: data, loading: false})
+        })
+}
+
+const fetchItem = (props) => {
+    const {dispatch, getItem, getItemText} = props
+    const id = _.get(props, ['input', 'value', 'value'])
+
+    id && getItem(id)
+        .then(data => {
+            return getItemText(data)
+        })
+        .then(data => dispatch({text: data}))
+}
+
 const errorStyle = {
     textAlign: 'left'
 }
@@ -32,37 +60,13 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
-    }, _.debounce(({state, dispatch, getOptions, getText, getValue}) => {
-        dispatch({loading: true})
-
-        getOptions(state.text)
-            .then((data) => {
-                return _.map(data, (item) => {
-                    return {
-                        text: getText(item),
-                        value: getValue(item)
-                    }
-                })
-            })
-            .then((data) => {
-                dispatch({dataSource: data, loading: false})
-            })
-    }, DELAY_FOR_TYPE_ATTACK)),
+    }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
 
     withPropsOnChange((props, nextProps) => {
         const value = _.get(props, ['input', 'value', 'value'])
         const nextValue = _.get(nextProps, ['input', 'value', 'value'])
         return nextValue && value !== nextValue
-    }, (props) => {
-        const {dispatch, getItem, getItemText} = props
-        const id = _.get(props, ['input', 'value', 'value'])
-
-        id && getItem(id)
-            .then(data => {
-                return getItemText(data)
-            })
-            .then(data => dispatch({text: data}))
-    })
+    }, (props) => fetchItem(props))
 )
 
 const SearchField = enhance((props) => {
