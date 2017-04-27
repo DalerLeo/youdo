@@ -29,7 +29,8 @@ export const MenuItems = [
         icon: (<Home />),
         url: ROUTES.PRODUCT_LIST_URL,
         childs: [
-            {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL}
+            {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL},
+            {name: 'Поставки', url: ROUTES.SUPPLY_LIST_URL}
         ]
     },
     {
