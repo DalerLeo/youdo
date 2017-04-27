@@ -13,6 +13,7 @@ import StockSearchField from './StockSearchField'
 import ImageUploadField from './ImageUploadField'
 import DateField from './DateField'
 import ProductSearchField from './ProductSearchField'
+import SupplyListProductField from './SupplyListProductField'
 
 export {
     ProductSearchField,
@@ -29,5 +30,6 @@ export {
     ImageUploadField,
     CurrencySearchField,
     ProviderSearchField,
-    StockSearchField
+    StockSearchField,
+    SupplyListProductField
 }

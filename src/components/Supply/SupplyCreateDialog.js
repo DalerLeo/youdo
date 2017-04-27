@@ -1,26 +1,24 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Col} from 'react-flexbox-grid'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import FlatButton from 'material-ui/FlatButton'
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn
-} from 'material-ui/Table'
-import DeleteIcon from '../DeleteIcon'
 import CloseIcon2 from '../CloseIcon2'
-import {CurrencySearchField, ProviderSearchField, StockSearchField, TextField, DateField, ProductSearchField} from '../ReduxForm'
+import {
+    CurrencySearchField,
+    ProviderSearchField,
+    StockSearchField,
+    SupplyListProductField,
+    TextField,
+    DateField
+} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -102,31 +100,6 @@ const enhance = compose(
                 width: '100% !important'
             }
         },
-        background: {
-            backgroundColor: '#f1f5f8',
-            display: 'flex',
-            padding: '10px',
-            marginTop: '20px',
-            '& > div': {
-                marginTop: '-20px !important',
-                marginRight: '20px',
-                height: '72px !important',
-                '& input': {
-                    height: '75px !important'
-                }
-            },
-            '& > button > div > span': {
-                padding: '0 !important',
-                textTransform: 'inherit !important',
-                fontSize: '16px'
-            },
-            '& > div:last-child': {
-                width: '100% !important'
-            },
-            '& button': {
-                marginTop: '10px !important'
-            }
-        },
         bottom: {
             '& > div:first-child': {
                 position: 'relative',
@@ -161,38 +134,6 @@ const enhance = compose(
                 right: '25px'
             }
         },
-        table: {
-            paddingTop: '20px'
-        },
-        tableTitle: {
-            fontWeight: 'bold',
-            color: 'black !important',
-            textAlign: 'left'
-        },
-        tableRow: {
-            borderBottom: '1px dashed #dadfe4 !important',
-            height: '40px !important',
-            '& td:first-child': {
-                width: '250px'
-            },
-            '& td': {
-                height: '40px !important',
-                padding: '0 5px !important'
-            },
-            '& th:first-child': {
-                width: '250px',
-                textAlign: 'left !important',
-                borderBottom: '1px dashed #dadfe4 !important',
-                fontWeight: 'bold !important'
-            },
-            '& th': {
-                textAlign: 'left !important',
-                height: '40px !important',
-                padding: '0 5px !important',
-                borderBottom: '1px dashed #dadfe4 !important',
-                fontWeight: 'bold !important'
-            }
-        },
         right: {
             borderLeft: '1px solid #efefef',
             padding: '0 0 10px 20px'
@@ -206,59 +147,18 @@ const enhance = compose(
             }
         }
     }),
-    withState('state', 'setState', false),
     reduxForm({
         form: 'SupplyCreateForm',
         enableReinitialize: true
     })
 )
-const tableData = [
-    {
-        name: 'John Smith',
-        status: 'Employed',
-        selected: true
-    },
-    {
-        name: 'Randal White',
-        status: 'Unemployed'
-    },
-    {
-        name: 'Stephanie Sanders',
-        status: 'Employed',
-        selected: true
-    },
-    {
-        name: 'Steve Brown',
-        status: 'Employed'
-    },
-    {
-        name: 'Joyce Whitten',
-        status: 'Employed'
-    },
-    {
-        name: 'Samuel Roberts',
-        status: 'Employed'
-    },
-    {
-        name: 'Randal White',
-        status: 'Unemployed'
-    },
-    {
-        name: 'Stephanie Sanders',
-        status: 'Employed',
-        selected: true
-    },
-    {
-        name: 'Steve Brown',
-        status: 'Employed'
-    }
-]
+
 const customContentStyle = {
     width: '1000px',
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, state, setState, onClose, classes} = props
+    const {open, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -300,14 +200,14 @@ const SupplyCreateDialog = enhance((props) => {
                                 </RadioButtonGroup>
                             </div>
                             <div className={classes.title}>Условия доставки</div>
-                            <div className={classes.selectContent}>
+                            <div>
                                 <Field
                                     name="stock"
                                     component={StockSearchField}
                                     label="Склад назначения"
                                     fullWidth={true}/>
                                 <Field
-                                    name="toDate"
+                                    name="deliveryDate"
                                     component={DateField}
                                     hintText="Дата поставки "
                                     fullWidth={true}/>
@@ -320,67 +220,10 @@ const SupplyCreateDialog = enhance((props) => {
                         </div>
                     </Col>
                     <Col md={8} className={classes.right}>
-                        <div>
-                            <div className={classes.title}>Список товаров</div>
-                            <FlatButton
-                                label="+ добавить товар"
-                                style={{color: '#12aaeb'}}
-                                onClick={() => setState(!state)}
-                                className={classes.span}/>
-                        </div>
-                        {state && <div className={classes.background}>
-                            <Field
-                                name="nameProduct"
-                                component={ProductSearchField}
-                                label="Наименование товара"/>
-                            <Field
-                                name="amount"
-                                component={TextField}
-                                label="Кол-во"/>
-                            <Field
-                                name="cost"
-                                component={TextField}
-                                label="Сумма(UZS)"/>
-                            <FlatButton label="Применить" style={{color: '#12aaeb'}}/>
-                        </div>}
-                        <div className={classes.table}>
-                            <Table
-                                fixedHeader={true}
-                                fixedFooter={false}
-                                multiSelectable={false}>
-                                <TableHeader
-                                    displaySelectAll={false}
-                                    adjustForCheckbox={false}
-                                    enableSelectAll={false}
-                                    className={classes.title}>
-                                    <TableRow className={classes.tableRow}>
-                                        <TableHeaderColumn
-                                            className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                                        <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                                        <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
-                                        <TableHeaderColumn className={classes.tableTitle}></TableHeaderColumn>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody
-                                    displayRowCheckbox={false}
-                                    deselectOnClickaway={false}
-                                    showRowHover={false}
-                                    stripedRows={false}>
-                                    {tableData.map((row, index) => (
-                                        <TableRow key={index} selected={row.selected} className={classes.tableRow}>
-                                            <TableRowColumn>{row.name}</TableRowColumn>
-                                            <TableRowColumn>{row.status}</TableRowColumn>
-                                            <TableRowColumn>35 000</TableRowColumn>
-                                            <TableRowColumn>
-                                                <IconButton>
-                                                    <DeleteIcon color="#666666"/>
-                                                </IconButton>
-                                            </TableRowColumn>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </div>
+                        <Fields
+                            names={['products', 'productName', 'quantity', 'cost']}
+                            component={SupplyListProductField}
+                        />
                     </Col>
                 </div>
                 <div className={classes.bottom}>
