@@ -20,7 +20,7 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../DeleteIcon'
 import CloseIcon2 from '../CloseIcon2'
-import SupplySearchField from '../ReduxForm/SupplySearchField'
+import ProviderSearchField from '../ReduxForm/ProviderSearchField'
 import StockSearchField from '../ReduxForm/StockSearchField'
 import ProductTypeSearchField from '../ReduxForm/ProductTypeSearchField'
 import DateToDateField from '../ReduxForm/DateToDateField'
@@ -277,7 +277,7 @@ const SupplyCreateDialog = enhance((props) => {
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.titleContent}>
-                    <span>Add an order</span>
+                    <span>Добавления заказа</span>
                     <IconButton>
                         <CloseIcon2 color="#666666"/>
                     </IconButton>
@@ -285,11 +285,11 @@ const SupplyCreateDialog = enhance((props) => {
                 <div className={classes.underLine}>
                     <Col xs={4}>
                         <div className={classes.left}>
-                            <div className={classes.title}>Choose supplier</div>
+                            <div className={classes.title}>Выбор поставщика</div>
                             <div className={classes.selectContent}>
                                 <Field
                                     name="deliveryComp"
-                                    component={SupplySearchField}
+                                    component={ProviderSearchField}
                                     label="Поставщик"
                                     fullWidth={true}/>
                                 <RadioButtonGroup name="delivery" defaultSelected="not_light"
@@ -331,7 +331,7 @@ const SupplyCreateDialog = enhance((props) => {
                     </Col>
                     <Col md={8} className={classes.right}>
                         <div>
-                            <div className={classes.title}>List of production</div>
+                            <div className={classes.title}>Список товаров</div>
                             <FlatButton
                                 label="+ добавить товар"
                                 style={{color: '#12aaeb'}}

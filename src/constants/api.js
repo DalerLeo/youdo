@@ -54,3 +54,6 @@ export const PAYMNET_TYPE = 'dist/payment'
 export const PAYMNET_TYPE_CREATE = `/${PAYMNET_TYPE}/add/`
 export const PAYMNET_TYPE_LIST = `/${PAYMNET_TYPE}/`
 export const PAYMNET_TYPE_ITEM = `/${PAYMNET_TYPE}/%d/`
+
+export const PROVIDER = 'dist/provider'
+export const PROVIDER_LIST = `/${PROVIDER}/`

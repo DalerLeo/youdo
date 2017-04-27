@@ -6,7 +6,7 @@ import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.SUPPLY_LIST}?search=${search || ''}`)
+    return axios().get(`${PATH.PROVIDER_LIST}?search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -19,7 +19,7 @@ const getItem = (id) => {
         })
 }
 
-const SupplySearchField = (props) => {
+const ProviderSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -32,4 +32,4 @@ const SupplySearchField = (props) => {
     )
 }
 
-export default SupplySearchField
+export default ProviderSearchField
