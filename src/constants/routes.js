@@ -10,6 +10,13 @@ export const SHOP_ITEM_TAB_URL = `${SHOP_ITEM_URL}/:tab`
 export const SHOP_ITEM_PATH = `/${SHOP}/%d`
 export const SHOP_ITEM_TAB_PATH = `/${SHOP}/%d/%s`
 
+export const SUPPLY = 'supply'
+export const SUPPLY_LIST_URL = `/${SUPPLY}`
+export const SUPPLY_ITEM_URL = `${SUPPLY_LIST_URL}/:supplyId`
+export const SUPPLY_ITEM_TAB_URL = `${SUPPLY_ITEM_URL}/:tab`
+export const SUPPLY_ITEM_PATH = `/${SUPPLY}/%d`
+export const SUPPLY_ITEM_TAB_PATH = `/${SUPPLY}/%d/%s`
+
 export const ORDER = 'order'
 export const ORDER_HISTORY_LIST_URL = `/${ORDER}/history`
 
