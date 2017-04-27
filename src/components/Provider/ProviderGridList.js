@@ -92,7 +92,7 @@ const ProviderGridList = enhance((props) => {
     )
 
     const providerDetail = (
-        <span>a</span>
+        <span>Provider Details</span>
     )
 
     const providerList = _.map(_.get(listData, 'data'), (item) => {
