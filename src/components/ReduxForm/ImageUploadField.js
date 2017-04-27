@@ -1,3 +1,4 @@
+/* global FormData */
 import React from 'react'
 import _ from 'lodash'
 import {compose, withState} from 'recompose'
@@ -30,34 +31,45 @@ const enhance = compose(
         }
     }),
     withState('fileUploadLoading', 'setFileUploadLoading', false),
-    withState('fileUploadErrors', 'setFileUploadErrors', [])
+    withState('fileUploadErrors', 'setFileUploadErrors', null),
+    withState('uploadedImage', 'setUploadedImage', null)
 )
 
-const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, setFileUploadErrors, fileUploadErrors}) => {
+const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, setFileUploadErrors,
+    fileUploadErrors, setUploadedImage, uploadedImage}) => {
     const onDrop = (files) => {
         const formData = new FormData()
         const firstElement = 0
         setFileUploadLoading(true)
-        formData.append('a', files[firstElement])
+        formData.append('file', files[firstElement])
         return axios().post(PATH.FILE_UPLOAD, formData)
             .then((response) => {
                 setFileUploadLoading(false)
-                setFileUploadErrors([])
+                setFileUploadErrors(null)
+                setUploadedImage(response.data)
             }).catch((error) => {
                 const errorData = _.get(error, ['response', 'data'])
-                setFileUploadErrors(errorData)
+                setFileUploadErrors(errorData.file[firstElement])
                 setFileUploadLoading(false)
+                setUploadedImage(null)
             })
     }
 
     const dropZoneView = ({acceptedFiles, rejectedFiles}) => {
+        const zero = 0
         if (fileUploadLoading) {
             return (<CircularProgress size={80} thickness={5}/>)
         }
 
-        return acceptedFiles.length || rejectedFiles.length
-            ? `Accepted ${acceptedFiles.length}, rejected ${rejectedFiles.length} files`
-            : 'Try dropping some files'
+        if (fileUploadErrors !== null) {
+            return (<div><b>Error:</b> <i>{fileUploadErrors}</i></div>)
+        }
+
+        if (acceptedFiles.length === zero) {
+            return 'Try dropping some files'
+        }
+        const url = acceptedFiles[zero].preview
+        return (<img src={url}/>)
     }
 
     return (
