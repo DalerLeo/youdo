@@ -31,12 +31,12 @@ const enhance = compose(
             '& div:last-child': {
                 textAlign: 'center !important',
                 '& button': {
+                    marginLeft: '20px !important',
                     marginBottom: '5px !important',
                     color: '#12aaeb !important'
                 }
             }
         },
-
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -45,17 +45,15 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
-
         fields: {
-            display: ({loading}) => !loading ? 'block' : 'none'
+            display: ({loading}) => !loading ? 'block' : 'none',
+            width: '100%'
         },
-
         body: {
             maxHeight: '600px !important',
             padding: '0 20px 20px 20px !important',
             overflow: 'hidden !important'
         },
-
         title: {
             width: '220px',
             margin: '0 auto',
@@ -65,7 +63,6 @@ const enhance = compose(
             color: '#fff',
             position: 'relative'
         },
-
         form: {
             display: 'flex'
         },
@@ -107,7 +104,7 @@ const ProviderCreateDialog = enhance((props) => {
                         <div>
                             <div>
                                 <Field
-                                    name="nameComp"
+                                    name="name"
                                     component={TextField}
                                     label="Организация"
                                     fullWidth={true}/>
@@ -118,24 +115,9 @@ const ProviderCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                                 <div className={classes.background}>
                                     <Fields
-                                        contacts={['contacts', 'contactName', 'email', 'phoneNumber']}
+                                        names={['contacts', 'contactName', 'email', 'phoneNumber']}
                                         component={ProviderContactsListField}
                                     />
-                                    <Field
-                                        name="contactName"
-                                        component={TextField}
-                                        label="Контактное лицо"
-                                        fullWidth={true}/>
-                                    <div className={classes.flex}>
-                                        <Field
-                                            name="email"
-                                            component={TextField}
-                                            label="E-mail"/>
-                                        <Field
-                                            name="phoneNumber"
-                                            component={TextField}
-                                            label="телефон"/>
-                                    </div>
                                 </div>
                             </div>
                             <div>
