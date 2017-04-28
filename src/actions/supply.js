@@ -6,7 +6,6 @@ import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/supplySerializer'
 
 export const supplyCreateAction = (formValues) => {
-    console.log(formValues)
     const requestData = serializers.createSerializer(formValues)
 
     const payload = axios()
