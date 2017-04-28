@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -26,33 +25,35 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
+        name: 'id',
+        title: 'Id',
+        xs: 1
+    },
+    {
+        sorting: true,
         name: 'name',
-        title: 'Name'
+        title: 'Поставщик',
+        xs: 3
     },
     {
         sorting: true,
-        name: 'phone',
-        title: 'Phone'
+        name: 'stock',
+        title: 'Наименование склада'
     },
     {
         sorting: true,
-        name: 'address',
-        title: 'Address'
+        name: 'totalCost',
+        title: 'Цена заказа'
     },
     {
         sorting: true,
-        name: 'guide',
-        title: 'Guide'
+        name: 'accepted',
+        title: 'Оплата'
     },
     {
         sorting: true,
-        name: 'contactName',
-        title: 'Contact name'
-    },
-    {
-        sorting: true,
-        name: 'createdDate',
-        title: 'Created date'
+        name: 'delivered',
+        title: 'Доставка'
     }
 ]
 
@@ -68,6 +69,24 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        success: {
+            display: 'inline-block',
+            height: '10px',
+            width: '10px',
+            borderRadius: '50%',
+            backgroundColor: '#81c784',
+            transform: 'translate(0,15%)',
+            marginRight: '5px'
+        },
+        error: {
+            display: 'inline-block',
+            height: '10px',
+            width: '10px',
+            borderRadius: '50%',
+            backgroundColor: '#e57373',
+            transform: 'translate(0,15%)',
+            marginRight: '5px'
         }
     })
 )
@@ -83,7 +102,6 @@ const SupplyGridList = enhance((props) => {
         deleteDialog,
         listData,
         detailData,
-        tabData,
         classes
     } = props
 
@@ -114,33 +132,35 @@ const SupplyGridList = enhance((props) => {
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
-            tabData={tabData}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
         />
     )
 
     const supplyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const phone = _.get(item, 'phone') || 'N/A'
-        const address = _.get(item, 'address') || 'N/A'
-        const guide = _.get(item, 'guide') || 'N/A'
-        const contactName = _.get(item, 'contactName') || 'N/A'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const name = _.get(_.get(item, 'provider'), 'name')
+        const stock = _.get(_.get(item, 'stock'), 'name') || 'N/A'
+        const totalCost = _.get(item, 'totalCost') || 'N/A'
 
         return (
             <Row key={id}>
-                <Col xs={2}>
+                <Col xs={1}>{id}</Col>
+                <Col xs={3}>
                     <Link to={{
                         pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{name}</Link>
                 </Col>
-                <Col xs={2}>{phone}</Col>
-                <Col xs={2}>{address}</Col>
-                <Col xs={2}>{guide}</Col>
-                <Col xs={2}>{contactName}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={2}>{stock}</Col>
+                <Col xs={2}>{totalCost}</Col>
+                <Col xs={2}>
+                    <div className={classes.success}></div>
+                    оплачен
+                </Col>
+                <Col xs={2}>
+                    <div className={classes.error}></div>
+                    ожидает
+                </Col>
             </Row>
         )
     })
@@ -210,7 +230,6 @@ SupplyGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,

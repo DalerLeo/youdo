@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
 import {Col} from 'react-flexbox-grid'
 import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
@@ -32,9 +32,6 @@ const validate = (data) => {
 }
 const enhance = compose(
     injectSheet({
-        dialog: {
-            width: '1200px !important'
-        },
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -42,16 +39,6 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
-        },
-        fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
-        },
-        flex: {
-            display: 'flex',
-            '& > div:first-child': {
-                padding: '0 !important',
-                borderBottom: '1px solid #efefef'
-            }
         },
         title: {
             paddingTop: '15px',
@@ -78,16 +65,7 @@ const enhance = compose(
         },
         underLine: {
             borderBottom: '1px solid #efefef',
-            display: 'flex',
-            '& > div:last-child > div:first-child': {
-                display: 'flex',
-                position: 'relative',
-                '& button': {
-                    position: 'absolute !important',
-                    right: '0 !important',
-                    marginTop: '15px !important'
-                }
-            }
+            display: 'flex'
         },
         radioButton: {
             '& > div': {
@@ -145,12 +123,43 @@ const enhance = compose(
                 fontSize: '16px !important',
                 color: '#12aaeb !important'
             }
+        },
+        background: {
+            backgroundColor: '#f1f5f8',
+            display: 'flex',
+            padding: '10px',
+            marginTop: '20px',
+            '& > div': {
+                marginTop: '-20px !important',
+                marginRight: '20px',
+                height: '72px !important',
+                '& input': {
+                    height: '75px !important'
+                }
+            },
+            '& > button > div > span': {
+                padding: '5px !important',
+                textTransform: 'inherit !important',
+                fontSize: '16px'
+            },
+            '& > div:first-child': {
+                width: '100% !important'
+            },
+            '& button': {
+                marginTop: '10px !important'
+            }
+        },
+        width: {
+            width: '120px !important'
         }
     }),
     reduxForm({
         form: 'SupplyCreateForm',
         enableReinitialize: true
-    })
+    }),
+    withReducer('state', 'dispatch', (state, action) => {
+        return {...state, ...action}
+    }, {open: false}),
 )
 
 const customContentStyle = {
@@ -158,7 +167,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes} = props
+    const {state, dispatch, open, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -173,7 +182,7 @@ const SupplyCreateDialog = enhance((props) => {
                 </div>
                 <div className={classes.titleContent}>
                     <span>Добавления заказа</span>
-                    <IconButton>
+                    <IconButton onTouchTap={onClose}>
                         <CloseIcon2 color="#666666"/>
                     </IconButton>
                 </div>
@@ -232,9 +241,10 @@ const SupplyCreateDialog = enhance((props) => {
                         <FlatButton
                             label="+ Добавить расход"
                             style={{color: '#12aaeb'}}
-                            className={classes.span}/>
+                            className={classes.span}
+                            onTouchTap={() => dispatch({open: !state.open})}/>
                     </div>
-                    <div className={classes.background}>
+                    {state.open && <div className={classes.background}>
                         <Field
                             name="additionalDescription"
                             component={TextField}
@@ -242,16 +252,20 @@ const SupplyCreateDialog = enhance((props) => {
                         <Field
                             name="additionalCost"
                             component={TextField}
-                            label="Сумма"/>
-                        <Field
-                            name="additionalCurrency"
-                            component={CurrencySearchField}
-                            label="Валюта"/>
+                            label="Сумма"
+                            textFieldStyle={{width: '110px'}}/>
+                        <div className={classes.width}>
+                            <Field
+                                name="additionalCurrency"
+                                component={CurrencySearchField}
+                                label="Валюта"
+                                textFieldStyle={{width: '120px'}}/>
+                        </div>
                         <FlatButton
                             label="Применить"
                             style={{color: '#12aaeb'}}
                             className={classes.span}/>
-                    </div>
+                    </div>}
                     <div className={classes.total}>
                         <div>
                             <div className={classes.title}>Описание</div>

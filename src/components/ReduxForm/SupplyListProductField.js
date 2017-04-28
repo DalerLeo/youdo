@@ -57,12 +57,21 @@ const enhance = compose(
             }
         },
         title: {
-            paddingTop: '15px',
+            paddingTop: '8px',
             fontWeight: 'bold',
             color: 'black !important'
         },
         headers: {
-            display: 'flex'
+            display: 'flex',
+            position: 'relative',
+            '& button': {
+                position: 'absolute !important',
+                right: '0',
+                '& > div > span': {
+                    textTransform: 'inherit !important',
+                    fontSize: '16 !important'
+                }
+            }
         },
         background: {
             backgroundColor: '#f1f5f8',
@@ -165,7 +174,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                                 className={classes.tableTitle}>Наименование</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Действися</TableHeaderColumn>
+                            <TableHeaderColumn></TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody
