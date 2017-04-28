@@ -96,15 +96,15 @@ const enhance = compose(
 
     withHandlers({
         handleAdd: props => () => {
-            const productName = _.get(props, ['productName', 'input', 'value'])
-            const quantity = _.get(props, ['quantity', 'input', 'value'])
+            const product = _.get(props, ['product', 'input', 'value'])
+            const amount = _.get(props, ['amount', 'input', 'value'])
             const cost = _.get(props, ['cost', 'input', 'value'])
 
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
 
-            if (!_.isEmpty(productName) && quantity && cost) {
-                onChange(_.union(products, [{productName, quantity, cost}]))
+            if (!_.isEmpty(product) && amount && cost) {
+                onChange(_.union(products, [{product, amount, cost}]))
             }
         },
 
@@ -137,11 +137,11 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                 {state.open && <div className={classes.background}>
                     <ProductSearchField
                         label="Наименование товара"
-                        {..._.get(defaultProps, 'productName')}
+                        {..._.get(defaultProps, 'product')}
                     />
                     <TextField
                         label="Кол-во"
-                        {..._.get(defaultProps, 'quantity')}
+                        {..._.get(defaultProps, 'amount')}
                     />
                     <TextField
                         label="Сумма(UZS)"
@@ -175,8 +175,8 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                         stripedRows={false}>
                         {_.map(products, (item, index) => (
                             <TableRow key={index} className={classes.tableRow}>
-                                <TableRowColumn>{_.get(item, ['productName', 'text'])}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'quantity')}</TableRowColumn>
+                                <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
+                                <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'cost')}</TableRowColumn>
                                 <TableRowColumn>
                                     <IconButton onTouchTap={() => handleRemove(index)}>

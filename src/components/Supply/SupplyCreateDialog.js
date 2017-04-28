@@ -187,14 +187,14 @@ const SupplyCreateDialog = enhance((props) => {
                                     component={ProviderSearchField}
                                     label="Поставщик"
                                     fullWidth={true}/>
-                                <RadioButtonGroup name="delivery" defaultSelected="not_light"
+                                <RadioButtonGroup name="contact" defaultSelected="1"
                                                   className={classes.radioButton}>
                                     <RadioButton
-                                        value="light"
+                                        value="1"
                                         label="Tursunov Bohodir"
                                     />
                                     <RadioButton
-                                        value="not_light"
+                                        value="2"
                                         label="Ashurov Anvar"
                                     />
                                 </RadioButtonGroup>
@@ -207,12 +207,12 @@ const SupplyCreateDialog = enhance((props) => {
                                     label="Склад назначения"
                                     fullWidth={true}/>
                                 <Field
-                                    name="deliveryDate"
+                                    name="date_delivery"
                                     component={DateField}
                                     hintText="Дата поставки "
                                     fullWidth={true}/>
                                 <Field
-                                    name="paymentType"
+                                    name="currency"
                                     component={CurrencySearchField}
                                     label="Валюта оплаты"
                                     fullWidth={true}/>
@@ -221,7 +221,7 @@ const SupplyCreateDialog = enhance((props) => {
                     </Col>
                     <Col md={8} className={classes.right}>
                         <Fields
-                            names={['products', 'productName', 'quantity', 'cost']}
+                            names={['products', 'product', 'amount', 'cost']}
                             component={SupplyListProductField}
                         />
                     </Col>

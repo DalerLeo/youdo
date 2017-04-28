@@ -1,27 +1,27 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import moment from 'moment'
 
 export const createSerializer = (data) => {
-    const deliveryComp = _.get(data, ['deliveryComp'])
-    const delivery = _.get(data, ['delivery'])
-    const nameStock = _.get(data, ['nameStock'])
-    const toDate = _.get(data, ['toDate'])
-    const typePayment = _.get(data, ['typePayment'])
-    const additionalDescription = _.get(data, ['additionalDescription'])
-    const additionalCost = _.get(data, ['additionalExpensive'])
-    const additionalPaymentType = _.get(data, ['additionalPaymentType'])
-    const productList = _.get(data, ['productList'])
+    console.log(data)
+    const provider = _.get(data, ['provider', 'value'])
+    const stock = _.get(data, ['stock', 'value'])
+    const currency = _.get(data, ['currency', 'value'])
+    const products = _.map(_.get(data, ['products']), (item) => {
+        return {
+            amount: item.amount,
+            cost: item.cost,
+            product: item.product.value
+        }
+    })
 
     return {
-        deliveryComp,
-        delivery,
-        nameStock,
-        toDate,
-        typePayment,
-        additionalDescription,
-        additionalCost,
-        additionalPaymentType,
-        productList
+        provider,
+        stock,
+        'contact': 1,
+        'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
+        currency,
+        products
     }
 }
 
