@@ -1,13 +1,10 @@
 import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
-import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
-import * as ROUTER from '../../constants/routes'
-import * as SUPPLY from '../../constants/supply'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
@@ -123,11 +120,6 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_FILTER_OPEN]: false})})
         },
 
-        handleTabChange: props => (tab) => {
-            const supplyId = _.toInteger(_.get(props, ['params', 'supplyId']))
-            hashHistory.push({pathname: sprintf(ROUTER.SUPPLY_ITEM_TAB_PATH, supplyId, tab)})
-        },
-
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
             hashHistory.push({pathname, query: {}})
@@ -231,7 +223,6 @@ const SupplyList = enhance((props) => {
     const fromDate = filter.getParam(SUPPLY_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(SUPPLY_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'supplyId'))
-    const tab = _.get(params, 'tab') || SUPPLY.DEFAULT_TAB
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -314,11 +305,6 @@ const SupplyList = enhance((props) => {
         handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
-    const tabData = {
-        tab,
-        handleTabChange: props.handleTabChange
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -336,7 +322,6 @@ const SupplyList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                tabData={tabData}
                 createDialog={createDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
