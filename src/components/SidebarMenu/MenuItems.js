@@ -38,6 +38,7 @@ export const MenuItems = [
         icon: (<AccountBalanceWallet />),
         url: ROUTES.SHOP_LIST_URL,
         childs: [
+            {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL}
         ]
     },
     {

@@ -15,6 +15,13 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.SHOP_UPDATE),
         csv: createThunkReducer(actionTypes.SHOP_LIST_CSV)
     }),
+    cashbox: combineReducers({
+        create: createThunkReducer(actionTypes.CASHBOX_CREATE),
+        list: createThunkReducer(actionTypes.CASHBOX_LIST),
+        item: createThunkReducer(actionTypes.CASHBOX_ITEM),
+        update: createThunkReducer(actionTypes.CASHBOX_UPDATE),
+        csv: createThunkReducer(actionTypes.CASHBOX_LIST_CSV)
+    }),
     supply: combineReducers({
         create: createThunkReducer(actionTypes.SUPPLY_CREATE),
         list: createThunkReducer(actionTypes.SUPPLY_LIST),

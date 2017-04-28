@@ -1,0 +1,351 @@
+import React from 'react'
+import _ from 'lodash'
+import moment from 'moment'
+import sprintf from 'sprintf'
+import {connect} from 'react-redux'
+import {hashHistory} from 'react-router'
+import Layout from '../../components/Layout'
+import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import * as CASHBOX from '../../constants/cashBox'
+import * as ROUTER from '../../constants/routes'
+import filterHelper from '../../helpers/filter'
+import toBoolean from '../../helpers/toBoolean'
+import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
+import {
+    CASHBOX_CREATE_DIALOG_OPEN,
+    CASHBOX_UPDATE_DIALOG_OPEN,
+    CASHBOX_FILTER_KEY,
+    CASHBOX_FILTER_OPEN,
+    CashBoxGridList
+} from '../../components/CashBox'
+import {
+    cashBoxCreateAction,
+    cashBoxUpdateAction,
+    cashBoxListFetchAction,
+    cashBoxCSVFetchAction,
+    cashBoxDeleteAction,
+    cashBoxItemFetchAction
+} from '../../actions/cashBox'
+import {openSnackbarAction} from '../../actions/snackbar'
+
+const enhance = compose(
+    connect((state, props) => {
+        const query = _.get(props, ['location', 'query'])
+        const pathname = _.get(props, ['location', 'pathname'])
+        const detail = _.get(state, ['cashBox', 'item', 'data'])
+        const detailLoading = _.get(state, ['cashBox', 'item', 'loading'])
+        const createLoading = _.get(state, ['cashBox', 'create', 'loading'])
+        const updateLoading = _.get(state, ['cashBox', 'update', 'loading'])
+        const list = _.get(state, ['cashBox', 'list', 'data'])
+        const listLoading = _.get(state, ['cashBox', 'list', 'loading'])
+        const csvData = _.get(state, ['cashBox', 'csv', 'data'])
+        const csvLoading = _.get(state, ['cashBox', 'csv', 'loading'])
+        const filterForm = _.get(state, ['form', 'CashBoxFilterForm'])
+        const createForm = _.get(state, ['form', 'CashBoxCreateForm'])
+        const filter = filterHelper(list, pathname, query)
+
+        return {
+            list,
+            listLoading,
+            detail,
+            detailLoading,
+            createLoading,
+            updateLoading,
+            csvData,
+            csvLoading,
+            filter,
+            filterForm,
+            createForm
+        }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+    }, ({dispatch, filter}) => {
+        dispatch(cashBoxListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const cashBoxId = _.get(nextProps, ['params', 'cashBoxId'])
+        return cashBoxId && _.get(props, ['params', 'cashBoxId']) !== cashBoxId
+    }, ({dispatch, params}) => {
+        const cashBoxId = _.toInteger(_.get(params, 'cashBoxId'))
+        cashBoxId && dispatch(cashBoxItemFetchAction(cashBoxId))
+    }),
+
+    withState('openCSVDialog', 'setOpenCSVDialog', false),
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+
+    withHandlers({
+        handleActionEdit: props => () => {
+            return null
+        },
+
+        handleOpenCSVDialog: props => () => {
+            const {dispatch, setOpenCSVDialog} = props
+            setOpenCSVDialog(true)
+
+            dispatch(cashBoxCSVFetchAction(props.filter))
+        },
+
+        handleCloseCSVDialog: props => () => {
+            const {setOpenCSVDialog} = props
+            setOpenCSVDialog(false)
+        },
+
+        handleOpenConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(true)
+        },
+
+        handleCloseConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(false)
+        },
+        handleSendConfirmDialog: props => () => {
+            const {dispatch, detail, setOpenConfirmDialog} = props
+            dispatch(cashBoxDeleteAction(detail.id))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                })
+                .then(() => {
+                    setOpenConfirmDialog(false)
+                })
+        },
+
+        handleOpenFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_FILTER_OPEN]: true})})
+        },
+
+        handleCloseFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_FILTER_OPEN]: false})})
+        },
+
+        handleTabChange: props => (tab) => {
+            const cashBoxId = _.toInteger(_.get(props, ['params', 'cashBoxId']))
+            hashHistory.push({pathname: sprintf(ROUTER.CASHBOX_ITEM_TAB_PATH, cashBoxId, tab)})
+        },
+
+        handleClearFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
+        },
+
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const category = _.get(filterForm, ['values', 'category', 'value']) || null
+
+            filter.filterBy({
+                [CASHBOX_FILTER_OPEN]: false,
+                [CASHBOX_FILTER_KEY.CATEGORY]: category,
+                [CASHBOX_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [CASHBOX_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+            })
+        },
+        handleOpenDeleteDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({openDeleteDialog: 'yes'})
+            })
+        },
+
+        handleCloseDeleteDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
+        },
+
+        handleOpenCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitCreateDialog: props => () => {
+            const {dispatch, createForm, filter} = props
+
+            return dispatch(cashBoxCreateAction(_.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                })
+                .then(() => {
+                    hashHistory.push({query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: false})})
+                })
+        },
+
+        handleOpenUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_UPDATE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_UPDATE_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitUpdateDialog: props => () => {
+            const {dispatch, createForm, filter} = props
+            const cashBoxId = _.toInteger(_.get(props, ['params', 'cashBoxId']))
+
+            return dispatch(cashBoxUpdateAction(cashBoxId, _.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(cashBoxItemFetchAction(cashBoxId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[CASHBOX_UPDATE_DIALOG_OPEN]: false}))
+                })
+        }
+    })
+)
+
+const CashBoxList = enhance((props) => {
+    const {
+        location,
+        list,
+        listLoading,
+        detail,
+        detailLoading,
+        createLoading,
+        updateLoading,
+        filter,
+        layout,
+        params
+    } = props
+
+    const openFilterDialog = toBoolean(_.get(location, ['query', CASHBOX_FILTER_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', CASHBOX_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', CASHBOX_UPDATE_DIALOG_OPEN]))
+    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
+    const category = _.toInteger(filter.getParam(CASHBOX_FILTER_KEY.CATEGORY))
+    const fromDate = filter.getParam(CASHBOX_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(CASHBOX_FILTER_KEY.TO_DATE)
+    const detailId = _.toInteger(_.get(params, 'cashBoxId'))
+    const tab = _.get(params, 'tab') || CASHBOX.DEFAULT_TAB
+
+    const actionsDialog = {
+        handleActionEdit: props.handleActionEdit,
+        handleActionDelete: props.handleOpenDeleteDialog
+    }
+
+    const createDialog = {
+        createLoading,
+        openCreateDialog,
+        handleOpenCreateDialog: props.handleOpenCreateDialog,
+        handleCloseCreateDialog: props.handleCloseCreateDialog,
+        handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+
+    const deleteDialog = {
+        openDeleteDialog,
+        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
+        handleCloseDeleteDialog: props.handleCloseDeleteDialog
+    }
+
+    const confirmDialog = {
+        openConfirmDialog: props.openConfirmDialog,
+        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
+        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
+        handleSendConfirmDialog: props.handleSendConfirmDialog
+    }
+
+    const updateDialog = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            }
+
+            return {
+                name: _.get(detail, 'name'),
+                category: {
+                    value: _.get(detail, 'category')
+                },
+                address: _.get(detail, 'address'),
+                guide: _.get(detail, 'guide'),
+                phone: _.get(detail, 'phone'),
+                contactName: _.get(detail, 'contactName'),
+                official: _.get(detail, 'official'),
+                latLng: {
+                    lat: _.get(detail, 'lat'),
+                    lng: _.get(detail, 'lon')
+                }
+            }
+        })(),
+        updateLoading: detailLoading || updateLoading,
+        openUpdateDialog,
+        handleOpenUpdateDialog: props.handleOpenUpdateDialog,
+        handleCloseUpdateDialog: props.handleCloseUpdateDialog,
+        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
+    }
+
+    const filterDialog = {
+        initialValues: {
+            category: {
+                value: category
+            },
+            date: {
+                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
+                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            }
+        },
+        filterLoading: false,
+        openFilterDialog,
+        handleOpenFilterDialog: props.handleOpenFilterDialog,
+        handleCloseFilterDialog: props.handleCloseFilterDialog,
+        handleClearFilterDialog: props.handleClearFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+    }
+
+    const csvDialog = {
+        csvData: props.csvData,
+        csvLoading: props.csvLoading,
+        openCSVDialog: props.openCSVDialog,
+        handleOpenCSVDialog: props.handleOpenCSVDialog,
+        handleCloseCSVDialog: props.handleCloseCSVDialog
+    }
+
+    const tabData = {
+        tab,
+        handleTabChange: props.handleTabChange
+    }
+
+    const listData = {
+        data: _.get(list, 'results'),
+        listLoading
+    }
+
+    const detailData = {
+        id: detailId,
+        data: detail,
+        detailLoading
+    }
+
+    return (
+        <Layout {...layout}>
+            <CashBoxGridList
+                filter={filter}
+                listData={listData}
+                detailData={detailData}
+                tabData={tabData}
+                createDialog={createDialog}
+                deleteDialog={deleteDialog}
+                confirmDialog={confirmDialog}
+                updateDialog={updateDialog}
+                actionsDialog={actionsDialog}
+                filterDialog={filterDialog}
+                csvDialog={csvDialog}
+            />
+        </Layout>
+    )
+})
+
+export default CashBoxList

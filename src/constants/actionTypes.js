@@ -10,6 +10,13 @@ export const SHOP_UPDATE = 'SHOP_UPDATE'
 export const SHOP_CREATE = 'SHOP_CREATE'
 export const SHOP_DELETE = 'SHOP_DELETE'
 
+export const CASHBOX_LIST = 'CASHBOX_LIST'
+export const CASHBOX_LIST_CSV = 'CASHBOX_LIST_CSV'
+export const CASHBOX_ITEM = 'CASHBOX_ITEM'
+export const CASHBOX_UPDATE = 'CASHBOX_UPDATE'
+export const CASHBOX_CREATE = 'CASHBOX_CREATE'
+export const CASHBOX_DELETE = 'CASHBOX_DELETE'
+
 export const SUPPLY_LIST = 'SUPPLY_LIST'
 export const SUPPLY_LIST_CSV = 'SUPPLY_LIST_CSV'
 export const SUPPLY_ITEM = 'SUPPLY_ITEM'
