@@ -99,7 +99,7 @@ const ProviderCreateDialog = enhance((props) => {
                 </div>
                 <div className={classes.fields}>
                         <div>
-                            <h4 className={classes.title}> {isUpdate ? 'Изменить поставщику' : 'Добавить поставщику'}</h4>
+                            <h4 className={classes.title}> {isUpdate ? 'Изменить поставщика' : 'Добавить поставщика'}</h4>
                         </div>
                         <div>
                             <div>
