@@ -31,12 +31,11 @@ const enhance = compose(
         }
     }),
     withState('fileUploadLoading', 'setFileUploadLoading', false),
-    withState('fileUploadErrors', 'setFileUploadErrors', null),
-    withState('uploadedImage', 'setUploadedImage', null)
+    withState('fileUploadErrors', 'setFileUploadErrors', null)
 )
 
 const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, setFileUploadErrors,
-    fileUploadErrors, setUploadedImage, uploadedImage}) => {
+    fileUploadErrors, input}) => {
     const onDrop = (files) => {
         const formData = new FormData()
         const firstElement = 0
@@ -46,12 +45,12 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
             .then((response) => {
                 setFileUploadLoading(false)
                 setFileUploadErrors(null)
-                setUploadedImage(response.data)
+                input.onChange(response.data.id)
             }).catch((error) => {
                 const errorData = _.get(error, ['response', 'data'])
                 setFileUploadErrors(errorData.file[firstElement])
                 setFileUploadLoading(false)
-                setUploadedImage(null)
+                input.onChange(null)
             })
     }
 
@@ -62,11 +61,11 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
         }
 
         if (fileUploadErrors !== null) {
-            return (<div><b>Error:</b> <i>{fileUploadErrors}</i></div>)
+            return (<div><b>Ошибка:</b> <i>{fileUploadErrors}</i></div>)
         }
 
         if (acceptedFiles.length === zero) {
-            return 'Try dropping some files'
+            return 'Добавьте фото'
         }
         const url = acceptedFiles[zero].preview
         return (<img src={url}/>)
