@@ -1,13 +1,10 @@
 import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
-import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
-import * as CASHBOX from '../../constants/cashBox'
-import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
@@ -16,32 +13,32 @@ import {
     CASHBOX_UPDATE_DIALOG_OPEN,
     CASHBOX_FILTER_KEY,
     CASHBOX_FILTER_OPEN,
-    CashBoxGridList
-} from '../../components/CashBox'
+    CashboxGridList
+} from '../../components/Cashbox'
 import {
-    cashBoxCreateAction,
-    cashBoxUpdateAction,
-    cashBoxListFetchAction,
-    cashBoxCSVFetchAction,
-    cashBoxDeleteAction,
-    cashBoxItemFetchAction
-} from '../../actions/cashBox'
+    cashboxCreateAction,
+    cashboxUpdateAction,
+    cashboxListFetchAction,
+    cashboxCSVFetchAction,
+    cashboxDeleteAction,
+    cashboxItemFetchAction
+} from '../../actions/cashbox'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['cashBox', 'item', 'data'])
-        const detailLoading = _.get(state, ['cashBox', 'item', 'loading'])
-        const createLoading = _.get(state, ['cashBox', 'create', 'loading'])
-        const updateLoading = _.get(state, ['cashBox', 'update', 'loading'])
-        const list = _.get(state, ['cashBox', 'list', 'data'])
-        const listLoading = _.get(state, ['cashBox', 'list', 'loading'])
-        const csvData = _.get(state, ['cashBox', 'csv', 'data'])
-        const csvLoading = _.get(state, ['cashBox', 'csv', 'loading'])
-        const filterForm = _.get(state, ['form', 'CashBoxFilterForm'])
-        const createForm = _.get(state, ['form', 'CashBoxCreateForm'])
+        const detail = _.get(state, ['cashbox', 'item', 'data'])
+        const detailLoading = _.get(state, ['cashbox', 'item', 'loading'])
+        const createLoading = _.get(state, ['cashbox', 'create', 'loading'])
+        const updateLoading = _.get(state, ['cashbox', 'update', 'loading'])
+        const list = _.get(state, ['cashbox', 'list', 'data'])
+        const listLoading = _.get(state, ['cashbox', 'list', 'loading'])
+        const csvData = _.get(state, ['cashbox', 'csv', 'data'])
+        const csvLoading = _.get(state, ['cashbox', 'csv', 'loading'])
+        const filterForm = _.get(state, ['form', 'CashboxFilterForm'])
+        const createForm = _.get(state, ['form', 'CashboxCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -61,15 +58,15 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(cashBoxListFetchAction(filter))
+        dispatch(transactionListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const cashBoxId = _.get(nextProps, ['params', 'cashBoxId'])
-        return cashBoxId && _.get(props, ['params', 'cashBoxId']) !== cashBoxId
+        const cashboxId = _.get(nextProps, ['params', 'cashboxId'])
+        return cashboxId && _.get(props, ['params', 'cashboxId']) !== cashboxId
     }, ({dispatch, params}) => {
-        const cashBoxId = _.toInteger(_.get(params, 'cashBoxId'))
-        cashBoxId && dispatch(cashBoxItemFetchAction(cashBoxId))
+        const cashboxId = _.toInteger(_.get(params, 'cashboxId'))
+        cashboxId && dispatch(cashboxItemFetchAction(cashboxId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -83,8 +80,7 @@ const enhance = compose(
         handleOpenCSVDialog: props => () => {
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
-
-            dispatch(cashBoxCSVFetchAction(props.filter))
+            dispatch(cashboxCSVFetchAction(props.filter))
         },
 
         handleCloseCSVDialog: props => () => {
@@ -103,7 +99,7 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog} = props
-            dispatch(cashBoxDeleteAction(detail.id))
+            dispatch(cashboxDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Successful deleted'}))
                 })
@@ -120,11 +116,6 @@ const enhance = compose(
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CASHBOX_FILTER_OPEN]: false})})
-        },
-
-        handleTabChange: props => (tab) => {
-            const cashBoxId = _.toInteger(_.get(props, ['params', 'cashBoxId']))
-            hashHistory.push({pathname: sprintf(ROUTER.CASHBOX_ITEM_TAB_PATH, cashBoxId, tab)})
         },
 
         handleClearFilterDialog: props => () => {
@@ -171,7 +162,7 @@ const enhance = compose(
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter} = props
 
-            return dispatch(cashBoxCreateAction(_.get(createForm, ['values'])))
+            return dispatch(cashboxCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
@@ -192,11 +183,11 @@ const enhance = compose(
 
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
-            const cashBoxId = _.toInteger(_.get(props, ['params', 'cashBoxId']))
+            const cashboxId = _.toInteger(_.get(props, ['params', 'cashboxId']))
 
-            return dispatch(cashBoxUpdateAction(cashBoxId, _.get(createForm, ['values'])))
+            return dispatch(cashboxUpdateAction(cashboxId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(cashBoxItemFetchAction(cashBoxId))
+                    return dispatch(cashboxItemFetchAction(cashboxId))
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
@@ -208,7 +199,7 @@ const enhance = compose(
     })
 )
 
-const CashBoxList = enhance((props) => {
+const CashboxList = enhance((props) => {
     const {
         location,
         list,
@@ -219,6 +210,7 @@ const CashBoxList = enhance((props) => {
         updateLoading,
         filter,
         layout,
+        dispatch,
         params
     } = props
 
@@ -229,8 +221,8 @@ const CashBoxList = enhance((props) => {
     const category = _.toInteger(filter.getParam(CASHBOX_FILTER_KEY.CATEGORY))
     const fromDate = filter.getParam(CASHBOX_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CASHBOX_FILTER_KEY.TO_DATE)
-    const detailId = _.toInteger(_.get(params, 'cashBoxId'))
-    const tab = _.get(params, 'tab') || CASHBOX.DEFAULT_TAB
+    const detailId = _.toInteger(_.get(params, 'cashboxId'))
+    dispatch(cashboxListFetchAction())
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -313,11 +305,6 @@ const CashBoxList = enhance((props) => {
         handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
-    const tabData = {
-        tab,
-        handleTabChange: props.handleTabChange
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -331,11 +318,11 @@ const CashBoxList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <CashBoxGridList
+            <CashboxGridList
                 filter={filter}
+                cashboxData={cashboxData}
                 listData={listData}
                 detailData={detailData}
-                tabData={tabData}
                 createDialog={createDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
@@ -348,4 +335,4 @@ const CashBoxList = enhance((props) => {
     )
 })
 
-export default CashBoxList
+export default CashboxList

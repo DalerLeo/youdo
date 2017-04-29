@@ -36,9 +36,9 @@ export const MenuItems = [
     {
         name: 'Бухгалтерия',
         icon: (<AccountBalanceWallet />),
-        url: ROUTES.SHOP_LIST_URL,
+        url: ROUTES.CASHBOX_LIST_URL,
         childs: [
-            {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL}
+            {name: 'Касси', url: ROUTES.CASHBOX_LIST_URL}
         ]
     },
     {

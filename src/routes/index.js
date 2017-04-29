@@ -5,7 +5,7 @@ import * as ROUTES from '../constants/routes'
 import App from '../containers/App'
 import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
-import {CashBoxList} from '../containers/CashBox'
+import {CashboxList} from '../containers/Cashbox'
 import {SupplyList} from '../containers/Supply'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
@@ -44,19 +44,19 @@ export default {
                 }
             ]
         },
-        // CashBox
+        // Cashbox
         {
             path: ROUTES.CASHBOX_LIST_URL,
-            component: userIsAuth(CashBoxList),
+            component: userIsAuth(CashboxList),
             childRoutes: [
                 {
                     path: ROUTES.CASHBOX_ITEM_URL,
-                    component: userIsAuth(CashBoxList)
+                    component: userIsAuth(CashboxList)
                 },
 
                 {
-                    path: ROUTES.SHOP_ITEM_TAB_URL,
-                    component: userIsAuth(CashBoxList)
+                    path: ROUTES.CASHBOX_ITEM_TAB_URL,
+                    component: userIsAuth(CashboxList)
                 }
             ]
         },

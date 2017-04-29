@@ -18,11 +18,17 @@ export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
-export const CASHBOX = 'dist/cashbox'
+export const CASHBOX = 'cashbox'
 export const CASHBOX_CREATE = `/${CASHBOX}/`
 export const CASHBOX_LIST = `/${CASHBOX}/`
 export const CASHBOX_ITEM = `/${CASHBOX}/%d/`
 export const CASHBOX_DELETE = `/${CASHBOX}/%d/`
+
+export const TRANSACTION = 'transaction'
+export const TRANSACTION_CREATE = `/${TRANSACTION}/`
+export const TRANSACTION_LIST = `/${TRANSACTION}/`
+export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
+export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 
 export const SUPPLY = 'dist/supply'
 export const SUPPLY_CREATE = `/${SUPPLY}/`
