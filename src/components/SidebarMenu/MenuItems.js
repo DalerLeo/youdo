@@ -30,6 +30,7 @@ export const MenuItems = [
         url: ROUTES.PRODUCT_LIST_URL,
         childs: [
             {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL},
+            {name: 'Поставщики', url: ROUTES.PROVIDER_LIST_URL},
             {name: 'Поставки', url: ROUTES.SUPPLY_LIST_URL}
         ]
     },

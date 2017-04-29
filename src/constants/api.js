@@ -12,6 +12,12 @@ export const CATEGORY_CREATE = `/${CATEGORY}/`
 export const CATEGORY_LIST = `/${CATEGORY}/`
 export const CATEGORY_ITEM = `/${CATEGORY}/%d/`
 
+export const PROVIDER = 'dist/provider'
+export const PROVIDER_CREATE = `/${PROVIDER}/`
+export const PROVIDER_DELETE = `/${PROVIDER}/`
+export const PROVIDER_LIST = `/${PROVIDER}/`
+export const PROVIDER_ITEM = `/${PROVIDER}/%d/`
+
 export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
@@ -56,3 +62,8 @@ export const PAYMNET_TYPE_LIST = `/${PAYMNET_TYPE}/`
 export const PAYMNET_TYPE_ITEM = `/${PAYMNET_TYPE}/%d/`
 
 export const FILE_UPLOAD = '/file/file/'
+export const CURRENCY = 'currency/currencies'
+export const CURRENCY_CREATE = `/${CURRENCY}/add/`
+export const CURRENCY_LIST = `/${CURRENCY}/`
+export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
+

@@ -6,20 +6,20 @@ import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.PAYMNET_TYPE_LIST}?search=${search || ''}`)
+    return axios().get(`${PATH.PRODUCT_LIST}?search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
 }
 
 const getItem = (id) => {
-    return axios().get(sprintf(PATH.PAYMNET_TYPE_ITEM, id))
+    return axios().get(sprintf(PATH.PRODUCT_ITEM, id))
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))
         })
 }
 
-const PaymentTypeSearchField = (props) => {
+const ProductSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -32,4 +32,4 @@ const PaymentTypeSearchField = (props) => {
     )
 }
 
-export default PaymentTypeSearchField
+export default ProductSearchField
