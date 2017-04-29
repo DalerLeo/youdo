@@ -1,12 +1,15 @@
-import _ from 'lodash'
 import React from 'react'
-import {compose, withReducer, withHandlers} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import IconButton from 'material-ui/IconButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import ContentRemove from 'material-ui/svg-icons/content/remove'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
-import DeleteIcon from '../DeleteIcon'
+import {Field} from 'redux-form'
 import TextField from './TextField'
+
+/**
+ * {['contacts', 'contactName', 'email', 'phoneNumber']}
+ */
 
 const enhance = compose(
     injectSheet({
@@ -34,84 +37,65 @@ const enhance = compose(
                 marginRight: '10px'
             }
         }
-    }),
-    withReducer('state', 'dispatch', (state, action) => {
-        return {...state, ...action}
-    }, {open: false}),
-
-    withHandlers({
-        handleAdd: props => () => {
-            const contactName = _.get(props, ['contactName', 'input', 'value'])
-            const email = _.get(props, ['email', 'input', 'value'])
-            const phoneNumber = _.get(props, ['phoneNumber', 'input', 'value'])
-
-            const onChange = _.get(props, ['contacts', 'input', 'onChange'])
-            const contacts = _.get(props, ['contacts', 'input', 'value'])
-
-            if (!_.isEmpty(contactName) && email && phoneNumber) {
-                onChange(_.union(contacts, [{contactName, email, phoneNumber}]))
-            }
-        },
-
-        handleRemove: props => (listIndex) => {
-            const onChange = _.get(props, ['contacts', 'input', 'onChange'])
-            const contacts = _(props)
-                .get(['contacts', 'input', 'value'])
-                .filter((item, index) => index !== listIndex)
-
-            onChange(contacts)
-        }
     })
 )
 
-const ProviderContactsListField = ({classes, handleAdd, handleRemove, ...defaultProps}) => {
-    const contacts = _.get(defaultProps, ['contacts', 'input', 'value']) || []
+const ProviderContactsListField = ({classes, fields}) => {
+    const ONE = 1
+    const handleTouchTap = (index) => {
+        const LAST_INDEX = index + ONE
+
+        if (fields.length === LAST_INDEX) {
+            return fields.push({})
+        }
+
+        return fields.remove(index)
+    }
 
     return (
         <div>
-            <div className={classes.headers}>
-                <FloatingActionButton
-                    backgroundColor="#12aaeb"
-                    onTouchTap={handleAdd}
-                    mini={true}>
-                    <ContentAdd />
-                </FloatingActionButton>
-            </div>
-            <div>
-                {_.map(contacts, (item, index) => (
-                    <div key={index}>
-                        <TextField
-                            label="Контактное лицо"
-                            {..._.get(item, ['contactName', 'text'])}/>
-                        <TextField
-                            label="Email"
-                            {..._.get(item, 'email')}/>
-                        <TextField
-                            label="Телефон номер"
-                            {..._.get(item, 'phoneNumber')}/>
-                        <IconButton onTouchTap={() => handleRemove(index)}>
-                            <DeleteIcon color="#666666"/>
-                        </IconButton>
+            {fields.map((contact, index) => {
+                return (
+                    <div>
+                        <div className={classes.headers}>
+                            <FloatingActionButton
+                                backgroundColor="#12aaeb"
+                                onTouchTap={() => handleTouchTap(index)}
+                                mini={true}>
+                                {fields.length !== index + ONE ? <ContentRemove/> : <ContentAdd />}
+                            </FloatingActionButton>
+                        </div>
+                        <div key={index}>
+                            <div>
+                                <div>
+                                    <Field
+                                        label="Контактное лицо"
+                                        name={`${contact}.name`}
+                                        component={TextField}
+                                        fullWidth={true}
+                                    />
+
+                                    <div className={classes.flex}>
+                                        <Field
+                                            label="Email"
+                                            name={`${contact}.email`}
+                                            component={TextField}
+                                            fullWidth={true}
+                                        />
+
+                                        <Field
+                                            label="Телефон номер"
+                                            name={`${contact}.phone`}
+                                            component={TextField}
+                                            fullWidth={true}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                ))}
-                <div>
-                    <TextField
-                        label="Контактное лицо"
-                        {..._.get(defaultProps, 'contactName')}
-                        fullWidth={true}
-                    />
-                    <div className={classes.flex}>
-                        <TextField
-                            label="Email"
-                            {..._.get(defaultProps, 'email')}
-                        />
-                        <TextField
-                            label="Телефон номер"
-                            {..._.get(defaultProps, 'phoneNumber')}
-                        />
-                    </div>
-                </div>
-            </div>
+                )
+            })}
         </div>
     )
 }

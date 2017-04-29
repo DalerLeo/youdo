@@ -6,12 +6,13 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
+import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
 import ProviderContactsListField from '../ReduxForm/ProviderContactsListField'
 
 export const PROVIDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const PROVIDER_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -114,8 +115,8 @@ const ProviderCreateDialog = enhance((props) => {
                                     label="Местположение"
                                     fullWidth={true}/>
                                 <div className={classes.background}>
-                                    <Fields
-                                        names={['contacts', 'contactName', 'email', 'phoneNumber']}
+                                    <FieldArray
+                                        name="contacts"
                                         component={ProviderContactsListField}
                                     />
                                 </div>

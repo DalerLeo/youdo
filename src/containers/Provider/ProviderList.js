@@ -223,8 +223,19 @@ const ProviderList = enhance((props) => {
             if (!detail) {
                 return {}
             }
+
+            const contacts = _(detail).get('contacts').map((contact) => {
+                return {
+                    name: _.get(contact, 'name'),
+                    email: _.get(contact, 'email'),
+                    phone: _.get(contact, 'phone')
+                }
+            })
+
             return {
-                name: _.get(detail, 'name')
+                name: _.get(detail, 'name'),
+                address: _.get(detail, 'address'),
+                contacts: _.union(contacts, [{}])
             }
         })(),
         updateLoading: detailLoading || updateLoading,
