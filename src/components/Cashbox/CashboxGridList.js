@@ -20,39 +20,35 @@ import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Edit from 'material-ui/svg-icons/image/edit'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 
 const listHeader = [
     {
         sorting: true,
-        name: 'name',
-        title: 'Name'
+        name: 'id',
+        title: 'Id',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'phone',
-        title: 'Phone'
+        name: 'name',
+        title: 'Name',
+        xs: 6
     },
     {
         sorting: true,
         name: 'address',
-        title: 'Address'
+        title: 'Address',
+        xs: 3
     },
     {
         sorting: true,
         name: 'guide',
-        title: 'Guide'
-    },
-    {
-        sorting: true,
-        name: 'contactName',
-        title: 'Contact name'
-    },
-    {
-        sorting: true,
-        name: 'createdDate',
-        title: 'Created date'
+        title: 'Guide',
+        xs: 1
     }
 ]
 

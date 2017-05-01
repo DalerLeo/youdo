@@ -18,12 +18,13 @@ import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-import CashPayment from  '../CashPayment'
+import CashPayment from '../CashPayment'
 import BankPayment from '../BankPayment'
+import CircularProgress from 'material-ui/CircularProgress'
 
 const listHeader = [
     {
@@ -115,19 +116,17 @@ const enhance = compose(
             width: '100%'
         }
     }),
-    withState('state', 'setState', null)
 )
 
 const TransactionGridList = enhance((props) => {
     const {
-        state,
-        setState,
         filter,
         createDialog,
         updateDialog,
         filterDialog,
         cashboxData,
         actionsDialog,
+        cashboxListLoading,
         confirmDialog,
         deleteDialog,
         listData,
@@ -193,14 +192,18 @@ const TransactionGridList = enhance((props) => {
         const type = _.get(item, 'type')
         const cashier = _.toInteger(_.get(item, 'cashier'))
         const balance = _.toInteger(_.get(item, 'balance'))
+        const isActive = item.id === _.get(cashboxData, 'cashboxId')
+        const BANK_ID = 1
 
         return (
-            <Row key={id} className={classes.row} onTouchTap={() => setState(index)}
-                 style={state === index ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
+            <Row key={id} className={classes.row} onTouchTap={() => {
+                cashboxData.handleClickCashbox(id)
+            } }
+                 style={isActive ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                 <Col xs={8}>
                     <div>{name}</div>
-                    <div className={state === index && classes.blue}>
-                        {cashier === 1
+                    <div className={item.id === cashboxData.cashboxId && classes.blue}>
+                        {cashier === BANK_ID
                             ? <div>
                                 <BankPayment style={{height: '16px', width: '16px'}}/>
                                 <span className={classes.desc}>банковский счет</span>
@@ -213,7 +216,7 @@ const TransactionGridList = enhance((props) => {
                     </div>
                 </Col>
                 <Col xs={4}>
-                    <div className={state === index && classes.red}>{balance}</div>
+                    <div className={item.id === cashboxData.cashboxId && classes.red}>{balance}</div>
                     <div>{type}</div>
                 </Col>
             </Row>
@@ -225,6 +228,7 @@ const TransactionGridList = enhance((props) => {
         list: transactionList,
         loading: _.get(listData, 'listLoading')
     }
+    const AllCashboxId = 0
 
     return (
         <Container>
@@ -245,11 +249,17 @@ const TransactionGridList = enhance((props) => {
                 <Col xs={3}>
                     <div className={classes.listWrapper}>
                         <Row className={classes.row}
-                             style={state !== null ? {backgroundColor: '#f2f5f8'} : {backgroundColor: '#ffffff'}}>
+                             onTouchTap={() => { cashboxData.handleClickCashbox(AllCashboxId) } }
+                             style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                             <div className={classes.title}>Общий объем</div>
                             <br/>
                             <div className={classes.end}>во всех классах</div>
                         </Row>
+                        {cashboxListLoading &&
+                            <div style={{textAlign: 'center'}}>
+                                <CircularProgress size={100} thickness={6} />
+                            </div>
+                        }
                         {cashboxList}
                     </div>
                 </Col>
@@ -300,6 +310,7 @@ TransactionGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     cashboxData: PropTypes.object,
+    cashboxListLoading: PropTypes.bool,
     detailData: PropTypes.object,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,

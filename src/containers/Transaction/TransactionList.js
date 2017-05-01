@@ -38,16 +38,18 @@ const enhance = compose(
         const updateLoading = _.get(state, ['transaction', 'update', 'loading'])
         const list = _.get(state, ['transaction', 'list', 'data'])
         const cashboxList = _.get(state, ['cashbox', 'list', 'data'])
+        const cashboxListLoading = _.get(state, ['cashbox', 'list', 'loading'])
         const listLoading = _.get(state, ['transaction', 'list', 'loading'])
         const csvData = _.get(state, ['transaction', 'csv', 'data'])
         const csvLoading = _.get(state, ['transaction', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'TransactionFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const filter = filterHelper(list, pathname, query)
-
+        const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
         return {
             list,
             cashboxList,
+            cashboxListLoading,
             listLoading,
             detail,
             detailLoading,
@@ -57,6 +59,7 @@ const enhance = compose(
             csvLoading,
             filter,
             filterForm,
+            cashboxId,
             createForm
         }
     }),
@@ -66,7 +69,7 @@ const enhance = compose(
         dispatch(transactionListFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.cashboxList
+        return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
     }, ({dispatch}) => {
         dispatch(cashboxListFetchAction())
     }),
@@ -80,7 +83,6 @@ const enhance = compose(
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
-
     withHandlers({
         handleActionEdit: props => () => {
             return null
@@ -164,6 +166,11 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_DIALOG_OPEN]: true})})
         },
 
+        handleClickCashbox: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({'cashboxId': id})})
+        },
+
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_DIALOG_OPEN]: false})})
@@ -214,6 +221,7 @@ const TransactionList = enhance((props) => {
         location,
         list,
         cashboxList,
+        cashboxListLoading,
         listLoading,
         detail,
         detailLoading,
@@ -321,7 +329,10 @@ const TransactionList = enhance((props) => {
 
     const cashboxData = {
         data: _.get(cashboxList, 'results'),
+        handleClickCashbox: props.handleClickCashbox,
+        cashboxId: _.toInteger(props.cashboxId),
         listLoading
+
     }
 
     const detailData = {
@@ -335,6 +346,7 @@ const TransactionList = enhance((props) => {
             <TransactionGridList
                 filter={filter}
                 listData={listData}
+                cashboxListLoading={cashboxListLoading}
                 cashboxData={cashboxData}
                 detailData={detailData}
                 createDialog={createDialog}

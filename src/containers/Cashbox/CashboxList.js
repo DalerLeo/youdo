@@ -16,6 +16,8 @@ import {
     CashboxGridList
 } from '../../components/Cashbox'
 import {
+    cashboxCreateAction,
+    cashboxUpdateAction,
     cashboxListFetchAction,
     cashboxCSVFetchAction,
     cashboxDeleteAction,
@@ -78,6 +80,7 @@ const enhance = compose(
         handleOpenCSVDialog: props => () => {
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
+
             dispatch(cashboxCSVFetchAction(props.filter))
         },
 
@@ -208,7 +211,6 @@ const CashboxList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        dispatch,
         params
     } = props
 
@@ -220,7 +222,6 @@ const CashboxList = enhance((props) => {
     const fromDate = filter.getParam(CASHBOX_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CASHBOX_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'cashboxId'))
-    dispatch(cashboxListFetchAction())
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,

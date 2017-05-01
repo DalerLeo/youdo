@@ -5,7 +5,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const CASHBOX_CREATE_DIALOG_OPEN = 'openCreateDialog'
