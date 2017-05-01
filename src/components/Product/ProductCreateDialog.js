@@ -9,6 +9,8 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, ProductTypeSearchField, BrandSearchField, MeasurementSearchField, ImageUploadField} from '../ReduxForm'
+import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
 
 export const PRODUCT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -26,17 +28,6 @@ const validate = (data) => {
 
 const enhance = compose(
     injectSheet({
-        dialog: {
-            '& div:last-child': {
-                textAlign: 'left !important',
-                '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
-                    color: '#12aaeb !important'
-                }
-            }
-        },
-
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -45,34 +36,66 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
-
-        fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
+        fieldsWrap: {
+            display: ({loading}) => !loading ? 'flex' : 'none',
+            width: '100%'
         },
-
+        field: {
+            width: '100%'
+        },
         body: {
             maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
-            overflow: 'hidden !important'
+            overflow: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '20px !important'
         },
 
         title: {
-            width: '220px',
-            margin: '0 auto',
-            padding: '10px 0',
-            textAlign: 'center',
-            background: '#12aaeb',
-            color: '#fff',
-            position: 'relative'
+            paddingTop: '15px',
+            fontWeight: 'bold',
+            color: '#333'
+        },
+        titleContent: {
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            position: 'relative',
+            borderBottom: '1px solid #efefef',
+            marginLeft: '-24px',
+            marginRight: '-24px',
+            padding: '0px 30px 20px 30px',
+            '& button': {
+                position: 'absolute !important',
+                right: '20px',
+                margin: '-15px -10px 0 0 !important'
+            }
         },
 
         form: {
             display: 'flex'
         },
-
-        map: {
-            height: '600px',
-            paddingRight: '0'
+        inputField: {
+            fontSize: '13px !important'
+        },
+        imageUpload: {
+            width: '100px'
+        },
+        bottomButton: {
+            margin: '20px -20px 0',
+            bottom: '-5px',
+            padding: '20px 20px 0 0',
+            position: 'relative',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd'
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
         }
     }),
     reduxForm({
@@ -93,70 +116,67 @@ const ProductCreateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading ? {width: '135px'} : {}}
             bodyClassName={classes.body}>
+            <div className={classes.titleContent}>
+                <span>Добавить продукт</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.fields}>
-                        <div>
-                            <h4 className={classes.title}>Add Product</h4>
-                        </div>
-                        <div>
-                            <div>
-                                <Field
-                                    name="name"
-                                    component={TextField}
-                                    label="Наимование"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="type"
-                                    component={ProductTypeSearchField}
-                                    label="Тип продукта"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="brand"
-                                    component={BrandSearchField}
-                                    label="Бранд"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="measurement"
-                                    component={MeasurementSearchField}
-                                    label="Мера"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="image"
-                                    component={ImageUploadField}
-                                    label="Изображения"
-                                    fullWidth={true}
-                                />
-
-                            </div>
-
-                            <div>
-                                <FlatButton
-                                    label="Cancel"
-                                    primary={true}
-                                    onTouchTap={onClose}
-                                />
-
-                                <FlatButton
-                                    label="Apply"
-                                    primary={true}
-                                    type="submit"
-                                    keyboardFocused={true}
-                                />
-                            </div>
-                        </div>
+                <div className={classes.fieldsWrap}>
+                    <div className={classes.field}>
+                        <Field
+                            name="name"
+                            className={classes.inputField}
+                            component={TextField}
+                            label="Наимование"
+                            fullWidth={true}
+                        />
+                        <Field
+                            name="type"
+                            className={classes.inputField}
+                            component={ProductTypeSearchField}
+                            label="Тип продукта"
+                            fullWidth={true}
+                        />
+                        <Field
+                            name="brand"
+                            className={classes.inputField}
+                            component={BrandSearchField}
+                            label="Бренд"
+                            fullWidth={true}
+                        />
+                        <Field
+                            name="measurement"
+                            className={classes.inputField}
+                            component={MeasurementSearchField}
+                            label="Мера"
+                            fullWidth={true}
+                        />
+                    </div>
+                    <div className={classes.field} style={{maxWidth: '224px'}}>
+                        <Field
+                            name="image"
+                            className={classes.imageUpload}
+                            component={ImageUploadField}
+                            label="Изображения"
+                            fullWidth={true}
+                        />
+                    </div>
                 </div>
             </form>
+            <div className={classes.bottomButton}>
+                <FlatButton
+                    label="Сохранить"
+                    className={classes.actionButton}
+                    primary={true}
+                    type="submit"
+                    keyboardFocused={true}
+                />
+            </div>
         </Dialog>
     )
 })

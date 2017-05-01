@@ -43,12 +43,13 @@ const enhance = compose(
         title: {
             paddingTop: '15px',
             fontWeight: 'bold',
-            color: 'black !important'
+            color: '#333'
         },
         titleContent: {
             display: 'flex',
-            color: 'black',
+            color: '#333',
             fontWeight: 'bold',
+            textTransform: 'uppercase',
             position: 'relative',
             borderBottom: '1px solid #efefef',
             marginLeft: '-24px',
@@ -175,6 +176,7 @@ const SupplyCreateDialog = enhance((props) => {
             contentStyle={customContentStyle}
             open={open}
             onRequestClose={onClose}
+            bodyClassName={classes.body}
             autoScrollBodyContent={true}>
             <form onSubmit={onSubmit} scrolling="auto">
                 <div className={classes.loader}>
