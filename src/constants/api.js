@@ -62,8 +62,14 @@ export const PAYMNET_TYPE_LIST = `/${PAYMNET_TYPE}/`
 export const PAYMNET_TYPE_ITEM = `/${PAYMNET_TYPE}/%d/`
 
 export const FILE_UPLOAD = '/file/file/'
+
 export const CURRENCY = 'currency/currencies'
 export const CURRENCY_CREATE = `/${CURRENCY}/add/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
+
+export const MANUFACTURE = 'dist/manufacturing'
+export const MANUFACTURE_CREATE = `/${MANUFACTURE}/`
+export const MANUFACTURE_LIST = `/${MANUFACTURE}/`
+export const MANUFACTURE_ITEM = `/${MANUFACTURE}/%d/`
 

@@ -9,6 +9,7 @@ import {SupplyList} from '../containers/Supply'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
 import {ProviderList} from '../containers/Provider'
+import {ManufactureList} from '../containers/Manufacture'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -87,6 +88,12 @@ export default {
                     path: ROUTES.PROVIDER_ITEM_URL,
                     component: userIsAuth(ProviderList)
                 }
+            ]
+        },
+        {
+            path: ROUTES.MANUFACTURE_LIST_URL,
+            component: userIsAuth(ManufactureList),
+            childRoutes: [
             ]
         },
 

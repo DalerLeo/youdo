@@ -41,6 +41,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.PROVIDER_UPDATE),
         item: createThunkReducer(actionTypes.PROVIDER_ITEM)
     }),
+    manufacture: combineReducers({
+        create: createThunkReducer(actionTypes.PROVIDER_CREATE),
+        list: createThunkReducer(actionTypes.PROVIDER_LIST),
+        update: createThunkReducer(actionTypes.PROVIDER_UPDATE),
+        item: createThunkReducer(actionTypes.PROVIDER_ITEM)
+    }),
     snackbar: snackbarReducer(),
     form: formReducer,
     toastr: toastrReducer,

@@ -42,10 +42,11 @@ export const MenuItems = [
         ]
     },
     {
-        name: 'Карта',
+        name: 'Производство',
         icon: (<Map />),
-        url: ROUTES.SHOP_LIST_URL,
+        url: ROUTES.MANUFACTURE_LIST_URL,
         childs: [
+            {name: 'Производство', url: ROUTES.MANUFACTURE_LIST_URL},
         ]
     },
     {

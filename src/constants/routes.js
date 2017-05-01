@@ -33,3 +33,8 @@ export const PROVIDER = 'provider'
 export const PROVIDER_LIST_URL = `/${PROVIDER}`
 export const PROVIDER_ITEM_URL = `${PROVIDER_LIST_URL}/:providerId`
 export const PROVIDER_ITEM_PATH = `${PROVIDER}/%d`
+
+export const MANUFACTURE = 'manufacture'
+export const MANUFACTURE_LIST_URL = `/${MANUFACTURE}`
+export const MANUFACTURE_ITEM_URL = `${PROVIDER_LIST_URL}/:providerId`
+export const MANUFACTURE_ITEM_PATH = `${PROVIDER}/%d`
