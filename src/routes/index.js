@@ -6,6 +6,7 @@ import App from '../containers/App'
 import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
 import {CashboxList} from '../containers/Cashbox'
+import {TransactionList} from '../containers/Transaction'
 import {SupplyList} from '../containers/Supply'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
@@ -56,6 +57,22 @@ export default {
 
                 {
                     path: ROUTES.CASHBOX_ITEM_TAB_URL,
+                    component: userIsAuth(CashboxList)
+                }
+            ]
+        },
+        // Transactoin
+        {
+            path: ROUTES.TRANSACTION_LIST_URL,
+            component: userIsAuth(TransactionList),
+            childRoutes: [
+                {
+                    path: ROUTES.TRANSACTION_ITEM_URL,
+                    component: userIsAuth(TransactionList)
+                },
+
+                {
+                    path: ROUTES.TRANSACTION_ITEM_TAB_URL,
                     component: userIsAuth(CashboxList)
                 }
             ]

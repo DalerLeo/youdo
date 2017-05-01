@@ -24,7 +24,7 @@ export const CASHBOX_LIST = `/${CASHBOX}/`
 export const CASHBOX_ITEM = `/${CASHBOX}/%d/`
 export const CASHBOX_DELETE = `/${CASHBOX}/%d/`
 
-export const TRANSACTION = 'transaction'
+export const TRANSACTION = 'transactions/transaction'
 export const TRANSACTION_CREATE = `/${TRANSACTION}/`
 export const TRANSACTION_LIST = `/${TRANSACTION}/`
 export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`

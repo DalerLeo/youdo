@@ -1,11 +1,13 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
+import moment from 'moment'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -16,12 +18,10 @@ import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-import BankPayment from '../BankPayment'
-import CashPayment from '../CashPayment'
 
 const listHeader = [
     {
@@ -68,64 +68,12 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
-        },
-        flex: {
-            display: 'flex'
-        },
-        listWrapper: {
-            boxShadow: '2px 2px 3px #c3c5c7',
-            border: '1px solid #d2d3d5',
-            borderTop: 'none',
-            height: '100%',
-            width: '24%',
-            position: 'absolute',
-            marginLeft: '-36px',
-            paddingRight: '8px'
-        },
-        row: {
-            borderTop: '1px solid #c3c5c7',
-            padding: '15px 5px 15px 35px',
-            boxSizing: 'border-box',
-            '& > div:nth-child(2)> div': {
-                textAlign: 'right'
-            },
-            '& > div:nth-child(2)> div:first-child': {
-                color: '#92ce95',
-                marginBottom: '5px'
-            },
-            '& > div:first-child > div:first-child': {
-                marginBottom: '5px',
-                fontWeight: 'bold'
-            },
-            '& > div:first-child > div:nth-child(2)': {
-                color: '#409bcc'
-            }
-        },
-        red: {
-            color: '#e57373 !important'
-        },
-        blue: {
-            color: '#6f6fb5 !important'
-        },
-        desc: {
-            transform: 'translate(5%,0%)',
-            position: 'absolute'
-        },
-        title: {
-            fontWeight: 'bold'
-        },
-        end: {
-            color: '#b1b2b3',
-            width: '100%'
         }
     }),
-    withState('state', 'setState', null)
 )
 
 const CashboxGridList = enhance((props) => {
     const {
-        state,
-        setState,
         filter,
         createDialog,
         updateDialog,
@@ -169,34 +117,38 @@ const CashboxGridList = enhance((props) => {
         />
     )
 
-    const cashboxList = _.map(_.get(listData, 'data'), (item, index) => {
+    const cashboxList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const type = _.get(item, 'type')
-        const cashier = _.toInteger(_.get(item, 'cashier'))
-        const balance = _.toInteger(_.get(item, 'balance'))
-
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const iconButton = (
+            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
-            <Row key={id} className={classes.row} onTouchTap={() => setState(index)}
-                 style={state === index ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
-                <Col xs={8}>
-                    <div>{name}</div>
-                    <div className={state === index && classes.blue}>
-                        {cashier === 1
-                            ? <div>
-                                <BankPayment style={{height: '16px', width: '16px'}}/>
-                                <span className={classes.desc}>банковский счет</span>
-                            </div>
-                            : <div>
-                                <CashPayment style={{height: '16px', width: '16px'}}/>
-                                <span className={classes.desc}>наличные</span>
-                            </div>
-                        }
-                    </div>
-                </Col>
-                <Col xs={4}>
-                    <div className={state === index && classes.red}>{balance}</div>
-                    <div>{type}</div>
+            <Row key={id} style={{alignItems: 'center'}}>
+                <Col xs={2}>{id}</Col>
+                <Col xs={6}>{name}</Col>
+                <Col xs={3}>{createdDate}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => {
+                                updateDialog.handleOpenUpdateDialog(id)
+                            }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                        />
+                    </IconMenu>
                 </Col>
             </Row>
         )
@@ -222,59 +174,42 @@ const CashboxGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
+            <GridList
+                filter={filter}
+                list={list}
+                detail={cashboxDetail}
+                actionsDialog={actions}
+                filterDialog={cashboxFilterDialog}
+            />
 
-            <div className={classes.flex}>
-                <Col xs={3}>
-                    <div className={classes.listWrapper}>
-                        <Row className={classes.row}
-                             style={state !== null ? {backgroundColor: '#f2f5f8'} : {backgroundColor: '#ffffff'}}>
-                            <div className={classes.title}>Общий объем</div>
-                            <br/>
-                            <div className={classes.end}>во всех классах</div>
-                        </Row>
-                        {cashboxList}
-                    </div>
-                </Col>
-                <Col xs={9}>
-                    <GridList
-                        filter={filter}
-                        list={list}
-                        detail={cashboxDetail}
-                        actionsDialog={actions}
-                        filterDialog={cashboxFilterDialog}
-                    />
+            <CashboxCreateDialog
+                open={createDialog.openCreateDialog}
+                loading={createDialog.createLoading}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
+            />
 
-                    <CashboxCreateDialog
-                        open={createDialog.openCreateDialog}
-                        loading={createDialog.createLoading}
-                        onClose={createDialog.handleCloseCreateDialog}
-                        onSubmit={createDialog.handleSubmitCreateDialog}
-                    />
+            <CashboxCreateDialog
+                initialValues={updateDialog.initialValues}
+                open={updateDialog.openUpdateDialog}
+                loading={updateDialog.updateLoading}
+                onClose={updateDialog.handleCloseUpdateDialog}
+                onSubmit={updateDialog.handleSubmitUpdateDialog}
+            />
 
-                    <CashboxCreateDialog
-                        initialValues={updateDialog.initialValues}
-                        open={updateDialog.openUpdateDialog}
-                        loading={updateDialog.updateLoading}
-                        onClose={updateDialog.handleCloseUpdateDialog}
-                        onSubmit={updateDialog.handleSubmitUpdateDialog}
-                    />
+            <DeleteDialog
+                filter={filter}
+                open={deleteDialog.openDeleteDialog}
+                onClose={deleteDialog.handleCloseDeleteDialog}
+            />
 
-                    <DeleteDialog
-                        filter={filter}
-                        open={deleteDialog.openDeleteDialog}
-                        onClose={deleteDialog.handleCloseDeleteDialog}
-                    />
-
-                    {detailData.data && <ConfirmDialog
-                        type="delete"
-                        message={_.get(detailData, ['data', 'name'])}
-                        onClose={confirmDialog.handleCloseConfirmDialog}
-                        onSubmit={confirmDialog.handleSendConfirmDialog}
-                        open={confirmDialog.openConfirmDialog}
-                    />}
-                </Col>
-
-            </div>
+            {detailData.data && <ConfirmDialog
+                type="delete"
+                message={_.get(detailData, ['data', 'name'])}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.handleSendConfirmDialog}
+                open={confirmDialog.openConfirmDialog}
+            />}
         </Container>
     )
 })

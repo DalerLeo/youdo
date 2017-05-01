@@ -9,17 +9,22 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
-    CASHBOX_CREATE_DIALOG_OPEN,
-    CASHBOX_UPDATE_DIALOG_OPEN,
-    CASHBOX_FILTER_KEY,
-    CASHBOX_FILTER_OPEN,
-    CashboxGridList
-} from '../../components/Cashbox'
+    TRANSACTION_CREATE_DIALOG_OPEN,
+    TRANSACTION_UPDATE_DIALOG_OPEN,
+    TRANSACTION_FILTER_KEY,
+    TRANSACTION_FILTER_OPEN,
+    TransactionGridList
+} from '../../components/Transaction'
 import {
-    cashboxListFetchAction,
-    cashboxCSVFetchAction,
-    cashboxDeleteAction,
-    cashboxItemFetchAction
+    transactionCreateAction,
+    transactionUpdateAction,
+    transactionListFetchAction,
+    transactionCSVFetchAction,
+    transactionDeleteAction,
+    transactionItemFetchAction
+} from '../../actions/transaction'
+import {
+    cashboxListFetchAction
 } from '../../actions/cashbox'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -27,20 +32,22 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['cashbox', 'item', 'data'])
-        const detailLoading = _.get(state, ['cashbox', 'item', 'loading'])
-        const createLoading = _.get(state, ['cashbox', 'create', 'loading'])
-        const updateLoading = _.get(state, ['cashbox', 'update', 'loading'])
-        const list = _.get(state, ['cashbox', 'list', 'data'])
-        const listLoading = _.get(state, ['cashbox', 'list', 'loading'])
-        const csvData = _.get(state, ['cashbox', 'csv', 'data'])
-        const csvLoading = _.get(state, ['cashbox', 'csv', 'loading'])
-        const filterForm = _.get(state, ['form', 'CashboxFilterForm'])
-        const createForm = _.get(state, ['form', 'CashboxCreateForm'])
+        const detail = _.get(state, ['transaction', 'item', 'data'])
+        const detailLoading = _.get(state, ['transaction', 'item', 'loading'])
+        const createLoading = _.get(state, ['transaction', 'create', 'loading'])
+        const updateLoading = _.get(state, ['transaction', 'update', 'loading'])
+        const list = _.get(state, ['transaction', 'list', 'data'])
+        const cashboxList = _.get(state, ['cashbox', 'list', 'data'])
+        const listLoading = _.get(state, ['transaction', 'list', 'loading'])
+        const csvData = _.get(state, ['transaction', 'csv', 'data'])
+        const csvLoading = _.get(state, ['transaction', 'csv', 'loading'])
+        const filterForm = _.get(state, ['form', 'TransactionFilterForm'])
+        const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
             list,
+            cashboxList,
             listLoading,
             detail,
             detailLoading,
@@ -56,15 +63,19 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(cashboxListFetchAction(filter))
+        dispatch(transactionListFetchAction(filter))
     }),
-
     withPropsOnChange((props, nextProps) => {
-        const cashboxId = _.get(nextProps, ['params', 'cashboxId'])
-        return cashboxId && _.get(props, ['params', 'cashboxId']) !== cashboxId
+        return props.cashboxList
+    }, ({dispatch}) => {
+        dispatch(cashboxListFetchAction())
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const transactionId = _.get(nextProps, ['params', 'transactionId'])
+        return transactionId && _.get(props, ['params', 'transactionId']) !== transactionId
     }, ({dispatch, params}) => {
-        const cashboxId = _.toInteger(_.get(params, 'cashboxId'))
-        cashboxId && dispatch(cashboxItemFetchAction(cashboxId))
+        const transactionId = _.toInteger(_.get(params, 'transactionId'))
+        transactionId && dispatch(transactionItemFetchAction(transactionId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -78,7 +89,8 @@ const enhance = compose(
         handleOpenCSVDialog: props => () => {
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
-            dispatch(cashboxCSVFetchAction(props.filter))
+
+            dispatch(transactionCSVFetchAction(props.filter))
         },
 
         handleCloseCSVDialog: props => () => {
@@ -97,7 +109,7 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog} = props
-            dispatch(cashboxDeleteAction(detail.id))
+            dispatch(transactionDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Successful deleted'}))
                 })
@@ -108,12 +120,12 @@ const enhance = compose(
 
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_FILTER_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_FILTER_OPEN]: true})})
         },
 
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_FILTER_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_FILTER_OPEN]: false})})
         },
 
         handleClearFilterDialog: props => () => {
@@ -128,10 +140,10 @@ const enhance = compose(
             const category = _.get(filterForm, ['values', 'category', 'value']) || null
 
             filter.filterBy({
-                [CASHBOX_FILTER_OPEN]: false,
-                [CASHBOX_FILTER_KEY.CATEGORY]: category,
-                [CASHBOX_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [CASHBOX_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [TRANSACTION_FILTER_OPEN]: false,
+                [TRANSACTION_FILTER_KEY.CATEGORY]: category,
+                [TRANSACTION_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [TRANSACTION_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
         handleOpenDeleteDialog: props => () => {
@@ -149,58 +161,59 @@ const enhance = compose(
 
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_DIALOG_OPEN]: true})})
         },
 
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter} = props
 
-            return dispatch(cashboxCreateAction(_.get(createForm, ['values'])))
+            return dispatch(transactionCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({query: filter.getParams({[TRANSACTION_CREATE_DIALOG_OPEN]: false})})
                 })
         },
 
         handleOpenUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_UPDATE_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_UPDATE_DIALOG_OPEN]: true})})
         },
 
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_UPDATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
-            const cashboxId = _.toInteger(_.get(props, ['params', 'cashboxId']))
+            const transactionId = _.toInteger(_.get(props, ['params', 'transactionId']))
 
-            return dispatch(cashboxUpdateAction(cashboxId, _.get(createForm, ['values'])))
+            return dispatch(transactionUpdateAction(transactionId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(cashboxItemFetchAction(cashboxId))
+                    return dispatch(transactionItemFetchAction(transactionId))
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[CASHBOX_UPDATE_DIALOG_OPEN]: false}))
+                    hashHistory.push(filter.createURL({[TRANSACTION_UPDATE_DIALOG_OPEN]: false}))
                 })
         }
     })
 )
 
-const CashboxList = enhance((props) => {
+const TransactionList = enhance((props) => {
     const {
         location,
         list,
+        cashboxList,
         listLoading,
         detail,
         detailLoading,
@@ -208,19 +221,17 @@ const CashboxList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        dispatch,
         params
     } = props
 
-    const openFilterDialog = toBoolean(_.get(location, ['query', CASHBOX_FILTER_OPEN]))
-    const openCreateDialog = toBoolean(_.get(location, ['query', CASHBOX_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', CASHBOX_UPDATE_DIALOG_OPEN]))
+    const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', TRANSACTION_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', TRANSACTION_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
-    const category = _.toInteger(filter.getParam(CASHBOX_FILTER_KEY.CATEGORY))
-    const fromDate = filter.getParam(CASHBOX_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(CASHBOX_FILTER_KEY.TO_DATE)
-    const detailId = _.toInteger(_.get(params, 'cashboxId'))
-    dispatch(cashboxListFetchAction())
+    const category = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY))
+    const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
+    const detailId = _.toInteger(_.get(params, 'transactionId'))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -308,6 +319,11 @@ const CashboxList = enhance((props) => {
         listLoading
     }
 
+    const cashboxData = {
+        data: _.get(cashboxList, 'results'),
+        listLoading
+    }
+
     const detailData = {
         id: detailId,
         data: detail,
@@ -316,9 +332,10 @@ const CashboxList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <CashboxGridList
+            <TransactionGridList
                 filter={filter}
                 listData={listData}
+                cashboxData={cashboxData}
                 detailData={detailData}
                 createDialog={createDialog}
                 deleteDialog={deleteDialog}
@@ -332,4 +349,4 @@ const CashboxList = enhance((props) => {
     )
 })
 
-export default CashboxList
+export default TransactionList

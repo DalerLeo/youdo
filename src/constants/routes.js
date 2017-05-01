@@ -17,6 +17,13 @@ export const CASHBOX_ITEM_TAB_URL = `${CASHBOX_ITEM_URL}/:tab`
 export const CASHBOX_ITEM_PATH = `/${CASHBOX}/%d`
 export const CASHBOX_ITEM_TAB_PATH = `/${CASHBOX}/%d/%s`
 
+export const TRANSACTION = 'transaction'
+export const TRANSACTION_LIST_URL = `/${TRANSACTION}`
+export const TRANSACTION_ITEM_URL = `${TRANSACTION_LIST_URL}/:shopId`
+export const TRANSACTION_ITEM_TAB_URL = `${TRANSACTION_ITEM_URL}/:tab`
+export const TRANSACTION_ITEM_PATH = `/${TRANSACTION}/%d`
+export const TRANSACTION_ITEM_TAB_PATH = `/${TRANSACTION}/%d/%s`
+
 export const SUPPLY = 'supply'
 export const SUPPLY_LIST_URL = `/${SUPPLY}`
 export const SUPPLY_ITEM_URL = `${SUPPLY_LIST_URL}/:supplyId`

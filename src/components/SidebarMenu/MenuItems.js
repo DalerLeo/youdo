@@ -38,7 +38,8 @@ export const MenuItems = [
         icon: (<AccountBalanceWallet />),
         url: ROUTES.CASHBOX_LIST_URL,
         childs: [
-            {name: 'Касси', url: ROUTES.CASHBOX_LIST_URL}
+            {name: 'Касси', url: ROUTES.CASHBOX_LIST_URL},
+            {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL}
         ]
     },
     {
