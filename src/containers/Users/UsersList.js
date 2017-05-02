@@ -1,12 +1,10 @@
 import React from 'react'
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
-import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
@@ -175,11 +173,6 @@ const enhance = compose(
         },
 
         handleOpenUpdateDialog: props => (id) => {
-            // const {filter} = props
-            // hashHistory.push({
-            //     pathname: sprintf(ROUTER.USERS_ITEM_PATH, id),
-            //     query: filter.getParams({[USERS_UPDATE_DIALOG_OPEN]: true})
-            // })
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[USERS_UPDATE_DIALOG_OPEN]: true})})
         },
