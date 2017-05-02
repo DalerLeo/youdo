@@ -22,7 +22,7 @@ export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
-// Todo
+
 export const USERS = 'dist/user'
 export const USERS_CREATE = `/${USERS}/`
 export const USERS_LIST = `/${USERS}/`

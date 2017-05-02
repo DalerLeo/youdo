@@ -135,8 +135,6 @@ const UsersGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const username = _.get(item, 'username')
         const region = _.get(item, 'region') || 'N/A'
-        const firstName = _.get(item, 'firstName')
-        const secondName = _.get(item, 'secondName')
         const email = _.get(item, 'email')
         const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
         const typeUser = _.get(item, 'typeUser') || 'N/A'

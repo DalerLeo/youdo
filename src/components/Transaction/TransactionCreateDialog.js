@@ -108,7 +108,7 @@ const enhance = compose(
 )
 
 const TransactionCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes, cashboxData} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
 
@@ -177,16 +177,11 @@ const TransactionCreateDialog = enhance((props) => {
 })
 
 TransactionCreateDialog.propTyeps = {
-    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     cashboxData: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
-}
-
-TransactionCreateDialog.defaultProps = {
-    isUpdate: false
 }
 
 export default TransactionCreateDialog
