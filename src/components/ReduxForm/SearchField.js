@@ -102,10 +102,10 @@ const SearchField = enhance((props) => {
                 {...autoCompleteProps}
             />
             {!state.loading && <div className={classes.icon}>
-                <SearchIcon />
+                <SearchIcon style={{color: '#ccc', height: '20px', width: '20px'}}/>
             </div>}
             {state.loading && <div className={classes.icon}>
-                <CircularProgress size={25} thickness={3} />
+                <CircularProgress size={20} thickness={2} />
             </div>}
         </div>
     )
