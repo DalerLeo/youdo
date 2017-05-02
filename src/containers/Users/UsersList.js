@@ -1,10 +1,12 @@
 import React from 'react'
 import _ from 'lodash'
+import sprintf from 'sprintf'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
@@ -172,7 +174,12 @@ const enhance = compose(
                 })
         },
 
-        handleOpenUpdateDialog: props => () => {
+        handleOpenUpdateDialog: props => (id) => {
+            // const {filter} = props
+            // hashHistory.push({
+            //     pathname: sprintf(ROUTER.USERS_ITEM_PATH, id),
+            //     query: filter.getParams({[USERS_UPDATE_DIALOG_OPEN]: true})
+            // })
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[USERS_UPDATE_DIALOG_OPEN]: true})})
         },
@@ -256,19 +263,14 @@ const UsersList = enhance((props) => {
             }
 
             return {
-                name: _.get(detail, 'name'),
-                category: {
-                    value: _.get(detail, 'category')
-                },
-                address: _.get(detail, 'address'),
-                guide: _.get(detail, 'guide'),
-                phone: _.get(detail, 'phone'),
-                contactName: _.get(detail, 'contactName'),
-                official: _.get(detail, 'official'),
-                latLng: {
-                    lat: _.get(detail, 'lat'),
-                    lng: _.get(detail, 'lon')
-                }
+                username: _.get(detail, 'username'),
+                firstName: _.get(detail, 'firstName'),
+                secondName: _.get(detail, 'secondName'),
+                phoneNumber: _.get(detail, 'phoneNumber'),
+                region: _.get(detail, 'region'),
+                password: _.get(detail, 'password'),
+                typeUser: _.get(detail, 'typeUser'),
+                email: _.get(detail, 'email')
             }
         })(),
         updateLoading: detailLoading || updateLoading,

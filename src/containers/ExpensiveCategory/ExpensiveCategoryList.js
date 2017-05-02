@@ -106,11 +106,6 @@ const enhance = compose(
                 })
         },
 
-        handleTabChange: props => (tab) => {
-            const expensiveCategoryId = _.toInteger(_.get(props, ['params', 'expensiveCategoryId']))
-            hashHistory.push({pathname: sprintf(ROUTER.EXPENSIVE_CATEGORY_ITEM_TAB_PATH, expensiveCategoryId, tab)})
-        },
-
         handleOpenDeleteDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({
@@ -195,7 +190,6 @@ const ExpensiveCategoryList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', EXPENSIVE_CATEGORY_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'expensiveCategoryId'))
-    const tab = _.get(params, 'tab')
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -247,11 +241,6 @@ const ExpensiveCategoryList = enhance((props) => {
         handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
-    const tabData = {
-        tab,
-        handleTabChange: props.handleTabChange
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -269,7 +258,6 @@ const ExpensiveCategoryList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                tabData={tabData}
                 createDialog={createDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}

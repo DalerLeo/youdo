@@ -9,9 +9,10 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, LocationField, CategorySearchField} from '../ReduxForm'
+import {TextField} from '../ReduxForm'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const USERS_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -48,12 +49,12 @@ const enhance = compose(
         },
 
         fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
+            display: ({loading}) => !loading ? 'block' : 'none'
         },
 
         body: {
             maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
+            padding: '30px !important',
             overflow: 'hidden !important'
         },
 
@@ -66,14 +67,24 @@ const enhance = compose(
             color: '#fff',
             position: 'relative'
         },
-
-        form: {
-            display: 'flex'
+        bottomBorder: {
+            display: 'flex',
+            borderBottom: '2px dashed #efefef',
+            marginBottom: '20px',
+            paddingBottom: '20px'
         },
-
-        map: {
-            height: '600px',
-            paddingRight: '0'
+        rightBorder: {
+            borderRight: '2px dashed #efefef',
+            paddingRight: '20px !important'
+        },
+        paddingLeft: {
+            paddingLeft: '20px !important'
+        },
+        marginTop: {
+            marginTop: '-20px !important'
+        },
+        flex: {
+            display: 'flex'
         }
     }),
     reduxForm({
@@ -83,7 +94,7 @@ const enhance = compose(
 )
 
 const UsersCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -92,92 +103,81 @@ const UsersCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '135px'} : {width: '600px'}}
             bodyClassName={classes.body}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.fields}>
-                    <Col xs={5}>
-                        <div>
-                            <h4 className={classes.title}>Add Users</h4>
-                        </div>
-                        <div>
-                            <div>
-                                <Field
-                                    name="name"
-                                    component={TextField}
-                                    label="Name"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="category"
-                                    component={CategorySearchField}
-                                    label="Category"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="address"
-                                    component={TextField}
-                                    label="Address"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="guide"
-                                    component={TextField}
-                                    label="Guide"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="phone"
-                                    component={TextField}
-                                    label="Phone"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="contactName"
-                                    component={TextField}
-                                    label="Contact name"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="official"
-                                    component={TextField}
-                                    label="Official"
-                                    fullWidth={true}
-                                />
-                            </div>
-
-                            <div>
-                                <FlatButton
-                                    label="Cancel"
-                                    primary={true}
-                                    onTouchTap={onClose}
-                                />
-
-                                <FlatButton
-                                    label="Apply"
-                                    primary={true}
-                                    type="submit"
-                                    keyboardFocused={true}
-                                />
-                            </div>
-                        </div>
-                    </Col>
-                    <Col xs={7} className={classes.map}>
-                        <Field
-                            name="latLng"
-                            component={LocationField}
-                            fullWidth={true}
-                        />
-                    </Col>
+                    <div>
+                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
+                    </div>
+                    <div className={classes.bottomBorder}>
+                        <Col xs={6}>
+                            <Field
+                                name="name"
+                                component={TextField}
+                                label="Имя"
+                                className={classes.marginTop}
+                                fullWidth={true}/>
+                            <Field
+                                name="surname"
+                                component={TextField}
+                                label="Фамилия"
+                                className={classes.marginTop}
+                                fullWidth={true}/>
+                        </Col>
+                        <Col xs={6}>
+                            img content
+                        </Col>
+                    </div>
+                    <div className={classes.bottomBorder}>
+                        <Col xs={6} className={classes.rightBorder}>
+                            <Field
+                                name="email"
+                                component={TextField}
+                                label="Email"
+                                className={classes.marginTop}
+                                fullWidth={true}/>
+                            <Field
+                                name="phoneNumber"
+                                component={TextField}
+                                label="Телефон"
+                                className={classes.marginTop}
+                                fullWidth={true}/>
+                        </Col>
+                        <Col xs={6} className={classes.paddingLeft}>
+                            <Field
+                                name="typeUser"
+                                component={TextField}
+                                label="Тип Пользователя"
+                                className={classes.marginTop}
+                                fullWidth={true}/>
+                            <Field
+                                name="region"
+                                component={TextField}
+                                label="Район"
+                                className={classes.marginTop}
+                                fullWidth={true}/>
+                            <Field
+                                name="password"
+                                component={TextField}
+                                label="Пароль"
+                                className={classes.marginTop}
+                                fullWidth={true}/>
+                            <Field
+                                name="password"
+                                component={TextField}
+                                label="Потвердить пароль"
+                                className={classes.marginTop}
+                                fullWidth={true}/>
+                        </Col>
+                    </div>
+                </div>
+                <div>
+                    <FlatButton label="Отменить" onTouchTap={onClose}/>
+                    <FlatButton type="submit" label="Применить"/>
                 </div>
             </form>
         </Dialog>
@@ -185,6 +185,7 @@ const UsersCreateDialog = enhance((props) => {
 })
 
 UsersCreateDialog.propTyeps = {
+    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,

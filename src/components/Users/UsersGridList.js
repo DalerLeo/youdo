@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -21,33 +20,48 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Edit from 'material-ui/svg-icons/image/edit'
 import Tooltip from '../ToolTip'
 
 const listHeader = [
     {
         sorting: true,
-        name: 'name',
-        title: 'Name'
+        name: '',
+        title: '',
+        xs: 1
     },
     {
         sorting: true,
-        name: 'phone',
-        title: 'Phone'
+        name: 'username',
+        title: 'Пользователь',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'address',
-        title: 'Address'
+        name: 'region',
+        title: 'Телефон',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'guide',
-        title: 'Guide'
+        name: 'phoneNumber',
+        title: 'Адрес',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'contactName',
-        title: 'Contact name'
+        name: 'email',
+        title: 'Email',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'typeUser',
+        title: 'Должность',
+        xs: 2
     },
     {
         sorting: true,
@@ -83,7 +97,6 @@ const UsersGridList = enhance((props) => {
         deleteDialog,
         listData,
         detailData,
-        tabData,
         classes
     } = props
 
@@ -114,33 +127,56 @@ const UsersGridList = enhance((props) => {
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
-            tabData={tabData}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
         />
     )
 
     const usersList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const phone = _.get(item, 'phone') || 'N/A'
-        const address = _.get(item, 'address') || 'N/A'
-        const guide = _.get(item, 'guide') || 'N/A'
-        const contactName = _.get(item, 'contactName') || 'N/A'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const username = _.get(item, 'username')
+        const region = _.get(item, 'region') || 'N/A'
+        const firstName = _.get(item, 'firstName')
+        const secondName = _.get(item, 'secondName')
+        const email = _.get(item, 'email')
+        const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
+        const typeUser = _.get(item, 'typeUser') || 'N/A'
+
+        const iconButton = (
+            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
 
         return (
             <Row key={id}>
+                <Col xs={1}></Col>
                 <Col xs={2}>
                     <Link to={{
                         pathname: sprintf(ROUTES.USERS_ITEM_PATH, id),
                         query: filter.getParams()
-                    }}>{name}</Link>
+                    }}>{username}</Link>
                 </Col>
-                <Col xs={2}>{phone}</Col>
-                <Col xs={2}>{address}</Col>
-                <Col xs={2}>{guide}</Col>
-                <Col xs={2}>{contactName}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={2}>{region}</Col>
+                <Col xs={2}>{phoneNumber}</Col>
+                <Col xs={2}>{email}</Col>
+                <Col xs={2}>{typeUser}</Col>
+                <Col xs={1}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                        />
+                    </IconMenu>
+                </Col>
             </Row>
         )
     })
@@ -210,7 +246,6 @@ UsersGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
