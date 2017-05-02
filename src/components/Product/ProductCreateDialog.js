@@ -26,6 +26,7 @@ const validate = (data) => {
     })
 }
 
+const colorBlue = '#129fdd !important'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -90,7 +91,7 @@ const enhance = compose(
             '& span': {
                 fontSize: '13px !important',
                 fontWeight: '600 !important',
-                color: '#129fdd'
+                color: colorBlue
             }
         },
         actionButton: {
