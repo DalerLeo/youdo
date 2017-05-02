@@ -273,6 +273,7 @@ const TransactionGridList = enhance((props) => {
                     />
 
                     <TransactionCreateDialog
+                        cashboxData={cashboxData}
                         open={createDialog.openCreateDialog}
                         loading={createDialog.createLoading}
                         onClose={createDialog.handleCloseCreateDialog}
@@ -281,6 +282,7 @@ const TransactionGridList = enhance((props) => {
 
                     <TransactionCreateDialog
                         initialValues={updateDialog.initialValues}
+                        isUpdate={true}
                         open={updateDialog.openUpdateDialog}
                         loading={updateDialog.updateLoading}
                         onClose={updateDialog.handleCloseUpdateDialog}

@@ -11,7 +11,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import TextFieldMU from 'material-ui/TextField'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CurrencySearchField} from '../ReduxForm'
+import {TextField, CurrencySearchField, ExpensiveCategorySearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 
 export const TRANSACTION_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -94,7 +94,7 @@ const enhance = compose(
         },
         border: {
             '& textarea': {
-                border: '1px solid #efefef !important'
+                border: '1px solid #cccccc !important'
             },
             '$ > label': {
                 display: 'none'
@@ -108,8 +108,9 @@ const enhance = compose(
 )
 
 const TransactionCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, cashboxData, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
 
     return (
         <Dialog
@@ -117,7 +118,7 @@ const TransactionCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '135px'} : {width: '400px'}}
             bodyClassName={classes.body}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
@@ -132,40 +133,37 @@ const TransactionCreateDialog = enhance((props) => {
                     </div>
                     <div>
                         <div>Касса:</div>
-                        <div className={classes.label}>Називание выбранной кассы</div>
+                        <div className={classes.label} name="cashbox" value={cashbox}>{_.get(cashbox, 'name')}</div>
                         <Field
-                            name="comment"
-                            component={TextField}
+                            name="categoryId"
+                            component={ExpensiveCategorySearchField}
                             label="Категория расхода"
-                            fullWidth={true}
-                        />
+                            fullWidth={true}/>
                         <div className={classes.flex}>
                             <Col xs={6}>
                                 <Field
                                     name="amount"
                                     component={TextField}
                                     label="Сумма"
-                                    fullWidth={true}
-                                />
+                                    fullWidth={true}/>
                             </Col>
                             <Col xs={4}>
                                 <Field
                                     name="typePayment"
                                     component={CurrencySearchField}
                                     label="Валята"
-                                    fullWidth={true}
-                                />
+                                    fullWidth={true}/>
                             </Col>
                         </div>
                         <TextFieldMU
+                            name="comment"
                             floatingLabelFocusStyle={{borderBottom: 'none'}}
                             className={classes.border}
                             floatingLabelText="Комментары"
                             multiLine={true}
                             rows={3}
                             rowsMax={3}
-                            fullWidth={true}
-                        />
+                            fullWidth={true}/>
                     </div>
                     <FlatButton
                         label="Сохранмть"
@@ -179,10 +177,16 @@ const TransactionCreateDialog = enhance((props) => {
 })
 
 TransactionCreateDialog.propTyeps = {
+    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
+    cashboxData: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
+}
+
+TransactionCreateDialog.defaultProps = {
+    isUpdate: false
 }
 
 export default TransactionCreateDialog

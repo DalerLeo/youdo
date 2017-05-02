@@ -42,3 +42,8 @@ export const CATEGORY = 'category'
 export const CATEGORY_LIST_URL = `/${CATEGORY}`
 export const CATEGORY_ITEM_URL = `${CATEGORY_LIST_URL}/:categoryId`
 export const CATEGORY_ITEM_PATH = `${CATEGORY}/%d`
+
+export const EXPENSIVE_CATEGORY = 'expensiveCategory'
+export const EXPENSIVE_CATEGORY_LIST_URL = `/${EXPENSIVE_CATEGORY}`
+export const EXPENSIVE_CATEGORY_ITEM_URL = `${EXPENSIVE_CATEGORY_LIST_URL}/:expensiveCategoryId`
+export const EXPENSIVE_CATEGORY_ITEM_PATH = `${EXPENSIVE_CATEGORY}/%d`

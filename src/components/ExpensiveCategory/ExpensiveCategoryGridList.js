@@ -1,54 +1,52 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import moment from 'moment'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import CashboxFilterForm from './CashboxFilterForm'
-import CashboxDetails from './CashboxDetails'
-import CashboxCreateDialog from './CashboxCreateDialog'
+import ExpensiveCategoryCreateDialog from './ExpensiveCategoryCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Edit from 'material-ui/svg-icons/image/edit'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Edit from 'material-ui/svg-icons/image/edit'
 
 const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: 'Id',
-        xs: 2
+        xs: 2,
+        title: 'Id'
     },
     {
         sorting: true,
         name: 'name',
-        title: 'Name',
-        xs: 6
+        xs: 6,
+        title: 'Наименование'
     },
     {
         sorting: true,
-        name: 'address',
-        title: 'Address',
-        xs: 3
+        xs: 3,
+        name: 'created_date',
+        title: 'Дата создания'
     },
     {
-        sorting: true,
-        name: 'guide',
-        title: 'Guide',
-        xs: 1
+        sorting: false,
+        xs: 1,
+        name: 'actions',
+        title: ''
     }
 ]
 
@@ -65,15 +63,14 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         }
-    }),
+    })
 )
 
-const CashboxGridList = enhance((props) => {
+const ExpensiveCategoryGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
-        filterDialog,
         actionsDialog,
         confirmDialog,
         deleteDialog,
@@ -94,26 +91,11 @@ const CashboxGridList = enhance((props) => {
         </div>
     )
 
-    const cashboxFilterDialog = (
-        <CashboxFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
+    const expensiveCategoryDetail = (
+        <span>a</span>
     )
 
-    const cashboxDetail = (
-        <CashboxDetails
-            key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            deleteDialog={deleteDialog}
-            confirmDialog={confirmDialog}
-            loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-        />
-    )
-
-    const cashboxList = _.map(_.get(listData, 'data'), (item) => {
+    const expensiveCategoryList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
@@ -135,9 +117,7 @@ const CashboxGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Изменить"
                             leftIcon={<Edit />}
-                            onTouchTap={() => {
-                                updateDialog.handleOpenUpdateDialog(id)
-                            }}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
                         />
                         <MenuItem
                             primaryText="Удалить "
@@ -152,16 +132,15 @@ const CashboxGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: cashboxList,
+        list: expensiveCategoryList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.CASHBOX_LIST_URL}/>
-
+            <SubMenu url={ROUTES.EXPENSIVE_CATEGORY_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
+                <Tooltip position="left" text="Добавить продукт">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -170,24 +149,24 @@ const CashboxGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
+
             <GridList
                 filter={filter}
                 list={list}
-                detail={cashboxDetail}
+                detail={expensiveCategoryDetail}
                 actionsDialog={actions}
-                filterDialog={cashboxFilterDialog}
             />
 
-            <CashboxCreateDialog
+            <ExpensiveCategoryCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <CashboxCreateDialog
-                initialValues={updateDialog.initialValues}
+            <ExpensiveCategoryCreateDialog
                 isUpdate={true}
+                initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
@@ -211,10 +190,11 @@ const CashboxGridList = enhance((props) => {
     )
 })
 
-CashboxGridList.propTypes = {
+ExpensiveCategoryGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
+    tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
@@ -243,15 +223,7 @@ CashboxGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
-    filterDialog: PropTypes.shape({
-        initialValues: PropTypes.object,
-        filterLoading: PropTypes.bool,
-        openFilterDialog: PropTypes.bool.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default CashboxGridList
+export default ExpensiveCategoryGridList

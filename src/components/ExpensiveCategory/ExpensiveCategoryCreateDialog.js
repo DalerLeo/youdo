@@ -10,7 +10,7 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
 
-export const CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const EXPENSIVE_CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -76,12 +76,12 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'CategoryCreateForm',
+        form: 'ExpensiveCategoryCreateForm',
         enableReinitialize: true
     })
 )
 
-const CategoryCreateDialog = enhance((props) => {
+const ExpensiveCategoryCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -98,40 +98,40 @@ const CategoryCreateDialog = enhance((props) => {
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.fields}>
-                    <div>
-                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
-                    </div>
-                    <div>
                         <div>
-                            <Field
-                                name="name"
-                                component={TextField}
-                                label="Наимование"
-                                fullWidth={true}
-                            />
+                            <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
                         </div>
                         <div>
-                            <FlatButton
-                                label="Отменить"
-                                primary={true}
-                                onTouchTap={onClose}
-                            />
+                            <div>
+                                <Field
+                                    name="name"
+                                    component={TextField}
+                                    label="Наимование"
+                                    fullWidth={true}
+                                />
+                            </div>
+                            <div>
+                                <FlatButton
+                                    label="Отменить"
+                                    primary={true}
+                                    onTouchTap={onClose}
+                                />
 
-                            <FlatButton
-                                label="Отправить"
-                                primary={true}
-                                type="submit"
-                                keyboardFocused={true}
-                            />
+                                <FlatButton
+                                    label="Отправить"
+                                    primary={true}
+                                    type="submit"
+                                    keyboardFocused={true}
+                                />
+                            </div>
                         </div>
-                    </div>
                 </div>
             </form>
         </Dialog>
     )
 })
 
-CategoryCreateDialog.propTypes = {
+ExpensiveCategoryCreateDialog.propTypes = {
     isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -139,8 +139,8 @@ CategoryCreateDialog.propTypes = {
     loading: PropTypes.bool.isRequired
 }
 
-CategoryCreateDialog.defaultProps = {
+ExpensiveCategoryCreateDialog.defaultProps = {
     isUpdate: false
 }
 
-export default CategoryCreateDialog
+export default ExpensiveCategoryCreateDialog

@@ -5,8 +5,10 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
-import {reduxForm, SubmissionError} from 'redux-form'
+import FlatButton from 'material-ui/FlatButton'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
+import {TextField} from '../ReduxForm'
 
 export const CASHBOX_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -45,7 +47,7 @@ const enhance = compose(
         },
 
         fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
+            display: ({loading}) => !loading ? 'block' : 'none'
         },
 
         body: {
@@ -71,7 +73,7 @@ const enhance = compose(
 )
 
 const CashboxCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -87,7 +89,33 @@ const CashboxCreateDialog = enhance((props) => {
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.fields}>
-                    Cashbox Fields
+                    <div>
+                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
+                    </div>
+                    <div>
+                        <div>
+                            <Field
+                                name="name"
+                                component={TextField}
+                                label="Наимование"
+                                fullWidth={true}
+                            />
+                        </div>
+                        <div>
+                            <FlatButton
+                                label="Отменить"
+                                primary={true}
+                                onTouchTap={onClose}
+                            />
+
+                            <FlatButton
+                                label="Отправить"
+                                primary={true}
+                                type="submit"
+                                keyboardFocused={true}
+                            />
+                        </div>
+                    </div>
                 </div>
             </form>
         </Dialog>
@@ -95,10 +123,14 @@ const CashboxCreateDialog = enhance((props) => {
 })
 
 CashboxCreateDialog.propTyeps = {
+    isUpdate: PropTypes.bool.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
+CashboxCreateDialog.defaultProps = {
+    isUpdate: false
+}
 export default CashboxCreateDialog

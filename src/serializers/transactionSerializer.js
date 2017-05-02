@@ -5,13 +5,13 @@ export const createSerializer = (data) => {
     const amount = _.get(data, ['amount'])
     const comment = _.get(data, ['comment', 'value'])
     const cashbox = _.get(data, ['cashbox'])
-    const objectId = _.get(data, ['objectId'])
+    const categoryId = _.get(data, ['categoryId'])
 
     return {
         amount,
         comment,
         cashbox,
-        objectId
+        categoryId
     }
 }
 
