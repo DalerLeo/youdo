@@ -12,6 +12,7 @@ import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
+import {ProviderList} from '../containers/Provider'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -132,6 +133,17 @@ export default {
                 {
                     path: ROUTES.EXPENSIVE_CATEGORY_ITEM_URL,
                     component: userIsAuth(ExpensiveCategoryList)
+                }
+            ]
+        },
+        // Provider
+        {
+            path: ROUTES.PROVIDER_LIST_URL,
+            component: userIsAuth(ProviderList),
+            childRoutes: [
+                {
+                    path: ROUTES.PROVIDER_ITEM_URL,
+                    component: userIsAuth(ProviderList)
                 }
             ]
         },

@@ -6,11 +6,13 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ProductTypeSearchField, BrandSearchField, MeasurementSearchField, ImageUploadField} from '../ReduxForm'
+import {TextField} from '../ReduxForm'
+import ProviderContactsListField from '../ReduxForm/ProviderContactsListField'
 
-export const PRODUCT_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const PROVIDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const PROVIDER_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -28,15 +30,14 @@ const enhance = compose(
     injectSheet({
         dialog: {
             '& div:last-child': {
-                textAlign: 'left !important',
+                textAlign: 'center !important',
                 '& button': {
-                    marginLeft: '50px !important',
+                    marginLeft: '20px !important',
                     marginBottom: '5px !important',
                     color: '#12aaeb !important'
                 }
             }
         },
-
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -45,17 +46,15 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
-
         fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
+            display: ({loading}) => !loading ? 'block' : 'none',
+            width: '100%'
         },
-
         body: {
             maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
+            padding: '0 20px 20px 20px !important',
             overflow: 'hidden !important'
         },
-
         title: {
             width: '220px',
             margin: '0 auto',
@@ -65,24 +64,26 @@ const enhance = compose(
             color: '#fff',
             position: 'relative'
         },
-
         form: {
             display: 'flex'
         },
-
-        map: {
-            height: '600px',
-            paddingRight: '0'
+        background: {
+            backgroundColor: '#f1f5f8',
+            margin: '0 -20px 20px -20px',
+            padding: '0 20px'
+        },
+        flex: {
+            display: 'flex'
         }
     }),
     reduxForm({
-        form: 'ProductCreateForm',
+        form: 'ProviderCreateForm',
         enableReinitialize: true
     })
 )
 
-const ProductCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+const ProviderCreateDialog = enhance((props) => {
+    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -91,7 +92,7 @@ const ProductCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
@@ -99,60 +100,38 @@ const ProductCreateDialog = enhance((props) => {
                 </div>
                 <div className={classes.fields}>
                         <div>
-                            <h4 className={classes.title}>Add Product</h4>
+                            <h4 className={classes.title}> {isUpdate ? 'Изменить поставщика' : 'Добавить поставщика'}</h4>
                         </div>
                         <div>
                             <div>
                                 <Field
                                     name="name"
                                     component={TextField}
-                                    label="Наимование"
-                                    fullWidth={true}
-                                />
-
+                                    label="Организация"
+                                    fullWidth={true}/>
                                 <Field
-                                    name="type"
-                                    component={ProductTypeSearchField}
-                                    label="Тип продукта"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="brand"
-                                    component={BrandSearchField}
-                                    label="Бранд"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="measurement"
-                                    component={MeasurementSearchField}
-                                    label="Мера"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="image"
-                                    component={ImageUploadField}
-                                    label="Изображения"
-                                    fullWidth={true}
-                                />
-
+                                    name="address"
+                                    component={TextField}
+                                    label="Местположение"
+                                    fullWidth={true}/>
+                                <div className={classes.background}>
+                                    <FieldArray
+                                        name="contacts"
+                                        component={ProviderContactsListField}
+                                    />
+                                </div>
                             </div>
-
                             <div>
                                 <FlatButton
-                                    label="Cancel"
+                                    label="Отменить"
                                     primary={true}
-                                    onTouchTap={onClose}
-                                />
+                                    onTouchTap={onClose}/>
 
                                 <FlatButton
-                                    label="Apply"
+                                    label="Отправить"
                                     primary={true}
                                     type="submit"
-                                    keyboardFocused={true}
-                                />
+                                    keyboardFocused={true}/>
                             </div>
                         </div>
                 </div>
@@ -161,11 +140,16 @@ const ProductCreateDialog = enhance((props) => {
     )
 })
 
-ProductCreateDialog.propTyeps = {
+ProviderCreateDialog.propTypes = {
+    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
-export default ProductCreateDialog
+ProviderCreateDialog.defaultProps = {
+    isUpdate: false
+}
+
+export default ProviderCreateDialog
