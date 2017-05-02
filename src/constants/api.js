@@ -22,6 +22,12 @@ export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
+//
+// export const USERS = 'dist/market'
+// export const USERS_CREATE = `/${USERS}/`
+// export const USERS_LIST = `/${USERS}/`
+// export const USERS_ITEM = `/${USERS}/%d/`
+// export const USERS_DELETE = `/${USERS}/%d/`
 
 export const CASHBOX = 'cashbox'
 export const CASHBOX_CREATE = `/${CASHBOX}/`

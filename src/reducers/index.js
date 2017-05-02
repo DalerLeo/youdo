@@ -55,6 +55,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_UPDATE),
         item: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_ITEM)
     }),
+    users: combineReducers({
+        create: createThunkReducer(actionTypes.USERS_CREATE),
+        list: createThunkReducer(actionTypes.USERS_LIST),
+        update: createThunkReducer(actionTypes.USERS_UPDATE),
+        item: createThunkReducer(actionTypes.USERS_ITEM)
+    }),
     snackbar: snackbarReducer(),
     form: formReducer,
     toastr: toastrReducer,

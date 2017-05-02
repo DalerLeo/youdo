@@ -10,6 +10,13 @@ export const SHOP_ITEM_TAB_URL = `${SHOP_ITEM_URL}/:tab`
 export const SHOP_ITEM_PATH = `/${SHOP}/%d`
 export const SHOP_ITEM_TAB_PATH = `/${SHOP}/%d/%s`
 
+export const USERS = 'users'
+export const USERS_LIST_URL = `/${USERS}`
+export const USERS_ITEM_URL = `${USERS_LIST_URL}/:shopId`
+export const USERS_ITEM_TAB_URL = `${USERS_ITEM_URL}/:tab`
+export const USERS_ITEM_PATH = `/${USERS}/%d`
+export const USERS_ITEM_TAB_PATH = `/${USERS}/%d/%s`
+
 export const CASHBOX = 'cashbox'
 export const CASHBOX_LIST_URL = `/${CASHBOX}`
 export const CASHBOX_ITEM_URL = `${CASHBOX_LIST_URL}/:shopId`

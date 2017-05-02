@@ -11,6 +11,7 @@ import {SupplyList} from '../containers/Supply'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
+import {UsersList} from '../containers/Users'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -43,6 +44,17 @@ export default {
                 {
                     path: ROUTES.SHOP_ITEM_TAB_URL,
                     component: userIsAuth(ShopList)
+                }
+            ]
+        },
+        // Users
+        {
+            path: ROUTES.USERS_LIST_URL,
+            component: userIsAuth(UsersList),
+            childRoutes: [
+                {
+                    path: ROUTES.USERS_ITEM_URL,
+                    component: userIsAuth(UsersList)
                 }
             ]
         },
