@@ -7,6 +7,7 @@ import * as PATH from '../../constants/api'
 import Dropzone from 'react-dropzone'
 import axios from '../../helpers/axios'
 import CircularProgress from 'material-ui/CircularProgress'
+import ImageImage from 'material-ui/svg-icons/image/image'
 
 const enhance = compose(
     injectSheet({
@@ -14,6 +15,20 @@ const enhance = compose(
             position: 'relative',
             width: '100%',
             height: '100%'
+        },
+        dropZone: {
+            border: '2px #ccc dashed',
+            width: '200px',
+            height: '216px',
+            display: 'flex',
+            margin: '60px 0 0 auto',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            overflow: 'hidden',
+            '& img': {
+                width: '100%',
+                display: 'block'
+            }
         },
         error: {
             position: 'absolute',
@@ -65,7 +80,11 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
         }
 
         if (acceptedFiles.length === zero) {
-            return 'Добавьте фото'
+            return (
+                <p>
+                    <ImageImage style={{color: '#b9b9b9', width: '50px', height: '50px', display: 'block', margin: 'auto'}}/>
+                    Загрузите фото
+                </p>)
         }
         const url = acceptedFiles[zero].preview
         return (<img src={url}/>)
@@ -75,6 +94,7 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
         <div className={classes.wrapper}>
             <Dropzone
                 onDrop={onDrop}
+                className={classes.dropZone}
                 accept="image/jpeg, image/png">
                 {dropZoneView}
             </Dropzone>
