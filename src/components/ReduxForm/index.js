@@ -16,6 +16,7 @@ import DateField from './DateField'
 import ProductSearchField from './ProductSearchField'
 import SupplyListProductField from './SupplyListProductField'
 import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
+import PaymentTypeSearchField from './PaymentTypeSearchField'
 
 export {
     ProductSearchField,
@@ -35,5 +36,6 @@ export {
     ProviderSearchField,
     StockSearchField,
     SupplyListProductField,
-    ExpensiveCategorySearchField
+    ExpensiveCategorySearchField,
+    PaymentTypeSearchField
 }

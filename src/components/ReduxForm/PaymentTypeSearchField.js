@@ -1,22 +1,19 @@
-import sprintf from 'sprintf'
+import _ from 'lodash'
 import React from 'react'
 import SearchField from './SearchField'
-import axios from '../../helpers/axios'
-import * as PATH from '../../constants/api'
-import toCamelCase from '../../helpers/toCamelCase'
+
+const Items = [
+    {id: 1, name: 'bank'},
+    {id: 2, name: 'cash'}
+]
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.CURRENCY_LIST}?search=${search || ''}`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
+    return Promise.resolve(Items)
 }
 
 const getItem = (id) => {
-    return axios().get(sprintf(PATH.CURRENCY_ITEM, id))
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
-        })
+    return Promise.resolve(
+        _.find(Items, (o) => { return o.id === _.toInteger(id) }))
 }
 
 const CurrencySearchField = (props) => {

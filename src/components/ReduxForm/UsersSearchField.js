@@ -1,9 +1,11 @@
+import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
 import SearchField from './SearchField'
 import axios from '../../helpers/axios'
 import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
+
 
 const getOptions = (search) => {
     return axios().get(`${PATH.USERS_LIST}?search=${search || ''}`)
@@ -19,14 +21,18 @@ const getItem = (id) => {
         })
 }
 
+const getText = (obj) => {
+    return _.get(obj, 'firstName') + ' ' + _.get(obj, 'secondName')
+}
+
 const UsersSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('name')}
+            getText={getText}
             getOptions={getOptions}
             getItem={getItem}
-            getItemText={SearchField.defaultGetText('name')}
+            getItemText={getText}
             {...props}
         />
     )
