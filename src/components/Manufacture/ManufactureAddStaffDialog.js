@@ -120,7 +120,7 @@ const enhance = compose(
 )
 
 const ManufactureAddStaffDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (

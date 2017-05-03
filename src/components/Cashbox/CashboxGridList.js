@@ -121,8 +121,7 @@ const CashboxGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const currency = _.get(item, ['currency']) || 'N/A'
         const cashier = _.get(item, ['cashier'])
-        const type = _.get(item, 'type')
-        // === bank ? 'банковский счет' : 'наличный'
+        const type = _.get(item, 'type') === bank ? 'банковский счет' : 'наличный'
         const iconButton = (
             <IconButton style={{padding: '0 12px', height: 'auto'}}>
                 <MoreVertIcon />
