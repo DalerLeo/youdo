@@ -17,14 +17,14 @@ export const categoryCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.SHOP_CREATE,
+        type: actionTypes.CATEGORY_CREATE,
         payload
     }
 }
 
 export const categoryDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.SHOP_DELETE, id))
+        .delete(sprintf(API.CATEGORY_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,7 +33,7 @@ export const categoryDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.SHOP_DELETE,
+        type: actionTypes.CATEGORY_DELETE,
         payload
     }
 }
@@ -41,7 +41,7 @@ export const categoryDeleteAction = (id) => {
 export const categoryUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.SHOP_ITEM, id), requestData)
+        .put(sprintf(API.CATEGORY_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,7 +50,7 @@ export const categoryUpdateAction = (id, formValues) => {
         })
 
     return {
-        type: actionTypes.SHOP_UPDATE,
+        type: actionTypes.CATEGORY_UPDATE,
         payload
     }
 }
@@ -75,7 +75,7 @@ export const categoryListFetchAction = (filter) => {
 export const categoryCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.SHOP_LIST, {params})
+        .get(API.CATEGORY_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -84,7 +84,7 @@ export const categoryCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.SHOP_LIST_CSV,
+        type: actionTypes.CATEGORY_LIST_CSV,
         payload
     }
 }

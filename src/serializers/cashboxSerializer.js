@@ -3,25 +3,17 @@ import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
     const name = _.get(data, ['name'])
-    const category = _.get(data, ['category', 'value'])
-    const address = _.get(data, ['address'])
-    const guide = _.get(data, ['guide'])
-    const phone = _.get(data, ['phone'])
-    const lat = _.get(data, ['latLng', 'lat'])
-    const lng = _.get(data, ['latLng', 'lng'])
-    const official = _.get(data, ['official'])
-    const contactName = _.get(data, ['contactName'])
+    const balance = _.get(data, ['balance'])
+    const currency = _.get(data, ['currency'])
+    const cashier = _.get(data, ['cashier'])
+    const type = _.get(data, ['type'])
 
     return {
         name,
-        category,
-        address,
-        guide,
-        phone,
-        lat,
-        lon: lng,
-        official,
-        'contact_name': contactName
+        balance,
+        currency,
+        cashier,
+        type
     }
 }
 
@@ -30,7 +22,7 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'category': _.get(defaultData, 'category'),
+        'currency': _.get(defaultData, 'currency'),
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'search': _.get(defaultData, 'search'),

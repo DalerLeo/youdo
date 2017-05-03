@@ -12,29 +12,24 @@ export const SHOP_ITEM_TAB_PATH = `/${SHOP}/%d/%s`
 
 export const USERS = 'users'
 export const USERS_LIST_URL = `/${USERS}`
-export const USERS_ITEM_URL = `${USERS_LIST_URL}/:shopId`
-export const USERS_ITEM_TAB_URL = `${USERS_ITEM_URL}/:tab`
+export const USERS_ITEM_URL = `${USERS_LIST_URL}/:usersId`
 export const USERS_ITEM_PATH = `/${USERS}/%d`
 export const USERS_ITEM_TAB_PATH = `/${USERS}/%d/%s`
 
 export const CASHBOX = 'cashbox'
 export const CASHBOX_LIST_URL = `/${CASHBOX}`
-export const CASHBOX_ITEM_URL = `${CASHBOX_LIST_URL}/:shopId`
-export const CASHBOX_ITEM_TAB_URL = `${CASHBOX_ITEM_URL}/:tab`
+export const CASHBOX_ITEM_URL = `${CASHBOX_LIST_URL}/:cashboxId`
 export const CASHBOX_ITEM_PATH = `/${CASHBOX}/%d`
-export const CASHBOX_ITEM_TAB_PATH = `/${CASHBOX}/%d/%s`
 
 export const TRANSACTION = 'transaction'
 export const TRANSACTION_LIST_URL = `/${TRANSACTION}`
-export const TRANSACTION_ITEM_URL = `${TRANSACTION_LIST_URL}/:shopId`
-export const TRANSACTION_ITEM_TAB_URL = `${TRANSACTION_ITEM_URL}/:tab`
+export const TRANSACTION_ITEM_URL = `${TRANSACTION_LIST_URL}/:transactionId`
 export const TRANSACTION_ITEM_PATH = `/${TRANSACTION}/%d`
 export const TRANSACTION_ITEM_TAB_PATH = `/${TRANSACTION}/%d/%s`
 
 export const SUPPLY = 'supply'
 export const SUPPLY_LIST_URL = `/${SUPPLY}`
 export const SUPPLY_ITEM_URL = `${SUPPLY_LIST_URL}/:supplyId`
-export const SUPPLY_ITEM_TAB_URL = `${SUPPLY_ITEM_URL}/:tab`
 export const SUPPLY_ITEM_PATH = `/${SUPPLY}/%d`
 export const SUPPLY_ITEM_TAB_PATH = `/${SUPPLY}/%d/%s`
 

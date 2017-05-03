@@ -8,7 +8,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, CurrencySearchField, UsersSearchField} from '../ReduxForm'
 
 export const CASHBOX_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -28,10 +28,8 @@ const enhance = compose(
     injectSheet({
         dialog: {
             '& div:last-child': {
-                textAlign: 'left !important',
                 '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
+                    marginTop: '10px !important',
                     color: '#12aaeb !important'
                 }
             }
@@ -52,7 +50,7 @@ const enhance = compose(
 
         body: {
             maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
+            padding: '0 30px 20px 30px !important',
             overflow: 'hidden !important'
         },
 
@@ -64,6 +62,9 @@ const enhance = compose(
             background: '#12aaeb',
             color: '#fff',
             position: 'relative'
+        },
+        center: {
+            textAlign: 'center'
         }
     }),
     reduxForm({
@@ -82,7 +83,7 @@ const CashboxCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
@@ -90,7 +91,7 @@ const CashboxCreateDialog = enhance((props) => {
                 </div>
                 <div className={classes.fields}>
                     <div>
-                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
+                        <h4 className={classes.title}> {isUpdate ? 'Изменить кассу' : 'Добавить кассу'}</h4>
                     </div>
                     <div>
                         <div>
@@ -100,8 +101,26 @@ const CashboxCreateDialog = enhance((props) => {
                                 label="Наимование"
                                 fullWidth={true}
                             />
+                            <Field
+                                name="currency"
+                                component={CurrencySearchField}
+                                label="Валюта"
+                                fullWidth={true}
+                            />
+                            <Field
+                                name="cashier"
+                                component={UsersSearchField}
+                                label="Кассир"
+                                fullWidth={true}
+                            />
+                            <Field
+                                name="type"
+                                component={TextField}
+                                label="Тип оплата"
+                                fullWidth={true}
+                            />
                         </div>
-                        <div>
+                        <div className={classes.center}>
                             <FlatButton
                                 label="Отменить"
                                 primary={true}

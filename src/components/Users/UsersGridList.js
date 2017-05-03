@@ -11,7 +11,6 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import UsersFilterForm from './UsersFilterForm'
-import UsersDetails from './UsersDetails'
 import UsersCreateDialog from './UsersCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
@@ -121,14 +120,7 @@ const UsersGridList = enhance((props) => {
     )
 
     const usersDetail = (
-        <UsersDetails
-            key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            deleteDialog={deleteDialog}
-            confirmDialog={confirmDialog}
-            loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-        />
+        <span>a</span>
     )
 
     const usersList = _.map(_.get(listData, 'data'), (item) => {
@@ -217,6 +209,7 @@ const UsersGridList = enhance((props) => {
 
             <UsersCreateDialog
                 initialValues={updateDialog.initialValues}
+                isUpdate={true}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}

@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import moment from 'moment'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
@@ -12,7 +11,6 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import CashboxFilterForm from './CashboxFilterForm'
-import CashboxDetails from './CashboxDetails'
 import CashboxCreateDialog from './CashboxCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
@@ -30,24 +28,42 @@ const listHeader = [
         sorting: true,
         name: 'id',
         title: 'Id',
-        xs: 2
+        xs: 1
     },
     {
         sorting: true,
         name: 'name',
         title: 'Name',
-        xs: 6
+        xs: 2
     },
     {
         sorting: true,
-        name: 'address',
-        title: 'Address',
-        xs: 3
+        name: 'balance',
+        title: 'Баланс',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'guide',
-        title: 'Guide',
+        name: 'currency',
+        title: 'Валюта',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'cashier',
+        title: 'Кассир',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'type',
+        title: 'Тип',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: '',
+        title: '',
         xs: 1
     }
 ]
@@ -103,20 +119,16 @@ const CashboxGridList = enhance((props) => {
     )
 
     const cashboxDetail = (
-        <CashboxDetails
-            key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            deleteDialog={deleteDialog}
-            confirmDialog={confirmDialog}
-            loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-        />
+        <span>a</span>
     )
-
+    const bank = 1
     const cashboxList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const balance = _.get(item, 'balance') || 'N/A'
+        const currency = _.get(item, 'currency') || 'N/A'
+        const cashier = _.get(item, 'cashier') === bank ? 'bank' : 'cash'
+        const type = _.get(item, 'type')
         const iconButton = (
             <IconButton style={{padding: '0 12px', height: 'auto'}}>
                 <MoreVertIcon />
@@ -124,9 +136,12 @@ const CashboxGridList = enhance((props) => {
         )
         return (
             <Row key={id} style={{alignItems: 'center'}}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={6}>{name}</Col>
-                <Col xs={3}>{createdDate}</Col>
+                <Col xs={1}>{id}</Col>
+                <Col xs={2}>{name}</Col>
+                <Col xs={2}>{balance}</Col>
+                <Col xs={2}>{currency}</Col>
+                <Col xs={2}>{cashier}</Col>
+                <Col xs={2}>{type}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -135,9 +150,7 @@ const CashboxGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Изменить"
                             leftIcon={<Edit />}
-                            onTouchTap={() => {
-                                updateDialog.handleOpenUpdateDialog(id)
-                            }}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
                         />
                         <MenuItem
                             primaryText="Удалить "

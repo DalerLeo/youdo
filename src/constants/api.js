@@ -11,6 +11,7 @@ export const CATEGORY = 'dist/category'
 export const CATEGORY_CREATE = `/${CATEGORY}/`
 export const CATEGORY_LIST = `/${CATEGORY}/`
 export const CATEGORY_ITEM = `/${CATEGORY}/%d/`
+export const CATEGORY_DELETE = `/${CATEGORY}/%d/`
 
 export const EXPENSIVE_CATEGORY = 'expanse_categories/expanse_category'
 export const EXPENSIVE_CATEGORY_CREATE = `/${EXPENSIVE_CATEGORY}/`

@@ -28,10 +28,8 @@ const enhance = compose(
     injectSheet({
         dialog: {
             '& div:last-child': {
-                textAlign: 'left !important',
                 '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
+                    marginTop: '10px !important',
                     color: '#12aaeb !important'
                 }
             }
@@ -47,12 +45,13 @@ const enhance = compose(
         },
 
         fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
+            display: ({loading}) => !loading ? 'block' : 'none',
+            width: '100%'
         },
 
         body: {
             maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
+            padding: '0 30px 20px 30px !important',
             overflow: 'hidden !important'
         },
 
@@ -69,10 +68,8 @@ const enhance = compose(
         form: {
             display: 'flex'
         },
-
-        map: {
-            height: '600px',
-            paddingRight: '0'
+        center: {
+            textAlign: 'center'
         }
     }),
     reduxForm({
@@ -91,40 +88,40 @@ const ExpensiveCategoryCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.fields}>
+                    <div>
+                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
+                    </div>
+                    <div>
                         <div>
-                            <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
+                            <Field
+                                name="name"
+                                component={TextField}
+                                label="Наимование"
+                                fullWidth={true}
+                            />
                         </div>
-                        <div>
-                            <div>
-                                <Field
-                                    name="name"
-                                    component={TextField}
-                                    label="Наимование"
-                                    fullWidth={true}
-                                />
-                            </div>
-                            <div>
-                                <FlatButton
-                                    label="Отменить"
-                                    primary={true}
-                                    onTouchTap={onClose}
-                                />
+                        <div className={classes.center}>
+                            <FlatButton
+                                label="Отменить"
+                                primary={true}
+                                onTouchTap={onClose}
+                            />
 
-                                <FlatButton
-                                    label="Отправить"
-                                    primary={true}
-                                    type="submit"
-                                    keyboardFocused={true}
-                                />
-                            </div>
+                            <FlatButton
+                                label="Отправить"
+                                primary={true}
+                                type="submit"
+                                keyboardFocused={true}
+                            />
                         </div>
+                    </div>
                 </div>
             </form>
         </Dialog>

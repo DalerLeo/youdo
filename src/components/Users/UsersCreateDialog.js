@@ -30,9 +30,7 @@ const enhance = compose(
     injectSheet({
         dialog: {
             '& div:last-child': {
-                textAlign: 'left !important',
                 '& button': {
-                    marginLeft: '50px !important',
                     marginBottom: '5px !important',
                     color: '#12aaeb !important'
                 }
@@ -54,7 +52,7 @@ const enhance = compose(
 
         body: {
             maxHeight: '600px !important',
-            padding: '30px !important',
+            padding: '0 30px 20px 30px !important',
             overflow: 'hidden !important'
         },
 
@@ -85,6 +83,9 @@ const enhance = compose(
         },
         flex: {
             display: 'flex'
+        },
+        center: {
+            textAlign: 'center'
         }
     }),
     reduxForm({
@@ -116,13 +117,13 @@ const UsersCreateDialog = enhance((props) => {
                     <div className={classes.bottomBorder}>
                         <Col xs={6}>
                             <Field
-                                name="name"
+                                name="firstName"
                                 component={TextField}
                                 label="Имя"
                                 className={classes.marginTop}
                                 fullWidth={true}/>
                             <Field
-                                name="surname"
+                                name="secondName"
                                 component={TextField}
                                 label="Фамилия"
                                 className={classes.marginTop}
@@ -174,10 +175,10 @@ const UsersCreateDialog = enhance((props) => {
                                 fullWidth={true}/>
                         </Col>
                     </div>
-                </div>
-                <div>
-                    <FlatButton label="Отменить" onTouchTap={onClose}/>
-                    <FlatButton type="submit" label="Применить"/>
+                    <div className={classes.center}>
+                        <FlatButton label="Отменить" onTouchTap={onClose}/>
+                        <FlatButton type="submit" label="Применить"/>
+                    </div>
                 </div>
             </form>
         </Dialog>
