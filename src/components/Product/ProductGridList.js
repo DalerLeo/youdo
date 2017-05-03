@@ -22,6 +22,11 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+
+
 const listHeader = [
     {
         sorting: true,
@@ -117,9 +122,14 @@ const ProductGridList = enhance((props) => {
         const image = _.get(item, ['image', 'url']) || ''
         const measurement = _.get(item, ['measurement', 'name']) || ''
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const iconButton = (
+            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
             <Row key={id}>
-                <Col xs={4}>
+                <Col xs={3}>
                     <Link to={{
                         pathname: sprintf(ROUTES.PRODUCT_ITEM_PATH, id),
                         query: filter.getParams()
@@ -129,6 +139,23 @@ const ProductGridList = enhance((props) => {
                 <Col xs={2}>{brand}</Col>
                 <Col xs={2}>{measurement}</Col>
                 <Col xs={2}>{createdDate}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                        />
+                    </IconMenu>
+                </Col>
             </Row>
         )
     })
