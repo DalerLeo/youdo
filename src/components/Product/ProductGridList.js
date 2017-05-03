@@ -26,27 +26,32 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        title: 'Наименование'
+        title: 'Наименование',
+        xs: 4
     },
     {
         sorting: true,
         name: 'type',
-        title: 'Тип товара'
+        title: 'Тип товара',
+        xs:2
     },
     {
         sorting: true,
         name: 'brand',
-        title: 'Бренд'
+        title: 'Бренд',
+        xs:2
     },
     {
         sorting: true,
         name: 'measurement',
-        title: 'Мера'
+        title: 'Мера',
+        xs:2
     },
     {
         sorting: true,
         name: 'created_date',
-        title: 'Дата создания'
+        title: 'Дата создания',
+        xs:2
     }
 ]
 
@@ -107,10 +112,10 @@ const ProductGridList = enhance((props) => {
     const productList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const type = _.get(item, 'type') || 'N/A'
+        const type = _.get(item, ['type', 'name']) || 'N/A'
         const brand = _.get(item, ['brand', 'name']) || 'N/A'
-        const image = _.get(item, 'image') || ''
-        const measurement = _.get(item, 'measurement') || ''
+        const image = _.get(item, ['image', 'url']) || ''
+        const measurement = _.get(item, ['measurement', 'name']) || ''
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
             <Row key={id}>
