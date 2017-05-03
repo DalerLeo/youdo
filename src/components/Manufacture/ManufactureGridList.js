@@ -9,18 +9,18 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import ManufactureCreateDialog from './ManufactureCreateDialog'
+import ManufactureAddStaffDialog from './ManufactureAddStaffDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
 
 const listHeader = [
@@ -50,8 +50,6 @@ const listHeader = [
     }
 ]
 
-
-
 const enhance = compose(
     injectSheet({
         addButton: {
@@ -65,10 +63,9 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         },
-        productionMainRow:{
+        productionMainRow: {
             margin: '0 -26px;',
             fontSize: '13px',
-            extend: 'productionMainRow',
             '& a': {
                 color: 'rgb(18, 170, 235)'
             }
@@ -88,9 +85,8 @@ const enhance = compose(
             listStyle: 'none',
             margin: '0',
             padding: '0',
-            extend: 'productionUl',
             '& li:last-child': {
-                border:'none'
+                border: 'none'
             }
         },
         productionTypeLi: {
@@ -117,7 +113,6 @@ const enhance = compose(
             margin: '0',
             borderBottom: '1px dashed #efefef',
             padding: '20px 0 10px 0',
-            extend: 'productionStaffGroupTitle',
             '& p': {
                 margin: '0',
                 display: 'inline-block'
@@ -129,11 +124,10 @@ const enhance = compose(
                 marginTop: '1px'
             }
         },
-        productionStaff:{
+        productionStaff: {
             margin: '0',
             borderBottom: '1px dashed #efefef',
             padding: '10px 0 10px 0',
-            extend: 'productionStaff',
             '& div:first-child': {
                 width: '30px',
                 height: '30px',
@@ -143,7 +137,7 @@ const enhance = compose(
                 marginRight: '10px'
             },
             '& div:first-child img': {
-                width:'30px'
+                width: '30px'
             },
             '& div:last-child': {
                 display: 'inline-block',
@@ -153,13 +147,13 @@ const enhance = compose(
                 color: '#666'
             }
         },
-        productionEquipment:{
+        productionEquipment: {
             padding: '20px 0',
             borderBottom: '1px solid #efefef'
         },
-        productionEquipmentElement:{
+        productionEquipmentElement: {
             background: '#f2f5f8',
-            textAlign:'center',
+            textAlign: 'center',
             padding: '20px 30px'
         }
 
@@ -174,6 +168,7 @@ const ManufactureGridList = enhance((props) => {
         actionsDialog,
         confirmDialog,
         deleteDialog,
+        addStaff,
         listData,
         detailData,
         classes
@@ -190,7 +185,6 @@ const ManufactureGridList = enhance((props) => {
             </IconButton>
         </div>
     )
-
     const manufactureDetail = (
         <span>a</span>
     )
@@ -239,6 +233,12 @@ const ManufactureGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.MANUFACTURE_LIST_URL}/>
+            <ManufactureAddStaffDialog
+                open={addStaff.open}
+                loading={createDialog.createLoading}
+                onClose={addStaff.handleClose}
+                onSubmit={createDialog.handleSubmitCreateDialog}
+            />
             <Row className={classes.productionMainRow}>
                 <Col xs={3} className={classes.productionLeftSide}>
                     <h2 className={classes.productionH2}>Этапы производства</h2>
@@ -270,7 +270,7 @@ const ManufactureGridList = enhance((props) => {
                         <Col xs={4} style={{borderRight: '1px solid #efefef', height: 'calc(100vh - 120px)', padding: '20px 30px 20px 10px'}}>
                             <div>
                                 <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Персонал</h3>
-                                <a href="#" style={{float: 'right'}}>добавить</a>
+                                <a style={{float: 'right'}} onClick={addStaff.handleOpen}> <ContentAdd />добавить</a>
                             </div>
                             <div style={{marginBottom: '10px'}}>
                                 <div className={classes.productionStaffGroupTitle}>
@@ -400,6 +400,11 @@ ManufactureGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
+    }).isRequired,
+    addStaff: PropTypes.shape({
+        open: PropTypes.bool.isRequired,
+        handleOpen: PropTypes.func.isRequired,
+        handleClose: PropTypes.func.isRequired
     }).isRequired
 }
 

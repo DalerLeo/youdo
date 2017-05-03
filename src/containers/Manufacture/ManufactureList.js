@@ -10,8 +10,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
-    MANUFACTURE_CREATE_DIALOG_OPEN,
-    MANUFACTURE_UPDATE_DIALOG_OPEN,
+    MANUFACTURE_ADD_STAFF_DIALOG_OPEN,
     ManufactureGridList
 } from '../../components/Manufacture'
 import {
@@ -129,6 +128,15 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_DIALOG_OPEN]: true})})
         },
 
+        handleOpenAddStaff: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: true})})
+        },
+        handleCloseAddStaff: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: false})})
+        },
+
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_DIALOG_OPEN]: false})})
@@ -191,9 +199,11 @@ const ManufactureList = enhance((props) => {
         params
     } = props
 
-    const openCreateDialog = toBoolean(_.get(location, ['query', MANUFACTURE_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', MANUFACTURE_UPDATE_DIALOG_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', '']))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', '']))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
+    const openAddStaffDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_STAFF_DIALOG_OPEN]))
+
     const detailId = _.toInteger(_.get(params, 'manufactureId'))
     const tab = _.get(params, 'tab')
 
@@ -262,6 +272,11 @@ const ManufactureList = enhance((props) => {
         data: detail,
         detailLoading
     }
+    const addStaff = {
+        open: openAddStaffDialog,
+        handleOpen: props.handleOpenAddStaff,
+        handleClose: props.handleCloseAddStaff
+    }
 
     return (
         <Layout {...layout}>
@@ -276,6 +291,7 @@ const ManufactureList = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 csvDialog={csvDialog}
+                addStaff={addStaff}
             />
         </Layout>
     )

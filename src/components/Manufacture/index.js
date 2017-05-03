@@ -1,7 +1,7 @@
 import ManufactureGridList from './ManufactureGridList'
-import {MANUFACTURE_CREATE_DIALOG_OPEN} from './ManufactureCreateDialog'
+import {MANUFACTURE_ADD_STAFF_DIALOG_OPEN} from './ManufactureAddStaffDialog'
 
 export {
-    MANUFACTURE_CREATE_DIALOG_OPEN,
+    MANUFACTURE_ADD_STAFF_DIALOG_OPEN,
     ManufactureGridList
 }
