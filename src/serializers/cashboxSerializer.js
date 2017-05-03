@@ -3,14 +3,12 @@ import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
     const name = _.get(data, ['name'])
-    const balance = _.get(data, ['balance'])
-    const currency = _.get(data, ['currency'])
-    const cashier = _.get(data, ['cashier'])
-    const type = _.get(data, ['type'])
+    const currency = _.get(data, ['currency', 'value'])
+    const cashier = _.get(data, ['cashier', 'value'])
+    const type = _.get(data, ['type', 'value'])
 
     return {
         name,
-        balance,
         currency,
         cashier,
         type
