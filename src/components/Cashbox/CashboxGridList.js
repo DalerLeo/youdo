@@ -28,18 +28,12 @@ const listHeader = [
         sorting: true,
         name: 'id',
         title: 'Id',
-        xs: 1
+        xs: 2
     },
     {
         sorting: true,
         name: 'name',
         title: 'Name',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'balance',
-        title: 'Баланс',
         xs: 2
     },
     {
@@ -64,7 +58,7 @@ const listHeader = [
         sorting: true,
         name: '',
         title: '',
-        xs: 1
+        xs: 2
     }
 ]
 
@@ -125,10 +119,10 @@ const CashboxGridList = enhance((props) => {
     const cashboxList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const balance = _.get(item, 'balance') || 'N/A'
-        const currency = _.get(item, ['currency', 'name']) || 'N/A'
-        const cashier = _.get(item, ['cashier', 'firstName'])
-        const type = _.get(item, 'type') === bank ? 'bank' : 'cash'
+        const currency = _.get(item, ['currency']) || 'N/A'
+        const cashier = _.get(item, ['cashier'])
+        const type = _.get(item, 'type')
+        // === bank ? 'банковский счет' : 'наличный'
         const iconButton = (
             <IconButton style={{padding: '0 12px', height: 'auto'}}>
                 <MoreVertIcon />
@@ -136,13 +130,12 @@ const CashboxGridList = enhance((props) => {
         )
         return (
             <Row key={id} style={{alignItems: 'center'}}>
-                <Col xs={1}>{id}</Col>
+                <Col xs={2}>{id}</Col>
                 <Col xs={2}>{name}</Col>
-                <Col xs={2}>{balance}</Col>
                 <Col xs={2}>{currency}</Col>
                 <Col xs={2}>{cashier}</Col>
                 <Col xs={2}>{type}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
+                <Col xs={2} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}

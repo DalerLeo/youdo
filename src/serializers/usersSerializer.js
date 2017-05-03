@@ -2,23 +2,25 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
-    const username = _.get(data, ['username'])
-    const firstName = _.get(data, ['firstName', 'value'])
-    const secondName = _.get(data, ['secondName'])
+    const username = 'asd'
+        // _.get(data, ['username'])
+    const first_name = _.get(data, ['firstName'])
+    const second_name = _.get(data, ['secondName'])
     const region = _.get(data, ['region'])
     const email = _.get(data, ['email'])
-    const phoneNumber = _.get(data, ['phoneNumber'])
-    const img = _.get(data, ['imgLng', 'img'])
+    const phone_number = _.get(data, ['phoneNumber'])
+    const image = 1
+        // _.get(data, ['img'])
     const password = _.get(data, ['password'])
 
     return {
         username,
-        firstName,
-        secondName,
-        region,
-        email,
-        phoneNumber,
-        img,
+        first_name,
+        second_name,
+        // region,
+        // 'email': email,
+        phone_number,
+        image,
         password
     }
 }
