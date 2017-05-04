@@ -105,6 +105,7 @@ const enhance = compose(
         },
         payInfo: {
             display: 'flex'
+        },
         storeInfo: {
             display: 'flex'
         },
