@@ -8,8 +8,9 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
+import {CurrencySearchField} from '../ReduxForm'
 
-export const BASE_CURRENCY_CREATE_DIALOG_OPEN = 'openEditDialog'
+export const PRIMARY_CURRENCY_DIALOG_OPEN = 'openPrimaryDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -61,8 +62,9 @@ const enhance = compose(
     })
 )
 
-const BaseCurrencyCreateDialog = enhance((props) => {
-    const {classes, open, onClose, loading} = props
+const PrimaryCurrencyDialog = enhance((props) => {
+    const {classes, open, onClose, handleSubmit, loading} = props
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
         <Dialog
@@ -72,12 +74,17 @@ const BaseCurrencyCreateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading ? {width: '135px'} : {}}
             bodyClassName={classes.body}>
-            <form className={classes.form}>
+            <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.fields}>
-                    form
+                    <Field
+                        name="currency"
+                        component={CurrencySearchField}
+                        label="Валюта"
+                        fullWidth={true}
+                    />
                     <div>
                         <FlatButton
                             label="Отменить"
@@ -98,14 +105,15 @@ const BaseCurrencyCreateDialog = enhance((props) => {
     )
 })
 
-BaseCurrencyCreateDialog.propTypes = {
+PrimaryCurrencyDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    onSubmit: PropTypes.func.isRequired
 }
 
-BaseCurrencyCreateDialog.defaultProps = {
+PrimaryCurrencyDialog.defaultProps = {
     isUpdate: false
 }
 
-export default BaseCurrencyCreateDialog
+export default PrimaryCurrencyDialog

@@ -25,6 +25,14 @@ export const createSerializer = (data) => {
     }
 }
 
+export const updatePrimarySerializer = (data) => {
+    // const name = _.get(data, ['name'])
+
+    return {
+        'curreny_id': 1
+    }
+}
+
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')

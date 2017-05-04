@@ -53,7 +53,9 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.CURRENCY_CREATE),
         list: createThunkReducer(actionTypes.CURRENCY_LIST),
         update: createThunkReducer(actionTypes.CURRENCY_UPDATE),
-        item: createThunkReducer(actionTypes.CURRENCY_ITEM)
+        item: createThunkReducer(actionTypes.CURRENCY_ITEM),
+        primary: createThunkReducer(actionTypes.CURRENCY_PRIMARY),
+        primaryUpdate: createThunkReducer(actionTypes.CURRENCY_PRIMARY_UPDATE)
     }),
     measurement: combineReducers({
         create: createThunkReducer(actionTypes.MEASUREMENT_CREATE),

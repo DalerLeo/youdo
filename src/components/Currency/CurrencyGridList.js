@@ -17,7 +17,7 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
-import BaseCurrencyCreateDialog from './BaseCurrencyCreateDialog'
+import PrimaryCurrencyDialog from './PrimaryCurrencyDialog'
 import SubMenu from '../SubMenu'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
@@ -94,8 +94,8 @@ const CurrencyGridList = enhance((props) => {
     const {
         filter,
         createDialog,
-        editDialog,
         updateDialog,
+        primaryDialog,
         actionsDialog,
         confirmDialog,
         deleteDialog,
@@ -178,23 +178,26 @@ const CurrencyGridList = enhance((props) => {
             <div className={classes.editContent}>
                 <div className={classes.title}>Основная валюта</div>
                 <div>
-                    Вибранная валюта: {}
+                    Вибранная валюта: {_.get(primaryDialog.primaryCurrency, 'name')}
                     <FlatButton
                         label="Изменить"
                         className={classes.button}
-                        onTouchTap={editDialog.handleEditOpenDialog}/>
+                        onTouchTap={primaryDialog.handlePrimaryOpenDialog}/>
                 </div>
                 <div>
                     <IconButton>
                         <InfoIcon color="#464646"/>
                     </IconButton>
+                    Lorem impus dolar
                 </div>
             </div>
 
-            <BaseCurrencyCreateDialog
-                open={editDialog.openEditDialog}
-                onClose={editDialog.handleEditCloseDialog}
-                loading={editDialog.updateLoading}
+            <PrimaryCurrencyDialog
+                open={primaryDialog.openPrimaryDialog}
+                onClose={primaryDialog.handlePrimaryCloseDialog}
+                initialValues={primaryDialog.initialValues}
+                loading={primaryDialog.primaryCurrencyLoading}
+                onSubmit={primaryDialog.handleSubmitPrimaryDialog}
             />
 
             <GridList
@@ -241,21 +244,13 @@ CurrencyGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired,
-        handleSubmitEditDialog: PropTypes.func.isRequired
+        handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
-    editDialog: PropTypes.shape({
-        openEditDialog: PropTypes.bool.isRequired,
-        updateLoading: PropTypes.bool.isRequired,
-        handleEditOpenDialog: PropTypes.func.isRequired,
-        handleEditCloseDialog: PropTypes.func.isRequired
-    }),
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
@@ -273,6 +268,14 @@ CurrencyGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    primaryDialog: PropTypes.shape({
+        primaryCurrency: PropTypes.object,
+        primaryCurrencyLoading: PropTypes.bool.isRequired,
+        openPrimaryDialog: PropTypes.bool.isRequired,
+        handlePrimaryOpenDialog: PropTypes.func.isRequired,
+        handleClosePrimaryDialog: PropTypes.func.isRequired,
+        handleSubmitPrimaryDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,

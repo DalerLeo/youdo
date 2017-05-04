@@ -34,6 +34,8 @@ export const CURRENCY = 'currency/currencies'
 export const CURRENCY_CREATE = `/${CURRENCY}/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
+export const CURRENCY_PRIMARY = 'currency_primary'
+export const CURRENCY_PRIMARY_ITEM = `/${CURRENCY_PRIMARY}/%d/`
 
 export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`
@@ -92,11 +94,6 @@ export const PAYMNET_TYPE_LIST = `/${PAYMNET_TYPE}/`
 export const PAYMNET_TYPE_ITEM = `/${PAYMNET_TYPE}/%d/`
 
 export const FILE_UPLOAD = '/file/file/'
-
-export const CURRENCY = 'currency/currencies'
-export const CURRENCY_CREATE = `/${CURRENCY}/add/`
-export const CURRENCY_LIST = `/${CURRENCY}/`
-export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
 
 export const MANUFACTURE = 'dist/manufacturing'
 export const MANUFACTURE_CREATE = `/${MANUFACTURE}/`
