@@ -62,6 +62,9 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        actionBtn: {
+            height: '48px'
         }
     })
 )
@@ -100,8 +103,8 @@ const ProviderGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
-            <IconButton style={{padding: '0 12px', height: 'auto'}}>
-                <MoreVertIcon />
+            <IconButton className={classes.actionBtn}>
+                <MoreVertIcon/>
             </IconButton>
         )
         return (
@@ -140,7 +143,7 @@ const ProviderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.PROVIDER_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить продукт">
+                <Tooltip position="left" text="Добавить поставщика">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}

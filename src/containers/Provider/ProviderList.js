@@ -221,7 +221,9 @@ const ProviderList = enhance((props) => {
     const updateDialog = {
         initialValues: (() => {
             if (!detail) {
-                return {}
+                return {
+                    contacts: [{}]
+                }
             }
 
             const contacts = _(detail).get('contacts').map((contact) => {
