@@ -173,7 +173,7 @@ const SupplyGridList = enhance((props) => {
             <SubMenu url={ROUTES.SUPPLY_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
+                <Tooltip position="left" text="Добавить поставку">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}

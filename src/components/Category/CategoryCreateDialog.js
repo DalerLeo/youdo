@@ -11,6 +11,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
+import MainStyles from '../Styles/MainStyles'
 
 export const CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -26,9 +27,8 @@ const validate = (data) => {
     })
 }
 
-const colorBlue = '#129fdd !important'
 const enhance = compose(
-    injectSheet({
+    injectSheet(_.merge(MainStyles, {
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -37,72 +37,16 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
-        fieldsWrap: {
-            display: ({loading}) => !loading ? 'flex' : 'none',
-            width: '100%'
-        },
-        fields: {
-            width: '100%'
-        },
         body: {
-            overflowY: 'auto !important',
-            fontSize: '13px !important',
-            position: 'relative',
-            padding: '20px !important'
-        },
-        title: {
-            paddingTop: '15px',
-            fontWeight: 'bold',
-            color: '#333'
-        },
-        titleContent: {
-            background: '#fff',
-            color: '#333',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            right: '0',
-            borderBottom: '1px solid #efefef',
-            padding: '20px 30px',
-            zIndex: '999',
-            '& button': {
-                position: 'absolute !important',
-                right: '10px',
-                top: '50%',
-                padding: '0 !important',
-                marginTop: '-24px !important'
-            }
+            minHeight: 'auto'
         },
         form: {
-            display: 'flex',
-            padding: '35px 10px 76px'
+            minHeight: 'auto'
         },
-        inputField: {
-            fontSize: '13px !important'
-        },
-        bottomButton: {
-            position: 'fixed',
-            bottom: '0',
-            left: '0',
-            right: '0',
-            padding: '20px',
-            zIndex: '999',
-            borderTop: '1px solid #efefef',
-            background: '#fff',
-            textAlign: 'right',
-            '& span': {
-                fontSize: '13px !important',
-                fontWeight: '600 !important',
-                color: colorBlue
-            }
-        },
-        actionButton: {
-            fontSize: '13px !important',
-            margin: '0 !important'
+        fieldsWrap: {
+            minHeight: '100px'
         }
-    }),
+    })),
     reduxForm({
         form: 'CategoryCreateForm',
         enableReinitialize: true
@@ -132,12 +76,12 @@ const CategoryCreateDialog = enhance((props) => {
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.fieldsWrap}>
-                    <div className={classes.fields}>
+                    <div className={classes.field}>
                         <Field
                             name="name"
                             component={TextField}
                             className={classes.inputField}
-                            label="Наимование"
+                            label="Наименование"
                             fullWidth={true}
                         />
                     </div>

@@ -9,6 +9,9 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
+import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
+import MainStyles from '../Styles/MainStyles'
 
 export const EXPENSIVE_CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -25,16 +28,7 @@ const validate = (data) => {
 }
 
 const enhance = compose(
-    injectSheet({
-        dialog: {
-            '& div:last-child': {
-                '& button': {
-                    marginTop: '10px !important',
-                    color: '#12aaeb !important'
-                }
-            }
-        },
-
+    injectSheet(_.merge(MainStyles, {
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -43,35 +37,16 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
-
-        fields: {
-            display: ({loading}) => !loading ? 'block' : 'none',
-            width: '100%'
-        },
-
         body: {
-            maxHeight: '600px !important',
-            padding: '0 30px 20px 30px !important',
-            overflow: 'hidden !important'
+            minHeight: 'auto'
         },
-
-        title: {
-            width: '220px',
-            margin: '0 auto',
-            padding: '10px 0',
-            textAlign: 'center',
-            background: '#12aaeb',
-            color: '#fff',
-            position: 'relative'
-        },
-
         form: {
-            display: 'flex'
+            minHeight: 'auto'
         },
-        center: {
-            textAlign: 'center'
+        fieldsWrap: {
+            minHeight: '100px'
         }
-    }),
+    })),
     reduxForm({
         form: 'ExpensiveCategoryCreateForm',
         enableReinitialize: true
@@ -90,40 +65,37 @@ const ExpensiveCategoryCreateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
+            <div className={classes.titleContent}>
+                <span>{isUpdate ? 'Изменить категорию расходов' : 'Добавить категорию расходов'}</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.fields}>
-                    <div>
-                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
-                    </div>
-                    <div>
-                        <div>
-                            <Field
-                                name="name"
-                                component={TextField}
-                                label="Наимование"
-                                fullWidth={true}
-                            />
-                        </div>
-                        <div className={classes.center}>
-                            <FlatButton
-                                label="Отменить"
-                                primary={true}
-                                onTouchTap={onClose}
-                            />
-
-                            <FlatButton
-                                label="Отправить"
-                                primary={true}
-                                type="submit"
-                                keyboardFocused={true}
-                            />
-                        </div>
+                <div className={classes.fieldsWrap}>
+                    <div className={classes.field}>
+                        <Field
+                            name="name"
+                            component={TextField}
+                            className={classes.inputField}
+                            label="Наименование"
+                            fullWidth={true}
+                        />
                     </div>
                 </div>
             </form>
+            <div className={classes.bottomButton}>
+                <FlatButton
+                    label="Сохранить"
+                    className={classes.actionButton}
+                    primary={true}
+                    type="submit"
+                    keyboardFocused={true}
+                />
+            </div>
         </Dialog>
     )
 })

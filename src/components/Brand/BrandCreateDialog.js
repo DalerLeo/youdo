@@ -9,6 +9,9 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
+import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
+import MainStyles from '../Styles/MainStyles'
 
 export const BRAND_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -25,19 +28,7 @@ const validate = (data) => {
 }
 
 const enhance = compose(
-    injectSheet({
-        dialog: {
-            '& div:last-child': {
-                '& button': {
-                    marginTop: '10px !important'
-                },
-                '& button:last-child': {
-                    marginLeft: '50px !important',
-                    color: '#12aaeb !important'
-                }
-            }
-        },
-
+    injectSheet(_.merge(MainStyles, {
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -45,37 +36,8 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
-        },
-
-        fields: {
-            display: ({loading}) => !loading ? 'block' : 'none'
-        },
-
-        body: {
-            maxHeight: '600px !important',
-            overflow: 'hidden !important',
-            padding: '0 20px 20px 20px !important',
-            textAlign: 'center'
-        },
-
-        title: {
-            width: '220px',
-            margin: '0 auto',
-            padding: '10px 0',
-            textAlign: 'center',
-            background: '#12aaeb',
-            color: '#fff',
-            position: 'relative'
-        },
-        content: {
-            maxWidth: '500px !important',
-            width: '500px !important'
-        },
-        map: {
-            height: '600px',
-            paddingRight: '0'
         }
-    }),
+    })),
     reduxForm({
         form: 'BrandCreateForm',
         enableReinitialize: true
@@ -83,7 +45,7 @@ const enhance = compose(
 )
 
 const BrandCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -92,52 +54,53 @@ const BrandCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentClassName={classes.content}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
-            <form onSubmit={onSubmit} >
+            <div className={classes.titleContent}>
+                <span>{isUpdate ? 'Изменить бренд' : 'Добавить бренд'}</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
+            <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.fields}>
-                        <div>
-                            <h4 className={classes.title}>Add Brand</h4>
-                        </div>
-                        <div>
-                            <div>
-                                <Field
-                                    name="name"
-                                    component={TextField}
-                                    label="Наимование"
-                                    fullWidth={true}
-                                />
-                            </div>
-                            <div>
-                                <FlatButton
-                                    label="Cancel"
-                                    primary={true}
-                                    onTouchTap={onClose}
-                                />
-
-                                <FlatButton
-                                    label="Apply"
-                                    primary={true}
-                                    type="submit"
-                                    keyboardFocused={true}
-                                />
-                            </div>
-                        </div>
+                <div className={classes.fieldsWrap}>
+                    <div className={classes.field}>
+                        <Field
+                            name="name"
+                            component={TextField}
+                            className={classes.inputField}
+                            label="Наименование"
+                            fullWidth={true}
+                        />
+                    </div>
                 </div>
             </form>
+            <div className={classes.bottomButton}>
+                <FlatButton
+                    label="Сохранить"
+                    className={classes.actionButton}
+                    primary={true}
+                    type="submit"
+                    keyboardFocused={true}
+                />
+            </div>
         </Dialog>
     )
 })
 
 BrandCreateDialog.propTyeps = {
+    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
+}
+
+BrandCreateDialog.defaultProps = {
+    isUpdate: false
 }
 
 export default BrandCreateDialog

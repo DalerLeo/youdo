@@ -59,8 +59,6 @@ export const MenuItems = [
             {name: 'Кассы', url: ROUTES.CASHBOX_LIST_URL},
             {name: 'Категории расходов', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL},
             {name: 'Бренд', url: ROUTES.BRAND_LIST_URL},
-            {name: 'Касси', url: ROUTES.CASHBOX_LIST_URL},
-            {name: 'Категории расхода', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL},
             {name: 'Пользователи', url: ROUTES.USERS_LIST_URL},
             {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL}
         ]

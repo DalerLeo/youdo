@@ -28,32 +28,14 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
-        name: '',
-        title: '',
-        xs: 1
+        name: 'login',
+        title: 'Логин',
+        xs: 2
     },
     {
         sorting: true,
         name: 'username',
         title: 'Пользователь',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'region',
-        title: 'Телефон',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'phoneNumber',
-        title: 'Адрес',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'email',
-        title: 'Email',
         xs: 2
     },
     {
@@ -64,8 +46,21 @@ const listHeader = [
     },
     {
         sorting: true,
+        name: 'phoneNumber',
+        title: 'Телефон',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'address',
+        title: 'Адрес',
+        xs: 2
+    },
+    {
+        sorting: true,
         name: 'createdDate',
-        title: 'Created date'
+        title: 'Дата создания',
+        xs: 1
     }
 ]
 
@@ -132,24 +127,24 @@ const UsersGridList = enhance((props) => {
         const typeUser = _.get(item, 'typeUser') || 'N/A'
 
         const iconButton = (
-            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+            <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
             </IconButton>
         )
 
         return (
             <Row key={id}>
-                <Col xs={1}></Col>
+                <Col xs={2}>Логин</Col>
                 <Col xs={2}>
                     <Link to={{
                         pathname: sprintf(ROUTES.USERS_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{username}</Link>
                 </Col>
-                <Col xs={2}>{region}</Col>
-                <Col xs={2}>{phoneNumber}</Col>
-                <Col xs={2}>{email}</Col>
                 <Col xs={2}>{typeUser}</Col>
+                <Col xs={2}>{phoneNumber}</Col>
+                <Col xs={2}>{region}</Col>
+                <Col xs={1}>12.05.2016</Col>
                 <Col xs={1}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -182,7 +177,7 @@ const UsersGridList = enhance((props) => {
             <SubMenu url={ROUTES.USERS_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
+                <Tooltip position="left" text="Добавить пользователя">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
