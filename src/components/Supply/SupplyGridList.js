@@ -70,23 +70,20 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         },
-        success: {
+        dot: {
             display: 'inline-block',
-            height: '10px',
-            width: '10px',
+            height: '7px',
+            width: '7px',
             borderRadius: '50%',
-            backgroundColor: '#81c784',
-            transform: 'translate(0,15%)',
-            marginRight: '5px'
+            marginRight: '6px'
+        },
+        success: {
+            extend: 'dot',
+            backgroundColor: '#81c784'
         },
         error: {
-            display: 'inline-block',
-            height: '10px',
-            width: '10px',
-            borderRadius: '50%',
-            backgroundColor: '#e57373',
-            transform: 'translate(0,15%)',
-            marginRight: '5px'
+            extend: 'dot',
+            backgroundColor: '#e57373'
         }
     })
 )
