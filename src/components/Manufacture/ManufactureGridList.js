@@ -189,46 +189,12 @@ const ManufactureGridList = enhance((props) => {
         <span>a</span>
     )
 
-    const manufactureList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton style={{padding: '0 12px', height: 'auto'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
-        return (
-            <Row key={id} style={{alignItems: 'center'}}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={6}>{name}</Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
-                        />
-                    </IconMenu>
-                </Col>
-            </Row>
-        )
-    })
 
-    const list = {
-        header: listHeader,
-        list: manufactureList,
-        loading: _.get(listData, 'listLoading')
-    }
+    const iconButton = (
+        <IconButton style={{padding: '0 12px', height: 'auto'}}>
+            <MoreVertIcon />
+        </IconButton>
+    )
 
     return (
         <Container>
@@ -270,7 +236,10 @@ const ManufactureGridList = enhance((props) => {
                         <Col xs={4} style={{borderRight: '1px solid #efefef', height: 'calc(100vh - 120px)', padding: '20px 30px 20px 10px'}}>
                             <div>
                                 <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Персонал</h3>
-                                <a style={{float: 'right'}} onClick={addStaff.handleOpen}> <ContentAdd />добавить</a>
+                                <a style={{float: 'right'}} onClick={addStaff.handleOpen}>
+                                    <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
+                                    добавить
+                                </a>
                             </div>
                             <div style={{marginBottom: '10px'}}>
                                 <div className={classes.productionStaffGroupTitle}>
@@ -355,7 +324,21 @@ const ManufactureGridList = enhance((props) => {
                                 </Col>
                                 <Col xs={4} style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
                                     <a href="#" style={{borderBottom: '1px dashed rgb(18, 170, 235)'}}>BoM </a>
-                                    <a href="#"> ic</a>
+                                    <IconMenu
+                                        iconButtonElement={iconButton}
+                                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                                        <MenuItem
+                                            primaryText="Изменить"
+                                            leftIcon={<Edit />}
+                                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                                        />
+                                        <MenuItem
+                                            primaryText="Удалить "
+                                            leftIcon={<DeleteIcon />}
+                                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                                        />
+                                    </IconMenu>
                                 </Col>
                             </Row>
                         </Col>

@@ -12,6 +12,8 @@ import {TextField} from '../ReduxForm'
 import ProviderContactsListField from '../ReduxForm/ProviderContactsListField'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
 
 export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
 
@@ -40,10 +42,14 @@ const enhance = compose(
         },
         fieldsWrap: {
             display: ({loading}) => !loading ? 'flex' : 'none',
-            width: '100%'
+            width: '100%',
+            fontSize: '13px'
         },
-        field: {
-            width: '100%'
+        leftSide: {
+            width: '40%'
+        },
+        rightSide: {
+            width: '60%'
         },
         body: {
             overflowY: 'auto !important',
@@ -80,8 +86,28 @@ const enhance = compose(
             display: 'flex',
             padding: '35px 10px 76px'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldShift: {
+            fontSize: '13px !important',
+            width: '55% !important',
+            marginRight: '20px',
+            height: '50px !important',
+            '& input': {
+                top: '-10px'
+            },
+            '& label': {
+                top: '20px !important'
+            }
+        },
+        inputFieldTime: {
+            fontSize: '13px !important',
+            width: 'calc(45% - 20px) !important',
+            height: '50px !important',
+            '& input': {
+                top: '-10px'
+            },
+            '& label': {
+                top: '20px !important'
+            }
         },
         imageUpload: {
             width: '100px'
@@ -106,11 +132,48 @@ const enhance = compose(
             fontSize: '13px !important',
             margin: '0 !important'
         },
+        buttonSub: {
+            textAlign: 'right',
+            marginTop: '10px',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: colorBlue,
+                paddingLeft: '10px',
+                paddingRight: '10px'
+            },
+            '& button': {
+                margin: '0 !important',
+                fontSize: '13px !important',
+                marginRight: '-20px !important'
+            }
+        },
+        shift: {
+            padding: '20px 0 0',
+            '& h4': {
+                margin: '0',
+                fontSize: '13px',
+                fontWeight: '600'
+            },
+            '& span': {
+                marginLeft: '5px',
+                color: '#999',
+                fontSize: '11px',
+                fontWeight: '100'
+            }
+        },
+        deleteHideIco: {
+            position: 'relative',
+            display: 'table-cell',
+            float: 'right',
+            top: '-15px',
+            cursor: 'pointer'
+        },
         background: {
             background: '#f1f5f8',
             color: '#333',
-            margin: '12px -30px 0',
-            padding: '20px 30px'
+            margin: '0 -30px 0',
+            padding: '20px 30px 10px'
         }
     }),
     reduxForm({
@@ -129,11 +192,11 @@ const ManufactureAddStaffDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '135px'} : {width: '570px'}}
             bodyClassName={classes.body}>
 
             <div className={classes.titleContent}>
-                <span>Добавление поставщика</span>
+                <span>ПРОИЗВОДСТВО КЛЕЯ: ПЕРСОНАЛ</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -143,26 +206,53 @@ const ManufactureAddStaffDialog = enhance((props) => {
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.fieldsWrap}>
-                    <div className={classes.field}>
-                        <Field
-                            name="name"
-                            component={TextField}
-                            className={classes.inputField}
-                            label="Организация"
-                            fullWidth={true}/>
-                        <Field
-                            name="address"
-                            component={TextField}
-                            className={classes.inputField}
-                            label="Местположение"
-                            fullWidth={true}/>
-
+                    <div className={classes.leftSide}>
+                        <div>
+                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Персонал</h3>
+                            <a style={{float: 'right'}}>
+                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
+                                добавить
+                            </a>
+                        </div>
                         <div className={classes.background}>
-                            Контактные данные
-                            <FieldArray
-                                name="contacts"
-                                component={ProviderContactsListField}
-                            />
+                            <Field
+                                name="name"
+                                component={TextField}
+                                className={classes.inputFieldShift}
+                                label="Наименование"
+                                fullWidth={true}/>
+                            <Field
+                                name="address"
+                                component={TextField}
+                                className={classes.inputFieldTime}
+                                label="Время"
+                                fullWidth={true}/>
+                            <div className={classes.buttonSub}>
+                                <FlatButton
+                                    label="Сохранить"
+                                    className={classes.actionButton}
+                                    primary={true}
+                                    type="submit"
+                                />
+                            </div>
+                        </div>
+                        <div className={classes.shift}>
+                            <h4>
+                                Смена А
+                                <span>(00:00 - 00:00)</span>
+                            </h4>
+                            <div className={classes.deleteHideIco}>
+                                <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
+                            </div>
+                        </div>
+                        <div className={classes.shift}>
+                            <h4>
+                                Смена Б
+                                <span>(00:00 - 00:00)</span>
+                            </h4>
+                            <div className={classes.deleteHideIco}>
+                                <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
+                            </div>
                         </div>
                     </div>
                 </div>
