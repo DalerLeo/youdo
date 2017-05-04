@@ -129,11 +129,13 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const category = _.get(filterForm, ['values', 'category', 'value']) || null
+            const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
+            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
 
             filter.filterBy({
                 [SUPPLY_FILTER_OPEN]: false,
-                [SUPPLY_FILTER_KEY.CATEGORY]: category,
+                [SUPPLY_FILTER_KEY.PROVIDER]: provider,
+                [SUPPLY_FILTER_KEY.STOCK]: stock,
                 [SUPPLY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [SUPPLY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
@@ -219,7 +221,8 @@ const SupplyList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', SUPPLY_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', SUPPLY_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
-    const category = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.CATEGORY))
+    const provider = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
+    const stock = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STOCK))
     const fromDate = filter.getParam(SUPPLY_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(SUPPLY_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'supplyId'))
@@ -257,19 +260,14 @@ const SupplyList = enhance((props) => {
             }
 
             return {
-                name: _.get(detail, 'name'),
-                category: {
-                    value: _.get(detail, 'category')
+                provider: _.get(detail, 'provider'),
+                provider: {
+                    value: _.get(detail, 'provider')
                 },
-                address: _.get(detail, 'address'),
-                guide: _.get(detail, 'guide'),
-                phone: _.get(detail, 'phone'),
-                contactName: _.get(detail, 'contactName'),
-                official: _.get(detail, 'official'),
-                latLng: {
-                    lat: _.get(detail, 'lat'),
-                    lng: _.get(detail, 'lon')
-                }
+                stock: _.get(detail, 'stock'),
+                dataDelivery: _.get(detail, 'dataDelivery'),
+                contact: _.get(detail, 'contact'),
+                currency: _.get(detail, 'currency')
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -281,8 +279,11 @@ const SupplyList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            category: {
-                value: category
+            provider: {
+                value: provider
+            },
+            stock: {
+                value: stock
             },
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),

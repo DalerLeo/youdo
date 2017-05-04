@@ -10,13 +10,14 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
-import {CategorySearchField} from '../ReduxForm'
+import {ProviderSearchField, StockSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 
 export const SUPPLY_FILTER_OPEN = 'openFilterDialog'
 
 export const SUPPLY_FILTER_KEY = {
-    CATEGORY: 'category',
+    PROVIDER: 'provider',
+    STOCK: 'stock',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
@@ -144,7 +145,8 @@ const SupplyFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field name="category" component={CategorySearchField} label="Category"/>
+                        <Field name="provider" component={ProviderSearchField} label="Поставщик"/>
+                        <Field name="stock" component={StockSearchField} label="Склад"/>
                     </div>
 
                     <div>

@@ -26,34 +26,43 @@ const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: 'Id',
+        title: '№',
         xs: 1
     },
     {
         sorting: true,
         name: 'name',
         title: 'Поставщик',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
         name: 'stock',
-        title: 'Наименование склада'
+        title: 'Склад'
+    },
+    {
+        sorting: true,
+        name: 'dateDelivery',
+        title: 'Дата поставки',
+        xs: 2
     },
     {
         sorting: true,
         name: 'totalCost',
-        title: 'Цена заказа'
+        title: 'Цена заказа',
+        xs: 2
     },
     {
         sorting: true,
         name: 'accepted',
-        title: 'Оплата'
+        title: 'Оплата',
+        xs: 2
     },
     {
         sorting: true,
         name: 'delivered',
-        title: 'Доставка'
+        title: 'Доставка',
+        xs: 1
     }
 ]
 
@@ -137,27 +146,27 @@ const SupplyGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(_.get(item, 'provider'), 'name')
         const stock = _.get(_.get(item, 'stock'), 'name') || 'N/A'
+        const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
         const totalCost = _.get(item, 'totalCost') || 'N/A'
+        const status = _.get(item, 'status') || 'N/A'
+        const acceptedCost = _.get(item, 'acceptedCost') || 'N/A'
+        const defectedCost = _.get(item, 'defectedCost') || 'N/A'
 
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={3}>
+                <Col xs={2}>
                     <Link to={{
                         pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{name}</Link>
                 </Col>
                 <Col xs={2}>{stock}</Col>
+                <Col xs={2}>{dateDelivery}</Col>
                 <Col xs={2}>{totalCost}</Col>
-                <Col xs={2}>
-                    <div className={classes.success}></div>
-                    оплачен
-                </Col>
-                <Col xs={2}>
-                    <div className={classes.error}></div>
-                    ожидает
-                </Col>
+                <Col xs={2}>{status}</Col>
+                <Col xs={1}>{acceptedCost}</Col>
+                <Col xs={1}>{acceptedCost}</Col>
             </Row>
         )
     })
