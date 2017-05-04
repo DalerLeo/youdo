@@ -26,7 +26,6 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 
-
 const listHeader = [
     {
         sorting: true,
@@ -38,25 +37,25 @@ const listHeader = [
         sorting: true,
         name: 'type',
         title: 'Тип товара',
-        xs:2
+        xs: 2
     },
     {
         sorting: true,
         name: 'brand',
         title: 'Бренд',
-        xs:2
+        xs: 2
     },
     {
         sorting: true,
         name: 'measurement',
         title: 'Мера',
-        xs:2
+        xs: 2
     },
     {
         sorting: true,
         name: 'created_date',
         title: 'Дата создания',
-        xs:2
+        xs: 2
     }
 ]
 
