@@ -24,7 +24,7 @@ export const brandCreateAction = (formValues) => {
 
 export const brandDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.SHOP_DELETE, id))
+        .delete(sprintf(API.BRAND_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -83,7 +83,7 @@ export const brandCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.SHOP_LIST_CSV,
+        type: actionTypes.BRAND_LIST_CSV,
         payload
     }
 }
@@ -99,7 +99,7 @@ export const brandItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.SHOP_ITEM,
+        type: actionTypes.BRAND_ITEM,
         payload
     }
 }

@@ -95,9 +95,12 @@ export default {
             path: ROUTES.BRAND_LIST_URL,
             component: userIsAuth(BrandList),
             childRoutes: [
+                {
+                    path: ROUTES.BRAND_ITEM_URL,
+                    component: userIsAuth(BrandList)
+                }
             ]
         },
-
         {
             path: '*',
             component: NotFound

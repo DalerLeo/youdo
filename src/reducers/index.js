@@ -44,7 +44,8 @@ const rootReducer = combineReducers({
     brand: combineReducers({
         create: createThunkReducer(actionTypes.BRAND_CREATE),
         list: createThunkReducer(actionTypes.BRAND_LIST),
-        update: createThunkReducer(actionTypes.BRAND_UPDATE)
+        update: createThunkReducer(actionTypes.BRAND_UPDATE),
+        item: createThunkReducer(actionTypes.BRAND_ITEM)
     }),
     snackbar: snackbarReducer(),
     form: formReducer,

@@ -10,6 +10,10 @@ import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import Edit from 'material-ui/svg-icons/image/edit'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -29,7 +33,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 6,
+        xs: 5,
         title: 'Наименование'
     },
     {
@@ -37,7 +41,14 @@ const listHeader = [
         xs: 4,
         name: 'created_date',
         title: 'Дата создания'
+    },
+    {
+        sorting: true,
+        xs: 1,
+        name: 'actions',
+        title: ''
     }
+
 ]
 
 const enhance = compose(
@@ -55,6 +66,9 @@ const enhance = compose(
         },
         marginLeft: {
             marginLeft: '20px !important'
+        },
+        right: {
+            textAlign: 'right'
         }
     })
 )
@@ -92,20 +106,32 @@ const BrandGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const iconButton = (
+            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
             <Row key={id}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={5}>
-                        {name}
-                </Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={2}>
-                    <IconButton>
-                        <ModEditorIcon color="#666666"/>
-                    </IconButton>
-                    <IconButton className={classes.marginLeft}>
-                        <DeleteIcon  color="#666666"/>
-                    </IconButton>
+                <Col xs={5}>{name}</Col>
+                <Col xs={4}>{createdDate}</Col>
+                <Col xs={1} className={classes.right}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                        />
+                    </IconMenu>
                 </Col>
             </Row>
         )

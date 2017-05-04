@@ -29,6 +29,7 @@ export const CATEGORY_CREATE = 'CATEGORY_CREATE'
 export const CATEGORY_DELETE = 'CATEGORY_DELETE'
 
 export const BRAND_LIST = 'BRAND_LIST'
+export const BRAND_ITEM = 'BRAND_ITEM'
 export const BRAND_UPDATE = 'BRAND_UPDATE'
 export const BRAND_CREATE = 'BRAND_CREATE'
 export const BRAND_DELETE = 'BRAND_DELETE'
