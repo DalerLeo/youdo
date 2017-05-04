@@ -118,7 +118,7 @@ const UsersCreateDialog = enhance((props) => {
                 </div>
                 <div className={classes.fields}>
                     <div>
-                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
+                        <h4 className={classes.title}> {isUpdate ? 'Изменить пользователя' : 'Добавить пользователя'}</h4>
                     </div>
                     <div className={classes.bottomBorder}>
                         <Col xs={6}>
@@ -148,7 +148,7 @@ const UsersCreateDialog = enhance((props) => {
                     <div className={classes.bottomBorder}>
                         <Col xs={6} className={classes.rightBorder}>
                             <Field
-                                name="email"
+                                name="username"
                                 component={TextField}
                                 label="Email"
                                 className={classes.marginTop}
