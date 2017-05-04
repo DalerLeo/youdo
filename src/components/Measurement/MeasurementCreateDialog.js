@@ -105,7 +105,7 @@ const MeasurementCreateDialog = enhance((props) => {
                             <Field
                                 name="name"
                                 component={TextField}
-                                label="Наимование"
+                                label="Наименование"
                                 fullWidth={true}
                             />
                             <Field

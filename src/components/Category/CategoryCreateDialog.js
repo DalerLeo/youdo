@@ -9,6 +9,9 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
+import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
+import MainStyles from '../Styles/MainStyles'
 
 export const CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -25,18 +28,7 @@ const validate = (data) => {
 }
 
 const enhance = compose(
-    injectSheet({
-        dialog: {
-            '& div:last-child': {
-                textAlign: 'left !important',
-                '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
-                    color: '#12aaeb !important'
-                }
-            }
-        },
-
+    injectSheet(_.merge(MainStyles, {
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -45,36 +37,16 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
-
-        fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
-        },
-
         body: {
-            maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
-            overflow: 'hidden !important'
+            minHeight: 'auto'
         },
-
-        title: {
-            width: '220px',
-            margin: '0 auto',
-            padding: '10px 0',
-            textAlign: 'center',
-            background: '#12aaeb',
-            color: '#fff',
-            position: 'relative'
-        },
-
         form: {
-            display: 'flex'
+            minHeight: 'auto'
         },
-
-        map: {
-            height: '600px',
-            paddingRight: '0'
+        fieldsWrap: {
+            minHeight: '100px'
         }
-    }),
+    })),
     reduxForm({
         form: 'CategoryCreateForm',
         enableReinitialize: true
@@ -91,42 +63,39 @@ const CategoryCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
+            <div className={classes.titleContent}>
+                <span>{isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.fields}>
-                    <div>
-                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
-                    </div>
-                    <div>
-                        <div>
-                            <Field
-                                name="name"
-                                component={TextField}
-                                label="Наимование"
-                                fullWidth={true}
-                            />
-                        </div>
-                        <div>
-                            <FlatButton
-                                label="Отменить"
-                                primary={true}
-                                onTouchTap={onClose}
-                            />
-
-                            <FlatButton
-                                label="Отправить"
-                                primary={true}
-                                type="submit"
-                                keyboardFocused={true}
-                            />
-                        </div>
+                <div className={classes.fieldsWrap}>
+                    <div className={classes.field}>
+                        <Field
+                            name="name"
+                            component={TextField}
+                            className={classes.inputField}
+                            label="Наименование"
+                            fullWidth={true}
+                        />
                     </div>
                 </div>
             </form>
+            <div className={classes.bottomButton}>
+                <FlatButton
+                    label="Сохранить"
+                    className={classes.actionButton}
+                    primary={true}
+                    type="submit"
+                    keyboardFocused={true}
+                />
+            </div>
         </Dialog>
     )
 })

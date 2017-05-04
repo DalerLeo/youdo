@@ -19,6 +19,9 @@ const enhance = compose(
                 paddingRight: '35px'
             }
         },
+        searchField: {
+            fontSize: '13px !important'
+        },
         filterEmptySearch: {
             extend: 'search',
             margin: '0 0 0 10px'
@@ -46,7 +49,8 @@ const GridListNavSearch = enhance(({classes, search, setSearch, onSubmit, filter
             <div className={filterIsEmpty ? classes.filterEmptySearch : classes.search}>
                 <TextField
                     fullWidth={true}
-                    hintText="Search"
+                    hintText="Поиск"
+                    className={classes.searchField}
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                 />

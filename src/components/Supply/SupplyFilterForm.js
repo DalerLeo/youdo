@@ -12,6 +12,7 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
 import {CategorySearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
+import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const SUPPLY_FILTER_OPEN = 'openFilterDialog'
 
@@ -56,16 +57,13 @@ const enhance = compose(
             color: '#8f8f8f !important'
         },
         arrow: {
+            color: '#12aaeb',
             paddingRight: '14px',
             position: 'relative',
-            '&::after': {
+            '& svg': {
                 position: 'absolute',
-                top: '8px',
-                right: 0,
-                content: '""',
-                borderTop: '5px solid',
-                borderLeft: '5px solid transparent',
-                borderRight: '5px solid transparent'
+                width: '18px !important',
+                height: '18px !important'
             }
         },
         header: {
@@ -127,7 +125,7 @@ const SupplyFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    Show filter
+                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )

@@ -107,7 +107,7 @@ const BrandGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
-            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+            <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
             </IconButton>
         )
@@ -147,7 +147,7 @@ const BrandGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.BRAND_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить продукт">
+                <Tooltip position="left" text="Добавить бренд">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}

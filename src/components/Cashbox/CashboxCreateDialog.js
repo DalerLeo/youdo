@@ -9,7 +9,9 @@ import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CurrencySearchField, UsersSearchField, PaymentTypeSearchField} from '../ReduxForm'
-import {MainStyles} from '../Styles/MainStyles'
+import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
+import MainStyles from '../Styles/MainStyles'
 
 export const CASHBOX_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -26,15 +28,6 @@ const validate = (data) => {
 }
 
 const styles = _.merge(MainStyles, {
-    dialog: {
-        '& div:last-child': {
-            '& button': {
-                marginTop: '10px !important',
-                color: '#12aaeb !important'
-            }
-        }
-    },
-
     loader: {
         width: '120px',
         margin: '0 auto',
@@ -42,29 +35,6 @@ const styles = _.merge(MainStyles, {
         textAlign: 'center',
         display: ({loading}) => loading ? 'flex' : 'none',
         flexDirection: 'center'
-    },
-
-    fields: {
-        display: ({loading}) => !loading ? 'block' : 'none'
-    },
-
-    body: {
-        maxHeight: '600px !important',
-        padding: '0 30px 20px 30px !important',
-        overflow: 'hidden !important'
-    },
-
-    title: {
-        width: '220px',
-        margin: '0 auto',
-        padding: '10px 0',
-        textAlign: 'center',
-        background: '#12aaeb',
-        color: '#fff',
-        position: 'relative'
-    },
-    center: {
-        textAlign: 'center'
     }
 })
 
@@ -88,58 +58,58 @@ const CashboxCreateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
+            <div className={classes.titleContent}>
+                <span>{isUpdate ? 'Изменить кассу' : 'Добавить кассу'}</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.fields}>
-                    <div>
-                        <h4 className={classes.title}> {isUpdate ? 'Изменить кассу' : 'Добавить кассу'}</h4>
-                    </div>
-                    <div>
-                        <div>
-                            <Field
-                                name="name"
-                                component={TextField}
-                                label="Наимование"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="currency"
-                                component={CurrencySearchField}
-                                label="Валюта"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="cashier"
-                                component={UsersSearchField}
-                                label="Кассир"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="type"
-                                component={PaymentTypeSearchField}
-                                label="Тип оплата"
-                                fullWidth={true}
-                            />
-                        </div>
-                        <div className={classes.center}>
-                            <FlatButton
-                                label="Отменить"
-                                primary={true}
-                                onTouchTap={onClose}
-                            />
-
-                            <FlatButton
-                                label="Отправить"
-                                primary={true}
-                                type="submit"
-                                keyboardFocused={true}
-                            />
-                        </div>
+                <div className={classes.fieldsWrap}>
+                    <div className={classes.field}>
+                        <Field
+                            name="name"
+                            component={TextField}
+                            className={classes.inputField}
+                            label="Наименование"
+                            fullWidth={true}
+                        />
+                        <Field
+                            name="currency"
+                            component={CurrencySearchField}
+                            className={classes.inputField}
+                            label="Валюта"
+                            fullWidth={true}
+                        />
+                        <Field
+                            name="cashier"
+                            component={UsersSearchField}
+                            className={classes.inputField}
+                            label="Кассир"
+                            fullWidth={true}
+                        />
+                        <Field
+                            name="type"
+                            component={PaymentTypeSearchField}
+                            className={classes.inputField}
+                            label="Тип оплаты"
+                            fullWidth={true}
+                        />
                     </div>
                 </div>
             </form>
+            <div className={classes.bottomButton}>
+                <FlatButton
+                    label="Сохранить"
+                    className={classes.actionButton}
+                    primary={true}
+                    type="submit"
+                    keyboardFocused={true}
+                />
+            </div>
         </Dialog>
     )
 })

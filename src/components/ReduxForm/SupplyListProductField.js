@@ -89,7 +89,7 @@ const enhance = compose(
             '& > button > div > span': {
                 padding: '0 !important',
                 textTransform: 'inherit !important',
-                fontSize: '16px'
+                fontSize: '13px'
             },
             '& > div:last-child': {
                 width: '100% !important'

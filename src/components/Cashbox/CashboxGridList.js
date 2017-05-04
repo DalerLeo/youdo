@@ -123,7 +123,7 @@ const CashboxGridList = enhance((props) => {
         const cashier = _.get(item, ['cashier'])
         const type = _.get(item, 'type') === bank ? 'банковский счет' : 'наличный'
         const iconButton = (
-            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+            <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
             </IconButton>
         )
@@ -166,7 +166,7 @@ const CashboxGridList = enhance((props) => {
             <SubMenu url={ROUTES.CASHBOX_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
+                <Tooltip position="left" text="Добавить кассу">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}

@@ -13,6 +13,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import MainStyles from '../Styles/MainStyles'
 
 export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
 
@@ -30,7 +31,7 @@ const validate = (data) => {
 
 const colorBlue = '#129fdd !important'
 const enhance = compose(
-    injectSheet({
+    injectSheet(_.merge(MainStyles, {
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -38,12 +39,6 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
-        },
-        fieldsWrap: {
-            display: ({loading}) => !loading ? 'flex' : 'none',
-            width: '100%',
-            fontSize: '13px',
-            minHeight: '235px'
         },
         leftSide: {
             width: '40%',
@@ -57,44 +52,6 @@ const enhance = compose(
         },
         innerTitle: {
             marginTop: '20px'
-        },
-        body: {
-            overflowY: 'hidden !important',
-            fontSize: '13px !important',
-            position: 'relative',
-            padding: '0 !important',
-            minHeight: '428px',
-            maxHeight: 'calc(100vh - 200px) !important'
-        },
-        title: {
-            paddingTop: '15px',
-            fontWeight: 'bold',
-            color: '#333'
-        },
-        titleContent: {
-            background: '#fff',
-            color: '#333',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            top: '0',
-            left: '0',
-            right: '0',
-            borderBottom: '1px solid #efefef',
-            padding: '20px 30px',
-            zIndex: '999',
-            '& button': {
-                marginTop: '-17px !important',
-                right: '13px',
-                padding: '0 !important',
-                position: 'absolute !important'
-            }
-        },
-        form: {
-            display: 'flex',
-            padding: '0 30px',
-            minHeight: '307px',
-            maxHeight: '50vh',
-            overflow: 'auto'
         },
         inputFieldShift: {
             fontSize: '13px !important',
@@ -121,25 +78,6 @@ const enhance = compose(
         },
         imageUpload: {
             width: '100px'
-        },
-        bottomButton: {
-            bottom: '0',
-            left: '0',
-            right: '0',
-            padding: '15px',
-            zIndex: '999',
-            borderTop: '1px solid #efefef',
-            background: '#fff',
-            textAlign: 'right',
-            '& span': {
-                fontSize: '13px !important',
-                fontWeight: '600 !important',
-                color: colorBlue
-            }
-        },
-        actionButton: {
-            fontSize: '13px !important',
-            margin: '0 !important'
         },
         buttonSub: {
             textAlign: 'right',
@@ -237,7 +175,7 @@ const enhance = compose(
                 }
             }
         }
-    }),
+    })),
     withState('openAddShift', 'setOpenAddShift', false),
     withState('openAddStaff', 'setOpenAddStaff', false),
     reduxForm({

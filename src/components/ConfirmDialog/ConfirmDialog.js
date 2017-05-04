@@ -5,40 +5,76 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
+import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
 
+const colorBlue = '#129fdd !important'
 const enhance = compose(
     injectSheet({
-        dialog: {
-            '& div:last-child': {
-                textAlign: 'left !important',
-                width: '500px',
-                maxWidth: 'none',
-                '& button': {
-                    marginTop: '20px !important',
-                    marginRight: '20px !important',
-                    marginBottom: '5px !important',
-                    maxWidth: '100px !important',
-                    color: '#12aaeb !important'
-                }
+        body: {
+            overflowY: 'auto !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '20px !important'
+        },
+        title: {
+            paddingTop: '15px',
+            fontWeight: 'bold',
+            color: '#333'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            right: '0',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                position: 'absolute !important',
+                right: '10px',
+                top: '50%',
+                padding: '0 !important',
+                marginTop: '-24px !important'
             }
         },
-
-        body: {
-            maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
-            overflow: 'hidden !important'
+        form: {
+            padding: '35px 10px 57px'
         },
-
-        title: {
-            width: '220px',
-            margin: '0 auto',
-            padding: '10px 0',
-            textAlign: 'center',
-            background: '#12aaeb',
-            color: '#fff',
-            position: 'relative'
+        background: {
+            background: '#f1f5f8',
+            fontWeight: '600',
+            padding: '20px 30px',
+            margin: '0 -30px',
+            width: '100%'
+        },
+        confirm: {
+            padding: '20px 0'
+        },
+        bottomButton: {
+            position: 'fixed',
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '20px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: colorBlue
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
         }
-
     })
 )
 
@@ -57,26 +93,30 @@ const ConfirmDialog = enhance((props) => {
             modal={true}
             open={open}
             onRequestClose={onClose}
+            contentStyle={{width: '500px'}}
             className={classes.dialog}
             bodyClassName={classes.body}>
-            <div>
-                <h4 className={classes.title}>{title}</h4>
+            <div className={classes.titleContent}>
+                <span>{title}</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
             </div>
-            {message}
-            <div>
-                <div>
-                    <FlatButton
-                        label="Отменить"
-                        primary={true}
-                        onTouchTap={onClose}
-                        keyboardFocused={true}
-                    />
-                    <FlatButton
-                        label={buttonLabel}
-                        primary={true}
-                        onTouchTap={onSubmit}
-                    />
+            <div className={classes.form}>
+                <div className={classes.confirm}>
+                    Вы уверены что хотите удалить эти данные?
                 </div>
+                <div className={classes.background}>
+                    {message}
+                </div>
+            </div>
+            <div className={classes.bottomButton}>
+                <FlatButton
+                    className={classes.actionButton}
+                    label={buttonLabel}
+                    primary={true}
+                    onTouchTap={onSubmit}
+                />
             </div>
         </Dialog>
     )
