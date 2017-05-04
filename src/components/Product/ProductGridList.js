@@ -8,6 +8,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -21,32 +22,40 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 
 const listHeader = [
     {
         sorting: true,
         name: 'name',
-        title: 'Наименование'
+        title: 'Наименование',
+        xs: 4
     },
     {
         sorting: true,
         name: 'type',
-        title: 'Тип товара'
+        title: 'Тип товара',
+        xs: 2
     },
     {
         sorting: true,
         name: 'brand',
-        title: 'Бренд'
+        title: 'Бренд',
+        xs: 2
     },
     {
         sorting: true,
         name: 'measurement',
-        title: 'Мера'
+        title: 'Мера',
+        xs: 2
     },
     {
         sorting: true,
         name: 'created_date',
-        title: 'Дата создания'
+        title: 'Дата создания',
+        xs: 2
     }
 ]
 
@@ -107,14 +116,19 @@ const ProductGridList = enhance((props) => {
     const productList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const type = _.get(item, 'type') || 'N/A'
+        const type = _.get(item, ['type', 'name']) || 'N/A'
         const brand = _.get(item, ['brand', 'name']) || 'N/A'
-        const image = _.get(item, 'image') || ''
-        const measurement = _.get(item, 'measurement') || ''
+        const image = _.get(item, ['image', 'url']) || ''
+        const measurement = _.get(item, ['measurement', 'name']) || ''
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const iconButton = (
+            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
             <Row key={id}>
-                <Col xs={4}>
+                <Col xs={3}>
                     <Link to={{
                         pathname: sprintf(ROUTES.PRODUCT_ITEM_PATH, id),
                         query: filter.getParams()
@@ -124,6 +138,23 @@ const ProductGridList = enhance((props) => {
                 <Col xs={2}>{brand}</Col>
                 <Col xs={2}>{measurement}</Col>
                 <Col xs={2}>{createdDate}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                        />
+                    </IconMenu>
+                </Col>
             </Row>
         )
     })

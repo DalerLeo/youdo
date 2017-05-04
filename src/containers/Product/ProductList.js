@@ -24,6 +24,7 @@ import {
     productDeleteAction,
     productItemFetchAction
 } from '../../actions/product'
+
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(

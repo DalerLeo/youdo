@@ -37,15 +37,17 @@ export const MenuItems = [
     {
         name: 'Бухгалтерия',
         icon: (<AccountBalanceWallet />),
-        url: ROUTES.SHOP_LIST_URL,
+        url: ROUTES.TRANSACTION_LIST_URL,
         childs: [
+            {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL}
         ]
     },
     {
-        name: 'Карта',
+        name: 'Производство',
         icon: (<Map />),
-        url: ROUTES.SHOP_LIST_URL,
+        url: ROUTES.MANUFACTURE_LIST_URL,
         childs: [
+            {name: 'Производство', url: ROUTES.MANUFACTURE_LIST_URL}
         ]
     },
     {
@@ -54,7 +56,11 @@ export const MenuItems = [
         url: ROUTES.CATEGORY_LIST_URL,
         childs: [
             {name: 'Категории', url: ROUTES.CATEGORY_LIST_URL},
-            {name: 'Бренд', url: ROUTES.BRAND_LIST_URL}
+            {name: 'Бренд', url: ROUTES.BRAND_LIST_URL},
+            {name: 'Касси', url: ROUTES.CASHBOX_LIST_URL},
+            {name: 'Категории расхода', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL},
+            {name: 'Пользователи', url: ROUTES.USERS_LIST_URL},
+            {name: 'Измерение', url: ROUTES.MEASUREMENT_LIST_URL}
         ]
     }
 ]

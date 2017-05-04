@@ -15,6 +15,20 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.SHOP_UPDATE),
         csv: createThunkReducer(actionTypes.SHOP_LIST_CSV)
     }),
+    cashbox: combineReducers({
+        create: createThunkReducer(actionTypes.CASHBOX_CREATE),
+        list: createThunkReducer(actionTypes.CASHBOX_LIST),
+        item: createThunkReducer(actionTypes.CASHBOX_ITEM),
+        update: createThunkReducer(actionTypes.CASHBOX_UPDATE),
+        csv: createThunkReducer(actionTypes.CASHBOX_LIST_CSV)
+    }),
+    transaction: combineReducers({
+        create: createThunkReducer(actionTypes.TRANSACTION_CREATE),
+        list: createThunkReducer(actionTypes.TRANSACTION_LIST),
+        item: createThunkReducer(actionTypes.TRANSACTION_ITEM),
+        update: createThunkReducer(actionTypes.TRANSACTION_UPDATE),
+        csv: createThunkReducer(actionTypes.TRANSACTION_LIST_CSV)
+    }),
     supply: combineReducers({
         create: createThunkReducer(actionTypes.SUPPLY_CREATE),
         list: createThunkReducer(actionTypes.SUPPLY_LIST),
@@ -35,6 +49,24 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.CATEGORY_UPDATE),
         item: createThunkReducer(actionTypes.CATEGORY_ITEM)
     }),
+    measurement: combineReducers({
+        create: createThunkReducer(actionTypes.MEASUREMENT_CREATE),
+        list: createThunkReducer(actionTypes.MEASUREMENT_LIST),
+        update: createThunkReducer(actionTypes.MEASUREMENT_UPDATE),
+        item: createThunkReducer(actionTypes.MEASUREMENT_ITEM)
+    }),
+    expensiveCategory: combineReducers({
+        create: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_CREATE),
+        list: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_LIST),
+        update: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_UPDATE),
+        item: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_ITEM)
+    }),
+    users: combineReducers({
+        create: createThunkReducer(actionTypes.USERS_CREATE),
+        list: createThunkReducer(actionTypes.USERS_LIST),
+        update: createThunkReducer(actionTypes.USERS_UPDATE),
+        item: createThunkReducer(actionTypes.USERS_ITEM)
+    }),
     provider: combineReducers({
         create: createThunkReducer(actionTypes.PROVIDER_CREATE),
         list: createThunkReducer(actionTypes.PROVIDER_LIST),
@@ -46,6 +78,12 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.BRAND_LIST),
         update: createThunkReducer(actionTypes.BRAND_UPDATE),
         item: createThunkReducer(actionTypes.BRAND_ITEM)
+    }),
+    manufacture: combineReducers({
+        create: createThunkReducer(actionTypes.PROVIDER_CREATE),
+        list: createThunkReducer(actionTypes.PROVIDER_LIST),
+        update: createThunkReducer(actionTypes.PROVIDER_UPDATE),
+        item: createThunkReducer(actionTypes.PROVIDER_ITEM)
     }),
     snackbar: snackbarReducer(),
     form: formReducer,
