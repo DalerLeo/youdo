@@ -3,9 +3,25 @@ import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
     const name = _.get(data, ['name'])
+    const category = _.get(data, ['category', 'value'])
+    const address = _.get(data, ['address'])
+    const guide = _.get(data, ['guide'])
+    const phone = _.get(data, ['phone'])
+    const lat = _.get(data, ['latLng', 'lat'])
+    const lng = _.get(data, ['latLng', 'lng'])
+    const official = _.get(data, ['official'])
+    const contactName = _.get(data, ['contactName'])
 
     return {
-        name
+        name,
+        category,
+        address,
+        guide,
+        phone,
+        lat,
+        lon: lng,
+        official,
+        'contact_name': contactName
     }
 }
 

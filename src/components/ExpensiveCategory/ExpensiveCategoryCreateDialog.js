@@ -10,7 +10,7 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
 
-export const CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const EXPENSIVE_CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -28,10 +28,8 @@ const enhance = compose(
     injectSheet({
         dialog: {
             '& div:last-child': {
-                textAlign: 'left !important',
                 '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
+                    marginTop: '10px !important',
                     color: '#12aaeb !important'
                 }
             }
@@ -47,12 +45,13 @@ const enhance = compose(
         },
 
         fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
+            display: ({loading}) => !loading ? 'block' : 'none',
+            width: '100%'
         },
 
         body: {
             maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
+            padding: '0 30px 20px 30px !important',
             overflow: 'hidden !important'
         },
 
@@ -69,19 +68,17 @@ const enhance = compose(
         form: {
             display: 'flex'
         },
-
-        map: {
-            height: '600px',
-            paddingRight: '0'
+        center: {
+            textAlign: 'center'
         }
     }),
     reduxForm({
-        form: 'CategoryCreateForm',
+        form: 'ExpensiveCategoryCreateForm',
         enableReinitialize: true
     })
 )
 
-const CategoryCreateDialog = enhance((props) => {
+const ExpensiveCategoryCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -91,7 +88,7 @@ const CategoryCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
@@ -110,7 +107,7 @@ const CategoryCreateDialog = enhance((props) => {
                                 fullWidth={true}
                             />
                         </div>
-                        <div>
+                        <div className={classes.center}>
                             <FlatButton
                                 label="Отменить"
                                 primary={true}
@@ -131,7 +128,7 @@ const CategoryCreateDialog = enhance((props) => {
     )
 })
 
-CategoryCreateDialog.propTypes = {
+ExpensiveCategoryCreateDialog.propTypes = {
     isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -139,8 +136,8 @@ CategoryCreateDialog.propTypes = {
     loading: PropTypes.bool.isRequired
 }
 
-CategoryCreateDialog.defaultProps = {
+ExpensiveCategoryCreateDialog.defaultProps = {
     isUpdate: false
 }
 
-export default CategoryCreateDialog
+export default ExpensiveCategoryCreateDialog
