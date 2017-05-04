@@ -24,17 +24,28 @@ const enhance = compose(
             color: 'black !important'
         },
         headers: {
-            height: '30px',
+            height: '0',
             position: 'relative',
+            top: '-30px',
             '& button': {
                 position: 'absolute !important',
                 right: '0 !important'
             }
         },
+        inputField: {
+            fontSize: '13px !important'
+        },
         flex: {
             display: 'flex',
             '& div:first-child': {
                 marginRight: '10px'
+            }
+        },
+        contactBlock: {
+            marginBottom: '15px',
+            paddingBottom: '15px',
+            '&:last-child': {
+                margin: '0'
             }
         }
     })
@@ -56,7 +67,7 @@ const ProviderContactsListField = ({classes, fields}) => {
         <div>
             {fields.map((contact, index) => {
                 return (
-                    <div>
+                    <div className={classes.contactBlock}>
                         <div className={classes.headers}>
                             <FloatingActionButton
                                 backgroundColor="#12aaeb"
@@ -66,31 +77,30 @@ const ProviderContactsListField = ({classes, fields}) => {
                             </FloatingActionButton>
                         </div>
                         <div key={index}>
-                            <div>
-                                <div>
-                                    <Field
-                                        label="Контактное лицо"
-                                        name={`${contact}.name`}
-                                        component={TextField}
-                                        fullWidth={true}
-                                    />
+                            <Field
+                                label="Контактное лицо"
+                                name={`${contact}.name`}
+                                component={TextField}
+                                className={classes.inputField}
+                                fullWidth={true}
+                            />
 
-                                    <div className={classes.flex}>
-                                        <Field
-                                            label="Email"
-                                            name={`${contact}.email`}
-                                            component={TextField}
-                                            fullWidth={true}
-                                        />
+                            <div className={classes.flex}>
+                                <Field
+                                    label="Email"
+                                    name={`${contact}.email`}
+                                    component={TextField}
+                                    className={classes.inputField}
+                                    fullWidth={true}
+                                />
 
-                                        <Field
-                                            label="Телефон номер"
-                                            name={`${contact}.phone`}
-                                            component={TextField}
-                                            fullWidth={true}
-                                        />
-                                    </div>
-                                </div>
+                                <Field
+                                    label="Телефон номер"
+                                    name={`${contact}.phone`}
+                                    component={TextField}
+                                    className={classes.inputField}
+                                    fullWidth={true}
+                                />
                             </div>
                         </div>
                     </div>
