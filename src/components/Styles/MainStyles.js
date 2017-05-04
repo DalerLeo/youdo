@@ -1,5 +1,5 @@
 const MainStyles = {
-    body: {
+    test: {
         padding: '10px'
     }
 }
