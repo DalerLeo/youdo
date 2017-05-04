@@ -49,6 +49,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.CATEGORY_UPDATE),
         item: createThunkReducer(actionTypes.CATEGORY_ITEM)
     }),
+    measurement: combineReducers({
+        create: createThunkReducer(actionTypes.MEASUREMENT_CREATE),
+        list: createThunkReducer(actionTypes.MEASUREMENT_LIST),
+        update: createThunkReducer(actionTypes.MEASUREMENT_UPDATE),
+        item: createThunkReducer(actionTypes.MEASUREMENT_ITEM)
+    }),
     expensiveCategory: combineReducers({
         create: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_CREATE),
         list: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_LIST),

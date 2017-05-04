@@ -10,6 +10,7 @@ import {TransactionList} from '../containers/Transaction'
 import {SupplyList} from '../containers/Supply'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
+import {MeasurementList} from '../containers/Measurement'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
@@ -68,11 +69,6 @@ export default {
                 {
                     path: ROUTES.CASHBOX_ITEM_URL,
                     component: userIsAuth(CashboxList)
-                },
-
-                {
-                    path: ROUTES.CASHBOX_ITEM_TAB_URL,
-                    component: userIsAuth(CashboxList)
                 }
             ]
         },
@@ -84,11 +80,6 @@ export default {
                 {
                     path: ROUTES.TRANSACTION_ITEM_URL,
                     component: userIsAuth(TransactionList)
-                },
-
-                {
-                    path: ROUTES.TRANSACTION_ITEM_TAB_URL,
-                    component: userIsAuth(CashboxList)
                 }
             ]
         },
@@ -99,11 +90,6 @@ export default {
             childRoutes: [
                 {
                     path: ROUTES.SUPPLY_ITEM_URL,
-                    component: userIsAuth(SupplyList)
-                },
-
-                {
-                    path: ROUTES.SUPPLY_ITEM_TAB_URL,
                     component: userIsAuth(SupplyList)
                 }
             ]
@@ -123,6 +109,17 @@ export default {
                 {
                     path: ROUTES.CATEGORY_ITEM_URL,
                     component: userIsAuth(CategoryList)
+                }
+            ]
+        },
+        // Measurement
+        {
+            path: ROUTES.MEASUREMENT_LIST_URL,
+            component: userIsAuth(MeasurementList),
+            childRoutes: [
+                {
+                    path: ROUTES.MEASUREMENT_ITEM_URL,
+                    component: userIsAuth(MeasurementList)
                 }
             ]
         },

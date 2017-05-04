@@ -9,7 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, ImageUploadField} from '../ReduxForm'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const USERS_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -86,6 +86,12 @@ const enhance = compose(
         },
         center: {
             textAlign: 'center'
+        },
+        imageUpload: {
+            width: '100px'
+        },
+        height: {
+            height: '100px'
         }
     }),
     reduxForm({
@@ -112,7 +118,7 @@ const UsersCreateDialog = enhance((props) => {
                 </div>
                 <div className={classes.fields}>
                     <div>
-                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
+                        <h4 className={classes.title}> {isUpdate ? 'Изменить пользователя' : 'Добавить пользователя'}</h4>
                     </div>
                     <div className={classes.bottomBorder}>
                         <Col xs={6}>
@@ -129,14 +135,20 @@ const UsersCreateDialog = enhance((props) => {
                                 className={classes.marginTop}
                                 fullWidth={true}/>
                         </Col>
-                        <Col xs={6}>
-                            img content
+                        <Col xs={6} className={classes.height}>
+                            <Field
+                                name="image"
+                                className={classes.imageUpload}
+                                component={ImageUploadField}
+                                label="Изображения"
+                                fullWidth={true}
+                            />
                         </Col>
                     </div>
                     <div className={classes.bottomBorder}>
                         <Col xs={6} className={classes.rightBorder}>
                             <Field
-                                name="email"
+                                name="username"
                                 component={TextField}
                                 label="Email"
                                 className={classes.marginTop}
