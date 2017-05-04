@@ -134,7 +134,7 @@ const ProviderCreateDialog = enhance((props) => {
             bodyClassName={classes.body}>
 
             <div className={classes.titleContent}>
-                <span>Добавление поставщика</span>
+                <span>{isUpdate ? 'Добавление поставщика' : 'Изменить поставщика'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
