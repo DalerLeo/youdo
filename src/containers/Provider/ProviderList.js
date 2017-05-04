@@ -10,33 +10,33 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
-    CATEGORY_CREATE_DIALOG_OPEN,
-    CATEGORY_UPDATE_DIALOG_OPEN,
-    CategoryGridList
-} from '../../components/Category'
+    PROVIDER_CREATE_DIALOG_OPEN,
+    PROVIDER_UPDATE_DIALOG_OPEN,
+    ProviderGridList
+} from '../../components/Provider'
 import {
-    categoryCreateAction,
-    categoryUpdateAction,
-    categoryListFetchAction,
-    categoryCSVFetchAction,
-    categoryDeleteAction,
-    categoryItemFetchAction
-} from '../../actions/category'
+    providerCreateAction,
+    providerUpdateAction,
+    providerListFetchAction,
+    providerCSVFetchAction,
+    providerDeleteAction,
+    providerItemFetchAction
+} from '../../actions/provider'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['category', 'item', 'data'])
-        const detailLoading = _.get(state, ['category', 'item', 'loading'])
-        const createLoading = _.get(state, ['category', 'create', 'loading'])
-        const updateLoading = _.get(state, ['category', 'update', 'loading'])
-        const list = _.get(state, ['category', 'list', 'data'])
-        const listLoading = _.get(state, ['category', 'list', 'loading'])
-        const csvData = _.get(state, ['category', 'csv', 'data'])
-        const csvLoading = _.get(state, ['category', 'csv', 'loading'])
-        const createForm = _.get(state, ['form', 'CategoryCreateForm'])
+        const detail = _.get(state, ['provider', 'item', 'data'])
+        const detailLoading = _.get(state, ['provider', 'item', 'loading'])
+        const createLoading = _.get(state, ['provider', 'create', 'loading'])
+        const updateLoading = _.get(state, ['provider', 'update', 'loading'])
+        const list = _.get(state, ['provider', 'list', 'data'])
+        const listLoading = _.get(state, ['provider', 'list', 'loading'])
+        const csvData = _.get(state, ['provider', 'csv', 'data'])
+        const csvLoading = _.get(state, ['provider', 'csv', 'loading'])
+        const createForm = _.get(state, ['form', 'ProviderCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -55,15 +55,15 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(categoryListFetchAction(filter))
+        dispatch(providerListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const categoryId = _.get(nextProps, ['params', 'categoryId'])
-        return categoryId && _.get(props, ['params', 'categoryId']) !== categoryId
+        const providerId = _.get(nextProps, ['params', 'providerId'])
+        return providerId && _.get(props, ['params', 'providerId']) !== providerId
     }, ({dispatch, params}) => {
-        const categoryId = _.toInteger(_.get(params, 'categoryId'))
-        categoryId && dispatch(categoryItemFetchAction(categoryId))
+        const providerId = _.toInteger(_.get(params, 'providerId'))
+        providerId && dispatch(providerItemFetchAction(providerId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -78,7 +78,7 @@ const enhance = compose(
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
 
-            dispatch(categoryCSVFetchAction(props.filter))
+            dispatch(providerCSVFetchAction(props.filter))
         },
 
         handleCloseCSVDialog: props => () => {
@@ -97,18 +97,13 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog} = props
-            dispatch(categoryDeleteAction(detail.id))
+            dispatch(providerDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Successful deleted'}))
                 })
                 .then(() => {
                     setOpenConfirmDialog(false)
                 })
-        },
-
-        handleTabChange: props => (tab) => {
-            const categoryId = _.toInteger(_.get(props, ['params', 'categoryId']))
-            hashHistory.push({pathname: sprintf(ROUTER.CATEGORY_ITEM_TAB_PATH, categoryId, tab)})
         },
 
         handleOpenDeleteDialog: props => () => {
@@ -126,58 +121,58 @@ const enhance = compose(
 
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CATEGORY_CREATE_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[PROVIDER_CREATE_DIALOG_OPEN]: true})})
         },
 
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CATEGORY_CREATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[PROVIDER_CREATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter} = props
 
-            return dispatch(categoryCreateAction(_.get(createForm, ['values'])))
+            return dispatch(providerCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[CATEGORY_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({query: filter.getParams({[PROVIDER_CREATE_DIALOG_OPEN]: false})})
                 })
         },
 
         handleOpenUpdateDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.CATEGORY_ITEM_PATH, id),
-                query: filter.getParams({[CATEGORY_UPDATE_DIALOG_OPEN]: true})
+                pathname: sprintf(ROUTER.PROVIDER_ITEM_PATH, id),
+                query: filter.getParams({[PROVIDER_UPDATE_DIALOG_OPEN]: true})
             })
         },
 
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CATEGORY_UPDATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[PROVIDER_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
-            const categoryId = _.toInteger(_.get(props, ['params', 'categoryId']))
+            const providerId = _.toInteger(_.get(props, ['params', 'providerId']))
 
-            return dispatch(categoryUpdateAction(categoryId, _.get(createForm, ['values'])))
+            return dispatch(providerUpdateAction(providerId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(categoryItemFetchAction(categoryId))
+                    return dispatch(providerItemFetchAction(providerId))
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[CATEGORY_UPDATE_DIALOG_OPEN]: false}))
+                    hashHistory.push(filter.createURL({[PROVIDER_UPDATE_DIALOG_OPEN]: false}))
                 })
         }
     })
 )
 
-const CategoryList = enhance((props) => {
+const ProviderList = enhance((props) => {
     const {
         location,
         list,
@@ -191,10 +186,10 @@ const CategoryList = enhance((props) => {
         params
     } = props
 
-    const openCreateDialog = toBoolean(_.get(location, ['query', CATEGORY_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', CATEGORY_UPDATE_DIALOG_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', PROVIDER_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', PROVIDER_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
-    const detailId = _.toInteger(_.get(params, 'categoryId'))
+    const detailId = _.toInteger(_.get(params, 'providerId'))
     const tab = _.get(params, 'tab')
 
     const actionsDialog = {
@@ -228,8 +223,19 @@ const CategoryList = enhance((props) => {
             if (!detail) {
                 return {}
             }
+
+            const contacts = _(detail).get('contacts').map((contact) => {
+                return {
+                    name: _.get(contact, 'name'),
+                    email: _.get(contact, 'email'),
+                    phone: _.get(contact, 'phone')
+                }
+            })
+
             return {
-                name: _.get(detail, 'name')
+                name: _.get(detail, 'name'),
+                address: _.get(detail, 'address'),
+                contacts: _.union(contacts, [{}])
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -265,7 +271,7 @@ const CategoryList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <CategoryGridList
+            <ProviderGridList
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
@@ -281,4 +287,4 @@ const CategoryList = enhance((props) => {
     )
 })
 
-export default CategoryList
+export default ProviderList

@@ -15,6 +15,13 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.SHOP_UPDATE),
         csv: createThunkReducer(actionTypes.SHOP_LIST_CSV)
     }),
+    supply: combineReducers({
+        create: createThunkReducer(actionTypes.SUPPLY_CREATE),
+        list: createThunkReducer(actionTypes.SUPPLY_LIST),
+        item: createThunkReducer(actionTypes.SUPPLY_ITEM),
+        update: createThunkReducer(actionTypes.SUPPLY_UPDATE),
+        csv: createThunkReducer(actionTypes.SUPPLY_LIST_CSV)
+    }),
     product: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_CREATE),
         list: createThunkReducer(actionTypes.PRODUCT_LIST),
@@ -25,7 +32,14 @@ const rootReducer = combineReducers({
     category: combineReducers({
         create: createThunkReducer(actionTypes.CATEGORY_CREATE),
         list: createThunkReducer(actionTypes.CATEGORY_LIST),
-        update: createThunkReducer(actionTypes.CATEGORY_UPDATE)
+        update: createThunkReducer(actionTypes.CATEGORY_UPDATE),
+        item: createThunkReducer(actionTypes.CATEGORY_ITEM)
+    }),
+    provider: combineReducers({
+        create: createThunkReducer(actionTypes.PROVIDER_CREATE),
+        list: createThunkReducer(actionTypes.PROVIDER_LIST),
+        update: createThunkReducer(actionTypes.PROVIDER_UPDATE),
+        item: createThunkReducer(actionTypes.PROVIDER_ITEM)
     }),
     brand: combineReducers({
         create: createThunkReducer(actionTypes.BRAND_CREATE),

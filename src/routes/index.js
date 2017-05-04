@@ -5,9 +5,11 @@ import * as ROUTES from '../constants/routes'
 import App from '../containers/App'
 import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
+import {SupplyList} from '../containers/Supply'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
 import {BrandList} from '../containers/Brand'
+import {ProviderList} from '../containers/Provider'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -43,6 +45,22 @@ export default {
                 }
             ]
         },
+        // Supply
+        {
+            path: ROUTES.SUPPLY_LIST_URL,
+            component: userIsAuth(SupplyList),
+            childRoutes: [
+                {
+                    path: ROUTES.SUPPLY_ITEM_URL,
+                    component: userIsAuth(SupplyList)
+                },
+
+                {
+                    path: ROUTES.SUPPLY_ITEM_TAB_URL,
+                    component: userIsAuth(SupplyList)
+                }
+            ]
+        },
         // Product
         {
             path: ROUTES.PRODUCT_LIST_URL,
@@ -55,6 +73,21 @@ export default {
             path: ROUTES.CATEGORY_LIST_URL,
             component: userIsAuth(CategoryList),
             childRoutes: [
+                {
+                    path: ROUTES.CATEGORY_ITEM_URL,
+                    component: userIsAuth(CategoryList)
+                }
+            ]
+        },
+        // Provider
+        {
+            path: ROUTES.PROVIDER_LIST_URL,
+            component: userIsAuth(ProviderList),
+            childRoutes: [
+                {
+                    path: ROUTES.PROVIDER_ITEM_URL,
+                    component: userIsAuth(ProviderList)
+                }
             ]
         },
         // Brand

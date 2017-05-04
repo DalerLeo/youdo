@@ -3,12 +3,46 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/categorySerializer'
+import * as serializers from '../serializers/supplySerializer'
 
-export const categoryCreateAction = (formValues) => {
+export const supplyCreateAction = (formValues) => {
+    const requestData = serializers.createSerializer(formValues)
+
+    const payload = axios()
+        .post(API.SUPPLY_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SUPPLY_CREATE,
+        payload
+    }
+}
+
+export const supplyDeleteAction = (id) => {
+    const payload = axios()
+        .delete(sprintf(API.SUPPLY_DELETE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SUPPLY_DELETE,
+        payload
+    }
+}
+
+export const supplyUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .post(API.CATEGORY_CREATE, requestData)
+        .put(sprintf(API.SUPPLY_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,48 +51,15 @@ export const categoryCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.SHOP_CREATE,
+        type: actionTypes.SUPPLY_UPDATE,
         payload
     }
 }
 
-export const categoryDeleteAction = (id) => {
-    const payload = axios()
-        .delete(sprintf(API.SHOP_DELETE, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SHOP_DELETE,
-        payload
-    }
-}
-
-export const categoryUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .put(sprintf(API.SHOP_ITEM, id), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SHOP_UPDATE,
-        payload
-    }
-}
-
-export const categoryListFetchAction = (filter) => {
+export const supplyListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.CATEGORY_LIST, {params})
+        .get(API.SUPPLY_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,15 +68,15 @@ export const categoryListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.CATEGORY_LIST,
+        type: actionTypes.SUPPLY_LIST,
         payload
     }
 }
 
-export const categoryCSVFetchAction = (filter) => {
+export const supplyCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.SHOP_LIST, {params})
+        .get(API.SUPPLY_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -84,14 +85,14 @@ export const categoryCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.SHOP_LIST_CSV,
+        type: actionTypes.SUPPLY_LIST_CSV,
         payload
     }
 }
 
-export const categoryItemFetchAction = (id) => {
+export const supplyItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.CATEGORY_ITEM, id))
+        .get(sprintf(API.SUPPLY_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -100,7 +101,7 @@ export const categoryItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.CATEGORY_ITEM,
+        type: actionTypes.SUPPLY_ITEM,
         payload
     }
 }

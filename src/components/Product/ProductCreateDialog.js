@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ProductTypeSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
+import {TextField, ProductTypeSearchField, BrandSearchField, MeasurementSearchField, ImageUploadField} from '../ReduxForm'
 
 export const PRODUCT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -128,6 +128,13 @@ const ProductCreateDialog = enhance((props) => {
                                     name="measurement"
                                     component={MeasurementSearchField}
                                     label="Мера"
+                                    fullWidth={true}
+                                />
+
+                                <Field
+                                    name="image"
+                                    component={ImageUploadField}
+                                    label="Изображения"
                                     fullWidth={true}
                                 />
 

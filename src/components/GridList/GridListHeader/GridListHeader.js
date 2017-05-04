@@ -74,7 +74,7 @@ const enhance = compose(
 )
 
 const GridListHeader = enhance((props) => {
-    const {classes, filter, column, listIds, onChecked} = props
+    const {classes, filter, column, listIds, onChecked, withoutCheckboxes} = props
 
     // Calculate row size for correct showing grid list
     const rowSize = 12
@@ -91,7 +91,7 @@ const GridListHeader = enhance((props) => {
 
     const firstIndex = 0
     const items = _.map(column, (item, index) => {
-        const xs = index === firstIndex ? firstColumnSize : defaultColumnSize
+        const xs = (!_.isNil(item.xs)) ? item.xs : (index === firstIndex ? firstColumnSize : defaultColumnSize)
 
         if (_.get(item, 'sorting')) {
             const name = _.get(item, 'name')
@@ -121,7 +121,9 @@ const GridListHeader = enhance((props) => {
     return (
         <div className={classes.header}>
             <div className={classes.checkbox}>
+                {withoutCheckboxes &&
                 <Checkbox onCheck={onChecked} checked={checkboxChecked}/>
+                }
             </div>
             <Row>
                 {items}
