@@ -9,6 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CurrencySearchField, UsersSearchField, PaymentTypeSearchField} from '../ReduxForm'
+import {MainStyles} from '../Styles/MainStyles'
 
 export const CASHBOX_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -24,49 +25,51 @@ const validate = (data) => {
     })
 }
 
-const enhance = compose(
-    injectSheet({
-        dialog: {
-            '& div:last-child': {
-                '& button': {
-                    marginTop: '10px !important',
-                    color: '#12aaeb !important'
-                }
+const styles = _.merge(MainStyles, {
+    dialog: {
+        '& div:last-child': {
+            '& button': {
+                marginTop: '10px !important',
+                color: '#12aaeb !important'
             }
-        },
-
-        loader: {
-            width: '120px',
-            margin: '0 auto',
-            padding: '15px',
-            textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none',
-            flexDirection: 'center'
-        },
-
-        fields: {
-            display: ({loading}) => !loading ? 'block' : 'none'
-        },
-
-        body: {
-            maxHeight: '600px !important',
-            padding: '0 30px 20px 30px !important',
-            overflow: 'hidden !important'
-        },
-
-        title: {
-            width: '220px',
-            margin: '0 auto',
-            padding: '10px 0',
-            textAlign: 'center',
-            background: '#12aaeb',
-            color: '#fff',
-            position: 'relative'
-        },
-        center: {
-            textAlign: 'center'
         }
-    }),
+    },
+
+    loader: {
+        width: '120px',
+        margin: '0 auto',
+        padding: '15px',
+        textAlign: 'center',
+        display: ({loading}) => loading ? 'flex' : 'none',
+        flexDirection: 'center'
+    },
+
+    fields: {
+        display: ({loading}) => !loading ? 'block' : 'none'
+    },
+
+    body: {
+        maxHeight: '600px !important',
+        padding: '0 30px 20px 30px !important',
+        overflow: 'hidden !important'
+    },
+
+    title: {
+        width: '220px',
+        margin: '0 auto',
+        padding: '10px 0',
+        textAlign: 'center',
+        background: '#12aaeb',
+        color: '#fff',
+        position: 'relative'
+    },
+    center: {
+        textAlign: 'center'
+    }
+})
+
+const enhance = compose(
+    injectSheet(styles),
     reduxForm({
         form: 'CashboxCreateForm',
         enableReinitialize: true
