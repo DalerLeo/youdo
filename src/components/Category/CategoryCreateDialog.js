@@ -98,33 +98,33 @@ const CategoryCreateDialog = enhance((props) => {
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.fields}>
+                    <div>
+                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
+                    </div>
+                    <div>
                         <div>
-                            <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
+                            <Field
+                                name="name"
+                                component={TextField}
+                                label="Наимование"
+                                fullWidth={true}
+                            />
                         </div>
                         <div>
-                            <div>
-                                <Field
-                                    name="name"
-                                    component={TextField}
-                                    label="Наимование"
-                                    fullWidth={true}
-                                />
-                            </div>
-                            <div>
-                                <FlatButton
-                                    label="Отменить"
-                                    primary={true}
-                                    onTouchTap={onClose}
-                                />
+                            <FlatButton
+                                label="Отменить"
+                                primary={true}
+                                onTouchTap={onClose}
+                            />
 
-                                <FlatButton
-                                    label="Отправить"
-                                    primary={true}
-                                    type="submit"
-                                    keyboardFocused={true}
-                                />
-                            </div>
+                            <FlatButton
+                                label="Отправить"
+                                primary={true}
+                                type="submit"
+                                keyboardFocused={true}
+                            />
                         </div>
+                    </div>
                 </div>
             </form>
         </Dialog>
