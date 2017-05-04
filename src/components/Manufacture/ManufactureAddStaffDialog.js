@@ -6,10 +6,9 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
-import ProviderContactsListField from '../ReduxForm/ProviderContactsListField'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
@@ -183,7 +182,7 @@ const enhance = compose(
 )
 
 const ManufactureAddStaffDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -271,11 +270,10 @@ const ManufactureAddStaffDialog = enhance((props) => {
 })
 
 ManufactureAddStaffDialog.propTypes = {
-    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    onSubmit: PropTypes.func,
+    loading: PropTypes.bool
 }
 
 ManufactureAddStaffDialog.defaultProps = {

@@ -8,14 +8,11 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     MANUFACTURE_ADD_STAFF_DIALOG_OPEN,
     ManufactureGridList
 } from '../../components/Manufacture'
 import {
-    manufactureCreateAction,
-    manufactureUpdateAction,
     manufactureListFetchAction,
     manufactureCSVFetchAction,
     manufactureDeleteAction,
@@ -123,11 +120,6 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
-        handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_DIALOG_OPEN]: true})})
-        },
-
         handleOpenAddStaff: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: true})})
@@ -135,52 +127,6 @@ const enhance = compose(
         handleCloseAddStaff: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: false})})
-        },
-
-        handleCloseCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-
-            return dispatch(manufactureCreateAction(_.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
-                })
-                .then(() => {
-                    hashHistory.push({query: filter.getParams({[MANUFACTURE_CREATE_DIALOG_OPEN]: false})})
-                })
-        },
-
-        handleOpenUpdateDialog: props => (id) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.MANUFACTURE_ITEM_PATH, id),
-                query: filter.getParams({[MANUFACTURE_UPDATE_DIALOG_OPEN]: true})
-            })
-        },
-
-        handleCloseUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_UPDATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-            const manufactureId = _.toInteger(_.get(props, ['params', 'manufactureId']))
-
-            return dispatch(manufactureUpdateAction(manufactureId, _.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(manufactureItemFetchAction(manufactureId))
-                })
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[MANUFACTURE_UPDATE_DIALOG_OPEN]: false}))
-                })
         }
     })
 )
@@ -188,84 +134,15 @@ const enhance = compose(
 const ManufactureList = enhance((props) => {
     const {
         location,
-        list,
-        listLoading,
         detail,
         detailLoading,
-        createLoading,
-        updateLoading,
-        filter,
         layout,
         params
     } = props
 
-    const openCreateDialog = toBoolean(_.get(location, ['query', '']))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', '']))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const openAddStaffDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_STAFF_DIALOG_OPEN]))
 
     const detailId = _.toInteger(_.get(params, 'manufactureId'))
-    const tab = _.get(params, 'tab')
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
-
-    const createDialog = {
-        createLoading,
-        openCreateDialog,
-        handleOpenCreateDialog: props.handleOpenCreateDialog,
-        handleCloseCreateDialog: props.handleCloseCreateDialog,
-        handleSubmitCreateDialog: props.handleSubmitCreateDialog
-    }
-
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
-    }
-
-    const confirmDialog = {
-        openConfirmDialog: props.openConfirmDialog,
-        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
-        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
-        handleSendConfirmDialog: props.handleSendConfirmDialog
-    }
-
-    const updateDialog = {
-        initialValues: (() => {
-            if (!detail) {
-                return {}
-            }
-            return {
-                name: _.get(detail, 'name')
-            }
-        })(),
-        updateLoading: detailLoading || updateLoading,
-        openUpdateDialog,
-        handleOpenUpdateDialog: props.handleOpenUpdateDialog,
-        handleCloseUpdateDialog: props.handleCloseUpdateDialog,
-        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
-    }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
-    const tabData = {
-        tab,
-        handleTabChange: props.handleTabChange
-    }
-
-    const listData = {
-        data: _.get(list, 'results'),
-        listLoading
-    }
 
     const detailData = {
         id: detailId,
@@ -275,22 +152,15 @@ const ManufactureList = enhance((props) => {
     const addStaff = {
         open: openAddStaffDialog,
         handleOpen: props.handleOpenAddStaff,
-        handleClose: props.handleCloseAddStaff
+        handleClose: props.handleCloseAddStaff,
+        handleLoading: props.handleCloseAddStaff,
+        handleSubmit: props.handleCloseAddStaff
     }
 
     return (
         <Layout {...layout}>
             <ManufactureGridList
-                filter={filter}
-                listData={listData}
                 detailData={detailData}
-                tabData={tabData}
-                createDialog={createDialog}
-                deleteDialog={deleteDialog}
-                confirmDialog={confirmDialog}
-                updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
-                csvDialog={csvDialog}
                 addStaff={addStaff}
             />
         </Layout>

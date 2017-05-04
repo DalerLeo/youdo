@@ -6,7 +6,6 @@ import axios from '../../helpers/axios'
 import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
 
-
 const getOptions = (search) => {
     return axios().get(`${PATH.USERS_LIST}?search=${search || ''}`)
         .then(({data}) => {
