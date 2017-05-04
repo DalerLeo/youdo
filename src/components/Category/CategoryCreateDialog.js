@@ -9,6 +9,8 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
+import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
 
 export const CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -24,19 +26,9 @@ const validate = (data) => {
     })
 }
 
+const colorBlue = '#129fdd !important'
 const enhance = compose(
     injectSheet({
-        dialog: {
-            '& div:last-child': {
-                textAlign: 'left !important',
-                '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
-                    color: '#12aaeb !important'
-                }
-            }
-        },
-
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -45,34 +37,70 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
-
+        fieldsWrap: {
+            display: ({loading}) => !loading ? 'flex' : 'none',
+            width: '100%'
+        },
         fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
+            width: '100%'
         },
-
         body: {
-            maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
-            overflow: 'hidden !important'
+            overflowY: 'auto !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '20px !important'
         },
-
         title: {
-            width: '220px',
-            margin: '0 auto',
-            padding: '10px 0',
-            textAlign: 'center',
-            background: '#12aaeb',
-            color: '#fff',
-            position: 'relative'
+            paddingTop: '15px',
+            fontWeight: 'bold',
+            color: '#333'
         },
-
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            right: '0',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                position: 'absolute !important',
+                right: '10px',
+                top: '50%',
+                padding: '0 !important',
+                marginTop: '-24px !important'
+            }
+        },
         form: {
-            display: 'flex'
+            display: 'flex',
+            padding: '35px 10px 76px'
         },
-
-        map: {
-            height: '600px',
-            paddingRight: '0'
+        inputField: {
+            fontSize: '13px !important'
+        },
+        bottomButton: {
+            position: 'fixed',
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '20px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: colorBlue
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
         }
     }),
     reduxForm({
@@ -91,42 +119,39 @@ const CategoryCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
+            <div className={classes.titleContent}>
+                <span>{isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.fields}>
-                    <div>
-                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
-                    </div>
-                    <div>
-                        <div>
-                            <Field
-                                name="name"
-                                component={TextField}
-                                label="Наимование"
-                                fullWidth={true}
-                            />
-                        </div>
-                        <div>
-                            <FlatButton
-                                label="Отменить"
-                                primary={true}
-                                onTouchTap={onClose}
-                            />
-
-                            <FlatButton
-                                label="Отправить"
-                                primary={true}
-                                type="submit"
-                                keyboardFocused={true}
-                            />
-                        </div>
+                <div className={classes.fieldsWrap}>
+                    <div className={classes.fields}>
+                        <Field
+                            name="name"
+                            component={TextField}
+                            className={classes.inputField}
+                            label="Наимование"
+                            fullWidth={true}
+                        />
                     </div>
                 </div>
             </form>
+            <div className={classes.bottomButton}>
+                <FlatButton
+                    label="Сохранить"
+                    className={classes.actionButton}
+                    primary={true}
+                    type="submit"
+                    keyboardFocused={true}
+                />
+            </div>
         </Dialog>
     )
 })
