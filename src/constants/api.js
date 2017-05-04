@@ -11,6 +11,12 @@ export const CATEGORY = 'dist/category'
 export const CATEGORY_CREATE = `/${CATEGORY}/`
 export const CATEGORY_LIST = `/${CATEGORY}/`
 export const CATEGORY_ITEM = `/${CATEGORY}/%d/`
+export const CATEGORY_DELETE = `/${CATEGORY}/%d/`
+
+export const EXPENSIVE_CATEGORY = 'expanse_categories/expanse_category'
+export const EXPENSIVE_CATEGORY_CREATE = `/${EXPENSIVE_CATEGORY}/`
+export const EXPENSIVE_CATEGORY_LIST = `/${EXPENSIVE_CATEGORY}/`
+export const EXPENSIVE_CATEGORY_ITEM = `/${EXPENSIVE_CATEGORY}/%d/`
 
 export const PROVIDER = 'dist/provider'
 export const PROVIDER_CREATE = `/${PROVIDER}/`
@@ -23,6 +29,24 @@ export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
+
+export const USERS = 'dist/user'
+export const USERS_CREATE = `/${USERS}/`
+export const USERS_LIST = `/${USERS}/`
+export const USERS_ITEM = `/${USERS}/%d/`
+export const USERS_DELETE = `/${USERS}/%d/`
+
+export const CASHBOX = 'cashbox'
+export const CASHBOX_CREATE = `/${CASHBOX}/`
+export const CASHBOX_LIST = `/${CASHBOX}/`
+export const CASHBOX_ITEM = `/${CASHBOX}/%d/`
+export const CASHBOX_DELETE = `/${CASHBOX}/%d/`
+
+export const TRANSACTION = 'transactions/transaction'
+export const TRANSACTION_CREATE = `/${TRANSACTION}/`
+export const TRANSACTION_LIST = `/${TRANSACTION}/`
+export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
+export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 
 export const SUPPLY = 'dist/supply'
 export const SUPPLY_CREATE = `/${SUPPLY}/`
@@ -62,8 +86,14 @@ export const PAYMNET_TYPE_LIST = `/${PAYMNET_TYPE}/`
 export const PAYMNET_TYPE_ITEM = `/${PAYMNET_TYPE}/%d/`
 
 export const FILE_UPLOAD = '/file/file/'
+
 export const CURRENCY = 'currency/currencies'
 export const CURRENCY_CREATE = `/${CURRENCY}/add/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
+
+export const MANUFACTURE = 'dist/manufacturing'
+export const MANUFACTURE_CREATE = `/${MANUFACTURE}/`
+export const MANUFACTURE_LIST = `/${MANUFACTURE}/`
+export const MANUFACTURE_ITEM = `/${MANUFACTURE}/%d/`
 

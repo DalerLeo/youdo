@@ -3,12 +3,12 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/categorySerializer'
+import * as serializers from '../serializers/cashboxSerializer'
 
-export const categoryCreateAction = (formValues) => {
+export const cashboxCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .post(API.CATEGORY_CREATE, requestData)
+        .post(API.CASHBOX_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,14 +17,14 @@ export const categoryCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.CATEGORY_CREATE,
+        type: actionTypes.CASHBOX_CREATE,
         payload
     }
 }
 
-export const categoryDeleteAction = (id) => {
+export const cashboxDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.CATEGORY_DELETE, id))
+        .delete(sprintf(API.CASHBOX_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,15 +33,15 @@ export const categoryDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.CATEGORY_DELETE,
+        type: actionTypes.CASHBOX_DELETE,
         payload
     }
 }
 
-export const categoryUpdateAction = (id, formValues) => {
+export const cashboxUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.CATEGORY_ITEM, id), requestData)
+        .put(sprintf(API.CASHBOX_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,15 +50,14 @@ export const categoryUpdateAction = (id, formValues) => {
         })
 
     return {
-        type: actionTypes.CATEGORY_UPDATE,
+        type: actionTypes.CASHBOX_UPDATE,
         payload
     }
 }
 
-export const categoryListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const cashboxListFetchAction = () => {
     const payload = axios()
-        .get(API.CATEGORY_LIST, {params})
+        .get(API.CASHBOX_LIST)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,15 +66,15 @@ export const categoryListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.CATEGORY_LIST,
+        type: actionTypes.CASHBOX_LIST,
         payload
     }
 }
 
-export const categoryCSVFetchAction = (filter) => {
+export const cashboxCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.CATEGORY_LIST, {params})
+        .get(API.CASHBOX_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -84,14 +83,14 @@ export const categoryCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.CATEGORY_LIST_CSV,
+        type: actionTypes.CASHBOX_LIST_CSV,
         payload
     }
 }
 
-export const categoryItemFetchAction = (id) => {
+export const cashboxItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.CATEGORY_ITEM, id))
+        .get(sprintf(API.CASHBOX_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -100,7 +99,7 @@ export const categoryItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.CATEGORY_ITEM,
+        type: actionTypes.CASHBOX_ITEM,
         payload
     }
 }

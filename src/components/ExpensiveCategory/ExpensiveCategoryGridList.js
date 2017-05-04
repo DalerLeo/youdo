@@ -9,7 +9,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import CategoryCreateDialog from './CategoryCreateDialog'
+import ExpensiveCategoryCreateDialog from './ExpensiveCategoryCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -66,7 +66,7 @@ const enhance = compose(
     })
 )
 
-const CategoryGridList = enhance((props) => {
+const ExpensiveCategoryGridList = enhance((props) => {
     const {
         filter,
         createDialog,
@@ -91,11 +91,11 @@ const CategoryGridList = enhance((props) => {
         </div>
     )
 
-    const categoryDetail = (
+    const expensiveCategoryDetail = (
         <span>a</span>
     )
 
-    const categoryList = _.map(_.get(listData, 'data'), (item) => {
+    const expensiveCategoryList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
@@ -132,13 +132,13 @@ const CategoryGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: categoryList,
+        list: expensiveCategoryList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.CATEGORY_LIST_URL}/>
+            <SubMenu url={ROUTES.EXPENSIVE_CATEGORY_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить продукт">
                     <FloatingActionButton
@@ -153,19 +153,18 @@ const CategoryGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={categoryDetail}
+                detail={expensiveCategoryDetail}
                 actionsDialog={actions}
             />
 
-            <CategoryCreateDialog
-                initialValues={{}}
+            <ExpensiveCategoryCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <CategoryCreateDialog
+            <ExpensiveCategoryCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
@@ -191,7 +190,7 @@ const CategoryGridList = enhance((props) => {
     )
 })
 
-CategoryGridList.propTypes = {
+ExpensiveCategoryGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -227,4 +226,4 @@ CategoryGridList.propTypes = {
     }).isRequired
 }
 
-export default CategoryGridList
+export default ExpensiveCategoryGridList

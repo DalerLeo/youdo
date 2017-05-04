@@ -1,7 +1,8 @@
 import _ from 'lodash'
-import moment from 'moment'
+import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
+import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -9,7 +10,8 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import CategoryCreateDialog from './CategoryCreateDialog'
+import UsersFilterForm from './UsersFilterForm'
+import UsersCreateDialog from './UsersCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -17,36 +19,53 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
+import Tooltip from '../ToolTip'
 
 const listHeader = [
     {
         sorting: true,
-        name: 'id',
-        xs: 2,
-        title: 'Id'
+        name: '',
+        title: '',
+        xs: 1
     },
     {
         sorting: true,
-        name: 'name',
-        xs: 6,
-        title: 'Наименование'
+        name: 'username',
+        title: 'Пользователь',
+        xs: 2
     },
     {
         sorting: true,
-        xs: 3,
-        name: 'created_date',
-        title: 'Дата создания'
+        name: 'region',
+        title: 'Телефон',
+        xs: 2
     },
     {
-        sorting: false,
-        xs: 1,
-        name: 'actions',
-        title: ''
+        sorting: true,
+        name: 'phoneNumber',
+        title: 'Адрес',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'email',
+        title: 'Email',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'typeUser',
+        title: 'Должность',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'createdDate',
+        title: 'Created date'
     }
 ]
 
@@ -66,11 +85,12 @@ const enhance = compose(
     })
 )
 
-const CategoryGridList = enhance((props) => {
+const UsersGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
+        filterDialog,
         actionsDialog,
         confirmDialog,
         deleteDialog,
@@ -91,25 +111,46 @@ const CategoryGridList = enhance((props) => {
         </div>
     )
 
-    const categoryDetail = (
+    const usersFilterDialog = (
+        <UsersFilterForm
+            initialValues={filterDialog.initialValues}
+            filter={filter}
+            filterDialog={filterDialog}
+        />
+    )
+
+    const usersDetail = (
         <span>a</span>
     )
 
-    const categoryList = _.map(_.get(listData, 'data'), (item) => {
+    const usersList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const username = _.get(item, 'username')
+        const region = _.get(item, 'region') || 'N/A'
+        const email = _.get(item, 'email')
+        const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
+        const typeUser = _.get(item, 'typeUser') || 'N/A'
+
         const iconButton = (
             <IconButton style={{padding: '0 12px', height: 'auto'}}>
                 <MoreVertIcon />
             </IconButton>
         )
+
         return (
-            <Row key={id} style={{alignItems: 'center'}}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={6}>{name}</Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
+            <Row key={id}>
+                <Col xs={1}></Col>
+                <Col xs={2}>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.USERS_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>{username}</Link>
+                </Col>
+                <Col xs={2}>{region}</Col>
+                <Col xs={2}>{phoneNumber}</Col>
+                <Col xs={2}>{email}</Col>
+                <Col xs={2}>{typeUser}</Col>
+                <Col xs={1}>
                     <IconMenu
                         iconButtonElement={iconButton}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -132,15 +173,16 @@ const CategoryGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: categoryList,
+        list: usersList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.CATEGORY_LIST_URL}/>
+            <SubMenu url={ROUTES.USERS_LIST_URL}/>
+
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить продукт">
+                <Tooltip position="left" text="Добавить магазин">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -153,21 +195,21 @@ const CategoryGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={categoryDetail}
+                detail={usersDetail}
                 actionsDialog={actions}
+                filterDialog={usersFilterDialog}
             />
 
-            <CategoryCreateDialog
-                initialValues={{}}
+            <UsersCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <CategoryCreateDialog
-                isUpdate={true}
+            <UsersCreateDialog
                 initialValues={updateDialog.initialValues}
+                isUpdate={true}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
@@ -191,11 +233,10 @@ const CategoryGridList = enhance((props) => {
     )
 })
 
-CategoryGridList.propTypes = {
+UsersGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
@@ -224,7 +265,15 @@ CategoryGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
+    }).isRequired,
+    filterDialog: PropTypes.shape({
+        initialValues: PropTypes.object,
+        filterLoading: PropTypes.bool,
+        openFilterDialog: PropTypes.bool.isRequired,
+        handleOpenFilterDialog: PropTypes.func.isRequired,
+        handleCloseFilterDialog: PropTypes.func.isRequired,
+        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default CategoryGridList
+export default UsersGridList

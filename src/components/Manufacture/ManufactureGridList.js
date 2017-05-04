@@ -1,0 +1,299 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import {Row, Col} from 'react-flexbox-grid'
+import IconButton from 'material-ui/IconButton'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import * as ROUTES from '../../constants/routes'
+import Container from '../Container'
+import ManufactureAddStaffDialog from './ManufactureAddStaffDialog'
+import SubMenu from '../SubMenu'
+import injectSheet from 'react-jss'
+import {compose} from 'recompose'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+import Edit from 'material-ui/svg-icons/image/edit'
+
+const enhance = compose(
+    injectSheet({
+        addButton: {
+            '& button': {
+                backgroundColor: '#275482 !important'
+            }
+        },
+        addButtonWrapper: {
+            position: 'absolute',
+            top: '10px',
+            right: '0',
+            marginBottom: '0px'
+        },
+        productionMainRow: {
+            margin: '0 -26px;',
+            fontSize: '13px',
+            '& a': {
+                color: 'rgb(18, 170, 235)'
+            }
+        },
+        productionLeftSide: {
+            background: '#fcfcfc',
+            borderRight: '1px solid #efefef',
+            height: 'calc(100vh - 65px)',
+            padding: '0'
+        },
+        productionRightSide: {
+            background: '#fff',
+            height: 'calc(100vh - 65px)',
+            padding: '0 30px'
+        },
+        productionUl: {
+            listStyle: 'none',
+            margin: '0',
+            padding: '0',
+            '& li:last-child': {
+                border: 'none'
+            }
+        },
+        productionTypeLi: {
+            margin: '0',
+            padding: '20px 30px',
+            borderBottom: '1px solid #efefef'
+        },
+        productionH2: {
+            fontSize: '13px',
+            fontWeight: 'bold',
+            margin: '0',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px'
+        },
+        productionRightH2: {
+            fontSize: '13px',
+            fontWeight: 'bold',
+            margin: '0',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 0'
+        },
+
+        productionStaffGroupTitle: {
+            margin: '0',
+            borderBottom: '1px dashed #efefef',
+            padding: '20px 0 10px 0',
+            '& p': {
+                margin: '0',
+                display: 'inline-block'
+            },
+            '& span': {
+                color: '#999',
+                float: 'right',
+                fontSize: '12px',
+                marginTop: '1px'
+            }
+        },
+        productionStaff: {
+            margin: '0',
+            borderBottom: '1px dashed #efefef',
+            padding: '10px 0 10px 0',
+            '& div:first-child': {
+                width: '30px',
+                height: '30px',
+                display: 'inline-block',
+                borderRadius: '50%',
+                verticalAlign: 'top',
+                marginRight: '10px'
+            },
+            '& div:first-child img': {
+                width: '30px'
+            },
+            '& div:last-child': {
+                display: 'inline-block',
+                verticalAlign: 'top'
+            },
+            '& div:last-child span': {
+                color: '#666'
+            }
+        },
+        productionEquipment: {
+            padding: '20px 0',
+            borderBottom: '1px solid #efefef'
+        },
+        productionEquipmentElement: {
+            background: '#f2f5f8',
+            textAlign: 'center',
+            padding: '20px 30px'
+        }
+
+    })
+)
+
+const ManufactureGridList = enhance((props) => {
+    const {
+        addStaff,
+        classes
+    } = props
+
+    const iconButton = (
+        <IconButton style={{padding: '0 12px', height: 'auto'}}>
+            <MoreVertIcon />
+        </IconButton>
+    )
+
+    return (
+        <Container>
+            <SubMenu url={ROUTES.MANUFACTURE_LIST_URL}/>
+            <ManufactureAddStaffDialog
+                open={addStaff.open}
+                onClose={addStaff.handleClose}
+            />
+            <Row className={classes.productionMainRow}>
+                <Col xs={3} className={classes.productionLeftSide}>
+                    <h2 className={classes.productionH2}>Этапы производства</h2>
+                    <ul className={classes.productionUl}>
+                        <li className={classes.productionTypeLi}>
+                            Производство клея
+                        </li>
+                        <li className={classes.productionTypeLi}>
+                            Производство втулок
+                        </li>
+                        <li className={classes.productionTypeLi}>
+                            Производство рулонов
+                        </li>
+                        <li className={classes.productionTypeLi}>
+                            Резка рулонов
+                        </li>
+                        <li className={classes.productionTypeLi}>
+                            Нанесение логотипа
+                        </li>
+                    </ul>
+                </Col>
+                <Col xs={9} className={classes.productionRightSide}>
+                    <Row>
+                        <Col xs={12}>
+                            <h2 className={classes.productionRightH2}>Производство клея</h2>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={4} style={{borderRight: '1px solid #efefef', height: 'calc(100vh - 120px)', padding: '20px 30px 20px 10px'}}>
+                            <div>
+                                <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Персонал</h3>
+                                <a style={{float: 'right'}} onClick={addStaff.handleOpen}>
+                                    <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
+                                    добавить
+                                </a>
+                            </div>
+                            <div style={{marginBottom: '10px'}}>
+                                <div className={classes.productionStaffGroupTitle}>
+                                    <p>Смена А</p>
+                                    <span>График: 09:00 - 18:00</span>
+                                </div>
+                                <ul className={classes.productionUl}>
+                                    <li className={classes.productionStaff}>
+                                        <div>
+                                            <img src />
+                                        </div>
+                                        <div>
+                                            Атамбаев Бекзод<br />
+                                            <span>Должность</span>
+                                        </div>
+                                    </li>
+                                    <li className={classes.productionStaff}>
+                                        <div>
+                                            <img src />
+                                        </div>
+                                        <div>
+                                            Атамбаев Бекзод<br />
+                                            <span>Должность</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div style={{marginBottom: '10px'}}>
+                                <div className={classes.productionStaffGroupTitle}>
+                                    <p>Смена Б</p>
+                                    <span>График: 09:00 - 18:00</span>
+                                </div>
+                                <ul className={classes.productionUl}>
+                                    <li className={classes.productionStaff}>
+                                        <div>
+                                            <img src />
+                                        </div>
+                                        <div>
+                                            Атамбаев Бекзод<br />
+                                            <span>Должность</span>
+                                        </div>
+                                    </li>
+                                    <li className={classes.productionStaff}>
+                                        <div>
+                                            <img src />
+                                        </div>
+                                        <div>
+                                            Атамбаев Бекзод<br />
+                                            <span>Должность</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </Col>
+                        <Col xs={8} style={{padding: '20px 25px'}}>
+                            <Row>
+                                <Col xs={12}>
+                                    <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Оборудование</h3>
+                                    <Row className={classes.productionEquipment}>
+                                        <Col xs={4}>
+                                            <div className={classes.productionEquipmentElement}>
+                                                Название оборудования
+                                            </div>
+                                        </Col>
+                                        <Col xs={4}>
+                                            <div className={classes.productionEquipmentElement}>
+                                                Название оборудования
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12}>
+                                    <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0', padding: '20px 0 10px'}}>Список производимой продукции</h3>
+                                </Col>
+                            </Row>
+                            <Row style={{borderBottom: '1px dashed #efefef', padding: '10px 0'}}>
+                                <Col xs={8}>
+                                    <strong>Название продукта</strong><br />
+                                    <span>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</span>
+                                </Col>
+                                <Col xs={4} style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+                                    <a href="#" style={{borderBottom: '1px dashed rgb(18, 170, 235)'}}>BoM </a>
+                                    <IconMenu
+                                        iconButtonElement={iconButton}
+                                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                                        <MenuItem
+                                            primaryText="Изменить"
+                                            leftIcon={<Edit />}
+                                        />
+                                        <MenuItem
+                                            primaryText="Удалить "
+                                            leftIcon={<DeleteIcon />}
+                                        />
+                                    </IconMenu>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
+
+        </Container>
+    )
+})
+
+ManufactureGridList.propTypes = {
+    detailData: PropTypes.object,
+    addStaff: PropTypes.shape({
+        open: PropTypes.bool.isRequired,
+        handleOpen: PropTypes.func.isRequired,
+        handleClose: PropTypes.func.isRequired
+    }).isRequired
+}
+
+export default ManufactureGridList
