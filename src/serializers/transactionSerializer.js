@@ -2,10 +2,16 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
-    const name = _.get(data, ['name'])
+    const amount = _.get(data, ['amount'])
+    const comment = _.get(data, ['comment', 'value'])
+    const cashbox = _.get(data, ['cashbox'])
+    const categoryId = _.get(data, ['categoryId'])
 
     return {
-        name
+        amount,
+        comment,
+        cashbox,
+        categoryId
     }
 }
 
@@ -14,8 +20,9 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'brand': _.get(defaultData, 'brand'),
-        'type': _.get(defaultData, 'type'),
+        'comment': _.get(defaultData, 'comment'),
+        'created_date_0': _.get(defaultData, 'fromDate'),
+        'created_date_1': _.get(defaultData, 'toDate'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

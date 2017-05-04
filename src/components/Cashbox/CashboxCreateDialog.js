@@ -4,13 +4,13 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
+import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, CurrencySearchField, UsersSearchField, PaymentTypeSearchField} from '../ReduxForm'
 
-export const CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const CASHBOX_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -28,10 +28,8 @@ const enhance = compose(
     injectSheet({
         dialog: {
             '& div:last-child': {
-                textAlign: 'left !important',
                 '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
+                    marginTop: '10px !important',
                     color: '#12aaeb !important'
                 }
             }
@@ -47,12 +45,12 @@ const enhance = compose(
         },
 
         fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
+            display: ({loading}) => !loading ? 'block' : 'none'
         },
 
         body: {
             maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
+            padding: '0 30px 20px 30px !important',
             overflow: 'hidden !important'
         },
 
@@ -65,23 +63,17 @@ const enhance = compose(
             color: '#fff',
             position: 'relative'
         },
-
-        form: {
-            display: 'flex'
-        },
-
-        map: {
-            height: '600px',
-            paddingRight: '0'
+        center: {
+            textAlign: 'center'
         }
     }),
     reduxForm({
-        form: 'CategoryCreateForm',
+        form: 'CashboxCreateForm',
         enableReinitialize: true
     })
 )
 
-const CategoryCreateDialog = enhance((props) => {
+const CashboxCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -91,7 +83,7 @@ const CategoryCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
@@ -99,7 +91,7 @@ const CategoryCreateDialog = enhance((props) => {
                 </div>
                 <div className={classes.fields}>
                     <div>
-                        <h4 className={classes.title}> {isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</h4>
+                        <h4 className={classes.title}> {isUpdate ? 'Изменить кассу' : 'Добавить кассу'}</h4>
                     </div>
                     <div>
                         <div>
@@ -109,8 +101,26 @@ const CategoryCreateDialog = enhance((props) => {
                                 label="Наимование"
                                 fullWidth={true}
                             />
+                            <Field
+                                name="currency"
+                                component={CurrencySearchField}
+                                label="Валюта"
+                                fullWidth={true}
+                            />
+                            <Field
+                                name="cashier"
+                                component={UsersSearchField}
+                                label="Кассир"
+                                fullWidth={true}
+                            />
+                            <Field
+                                name="type"
+                                component={PaymentTypeSearchField}
+                                label="Тип оплата"
+                                fullWidth={true}
+                            />
                         </div>
-                        <div>
+                        <div className={classes.center}>
                             <FlatButton
                                 label="Отменить"
                                 primary={true}
@@ -131,16 +141,15 @@ const CategoryCreateDialog = enhance((props) => {
     )
 })
 
-CategoryCreateDialog.propTypes = {
-    isUpdate: PropTypes.bool,
+CashboxCreateDialog.propTyeps = {
+    isUpdate: PropTypes.bool.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
-CategoryCreateDialog.defaultProps = {
+CashboxCreateDialog.defaultProps = {
     isUpdate: false
 }
-
-export default CategoryCreateDialog
+export default CashboxCreateDialog

@@ -5,9 +5,13 @@ import * as ROUTES from '../constants/routes'
 import App from '../containers/App'
 import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
+import {CashboxList} from '../containers/Cashbox'
+import {TransactionList} from '../containers/Transaction'
 import {SupplyList} from '../containers/Supply'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
+import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
+import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
 import {ManufactureList} from '../containers/Manufacture'
 import NotFound from '../containers/NotFound'
@@ -45,6 +49,49 @@ export default {
                 }
             ]
         },
+        // Users
+        {
+            path: ROUTES.USERS_LIST_URL,
+            component: userIsAuth(UsersList),
+            childRoutes: [
+                {
+                    path: ROUTES.USERS_ITEM_URL,
+                    component: userIsAuth(UsersList)
+                }
+            ]
+        },
+        // Cashbox
+        {
+            path: ROUTES.CASHBOX_LIST_URL,
+            component: userIsAuth(CashboxList),
+            childRoutes: [
+                {
+                    path: ROUTES.CASHBOX_ITEM_URL,
+                    component: userIsAuth(CashboxList)
+                },
+
+                {
+                    path: ROUTES.CASHBOX_ITEM_TAB_URL,
+                    component: userIsAuth(CashboxList)
+                }
+            ]
+        },
+        // Transactoin
+        {
+            path: ROUTES.TRANSACTION_LIST_URL,
+            component: userIsAuth(TransactionList),
+            childRoutes: [
+                {
+                    path: ROUTES.TRANSACTION_ITEM_URL,
+                    component: userIsAuth(TransactionList)
+                },
+
+                {
+                    path: ROUTES.TRANSACTION_ITEM_TAB_URL,
+                    component: userIsAuth(CashboxList)
+                }
+            ]
+        },
         // Supply
         {
             path: ROUTES.SUPPLY_LIST_URL,
@@ -76,6 +123,17 @@ export default {
                 {
                     path: ROUTES.CATEGORY_ITEM_URL,
                     component: userIsAuth(CategoryList)
+                }
+            ]
+        },
+        // ExpensiveCategory
+        {
+            path: ROUTES.EXPENSIVE_CATEGORY_LIST_URL,
+            component: userIsAuth(ExpensiveCategoryList),
+            childRoutes: [
+                {
+                    path: ROUTES.EXPENSIVE_CATEGORY_ITEM_URL,
+                    component: userIsAuth(ExpensiveCategoryList)
                 }
             ]
         },
