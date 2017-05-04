@@ -73,6 +73,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.PROVIDER_UPDATE),
         item: createThunkReducer(actionTypes.PROVIDER_ITEM)
     }),
+    brand: combineReducers({
+        create: createThunkReducer(actionTypes.BRAND_CREATE),
+        list: createThunkReducer(actionTypes.BRAND_LIST),
+        update: createThunkReducer(actionTypes.BRAND_UPDATE),
+        item: createThunkReducer(actionTypes.BRAND_ITEM)
+    }),
     manufacture: combineReducers({
         create: createThunkReducer(actionTypes.PROVIDER_CREATE),
         list: createThunkReducer(actionTypes.PROVIDER_LIST),
