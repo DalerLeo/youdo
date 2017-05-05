@@ -5,6 +5,7 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import {Row, Col} from 'react-flexbox-grid'
@@ -151,7 +152,11 @@ const enhance = compose(
                     width: '100%',
                     justifyContent: 'space-between',
                     fontWeight: 'bold',
-                    paddingBottom: '30px'
+                    paddingBottom: '30px',
+                    '& .expenseButton > div > span ': {
+                        color: 'red !important',
+                        textTransform: 'inherit !important'
+                    }
                 }
             },
             '& .expenseInfo': {
@@ -225,12 +230,27 @@ const tooltipPosition = 'bottom-center'
 const SupplyDetails = enhance((props) => {
     const {classes, loading, data, setOpenDetails, openDetails} = props
     const id = _.get(data, 'id')
+    const provider = _.get(data, ['provider', 'name'])
+    const products = _.get(data, 'products')
+    const stock = _.get(data, ['stock', 'name'])
+    const currency = _.get(data, 'currency') || 'N/A'
+    const contact = _.get(data, 'contact')
+    const contactPerson = _.get(contact, 'name')
+    const contactEmail = _.get(contact, 'email')
+    const contactPhone = _.get(contact, 'phone')
+    const dataDelivery = _.get(data, 'dataDelivery') || 'N/A'
+    const acceptedCost = _.get(data, 'acceptedCost')
+    const acceptedTime = _.get(data, 'acceptedTime') || 'N/A'
+    const finishedTime = _.get(data, 'finishedTime') || 'N/A'
+    const defectesCost = _.get(data, 'defectesCost')
+    const totalCost = _.get(data, 'totalCost')
+    const comment = _.get(data, 'comment')
 
     if (loading) {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6} />
+                    <CircularProgress size={100} thickness={6}/>
                 </div>
             </div>
         )
@@ -241,21 +261,25 @@ const SupplyDetails = enhance((props) => {
             <div className={classes.title}>
                 <div className={classes.titleLabel}>Заказ №{id}</div>
                 <div className={classes.titleSupplier}>
-                    <a className={classes.dropdown} onMouseEnter={() => { setOpenDetails(true) }}>OOO Seven Stick</a>
+                    <a className={classes.dropdown} onMouseEnter={() => {
+                        setOpenDetails(true)
+                    }}>{provider}</a>
                     {openDetails &&
-                    <div className="supplierDetails" onMouseLeave={() => { setOpenDetails(false) }}>
+                    <div className="supplierDetails" onMouseLeave={() => {
+                        setOpenDetails(false)
+                    }}>
                         <div className="detailsWrap">
                             <Row className="detailsList">
                                 <Col xs={6}>Контактное лицо</Col>
-                                <Col xs={6}>Трололо Курдявович</Col>
+                                <Col xs={6}>{contactPerson}</Col>
                             </Row>
                             <Row className="detailsList">
                                 <Col xs={6}>Телефон</Col>
-                                <Col xs={6}>+998974562115</Col>
+                                <Col xs={6}>{contactPhone}</Col>
                             </Row>
                             <Row className="detailsList">
                                 <Col xs={6}>Email</Col>
-                                <Col xs={6}>trollolo@gmail.com</Col>
+                                <Col xs={6}>{contactEmail}</Col>
                             </Row>
                         </div>
                     </div>
@@ -282,18 +306,15 @@ const SupplyDetails = enhance((props) => {
             </div>
 
             <div className={classes.details}>
-                <div className={classes.payInfo}>
-                    <div className={classes.paid}>Оплачено: 150000</div>
-                    <div className={classes.remain} style={{marginLeft: '45px'}}>Баланс: 50000</div>
-                </div>
-                <div className={classes.dateInfo}>Товар будет доставлен: 22.04.2017</div>
                 <div className={classes.storeInfo}>
-                    <div className={classes.store}>Склад: <span style={{color: '#999', fontWeight: 'bold'}}>Название склада</span></div>
-                    <div className={classes.supplyDate} style={{marginLeft: '45px'}}>Дата поставки: <span style={{color: '#e57373', fontWeight: 'bold'}}>13.02.2017</span></div>
+                    <div className={classes.store}>Склад: <span
+                        style={{color: '#999', fontWeight: 'bold'}}>{stock}</span></div>
+                    <div className={classes.supplyDate} style={{marginLeft: '45px'}}>Дата поставки: <span
+                        style={{color: '#e57373', fontWeight: 'bold'}}>{dataDelivery}</span></div>
                 </div>
                 <div className={classes.dateInfo}>
-                    <div>Начало приемки: <span style={{fontWeight: '600'}}>24.02.2017, 00:30</span></div>
-                    <div>Конец приемки: <span style={{fontWeight: '600'}}>24.02.2017, 00:30</span></div>
+                    <div>Начало приемки: <span style={{fontWeight: '600'}}>{acceptedTime}</span></div>
+                    <div>Конец приемки: <span style={{fontWeight: '600'}}>{finishedTime}</span></div>
                 </div>
             </div>
 
@@ -304,51 +325,65 @@ const SupplyDetails = enhance((props) => {
                         <Col xs={1}>Количество</Col>
                         <Col xs={1}>Принято</Col>
                         <Col xs={1}>Брак</Col>
-                        <Col xs={1}><div>Стоимость</div></Col>
-                        <Col xs={2}><div style={{textAlign: 'right'}}>Итог</div></Col>
+                        <Col xs={1}>
+                            <div>Стоимость</div>
+                        </Col>
+                        <Col xs={2}>
+                            <div style={{textAlign: 'right'}}>Итог</div>
+                        </Col>
                     </Row>
                 </div>
                 <div>
-                    <Row className="dataInfo">
-                        <Col xs={6}>Жевательная резинка Seven Stick со вкусом клубники</Col>
-                        <Col xs={1}>1000 шт</Col>
-                        <Col xs={1}>980 шт</Col>
-                        <Col xs={1}>20 шт</Col>
-                        <Col xs={1}><div>2 USD</div></Col>
-                        <Col xs={2}><div style={{textAlign: 'right'}}>2000 USD</div></Col>
-                    </Row>
-                    <Row className="dataInfo">
-                        <Col xs={6}>Жевательная резинка Seven Stick со вкусом клубники</Col>
-                        <Col xs={1}>1000 шт</Col>
-                        <Col xs={1}>980 шт</Col>
-                        <Col xs={1}>20 шт</Col>
-                        <Col xs={1}><div>2 USD</div></Col>
-                        <Col xs={2}><div style={{textAlign: 'right'}}>2000 USD</div></Col>
-                    </Row>
-                    <Row className="dataInfo">
-                        <Col xs={6}>Жевательная резинка Seven Stick со вкусом клубники</Col>
-                        <Col xs={1}>1000 шт</Col>
-                        <Col xs={1}>980 шт</Col>
-                        <Col xs={1}>20 шт</Col>
-                        <Col xs={1}><div>2 USD</div></Col>
-                        <Col xs={2}><div style={{textAlign: 'right'}}>2000 USD</div></Col>
-                    </Row>
+                    {_.map(products, (item) => {
+                        const product = _.get(item, 'product')
+                        const productName = _.get(product, 'name')
+                        const price = _.get(product, 'price')
+                        const cost = _.get(item, 'cost')
+                        const amount = _.get(item, 'amount')
+                        const postedAmount = _.get(item, 'postedAmount')
+                        const defectAmount = _.get(item, 'defectAmount')
+                        const measurement = _.get(product, ['measurement', 'name'])
+                        return (
+                            <Row className="dataInfo" key={item}>
+                                <Col xs={6}>{productName}</Col>
+                                <Col xs={1}>{amount} {measurement}</Col>
+                                <Col xs={1}>{postedAmount} {measurement}</Col>
+                                <Col xs={1}>{defectAmount} {measurement}</Col>
+                                <Col xs={1}>
+                                    <div>{price} {currency}</div>
+                                </Col>
+                                <Col xs={2}>
+                                    <div style={{textAlign: 'right'}}>{cost} {currency}</div>
+                                </Col>
+                            </Row>
+                        )
+                    })}
                 </div>
                 <div className="summary">
-                    <div>Сумма заказа <span style={{marginLeft: '40px'}}>16200 USD</span></div>
+                    <div>Сумма заказа <span style={{marginLeft: '40px'}}>{totalCost} {currency}</span></div>
                 </div>
                 <div className="addExpenses">
                     <div className="addExpense">
                         <div>Дополнительные расходы по заказу</div>
-                        <div><a>+ добавить доп. расход</a></div>
+                        <div>
+                            <FlatButton
+                                className="expenseButton"
+                                label="+ добавить доп. расход"/>
+                        </div>
                     </div>
                     <div className="noExpense">
                         Нет дополнительных расходов по этому заказу
                     </div>
                     <div className="expenseInfo">
                         <Row>
-                            <Col xs={10}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia, nostrum, quas. Ad aliquid asperiores beatae debitis ex facere, id ipsa ipsam iste iure, iusto labore maxime minus neque perferendis perspiciatis placeat, quam repellendus similique sunt totam veniam vitae! Doloremque expedita in inventore, laborum perferendis placeat repellendus reprehenderit suscipit temporibus voluptatibus!</Col>
-                            <Col xs={2}><div style={{textAlign: 'right'}}>2000 USD</div></Col>
+                            <Col xs={10}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia, nostrum,
+                                quas. Ad aliquid asperiores beatae debitis ex facere, id ipsa ipsam iste iure, iusto
+                                labore maxime minus neque perferendis perspiciatis placeat, quam repellendus similique
+                                sunt totam veniam vitae! Doloremque expedita in inventore, laborum perferendis placeat
+                                repellendus reprehenderit suscipit temporibus voluptatibus!</Col>
+                            <Col xs={2}>
+                                <div style={{textAlign: 'right'}}>2000 USD</div>
+                            </Col>
                         </Row>
                     </div>
                 </div>
@@ -357,12 +392,7 @@ const SupplyDetails = enhance((props) => {
                         <img src={Person} alt=""/>
                     </div>
                     <div className="personText">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab,
-                        aperiam asperiores aut dignissimos eaque earum enim eos est ex
-                        excepturi facere id incidunt ipsum iste laudantium magnam maiores
-                        modi molestiae mollitia neque non, obcaecati pariatur perferendis
-                        placeat praesentium provident quaerat quam quas qui quisquam ratione
-                        reprehenderit similique sint ullam ut veritatis vitae! Commodi, odit.
+                        {comment}
                     </div>
                 </div>
             </div>
@@ -379,7 +409,12 @@ SupplyDetails.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired
+    handleOpenUpdateDialog: PropTypes.func.isRequired,
+    // expenseData: PropTypes.shape({
+    //     handleExpenseOpenDialog: handleExpenseOpenDialog.func.isRequired,
+    //     handleExpenseCloseDialog: handleExpenseCloseDialog.func.isRequired,
+    //     handleExpenseSubmitDialog: handleExpenseSubmitDialog.func.isRequired
+    // })
 
 }
 
