@@ -10,6 +10,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
     MANUFACTURE_ADD_STAFF_DIALOG_OPEN,
+    MANUFACTURE_SHOW_BOM_DIALOG_OPEN,
     ManufactureGridList
 } from '../../components/Manufacture'
 import {
@@ -127,6 +128,14 @@ const enhance = compose(
         handleCloseAddStaff: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: false})})
+        },
+        handleOpenShowBom: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_SHOW_BOM_DIALOG_OPEN]: true})})
+        },
+        handleCloseShowBom: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_SHOW_BOM_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -142,6 +151,8 @@ const ManufactureList = enhance((props) => {
 
     const openAddStaffDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_STAFF_DIALOG_OPEN]))
 
+    const openShowBom = toBoolean(_.get(location, ['query', MANUFACTURE_SHOW_BOM_DIALOG_OPEN]))
+
     const detailId = _.toInteger(_.get(params, 'manufactureId'))
 
     const detailData = {
@@ -156,12 +167,20 @@ const ManufactureList = enhance((props) => {
         handleLoading: props.handleCloseAddStaff,
         handleSubmit: props.handleCloseAddStaff
     }
+    const showBom = {
+        open: openShowBom,
+        handleOpen: props.handleOpenShowBom,
+        handleClose: props.handleCloseShowBom,
+        handleLoading: props.handleCloseShowBom,
+        handleSubmit: props.handleCloseShowBom
+    }
 
     return (
         <Layout {...layout}>
             <ManufactureGridList
                 detailData={detailData}
                 addStaff={addStaff}
+                showBom={showBom}
             />
         </Layout>
     )
