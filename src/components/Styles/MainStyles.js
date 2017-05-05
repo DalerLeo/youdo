@@ -1,6 +1,18 @@
+import Dot from '../Images/dot.png'
+
 const MainStyles = {
     test: {
         padding: '10px'
+    },
+    dashedLink: {
+        borderBottom: '1px dashed'
+    },
+    lightBlueBg: {
+        background: '#f1f5f8',
+        color: '#333'
+    },
+    dottedList: {
+
     },
     // MODAL
     body: {

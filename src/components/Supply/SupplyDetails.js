@@ -8,12 +8,15 @@ import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import {Row, Col} from 'react-flexbox-grid'
-import Dot from '../Images/dot.png'
 import Person from '../Images/person.png'
+import MainStyles from '../Styles/MainStyles'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
-    injectSheet({
+    injectSheet(_.merge(MainStyles, {
+        dottedList: {
+            padding: '20px 0'
+        },
         wrapper: {
             color: '#333 !important',
             width: '100%',
@@ -68,8 +71,7 @@ const enhance = compose(
                         top: '0',
                         left: '0',
                         right: '0',
-                        height: '2px',
-                        background: 'url(' + Dot + ')'
+                        height: '2px'
                     }
                 },
                 '& .detailsList': {
@@ -119,21 +121,6 @@ const enhance = compose(
                 padding: '20px 0',
                 width: '100%'
             },
-            '& .dataInfo': {
-                padding: '20px 0',
-                display: 'flex',
-                alignItems: 'center',
-                position: 'relative',
-                '&:after': {
-                    content: '""',
-                    background: 'url(' + Dot + ')',
-                    position: 'absolute',
-                    bottom: '0',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                    height: '2px'
-                }
-            },
             '& .summary': {
                 fontWeight: 'bold',
                 textTransform: 'uppercase',
@@ -141,6 +128,12 @@ const enhance = compose(
                 padding: '20px 30px',
                 margin: '0 -30px',
                 borderBottom: '1px #efefef solid'
+            },
+            '& .dottedList': {
+                '&:after': {
+                    left: '0.5rem',
+                    right: '0.5rem'
+                }
             },
             '& .addExpenses': {
                 padding: '20px 30px',
@@ -159,10 +152,6 @@ const enhance = compose(
                 '&:last-child': {
                     margin: '0'
                 }
-            },
-            '& .noExpense': {
-                textAlign: 'center',
-                color: '#999'
             },
             '& .comment': {
                 display: 'flex',
@@ -203,7 +192,7 @@ const enhance = compose(
                 }
             }
         }
-    }),
+    })),
     withState('openDetails', 'setOpenDetails', false)
 )
 
@@ -282,11 +271,6 @@ const SupplyDetails = enhance((props) => {
             </div>
 
             <div className={classes.details}>
-                <div className={classes.payInfo}>
-                    <div className={classes.paid}>Оплачено: 150000</div>
-                    <div className={classes.remain} style={{marginLeft: '45px'}}>Баланс: 50000</div>
-                </div>
-                <div className={classes.dateInfo}>Товар будет доставлен: 22.04.2017</div>
                 <div className={classes.storeInfo}>
                     <div className={classes.store}>Склад: <span style={{color: '#999', fontWeight: 'bold'}}>Название склада</span></div>
                     <div className={classes.supplyDate} style={{marginLeft: '45px'}}>Дата поставки: <span style={{color: '#e57373', fontWeight: 'bold'}}>13.02.2017</span></div>
@@ -309,7 +293,7 @@ const SupplyDetails = enhance((props) => {
                     </Row>
                 </div>
                 <div>
-                    <Row className="dataInfo">
+                    <Row className="dottedList">
                         <Col xs={6}>Жевательная резинка Seven Stick со вкусом клубники</Col>
                         <Col xs={1}>1000 шт</Col>
                         <Col xs={1}>980 шт</Col>
@@ -317,7 +301,7 @@ const SupplyDetails = enhance((props) => {
                         <Col xs={1}><div>2 USD</div></Col>
                         <Col xs={2}><div style={{textAlign: 'right'}}>2000 USD</div></Col>
                     </Row>
-                    <Row className="dataInfo">
+                    <Row className="dottedList">
                         <Col xs={6}>Жевательная резинка Seven Stick со вкусом клубники</Col>
                         <Col xs={1}>1000 шт</Col>
                         <Col xs={1}>980 шт</Col>
@@ -325,7 +309,7 @@ const SupplyDetails = enhance((props) => {
                         <Col xs={1}><div>2 USD</div></Col>
                         <Col xs={2}><div style={{textAlign: 'right'}}>2000 USD</div></Col>
                     </Row>
-                    <Row className="dataInfo">
+                    <Row className="dottedList">
                         <Col xs={6}>Жевательная резинка Seven Stick со вкусом клубники</Col>
                         <Col xs={1}>1000 шт</Col>
                         <Col xs={1}>980 шт</Col>
@@ -341,9 +325,6 @@ const SupplyDetails = enhance((props) => {
                     <div className="addExpense">
                         <div>Дополнительные расходы по заказу</div>
                         <div><a>+ добавить доп. расход</a></div>
-                    </div>
-                    <div className="noExpense">
-                        Нет дополнительных расходов по этому заказу
                     </div>
                     <div className="expenseInfo">
                         <Row>
