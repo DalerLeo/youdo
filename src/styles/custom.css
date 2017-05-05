@@ -11,7 +11,7 @@ input:-webkit-autofill {
 }
 
 ::-webkit-scrollbar-button {
-    height: 0px;
+    height: 0;
 }
 ::-webkit-scrollbar-track {
     background: #eeeff3
@@ -41,6 +41,12 @@ body {
     width: 100%;
     font-family: 'Open Sans',sans-serif !important;
     font-size: 13px;
+    color: #333 !important;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    padding: 0;
+    margin: 0
 }
 
 a {
@@ -48,6 +54,16 @@ a {
     text-decoration: none;
     color: #129fdd;
     cursor: pointer;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+strong {
+        font-weight: 600;
 }
 
 .dottedList {

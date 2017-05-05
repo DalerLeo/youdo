@@ -1,5 +1,3 @@
-import Dot from '../Images/dot.png'
-
 const MainStyles = {
     test: {
         padding: '10px'
@@ -27,7 +25,8 @@ const MainStyles = {
         display: ({loading}) => !loading ? 'flex' : 'none',
         width: '100%',
         fontSize: '13px',
-        minHeight: '235px'
+        minHeight: '235px',
+        color: '#333'
     },
     field: {
         width: '100%'

@@ -14,6 +14,7 @@ import IconButton from 'material-ui/IconButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MainStyles from '../Styles/MainStyles'
+import Person from '../Images/person.png'
 
 export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
 
@@ -146,31 +147,36 @@ const enhance = compose(
                 margin: '0',
                 borderBottom: '1px dashed #efefef',
                 padding: '10px 0',
+                display: 'flex',
+                alignItems: 'center',
+                position: 'relative',
                 '& div:first-child': {
                     width: '30px',
                     height: '30px',
                     display: 'inline-block',
                     borderRadius: '50%',
                     verticalAlign: 'top',
-                    marginRight: '10px'
+                    marginRight: '10px',
+                    overflow: 'hidden'
                 },
                 '& div:first-child img': {
                     width: '30px'
                 },
                 '& div:nth-child(2)': {
                     display: 'inline-block',
-                    verticalAlign: 'top'
+                    verticalAlign: 'top',
+                    width: '80%'
                 },
                 '& div::nth-child(2) span': {
                     color: '#666'
                 },
                 '& div:last-child': {
-                    top: '6px !important',
+                    top: '0px !important',
                     display: 'none'
                 },
                 '&:hover': {
                     '& div:last-child': {
-                        display: 'block'
+                        display: 'flex'
                     }
                 }
             }
@@ -233,7 +239,6 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                 <FlatButton
                                     label="Сохранить"
                                     className={classes.actionButton}
-                                    primary={true}
                                     type="submit"
                                 />
                             </div>
@@ -280,9 +285,8 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                 fullWidth={true}/>
                             <div className={classes.buttonSub}>
                                 <FlatButton
-                                    label="Сохранить"
+                                    label="Применить"
                                     className={classes.actionButton}
-                                    primary={true}
                                     type="submit"
                                 />
                             </div>
@@ -297,7 +301,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                             <ul>
                                 <li>
                                     <div>
-                                        <img src />
+                                        <img src={Person} />
                                     </div>
                                     <div>
                                         Атамбаев Бекзод<br />
@@ -309,7 +313,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                 </li>
                                 <li>
                                     <div>
-                                        <img src />
+                                        <img src={Person} />
                                     </div>
                                     <div>
                                         Атамбаев Бекзод<br />
@@ -331,7 +335,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                             <ul>
                                 <li>
                                     <div>
-                                        <img src />
+                                        <img src={Person} />
                                     </div>
                                     <div>
                                         Атамбаев Бекзод<br />
@@ -343,7 +347,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                 </li>
                                 <li>
                                     <div>
-                                        <img src />
+                                        <img src={Person} />
                                     </div>
                                     <div>
                                         Атамбаев Бекзод<br />
@@ -362,7 +366,6 @@ const ManufactureAddStaffDialog = enhance((props) => {
                 <FlatButton
                     label="Сохранить"
                     className={classes.actionButton}
-                    primary={true}
                     type="submit"
                     keyboardFocused={true}
                 />
