@@ -91,14 +91,6 @@ const enhance = compose(
                 float: 'right',
                 marginTop: '-5px !important'
             }
-        },
-        border: {
-            '& textarea': {
-                border: '1px solid #cccccc !important'
-            },
-            '$ > label': {
-                display: 'none'
-            }
         }
     }),
     reduxForm({
@@ -118,7 +110,7 @@ const TransactionCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '400px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '400px'}}
             bodyClassName={classes.body}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>

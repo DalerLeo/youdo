@@ -54,7 +54,7 @@ const BrandCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
@@ -78,15 +78,15 @@ const BrandCreateDialog = enhance((props) => {
                         />
                     </div>
                 </div>
+                <div className={classes.bottomButton}>
+                    <FlatButton
+                        label="Сохранить"
+                        className={classes.actionButton}
+                        primary={true}
+                        type="submit"
+                    />
+                </div>
             </form>
-            <div className={classes.bottomButton}>
-                <FlatButton
-                    label="Сохранить"
-                    className={classes.actionButton}
-                    primary={true}
-                    type="submit"
-                />
-            </div>
         </Dialog>
     )
 })

@@ -79,7 +79,6 @@ const DeleteDialog = enhance((props) => {
                                 label="УДАЛИТЬ"
                                 primary={true}
                                 type="submit"
-                                keyboardFocused={true}
                             />
                         </div>
                     </div>

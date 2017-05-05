@@ -66,7 +66,7 @@ const UsersCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialogAddUser}
-            contentStyle={loading ? {width: '135px'} : {width: '600px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '600px'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменить пользователя' : 'Добавить пользователя'}</span>
@@ -151,15 +151,15 @@ const UsersCreateDialog = enhance((props) => {
                         </Row>
                     </div>
                 </div>
+                <div className={classes.bottomButton}>
+                    <FlatButton
+                        label="Сохранить"
+                        className={classes.actionButton}
+                        primary={true}
+                        type="submit"
+                    />
+                </div>
             </form>
-            <div className={classes.bottomButton}>
-                <FlatButton
-                    label="Сохранить"
-                    className={classes.actionButton}
-                    primary={true}
-                    type="submit"
-                />
-            </div>
         </Dialog>
     )
 })

@@ -56,6 +56,10 @@ a {
     cursor: pointer;
 }
 
+label, button, input, span, div {
+    font-size: 13px !important;
+}
+
 ul {
     margin: 0;
     padding: 0;

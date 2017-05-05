@@ -9,6 +9,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
+import Dot from '../Images/dot.png'
 import MainStyles from '../Styles/MainStyles'
 
 const colorBlue = '#12aaeb !important'
@@ -56,8 +57,8 @@ const enhance = compose(
                 boxShadow: '0 2px 5px 0px rgba(0, 0, 0, 0.16)',
                 fontSize: '13px',
                 position: 'absolute',
-                padding: '60px 28px 20px',
-                top: '-24px',
+                padding: '64px 28px 20px',
+                top: '-18px',
                 left: '50%',
                 zIndex: '9',
                 minWidth: '300px',
@@ -67,6 +68,7 @@ const enhance = compose(
                     paddingTop: '10px',
                     '&:before': {
                         content: '""',
+                        background: 'url(' + Dot + ')',
                         position: 'absolute',
                         top: '0',
                         left: '0',
@@ -87,10 +89,10 @@ const enhance = compose(
         },
         dropdown: {
             position: 'relative',
-            paddingRight: '15px',
+            paddingRight: '18px',
             zIndex: '10',
             '&:after': {
-                top: '8px',
+                top: '10px',
                 right: '0',
                 content: '""',
                 position: 'absolute',

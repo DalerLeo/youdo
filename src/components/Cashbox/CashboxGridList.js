@@ -119,8 +119,8 @@ const CashboxGridList = enhance((props) => {
     const cashboxList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const currency = _.get(item, ['currency']) || 'N/A'
-        const cashier = _.get(item, ['cashier'])
+        const currency = _.get(item, ['currency', 'name']) || 'N/A'
+        const cashier = _.get(item, ['cashier', 'first_name']) + ' ' + _.get(item, ['cashier', 'second_name'])
         const type = _.get(item, 'type') === bank ? 'банковский счет' : 'наличный'
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>

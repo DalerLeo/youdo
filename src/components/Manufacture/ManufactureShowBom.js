@@ -53,8 +53,6 @@ const enhance = compose(
             maxHeight: '70vh'
         },
         fieldsWrap: {
-            overflowY: 'auto',
-            minHeight: '40vh',
             maxHeight: '70vh'
         },
         listBom: {
@@ -125,7 +123,7 @@ const ManufactureShowBom = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '600px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '600px'}}
             bodyClassName={classes.body}>
 
             <div className={classes.titleContent}>
@@ -268,7 +266,6 @@ const ManufactureShowBom = enhance((props) => {
                     label="Сохранить"
                     className={classes.actionButton}
                     type="submit"
-                    keyboardFocused={true}
                 />
             </div>
         </Dialog>
