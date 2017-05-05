@@ -35,9 +35,6 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
-        },
-        imageUpload: {
-            width: '100px'
         }
     })),
     reduxForm({
@@ -64,7 +61,7 @@ const ProductCreateDialog = enhance((props) => {
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form}>
+            <form onSubmit={onSubmit} className={classes.form} style={{height: 'auto', overflow: 'hidden'}}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
@@ -116,7 +113,6 @@ const ProductCreateDialog = enhance((props) => {
                     className={classes.actionButton}
                     primary={true}
                     type="submit"
-                    keyboardFocused={true}
                 />
             </div>
         </Dialog>
