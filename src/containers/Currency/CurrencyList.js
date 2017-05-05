@@ -43,7 +43,6 @@ const enhance = compose(
         const csvLoading = _.get(state, ['currency', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'CurrencyCreateForm'])
         const filter = filterHelper(list, pathname, query)
-        console.log(primaryCurrency)
         return {
             list,
             listLoading,

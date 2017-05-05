@@ -261,9 +261,6 @@ const SupplyList = enhance((props) => {
 
             return {
                 provider: _.get(detail, 'provider'),
-                provider: {
-                    value: _.get(detail, 'provider')
-                },
                 stock: _.get(detail, 'stock'),
                 dataDelivery: _.get(detail, 'dataDelivery'),
                 contact: _.get(detail, 'contact'),

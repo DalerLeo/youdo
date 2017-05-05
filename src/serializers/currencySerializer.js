@@ -26,10 +26,10 @@ export const createSerializer = (data) => {
 }
 
 export const updatePrimarySerializer = (data) => {
-    // const name = _.get(data, ['name'])
+    const name = _.get(data, ['name'])
 
     return {
-        'curreny_id': 1
+        name
     }
 }
 
