@@ -44,18 +44,18 @@ const SideBarMenu = (props) => {
             </div>
             <div className={classes.items}>
                 {items}
-            </div>
 
-            <div className={classes.logout}>
-                <ToolTip position="right" text="Log out">
-                    <IconButton
-                        iconStyle={style.iconStyle}
-                        style={style.style}
-                        touch={touch}
-                        onClick={handleSignOut}>
-                        <SettingsPower />
-                    </IconButton>
-                </ToolTip>
+                <div className={classes.logout}>
+                    <ToolTip position="right" text="Log out">
+                        <IconButton
+                            iconStyle={style.iconStyle}
+                            style={style.style}
+                            touch={touch}
+                            onClick={handleSignOut}>
+                            <SettingsPower />
+                        </IconButton>
+                    </ToolTip>
+                </div>
             </div>
         </div>
     )
@@ -74,19 +74,23 @@ export default injectSheet({
     },
 
     items: {
+        position: 'relative',
+        width: '100%',
+        '& button': {
+            width: '100% !important',
+            height: '65px !important'
+        },
         '& svg': {
-            fontSize: '24px',
-            color: '#abacb0 !important'
+            color: '#abacb0 !important',
+            width: '25px !important',
+            height: '25px !important'
         }
     },
 
     logout: {
         position: 'absolute',
-        bottom: 0,
-
-        '& svg': {
-            fontSize: '24px',
-            color: '#abacb0 !important'
-        }
+        bottom: '0',
+        left: '0',
+        right: '0'
     }
 })(SideBarMenu)

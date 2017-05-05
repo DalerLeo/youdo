@@ -29,7 +29,7 @@ export default injectSheet({
     },
     content: {
         background: '#f2f5f8',
-        width: '100%',
+        width: 'calc(100% - 140px)',
         padding: '28px',
         overflow: 'auto'
     }

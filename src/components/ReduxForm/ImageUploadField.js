@@ -14,20 +14,19 @@ const enhance = compose(
         wrapper: {
             position: 'relative',
             width: '100%',
-            height: '100%'
-        },
-        dropZone: {
-            border: '2px #ccc dashed',
-            width: '200px',
-            height: '216px',
-            display: 'flex',
-            margin: '60px 0 0 auto',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            overflow: 'hidden',
-            '& img': {
-                width: '100%',
-                display: 'block'
+            '& .imageDropZone': {
+                border: '2px #ccc dashed',
+                width: '200px',
+                height: '216px',
+                display: 'flex',
+                margin: '60px 0 0 auto',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                overflow: 'hidden',
+                '& img': {
+                    width: '100%',
+                    display: 'block'
+                }
             }
         },
         error: {
@@ -94,7 +93,7 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
         <div className={classes.wrapper}>
             <Dropzone
                 onDrop={onDrop}
-                className={classes.dropZone}
+                className="imageDropZone"
                 accept="image/jpeg, image/png">
                 {dropZoneView}
             </Dropzone>
