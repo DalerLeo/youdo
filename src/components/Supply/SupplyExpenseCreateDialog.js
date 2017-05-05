@@ -3,22 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {Col} from 'react-flexbox-grid'
-import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
+import {reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
-import CircularProgress from 'material-ui/CircularProgress'
-import IconButton from 'material-ui/IconButton'
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
-import FlatButton from 'material-ui/FlatButton'
-import CloseIcon2 from '../CloseIcon2'
-import {
-    CurrencySearchField,
-    ProviderSearchField,
-    StockSearchField,
-    ExpenseListProductField,
-    TextField,
-    DateField
-} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const SUPPLY_EXPENSE_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -60,7 +46,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const ExpenseCreateDialog = enhance((props) => {
-    const {state, dispatch, open, handleSubmit, onClose, classes} = props
+    const {open, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog

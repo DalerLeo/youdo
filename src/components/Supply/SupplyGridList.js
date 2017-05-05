@@ -297,7 +297,6 @@ SupplyGridList.propTypes = {
         handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired,
 
-
     supplyExpenseCreateDialog: PropTypes.shape({
         supplyExpenseLoading: PropTypes.bool.isRequired,
         openSupplyExpenseCreateDialog: PropTypes.bool.isRequired,
@@ -319,7 +318,7 @@ SupplyGridList.propTypes = {
     supplyExpenseActionsDialog: PropTypes.shape({
         handleSupplyExpenseActionEdit: PropTypes.func.isRequired,
         handleSupplyExpenseActionDelete: PropTypes.func.isRequired
-    }).isRequired,
+    }).isRequired
 }
 
 export default SupplyGridList

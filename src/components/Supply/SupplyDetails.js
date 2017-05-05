@@ -228,10 +228,8 @@ const SupplyDetails = enhance((props) => {
     const contactEmail = _.get(contact, 'email')
     const contactPhone = _.get(contact, 'phone')
     const dataDelivery = _.get(data, 'dataDelivery') || 'N/A'
-    const acceptedCost = _.get(data, 'acceptedCost')
     const acceptedTime = _.get(data, 'acceptedTime') || 'N/A'
     const finishedTime = _.get(data, 'finishedTime') || 'N/A'
-    const defectesCost = _.get(data, 'defectesCost')
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
 
