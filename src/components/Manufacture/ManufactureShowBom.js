@@ -7,6 +7,8 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
+import {Field, reduxForm} from 'redux-form'
+import {TextField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
@@ -102,7 +104,10 @@ const enhance = compose(
     })),
     withState('openAddShift', 'setOpenAddShift', false),
     withState('openAddStaff', 'setOpenAddStaff', false),
-
+    reduxForm({
+        form: 'ProviderCreateForm',
+        enableReinitialize: true
+    })
 )
 
 const ManufactureShowBom = enhance((props) => {
@@ -189,13 +194,28 @@ const ManufactureShowBom = enhance((props) => {
                             </li>
                             <li className="dottedList">
                                 <Col xs={8}>
-                                    Дистилированная вода
+                                    <Field
+                                        name="name"
+                                        component={TextField}
+                                        className={classes.inputFieldShift}
+                                        label="Сотрудник"
+                                        fullWidth={true}/>
                                 </Col>
                                 <Col xs={2}>
-                                    100
+                                    <Field
+                                        name="name"
+                                        component={TextField}
+                                        className={classes.inputFieldShift}
+                                        label="Сотрудник"
+                                        fullWidth={true}/>
                                 </Col>
                                 <Col xs={1}>
-                                    л
+                                    <Field
+                                        name="name"
+                                        component={TextField}
+                                        className={classes.inputFieldShift}
+                                        label="Сотрудник"
+                                        fullWidth={true}/>
                                 </Col>
                                 <Col xs={1}>
                                     <IconMenu
