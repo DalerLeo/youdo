@@ -1,26 +1,35 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
-import moment from 'moment'
 
 export const createSerializer = (data) => {
-    const provider = _.get(data, ['provider', 'value'])
-    const stock = _.get(data, ['stock', 'value'])
+    const name = _.get(data, ['name'])
     const currency = _.get(data, ['currency', 'value'])
-    const products = _.map(_.get(data, ['products']), (item) => {
-        return {
-            amount: item.amount,
-            cost: item.cost,
-            product: item.product.value
-        }
-    })
+    const address = _.get(data, ['address'])
+    const guide = _.get(data, ['guide'])
+    const phone = _.get(data, ['phone'])
+    const lat = _.get(data, ['latLng', 'lat'])
+    const lng = _.get(data, ['latLng', 'lng'])
+    const official = _.get(data, ['official'])
+    const contactName = _.get(data, ['contactName'])
 
     return {
-        provider,
-        stock,
-        'contact': 1,
-        'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
+        name,
         currency,
-        products
+        address,
+        guide,
+        phone,
+        lat,
+        lon: lng,
+        official,
+        'contact_name': contactName
+    }
+}
+
+export const updatePrimarySerializer = (data) => {
+    const name = _.get(data, ['name'])
+
+    return {
+        name
     }
 }
 
@@ -29,10 +38,8 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'provider': _.get(defaultData, 'provider'),
-        'stock': _.get(defaultData, 'stock'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate'),
+        'brand': _.get(defaultData, 'brand'),
+        'type': _.get(defaultData, 'type'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

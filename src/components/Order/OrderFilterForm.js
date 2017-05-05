@@ -10,15 +10,14 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
-import {ProviderSearchField, StockSearchField} from '../ReduxForm'
+import {CategorySearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const SUPPLY_FILTER_OPEN = 'openFilterDialog'
+export const ORDER_FILTER_OPEN = 'openFilterDialog'
 
-export const SUPPLY_FILTER_KEY = {
-    PROVIDER: 'provider',
-    STOCK: 'stock',
+export const ORDER_FILTER_KEY = {
+    CATEGORY: 'category',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
@@ -84,15 +83,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'SupplyFilterForm',
+        form: 'OrderFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(SUPPLY_FILTER_KEY)
+            return _(ORDER_FILTER_KEY)
                 .values()
-                .filter(item => item !== SUPPLY_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== ORDER_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -100,7 +99,7 @@ const enhance = compose(
     })
 )
 
-const SupplyFilterForm = enhance((props) => {
+const OrderFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
 
@@ -143,8 +142,7 @@ const SupplyFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field name="provider" component={ProviderSearchField} label="Поставщик"/>
-                        <Field name="stock" component={StockSearchField} label="Склад"/>
+                        <Field name="category" component={CategorySearchField} label="Category"/>
                     </div>
 
                     <div>
@@ -165,7 +163,7 @@ const SupplyFilterForm = enhance((props) => {
     )
 })
 
-SupplyFilterForm.propTypes = {
+OrderFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -176,4 +174,4 @@ SupplyFilterForm.propTypes = {
     })
 }
 
-export default SupplyFilterForm
+export default OrderFilterForm

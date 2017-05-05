@@ -1,44 +1,42 @@
 import React from 'react'
 import _ from 'lodash'
-import moment from 'moment'
+import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
-    SUPPLY_CREATE_DIALOG_OPEN,
-    SUPPLY_UPDATE_DIALOG_OPEN,
-    SUPPLY_FILTER_KEY,
-    SUPPLY_FILTER_OPEN,
-    SupplyGridList
-} from '../../components/Supply'
+    STOCK_CREATE_DIALOG_OPEN,
+    STOCK_UPDATE_DIALOG_OPEN,
+    StockGridList
+} from '../../components/Stock'
 import {
-    supplyCreateAction,
-    supplyUpdateAction,
-    supplyListFetchAction,
-    supplyCSVFetchAction,
-    supplyDeleteAction,
-    supplyItemFetchAction
-} from '../../actions/supply'
+    stockCreateAction,
+    stockUpdateAction,
+    stockListFetchAction,
+    stockCSVFetchAction,
+    stockDeleteAction,
+    stockItemFetchAction
+} from '../../actions/stock'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['supply', 'item', 'data'])
-        const detailLoading = _.get(state, ['supply', 'item', 'loading'])
-        const createLoading = _.get(state, ['supply', 'create', 'loading'])
-        const updateLoading = _.get(state, ['supply', 'update', 'loading'])
-        const list = _.get(state, ['supply', 'list', 'data'])
-        const listLoading = _.get(state, ['supply', 'list', 'loading'])
-        const csvData = _.get(state, ['supply', 'csv', 'data'])
-        const csvLoading = _.get(state, ['supply', 'csv', 'loading'])
-        const filterForm = _.get(state, ['form', 'SupplyFilterForm'])
-        const createForm = _.get(state, ['form', 'SupplyCreateForm'])
+        const detail = _.get(state, ['stock', 'item', 'data'])
+        const detailLoading = _.get(state, ['stock', 'item', 'loading'])
+        const createLoading = _.get(state, ['stock', 'create', 'loading'])
+        const updateLoading = _.get(state, ['stock', 'update', 'loading'])
+        const list = _.get(state, ['stock', 'list', 'data'])
+        const listLoading = _.get(state, ['stock', 'list', 'loading'])
+        const csvData = _.get(state, ['stock', 'csv', 'data'])
+        const csvLoading = _.get(state, ['stock', 'csv', 'loading'])
+        const createForm = _.get(state, ['form', 'StockCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -51,23 +49,21 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
-            filterForm,
             createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(supplyListFetchAction(filter))
+        dispatch(stockListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const supplyId = _.get(nextProps, ['params', 'supplyId'])
-
-        return supplyId && _.get(props, ['params', 'supplyId']) !== supplyId
+        const stockId = _.get(nextProps, ['params', 'stockId'])
+        return stockId && _.get(props, ['params', 'stockId']) !== stockId
     }, ({dispatch, params}) => {
-        const supplyId = _.toInteger(_.get(params, 'supplyId'))
-        supplyId && dispatch(supplyItemFetchAction(supplyId))
+        const stockId = _.toInteger(_.get(params, 'stockId'))
+        stockId && dispatch(stockItemFetchAction(stockId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -82,7 +78,7 @@ const enhance = compose(
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
 
-            dispatch(supplyCSVFetchAction(props.filter))
+            dispatch(stockCSVFetchAction(props.filter))
         },
 
         handleCloseCSVDialog: props => () => {
@@ -101,7 +97,7 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog} = props
-            dispatch(supplyDeleteAction(detail.id))
+            dispatch(stockDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Successful deleted'}))
                 })
@@ -110,36 +106,6 @@ const enhance = compose(
                 })
         },
 
-        handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_FILTER_OPEN]: true})})
-        },
-
-        handleCloseFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_FILTER_OPEN]: false})})
-        },
-
-        handleClearFilterDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {}})
-        },
-
-        handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-
-            filter.filterBy({
-                [SUPPLY_FILTER_OPEN]: false,
-                [SUPPLY_FILTER_KEY.PROVIDER]: provider,
-                [SUPPLY_FILTER_KEY.STOCK]: stock,
-                [SUPPLY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [SUPPLY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
-            })
-        },
         handleOpenDeleteDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({
@@ -155,55 +121,57 @@ const enhance = compose(
 
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_CREATE_DIALOG_OPEN]: true})})
         },
 
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_CREATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter} = props
 
-            return dispatch(supplyCreateAction(_.get(createForm, ['values'])))
+            return dispatch(stockCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({query: filter.getParams({[STOCK_CREATE_DIALOG_OPEN]: false})})
                 })
         },
 
-        handleOpenUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_UPDATE_DIALOG_OPEN]: true})})
+        handleOpenUpdateDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.STOCK_ITEM_PATH, id),
+                query: filter.getParams({[STOCK_UPDATE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_UPDATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
-            const supplyId = _.toInteger(_.get(props, ['params', 'supplyId']))
-
-            return dispatch(supplyUpdateAction(supplyId, _.get(createForm, ['values'])))
+            const stockId = _.toInteger(_.get(props, ['params', 'stockId']))
+            return dispatch(stockUpdateAction(stockId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(supplyItemFetchAction(supplyId))
+                    return dispatch(stockItemFetchAction(stockId))
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[SUPPLY_UPDATE_DIALOG_OPEN]: false}))
+                    hashHistory.push(filter.createURL({[STOCK_UPDATE_DIALOG_OPEN]: false}))
                 })
         }
     })
 )
 
-const SupplyList = enhance((props) => {
+const StockList = enhance((props) => {
     const {
         location,
         list,
@@ -217,15 +185,10 @@ const SupplyList = enhance((props) => {
         params
     } = props
 
-    const openFilterDialog = toBoolean(_.get(location, ['query', SUPPLY_FILTER_OPEN]))
-    const openCreateDialog = toBoolean(_.get(location, ['query', SUPPLY_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', SUPPLY_UPDATE_DIALOG_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', STOCK_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
-    const provider = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
-    const stock = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STOCK))
-    const fromDate = filter.getParam(SUPPLY_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(SUPPLY_FILTER_KEY.TO_DATE)
-    const detailId = _.toInteger(_.get(params, 'supplyId'))
+    const detailId = _.toInteger(_.get(params, 'stockId'))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -258,13 +221,14 @@ const SupplyList = enhance((props) => {
             if (!detail) {
                 return {}
             }
-
             return {
-                provider: _.get(detail, 'provider'),
-                stock: _.get(detail, 'stock'),
-                dataDelivery: _.get(detail, 'dataDelivery'),
-                contact: _.get(detail, 'contact'),
-                currency: _.get(detail, 'currency')
+                name: _.get(detail, 'name'),
+                manager: {
+                    value: _.get(detail, ['manager', 'id'])
+                },
+                stockType: {
+                    value: _.get(detail, ['stockType', 'id'])
+                }
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -272,27 +236,6 @@ const SupplyList = enhance((props) => {
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
-    }
-
-    const filterDialog = {
-        initialValues: {
-            provider: {
-                value: provider
-            },
-            stock: {
-                value: stock
-            },
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
-            }
-        },
-        filterLoading: false,
-        openFilterDialog,
-        handleOpenFilterDialog: props.handleOpenFilterDialog,
-        handleCloseFilterDialog: props.handleCloseFilterDialog,
-        handleClearFilterDialog: props.handleClearFilterDialog,
-        handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
     const csvDialog = {
@@ -316,7 +259,7 @@ const SupplyList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <SupplyGridList
+            <StockGridList
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
@@ -325,11 +268,10 @@ const SupplyList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                filterDialog={filterDialog}
                 csvDialog={csvDialog}
             />
         </Layout>
     )
 })
 
-export default SupplyList
+export default StockList

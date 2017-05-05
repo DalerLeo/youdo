@@ -1,46 +1,48 @@
 import React from 'react'
 import _ from 'lodash'
-import moment from 'moment'
+import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
-    SUPPLY_CREATE_DIALOG_OPEN,
-    SUPPLY_UPDATE_DIALOG_OPEN,
-    SUPPLY_FILTER_KEY,
-    SUPPLY_FILTER_OPEN,
-    SupplyGridList
-} from '../../components/Supply'
+    CURRENCY_CREATE_DIALOG_OPEN,
+    CURRENCY_UPDATE_DIALOG_OPEN,
+    PRIMARY_CURRENCY_DIALOG_OPEN,
+    CurrencyGridList
+} from '../../components/Currency'
 import {
-    supplyCreateAction,
-    supplyUpdateAction,
-    supplyListFetchAction,
-    supplyCSVFetchAction,
-    supplyDeleteAction,
-    supplyItemFetchAction
-} from '../../actions/supply'
+    currencyCreateAction,
+    currencyUpdateAction,
+    currencyListFetchAction,
+    currencyCSVFetchAction,
+    currencyDeleteAction,
+    currencyItemFetchAction,
+    currencyPrimaryFetchAction,
+    currencyPrimaryUpdateAction
+} from '../../actions/currency'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['supply', 'item', 'data'])
-        const detailLoading = _.get(state, ['supply', 'item', 'loading'])
-        const createLoading = _.get(state, ['supply', 'create', 'loading'])
-        const updateLoading = _.get(state, ['supply', 'update', 'loading'])
-        const list = _.get(state, ['supply', 'list', 'data'])
-        const listLoading = _.get(state, ['supply', 'list', 'loading'])
-        const csvData = _.get(state, ['supply', 'csv', 'data'])
-        const csvLoading = _.get(state, ['supply', 'csv', 'loading'])
-        const filterForm = _.get(state, ['form', 'SupplyFilterForm'])
-        const createForm = _.get(state, ['form', 'SupplyCreateForm'])
+        const detail = _.get(state, ['currency', 'item', 'data'])
+        const detailLoading = _.get(state, ['currency', 'item', 'loading'])
+        const createLoading = _.get(state, ['currency', 'create', 'loading'])
+        const updateLoading = _.get(state, ['currency', 'update', 'loading'])
+        const primaryCurrency = _.get(state, ['currency', 'primary', 'data', 'data'])
+        const primaryCurrencyLoading = _.get(state, ['currency', 'primary', 'loading'])
+        const list = _.get(state, ['currency', 'list', 'data'])
+        const listLoading = _.get(state, ['currency', 'list', 'loading'])
+        const csvData = _.get(state, ['currency', 'csv', 'data'])
+        const csvLoading = _.get(state, ['currency', 'csv', 'loading'])
+        const createForm = _.get(state, ['form', 'CurrencyCreateForm'])
         const filter = filterHelper(list, pathname, query)
-
         return {
             list,
             listLoading,
@@ -48,26 +50,32 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
+            primaryCurrency,
+            primaryCurrencyLoading,
             csvData,
             csvLoading,
             filter,
-            filterForm,
             createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(supplyListFetchAction(filter))
+        dispatch(currencyListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const supplyId = _.get(nextProps, ['params', 'supplyId'])
+        return !nextProps.primaryCurrencyLoading && _.isNil(props.primaryCurrency)
+    }, ({dispatch}) => {
+        dispatch(currencyPrimaryFetchAction())
+    }),
 
-        return supplyId && _.get(props, ['params', 'supplyId']) !== supplyId
+    withPropsOnChange((props, nextProps) => {
+        const currencyId = _.get(nextProps, ['params', 'currencyId'])
+        return currencyId && _.get(props, ['params', 'currencyId']) !== currencyId
     }, ({dispatch, params}) => {
-        const supplyId = _.toInteger(_.get(params, 'supplyId'))
-        supplyId && dispatch(supplyItemFetchAction(supplyId))
+        const currencyId = _.toInteger(_.get(params, 'currencyId'))
+        currencyId && dispatch(currencyItemFetchAction(currencyId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -82,7 +90,7 @@ const enhance = compose(
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
 
-            dispatch(supplyCSVFetchAction(props.filter))
+            dispatch(currencyCSVFetchAction(props.filter))
         },
 
         handleCloseCSVDialog: props => () => {
@@ -101,7 +109,7 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog} = props
-            dispatch(supplyDeleteAction(detail.id))
+            dispatch(currencyDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Successful deleted'}))
                 })
@@ -110,36 +118,6 @@ const enhance = compose(
                 })
         },
 
-        handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_FILTER_OPEN]: true})})
-        },
-
-        handleCloseFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_FILTER_OPEN]: false})})
-        },
-
-        handleClearFilterDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {}})
-        },
-
-        handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-
-            filter.filterBy({
-                [SUPPLY_FILTER_OPEN]: false,
-                [SUPPLY_FILTER_KEY.PROVIDER]: provider,
-                [SUPPLY_FILTER_KEY.STOCK]: stock,
-                [SUPPLY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [SUPPLY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
-            })
-        },
         handleOpenDeleteDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({
@@ -155,55 +133,84 @@ const enhance = compose(
 
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: true})})
+        },
+
+        handlePrimaryOpenDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: true})})
         },
 
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: false})})
+        },
+        handlePrimaryCloseDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitPrimaryDialog: props => () => {
+            const {dispatch, createForm, filter} = props
+            const currency = _.toInteger(_.get(props, ['params', 'currency']))
+
+            return dispatch(currencyPrimaryUpdateAction(currency, _.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[PRIMARY_CURRENCY_DIALOG_OPEN]: false}))
+                })
+        },
+        handleClosePrimaryDialog: props => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter} = props
 
-            return dispatch(supplyCreateAction(_.get(createForm, ['values'])))
+            return dispatch(currencyCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: false})})
                 })
         },
 
-        handleOpenUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_UPDATE_DIALOG_OPEN]: true})})
+        handleOpenUpdateDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id),
+                query: filter.getParams({[CURRENCY_UPDATE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_UPDATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[CURRENCY_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
-            const supplyId = _.toInteger(_.get(props, ['params', 'supplyId']))
+            const currencyId = _.toInteger(_.get(props, ['params', 'currencyId']))
 
-            return dispatch(supplyUpdateAction(supplyId, _.get(createForm, ['values'])))
+            return dispatch(currencyUpdateAction(currencyId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(supplyItemFetchAction(supplyId))
+                    return dispatch(currencyItemFetchAction(currencyId))
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[SUPPLY_UPDATE_DIALOG_OPEN]: false}))
+                    hashHistory.push(filter.createURL({[CURRENCY_UPDATE_DIALOG_OPEN]: false}))
                 })
         }
     })
 )
 
-const SupplyList = enhance((props) => {
+const CurrencyList = enhance((props) => {
     const {
         location,
         list,
@@ -212,26 +219,43 @@ const SupplyList = enhance((props) => {
         detailLoading,
         createLoading,
         updateLoading,
+        primaryCurrency,
+        primaryCurrencyLoading,
         filter,
         layout,
         params
     } = props
 
-    const openFilterDialog = toBoolean(_.get(location, ['query', SUPPLY_FILTER_OPEN]))
-    const openCreateDialog = toBoolean(_.get(location, ['query', SUPPLY_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', SUPPLY_UPDATE_DIALOG_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', CURRENCY_CREATE_DIALOG_OPEN]))
+    const openPrimaryDialog = toBoolean(_.get(location, ['query', PRIMARY_CURRENCY_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', CURRENCY_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
-    const provider = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
-    const stock = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STOCK))
-    const fromDate = filter.getParam(SUPPLY_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(SUPPLY_FILTER_KEY.TO_DATE)
-    const detailId = _.toInteger(_.get(params, 'supplyId'))
+    const detailId = _.toInteger(_.get(params, 'currencyId'))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
         handleActionDelete: props.handleOpenDeleteDialog
     }
 
+    const primaryDialog = {
+        initialValues: (() => {
+            if (!primaryCurrency) {
+                return {}
+            }
+            return {
+                currency: {
+                    value: _.get(primaryCurrency, 'id')
+                }
+            }
+        })(),
+        primaryCurrency: primaryCurrency,
+        openPrimaryDialog,
+        primaryCurrencyLoading,
+        handlePrimaryOpenDialog: props.handlePrimaryOpenDialog,
+        handleClosePrimaryDialog: props.handleClosePrimaryDialog,
+        handlePrimaryCloseDialog: props.handlePrimaryCloseDialog,
+        handleSubmitPrimaryDialog: props.handleSubmitPrimaryDialog
+    }
     const createDialog = {
         createLoading,
         openCreateDialog,
@@ -258,13 +282,8 @@ const SupplyList = enhance((props) => {
             if (!detail) {
                 return {}
             }
-
             return {
-                provider: _.get(detail, 'provider'),
-                stock: _.get(detail, 'stock'),
-                dataDelivery: _.get(detail, 'dataDelivery'),
-                contact: _.get(detail, 'contact'),
-                currency: _.get(detail, 'currency')
+                name: _.get(detail, 'name')
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -272,27 +291,6 @@ const SupplyList = enhance((props) => {
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
-    }
-
-    const filterDialog = {
-        initialValues: {
-            provider: {
-                value: provider
-            },
-            stock: {
-                value: stock
-            },
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
-            }
-        },
-        filterLoading: false,
-        openFilterDialog,
-        handleOpenFilterDialog: props.handleOpenFilterDialog,
-        handleCloseFilterDialog: props.handleCloseFilterDialog,
-        handleClearFilterDialog: props.handleClearFilterDialog,
-        handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
     const csvDialog = {
@@ -316,20 +314,20 @@ const SupplyList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <SupplyGridList
+            <CurrencyGridList
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}
+                primaryDialog={primaryDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                filterDialog={filterDialog}
                 csvDialog={csvDialog}
             />
         </Layout>
     )
 })
 
-export default SupplyList
+export default CurrencyList

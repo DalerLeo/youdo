@@ -8,12 +8,12 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, UsersSearchField, StockTypeSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
-export const CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const STOCK_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -37,6 +37,7 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
+
         fields: {
             display: ({loading}) => !loading ? 'block' : 'none',
             width: '100%'
@@ -53,12 +54,12 @@ const enhance = compose(
         }
     })),
     reduxForm({
-        form: 'CategoryCreateForm',
+        form: 'StockCreateForm',
         enableReinitialize: true
     })
 )
 
-const CategoryCreateDialog = enhance((props) => {
+const StockCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -69,7 +70,6 @@ const CategoryCreateDialog = enhance((props) => {
             onRequestClose={onClose}
             className={classes.dialog}
             contentStyle={loading ? {width: '135px'} : {width: '500px'}}
-            bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</span>
@@ -77,11 +77,11 @@ const CategoryCreateDialog = enhance((props) => {
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
+            <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.fieldsWrap} style={{minHeight: '135px'}}>
+                <div className={classes.fieldsWrap}>
                     <div className={classes.field}>
                         <Field
                             name="name"
@@ -90,22 +90,35 @@ const CategoryCreateDialog = enhance((props) => {
                             label="Наименование"
                             fullWidth={true}
                         />
+                        <Field
+                            name="manager"
+                            component={UsersSearchField}
+                            className={classes.inputField}
+                            label="Завсклад"
+                            fullWidth={true}
+                        />
+                        <Field
+                            name="stockType"
+                            component={StockTypeSearchField}
+                            className={classes.inputField}
+                            label="Тип склада"
+                            fullWidth={true}
+                        />
                     </div>
                 </div>
             </form>
             <div className={classes.bottomButton}>
                 <FlatButton
                     label="Сохранить"
-                    className={classes.actionButton}
-                    primary={true}
                     type="submit"
+                    keyboardFocused={true}
                 />
             </div>
         </Dialog>
     )
 })
 
-CategoryCreateDialog.propTypes = {
+StockCreateDialog.propTypes = {
     isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -113,8 +126,8 @@ CategoryCreateDialog.propTypes = {
     loading: PropTypes.bool.isRequired
 }
 
-CategoryCreateDialog.defaultProps = {
+StockCreateDialog.defaultProps = {
     isUpdate: false
 }
 
-export default CategoryCreateDialog
+export default StockCreateDialog

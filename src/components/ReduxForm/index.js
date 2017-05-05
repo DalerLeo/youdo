@@ -17,6 +17,7 @@ import ProductSearchField from './ProductSearchField'
 import SupplyListProductField from './SupplyListProductField'
 import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
 import PaymentTypeSearchField from './PaymentTypeSearchField'
+import StockTypeSearchField from './StockTypeSearchField'
 
 export {
     ProductSearchField,
@@ -37,5 +38,6 @@ export {
     StockSearchField,
     SupplyListProductField,
     ExpensiveCategorySearchField,
-    PaymentTypeSearchField
+    PaymentTypeSearchField,
+    StockTypeSearchField
 }

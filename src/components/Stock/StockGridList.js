@@ -1,8 +1,7 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -10,9 +9,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import SupplyFilterForm from './SupplyFilterForm'
-import SupplyDetails from './SupplyDetails'
-import SupplyCreateDialog from './SupplyCreateDialog'
+import StockCreateDialog from './StockCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -21,55 +18,47 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Edit from 'material-ui/svg-icons/image/edit'
 
 const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: '№',
-        xs: 1
+        xs: 1,
+        title: 'Id'
     },
     {
         sorting: true,
         name: 'name',
-        title: 'Поставщик',
-        xs: 2
+        xs: 3,
+        title: 'Наименование'
     },
     {
         sorting: true,
-        name: 'stock',
-        title: 'Склад',
-        xs: 2
+        name: 'manager',
+        xs: 3,
+        title: 'Завсклад'
     },
     {
         sorting: true,
-        name: 'dateDelivery',
-        title: 'Дата поставки',
-        xs: 2
+        name: 'stockType',
+        xs: 2,
+        title: 'Тип склада'
     },
     {
         sorting: true,
-        name: 'totalCost',
-        title: 'Цена заказа',
-        xs: 2
+        xs: 2,
+        name: 'created_date',
+        title: 'Дата создания'
     },
     {
-        sorting: true,
-        name: 'status',
-        title: 'Оплата',
-        xs: 1
-    },
-    {
-        sorting: true,
-        name: 'acceptedCost',
-        title: 'Принято',
-        xs: 1
-    },
-    {
-        sorting: true,
-        name: 'defectedCost',
-        title: 'Браковано',
-        xs: 1
+        sorting: false,
+        xs: 1,
+        name: 'actions',
+        title: ''
     }
 ]
 
@@ -85,31 +74,15 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
-        },
-        dot: {
-            display: 'inline-block',
-            height: '7px',
-            width: '7px',
-            borderRadius: '50%',
-            marginRight: '6px'
-        },
-        success: {
-            extend: 'dot',
-            backgroundColor: '#81c784'
-        },
-        error: {
-            extend: 'dot',
-            backgroundColor: '#e57373'
         }
     })
 )
 
-const SupplyGridList = enhance((props) => {
+const StockGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
-        filterDialog,
         actionsDialog,
         confirmDialog,
         deleteDialog,
@@ -130,66 +103,60 @@ const SupplyGridList = enhance((props) => {
         </div>
     )
 
-    const supplyFilterDialog = (
-        <SupplyFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
+    const stockDetail = (
+        <span>a</span>
     )
 
-    const supplyDetail = (
-        <SupplyDetails
-            key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            deleteDialog={deleteDialog}
-            confirmDialog={confirmDialog}
-            loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-        />
-    )
-
-    const supplyList = _.map(_.get(listData, 'data'), (item) => {
+    const stockList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(_.get(item, 'provider'), 'name')
-        const stock = _.get(_.get(item, 'stock'), 'name') || 'N/A'
-        const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
-        const totalCost = _.get(item, 'totalCost') || 'N/A'
-        const status = _.get(item, 'status') || 'N/A'
-        const acceptedCost = _.get(item, 'acceptedCost') || 'N/A'
-        const defectedCost = _.get(item, 'defectedCost') || 'N/A'
-
+        const name = _.get(item, 'name')
+        const manager = _.get(item, ['manager', 'firstName']) + ' ' + _.get(item, ['manager', 'secondName'])
+        const stockType = _.get(item, 'StockType') || 'N/A'
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const iconButton = (
+            <IconButton style={{padding: '0 12px'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
-            <Row key={id}>
+            <Row key={id} style={{alignItems: 'center'}}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={2}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{name}</Link>
+                <Col xs={3}>{name}</Col>
+                <Col xs={3}>{manager}</Col>
+                <Col xs={2}>{stockType}</Col>
+                <Col xs={2}>{createdDate}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                        />
+                    </IconMenu>
                 </Col>
-                <Col xs={2}>{stock}</Col>
-                <Col xs={2}>{dateDelivery}</Col>
-                <Col xs={2}>{totalCost}</Col>
-                <Col xs={1}>{status}</Col>
-                <Col xs={1}>{acceptedCost}</Col>
-                <Col xs={1}>{defectedCost}</Col>
             </Row>
         )
     })
 
     const list = {
         header: listHeader,
-        list: supplyList,
+        list: stockList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.SUPPLY_LIST_URL}/>
-
+            <SubMenu url={ROUTES.STOCK_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить поставку">
+                <Tooltip position="left" text="Добавить категорию">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -202,19 +169,20 @@ const SupplyGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={supplyDetail}
+                detail={stockDetail}
                 actionsDialog={actions}
-                filterDialog={supplyFilterDialog}
             />
 
-            <SupplyCreateDialog
+            <StockCreateDialog
+                initialValues={{}}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <SupplyCreateDialog
+            <StockCreateDialog
+                isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -239,7 +207,7 @@ const SupplyGridList = enhance((props) => {
     )
 })
 
-SupplyGridList.propTypes = {
+StockGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -271,15 +239,7 @@ SupplyGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
-    filterDialog: PropTypes.shape({
-        initialValues: PropTypes.object,
-        filterLoading: PropTypes.bool,
-        openFilterDialog: PropTypes.bool.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default SupplyGridList
+export default StockGridList
