@@ -107,7 +107,6 @@ const CashboxCreateDialog = enhance((props) => {
                     className={classes.actionButton}
                     primary={true}
                     type="submit"
-                    keyboardFocused={true}
                 />
             </div>
         </Dialog>
