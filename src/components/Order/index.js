@@ -1,10 +1,10 @@
-import ShopGridList from './ShopGridList'
-import {SHOP_CREATE_DIALOG_OPEN} from './ShopCreateDialog'
-import {SHOP_FILTER_KEY, SHOP_FILTER_OPEN} from './ShopFilterForm'
+import OrderGridList from './OrderGridList'
+import {ORDER_CREATE_DIALOG_OPEN} from './OrderCreateDialog'
+import {ORDER_FILTER_KEY, ORDER_FILTER_OPEN} from './OrderFilterForm'
 
 export {
-    SHOP_CREATE_DIALOG_OPEN,
-    SHOP_FILTER_KEY,
-    SHOP_FILTER_OPEN,
-    ShopGridList
+    ORDER_CREATE_DIALOG_OPEN,
+    ORDER_FILTER_KEY,
+    ORDER_FILTER_OPEN,
+    OrderGridList
 }

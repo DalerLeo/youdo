@@ -1,9 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
-import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -11,9 +9,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import OrderFilterForm from './OrderFilterForm'
-import OrderDetails from './OrderDetails'
-import OrderCreateDialog from './OrderCreateDialog'
+import StockCreateDialog from './StockCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -22,37 +18,47 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Edit from 'material-ui/svg-icons/image/edit'
 
 const listHeader = [
     {
         sorting: true,
+        name: 'id',
+        xs: 1,
+        title: 'Id'
+    },
+    {
+        sorting: true,
         name: 'name',
-        title: 'Name'
+        xs: 3,
+        title: 'Наименование'
     },
     {
         sorting: true,
-        name: 'phone',
-        title: 'Phone'
+        name: 'manager',
+        xs: 3,
+        title: 'Завсклад'
     },
     {
         sorting: true,
-        name: 'address',
-        title: 'Address'
+        name: 'stockType',
+        xs: 2,
+        title: 'Тип склада'
     },
     {
         sorting: true,
-        name: 'guide',
-        title: 'Guide'
+        xs: 2,
+        name: 'created_date',
+        title: 'Дата создания'
     },
     {
-        sorting: true,
-        name: 'contactName',
-        title: 'Contact name'
-    },
-    {
-        sorting: true,
-        name: 'createdDate',
-        title: 'Created date'
+        sorting: false,
+        xs: 1,
+        name: 'actions',
+        title: ''
     }
 ]
 
@@ -72,12 +78,11 @@ const enhance = compose(
     })
 )
 
-const OrderGridList = enhance((props) => {
+const StockGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
-        filterDialog,
         actionsDialog,
         confirmDialog,
         deleteDialog,
@@ -98,63 +103,60 @@ const OrderGridList = enhance((props) => {
         </div>
     )
 
-    const orderFilterDialog = (
-        <OrderFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
+    const stockDetail = (
+        <span>a</span>
     )
 
-    const orderDetail = (
-        <OrderDetails
-            key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            deleteDialog={deleteDialog}
-            confirmDialog={confirmDialog}
-            loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-        />
-    )
-
-    const orderList = _.map(_.get(listData, 'data'), (item) => {
+    const stockList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const phone = _.get(item, 'phone') || 'N/A'
-        const address = _.get(item, 'address') || 'N/A'
-        const guide = _.get(item, 'guide') || 'N/A'
-        const contactName = _.get(item, 'contactName') || 'N/A'
+        const manager = _.get(item, ['manager', 'firstName']) + ' ' + _.get(item, ['manager', 'secondName'])
+        const stockType = _.get(item, 'StockType') || 'N/A'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-
+        const iconButton = (
+            <IconButton style={{padding: '0 12px'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
-            <Row key={id}>
-                <Col xs={2}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{name}</Link>
-                </Col>
-                <Col xs={2}>{phone}</Col>
-                <Col xs={2}>{address}</Col>
-                <Col xs={2}>{guide}</Col>
-                <Col xs={2}>{contactName}</Col>
+            <Row key={id} style={{alignItems: 'center'}}>
+                <Col xs={1}>{id}</Col>
+                <Col xs={3}>{name}</Col>
+                <Col xs={3}>{manager}</Col>
+                <Col xs={2}>{stockType}</Col>
                 <Col xs={2}>{createdDate}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                        />
+                    </IconMenu>
+                </Col>
             </Row>
         )
     })
 
     const list = {
         header: listHeader,
-        list: orderList,
+        list: stockList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.ORDER_LIST_URL}/>
-
+            <SubMenu url={ROUTES.STOCK_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
+                <Tooltip position="left" text="Добавить категорию">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -167,19 +169,20 @@ const OrderGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={orderDetail}
+                detail={stockDetail}
                 actionsDialog={actions}
-                filterDialog={orderFilterDialog}
             />
 
-            <OrderCreateDialog
+            <StockCreateDialog
+                initialValues={{}}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <OrderCreateDialog
+            <StockCreateDialog
+                isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -204,7 +207,7 @@ const OrderGridList = enhance((props) => {
     )
 })
 
-OrderGridList.propTypes = {
+StockGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -236,15 +239,7 @@ OrderGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
-    filterDialog: PropTypes.shape({
-        initialValues: PropTypes.object,
-        filterLoading: PropTypes.bool,
-        openFilterDialog: PropTypes.bool.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default OrderGridList
+export default StockGridList

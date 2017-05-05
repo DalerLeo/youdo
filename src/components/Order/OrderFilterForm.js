@@ -14,9 +14,9 @@ import {CategorySearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const SHOP_FILTER_OPEN = 'openFilterDialog'
+export const ORDER_FILTER_OPEN = 'openFilterDialog'
 
-export const SHOP_FILTER_KEY = {
+export const ORDER_FILTER_KEY = {
     CATEGORY: 'category',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
@@ -83,15 +83,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ShopFilterForm',
+        form: 'OrderFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(SHOP_FILTER_KEY)
+            return _(ORDER_FILTER_KEY)
                 .values()
-                .filter(item => item !== SHOP_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== ORDER_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -99,7 +99,7 @@ const enhance = compose(
     })
 )
 
-const ShopFilterForm = enhance((props) => {
+const OrderFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
 
@@ -163,7 +163,7 @@ const ShopFilterForm = enhance((props) => {
     )
 })
 
-ShopFilterForm.propTypes = {
+OrderFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -174,4 +174,4 @@ ShopFilterForm.propTypes = {
     })
 }
 
-export default ShopFilterForm
+export default OrderFilterForm

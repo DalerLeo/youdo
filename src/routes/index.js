@@ -10,6 +10,7 @@ import {TransactionList} from '../containers/Transaction'
 import {SupplyList} from '../containers/Supply'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
+import {StockList} from '../containers/Stock'
 import {CurrencyList} from '../containers/Currency'
 import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
@@ -111,6 +112,17 @@ export default {
                 {
                     path: ROUTES.CATEGORY_ITEM_URL,
                     component: userIsAuth(CategoryList)
+                }
+            ]
+        },
+        // Stock
+        {
+            path: ROUTES.STOCK_LIST_URL,
+            component: userIsAuth(StockList),
+            childRoutes: [
+                {
+                    path: ROUTES.STOCK_ITEM_URL,
+                    component: userIsAuth(StockList)
                 }
             ]
         },

@@ -13,6 +13,12 @@ export const CATEGORY_LIST = `/${CATEGORY}/`
 export const CATEGORY_ITEM = `/${CATEGORY}/%d/`
 export const CATEGORY_DELETE = `/${CATEGORY}/%d/`
 
+export const STOCK = 'dist/stock'
+export const STOCK_CREATE = `/${STOCK}/`
+export const STOCK_LIST = `/${STOCK}/`
+export const STOCK_ITEM = `/${STOCK}/%d/`
+export const STOCK_DELETE = `/${STOCK}/%d/`
+
 export const MEASUREMENT = 'dist/measurement'
 export const MEASUREMENT_CREATE = `/${MEASUREMENT}/`
 export const MEASUREMENT_LIST = `/${MEASUREMENT}/`
@@ -82,11 +88,6 @@ export const BRAND = 'dist/brand'
 export const BRAND_CREATE = `/${BRAND}/`
 export const BRAND_LIST = `/${BRAND}/`
 export const BRAND_ITEM = `/${BRAND}/%d/`
-
-export const STOCK = 'dist/stock'
-export const STOCK_CREATE = `/${STOCK}/add/`
-export const STOCK_LIST = `/${STOCK}/`
-export const STOCK_ITEM = `/${STOCK}/%d/`
 
 export const PAYMNET_TYPE = 'dist/payment'
 export const PAYMNET_TYPE_CREATE = `/${PAYMNET_TYPE}/add/`

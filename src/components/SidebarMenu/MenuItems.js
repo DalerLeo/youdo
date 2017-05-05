@@ -56,6 +56,7 @@ export const MenuItems = [
         url: ROUTES.CATEGORY_LIST_URL,
         childs: [
             {name: 'Категории', url: ROUTES.CATEGORY_LIST_URL},
+            {name: 'Склад', url: ROUTES.STOCK_LIST_URL},
             {name: 'Валюта', url: ROUTES.CURRENCY_LIST_URL},
             {name: 'Касси', url: ROUTES.CASHBOX_LIST_URL},
             {name: 'Категории расхода', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL},

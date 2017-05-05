@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
-import ShopDetailsTab from './ShopDetailsTab'
 import {Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
@@ -89,8 +88,8 @@ const iconStyle = {
 
 const tooltipPosition = 'bottom-center'
 
-const ShopDetails = enhance((props) => {
-    const {classes, loading, data, tabData, confirmDialog, handleOpenUpdateDialog} = props
+const OrderDetails = enhance((props) => {
+    const {classes, loading, data, confirmDialog, handleOpenUpdateDialog} = props
     const name = _.get(data, 'name') || 'N/A'
     const type = _.get(data, 'categoryName') || 'N/A'
     const address = _.get(data, 'address') || 'N/A'
@@ -213,13 +212,11 @@ const ShopDetails = enhance((props) => {
                     </div>
                 </div>
             </Col>
-
-            <ShopDetailsTab tabData={tabData} data={data} />
         </div>
     )
 })
 
-ShopDetails.propTypes = {
+OrderDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     confirmDialog: PropTypes.shape({
@@ -228,13 +225,9 @@ ShopDetails.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    tabData: PropTypes.shape({
-        tab: PropTypes.string.isRequired,
-        handleTabChange: PropTypes.func.isRequired
-    }),
     handleOpenUpdateDialog: PropTypes.func.isRequired
 
 }
 
-export default ShopDetails
+export default OrderDetails
 
