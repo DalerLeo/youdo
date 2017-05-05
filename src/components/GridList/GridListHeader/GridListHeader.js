@@ -26,7 +26,13 @@ const enhance = compose(
             display: 'flex',
             boxShadow: 'rgba(0, 0, 0, 0.156863) 0 3px 10px, rgba(0, 0, 0, 0.227451) 0 3px 10px',
             '& .row': {
-                width: '100%'
+                width: '100%',
+                '& span': {
+                    lineHeight: 'normal !important'
+                },
+                '& button': {
+                    lineHeight: 'normal !important'
+                }
             }
         },
         sortingButton: {

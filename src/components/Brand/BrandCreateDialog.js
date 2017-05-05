@@ -13,7 +13,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
-export const CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const BRAND_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -36,30 +36,15 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
-        },
-
-        fields: {
-            display: ({loading}) => !loading ? 'block' : 'none',
-            width: '100%'
-        },
-
-        body: {
-            minHeight: 'auto'
-        },
-        form: {
-            minHeight: 'auto'
-        },
-        fieldsWrap: {
-            minHeight: '100px'
         }
     })),
     reduxForm({
-        form: 'CategoryCreateForm',
+        form: 'BrandCreateForm',
         enableReinitialize: true
     })
 )
 
-const CategoryCreateDialog = enhance((props) => {
+const BrandCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -72,7 +57,7 @@ const CategoryCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '135px'} : {width: '500px'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</span>
+                <span>{isUpdate ? 'Изменить бренд' : 'Добавить бренд'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -106,7 +91,7 @@ const CategoryCreateDialog = enhance((props) => {
     )
 })
 
-CategoryCreateDialog.propTypes = {
+BrandCreateDialog.propTyeps = {
     isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -114,8 +99,8 @@ CategoryCreateDialog.propTypes = {
     loading: PropTypes.bool.isRequired
 }
 
-CategoryCreateDialog.defaultProps = {
+BrandCreateDialog.defaultProps = {
     isUpdate: false
 }
 
-export default CategoryCreateDialog
+export default BrandCreateDialog

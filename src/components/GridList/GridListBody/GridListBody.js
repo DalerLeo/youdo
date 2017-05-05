@@ -15,14 +15,14 @@ const enhance = compose(
             height: '50px',
             background: '#fff',
             borderBottom: '1px dotted #eee',
-            alignItems: 'center',
-            display: 'flex',
             boxShadow: 'rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px',
             '& .row': {
-                width: '100%'
+                width: '100%',
+                alignItems: 'center',
+                height: '100%'
             },
             '& .row > div': {
-                paddingLeft: '15px'
+                paddingLeft: '25px'
             }
         },
         detail: {

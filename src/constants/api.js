@@ -79,7 +79,7 @@ export const PRODUCT_TYPE_LIST = `/${PRODUCT_TYPE}/`
 export const PRODUCT_TYPE_ITEM = `/${PRODUCT_TYPE}/%d/`
 
 export const BRAND = 'dist/brand'
-export const BRAND_CREATE = `/${BRAND}/add/`
+export const BRAND_CREATE = `/${BRAND}/`
 export const BRAND_LIST = `/${BRAND}/`
 export const BRAND_ITEM = `/${BRAND}/%d/`
 

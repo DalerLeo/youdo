@@ -28,7 +28,7 @@ setObservableConfig({
 setObservableConfig(rxjsconfig)
 
 const muiTheme = getMuiTheme({
-    fontFamily: 'Roboto, sans-serif',
+    fontFamily: 'Open Sans, sans-serif',
     palette: {
         primary1Color: '#5d6474',
         primary2Color: '#5d6474',

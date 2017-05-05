@@ -11,6 +11,7 @@ import {SupplyList} from '../containers/Supply'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
 import {CurrencyList} from '../containers/Currency'
+import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
@@ -154,6 +155,17 @@ export default {
                 {
                     path: ROUTES.PROVIDER_ITEM_URL,
                     component: userIsAuth(ProviderList)
+                }
+            ]
+        },
+        // Brand
+        {
+            path: ROUTES.BRAND_LIST_URL,
+            component: userIsAuth(BrandList),
+            childRoutes: [
+                {
+                    path: ROUTES.BRAND_ITEM_URL,
+                    component: userIsAuth(BrandList)
                 }
             ]
         },

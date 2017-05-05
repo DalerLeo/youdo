@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
@@ -13,6 +13,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import MainStyles from '../Styles/MainStyles'
 
 export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
 
@@ -30,7 +31,7 @@ const validate = (data) => {
 
 const colorBlue = '#129fdd !important'
 const enhance = compose(
-    injectSheet({
+    injectSheet(_.merge(MainStyles, {
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -39,51 +40,18 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
-        fieldsWrap: {
-            display: ({loading}) => !loading ? 'flex' : 'none',
-            width: '100%',
-            fontSize: '13px'
-        },
         leftSide: {
-            width: '40%'
+            width: '40%',
+            paddingRight: '20px'
         },
         rightSide: {
-            width: '60%'
+            width: '60%',
+            minHeight: '235px',
+            borderLeft: '1px solid #efefef',
+            paddingLeft: '20px'
         },
-        body: {
-            overflowY: 'auto !important',
-            fontSize: '13px !important',
-            position: 'relative',
-            padding: '20px !important'
-        },
-        title: {
-            paddingTop: '15px',
-            fontWeight: 'bold',
-            color: '#333'
-        },
-        titleContent: {
-            background: '#fff',
-            color: '#333',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            right: '0',
-            borderBottom: '1px solid #efefef',
-            padding: '20px 30px',
-            zIndex: '999',
-            '& button': {
-                position: 'absolute !important',
-                right: '10px',
-                top: '50%',
-                padding: '0 !important',
-                marginTop: '-24px !important'
-            }
-        },
-        form: {
-            display: 'flex',
-            padding: '35px 10px 76px'
+        innerTitle: {
+            marginTop: '20px'
         },
         inputFieldShift: {
             fontSize: '13px !important',
@@ -110,26 +78,6 @@ const enhance = compose(
         },
         imageUpload: {
             width: '100px'
-        },
-        bottomButton: {
-            position: 'fixed',
-            bottom: '0',
-            left: '0',
-            right: '0',
-            padding: '20px',
-            zIndex: '999',
-            borderTop: '1px solid #efefef',
-            background: '#fff',
-            textAlign: 'right',
-            '& span': {
-                fontSize: '13px !important',
-                fontWeight: '600 !important',
-                color: colorBlue
-            }
-        },
-        actionButton: {
-            fontSize: '13px !important',
-            margin: '0 !important'
         },
         buttonSub: {
             textAlign: 'right',
@@ -159,11 +107,16 @@ const enhance = compose(
                 color: '#999',
                 fontSize: '11px',
                 fontWeight: '100'
+            },
+            '&:hover': {
+                '& div:last-child': {
+                    display: 'table-cell'
+                }
             }
         },
         deleteHideIco: {
             position: 'relative',
-            display: 'table-cell',
+            display: 'none',
             float: 'right',
             top: '-15px',
             cursor: 'pointer'
@@ -171,10 +124,60 @@ const enhance = compose(
         background: {
             background: '#f1f5f8',
             color: '#333',
-            margin: '0 -30px 0',
-            padding: '20px 30px 10px'
+            margin: '10px -20px 0 -30px',
+            padding: '10px 20px 5px 30px'
+        },
+        staffAdd: {
+            background: '#f1f5f8',
+            color: '#333',
+            margin: '10px -30px 0 -20px',
+            padding: '10px 30px 5px 20px'
+        },
+        personalList: {
+            '& ul': {
+                listStyle: 'none',
+                margin: '0',
+                padding: '0',
+                '& li:last-child': {
+                    border: 'none'
+                }
+            },
+            '& li': {
+                margin: '0',
+                borderBottom: '1px dashed #efefef',
+                padding: '10px 0',
+                '& div:first-child': {
+                    width: '30px',
+                    height: '30px',
+                    display: 'inline-block',
+                    borderRadius: '50%',
+                    verticalAlign: 'top',
+                    marginRight: '10px'
+                },
+                '& div:first-child img': {
+                    width: '30px'
+                },
+                '& div:nth-child(2)': {
+                    display: 'inline-block',
+                    verticalAlign: 'top'
+                },
+                '& div::nth-child(2) span': {
+                    color: '#666'
+                },
+                '& div:last-child': {
+                    top: '6px !important',
+                    display: 'none'
+                },
+                '&:hover': {
+                    '& div:last-child': {
+                        display: 'block'
+                    }
+                }
+            }
         }
-    }),
+    })),
+    withState('openAddShift', 'setOpenAddShift', false),
+    withState('openAddStaff', 'setOpenAddStaff', false),
     reduxForm({
         form: 'ProviderCreateForm',
         enableReinitialize: true
@@ -182,7 +185,7 @@ const enhance = compose(
 )
 
 const ManufactureAddStaffDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, openAddShift, setOpenAddShift, openAddStaff, setOpenAddStaff} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -191,7 +194,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '570px'}}
+            contentStyle={loading ? {width: '135px'} : {width: '600px'}}
             bodyClassName={classes.body}>
 
             <div className={classes.titleContent}>
@@ -206,14 +209,14 @@ const ManufactureAddStaffDialog = enhance((props) => {
                 </div>
                 <div className={classes.fieldsWrap}>
                     <div className={classes.leftSide}>
-                        <div>
-                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Персонал</h3>
-                            <a style={{float: 'right'}}>
+                        <div className={classes.innerTitle}>
+                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Смена</h3>
+                            <a style={{float: 'right'}} onClick={() => { setOpenAddShift(!openAddShift) }}>
                                 <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
                                 добавить
                             </a>
                         </div>
-                        <div className={classes.background}>
+                        {openAddShift && <div className={classes.background}>
                             <Field
                                 name="name"
                                 component={TextField}
@@ -234,7 +237,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                     type="submit"
                                 />
                             </div>
-                        </div>
+                        </div>}
                         <div className={classes.shift}>
                             <h4>
                                 Смена А
@@ -252,6 +255,105 @@ const ManufactureAddStaffDialog = enhance((props) => {
                             <div className={classes.deleteHideIco}>
                                 <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
                             </div>
+                        </div>
+                    </div>
+                    <div className={classes.rightSide}>
+                        <div className={classes.innerTitle}>
+                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Персонал</h3>
+                            <a style={{float: 'right'}} onClick={() => { setOpenAddStaff(!openAddStaff) }}>
+                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
+                                добавить
+                            </a>
+                        </div>
+                        {openAddStaff && <div className={classes.staffAdd}>
+                            <Field
+                                name="name"
+                                component={TextField}
+                                className={classes.inputFieldShift}
+                                label="Сотрудник"
+                                fullWidth={true}/>
+                            <Field
+                                name="address"
+                                component={TextField}
+                                className={classes.inputFieldTime}
+                                label="Смена"
+                                fullWidth={true}/>
+                            <div className={classes.buttonSub}>
+                                <FlatButton
+                                    label="Сохранить"
+                                    className={classes.actionButton}
+                                    primary={true}
+                                    type="submit"
+                                />
+                            </div>
+                        </div>}
+                        <div className={classes.personalList}>
+                            <div className={classes.shift}>
+                                <h4>
+                                    Смена Б
+                                    <span>(00:00 - 00:00)</span>
+                                </h4>
+                            </div>
+                            <ul>
+                                <li>
+                                    <div>
+                                        <img src />
+                                    </div>
+                                    <div>
+                                        Атамбаев Бекзод<br />
+                                        <span>Должность</span>
+                                    </div>
+                                    <div className={classes.deleteHideIco}>
+                                        <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>
+                                        <img src />
+                                    </div>
+                                    <div>
+                                        Атамбаев Бекзод<br />
+                                        <span>Должность</span>
+                                    </div>
+                                    <div className={classes.deleteHideIco}>
+                                        <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className={classes.personalList}>
+                            <div className={classes.shift}>
+                                <h4>
+                                    Смена Б
+                                    <span>(00:00 - 00:00)</span>
+                                </h4>
+                            </div>
+                            <ul>
+                                <li>
+                                    <div>
+                                        <img src />
+                                    </div>
+                                    <div>
+                                        Атамбаев Бекзод<br />
+                                        <span>Должность</span>
+                                    </div>
+                                    <div className={classes.deleteHideIco}>
+                                        <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>
+                                        <img src />
+                                    </div>
+                                    <div>
+                                        Атамбаев Бекзод<br />
+                                        <span>Должность</span>
+                                    </div>
+                                    <div className={classes.deleteHideIco}>
+                                        <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>

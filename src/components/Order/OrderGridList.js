@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -10,9 +11,9 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import SupplyFilterForm from './SupplyFilterForm'
-import SupplyDetails from './SupplyDetails'
-import SupplyCreateDialog from './SupplyCreateDialog'
+import ShopFilterForm from './OrderFilterForm'
+import ShopDetails from './OrderDetails'
+import ShopCreateDialog from './OrderCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -25,51 +26,33 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
-        name: 'id',
-        title: '№',
-        xs: 1
-    },
-    {
-        sorting: true,
         name: 'name',
-        title: 'Поставщик',
-        xs: 2
+        title: 'Name'
     },
     {
         sorting: true,
-        name: 'stock',
-        title: 'Склад',
-        xs: 2
+        name: 'phone',
+        title: 'Phone'
     },
     {
         sorting: true,
-        name: 'dateDelivery',
-        title: 'Дата поставки',
-        xs: 2
+        name: 'address',
+        title: 'Address'
     },
     {
         sorting: true,
-        name: 'totalCost',
-        title: 'Цена заказа',
-        xs: 2
+        name: 'guide',
+        title: 'Guide'
     },
     {
         sorting: true,
-        name: 'status',
-        title: 'Оплата',
-        xs: 1
+        name: 'contactName',
+        title: 'Contact name'
     },
     {
         sorting: true,
-        name: 'acceptedCost',
-        title: 'Принято',
-        xs: 1
-    },
-    {
-        sorting: true,
-        name: 'defectedCost',
-        title: 'Браковано',
-        xs: 1
+        name: 'createdDate',
+        title: 'Created date'
     }
 ]
 
@@ -85,26 +68,11 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
-        },
-        dot: {
-            display: 'inline-block',
-            height: '7px',
-            width: '7px',
-            borderRadius: '50%',
-            marginRight: '6px'
-        },
-        success: {
-            extend: 'dot',
-            backgroundColor: '#81c784'
-        },
-        error: {
-            extend: 'dot',
-            backgroundColor: '#e57373'
         }
     })
 )
 
-const SupplyGridList = enhance((props) => {
+const ShopGridList = enhance((props) => {
     const {
         filter,
         createDialog,
@@ -115,6 +83,7 @@ const SupplyGridList = enhance((props) => {
         deleteDialog,
         listData,
         detailData,
+        tabData,
         classes
     } = props
 
@@ -130,66 +99,64 @@ const SupplyGridList = enhance((props) => {
         </div>
     )
 
-    const supplyFilterDialog = (
-        <SupplyFilterForm
+    const shopFilterDialog = (
+        <ShopFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
         />
     )
 
-    const supplyDetail = (
-        <SupplyDetails
+    const shopDetail = (
+        <ShopDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
+            tabData={tabData}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
         />
     )
 
-    const supplyList = _.map(_.get(listData, 'data'), (item) => {
+    const shopList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(_.get(item, 'provider'), 'name')
-        const stock = _.get(_.get(item, 'stock'), 'name') || 'N/A'
-        const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
-        const totalCost = _.get(item, 'totalCost') || 'N/A'
-        const status = _.get(item, 'status') || 'N/A'
-        const acceptedCost = _.get(item, 'acceptedCost') || 'N/A'
-        const defectedCost = _.get(item, 'defectedCost') || 'N/A'
+        const name = _.get(item, 'name')
+        const phone = _.get(item, 'phone') || 'N/A'
+        const address = _.get(item, 'address') || 'N/A'
+        const guide = _.get(item, 'guide') || 'N/A'
+        const contactName = _.get(item, 'contactName') || 'N/A'
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
 
         return (
             <Row key={id}>
-                <Col xs={1}>{id}</Col>
                 <Col xs={2}>
                     <Link to={{
-                        pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, id),
+                        pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{name}</Link>
                 </Col>
-                <Col xs={2}>{stock}</Col>
-                <Col xs={2}>{dateDelivery}</Col>
-                <Col xs={2}>{totalCost}</Col>
-                <Col xs={1}>{status}</Col>
-                <Col xs={1}>{acceptedCost}</Col>
-                <Col xs={1}>{defectedCost}</Col>
+                <Col xs={2}>{phone}</Col>
+                <Col xs={2}>{address}</Col>
+                <Col xs={2}>{guide}</Col>
+                <Col xs={2}>{contactName}</Col>
+                <Col xs={2}>{createdDate}</Col>
             </Row>
         )
     })
 
     const list = {
         header: listHeader,
-        list: supplyList,
+        list: shopList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.SUPPLY_LIST_URL}/>
+            <SubMenu url={ROUTES.SHOP_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить поставку">
+                <Tooltip position="left" text="Добавить магазин">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -202,19 +169,19 @@ const SupplyGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={supplyDetail}
+                detail={shopDetail}
                 actionsDialog={actions}
-                filterDialog={supplyFilterDialog}
+                filterDialog={shopFilterDialog}
             />
 
-            <SupplyCreateDialog
+            <ShopCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <SupplyCreateDialog
+            <ShopCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -239,10 +206,11 @@ const SupplyGridList = enhance((props) => {
     )
 })
 
-SupplyGridList.propTypes = {
+ShopGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
+    tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
@@ -282,4 +250,4 @@ SupplyGridList.propTypes = {
     }).isRequired
 }
 
-export default SupplyGridList
+export default ShopGridList

@@ -43,7 +43,12 @@ export const PRODUCT_ITEM_PATH = `/${PRODUCT}/%d`
 export const CATEGORY = 'category'
 export const CATEGORY_LIST_URL = `/${CATEGORY}`
 export const CATEGORY_ITEM_URL = `${CATEGORY_LIST_URL}/:categoryId`
-export const CATEGORY_ITEM_PATH = `${CATEGORY}/%d`
+export const CATEGORY_ITEM_PATH = `/${CATEGORY}/%d`
+
+export const BRAND = 'brand'
+export const BRAND_LIST_URL = `/${BRAND}`
+export const BRAND_ITEM_URL = `${BRAND_LIST_URL}/:brandId`
+export const BRAND_ITEM_PATH = `/${BRAND}/%d`
 
 export const CURRENCY = 'currency'
 export const CURRENCY_LIST_URL = `/${CURRENCY}`

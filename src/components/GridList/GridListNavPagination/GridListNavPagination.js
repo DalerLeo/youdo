@@ -19,7 +19,10 @@ const enhance = compose(
         },
 
         count: {
-            marginRight: '20px'
+            marginRight: '20px',
+            '& > div': {
+                fontSize: '13px !important'
+            }
         },
 
         nav: {
@@ -57,7 +60,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter}) => {
                 </SelectField>
             </div>
             <div className={classes.nav}>
-                <div>{startPage} - {startEnd} from {filter.getCounts()}</div>
+                <div>{startPage} - {startEnd} из {filter.getCounts()}</div>
                 <div>
                     <IconButton
                         disabled={Boolean(!prev)}

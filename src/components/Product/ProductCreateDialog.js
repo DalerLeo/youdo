@@ -11,6 +11,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, ProductTypeSearchField, BrandSearchField, MeasurementSearchField, ImageUploadField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
+import MainStyles from '../Styles/MainStyles'
 
 export const PRODUCT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -25,10 +26,8 @@ const validate = (data) => {
         _error: nonFieldErrors
     })
 }
-
-const colorBlue = '#129fdd !important'
 const enhance = compose(
-    injectSheet({
+    injectSheet(_.merge(MainStyles, {
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -37,68 +36,10 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
-        fieldsWrap: {
-            display: ({loading}) => !loading ? 'flex' : 'none',
-            width: '100%'
-        },
-        field: {
-            width: '100%'
-        },
-        body: {
-            maxHeight: '600px !important',
-            overflow: 'hidden !important',
-            fontSize: '13px !important',
-            position: 'relative',
-            padding: '20px !important'
-        },
-
-        title: {
-            paddingTop: '15px',
-            fontWeight: 'bold',
-            color: '#333'
-        },
-        titleContent: {
-            color: '#333',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            position: 'relative',
-            borderBottom: '1px solid #efefef',
-            marginLeft: '-24px',
-            marginRight: '-24px',
-            padding: '0px 30px 20px 30px',
-            '& button': {
-                position: 'absolute !important',
-                right: '20px',
-                margin: '-15px -10px 0 0 !important'
-            }
-        },
-
-        form: {
-            display: 'flex'
-        },
-        inputField: {
-            fontSize: '13px !important'
-        },
         imageUpload: {
             width: '100px'
-        },
-        bottomButton: {
-            margin: '20px -20px 0',
-            bottom: '-5px',
-            padding: '20px 20px 0 0',
-            position: 'relative',
-            textAlign: 'right',
-            '& span': {
-                fontSize: '13px !important',
-                fontWeight: '600 !important',
-                color: colorBlue
-            }
-        },
-        actionButton: {
-            fontSize: '13px !important',
-            margin: '0 !important'
         }
-    }),
+    })),
     reduxForm({
         form: 'ProductCreateForm',
         enableReinitialize: true
@@ -133,7 +74,7 @@ const ProductCreateDialog = enhance((props) => {
                             name="name"
                             className={classes.inputField}
                             component={TextField}
-                            label="Наимование"
+                            label="Наименование"
                             fullWidth={true}
                         />
                         <Field

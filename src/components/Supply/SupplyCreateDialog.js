@@ -121,7 +121,7 @@ const enhance = compose(
             '& div > span': {
                 padding: '0 5px !important',
                 textTransform: 'inherit !important',
-                fontSize: '16px !important',
+                fontSize: '13px !important',
                 color: '#12aaeb !important'
             }
         },
@@ -141,7 +141,7 @@ const enhance = compose(
             '& > button > div > span': {
                 padding: '5px !important',
                 textTransform: 'inherit !important',
-                fontSize: '16px'
+                fontSize: '13px'
             },
             '& > div:first-child': {
                 width: '100% !important'

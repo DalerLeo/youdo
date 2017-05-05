@@ -100,7 +100,7 @@ const CategoryGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
-            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+            <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
             </IconButton>
         )
@@ -140,7 +140,7 @@ const CategoryGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.CATEGORY_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить продукт">
+                <Tooltip position="left" text="Добавить категорию">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
