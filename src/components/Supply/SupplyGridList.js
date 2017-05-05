@@ -38,7 +38,8 @@ const listHeader = [
     {
         sorting: true,
         name: 'stock',
-        title: 'Склад'
+        title: 'Склад',
+        xs: 2
     },
     {
         sorting: true,
@@ -54,14 +55,20 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'accepted',
+        name: 'status',
         title: 'Оплата',
-        xs: 2
+        xs: 1
     },
     {
         sorting: true,
-        name: 'delivered',
-        title: 'Доставка',
+        name: 'acceptedCost',
+        title: 'Принято',
+        xs: 1
+    },
+    {
+        sorting: true,
+        name: 'defectedCost',
+        title: 'Браковано',
         xs: 1
     }
 ]
@@ -164,9 +171,9 @@ const SupplyGridList = enhance((props) => {
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
                 <Col xs={2}>{totalCost}</Col>
-                <Col xs={2}>{status}</Col>
+                <Col xs={1}>{status}</Col>
                 <Col xs={1}>{acceptedCost}</Col>
-                <Col xs={1}>{acceptedCost}</Col>
+                <Col xs={1}>{defectedCost}</Col>
             </Row>
         )
     })
