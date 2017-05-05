@@ -55,7 +55,6 @@ const MainStyles = {
         }
     },
     form: {
-        display: 'flex',
         padding: '0 30px',
         minHeight: '307px',
         maxHeight: '50vh',
@@ -65,14 +64,12 @@ const MainStyles = {
         fontSize: '13px !important'
     },
     bottomButton: {
-        bottom: '0',
-        left: '0',
-        right: '0',
         padding: '15px',
         zIndex: '999',
         borderTop: '1px solid #efefef',
         background: '#fff',
         textAlign: 'right',
+        margin: '0 -30px',
         '& span': {
             fontSize: '13px !important',
             fontWeight: '600 !important',

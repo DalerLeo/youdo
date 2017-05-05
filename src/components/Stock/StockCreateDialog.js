@@ -38,19 +38,11 @@ const enhance = compose(
             flexDirection: 'center'
         },
 
-        fields: {
-            display: ({loading}) => !loading ? 'block' : 'none',
-            width: '100%'
-        },
-
         body: {
             minHeight: 'auto'
         },
         form: {
             minHeight: 'auto'
-        },
-        fieldsWrap: {
-            minHeight: '100px'
         }
     })),
     reduxForm({
@@ -69,10 +61,11 @@ const StockCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
+            bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</span>
+                <span>{isUpdate ? 'Изменить склад' : 'Добавить склад'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -106,14 +99,13 @@ const StockCreateDialog = enhance((props) => {
                         />
                     </div>
                 </div>
+                <div className={classes.bottomButton}>
+                    <FlatButton
+                        label="Сохранить"
+                        type="submit"
+                    />
+                </div>
             </form>
-            <div className={classes.bottomButton}>
-                <FlatButton
-                    label="Сохранить"
-                    type="submit"
-                    keyboardFocused={true}
-                />
-            </div>
         </Dialog>
     )
 })

@@ -43,7 +43,7 @@ const enhance = compose(
             padding: '15px',
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none',
-            flexDirection: 'center'
+            justifyContent: 'space-around'
         },
 
         fields: {
@@ -52,7 +52,6 @@ const enhance = compose(
 
         body: {
             maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
             overflow: 'hidden !important'
         }
     }),
@@ -72,7 +71,7 @@ const PrimaryCurrencyDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '200px'} : {}}
             bodyClassName={classes.body}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
@@ -96,7 +95,6 @@ const PrimaryCurrencyDialog = enhance((props) => {
                             label="Отправить"
                             primary={true}
                             type="submit"
-                            keyboardFocused={true}
                         />
                     </div>
                 </div>

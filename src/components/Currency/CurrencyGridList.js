@@ -125,7 +125,7 @@ const CurrencyGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
-            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+            <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
             </IconButton>
         )

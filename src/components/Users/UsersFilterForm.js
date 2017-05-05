@@ -80,6 +80,9 @@ const enhance = compose(
         },
         submit: {
             color: '#fff !important'
+        },
+        inputField: {
+            fontSize: '13px !important'
         }
     }),
     reduxForm({
@@ -107,7 +110,7 @@ const UsersFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Filter counts: {filterCounts}</div>
+                    <div>Фильтр: {filterCounts} элемента</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -135,18 +138,18 @@ const UsersFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Filter</span>
+                    <span className={classes.title}>Фильтр</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field name="category" component={CategorySearchField} label="Category"/>
+                        <Field className={classes.inputField} name="category" component={CategorySearchField} label="Категория"/>
                     </div>
 
                     <div>
-                        <Field name="date" component={DateToDateField} label="Date to Date" fullWidth={true}/>
+                        <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
                     </div>
 
                     <div>
@@ -154,7 +157,7 @@ const UsersFilterForm = enhance((props) => {
                             type="submit"
                             primary={true}
                             buttonStyle={{color: '#fff'}}>
-                            Apply
+                            Применить
                         </RaisedButton>
                     </div>
                 </form>

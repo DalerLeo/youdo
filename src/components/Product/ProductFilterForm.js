@@ -78,6 +78,9 @@ const enhance = compose(
         },
         submit: {
             color: '#fff !important'
+        },
+        inputField: {
+            fontSize: '13px !important'
         }
     }),
     reduxForm({
@@ -105,7 +108,7 @@ const ProductFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Filter counts: {filterCounts}</div>
+                    <div>Фильтр: {filterCounts} элемента</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -133,27 +136,27 @@ const ProductFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Filter</span>
+                    <span className={classes.title}>Фильтр</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field name="product_type" component={ProductTypeSearchField} label="Product Type"/>
+                        <Field className={classes.inputField} name="product_type" component={ProductTypeSearchField} label="Тип продукта"/>
                     </div>
                     <div>
-                        <Field name="measurement" component={MeasurementSearchField} label="Meaurement"/>
+                        <Field className={classes.inputField} name="measurement" component={MeasurementSearchField} label="Мера"/>
                     </div>
                     <div>
-                        <Field name="brand" component={BrandSearchField} label="Brand"/>
+                        <Field className={classes.inputField} name="brand" component={BrandSearchField} label="Бренд"/>
                     </div>
                     <div>
                         <RaisedButton
                             type="submit"
                             primary={true}
                             buttonStyle={{color: '#fff'}}>
-                            Apply
+                            Применить
                         </RaisedButton>
                     </div>
                 </form>

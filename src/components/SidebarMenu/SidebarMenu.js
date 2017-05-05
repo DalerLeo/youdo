@@ -30,6 +30,7 @@ const SideBarMenu = (props) => {
                     <IconButton
                         iconStyle={style.iconStyle}
                         style={style.style}
+                        disableTouchRipple={true}
                         touch={touch}>
                         {item.icon}
                     </IconButton>
@@ -51,6 +52,7 @@ const SideBarMenu = (props) => {
                             iconStyle={style.iconStyle}
                             style={style.style}
                             touch={touch}
+                            disableTouchRipple={true}
                             onClick={handleSignOut}>
                             <SettingsPower />
                         </IconButton>
@@ -78,10 +80,14 @@ export default injectSheet({
         width: '100%',
         '& button': {
             width: '100% !important',
-            height: '65px !important'
+            height: '65px !important',
+            opacity: '0.5',
+            '&:hover': {
+                opacity: '1'
+            }
         },
         '& svg': {
-            color: '#abacb0 !important',
+            color: '#fff !important',
             width: '25px !important',
             height: '25px !important'
         }
