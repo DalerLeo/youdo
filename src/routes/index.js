@@ -8,6 +8,7 @@ import {ShopList} from '../containers/Shop'
 import {CashboxList} from '../containers/Cashbox'
 import {TransactionList} from '../containers/Transaction'
 import {SupplyList} from '../containers/Supply'
+import {OrderList} from '../containers/Order'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
 import {StockList} from '../containers/Stock'
@@ -94,6 +95,17 @@ export default {
                 {
                     path: ROUTES.SUPPLY_ITEM_URL,
                     component: userIsAuth(SupplyList)
+                }
+            ]
+        },
+        // Order
+        {
+            path: ROUTES.ORDER_LIST_URL,
+            component: userIsAuth(OrderList),
+            childRoutes: [
+                {
+                    path: ROUTES.ORDER_ITEM_URL,
+                    component: userIsAuth(OrderList)
                 }
             ]
         },

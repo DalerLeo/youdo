@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -26,33 +25,51 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
+        name: 'id',
+        title: '№',
+        xs: 1
+    },
+    {
+        sorting: true,
         name: 'name',
-        title: 'Name'
+        title: 'Поставщик',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'phone',
-        title: 'Phone'
+        name: 'stock',
+        title: 'Склад',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'address',
-        title: 'Address'
+        name: 'dateDelivery',
+        title: 'Дата поставки',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'guide',
-        title: 'Guide'
+        name: 'totalCost',
+        title: 'Цена заказа',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'contactName',
-        title: 'Contact name'
+        name: 'status',
+        title: 'Оплата',
+        xs: 1
     },
     {
         sorting: true,
-        name: 'createdDate',
-        title: 'Created date'
+        name: 'acceptedCost',
+        title: 'Принято',
+        xs: 1
+    },
+    {
+        sorting: true,
+        name: 'defectedCost',
+        title: 'Браковано',
+        xs: 1
     }
 ]
 
@@ -68,6 +85,21 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        dot: {
+            display: 'inline-block',
+            height: '7px',
+            width: '7px',
+            borderRadius: '50%',
+            marginRight: '6px'
+        },
+        success: {
+            extend: 'dot',
+            backgroundColor: '#81c784'
+        },
+        error: {
+            extend: 'dot',
+            backgroundColor: '#e57373'
         }
     })
 )
@@ -77,6 +109,7 @@ const OrderGridList = enhance((props) => {
         filter,
         createDialog,
         updateDialog,
+        expenseDialog,
         filterDialog,
         actionsDialog,
         confirmDialog,
@@ -114,31 +147,35 @@ const OrderGridList = enhance((props) => {
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
+            hanleExpenseOpenDialog={expenseDialog.handleOpenExpenseDialog}
         />
     )
 
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const phone = _.get(item, 'phone') || 'N/A'
-        const address = _.get(item, 'address') || 'N/A'
-        const guide = _.get(item, 'guide') || 'N/A'
-        const contactName = _.get(item, 'contactName') || 'N/A'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const name = _.get(_.get(item, 'provider'), 'name')
+        const stock = _.get(_.get(item, 'stock'), 'name') || 'N/A'
+        const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
+        const totalCost = _.get(item, 'totalCost') || 'N/A'
+        const status = _.get(item, 'status') || 'N/A'
+        const acceptedCost = _.get(item, 'acceptedCost') || 'N/A'
+        const defectedCost = _.get(item, 'defectedCost') || 'N/A'
 
         return (
             <Row key={id}>
+                <Col xs={1}>{id}</Col>
                 <Col xs={2}>
                     <Link to={{
                         pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{name}</Link>
                 </Col>
-                <Col xs={2}>{phone}</Col>
-                <Col xs={2}>{address}</Col>
-                <Col xs={2}>{guide}</Col>
-                <Col xs={2}>{contactName}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={2}>{stock}</Col>
+                <Col xs={2}>{dateDelivery}</Col>
+                <Col xs={2}>{totalCost}</Col>
+                <Col xs={1}>{status}</Col>
+                <Col xs={1}>{acceptedCost}</Col>
+                <Col xs={1}>{defectedCost}</Col>
             </Row>
         )
     })
@@ -154,7 +191,7 @@ const OrderGridList = enhance((props) => {
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
+                <Tooltip position="left" text="Добавить поставку">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -185,6 +222,13 @@ const OrderGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+            />
+
+            <ExpenseCreateDialog
+                open={expenseDialog.handleOpenExpenseDialog}
+                loading={expenseDialog.expenseLoading}
+                onClose={expenseDialog.handleCloseExpenseDialog}
+                onSubmit={expenseDialog.handleSubmitExpenseDialog}
             />
 
             <DeleteDialog
@@ -233,6 +277,13 @@ OrderGridList.propTypes = {
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
+    expenseDialog: PropTypes.shape({
+        expenseLoading: PropTypes.bool.isRequired,
+        openExpenseDialog: PropTypes.bool.isRequired,
+        handleOpenExpenseDialog: PropTypes.func.isRequired,
+        handleCloseExpenseDialog: PropTypes.func.isRequired,
+        handleSubmitExpenseDialog: PropTypes.func.isRequired
+    }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
@@ -244,6 +295,29 @@ OrderGridList.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired,
+
+    orderExpenseCreateDialog: PropTypes.shape({
+        orderExpenseLoading: PropTypes.bool.isRequired,
+        openOrderExpenseCreateDialog: PropTypes.bool.isRequired,
+        handleOrderExpenseOpenOrderExpenseCreateDialog: PropTypes.func.isRequired,
+        handleOrderExpenseCloseCreateDialog: PropTypes.func.isRequired,
+        handleOrderExpenseSubmitCreateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    orderExpenseConfirmDialog: PropTypes.shape({
+        openOrderExpenseConfirmDialog: PropTypes.bool.isRequired,
+        handleOrderExpenseOpenOrderExpenseConfirmDialog: PropTypes.func.isRequired,
+        handleOrderExpenseCloseConfirmDialog: PropTypes.func.isRequired,
+        handleOrderExpenseSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
+    orderExpenseDeleteDialog: PropTypes.shape({
+        openOrderExpenseDeleteDialog: PropTypes.bool.isRequired,
+        handleOrderExpenseOpenDeleteDialog: PropTypes.func.isRequired,
+        handleOrderExpenseCloseDeleteDialog: PropTypes.func.isRequired
+    }).isRequired,
+    orderExpenseActionsDialog: PropTypes.shape({
+        handleOrderExpenseActionEdit: PropTypes.func.isRequired,
+        handleOrderExpenseActionDelete: PropTypes.func.isRequired
     }).isRequired
 }
 

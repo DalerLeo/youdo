@@ -73,6 +73,12 @@ export const SUPPLY_LIST = `/${SUPPLY}/`
 export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DELETE = `/${SUPPLY}/%d/`
 
+export const ORDER = 'order'
+export const ORDER_CREATE = `/${ORDER}/`
+export const ORDER_LIST = `/${ORDER}/`
+export const ORDER_ITEM = `/${ORDER}/%d/`
+export const ORDER_DELETE = `/${ORDER}/%d/`
+
 export const SUPPLY_EXPENSE = 'dist/supply_expanse'
 export const SUPPLY_EXPENSE_CREATE = `/${SUPPLY}/`
 export const SUPPLY_EXPENSE_LIST = `/${SUPPLY}/`
