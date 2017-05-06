@@ -45,10 +45,20 @@ export const CATEGORY_LIST_URL = `/${CATEGORY}`
 export const CATEGORY_ITEM_URL = `${CATEGORY_LIST_URL}/:categoryId`
 export const CATEGORY_ITEM_PATH = `/${CATEGORY}/%d`
 
+export const STOCK = 'stock'
+export const STOCK_LIST_URL = `/${STOCK}`
+export const STOCK_ITEM_URL = `${STOCK_LIST_URL}/:stockId`
+export const STOCK_ITEM_PATH = `/${STOCK}/%d`
+
 export const BRAND = 'brand'
 export const BRAND_LIST_URL = `/${BRAND}`
 export const BRAND_ITEM_URL = `${BRAND_LIST_URL}/:brandId`
 export const BRAND_ITEM_PATH = `/${BRAND}/%d`
+
+export const CURRENCY = 'currency'
+export const CURRENCY_LIST_URL = `/${CURRENCY}`
+export const CURRENCY_ITEM_URL = `${CURRENCY_LIST_URL}/:currencyId`
+export const CURRENCY_ITEM_PATH = `${CURRENCY}/%d`
 
 export const MEASUREMENT = 'measurement'
 export const MEASUREMENT_LIST_URL = `/${MEASUREMENT}`

@@ -26,34 +26,50 @@ const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: 'Id',
+        title: '№',
         xs: 1
     },
     {
         sorting: true,
         name: 'name',
         title: 'Поставщик',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
         name: 'stock',
-        title: 'Наименование склада'
+        title: 'Склад',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'dateDelivery',
+        title: 'Дата поставки',
+        xs: 2
     },
     {
         sorting: true,
         name: 'totalCost',
-        title: 'Цена заказа'
+        title: 'Цена заказа',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'accepted',
-        title: 'Оплата'
+        name: 'status',
+        title: 'Оплата',
+        xs: 1
     },
     {
         sorting: true,
-        name: 'delivered',
-        title: 'Доставка'
+        name: 'acceptedCost',
+        title: 'Принято',
+        xs: 1
+    },
+    {
+        sorting: true,
+        name: 'defectedCost',
+        title: 'Браковано',
+        xs: 1
     }
 ]
 
@@ -93,6 +109,7 @@ const SupplyGridList = enhance((props) => {
         filter,
         createDialog,
         updateDialog,
+        expenseDialog,
         filterDialog,
         actionsDialog,
         confirmDialog,
@@ -130,6 +147,7 @@ const SupplyGridList = enhance((props) => {
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
+            hanleExpenseOpenDialog={expenseDialog.handleOpenExpenseDialog}
         />
     )
 
@@ -137,27 +155,27 @@ const SupplyGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(_.get(item, 'provider'), 'name')
         const stock = _.get(_.get(item, 'stock'), 'name') || 'N/A'
+        const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
         const totalCost = _.get(item, 'totalCost') || 'N/A'
+        const status = _.get(item, 'status') || 'N/A'
+        const acceptedCost = _.get(item, 'acceptedCost') || 'N/A'
+        const defectedCost = _.get(item, 'defectedCost') || 'N/A'
 
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={3}>
+                <Col xs={2}>
                     <Link to={{
                         pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{name}</Link>
                 </Col>
                 <Col xs={2}>{stock}</Col>
+                <Col xs={2}>{dateDelivery}</Col>
                 <Col xs={2}>{totalCost}</Col>
-                <Col xs={2}>
-                    <div className={classes.success}></div>
-                    оплачен
-                </Col>
-                <Col xs={2}>
-                    <div className={classes.error}></div>
-                    ожидает
-                </Col>
+                <Col xs={1}>{status}</Col>
+                <Col xs={1}>{acceptedCost}</Col>
+                <Col xs={1}>{defectedCost}</Col>
             </Row>
         )
     })
@@ -206,6 +224,13 @@ const SupplyGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
+            <ExpenseCreateDialog
+                open={expenseDialog.handleOpenExpenseDialog}
+                loading={expenseDialog.expenseLoading}
+                onClose={expenseDialog.handleCloseExpenseDialog}
+                onSubmit={expenseDialog.handleSubmitExpenseDialog}
+            />
+
             <DeleteDialog
                 filter={filter}
                 open={deleteDialog.openDeleteDialog}
@@ -252,6 +277,13 @@ SupplyGridList.propTypes = {
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
+    expenseDialog: PropTypes.shape({
+        expenseLoading: PropTypes.bool.isRequired,
+        openExpenseDialog: PropTypes.bool.isRequired,
+        handleOpenExpenseDialog: PropTypes.func.isRequired,
+        handleCloseExpenseDialog: PropTypes.func.isRequired,
+        handleSubmitExpenseDialog: PropTypes.func.isRequired
+    }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
@@ -263,6 +295,29 @@ SupplyGridList.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired,
+
+    supplyExpenseCreateDialog: PropTypes.shape({
+        supplyExpenseLoading: PropTypes.bool.isRequired,
+        openSupplyExpenseCreateDialog: PropTypes.bool.isRequired,
+        handleSupplyExpenseOpenSupplyExpenseCreateDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseCloseCreateDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseSubmitCreateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    supplyExpenseConfirmDialog: PropTypes.shape({
+        openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired,
+        handleSupplyExpenseOpenSupplyExpenseConfirmDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
+    supplyExpenseDeleteDialog: PropTypes.shape({
+        openSupplyExpenseDeleteDialog: PropTypes.bool.isRequired,
+        handleSupplyExpenseOpenDeleteDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseCloseDeleteDialog: PropTypes.func.isRequired
+    }).isRequired,
+    supplyExpenseActionsDialog: PropTypes.shape({
+        handleSupplyExpenseActionEdit: PropTypes.func.isRequired,
+        handleSupplyExpenseActionDelete: PropTypes.func.isRequired
     }).isRequired
 }
 

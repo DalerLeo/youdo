@@ -10,14 +10,15 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
-import {CategorySearchField} from '../ReduxForm'
+import {ProviderSearchField, StockSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const SUPPLY_FILTER_OPEN = 'openFilterDialog'
 
 export const SUPPLY_FILTER_KEY = {
-    CATEGORY: 'category',
+    PROVIDER: 'provider',
+    STOCK: 'stock',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
@@ -80,6 +81,9 @@ const enhance = compose(
         },
         submit: {
             color: '#fff !important'
+        },
+        inputField: {
+            fontSize: '13px !important'
         }
     }),
     reduxForm({
@@ -107,7 +111,7 @@ const SupplyFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Filter counts: {filterCounts}</div>
+                    <div>Фильтр: {filterCounts} элемента</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -135,18 +139,19 @@ const SupplyFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Filter</span>
+                    <span className={classes.title}>Фильтр</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field name="category" component={CategorySearchField} label="Category"/>
+                        <Field className={classes.inputField} name="provider" component={ProviderSearchField} label="Поставщик"/>
+                        <Field className={classes.inputField} name="stock" component={StockSearchField} label="Склад"/>
                     </div>
 
                     <div>
-                        <Field name="date" component={DateToDateField} label="Date to Date" fullWidth={true}/>
+                        <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
                     </div>
 
                     <div>
@@ -154,7 +159,7 @@ const SupplyFilterForm = enhance((props) => {
                             type="submit"
                             primary={true}
                             buttonStyle={{color: '#fff'}}>
-                            Apply
+                            Применить
                         </RaisedButton>
                     </div>
                 </form>

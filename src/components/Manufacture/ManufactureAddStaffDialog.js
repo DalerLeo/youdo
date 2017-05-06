@@ -188,7 +188,6 @@ const ManufactureAddStaffDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading ? {width: '135px'} : {width: '600px'}}
             bodyClassName={classes.popUp}>
-
             <div className={classes.titleContent}>
                 <span>ПРОИЗВОДСТВО КЛЕЯ: ПЕРСОНАЛ</span>
                 <IconButton onTouchTap={onClose}>

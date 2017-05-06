@@ -35,9 +35,6 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
-        },
-        imageUpload: {
-            width: '100px'
         }
     })),
     reduxForm({
@@ -56,7 +53,8 @@ const ProductCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '300px'} : {}}
+            bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
                 <span>Добавить продукт</span>
@@ -64,11 +62,11 @@ const ProductCreateDialog = enhance((props) => {
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form}>
+            <form onSubmit={onSubmit} className={classes.form} style={{height: 'auto', overflow: 'hidden'}}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.fieldsWrap}>
+                <div className={classes.fieldsWrap} style={{minHeight: '320px'}}>
                     <div className={classes.field}>
                         <Field
                             name="name"
@@ -109,16 +107,15 @@ const ProductCreateDialog = enhance((props) => {
                         />
                     </div>
                 </div>
+                <div className={classes.bottomButton}>
+                    <FlatButton
+                        label="Сохранить"
+                        className={classes.actionButton}
+                        primary={true}
+                        type="submit"
+                    />
+                </div>
             </form>
-            <div className={classes.bottomButton}>
-                <FlatButton
-                    label="Сохранить"
-                    className={classes.actionButton}
-                    primary={true}
-                    type="submit"
-                    keyboardFocused={true}
-                />
-            </div>
         </Dialog>
     )
 })

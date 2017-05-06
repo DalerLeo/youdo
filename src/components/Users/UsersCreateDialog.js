@@ -3,13 +3,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Col} from 'react-flexbox-grid'
+import {Row, Col} from 'react-flexbox-grid'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, ImageUploadField} from '../ReduxForm'
+import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
+import MainStyles from '../Styles/MainStyles'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const USERS_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -27,16 +30,7 @@ const validate = (data) => {
 }
 
 const enhance = compose(
-    injectSheet({
-        dialog: {
-            '& div:last-child': {
-                '& button': {
-                    marginBottom: '5px !important',
-                    color: '#12aaeb !important'
-                }
-            }
-        },
-
+    injectSheet(_.merge(MainStyles, {
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -45,55 +39,17 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
         },
-
-        fields: {
-            display: ({loading}) => !loading ? 'block' : 'none'
-        },
-
-        body: {
-            maxHeight: '600px !important',
-            padding: '0 30px 20px 30px !important',
-            overflow: 'hidden !important'
-        },
-
-        title: {
-            width: '220px',
-            margin: '0 auto',
-            padding: '10px 0',
-            textAlign: 'center',
-            background: '#12aaeb',
-            color: '#fff',
-            position: 'relative'
-        },
-        bottomBorder: {
-            display: 'flex',
-            borderBottom: '2px dashed #efefef',
-            marginBottom: '20px',
-            paddingBottom: '20px'
-        },
-        rightBorder: {
-            borderRight: '2px dashed #efefef',
-            paddingRight: '20px !important'
-        },
-        paddingLeft: {
-            paddingLeft: '20px !important'
-        },
-        marginTop: {
-            marginTop: '-20px !important'
-        },
-        flex: {
-            display: 'flex'
-        },
-        center: {
-            textAlign: 'center'
-        },
-        imageUpload: {
-            width: '100px'
-        },
-        height: {
-            height: '100px'
+        dialogAddUser: {
+            '& .imageDropZone': {
+                width: '150px !important',
+                height: '150px !important',
+                '& svg': {
+                    width: '30px !important',
+                    height: '30px !important'
+                }
+            }
         }
-    }),
+    })),
     reduxForm({
         form: 'UsersCreateForm',
         enableReinitialize: true
@@ -109,33 +65,36 @@ const UsersCreateDialog = enhance((props) => {
             modal={true}
             open={open}
             onRequestClose={onClose}
-            className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '600px'}}
+            className={classes.dialogAddUser}
+            contentStyle={loading ? {width: '300px'} : {width: '600px'}}
             bodyClassName={classes.body}>
-            <form onSubmit={onSubmit} className={classes.form}>
+            <div className={classes.titleContent}>
+                <span>{isUpdate ? 'Изменить пользователя' : 'Добавить пользователя'}</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
+            <form onSubmit={onSubmit} className={classes.form} style={{display: 'block'}}>
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.fields}>
-                    <div>
-                        <h4 className={classes.title}> {isUpdate ? 'Изменить пользователя' : 'Добавить пользователя'}</h4>
-                    </div>
-                    <div className={classes.bottomBorder}>
-                        <Col xs={6}>
+                <div className={classes.fieldsWrap}>
+                    <Row className={classes.field}>
+                        <Col xs={7}>
                             <Field
                                 name="firstName"
                                 component={TextField}
                                 label="Имя"
-                                className={classes.marginTop}
+                                className={classes.inputField}
                                 fullWidth={true}/>
                             <Field
                                 name="secondName"
                                 component={TextField}
                                 label="Фамилия"
-                                className={classes.marginTop}
+                                className={classes.inputField}
                                 fullWidth={true}/>
                         </Col>
-                        <Col xs={6} className={classes.height}>
+                        <Col xs={5}>
                             <Field
                                 name="image"
                                 className={classes.imageUpload}
@@ -144,53 +103,61 @@ const UsersCreateDialog = enhance((props) => {
                                 fullWidth={true}
                             />
                         </Col>
+                    </Row>
+                </div>
+                <div className={classes.fieldsWrap}>
+                    <div className={classes.field}>
+                        <Row>
+                            <Col xs={6}>
+                                <Field
+                                    name="username"
+                                    component={TextField}
+                                    label="Email"
+                                    className={classes.inputField}
+                                    fullWidth={true}/>
+                                <Field
+                                    name="phoneNumber"
+                                    component={TextField}
+                                    label="Телефон"
+                                    className={classes.inputField}
+                                    fullWidth={true}/>
+                            </Col>
+                            <Col xs={6}>
+                                <Field
+                                    name="typeUser"
+                                    component={TextField}
+                                    label="Тип Пользователя"
+                                    className={classes.inputField}
+                                    fullWidth={true}/>
+                                <Field
+                                    name="region"
+                                    component={TextField}
+                                    label="Район"
+                                    className={classes.inputField}
+                                    fullWidth={true}/>
+                                <Field
+                                    name="password"
+                                    component={TextField}
+                                    label="Пароль"
+                                    className={classes.inputField}
+                                    fullWidth={true}/>
+                                <Field
+                                    name="password"
+                                    component={TextField}
+                                    label="Потвердить пароль"
+                                    className={classes.inputField}
+                                    fullWidth={true}/>
+                            </Col>
+                        </Row>
                     </div>
-                    <div className={classes.bottomBorder}>
-                        <Col xs={6} className={classes.rightBorder}>
-                            <Field
-                                name="username"
-                                component={TextField}
-                                label="Email"
-                                className={classes.marginTop}
-                                fullWidth={true}/>
-                            <Field
-                                name="phoneNumber"
-                                component={TextField}
-                                label="Телефон"
-                                className={classes.marginTop}
-                                fullWidth={true}/>
-                        </Col>
-                        <Col xs={6} className={classes.paddingLeft}>
-                            <Field
-                                name="typeUser"
-                                component={TextField}
-                                label="Тип Пользователя"
-                                className={classes.marginTop}
-                                fullWidth={true}/>
-                            <Field
-                                name="region"
-                                component={TextField}
-                                label="Район"
-                                className={classes.marginTop}
-                                fullWidth={true}/>
-                            <Field
-                                name="password"
-                                component={TextField}
-                                label="Пароль"
-                                className={classes.marginTop}
-                                fullWidth={true}/>
-                            <Field
-                                name="password"
-                                component={TextField}
-                                label="Потвердить пароль"
-                                className={classes.marginTop}
-                                fullWidth={true}/>
-                        </Col>
-                    </div>
-                    <div className={classes.center}>
-                        <FlatButton label="Отменить" onTouchTap={onClose}/>
-                        <FlatButton type="submit" label="Применить"/>
-                    </div>
+                </div>
+                <div className={classes.bottomButton}>
+                    <FlatButton
+                        label="Сохранить"
+                        className={classes.actionButton}
+                        primary={true}
+                        type="submit"
+                    />
                 </div>
             </form>
         </Dialog>

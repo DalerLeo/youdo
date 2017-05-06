@@ -7,6 +7,7 @@ import {Field, reduxForm} from 'redux-form'
 import injectSheet from 'react-jss'
 import validate from '../../helpers/validate'
 import {CheckBox, TextField} from '../ReduxForm'
+import Dot from '../Images/dot.png'
 
 const enhance = compose(
     injectSheet({
@@ -32,9 +33,22 @@ const enhance = compose(
             fontSize: '14px',
             fontWeight: '700',
             textTransform: 'uppercase',
-            borderBottom: '1px dashed #e2e4e9',
             textAlign: 'center',
-            color: '#647994'
+            color: '#647994',
+            position: 'relative',
+            '&:after': {
+                content: '""',
+                backgroundImage: 'url(' + Dot + ')',
+                position: 'absolute',
+                bottom: '0',
+                height: '2px',
+                left: '0',
+                right: '0'
+            }
+        },
+
+        loginForm: {
+            fontSize: '13px !important'
         },
 
         rememberMe: {
@@ -71,19 +85,19 @@ const SignInForm = enhance((props) => {
             <form onSubmit={onSubmit}>
                 <div>
                     <div className={classes.title}>
-                        ENTER TO SYSTEM
+                        Вход в систему
                     </div>
                 </div>
                 <div>
                     <div className={classes.error}>{error}</div>
 
-                    <Field name="username" component={TextField} label="Login" fullWidth={true} />
-                    <Field name="password" component={TextField} label="Password" type="password" fullWidth={true} />
-                    <Field name="rememberMe" component={CheckBox} label="Remember me" className={classes.rememberMe} />
+                    <Field className={classes.loginForm} name="username" component={TextField} label="Логин" fullWidth={true} />
+                    <Field className={classes.loginForm} name="password" component={TextField} label="Пароль" type="password" fullWidth={true} />
+                    <Field name="rememberMe" component={CheckBox} label="Запомнить меня" className={classes.rememberMe} />
 
                     <RaisedButton
                         type="submit"
-                        label="Enter"
+                        label="Войти"
                         primary={true}
                         fullWidth={true}
                     />

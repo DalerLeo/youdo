@@ -91,7 +91,7 @@ const SupplyCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {}}
+            contentStyle={loading ? {width: '300px'} : {}}
             bodyClassName={classes.body}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.loader}>
@@ -165,7 +165,6 @@ const SupplyCreateDialog = enhance((props) => {
                                     label="Apply"
                                     primary={true}
                                     type="submit"
-                                    keyboardFocused={true}
                                 />
                             </div>
                         </div>

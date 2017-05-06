@@ -144,7 +144,7 @@ const UsersGridList = enhance((props) => {
                 <Col xs={2}>{phoneNumber}</Col>
                 <Col xs={2}>{region}</Col>
                 <Col xs={1}>12.05.2016</Col>
-                <Col xs={1}>
+                <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}

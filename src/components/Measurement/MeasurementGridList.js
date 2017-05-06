@@ -99,7 +99,7 @@ const MeasurementGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const amount = _.get(item, 'amount') || 'N/A'
         const iconButton = (
-            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+            <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
             </IconButton>
         )
@@ -139,7 +139,7 @@ const MeasurementGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.MEASUREMENT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить продукт">
+                <Tooltip position="left" text="Добавить измерение">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
