@@ -41,7 +41,7 @@ const enhance = compose(
         const detail = _.get(state, ['supply', 'item', 'data'])
         const detailLoading = _.get(state, ['supply', 'item', 'loading'])
         const createLoading = _.get(state, ['supply', 'create', 'loading'])
-        const supplyExpenseLoading = _.get(state, ['supplyExpense', 'expense', 'loading'])
+        const supplyExpenseLoading = _.get(state, ['supplyExpense', 'create', 'loading'])
         const updateLoading = _.get(state, ['supply', 'update', 'loading'])
         const list = _.get(state, ['supply', 'list', 'data'])
         const listLoading = _.get(state, ['supply', 'list', 'loading'])
@@ -310,32 +310,6 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
-                })
-        },
-
-        handleSupplyExpenseOpenUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_UPDATE_DIALOG_OPEN]: true})})
-        },
-
-        handleSupplyExpenseCloseUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_UPDATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSupplyExpenseSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-            const supplyExpenseId = _.toInteger(_.get(props, ['params', 'supplyExpenseId']))
-
-            return dispatch(supplyExpenseUpdateAction(supplyExpenseId, _.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(supplyExpenseItemFetchAction(supplyExpenseId))
-                })
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[SUPPLY_UPDATE_DIALOG_OPEN]: false}))
                 })
         }
     })
