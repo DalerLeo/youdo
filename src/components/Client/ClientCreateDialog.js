@@ -9,13 +9,13 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
-import ProviderContactsListField from '../ReduxForm/ProviderContactsListField'
+import ClientContactsListField from '../ReduxForm/ClientContactsListField'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
-export const PROVIDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
-export const PROVIDER_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
+export const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const CLIENT_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -47,12 +47,12 @@ const enhance = compose(
         }
     })),
     reduxForm({
-        form: 'ProviderCreateForm',
+        form: 'ClientCreateForm',
         enableReinitialize: true
     })
 )
 
-const ProviderCreateDialog = enhance((props) => {
+const ClientCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -66,7 +66,7 @@ const ProviderCreateDialog = enhance((props) => {
             bodyClassName={classes.body}>
 
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение поставщика' : 'Добавление поставщика'}</span>
+                <span>{isUpdate ? 'Изменение клиента' : 'Добавление клиента'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -94,7 +94,7 @@ const ProviderCreateDialog = enhance((props) => {
                             Контактные данные
                             <FieldArray
                                 name="contacts"
-                                component={ProviderContactsListField}
+                                component={ClientContactsListField}
                             />
                         </div>
                     </div>
@@ -112,7 +112,7 @@ const ProviderCreateDialog = enhance((props) => {
     )
 })
 
-ProviderCreateDialog.propTypes = {
+ClientCreateDialog.propTypes = {
     isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -120,8 +120,8 @@ ProviderCreateDialog.propTypes = {
     loading: PropTypes.bool.isRequired
 }
 
-ProviderCreateDialog.defaultProps = {
+ClientCreateDialog.defaultProps = {
     isUpdate: false
 }
 
-export default ProviderCreateDialog
+export default ClientCreateDialog

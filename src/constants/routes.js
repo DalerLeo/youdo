@@ -75,7 +75,12 @@ export const PROVIDER_LIST_URL = `/${PROVIDER}`
 export const PROVIDER_ITEM_URL = `${PROVIDER_LIST_URL}/:providerId`
 export const PROVIDER_ITEM_PATH = `${PROVIDER}/%d`
 
+export const CLIENT = 'client'
+export const CLIENT_LIST_URL = `/${CLIENT}`
+export const CLIENT_ITEM_URL = `${CLIENT_LIST_URL}/:clientId`
+export const CLIENT_ITEM_PATH = `${CLIENT}/%d`
+
 export const MANUFACTURE = 'manufacture'
 export const MANUFACTURE_LIST_URL = `/${MANUFACTURE}`
-export const MANUFACTURE_ITEM_URL = `${PROVIDER_LIST_URL}/:providerId`
+export const MANUFACTURE_ITEM_URL = `${PROVIDER_LIST_URL}/:manufactureId`
 export const MANUFACTURE_ITEM_PATH = `${PROVIDER}/%d`

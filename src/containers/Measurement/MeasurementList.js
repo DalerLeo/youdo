@@ -99,7 +99,7 @@ const enhance = compose(
             const {dispatch, detail, setOpenConfirmDialog} = props
             dispatch(measurementDeleteAction(detail.id))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
                     setOpenConfirmDialog(false)
@@ -134,7 +134,7 @@ const enhance = compose(
 
             return dispatch(measurementCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({query: filter.getParams({[MEASUREMENT_CREATE_DIALOG_OPEN]: false})})
@@ -163,7 +163,7 @@ const enhance = compose(
                     return dispatch(measurementItemFetchAction(measurementId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[MEASUREMENT_UPDATE_DIALOG_OPEN]: false}))

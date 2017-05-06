@@ -49,11 +49,7 @@ const enhance = compose(
             }
         },
         body: {
-            minHeight: '450px',
-            maxHeight: '70vh'
-        },
-        fieldsWrap: {
-            maxHeight: '70vh'
+            minHeight: '450px'
         },
         listBom: {
             margin: '0 30px',

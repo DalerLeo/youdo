@@ -17,6 +17,7 @@ import {MeasurementList} from '../containers/Measurement'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
+import {ClientList} from '../containers/Client'
 import {ManufactureList} from '../containers/Manufacture'
 import NotFound from '../containers/NotFound'
 
@@ -167,6 +168,17 @@ export default {
                 {
                     path: ROUTES.PROVIDER_ITEM_URL,
                     component: userIsAuth(ProviderList)
+                }
+            ]
+        },
+        // Client
+        {
+            path: ROUTES.CLIENT_LIST_URL,
+            component: userIsAuth(ClientList),
+            childRoutes: [
+                {
+                    path: ROUTES.CLIENT_ITEM_URL,
+                    component: userIsAuth(ClientList)
                 }
             ]
         },

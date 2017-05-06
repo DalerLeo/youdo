@@ -41,14 +41,13 @@ const MainStyles = {
         color: '#333',
         fontWeight: 'bold',
         textTransform: 'uppercase',
-        top: '0',
-        left: '0',
-        right: '0',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         borderBottom: '1px solid #efefef',
         padding: '20px 30px',
         zIndex: '999',
         '& button': {
-            marginTop: '-17px !important',
             right: '13px',
             padding: '0 !important',
             position: 'absolute !important'

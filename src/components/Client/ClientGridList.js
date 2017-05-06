@@ -7,10 +7,9 @@ import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
-import sprintf from 'sprintf'
 import GridList from '../GridList'
 import Container from '../Container'
-import ProviderCreateDialog from './ProviderCreateDialog'
+import ClientCreateDialog from './ClientCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -23,7 +22,6 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
-import {Link} from 'react-router'
 
 const listHeader = [
     {
@@ -52,22 +50,6 @@ const listHeader = [
     }
 ]
 
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 18,
-        height: 18
-    },
-    button: {
-        width: 30,
-        height: 30,
-        padding: 0
-    }
-}
-
-const tooltipPosition = 'bottom-center'
-
-const colorBlue = '#12aaeb !important'
 const enhance = compose(
     injectSheet({
         addButton: {
@@ -83,73 +65,11 @@ const enhance = compose(
         },
         actionBtn: {
             height: '48px'
-        },
-        wrapper: {
-            color: '#333 !important',
-            width: '100%',
-            display: 'flex',
-            flexWrap: 'wrap',
-            '& a': {
-                color: colorBlue
-            }
-        },
-        title: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
-            padding: '20px 30px',
-            borderBottom: '1px #efefef solid'
-        },
-        container: {
-            display: 'flex',
-            width: '100%'
-        },
-        sides: {
-            flexBasis: '27%'
-        },
-        leftSide: {
-            extend: 'sides',
-            borderRight: '1px #efefef solid',
-            padding: '20px 30px'
-        },
-        rightSide: {
-            extend: 'sides',
-            borderLeft: '1px #efefef solid',
-            padding: '20px 30px'
-        },
-        body: {
-            flexBasis: '66%',
-            padding: '20px 30px',
-            '& .dottedList': {
-                padding: '10px 0',
-                '&:after': {
-                    left: '0.5rem',
-                    right: '0.5rem'
-                },
-                '&:first-child': {
-                    padding: '0 0 10px'
-                },
-                '&:last-child': {
-                    '&:after': {
-                        display: 'none'
-                    }
-                }
-            }
-        },
-        titleLabel: {
-            fontSize: '18px',
-            color: '#333',
-            fontWeight: '700'
-        },
-        bodyTitle: {
-            fontWeight: '600',
-            marginBottom: '10px'
         }
     })
 )
 
-const ProviderGridList = enhance((props) => {
+const ClientGridList = enhance((props) => {
     const {
         filter,
         createDialog,
@@ -161,6 +81,7 @@ const ProviderGridList = enhance((props) => {
         detailData,
         classes
     } = props
+
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
@@ -172,60 +93,12 @@ const ProviderGridList = enhance((props) => {
             </IconButton>
         </div>
     )
-    const date = moment(_.get(detailData, ['data', 'createdDate'])).format('DD.MM.YYYY')
-    const address = _.get(detailData, ['data', 'address'])
-    const providerName = _.get(detailData, ['data', 'name'])
 
-    const providerDetail = (
-        <div className={classes.wrapper} key={_.get(detailData, 'id')}>
-            <div className={classes.title}>
-                <div className={classes.titleLabel}>{providerName}</div>
-                <div className={classes.titleButtons}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Изменить">
-                        <Edit />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Удалить">
-                        <DeleteIcon />
-                    </IconButton>
-                </div>
-            </div>
-            <div className={classes.container}>
-                <div className={classes.leftSide}>
-                    <div className={classes.bodyTitle}>Адрес</div>
-                    <div>{address}</div>
-                </div>
-                <div className={classes.body}>
-                    <div className={classes.bodyTitle} style={{margin: '0'}}>Контакты</div>
-                    <Row className="dottedList">
-                        <Col xs={4}>Ильхам Алиев</Col>
-                        <Col xs={4}>İlham_liyev@azerbut.az</Col>
-                        <Col xs={4}>+ 998 98 9898890</Col>
-                    </Row>
-                    <Row className="dottedList">
-                        <Col xs={4}>Хамад ибн Иса Аль Халифа</Col>
-                        <Col xs={4}>İlham_liyev@azerbut.az</Col>
-                        <Col xs={4}>+ 998 98 9898890</Col>
-                    </Row>
-                </div>
-                <div className={classes.rightSide}>
-                    <div className={classes.bodyTitle}>Дата добавления</div>
-                    <div>{date}</div>
-                </div>
-            </div>
-        </div>
+    const clientDetail = (
+        <span>Client Details</span>
     )
 
-    const providerList = _.map(_.get(listData, 'data'), (item) => {
+    const clientList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
@@ -237,12 +110,7 @@ const ProviderGridList = enhance((props) => {
         return (
             <Row key={id} style={{alignItems: 'center'}}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={6}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.PROVIDER_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{name}</Link>
-                </Col>
+                <Col xs={6}>{name}</Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
@@ -267,15 +135,15 @@ const ProviderGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: providerList,
+        list: clientList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.PROVIDER_LIST_URL}/>
+            <SubMenu url={ROUTES.CLIENT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить поставщика">
+                <Tooltip position="left" text="Добавить клиента">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -288,18 +156,18 @@ const ProviderGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={providerDetail}
+                detail={clientDetail}
                 actionsDialog={actions}
             />
 
-            <ProviderCreateDialog
+            <ClientCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <ProviderCreateDialog
+            <ClientCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
@@ -325,7 +193,7 @@ const ProviderGridList = enhance((props) => {
     )
 })
 
-ProviderGridList.propTypes = {
+ClientGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -361,4 +229,4 @@ ProviderGridList.propTypes = {
     }).isRequired
 }
 
-export default ProviderGridList
+export default ClientGridList

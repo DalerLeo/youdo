@@ -96,7 +96,7 @@ const enhance = compose(
             const {dispatch, detail, setOpenConfirmDialog} = props
             dispatch(manufactureDeleteAction(detail.id))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
                     setOpenConfirmDialog(false)
