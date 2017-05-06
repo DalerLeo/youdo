@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/supplyExpenseSerializer'
 
-export const supplyExpenseCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const supplyExpenseCreateAction = (formValues, id) => {
+    const requestData = serializers.createSerializer(formValues, id)
     const payload = axios()
         .post(API.SUPPLY_EXPENSE_CREATE, requestData)
         .then((response) => {
@@ -34,22 +34,6 @@ export const supplyExpenseDeleteAction = (id) => {
 
     return {
         type: actionTypes.SUPPLY_EXPENSE_DELETE,
-        payload
-    }
-}
-
-export const supplyExpenseUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .put(sprintf(API.SUPPLY_EXPENSE_ITEM, id), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-    return {
-        type: actionTypes.SUPPLY_EXPENSE_UPDATE,
         payload
     }
 }
