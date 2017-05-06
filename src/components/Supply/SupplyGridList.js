@@ -110,7 +110,7 @@ const SupplyGridList = enhance((props) => {
         filter,
         createDialog,
         updateDialog,
-        expenseDialog,
+        // expenseDialog,
         filterDialog,
         actionsDialog,
         confirmDialog,
@@ -120,9 +120,10 @@ const SupplyGridList = enhance((props) => {
         classes,
 
         supplyExpenseCreateDialog,
-        supplyExpenseConfirmDialog,
-        supplyExpenseDeleteDialog,
-        supplyExpenseActionsDialog
+        // supplyExpenseConfirmDialog,
+        // supplyExpenseDeleteDialog,
+        // supplyExpenseActionsDialog,
+        supplyListData
     } = props
 
     const actions = (
@@ -153,7 +154,8 @@ const SupplyGridList = enhance((props) => {
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-            hanleExpenseOpenDialog={expenseDialog.handleOpenExpenseDialog}
+            handleSupplyExpenseOpenCreateDialog={supplyExpenseCreateDialog.handleSupplyExpenseOpenCreateDialog}
+            supplyListData={supplyListData}
         />
     )
 
@@ -231,7 +233,7 @@ const SupplyGridList = enhance((props) => {
             />
 
             <SupplyExpenseCreateDialog
-                open={supplyExpenseCreateDialog.openSupplyExpenseCreateDialog()}
+                open={supplyExpenseCreateDialog.openSupplyExpenseCreateDialog}
                 loading={supplyExpenseCreateDialog.supplyExpenseLoading}
                 onClose={supplyExpenseCreateDialog.handleSupplyExpenseCloseCreateDialog}
                 onSubmit={supplyExpenseCreateDialog.handleSupplyExpenseSubmitCreateDialog}
@@ -303,20 +305,34 @@ SupplyGridList.propTypes = {
         handleSupplyExpenseCloseCreateDialog: PropTypes.func.isRequired,
         handleSupplyExpenseSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
-    supplyExpenseConfirmDialog: PropTypes.shape({
+    // supplyExpenseConfirmDialog: PropTypes.shape({
+    //     openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired,
+    //     handleSupplyExpenseOpenConfirmDialog: PropTypes.func.isRequired,
+    //     handleSupplyExpenseCloseConfirmDialog: PropTypes.func.isRequired,
+    //     handleSupplyExpenseSendConfirmDialog: PropTypes.func.isRequired
+    // }).isRequired,
+    // supplyExpenseDeleteDialog: PropTypes.shape({
+    //     openSupplyExpenseDeleteDialog: PropTypes.bool.isRequired,
+    //     handleSupplyExpenseOpenDeleteDialog: PropTypes.func.isRequired,
+    //     handleSupplyExpenseCloseDeleteDialog: PropTypes.func.isRequired
+    // }).isRequired,
+    // supplyExpenseActionsDialog: PropTypes.shape({
+    //     handleSupplyExpenseActionDelete: PropTypes.func.isRequired
+    // }).isRequired,
+    // supplyListData: PropTypes.object.isRequired
+    supplyListData: PropTypes.shape({
+        data: PropTypes.object.isRequired,
+        supplyExpenseListLoading: PropTypes.bool.isRequired,
+        openSupplyExpenseDeleteDialog: PropTypes.bool.isRequired,
+        handleSupplyExpenseOpenDeleteDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseCloseDeleteDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseActionDelete: PropTypes.func.isRequired,
         openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired,
         handleSupplyExpenseOpenConfirmDialog: PropTypes.func.isRequired,
         handleSupplyExpenseCloseConfirmDialog: PropTypes.func.isRequired,
         handleSupplyExpenseSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    supplyExpenseDeleteDialog: PropTypes.shape({
-        openSupplyExpenseDeleteDialog: PropTypes.bool.isRequired,
-        handleSupplyExpenseOpenDeleteDialog: PropTypes.func.isRequired,
-        handleSupplyExpenseCloseDeleteDialog: PropTypes.func.isRequired
-    }).isRequired,
-    supplyExpenseActionsDialog: PropTypes.shape({
-        handleSupplyExpenseActionDelete: PropTypes.func.isRequired
-    }).isRequired
+
+    })
 }
 
 export default SupplyGridList

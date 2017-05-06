@@ -3,11 +3,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
+import CircularProgress from 'material-ui/CircularProgress'
+import IconButton from 'material-ui/IconButton'
 import Dialog from 'material-ui/Dialog'
+import FlatButton from 'material-ui/FlatButton'
+import CloseIcon2 from '../CloseIcon2'
 import toCamelCase from '../../helpers/toCamelCase'
+import {TextField, CurrencySearchField} from '../ReduxForm'
+import MainStyles from '../Styles/MainStyles'
 
-export const SUPPLY_EXPENSE_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const SUPPLY_EXPENSE_CREATE_DIALOG_OPEN = 'openSupplyExpenseCreateDialog'
+export const SUPPLY_EXPENSE_UPDATE_DIALOG_OPEN = 'openSupplyExpenseUpdateDialog'
+
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -17,7 +25,7 @@ const validate = (data) => {
     })
 }
 const enhance = compose(
-    injectSheet({
+    injectSheet(_.merge(MainStyles, {
         loader: {
             width: '120px',
             margin: '0 auto',
@@ -25,15 +33,10 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
-        },
-        title: {
-            paddingTop: '15px',
-            fontWeight: 'bold',
-            color: '#333'
         }
-    }),
+    })),
     reduxForm({
-        form: 'ExpenseCreateForm',
+        form: 'SupplyExpenseCreateForm',
         enableReinitialize: true
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -41,28 +44,60 @@ const enhance = compose(
     }, {open: false}),
 )
 
-const customContentStyle = {
-    width: '1000px',
-    maxWidth: 'none'
-}
 const ExpenseCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes} = props
+    const {open, handleSubmit, onClose, classes, isUpdate, loading} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
             modal={true}
-            contentStyle={customContentStyle}
             open={open}
             onRequestClose={onClose}
-            bodyClassName={classes.body}
-            autoScrollBodyContent={true}>
-            <form onSubmit={onSubmit} scrolling="auto">
-                expense dialog
+            className={classes.dialog}
+            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
+            bodyClassName={classes.body}>
+            <div className={classes.titleContent}>
+                <span>{isUpdate ? 'Изменение расхода' : 'Добавление расхода'}</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
+            <form onSubmit={onSubmit} className={classes.form}>
+                <div className={classes.loader}>
+                    <CircularProgress size={80} thickness={5}/>
+                </div>
+                <div className={classes.fieldsWrap}>
+                    <div className={classes.field}>
+                        <Field
+                            name="comment"
+                            component={TextField}
+                            label="Описания раскода"
+                            fullWidth={true}/>
+                        <Field
+                            name="amount"
+                            component={TextField}
+                            label="Сумма"
+                            fullWidth={true}/>
+                        <Field
+                            name="currency"
+                            component={CurrencySearchField}
+                            label="Валюта"
+                            fullWidth={true}/>
+                    </div>
+                </div>
+                <div className={classes.bottomButton}>
+                    <FlatButton
+                        label="Применить"
+                        className={classes.actionButton}
+                        primary={true}
+                        type="submit"
+                    />
+                </div>
             </form>
         </Dialog>
     )
 })
 ExpenseCreateDialog.propTyeps = {
+    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
