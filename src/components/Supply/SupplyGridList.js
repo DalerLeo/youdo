@@ -110,7 +110,6 @@ const SupplyGridList = enhance((props) => {
         filter,
         createDialog,
         updateDialog,
-        // expenseDialog,
         filterDialog,
         actionsDialog,
         confirmDialog,
@@ -120,9 +119,6 @@ const SupplyGridList = enhance((props) => {
         classes,
 
         supplyExpenseCreateDialog,
-        // supplyExpenseConfirmDialog,
-        // supplyExpenseDeleteDialog,
-        // supplyExpenseActionsDialog,
         supplyListData
     } = props
 
@@ -305,21 +301,6 @@ SupplyGridList.propTypes = {
         handleSupplyExpenseCloseCreateDialog: PropTypes.func.isRequired,
         handleSupplyExpenseSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
-    // supplyExpenseConfirmDialog: PropTypes.shape({
-    //     openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired,
-    //     handleSupplyExpenseOpenConfirmDialog: PropTypes.func.isRequired,
-    //     handleSupplyExpenseCloseConfirmDialog: PropTypes.func.isRequired,
-    //     handleSupplyExpenseSendConfirmDialog: PropTypes.func.isRequired
-    // }).isRequired,
-    // supplyExpenseDeleteDialog: PropTypes.shape({
-    //     openSupplyExpenseDeleteDialog: PropTypes.bool.isRequired,
-    //     handleSupplyExpenseOpenDeleteDialog: PropTypes.func.isRequired,
-    //     handleSupplyExpenseCloseDeleteDialog: PropTypes.func.isRequired
-    // }).isRequired,
-    // supplyExpenseActionsDialog: PropTypes.shape({
-    //     handleSupplyExpenseActionDelete: PropTypes.func.isRequired
-    // }).isRequired,
-    // supplyListData: PropTypes.object.isRequired
     supplyListData: PropTypes.shape({
         data: PropTypes.object.isRequired,
         supplyExpenseListLoading: PropTypes.bool.isRequired,

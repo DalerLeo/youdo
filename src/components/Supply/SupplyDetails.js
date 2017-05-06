@@ -365,16 +365,21 @@ const SupplyDetails = enhance((props) => {
                         </div>
                     </div>
                     <div className="expenseInfo">
-                        {_.map(supplyExpenseList, (item) => {
-                            const id = _.get(item, 'id')
-                            const comment = _.get(item, 'comment')
-                            const amount = _.get(item, 'amount')
-                            const currency = _.get(item, 'currency')
+                        {supplyExpenseListLoading && <div className={classes.loader}>
+                            <div>
+                                <CircularProgress size={100} thickness={6}/>
+                            </div>
+                        </div>}
+                        {!supplyExpenseListLoading && _.map(supplyExpenseList, (item) => {
+                            const expId = _.get(item, 'id')
+                            const expComment = _.get(item, 'comment')
+                            const expAmount = _.get(item, 'amount')
+                            const expCurrency = _.get(item, 'currency')
                             return (
-                                <Row key={id}>
-                                    <Col xs={8}>{comment}</Col>
+                                <Row key={expId}>
+                                    <Col xs={8}>{expComment}</Col>
                                     <Col xs={2}>
-                                        <div style={{textAlign: 'right'}}>{amount} {currency}</div>
+                                        <div style={{textAlign: 'right'}}>{expAmount} {expCurrency}</div>
                                     </Col>
                                     <Col xs={2}>
                                         <IconButton

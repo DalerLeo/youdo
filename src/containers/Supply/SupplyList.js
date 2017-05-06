@@ -14,7 +14,6 @@ import {
     SUPPLY_FILTER_KEY,
     SUPPLY_FILTER_OPEN,
     SUPPLY_EXPENSE_CREATE_DIALOG_OPEN,
-    SUPPLY_EXPENSE_DELETE_DIALOG_OPEN,
     SupplyGridList
 } from '../../components/Supply'
 import {
@@ -27,10 +26,8 @@ import {
 } from '../../actions/supply'
 import {
     supplyExpenseCreateAction,
-    supplyExpenseCSVFetchAction,
     supplyExpenseDeleteAction,
-    supplyExpenseListFetchAction,
-    supplyExpenseItemFetchAction
+    supplyExpenseListFetchAction
 } from '../../actions/supplyExpense'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -228,22 +225,6 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleSupplyExpenseActionEdit: props => () => {
-            return null
-        },
-
-        handleSupplyExpenseOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(supplyExpenseCSVFetchAction(props.filter))
-        },
-
-        handleSupplyExpenseCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
         handleSupplyExpenseOpenConfirmDialog: props => () => {
             const {setOpenSupplyExpenseConfirmDialog} = props
             setOpenSupplyExpenseConfirmDialog(true)
@@ -422,7 +403,6 @@ const SupplyList = enhance((props) => {
     const supplyListData = {
         data: _.get(supplyExpenseList, 'results'),
         supplyExpenseListLoading,
-        openSupplyExpenseDeleteDialog,
         handleSupplyExpenseOpenDeleteDialog: props.handleSupplyExpenseOpenDeleteDialog,
         handleSupplyExpenseCloseDeleteDialog: props.handleSupplyExpenseCloseDeleteDialog,
         openSupplyExpenseConfirmDialog: props.openSupplyExpenseConfirmDialog,
@@ -432,12 +412,6 @@ const SupplyList = enhance((props) => {
         handleSupplyExpenseActionDelete: props.handleSupplyExpenseOpenDeleteDialog
     }
     const openSupplyExpenseCreateDialog = toBoolean(_.get(location, ['query', SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]))
-    const openSupplyExpenseDeleteDialog = toBoolean(_.get(location, ['query', SUPPLY_EXPENSE_DELETE_DIALOG_OPEN]))
-
-    // const supplyExpenseActionsDialog = {
-    //     handleSupplyExpenseActionEdit: props.handleSupplyExpenseActionEdit,
-    //     handleSupplyExpenseActionDelete: props.handleSupplyExpenseOpenDeleteDialog
-    // }
 
     const supplyExpenseCreateDialog = {
         supplyExpenseLoading,
@@ -446,19 +420,6 @@ const SupplyList = enhance((props) => {
         handleSupplyExpenseCloseCreateDialog: props.handleSupplyExpenseCloseCreateDialog,
         handleSupplyExpenseSubmitCreateDialog: props.handleSupplyExpenseSubmitCreateDialog
     }
-
-    // const supplyExpenseDeleteDialog = {
-    //     // openSupplyExpenseDeleteDialog,
-    //     handleSupplyExpenseOpenDeleteDialog: props.handleSupplyExpenseOpenDeleteDialog,
-    //     handleSupplyExpenseCloseDeleteDialog: props.handleSupplyExpenseCloseDeleteDialog
-    // }
-
-    // const supplyExpenseConfirmDialog = {
-    //     openSupplyExpenseConfirmDialog: props.openSupplyExpenseConfirmDialog,
-    //     handleSupplyExpenseOpenConfirmDialog: props.handleSupplyExpenseOpenConfirmDialog,
-    //     handleSupplyExpenseCloseConfirmDialog: props.handleSupplyExpenseCloseConfirmDialog,
-    //     handleSupplyExpenseSendConfirmDialog: props.handleSupplyExpenseSendConfirmDialog
-    // }
 
     return (
         <Layout {...layout}>
@@ -476,9 +437,6 @@ const SupplyList = enhance((props) => {
 
                 supplyListData={supplyListData}
                 supplyExpenseCreateDialog={supplyExpenseCreateDialog}
-                // supplyExpenseDeleteDialog={supplyExpenseDeleteDialog}
-                // supplyExpenseConfirmDialog={supplyExpenseConfirmDialog}
-                // supplyExpenseActionsDialog={supplyExpenseActionsDialog}
             />
         </Layout>
     )
