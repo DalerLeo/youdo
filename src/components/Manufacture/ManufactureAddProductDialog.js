@@ -5,6 +5,7 @@ import {Col} from 'react-flexbox-grid'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
+import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm} from 'redux-form'
 import {TextField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
@@ -18,9 +19,8 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import ImageCheck from '../Icons/check'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 
-export const MANUFACTURE_SHOW_BOM_DIALOG_OPEN = 'showBom'
+export const MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN = 'addProduct'
 
-const colorBlue = '#129fdd !important'
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -37,7 +37,6 @@ const enhance = compose(
             '& span': {
                 fontSize: '13px !important',
                 fontWeight: '600 !important',
-                color: colorBlue,
                 paddingLeft: '10px',
                 paddingRight: '10px'
             },
@@ -47,10 +46,27 @@ const enhance = compose(
                 marginRight: '-20px !important'
             }
         },
-        titleBom: {
-            padding: '20px 0',
+        productAddForm: {
+            padding: '5px 0 20px 0',
             borderBottom: '1px solid #efefef',
-            width: '100%'
+            width: '100%',
+            '& input': {
+                fontSize: '13px !important',
+                marginTop: '5px !important'
+            },
+            '& label': {
+                fontSize: '13px',
+                top: '24px !important'
+            },
+            '& div': {
+                height: '55px !important'
+            },
+            '& div div': {
+                height: '0px !important'
+            },
+            '& div:first-child': {
+                width: '70%'
+            }
         },
         titleAdd: {
             margin: '20px 0 5px',
@@ -114,7 +130,7 @@ const enhance = compose(
     })
 )
 
-const ManufactureShowBom = enhance((props) => {
+const ManufactureAddProductDialog = enhance((props) => {
     const {open, loading, onClose, classes, openAddMaterials, setOpenAddMaterials} = props
 
     const iconButton = (
@@ -131,6 +147,7 @@ const ManufactureShowBom = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading ? {width: '135px'} : {width: '600px'}}
             bodyClassName={classes.popUp}>
+
             <div className={classes.titleContent}>
                 <span>BoM</span>
                 <IconButton onTouchTap={onClose}>
@@ -140,9 +157,20 @@ const ManufactureShowBom = enhance((props) => {
             <div className={classes.bodyContent}>
                 <div className={classes.inContent}>
                     <div style={{width: '100%'}}>
-                        <div className={classes.titleBom}>
-                            <span>Продукт: <strong>Клей для скотча</strong></span><br />
-                            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                        <div className={classes.productAddForm}>
+                                <Field
+                                    name="productName"
+                                    label="Наименование продукта"
+                                    component={TextField}
+                                    className={classes.inputFieldMaterials}
+                                    fullWidth={true}/>
+
+                                <Field
+                                    name="Description"
+                                    label="Описание"
+                                    component={TextField}
+                                    className={classes.inputFieldMaterials}
+                                    fullWidth={true}/>
                         </div>
                         <div className={classes.titleAdd}>
                             <h3>Сырье</h3>
@@ -225,80 +253,31 @@ const ManufactureShowBom = enhance((props) => {
                                     </IconMenu>
                                 </Col>
                             </li>
-                            <li className="dottedList" style={{margin: '0 -29px', padding: '10px 30px', background: '#f2f5f8'}}>
-                                <Col xs={8}>
-                                    <Field
-                                        name="name"
-                                        defaultValue="Value on load"
-                                        component={TextField}
-                                        className={classes.inputFieldMaterials}
-                                        fullWidth={true}/>
-                                </Col>
-                                <Col xs={2}>
-                                    <Field
-                                        name="count"
-                                        component={TextField}
-                                        className={classes.inputFieldMaterials}
-                                        fullWidth={true}/>
-                                </Col>
-                                <Col xs={1}>
-                                    <Field
-                                        name="unit"
-                                        component={TextField}
-                                        className={classes.inputFieldMaterials}
-                                        fullWidth={true}/>
-                                </Col>
-                                <Col xs={1}>
-                                    <IconButton>
-                                        <div>
-                                            <ImageCheck style={{color: '#129fdd'}} />
-                                        </div>
-                                    </IconButton>
-                                </Col>
-                            </li>
-                            <li className="dottedList">
-                                <Col xs={8}>
-                                    Дистилированная вода
-                                </Col>
-                                <Col xs={2}>
-                                    100
-                                </Col>
-                                <Col xs={1}>
-                                    л
-                                </Col>
-                                <Col xs={1}>
-                                    <IconMenu
-                                        iconButtonElement={iconButton}
-                                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                                        <MenuItem
-                                            primaryText="Изменить"
-                                            leftIcon={<Edit />}
-                                        />
-                                        <MenuItem
-                                            primaryText="Удалить "
-                                            leftIcon={<DeleteIcon />}
-                                        />
-                                    </IconMenu>
-                                </Col>
-                            </li>
                         </ul>
                     </div>
+                </div>
+                <div className={classes.bottomButton}>
+                    <FlatButton
+                        label="Сохранить"
+                        className={classes.actionButton}
+                        primary={true}
+                        type="submit"
+                    />
                 </div>
             </div>
         </Dialog>
     )
 })
 
-ManufactureShowBom.propTypes = {
+ManufactureAddProductDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func,
     loading: PropTypes.bool
 }
 
-ManufactureShowBom.defaultProps = {
+ManufactureAddProductDialog.defaultProps = {
     isUpdate: false
 }
 
-export default ManufactureShowBom
+export default ManufactureAddProductDialog

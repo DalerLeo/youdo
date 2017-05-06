@@ -8,6 +8,7 @@ import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
 import ManufactureAddStaffDialog from './ManufactureAddStaffDialog'
 import ManufactureShowBom from './ManufactureShowBom'
+import ManufactureAddProductDialog from './ManufactureAddProductDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -182,6 +183,7 @@ const ManufactureGridList = enhance((props) => {
     const {
         addStaff,
         showBom,
+        addProductDialog,
         classes
     } = props
 
@@ -201,6 +203,10 @@ const ManufactureGridList = enhance((props) => {
             <ManufactureShowBom
                 open={showBom.open}
                 onClose={showBom.handleClose}
+            />
+            <ManufactureAddProductDialog
+                open={addProductDialog.open}
+                onClose={addProductDialog.handleClose}
             />
             <Row className={classes.productionMainRow}>
                 <Col xs={3} className={classes.productionLeftSide}>
@@ -321,7 +327,7 @@ const ManufactureGridList = enhance((props) => {
                             <Row>
                                 <Col xs={12} style={{padding: '20px 7px 10px'}}>
                                     <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '800', margin: '0'}}>Список производимой продукции</h3>
-                                    <a style={{float: 'right'}} onClick={showBom.handleOpen}>
+                                    <a style={{float: 'right'}} onClick={addProductDialog.handleOpen}>
                                         <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
                                         добавить
                                     </a>
@@ -372,6 +378,11 @@ ManufactureGridList.propTypes = {
         handleClose: PropTypes.func.isRequired
     }).isRequired,
     showBom: PropTypes.shape({
+        open: PropTypes.bool.isRequired,
+        handleOpen: PropTypes.func.isRequired,
+        handleClose: PropTypes.func.isRequired
+    }).isRequired,
+    addProductDialog: PropTypes.shape({
         open: PropTypes.bool.isRequired,
         handleOpen: PropTypes.func.isRequired,
         handleClose: PropTypes.func.isRequired
