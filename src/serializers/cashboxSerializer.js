@@ -21,6 +21,9 @@ export const listFilterSerializer = (data) => {
 
     return {
         'currency': _.get(defaultData, 'currency'),
+        'name': _.get(defaultData, 'name'),
+        'cashier': _.get(defaultData, 'cashier'),
+        'type': _.get(defaultData, 'type'),
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'search': _.get(defaultData, 'search'),

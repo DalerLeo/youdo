@@ -18,7 +18,6 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import BrandCreateDialog from './BrandCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
@@ -80,7 +79,6 @@ const BrandGridList = enhance((props) => {
         updateDialog,
         actionsDialog,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -129,7 +127,7 @@ const BrandGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Удалить "
                             leftIcon={<DeleteIcon />}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                         />
                     </IconMenu>
                 </Col>
@@ -179,12 +177,6 @@ const BrandGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
-            />
-
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -213,11 +205,6 @@ BrandGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,

@@ -146,15 +146,6 @@ const CategoryGridList = enhance((props) => {
                 detail={categoryDetail}
                 actionsDialog={actions}
             />
-
-            <CategoryCreateDialog
-                initialValues={{}}
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
             <CategoryCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
@@ -163,6 +154,14 @@ const CategoryGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
+
+            <CategoryCreateDialog
+                open={createDialog.openCreateDialog}
+                loading={createDialog.createLoading}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
+            />
+
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}

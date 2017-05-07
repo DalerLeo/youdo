@@ -29,6 +29,7 @@ export const EXPENSIVE_CATEGORY = 'expanse_categories/expanse_category'
 export const EXPENSIVE_CATEGORY_CREATE = `/${EXPENSIVE_CATEGORY}/`
 export const EXPENSIVE_CATEGORY_LIST = `/${EXPENSIVE_CATEGORY}/`
 export const EXPENSIVE_CATEGORY_ITEM = `/${EXPENSIVE_CATEGORY}/%d/`
+export const EXPENSIVE_CATEGORY_DELETE = `/${EXPENSIVE_CATEGORY}/%d/`
 
 export const PROVIDER = 'dist/provider'
 export const PROVIDER_CREATE = `/${PROVIDER}/`
@@ -41,6 +42,7 @@ export const CURRENCY_CREATE = `/${CURRENCY}/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
 export const CURRENCY_PRIMARY = 'currency_primary'
+export const CURRENCY_DELETE = `/${CURRENCY}/%d/`
 export const CURRENCY_PRIMARY_ITEM = `/${CURRENCY_PRIMARY}/%d/`
 
 export const SHOP = 'dist/market'
@@ -94,6 +96,7 @@ export const BRAND = 'dist/brand'
 export const BRAND_CREATE = `/${BRAND}/`
 export const BRAND_LIST = `/${BRAND}/`
 export const BRAND_ITEM = `/${BRAND}/%d/`
+export const BRAND_DELETE = `/${BRAND}/%d/`
 
 export const PAYMNET_TYPE = 'dist/payment'
 export const PAYMNET_TYPE_CREATE = `/${PAYMNET_TYPE}/add/`
