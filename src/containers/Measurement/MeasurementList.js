@@ -8,7 +8,6 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     MEASUREMENT_CREATE_DIALOG_OPEN,
     MEASUREMENT_UPDATE_DIALOG_OPEN,

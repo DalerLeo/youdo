@@ -9,7 +9,6 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     CASHBOX_CREATE_DIALOG_OPEN,
     CASHBOX_UPDATE_DIALOG_OPEN,
@@ -73,7 +72,6 @@ const enhance = compose(
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
-
 
     withHandlers({
         handleActionEdit: props => () => {
@@ -179,7 +177,6 @@ const enhance = compose(
                     dispatch(cashboxListFetchAction(filter))
                 })
         },
-
 
         handleOpenUpdateDialog: props => (id) => {
             const {filter} = props

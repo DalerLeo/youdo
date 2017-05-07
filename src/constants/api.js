@@ -31,7 +31,6 @@ export const EXPENSIVE_CATEGORY_LIST = `/${EXPENSIVE_CATEGORY}/`
 export const EXPENSIVE_CATEGORY_ITEM = `/${EXPENSIVE_CATEGORY}/%d/`
 export const EXPENSIVE_CATEGORY_DELETE = `/${EXPENSIVE_CATEGORY}/%d/`
 
-
 export const PROVIDER = 'dist/provider'
 export const PROVIDER_CREATE = `/${PROVIDER}/`
 export const PROVIDER_DELETE = `/${PROVIDER}/`

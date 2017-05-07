@@ -111,7 +111,6 @@ const StockGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const manager = _.get(item, ['manager', 'firstName']) + ' ' + _.get(item, ['manager', 'secondName'])
-        console.log(_.get(item, 'stockType') )
         const stockType = _.toInteger(_.get(item, 'stockType')) === main ? 'Основной' : 'Производственной'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
