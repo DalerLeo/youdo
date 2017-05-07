@@ -105,6 +105,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CATEGORY_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(categoryListFetchAction(filter))
                 })
         },
 
@@ -119,14 +120,15 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
 
             return dispatch(categoryCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[CATEGORY_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[CATEGORY_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(categoryListFetchAction(filter))
                 })
         },
 
@@ -156,6 +158,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CATEGORY_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(categoryListFetchAction(filter))
                 })
         }
     })
