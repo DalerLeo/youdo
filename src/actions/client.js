@@ -3,12 +3,12 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/currencySerializer'
+import * as serializers from '../serializers/clientSerializer'
 
-export const currencyCreateAction = (formValues) => {
+export const clientCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .post(API.CURRENCY_CREATE, requestData)
+        .post(API.CLIENT_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,14 +17,14 @@ export const currencyCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.CURRENCY_CREATE,
+        type: actionTypes.CLIENT_CREATE,
         payload
     }
 }
 
-export const currencyDeleteAction = (id) => {
+export const clientDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.CURRENCY_DELETE, id))
+        .delete(sprintf(API.CLIENT_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,15 +33,15 @@ export const currencyDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.CURRENCY_DELETE,
+        type: actionTypes.CLIENT_DELETE,
         payload
     }
 }
 
-export const currencyUpdateAction = (id, formValues) => {
+export const clientUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.CURRENCY_ITEM, id), requestData)
+        .put(sprintf(API.CLIENT_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,15 +50,15 @@ export const currencyUpdateAction = (id, formValues) => {
         })
 
     return {
-        type: actionTypes.CURRENCY_UPDATE,
+        type: actionTypes.CLIENT_UPDATE,
         payload
     }
 }
 
-export const currencyListFetchAction = (filter) => {
+export const clientListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.CURRENCY_LIST, {params})
+        .get(API.CLIENT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,15 +67,15 @@ export const currencyListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.CURRENCY_LIST,
+        type: actionTypes.CLIENT_LIST,
         payload
     }
 }
 
-export const currencyCSVFetchAction = (filter) => {
+export const clientCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.CURRENCY_LIST, {params})
+        .get(API.CLIENT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -84,14 +84,14 @@ export const currencyCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.CURRENCY_LIST_CSV,
+        type: actionTypes.CLIENT_LIST_CSV,
         payload
     }
 }
 
-export const currencyItemFetchAction = (id) => {
+export const clientItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.CURRENCY_ITEM, id))
+        .get(sprintf(API.CLIENT_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -100,40 +100,7 @@ export const currencyItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.CURRENCY_ITEM,
-        payload
-    }
-}
-
-export const currencyPrimaryFetchAction = () => {
-    const payload = axios()
-        .get(API.CURRENCY_PRIMARY)
-        .then((response) => {
-            return response
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response']))
-        })
-
-    return {
-        type: actionTypes.CURRENCY_PRIMARY,
-        payload
-    }
-}
-
-export const currencyPrimaryCreateAction = (formValues) => {
-    const requestData = serializers.createPrimarySerializer(formValues)
-    const payload = axios()
-        .post(sprintf(API.CURRENCY_PRIMARY_CREATE), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CURRENCY_PRIMARY_UPDATE,
+        type: actionTypes.CLIENT_ITEM,
         payload
     }
 }

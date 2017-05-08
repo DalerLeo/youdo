@@ -63,8 +63,8 @@ const enhance = compose(
             position: 'relative',
             '& svg': {
                 position: 'absolute',
-                width: '18px !important',
-                height: '18px !important'
+                width: '13px !important',
+                height: '20px !important'
             }
         },
         header: {

@@ -19,15 +19,28 @@ const enhance = compose(
         },
 
         count: {
-            marginRight: '20px',
+            marginRight: '15px',
+            height: '54px !important',
             '& > div': {
-                fontSize: '13px !important'
+                fontSize: '13px !important',
+                marginTop: '3px !important'
             }
         },
 
         nav: {
             display: 'flex',
             alignItems: 'center'
+        },
+        gridPagination: {
+            '& button': {
+                padding: '0 !important',
+                width: 'inherit !important',
+                height: 'inherit !important',
+                top: '2px'
+            },
+            '& button:first-child': {
+                padding: '0 5px 0 10px !important'
+            }
         }
     }),
     withHandlers({
@@ -61,7 +74,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter}) => {
             </div>
             <div className={classes.nav}>
                 <div>{startPage} - {startEnd} из {filter.getCounts()}</div>
-                <div>
+                <div className={classes.gridPagination}>
                     <IconButton
                         disabled={Boolean(!prev)}
                         iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}

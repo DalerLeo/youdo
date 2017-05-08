@@ -23,7 +23,7 @@ import {
     currencyDeleteAction,
     currencyItemFetchAction,
     currencyPrimaryFetchAction,
-    currencyPrimaryUpdateAction
+    currencyPrimaryCreateAction
 } from '../../actions/currency'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -42,6 +42,7 @@ const enhance = compose(
         const csvData = _.get(state, ['currency', 'csv', 'data'])
         const csvLoading = _.get(state, ['currency', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'CurrencyCreateForm'])
+        const baseCreateForm = _.get(state, ['form', 'BaseCurrencyCreateForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -55,6 +56,7 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
+            baseCreateForm,
             createForm
         }
     }),
@@ -114,7 +116,7 @@ const enhance = compose(
             const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(currencyDeleteAction(detail.id))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: false})})
@@ -140,35 +142,9 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: true})})
         },
 
-        handlePrimaryOpenDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: true})})
-        },
-
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: false})})
-        },
-        handlePrimaryCloseDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitPrimaryDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-            const currency = _.toInteger(_.get(props, ['params', 'currency']))
-
-            return dispatch(currencyPrimaryUpdateAction(currency, _.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[PRIMARY_CURRENCY_DIALOG_OPEN]: false}))
-                })
-        },
-        handleClosePrimaryDialog: props => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
@@ -176,10 +152,33 @@ const enhance = compose(
 
             return dispatch(currencyCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: false})})
+                })
+        },
+
+        handlePrimaryOpenDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: true})})
+        },
+
+        handlePrimaryCloseDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitPrimaryDialog: props => () => {
+            const {dispatch, baseCreateForm, filter, location: {pathname}} = props
+
+            return dispatch(currencyPrimaryCreateAction(_.get(baseCreateForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
+                    dispatch(currencyPrimaryFetchAction())
                 })
         },
 
@@ -205,7 +204,7 @@ const enhance = compose(
                     return dispatch(currencyItemFetchAction(currencyId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CURRENCY_UPDATE_DIALOG_OPEN]: false}))
@@ -249,7 +248,7 @@ const CurrencyList = enhance((props) => {
             }
             return {
                 currency: {
-                    value: _.get(primaryCurrency, 'id')
+                    value: _.get(primaryCurrency, 'currency')
                 }
             }
         })(),
@@ -257,7 +256,6 @@ const CurrencyList = enhance((props) => {
         openPrimaryDialog,
         primaryCurrencyLoading,
         handlePrimaryOpenDialog: props.handlePrimaryOpenDialog,
-        handleClosePrimaryDialog: props.handleClosePrimaryDialog,
         handlePrimaryCloseDialog: props.handlePrimaryCloseDialog,
         handleSubmitPrimaryDialog: props.handleSubmitPrimaryDialog
     }

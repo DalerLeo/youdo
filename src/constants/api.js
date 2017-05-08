@@ -37,13 +37,19 @@ export const PROVIDER_DELETE = `/${PROVIDER}/`
 export const PROVIDER_LIST = `/${PROVIDER}/`
 export const PROVIDER_ITEM = `/${PROVIDER}/%d/`
 
+export const CLIENT = 'client/client'
+export const CLIENT_CREATE = `/${CLIENT}/`
+export const CLIENT_DELETE = `/${CLIENT}/`
+export const CLIENT_LIST = `/${CLIENT}/`
+export const CLIENT_ITEM = `/${CLIENT}/%d/`
+
 export const CURRENCY = 'currency/currencies'
 export const CURRENCY_CREATE = `/${CURRENCY}/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
-export const CURRENCY_PRIMARY = 'currency_primary'
 export const CURRENCY_DELETE = `/${CURRENCY}/%d/`
-export const CURRENCY_PRIMARY_ITEM = `/${CURRENCY_PRIMARY}/%d/`
+export const CURRENCY_PRIMARY = 'currency_primary'
+export const CURRENCY_PRIMARY_CREATE = `/${CURRENCY_PRIMARY}/`
 
 export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`

@@ -5,6 +5,7 @@ import {compose, withHandlers} from 'recompose'
 import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import Checkbox from 'material-ui/Checkbox'
+import Dot from '../../Images/dot.png'
 
 const enhance = compose(
     injectSheet({
@@ -13,17 +14,28 @@ const enhance = compose(
         },
         item: {
             height: '50px',
+            padding: '0 30px',
             background: '#fff',
-            borderBottom: '1px dotted #eee',
             boxShadow: 'rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px',
             '& .row': {
                 width: '100%',
                 alignItems: 'center',
                 height: '100%'
             },
-            '& .row > div': {
-                paddingLeft: '25px'
+            '&:after': {
+                content: '""',
+                backgroundImage: 'url(' + Dot + ')',
+                position: 'absolute',
+                height: '2px',
+                left: '0',
+                right: '0',
+                marginTop: '-1px'
+            },
+            '&:last-child:after': {
+                content: '""',
+                backgroundImage: 'none'
             }
+
         },
         detail: {
             margin: '20px -15px !important',
