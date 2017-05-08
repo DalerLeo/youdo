@@ -7,7 +7,6 @@ import {compose} from 'recompose'
 import HardwareKeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
 import {MenuItems} from '../SidebarMenu/MenuItems'
 import ToolTip from '../ToolTip'
-import IconButton from 'material-ui/IconButton'
 
 const NOT_FOUND = -1
 
@@ -30,7 +29,16 @@ const enhance = compose(
         },
         active: {
             extend: 'item',
-            borderBottom: '1px dotted #44637e'
+            borderBottom: '1px dashed #44637e',
+            fontWeight: '600'
+        },
+        subParentIco: {
+            paddingTop: '3px',
+            paddingRight: '10px',
+            paddingLeft: '2px',
+            '& svg path': {
+                fill: 'rgb(93, 100, 116) !important'
+            }
         }
     })
 )
@@ -55,15 +63,11 @@ const SubMenu = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <Link to={parent.url}>
                 <ToolTip position="right" text={parent.name}>
-                    <IconButton
-                        iconStyle={{color: '#66696f'}}
-                        touch={true}>
+                    <div className={classes.subParentIco}>
                         {parent.icon}
-                    </IconButton>
+                    </div>
                 </ToolTip>
-            </Link>
             <HardwareKeyboardArrowRight style={{color: '#66696f', height: '12px', marginRight: '15px', width: 'auto'}} />
             {items}
         </div>

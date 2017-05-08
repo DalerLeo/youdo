@@ -31,7 +31,7 @@ const listHeader = [
         sorting: true,
         name: 'name',
         title: 'Наименование',
-        xs: 4
+        xs: 3
     },
     {
         sorting: true,
