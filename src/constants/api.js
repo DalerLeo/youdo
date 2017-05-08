@@ -41,9 +41,9 @@ export const CURRENCY = 'currency/currencies'
 export const CURRENCY_CREATE = `/${CURRENCY}/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
-export const CURRENCY_PRIMARY = 'currency_primary'
 export const CURRENCY_DELETE = `/${CURRENCY}/%d/`
-export const CURRENCY_PRIMARY_ITEM = `/${CURRENCY_PRIMARY}/%d/`
+export const CURRENCY_PRIMARY = 'currency_primary'
+export const CURRENCY_PRIMARY_CREATE = `/${CURRENCY_PRIMARY}/`
 
 export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`

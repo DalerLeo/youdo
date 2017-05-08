@@ -121,10 +121,10 @@ export const currencyPrimaryFetchAction = () => {
     }
 }
 
-export const currencyPrimaryUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const currencyPrimaryCreateAction = (formValues) => {
+    const requestData = serializers.createPrimarySerializer(formValues)
     const payload = axios()
-        .post(sprintf(API.CURRENCY_PRIMARY_ITEM, id), requestData)
+        .post(sprintf(API.CURRENCY_PRIMARY_CREATE), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
