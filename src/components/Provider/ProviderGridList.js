@@ -172,9 +172,12 @@ const ProviderGridList = enhance((props) => {
             </IconButton>
         </div>
     )
+    const contacts = _.get(detailData, 'contacts')
     const date = moment(_.get(detailData, ['data', 'createdDate'])).format('DD.MM.YYYY')
     const address = _.get(detailData, ['data', 'address'])
     const providerName = _.get(detailData, ['data', 'name'])
+
+    console.log(detailData);
 
     const providerDetail = (
         <div className={classes.wrapper} key={_.get(detailData, 'id')}>
@@ -206,16 +209,20 @@ const ProviderGridList = enhance((props) => {
                 </div>
                 <div className={classes.body}>
                     <div className={classes.bodyTitle} style={{margin: '0'}}>Контакты</div>
-                    <Row className="dottedList">
-                        <Col xs={4}>Ильхам Алиев</Col>
-                        <Col xs={4}>İlham_liyev@azerbut.az</Col>
-                        <Col xs={4}>+ 998 98 9898890</Col>
-                    </Row>
-                    <Row className="dottedList">
-                        <Col xs={4}>Хамад ибн Иса Аль Халифа</Col>
-                        <Col xs={4}>İlham_liyev@azerbut.az</Col>
-                        <Col xs={4}>+ 998 98 9898890</Col>
-                    </Row>
+                    <div className="dottedList">
+                        {_.map(contacts, (item) => {
+                            const name = _.get(contacts, 'name')
+                            const phone = _.get(contacts, 'phone')
+                            const email = _.get(contacts, 'email')
+                            return (
+                                <Row key={item}>
+                                    <Col xs={4}>{name}</Col>
+                                    <Col xs={4}>{email}</Col>
+                                    <Col xs={4}>{phone}</Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
                 </div>
                 <div className={classes.rightSide}>
                     <div className={classes.bodyTitle}>Дата добавления</div>

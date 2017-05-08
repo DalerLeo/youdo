@@ -119,7 +119,7 @@ const StockGridList = enhance((props) => {
             </IconButton>
         )
         return (
-            <Row key={id} style={{alignItems: 'center'}}>
+            <Row key={id}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={3}>{name}</Col>
                 <Col xs={3}>{manager}</Col>
