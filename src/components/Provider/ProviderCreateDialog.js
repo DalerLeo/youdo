@@ -43,7 +43,7 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-        contactBlock: {
+        contacts: {
             background: '#f1f5f8',
             color: '#333',
             margin: '12px -30px 0',
@@ -70,7 +70,7 @@ const ProviderCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Добавление поставщика' : 'Изменить поставщика'}</span>
+                <span>{isUpdate ? 'Изменение поставщика' : 'Добавление поставщика'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -102,6 +102,12 @@ const ProviderCreateDialog = enhance((props) => {
                                     component={ProviderContactsListField}
                                 />
                             </div>
+                        <div className={classes.contacts}>
+                            Контактные данные
+                            <FieldArray
+                                name="contacts"
+                                component={ProviderContactsListField}
+                            />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

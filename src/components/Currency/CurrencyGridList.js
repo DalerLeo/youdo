@@ -128,7 +128,7 @@ const CurrencyGridList = enhance((props) => {
             </IconButton>
         )
         return (
-            <Row key={id} style={{alignItems: 'center'}}>
+            <Row key={id}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={6}>{name}</Col>
                 <Col xs={3}>{createdDate}</Col>

@@ -94,6 +94,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.PROVIDER_UPDATE),
         item: createThunkReducer(actionTypes.PROVIDER_ITEM)
     }),
+    client: combineReducers({
+        create: createThunkReducer(actionTypes.CLIENT_CREATE),
+        list: createThunkReducer(actionTypes.CLIENT_LIST),
+        update: createThunkReducer(actionTypes.CLIENT_UPDATE),
+        item: createThunkReducer(actionTypes.CLIENT_ITEM)
+    }),
     brand: combineReducers({
         create: createThunkReducer(actionTypes.BRAND_CREATE),
         list: createThunkReducer(actionTypes.BRAND_LIST),
@@ -101,10 +107,10 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.BRAND_ITEM)
     }),
     manufacture: combineReducers({
-        create: createThunkReducer(actionTypes.PROVIDER_CREATE),
-        list: createThunkReducer(actionTypes.PROVIDER_LIST),
-        update: createThunkReducer(actionTypes.PROVIDER_UPDATE),
-        item: createThunkReducer(actionTypes.PROVIDER_ITEM)
+        create: createThunkReducer(actionTypes.MANUFACTURE_CREATE),
+        list: createThunkReducer(actionTypes.MANUFACTURE_LIST),
+        update: createThunkReducer(actionTypes.MANUFACTURE_UPDATE),
+        item: createThunkReducer(actionTypes.MANUFACTURE_ITEM)
     }),
     snackbar: snackbarReducer(),
     form: formReducer,

@@ -102,7 +102,7 @@ const MeasurementGridList = enhance((props) => {
             </IconButton>
         )
         return (
-            <Row key={id} style={{alignItems: 'center'}}>
+            <Row key={id}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={5}>{name}</Col>
                 <Col xs={4}>{amount}</Col>
