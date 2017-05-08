@@ -67,6 +67,7 @@ const iconStyle = {
 
 const tooltipPosition = 'bottom-center'
 
+const colorBlue = '#12aaeb !important'
 const enhance = compose(
     injectSheet({
         addButton: {
@@ -82,6 +83,69 @@ const enhance = compose(
         },
         actionBtn: {
             height: '48px'
+        },
+        wrapper: {
+            color: '#333 !important',
+            width: '100%',
+            display: 'flex',
+            flexWrap: 'wrap',
+            '& a': {
+                color: colorBlue
+            }
+        },
+        title: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+            padding: '20px 30px',
+            borderBottom: '1px #efefef solid'
+        },
+        container: {
+            display: 'flex',
+            width: '100%'
+        },
+        sides: {
+            flexBasis: '27%'
+        },
+        leftSide: {
+            extend: 'sides',
+            borderRight: '1px #efefef solid',
+            padding: '20px 30px'
+        },
+        rightSide: {
+            extend: 'sides',
+            borderLeft: '1px #efefef solid',
+            padding: '20px 30px'
+        },
+        body: {
+            flexBasis: '66%',
+            padding: '20px 30px',
+            '& .dottedList': {
+                padding: '10px 0',
+                '&:after': {
+                    left: '0.5rem',
+                    right: '0.5rem'
+                },
+                '&:first-child': {
+                    padding: '0 0 10px'
+                },
+                '&:last-child': {
+                    padding: '10px 0 0',
+                    '&:after': {
+                        display: 'none'
+                    }
+                }
+            }
+        },
+        titleLabel: {
+            fontSize: '18px',
+            color: '#333',
+            fontWeight: '700'
+        },
+        bodyTitle: {
+            fontWeight: '600',
+            marginBottom: '10px'
         }
     })
 )
@@ -110,6 +174,11 @@ const ClientGridList = enhance((props) => {
             </IconButton>
         </div>
     )
+    const providerId = _.get(detailData, 'id')
+    const contacts = _.get(detailData, ['data', 'contacts'])
+    const date = moment(_.get(detailData, ['data', 'createdDate'])).format('DD.MM.YYYY')
+    const address = _.get(detailData, ['data', 'address']) || 'N/A'
+    const providerName = _.get(detailData, ['data', 'name'])
 
     const clientDetail = (
         <div className={classes.wrapper} key={_.get(detailData, 'id')}>
@@ -120,6 +189,8 @@ const ClientGridList = enhance((props) => {
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
                         touch={true}
+                        disableTouchRipple={true}
+                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(providerId) }}
                         tooltipPosition={tooltipPosition}
                         tooltip="Изменить">
                         <Edit />
@@ -128,6 +199,8 @@ const ClientGridList = enhance((props) => {
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
                         touch={true}
+                        disableTouchRipple={true}
+                        onTouchTap={confirmDialog.handleOpenConfirmDialog}
                         tooltipPosition={tooltipPosition}
                         tooltip="Удалить">
                         <DeleteIcon />
@@ -144,10 +217,10 @@ const ClientGridList = enhance((props) => {
                     <div>
                         {_.map(contacts, (item) => {
                             const name = _.get(item, 'name')
-                            const phone = _.get(item, 'phone')
+                            const phone = _.get(item, 'telephone')
                             const email = _.get(item, 'email')
                             return (
-                                <Row key={item} className="dottedList">
+                                <Row key={item.id} className="dottedList">
                                     <Col xs={4}>{name}</Col>
                                     <Col xs={4}>{email}</Col>
                                     <Col xs={4}>{phone}</Col>

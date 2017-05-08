@@ -131,6 +131,7 @@ const enhance = compose(
                     padding: '0 0 10px'
                 },
                 '&:last-child': {
+                    padding: '10px 0 0',
                     '&:after': {
                         display: 'none'
                     }
@@ -172,12 +173,11 @@ const ProviderGridList = enhance((props) => {
             </IconButton>
         </div>
     )
+    const providerId = _.get(detailData, 'id')
     const contacts = _.get(detailData, ['data', 'contacts'])
     const date = moment(_.get(detailData, ['data', 'createdDate'])).format('DD.MM.YYYY')
-    const address = _.get(detailData, ['data', 'address'])
+    const address = _.get(detailData, ['data', 'address']) || 'N/A'
     const providerName = _.get(detailData, ['data', 'name'])
-
-    console.log(detailData);
 
     const providerDetail = (
         <div className={classes.wrapper} key={_.get(detailData, 'id')}>
@@ -188,6 +188,8 @@ const ProviderGridList = enhance((props) => {
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
                         touch={true}
+                        disableTouchRipple={true}
+                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(providerId) }}
                         tooltipPosition={tooltipPosition}
                         tooltip="Изменить">
                         <Edit />
@@ -196,6 +198,8 @@ const ProviderGridList = enhance((props) => {
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
                         touch={true}
+                        disableTouchRipple={true}
+                        onTouchTap={confirmDialog.handleOpenConfirmDialog}
                         tooltipPosition={tooltipPosition}
                         tooltip="Удалить">
                         <DeleteIcon />
@@ -215,7 +219,7 @@ const ProviderGridList = enhance((props) => {
                             const phone = _.get(item, 'phone')
                             const email = _.get(item, 'email')
                             return (
-                                <Row key={item} className="dottedList">
+                                <Row key={item.id} className="dottedList">
                                     <Col xs={4}>{name}</Col>
                                     <Col xs={4}>{email}</Col>
                                     <Col xs={4}>{phone}</Col>
