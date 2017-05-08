@@ -32,12 +32,16 @@ const validate = (data) => {
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
-            width: '120px',
-            margin: '0 auto',
-            padding: '15px',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
             textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none',
-            flexDirection: 'center'
+            display: ({loading}) => loading ? 'flex' : 'none'
         },
         dialogAddUser: {
             '& .imageDropZone': {
@@ -67,47 +71,46 @@ const UsersCreateDialog = enhance((props) => {
             onRequestClose={onClose}
             className={classes.dialogAddUser}
             contentStyle={loading ? {width: '300px'} : {width: '600px'}}
-            bodyClassName={classes.body}>
+            bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменить пользователя' : 'Добавить пользователя'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form} style={{display: 'block'}}>
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.fieldsWrap}>
-                    <Row className={classes.field}>
-                        <Col xs={7}>
-                            <Field
-                                name="firstName"
-                                component={TextField}
-                                label="Имя"
-                                className={classes.inputField}
-                                fullWidth={true}/>
-                            <Field
-                                name="secondName"
-                                component={TextField}
-                                label="Фамилия"
-                                className={classes.inputField}
-                                fullWidth={true}/>
-                        </Col>
-                        <Col xs={5}>
-                            <Field
-                                name="image"
-                                className={classes.imageUpload}
-                                component={ImageUploadField}
-                                label="Изображения"
-                                fullWidth={true}
-                            />
-                        </Col>
-                    </Row>
-                </div>
-                <div className={classes.fieldsWrap}>
-                    <div className={classes.field}>
-                        <Row>
+            <div className={classes.bodyContent}>
+                <form onSubmit={onSubmit} className={classes.form}>
+                    <div className={classes.loader}>
+                        <CircularProgress size={80} thickness={5}/>
+                    </div>
+                    <div className={classes.inContent} style={{display: 'block', maxHeight: '400px'}}>
+                        <Row className={classes.field}>
+                            <Col xs={7}>
+                                <Field
+                                    name="firstName"
+                                    component={TextField}
+                                    label="Имя"
+                                    className={classes.inputField}
+                                    fullWidth={true}/>
+                                <Field
+                                    name="secondName"
+                                    component={TextField}
+                                    label="Фамилия"
+                                    className={classes.inputField}
+                                    fullWidth={true}/>
+                            </Col>
+                            <Col xs={5}>
+                                <Field
+                                    name="image"
+                                    className={classes.imageUpload}
+                                    component={ImageUploadField}
+                                    label="Изображения"
+                                    fullWidth={true}
+                                />
+                            </Col>
+                        </Row>
+                        <div className="dottedList"></div>
+                        <Row className={classes.field}>
                             <Col xs={6}>
                                 <Field
                                     name="username"
@@ -150,16 +153,16 @@ const UsersCreateDialog = enhance((props) => {
                             </Col>
                         </Row>
                     </div>
-                </div>
-                <div className={classes.bottomButton}>
-                    <FlatButton
-                        label="Сохранить"
-                        className={classes.actionButton}
-                        primary={true}
-                        type="submit"
-                    />
-                </div>
-            </form>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
+                        />
+                    </div>
+                </form>
+            </div>
         </Dialog>
     )
 })

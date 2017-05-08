@@ -32,14 +32,18 @@ const validate = (data) => {
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
-            width: '120px',
-            margin: '0 auto',
-            padding: '15px',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
             textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none',
-            flexDirection: 'center'
+            display: ({loading}) => loading ? 'flex' : 'none'
         },
-        background: {
+        contactBlock: {
             background: '#f1f5f8',
             color: '#333',
             margin: '12px -30px 0',
@@ -63,7 +67,7 @@ const ProviderCreateDialog = enhance((props) => {
             onRequestClose={onClose}
             className={classes.dialog}
             contentStyle={loading ? {width: '300px'} : {width: '500px'}}
-            bodyClassName={classes.body}>
+            bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Добавление поставщика' : 'Изменить поставщика'}</span>
@@ -71,43 +75,45 @@ const ProviderCreateDialog = enhance((props) => {
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form}>
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.fieldsWrap}>
-                    <div className={classes.field}>
-                        <Field
-                            name="name"
-                            component={TextField}
-                            className={classes.inputField}
-                            label="Организация"
-                            fullWidth={true}/>
-                        <Field
-                            name="address"
-                            component={TextField}
-                            className={classes.inputField}
-                            label="Местположение"
-                            fullWidth={true}/>
+            <div className={classes.bodyContent}>
+                <form onSubmit={onSubmit} className={classes.form} style={{width: '100%'}}>
+                    <div className={classes.inContent}>
+                        <div className={classes.loader}>
+                            <CircularProgress size={80} thickness={5}/>
+                        </div>
+                        <div className={classes.field}>
+                            <Field
+                                name="name"
+                                component={TextField}
+                                className={classes.inputField}
+                                label="Организация"
+                                fullWidth={true}/>
+                            <Field
+                                name="address"
+                                component={TextField}
+                                className={classes.inputField}
+                                label="Местположение"
+                                fullWidth={true}/>
 
-                        <div className={classes.background}>
-                            Контактные данные
-                            <FieldArray
-                                name="contacts"
-                                component={ProviderContactsListField}
-                            />
+                            <div className={classes.contactBlock}>
+                                Контактные данные
+                                <FieldArray
+                                    name="contacts"
+                                    component={ProviderContactsListField}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className={classes.bottomButton}>
-                    <FlatButton
-                        label="Сохранить"
-                        className={classes.actionButton}
-                        primary={true}
-                        type="submit"
-                    />
-                </div>
-            </form>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
+                        />
+                    </div>
+                </form>
+            </div>
         </Dialog>
     )
 })
