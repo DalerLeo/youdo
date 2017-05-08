@@ -189,8 +189,7 @@ const TransactionGridList = enhance((props) => {
     const cashboxList = _.map(_.get(cashboxData, 'data'), (item, index) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const type = _.get(item, 'type')
-        const cashier = _.toInteger(_.get(item, 'cashier'))
+        const type = _.toInteger(_.get(item, 'type'))
         const balance = _.toInteger(_.get(item, 'balance'))
         const isActive = item.id === _.get(cashboxData, 'cashboxId')
         const BANK_ID = 1
@@ -203,7 +202,7 @@ const TransactionGridList = enhance((props) => {
                 <Col xs={8}>
                     <div>{name}</div>
                     <div className={item.id === cashboxData.cashboxId && classes.blue}>
-                        {cashier === BANK_ID
+                        {type === BANK_ID
                             ? <div>
                                 <BankPayment style={{height: '16px', width: '16px'}}/>
                                 <span className={classes.desc}>банковский счет</span>
