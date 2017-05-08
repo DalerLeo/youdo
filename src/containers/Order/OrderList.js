@@ -1,20 +1,17 @@
 import React from 'react'
 import _ from 'lodash'
-import moment from 'moment'
+import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     ORDER_CREATE_DIALOG_OPEN,
     ORDER_UPDATE_DIALOG_OPEN,
-    ORDER_FILTER_KEY,
-    ORDER_FILTER_OPEN,
-    ORDER_EXPENSE_CREATE_DIALOG_OPEN,
-    ORDER_EXPENSE_DELETE_DIALOG_OPEN,
+    ORDER_DELETE_DIALOG_OPEN,
     OrderGridList
 } from '../../components/Order'
 import {
@@ -39,7 +36,6 @@ const enhance = compose(
         const listLoading = _.get(state, ['order', 'list', 'loading'])
         const csvData = _.get(state, ['order', 'csv', 'data'])
         const csvLoading = _.get(state, ['order', 'csv', 'loading'])
-        const filterForm = _.get(state, ['form', 'OrderFilterForm'])
         const createForm = _.get(state, ['form', 'OrderCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -53,7 +49,6 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
-            filterForm,
             createForm
         }
     }),
@@ -65,7 +60,6 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const orderId = _.get(nextProps, ['params', 'orderId'])
-
         return orderId && _.get(props, ['params', 'orderId']) !== orderId
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
@@ -73,7 +67,6 @@ const enhance = compose(
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
-    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
@@ -92,67 +85,28 @@ const enhance = compose(
             setOpenCSVDialog(false)
         },
 
-        handleOpenConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(true)
+        handleOpenConfirmDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.ORDER_ITEM_PATH, id),
+                query: filter.getParams({[ORDER_DELETE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(false)
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_DELETE_DIALOG_OPEN]: false})})
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
+            const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(orderDeleteAction(detail.id))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
-                    setOpenConfirmDialog(false)
+                    hashHistory.push({pathname, query: filter.getParams({[ORDER_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(orderListFetchAction(filter))
                 })
-        },
-
-        handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_FILTER_OPEN]: true})})
-        },
-
-        handleCloseFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_FILTER_OPEN]: false})})
-        },
-
-        handleClearFilterDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {}})
-        },
-
-        handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-
-            filter.filterBy({
-                [ORDER_FILTER_OPEN]: false,
-                [ORDER_FILTER_KEY.PROVIDER]: provider,
-                [ORDER_FILTER_KEY.STOCK]: stock,
-                [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
-            })
-        },
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
         handleOpenCreateDialog: props => () => {
@@ -164,21 +118,26 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: false})})
         },
+
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
 
             return dispatch(orderCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(orderListFetchAction(filter))
                 })
         },
 
-        handleOpenUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})})
+        handleOpenUpdateDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.ORDER_ITEM_PATH, id),
+                query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseUpdateDialog: props => () => {
@@ -195,12 +154,47 @@ const enhance = compose(
                     return dispatch(orderItemFetchAction(orderId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[ORDER_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(orderListFetchAction(filter))
                 })
-        }
+        },
+        
+        handleOpenFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_FILTER_OPEN]: true})})
+        },
+
+        handleCloseFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_FILTER_OPEN]: false})})
+        },
+
+        handleTabChange: props => (tab) => {
+            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+            hashHistory.push({pathname: sprintf(ROUTER.ORDER_ITEM_TAB_PATH, shopId, tab)})
+        },
+
+        handleClearFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
+        },
+
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const category = _.get(filterForm, ['values', 'category', 'value']) || null
+
+            filter.filterBy({
+                [ORDER_FILTER_OPEN]: false,
+                [ORDER_FILTER_KEY.CATEGORY]: category,
+                [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+            })
+        },
     })
 )
 
@@ -218,19 +212,15 @@ const OrderList = enhance((props) => {
         params
     } = props
 
-    const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
-    const provider = _.toInteger(filter.getParam(ORDER_FILTER_KEY.PROVIDER))
-    const stock = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STOCK))
-    const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
+    const openConfirmDialog = toBoolean(_.get(location, ['query', ORDER_DELETE_DIALOG_OPEN]))
+
     const detailId = _.toInteger(_.get(params, 'orderId'))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
+        handleActionDelete: props.handleOpenConfirmDialog
     }
 
     const createDialog = {
@@ -241,14 +231,8 @@ const OrderList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
-    }
-
     const confirmDialog = {
-        openConfirmDialog: props.openConfirmDialog,
+        openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
@@ -259,13 +243,8 @@ const OrderList = enhance((props) => {
             if (!detail) {
                 return {}
             }
-
             return {
-                provider: _.get(detail, 'provider'),
-                stock: _.get(detail, 'stock'),
-                dataDelivery: _.get(detail, 'dataDelivery'),
-                contact: _.get(detail, 'contact'),
-                currency: _.get(detail, 'currency')
+                name: _.get(detail, 'name')
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -275,33 +254,30 @@ const OrderList = enhance((props) => {
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
 
-    const filterDialog = {
-        initialValues: {
-            provider: {
-                value: provider
-            },
-            stock: {
-                value: stock
-            },
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
-            }
-        },
-        filterLoading: false,
-        openFilterDialog,
-        handleOpenFilterDialog: props.handleOpenFilterDialog,
-        handleCloseFilterDialog: props.handleCloseFilterDialog,
-        handleClearFilterDialog: props.handleClearFilterDialog,
-        handleSubmitFilterDialog: props.handleSubmitFilterDialog
-    }
-
     const csvDialog = {
         csvData: props.csvData,
         csvLoading: props.csvLoading,
         openCSVDialog: props.openCSVDialog,
         handleOpenCSVDialog: props.handleOpenCSVDialog,
         handleCloseCSVDialog: props.handleCloseCSVDialog
+    }
+    
+    const filterDialog = {
+        // initialValues: {
+        //     category: {
+        //         value: category
+        //     },
+        //     date: {
+        //         fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
+        //         toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+        //     }
+        // },
+        // filterLoading: false,
+        // openFilterDialog,
+        // handleOpenFilterDialog: props.handleOpenFilterDialog,
+        // handleCloseFilterDialog: props.handleCloseFilterDialog,
+        // handleClearFilterDialog: props.handleClearFilterDialog,
+        // handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
     const listData = {
@@ -322,12 +298,11 @@ const OrderList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                filterDialog={filterDialog}
                 csvDialog={csvDialog}
+                filterDialog={filterDialog}
             />
         </Layout>
     )

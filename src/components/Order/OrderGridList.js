@@ -13,7 +13,6 @@ import Container from '../Container'
 import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
 import OrderCreateDialog from './OrderCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -109,11 +108,9 @@ const OrderGridList = enhance((props) => {
         filter,
         createDialog,
         updateDialog,
-        expenseDialog,
         filterDialog,
         actionsDialog,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -143,11 +140,9 @@ const OrderGridList = enhance((props) => {
         <OrderDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
-            deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-            hanleExpenseOpenDialog={expenseDialog.handleOpenExpenseDialog}
         />
     )
 
@@ -224,19 +219,6 @@ const OrderGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
-            <ExpenseCreateDialog
-                open={expenseDialog.handleOpenExpenseDialog}
-                loading={expenseDialog.expenseLoading}
-                onClose={expenseDialog.handleCloseExpenseDialog}
-                onSubmit={expenseDialog.handleSubmitExpenseDialog}
-            />
-
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
-            />
-
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -265,24 +247,12 @@ OrderGridList.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
-    }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
         openUpdateDialog: PropTypes.bool.isRequired,
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    expenseDialog: PropTypes.shape({
-        expenseLoading: PropTypes.bool.isRequired,
-        openExpenseDialog: PropTypes.bool.isRequired,
-        handleOpenExpenseDialog: PropTypes.func.isRequired,
-        handleCloseExpenseDialog: PropTypes.func.isRequired,
-        handleSubmitExpenseDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
@@ -295,30 +265,7 @@ OrderGridList.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
-    }).isRequired,
-
-    orderExpenseCreateDialog: PropTypes.shape({
-        orderExpenseLoading: PropTypes.bool.isRequired,
-        openOrderExpenseCreateDialog: PropTypes.bool.isRequired,
-        handleOrderExpenseOpenOrderExpenseCreateDialog: PropTypes.func.isRequired,
-        handleOrderExpenseCloseCreateDialog: PropTypes.func.isRequired,
-        handleOrderExpenseSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    orderExpenseConfirmDialog: PropTypes.shape({
-        openOrderExpenseConfirmDialog: PropTypes.bool.isRequired,
-        handleOrderExpenseOpenOrderExpenseConfirmDialog: PropTypes.func.isRequired,
-        handleOrderExpenseCloseConfirmDialog: PropTypes.func.isRequired,
-        handleOrderExpenseSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    orderExpenseDeleteDialog: PropTypes.shape({
-        openOrderExpenseDeleteDialog: PropTypes.bool.isRequired,
-        handleOrderExpenseOpenDeleteDialog: PropTypes.func.isRequired,
-        handleOrderExpenseCloseDeleteDialog: PropTypes.func.isRequired
-    }).isRequired,
-    orderExpenseActionsDialog: PropTypes.shape({
-        handleOrderExpenseActionEdit: PropTypes.func.isRequired,
-        handleOrderExpenseActionDelete: PropTypes.func.isRequired
-    }).isRequired
+    })
 }
 
 export default OrderGridList
