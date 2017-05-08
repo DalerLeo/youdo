@@ -63,7 +63,7 @@ const ClientCreateDialog = enhance((props) => {
             onRequestClose={onClose}
             className={classes.dialog}
             contentStyle={loading ? {width: '300px'} : {width: '500px'}}
-            bodyClassName={classes.body}>
+            bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменение клиента' : 'Добавление клиента'}</span>
@@ -71,43 +71,45 @@ const ClientCreateDialog = enhance((props) => {
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form}>
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.fieldsWrap}>
-                    <div className={classes.field}>
-                        <Field
-                            name="name"
-                            component={TextField}
-                            className={classes.inputField}
-                            label="Организация"
-                            fullWidth={true}/>
-                        <Field
-                            name="address"
-                            component={TextField}
-                            className={classes.inputField}
-                            label="Местположение"
-                            fullWidth={true}/>
+            <div className={classes.bodyContent}>
+                <form onSubmit={onSubmit} className={classes.form}>
+                    <div className={classes.loader}>
+                        <CircularProgress size={80} thickness={5}/>
+                    </div>
+                    <div className={classes.inContent}>
+                        <div className={classes.field}>
+                            <Field
+                                name="name"
+                                component={TextField}
+                                className={classes.inputField}
+                                label="Организация"
+                                fullWidth={true}/>
+                            <Field
+                                name="address"
+                                component={TextField}
+                                className={classes.inputField}
+                                label="Местположение"
+                                fullWidth={true}/>
 
-                        <div className={classes.contacts}>
-                            Контактные данные
-                            <FieldArray
-                                name="contacts"
-                                component={ClientContactsListField}
-                            />
+                            <div className={classes.contacts}>
+                                Контактные данные
+                                <FieldArray
+                                    name="contacts"
+                                    component={ClientContactsListField}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className={classes.bottomButton}>
-                    <FlatButton
-                        label="Сохранить"
-                        className={classes.actionButton}
-                        primary={true}
-                        type="submit"
-                    />
-                </div>
-            </form>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
+                        />
+                    </div>
+                </form>
+            </div>
         </Dialog>
     )
 })

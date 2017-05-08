@@ -232,7 +232,7 @@ const ClientList = enhance((props) => {
                 return {
                     name: _.get(contact, 'name'),
                     email: _.get(contact, 'email'),
-                    phone: _.get(contact, 'phone')
+                    telephone: _.get(contact, 'telephone')
                 }
             })
 

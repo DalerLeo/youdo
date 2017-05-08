@@ -96,7 +96,7 @@ const ClientContactsListField = ({classes, fields}) => {
 
                                 <Field
                                     label="Телефон номер"
-                                    name={`${contact}.phone`}
+                                    name={`${contact}.telephone`}
                                     component={TextField}
                                     className={classes.inputField}
                                     fullWidth={true}
