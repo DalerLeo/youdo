@@ -172,7 +172,7 @@ const ProviderGridList = enhance((props) => {
             </IconButton>
         </div>
     )
-    const contacts = _.get(detailData, 'contacts')
+    const contacts = _.get(detailData, ['data', 'contacts'])
     const date = moment(_.get(detailData, ['data', 'createdDate'])).format('DD.MM.YYYY')
     const address = _.get(detailData, ['data', 'address'])
     const providerName = _.get(detailData, ['data', 'name'])
@@ -208,14 +208,14 @@ const ProviderGridList = enhance((props) => {
                     <div>{address}</div>
                 </div>
                 <div className={classes.body}>
-                    <div className={classes.bodyTitle} style={{margin: '0'}}>Контакты</div>
-                    <div className="dottedList">
+                    <div className={classes.bodyTitle}>Контакты</div>
+                    <div>
                         {_.map(contacts, (item) => {
-                            const name = _.get(contacts, 'name')
-                            const phone = _.get(contacts, 'phone')
-                            const email = _.get(contacts, 'email')
+                            const name = _.get(item, 'name')
+                            const phone = _.get(item, 'phone')
+                            const email = _.get(item, 'email')
                             return (
-                                <Row key={item}>
+                                <Row key={item} className="dottedList">
                                     <Col xs={4}>{name}</Col>
                                     <Col xs={4}>{email}</Col>
                                     <Col xs={4}>{phone}</Col>

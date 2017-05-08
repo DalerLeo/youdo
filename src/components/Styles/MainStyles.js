@@ -78,7 +78,6 @@ const MainStyles = {
         borderTop: '1px solid #efefef',
         background: '#fff',
         textAlign: 'right',
-        margin: '0 -30px',
         '& span': {
             fontSize: '13px !important',
             fontWeight: '600 !important',
