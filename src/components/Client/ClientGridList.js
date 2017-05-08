@@ -3,6 +3,7 @@ import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
+import sprintf from 'sprintf'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
@@ -22,6 +23,7 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
+import {Link} from 'react-router'
 
 const listHeader = [
     {
@@ -49,6 +51,21 @@ const listHeader = [
         title: ''
     }
 ]
+
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 18,
+        height: 18
+    },
+    button: {
+        width: 30,
+        height: 30,
+        padding: 0
+    }
+}
+
+const tooltipPosition = 'bottom-center'
 
 const enhance = compose(
     injectSheet({
@@ -95,7 +112,56 @@ const ClientGridList = enhance((props) => {
     )
 
     const clientDetail = (
-        <span>Client Details</span>
+        <div className={classes.wrapper} key={_.get(detailData, 'id')}>
+            <div className={classes.title}>
+                <div className={classes.titleLabel}>{providerName}</div>
+                <div className={classes.titleButtons}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Изменить">
+                        <Edit />
+                    </IconButton>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Удалить">
+                        <DeleteIcon />
+                    </IconButton>
+                </div>
+            </div>
+            <div className={classes.container}>
+                <div className={classes.leftSide}>
+                    <div className={classes.bodyTitle}>Адрес</div>
+                    <div>{address}</div>
+                </div>
+                <div className={classes.body}>
+                    <div className={classes.bodyTitle}>Контакты</div>
+                    <div>
+                        {_.map(contacts, (item) => {
+                            const name = _.get(item, 'name')
+                            const phone = _.get(item, 'phone')
+                            const email = _.get(item, 'email')
+                            return (
+                                <Row key={item} className="dottedList">
+                                    <Col xs={4}>{name}</Col>
+                                    <Col xs={4}>{email}</Col>
+                                    <Col xs={4}>{phone}</Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
+                </div>
+                <div className={classes.rightSide}>
+                    <div className={classes.bodyTitle}>Дата добавления</div>
+                    <div>{date}</div>
+                </div>
+            </div>
+        </div>
     )
 
     const clientList = _.map(_.get(listData, 'data'), (item) => {
@@ -110,7 +176,12 @@ const ClientGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={6}>{name}</Col>
+                <Col xs={6}>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.CLIENT_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>{name}</Link>
+                </Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
