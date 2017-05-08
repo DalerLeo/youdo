@@ -3,7 +3,6 @@ import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -12,8 +11,8 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import TransactionFilterForm from './TransactionFilterForm'
-import TransactionDetails from './TransactionDetails'
-import TransactionCreateDialog from './TransactionCreateDialog'
+import TransactionExpenseDialog from './TransactionExpenseDialog'
+import TransactionIncomeDialog from './TransactionIncomeDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -25,6 +24,10 @@ import Tooltip from '../ToolTip'
 import CashPayment from '../CashPayment'
 import BankPayment from '../BankPayment'
 import CircularProgress from 'material-ui/CircularProgress'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Edit from 'material-ui/svg-icons/image/edit'
 
 const listHeader = [
     {
@@ -121,7 +124,8 @@ const enhance = compose(
 const TransactionGridList = enhance((props) => {
     const {
         filter,
-        createDialog,
+        expenseDialog,
+        incomeDialog,
         updateDialog,
         filterDialog,
         cashboxData,
@@ -155,34 +159,47 @@ const TransactionGridList = enhance((props) => {
     )
 
     const transactionDetail = (
-        <TransactionDetails
-            key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            deleteDialog={deleteDialog}
-            confirmDialog={confirmDialog}
-            loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-        />
+        <span>a</span>
     )
+
+    const minus = 0
+    const expense = 1
+    const income = 2
 
     const transactionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
         const amount = _.get(item, 'amount') || 'N/A'
+        const type = amount < minus ? expense : income
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-
+        const iconButton = (
+            <IconButton style={{padding: '0 12px'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={5}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.TRANSACTION_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{comment}</Link>
-                </Col>
-                <Col xs={2}>{amount}</Col>
+                <Col xs={5}>{comment}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}></Col>
+                <Col xs={2}>{amount}</Col>
+                <Col xs={2}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id, type) }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                        />
+                    </IconMenu>
+                </Col>
             </Row>
         )
     })
@@ -234,11 +251,19 @@ const TransactionGridList = enhance((props) => {
             <SubMenu url={ROUTES.TRANSACTION_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
+                <Tooltip position="left" text="Расход">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
+                        onTouchTap={expenseDialog.handleOpenExpenseDialog}>
+                        <ContentAdd />
+                    </FloatingActionButton>
+                </Tooltip>
+                <Tooltip position="left" text="Доход">
+                    <FloatingActionButton
+                        mini={true}
+                        className={classes.addButton}
+                        onTouchTap={incomeDialog.handleOpenIncomeDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
                 </Tooltip>
@@ -271,15 +296,32 @@ const TransactionGridList = enhance((props) => {
                         filterDialog={transactionFilterDialog}
                     />
 
-                    <TransactionCreateDialog
+                    <TransactionExpenseDialog
                         cashboxData={cashboxData}
-                        open={createDialog.openCreateDialog}
-                        loading={createDialog.createLoading}
-                        onClose={createDialog.handleCloseCreateDialog}
-                        onSubmit={createDialog.handleSubmitCreateDialog}
+                        open={expenseDialog.openExpenseDialog}
+                        loading={expenseDialog.createLoading}
+                        onClose={expenseDialog.handleCloseExpenseDialog}
+                        onSubmit={expenseDialog.handleSubmitExpenseDialog}
                     />
 
-                    <TransactionCreateDialog
+                    <TransactionIncomeDialog
+                        cashboxData={cashboxData}
+                        open={incomeDialog.openExpenseDialog}
+                        loading={incomeDialog.createLoading}
+                        onClose={incomeDialog.handleCloseExpenseDialog}
+                        onSubmit={incomeDialog.handleSubmitExpenseDialog}
+                    />
+
+                    <TransactionExpenseDialog
+                        initialValues={updateDialog.initialValues}
+                        isUpdate={true}
+                        open={updateDialog.openUpdateDialog}
+                        loading={updateDialog.updateLoading}
+                        onClose={updateDialog.handleCloseUpdateDialog}
+                        onSubmit={updateDialog.handleSubmitUpdateDialog}
+                    />
+
+                    <TransactionIncomeDialog
                         initialValues={updateDialog.initialValues}
                         isUpdate={true}
                         open={updateDialog.openUpdateDialog}
@@ -313,12 +355,19 @@ TransactionGridList.propTypes = {
     cashboxData: PropTypes.object,
     cashboxListLoading: PropTypes.bool,
     detailData: PropTypes.object,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
+    expenseDialog: PropTypes.shape({
+        expenseLoading: PropTypes.bool.isRequired,
+        openExpenseDialog: PropTypes.bool.isRequired,
+        handleOpenExpenseDialog: PropTypes.func.isRequired,
+        handleCloseExpenseDialog: PropTypes.func.isRequired,
+        handleSubmitExpenseDialog: PropTypes.func.isRequired
+    }).isRequired,
+    incomeDialog: PropTypes.shape({
+        incomeLoading: PropTypes.bool.isRequired,
+        openIncomeDialog: PropTypes.bool.isRequired,
+        handleOpenIncomeDialog: PropTypes.func.isRequired,
+        handleCloseIncomeDialog: PropTypes.func.isRequired,
+        handleSubmitIncomeDialog: PropTypes.func.isRequired
     }).isRequired,
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,

@@ -1,17 +1,30 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
-export const createSerializer = (data) => {
-    const amount = _.get(data, ['amount'])
-    const comment = _.get(data, ['comment', 'value'])
-    const cashbox = _.get(data, ['cashbox'])
-    const categoryId = _.get(data, ['categoryId'])
+export const expenseSerializer = (data, cashboxId) => {
+    console.log(data)
+    const amount = _.get(data, 'amount')
+    const comment = _.get(data, 'comment')
+    const objectId = _.get(data, ['categoryId', 'value'])
 
     return {
         amount,
         comment,
-        cashbox,
-        categoryId
+        'cashbox': cashboxId,
+        'objectId': objectId
+    }
+}
+
+export const incomeSerializer = (data, cashboxId) => {
+    const amount = _.get(data, 'amount')
+    const comment = _.get(data, 'comment')
+    const objectId = _.get(data, ['categoryId', 'value'])
+
+    return {
+        amount,
+        comment,
+        'cashbox': cashboxId,
+        'objectId': objectId
     }
 }
 

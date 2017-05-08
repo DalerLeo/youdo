@@ -14,7 +14,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CurrencySearchField, ExpensiveCategorySearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 
-export const TRANSACTION_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const TRANSACTION_EXPENSE_DIALOG_OPEN = 'openExpenseDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -98,7 +98,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'TransactionCreateForm',
+        form: 'TransactionExpenseForm',
         enableReinitialize: true
     })
 )
@@ -144,18 +144,15 @@ const TransactionCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </Col>
                             <Col xs={4}>
-                                <Field
-                                    name="typePayment"
-                                    component={CurrencySearchField}
-                                    label="Валята"
-                                    fullWidth={true}/>
+                                <div>
+                                    {_.get(cashbox, ['currency', 'name'])}
+                                </div>
                             </Col>
                         </div>
-                        <TextFieldMU
+                        <Field
                             name="comment"
-                            floatingLabelFocusStyle={{borderBottom: 'none'}}
-                            className={classes.border}
-                            floatingLabelText="Комментары"
+                            component={TextField}
+                            label="Комментары"
                             multiLine={true}
                             rows={3}
                             rowsMax={3}
