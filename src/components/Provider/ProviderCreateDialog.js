@@ -95,19 +95,13 @@ const ProviderCreateDialog = enhance((props) => {
                                 label="Местположение"
                                 fullWidth={true}/>
 
-                            <div className={classes.contactBlock}>
+                            <div className={classes.contacts}>
                                 Контактные данные
                                 <FieldArray
                                     name="contacts"
                                     component={ProviderContactsListField}
                                 />
                             </div>
-                        <div className={classes.contacts}>
-                            Контактные данные
-                            <FieldArray
-                                name="contacts"
-                                component={ProviderContactsListField}
-                            />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
