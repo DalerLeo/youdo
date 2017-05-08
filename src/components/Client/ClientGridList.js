@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -8,7 +9,8 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import MeasurementCreateDialog from './MeasurementCreateDialog'
+import ClientCreateDialog from './ClientCreateDialog'
+import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -31,14 +33,14 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 5,
+        xs: 6,
         title: 'Наименование'
     },
     {
         sorting: true,
-        xs: 4,
-        name: 'amount',
-        title: 'Количество'
+        xs: 3,
+        name: 'created_date',
+        title: 'Дата создания'
     },
     {
         sorting: false,
@@ -60,17 +62,21 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        actionBtn: {
+            height: '48px'
         }
     })
 )
 
-const MeasurementGridList = enhance((props) => {
+const ClientGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
         actionsDialog,
         confirmDialog,
+        deleteDialog,
         listData,
         detailData,
         classes
@@ -88,24 +94,24 @@ const MeasurementGridList = enhance((props) => {
         </div>
     )
 
-    const measurementDetail = (
-        <span>a</span>
+    const clientDetail = (
+        <span>Client Details</span>
     )
 
-    const measurementList = _.map(_.get(listData, 'data'), (item) => {
+    const clientList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const amount = _.get(item, 'amount') || 'N/A'
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
+            <IconButton className={classes.actionBtn}>
+                <MoreVertIcon/>
             </IconButton>
         )
         return (
             <Row key={id}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={5}>{name}</Col>
-                <Col xs={4}>{amount}</Col>
+                <Col xs={6}>{name}</Col>
+                <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -119,7 +125,7 @@ const MeasurementGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Удалить "
                             leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
                         />
                     </IconMenu>
                 </Col>
@@ -129,15 +135,15 @@ const MeasurementGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: measurementList,
+        list: clientList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.MEASUREMENT_LIST_URL}/>
+            <SubMenu url={ROUTES.CLIENT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить измерение">
+                <Tooltip position="left" text="Добавить клиента">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -150,25 +156,30 @@ const MeasurementGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={measurementDetail}
+                detail={clientDetail}
                 actionsDialog={actions}
             />
 
-            <MeasurementCreateDialog
-                initialValues={{}}
+            <ClientCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <MeasurementCreateDialog
+            <ClientCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+            />
+
+            <DeleteDialog
+                filter={filter}
+                open={deleteDialog.openDeleteDialog}
+                onClose={deleteDialog.handleCloseDeleteDialog}
             />
 
             {detailData.data && <ConfirmDialog
@@ -182,7 +193,7 @@ const MeasurementGridList = enhance((props) => {
     )
 })
 
-MeasurementGridList.propTypes = {
+ClientGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -200,6 +211,11 @@ MeasurementGridList.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
+    deleteDialog: PropTypes.shape({
+        openDeleteDialog: PropTypes.bool.isRequired,
+        handleOpenDeleteDialog: PropTypes.func.isRequired,
+        handleCloseDeleteDialog: PropTypes.func.isRequired
+    }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
         openUpdateDialog: PropTypes.bool.isRequired,
@@ -213,4 +229,4 @@ MeasurementGridList.propTypes = {
     }).isRequired
 }
 
-export default MeasurementGridList
+export default ClientGridList
