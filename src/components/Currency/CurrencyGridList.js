@@ -1,25 +1,29 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import FlatButton from 'material-ui/FlatButton'
 import * as ROUTES from '../../constants/routes'
-import GridList from '../GridList'
-import Container from '../Container'
-import MeasurementCreateDialog from './MeasurementCreateDialog'
-import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
+import CurrencyCreateDialog from './CurrencyCreateDialog'
+import PrimaryCurrencyDialog from './PrimaryCurrencyDialog'
+import SubMenu from '../SubMenu'
+import ConfirmDialog from '../ConfirmDialog'
+import GridList from '../GridList'
+import Container from '../Container'
+import Tooltip from '../ToolTip'
+import InfoIcon from '../InfoIcon'
 
 const listHeader = [
     {
@@ -31,14 +35,14 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 5,
+        xs: 6,
         title: 'Наименование'
     },
     {
         sorting: true,
-        xs: 4,
-        name: 'amount',
-        title: 'Количество'
+        xs: 3,
+        name: 'created_date',
+        title: 'Дата создания'
     },
     {
         sorting: false,
@@ -60,15 +64,37 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        editContent: {
+            width: '100%',
+            backgroundColor: '#ffffff',
+            padding: '20px 30px',
+            boxSizing: 'border-box',
+            marginBottom: '30px',
+            boxShadow: '0px 0px 3px #969696',
+            color: '#464646',
+            '& div:first-child': {
+                fontWeight: 'bold'
+            }
+        },
+        button: {
+            padding: '0 15px',
+            '& > div >span': {
+                color: '#12aaeb',
+                padding: '0 !important',
+                textTransform: 'inherit !important',
+                borderBottom: '1px dashed #12aaeb'
+            }
         }
     })
 )
 
-const MeasurementGridList = enhance((props) => {
+const CurrencyGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
+        primaryDialog,
         actionsDialog,
         confirmDialog,
         listData,
@@ -88,14 +114,14 @@ const MeasurementGridList = enhance((props) => {
         </div>
     )
 
-    const measurementDetail = (
+    const currencyDetail = (
         <span>a</span>
     )
 
-    const measurementList = _.map(_.get(listData, 'data'), (item) => {
+    const currencyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const amount = _.get(item, 'amount') || 'N/A'
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -104,8 +130,8 @@ const MeasurementGridList = enhance((props) => {
         return (
             <Row key={id} style={{alignItems: 'center'}}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={5}>{name}</Col>
-                <Col xs={4}>{amount}</Col>
+                <Col xs={6}>{name}</Col>
+                <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -129,15 +155,15 @@ const MeasurementGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: measurementList,
+        list: currencyList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.MEASUREMENT_LIST_URL}/>
+            <SubMenu url={ROUTES.CURRENCY_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить измерение">
+                <Tooltip position="left" text="Добавить продукт">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -147,22 +173,46 @@ const MeasurementGridList = enhance((props) => {
                 </Tooltip>
             </div>
 
+            <div className={classes.editContent}>
+                <div className={classes.title}>Основная валюта</div>
+                <div>
+                    Вибранная валюта: {_.get(primaryDialog.primaryCurrency, 'name')}
+                    <FlatButton
+                        label="Изменить"
+                        className={classes.button}
+                        onTouchTap={primaryDialog.handlePrimaryOpenDialog}/>
+                </div>
+                <div>
+                    <IconButton>
+                        <InfoIcon color="#464646"/>
+                    </IconButton>
+                    Lorem impus dolar
+                </div>
+            </div>
+
+            <PrimaryCurrencyDialog
+                open={primaryDialog.openPrimaryDialog}
+                onClose={primaryDialog.handlePrimaryCloseDialog}
+                initialValues={primaryDialog.initialValues}
+                loading={primaryDialog.primaryCurrencyLoading}
+                onSubmit={primaryDialog.handleSubmitPrimaryDialog}
+            />
+
             <GridList
                 filter={filter}
                 list={list}
-                detail={measurementDetail}
+                detail={currencyDetail}
                 actionsDialog={actions}
             />
 
-            <MeasurementCreateDialog
-                initialValues={{}}
+            <CurrencyCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <MeasurementCreateDialog
+            <CurrencyCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
@@ -182,11 +232,10 @@ const MeasurementGridList = enhance((props) => {
     )
 })
 
-MeasurementGridList.propTypes = {
+CurrencyGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
@@ -207,10 +256,18 @@ MeasurementGridList.propTypes = {
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
+    primaryDialog: PropTypes.shape({
+        primaryCurrency: PropTypes.object,
+        primaryCurrencyLoading: PropTypes.bool.isRequired,
+        openPrimaryDialog: PropTypes.bool.isRequired,
+        handlePrimaryOpenDialog: PropTypes.func.isRequired,
+        handleClosePrimaryDialog: PropTypes.func.isRequired,
+        handleSubmitPrimaryDialog: PropTypes.func.isRequired
+    }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default MeasurementGridList
+export default CurrencyGridList

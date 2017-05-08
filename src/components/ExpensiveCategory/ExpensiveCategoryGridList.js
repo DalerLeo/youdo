@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -8,7 +9,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import MeasurementCreateDialog from './MeasurementCreateDialog'
+import ExpensiveCategoryCreateDialog from './ExpensiveCategoryCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -31,14 +32,14 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 5,
+        xs: 6,
         title: 'Наименование'
     },
     {
         sorting: true,
-        xs: 4,
-        name: 'amount',
-        title: 'Количество'
+        xs: 3,
+        name: 'created_date',
+        title: 'Дата создания'
     },
     {
         sorting: false,
@@ -64,7 +65,7 @@ const enhance = compose(
     })
 )
 
-const MeasurementGridList = enhance((props) => {
+const ExpensiveCategoryGridList = enhance((props) => {
     const {
         filter,
         createDialog,
@@ -88,14 +89,14 @@ const MeasurementGridList = enhance((props) => {
         </div>
     )
 
-    const measurementDetail = (
+    const expensiveCategoryDetail = (
         <span>a</span>
     )
 
-    const measurementList = _.map(_.get(listData, 'data'), (item) => {
+    const expensiveCategoryList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const amount = _.get(item, 'amount') || 'N/A'
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -104,8 +105,8 @@ const MeasurementGridList = enhance((props) => {
         return (
             <Row key={id} style={{alignItems: 'center'}}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={5}>{name}</Col>
-                <Col xs={4}>{amount}</Col>
+                <Col xs={6}>{name}</Col>
+                <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -129,15 +130,15 @@ const MeasurementGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: measurementList,
+        list: expensiveCategoryList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.MEASUREMENT_LIST_URL}/>
+            <SubMenu url={ROUTES.EXPENSIVE_CATEGORY_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить измерение">
+                <Tooltip position="left" text="Добавить категорию">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -150,19 +151,18 @@ const MeasurementGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={measurementDetail}
+                detail={expensiveCategoryDetail}
                 actionsDialog={actions}
             />
 
-            <MeasurementCreateDialog
-                initialValues={{}}
+            <ExpensiveCategoryCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <MeasurementCreateDialog
+            <ExpensiveCategoryCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
@@ -182,7 +182,7 @@ const MeasurementGridList = enhance((props) => {
     )
 })
 
-MeasurementGridList.propTypes = {
+ExpensiveCategoryGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -213,4 +213,4 @@ MeasurementGridList.propTypes = {
     }).isRequired
 }
 
-export default MeasurementGridList
+export default ExpensiveCategoryGridList
