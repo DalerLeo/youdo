@@ -12,35 +12,37 @@ const GridListNav = ({classes, filter, filterDialog, actions}) => {
 
     return (
         <div className={classes.wrapper}>
-            {(selectIsEmpty && filterIsEmpty) && <Row>
-                <Col xs={6}>
-                    <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>
-                </Col>
-                <Col xs={6}>
-                    <GridListNavPagination filter={filter}/>
-                </Col>
-            </Row>}
+            <div style={{padding: '0 30px'}}>
+                {(selectIsEmpty && filterIsEmpty) && <Row>
+                    <Col xs={6}>
+                        <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>
+                    </Col>
+                    <Col xs={6}>
+                        <GridListNavPagination filter={filter}/>
+                    </Col>
+                </Row>}
 
-            {(selectIsEmpty && !filterIsEmpty) && <Row>
-                <Col xs={4}>
-                    {filterDialog}
-                </Col>
-                <Col xs={4}>
-                    <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>
-                </Col>
-                <Col xs={4}>
-                    <GridListNavPagination filter={filter}/>
-                </Col>
-            </Row>}
+                {(selectIsEmpty && !filterIsEmpty) && <Row>
+                    <Col xs={4}>
+                        {filterDialog}
+                    </Col>
+                    <Col xs={4}>
+                        <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>
+                    </Col>
+                    <Col xs={4}>
+                        <GridListNavPagination filter={filter}/>
+                    </Col>
+                </Row>}
 
-            {!selectIsEmpty && <Row className={classes.action}>
-                <Col xs={1}>
-                    {filter.getSelects().length} selected
-                </Col>
-                <Col xs={11} className={classes.actionButtons}>
-                    {actions}
-                </Col>
-            </Row>}
+                {!selectIsEmpty && <Row className={classes.action}>
+                    <Col xs={1}>
+                        {filter.getSelects().length} selected
+                    </Col>
+                    <Col xs={11} className={classes.actionButtons}>
+                        {actions}
+                    </Col>
+                </Row>}
+            </div>
         </div>
     )
 }
