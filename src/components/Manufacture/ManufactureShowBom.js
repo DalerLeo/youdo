@@ -51,6 +51,13 @@ const enhance = compose(
                 marginRight: '-20px !important'
             }
         },
+        body: {
+            minHeight: '450px'
+        },
+        listBom: {
+            margin: '0 30px',
+            width: '100%'
+        },
         titleBom: {
             padding: '20px 0',
             borderBottom: '1px solid #efefef',

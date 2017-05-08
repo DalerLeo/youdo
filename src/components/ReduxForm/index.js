@@ -10,6 +10,7 @@ import BrandSearchField from './BrandSearchField'
 import MeasurementSearchField from './MeasurementSearchField'
 import CurrencySearchField from './CurrencySearchField'
 import ProviderSearchField from './ProviderSearchField'
+import ClientSearchField from './ClientSearchField'
 import StockSearchField from './StockSearchField'
 import ImageUploadField from './ImageUploadField'
 import DateField from './DateField'
@@ -35,6 +36,7 @@ export {
     ImageUploadField,
     CurrencySearchField,
     ProviderSearchField,
+    ClientSearchField,
     StockSearchField,
     SupplyListProductField,
     ExpensiveCategorySearchField,

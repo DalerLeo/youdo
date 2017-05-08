@@ -106,7 +106,7 @@ const enhance = compose(
             const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(cashboxDeleteAction(detail.id))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CASHBOX_DELETE_DIALOG_OPEN]: false})})
@@ -170,7 +170,7 @@ const enhance = compose(
 
             return dispatch(cashboxCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: false})})
@@ -200,7 +200,7 @@ const enhance = compose(
                     return dispatch(cashboxItemFetchAction(cashboxId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CASHBOX_UPDATE_DIALOG_OPEN]: false}))
