@@ -8,11 +8,11 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     CURRENCY_CREATE_DIALOG_OPEN,
     CURRENCY_UPDATE_DIALOG_OPEN,
     PRIMARY_CURRENCY_DIALOG_OPEN,
+    CURRENCY_DELETE_DIALOG_OPEN,
     CurrencyGridList
 } from '../../components/Currency'
 import {
@@ -98,23 +98,27 @@ const enhance = compose(
             setOpenCSVDialog(false)
         },
 
-        handleOpenConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(true)
+        handleOpenConfirmDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id),
+                query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(false)
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: false})})
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
+            const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(currencyDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
-                    setOpenConfirmDialog(false)
+                    hashHistory.push({pathname, query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(currencyListFetchAction(filter))
                 })
         },
 
@@ -229,7 +233,8 @@ const CurrencyList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', CURRENCY_CREATE_DIALOG_OPEN]))
     const openPrimaryDialog = toBoolean(_.get(location, ['query', PRIMARY_CURRENCY_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CURRENCY_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
+    const openConfirmDialog = toBoolean(_.get(location, ['query', CURRENCY_DELETE_DIALOG_OPEN]))
+
     const detailId = _.toInteger(_.get(params, 'currencyId'))
 
     const actionsDialog = {
@@ -264,14 +269,8 @@ const CurrencyList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
-    }
-
     const confirmDialog = {
-        openConfirmDialog: props.openConfirmDialog,
+        openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
@@ -320,7 +319,6 @@ const CurrencyList = enhance((props) => {
                 detailData={detailData}
                 createDialog={createDialog}
                 primaryDialog={primaryDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}

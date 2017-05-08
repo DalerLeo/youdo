@@ -11,6 +11,7 @@ import toBoolean from '../../helpers/toBoolean'
 import {
     MANUFACTURE_ADD_STAFF_DIALOG_OPEN,
     MANUFACTURE_SHOW_BOM_DIALOG_OPEN,
+    MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN,
     ManufactureGridList
 } from '../../components/Manufacture'
 import {
@@ -136,6 +137,14 @@ const enhance = compose(
         handleCloseShowBom: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_SHOW_BOM_DIALOG_OPEN]: false})})
+        },
+        handleOpenAddProductDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: true})})
+        },
+        handleCloseAddProductDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -152,6 +161,8 @@ const ManufactureList = enhance((props) => {
     const openAddStaffDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_STAFF_DIALOG_OPEN]))
 
     const openShowBom = toBoolean(_.get(location, ['query', MANUFACTURE_SHOW_BOM_DIALOG_OPEN]))
+
+    const openAddProductDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]))
 
     const detailId = _.toInteger(_.get(params, 'manufactureId'))
 
@@ -174,6 +185,13 @@ const ManufactureList = enhance((props) => {
         handleLoading: props.handleCloseShowBom,
         handleSubmit: props.handleCloseShowBom
     }
+    const addProductDialog = {
+        open: openAddProductDialog,
+        handleOpen: props.handleOpenAddProductDialog,
+        handleClose: props.handleCloseAddProductDialog,
+        handleLoading: props.handleCloseAddProductDialog,
+        handleSubmit: props.handleCloseAddProductDialog
+    }
 
     return (
         <Layout {...layout}>
@@ -181,6 +199,7 @@ const ManufactureList = enhance((props) => {
                 detailData={detailData}
                 addStaff={addStaff}
                 showBom={showBom}
+                addProductDialog={addProductDialog}
             />
         </Layout>
     )

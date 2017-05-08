@@ -19,7 +19,6 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
 import PrimaryCurrencyDialog from './PrimaryCurrencyDialog'
 import SubMenu from '../SubMenu'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -98,7 +97,6 @@ const CurrencyGridList = enhance((props) => {
         primaryDialog,
         actionsDialog,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -147,7 +145,7 @@ const CurrencyGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Удалить "
                             leftIcon={<DeleteIcon />}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                         />
                     </IconMenu>
                 </Col>
@@ -223,12 +221,6 @@ const CurrencyGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
-            />
-
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -256,11 +248,6 @@ CurrencyGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,

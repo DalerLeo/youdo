@@ -18,23 +18,17 @@ const MainStyles = {
         fontSize: '13px !important',
         position: 'relative',
         padding: '0 !important',
-        minHeight: '428px',
-        maxHeight: 'calc(100vh - 200px) !important'
+        overflowX: 'hidden',
+        minHeight: '317px !important'
     },
-    fieldsWrap: {
-        display: ({loading}) => !loading ? 'flex' : 'none',
-        width: '100%',
-        fontSize: '13px',
-        minHeight: '235px',
-        color: '#333'
-    },
-    field: {
-        width: '100%'
-    },
-    title: {
-        paddingTop: '15px',
-        fontWeight: 'bold',
-        color: '#333'
+    popUp: {
+        overflowY: 'hidden !important',
+        fontSize: '13px !important',
+        position: 'relative',
+        padding: '0 !important',
+        overflowX: 'hidden',
+        height: '100%',
+        minHeight: '300px !important'
     },
     titleContent: {
         background: '#fff',
@@ -53,17 +47,33 @@ const MainStyles = {
             position: 'absolute !important'
         }
     },
-    form: {
-        padding: '0 30px',
-        minHeight: '307px',
+    inContent: {
+        display: 'flex',
         maxHeight: '50vh',
-        overflow: 'auto'
+        minHeight: '184px',
+        overflow: 'auto',
+        padding: '0 30px',
+        color: '#333'
+    },
+    bodyContent: {
+        width: '100%'
+    },
+    field: {
+        width: '100%'
+    },
+    title: {
+        paddingTop: '15px',
+        fontWeight: 'bold',
+        color: '#333'
     },
     inputField: {
         fontSize: '13px !important'
     },
     bottomButton: {
-        padding: '15px',
+        bottom: '0',
+        left: '0',
+        right: '0',
+        padding: '10px',
         zIndex: '999',
         borderTop: '1px solid #efefef',
         background: '#fff',
@@ -72,7 +82,8 @@ const MainStyles = {
         '& span': {
             fontSize: '13px !important',
             fontWeight: '600 !important',
-            color: '#129fdd'
+            color: '#129fdd',
+            verticalAlign: 'inherit !important'
         }
     },
     actionButton: {

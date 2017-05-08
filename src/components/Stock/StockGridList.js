@@ -10,7 +10,6 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import StockCreateDialog from './StockCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -85,7 +84,6 @@ const StockGridList = enhance((props) => {
         updateDialog,
         actionsDialog,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -107,11 +105,13 @@ const StockGridList = enhance((props) => {
         <span>a</span>
     )
 
+    const main = 1
+
     const stockList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const manager = _.get(item, ['manager', 'firstName']) + ' ' + _.get(item, ['manager', 'secondName'])
-        const stockType = _.get(item, 'StockType') || 'N/A'
+        const stockType = _.toInteger(_.get(item, 'stockType')) === main ? 'Основной' : 'Производственной'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
@@ -133,12 +133,16 @@ const StockGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Изменить"
                             leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                            onTouchTap={() => {
+                                updateDialog.handleOpenUpdateDialog(id)
+                            }}
                         />
                         <MenuItem
                             primaryText="Удалить "
                             leftIcon={<DeleteIcon />}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                            onTouchTap={() => {
+                                confirmDialog.handleOpenConfirmDialog(id)
+                            }}
                         />
                     </IconMenu>
                 </Col>
@@ -190,12 +194,6 @@ const StockGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
-            />
-
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -223,11 +221,6 @@ StockGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,

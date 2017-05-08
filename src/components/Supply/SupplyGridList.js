@@ -20,6 +20,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import SupplyExpenseCreateDialog from './SupplyExpenseCreateDialog'
 import Tooltip from '../ToolTip'
 
 const listHeader = [
@@ -115,7 +116,10 @@ const SupplyGridList = enhance((props) => {
         deleteDialog,
         listData,
         detailData,
-        classes
+        classes,
+
+        supplyExpenseCreateDialog,
+        supplyListData
     } = props
 
     const actions = (
@@ -146,6 +150,8 @@ const SupplyGridList = enhance((props) => {
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
+            handleSupplyExpenseOpenCreateDialog={supplyExpenseCreateDialog.handleSupplyExpenseOpenCreateDialog}
+            supplyListData={supplyListData}
         />
     )
 
@@ -222,6 +228,13 @@ const SupplyGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
+            <SupplyExpenseCreateDialog
+                open={supplyExpenseCreateDialog.openSupplyExpenseCreateDialog}
+                loading={supplyExpenseCreateDialog.supplyExpenseLoading}
+                onClose={supplyExpenseCreateDialog.handleSupplyExpenseCloseCreateDialog}
+                onSubmit={supplyExpenseCreateDialog.handleSupplyExpenseSubmitCreateDialog}
+            />
+
             <DeleteDialog
                 filter={filter}
                 open={deleteDialog.openDeleteDialog}
@@ -279,7 +292,28 @@ SupplyGridList.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+
+    supplyExpenseCreateDialog: PropTypes.shape({
+        supplyExpenseLoading: PropTypes.bool.isRequired,
+        openSupplyExpenseCreateDialog: PropTypes.bool.isRequired,
+        handleSupplyExpenseOpenCreateDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseCloseCreateDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseSubmitCreateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    supplyListData: PropTypes.shape({
+        data: PropTypes.object.isRequired,
+        supplyExpenseListLoading: PropTypes.bool.isRequired,
+        openSupplyExpenseDeleteDialog: PropTypes.bool.isRequired,
+        handleSupplyExpenseOpenDeleteDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseCloseDeleteDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseActionDelete: PropTypes.func.isRequired,
+        openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired,
+        handleSupplyExpenseOpenConfirmDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseSendConfirmDialog: PropTypes.func.isRequired
+
+    })
 }
 
 export default SupplyGridList

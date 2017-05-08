@@ -5,9 +5,7 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import CircularProgress from 'material-ui/CircularProgress'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm} from 'redux-form'
 import {TextField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
@@ -17,18 +15,6 @@ import MainStyles from '../Styles/MainStyles'
 import Person from '../Images/person.png'
 
 export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const colorBlue = '#129fdd !important'
 const enhance = compose(
@@ -43,13 +29,14 @@ const enhance = compose(
         },
         leftSide: {
             width: '40%',
-            paddingRight: '20px'
+            paddingRight: '20px',
+            height: '100%'
         },
         rightSide: {
             width: '60%',
-            minHeight: '235px',
             borderLeft: '1px solid #efefef',
-            paddingLeft: '20px'
+            padding: '0 0 20px 20px',
+            height: '100%'
         },
         innerTitle: {
             marginTop: '20px'
@@ -191,8 +178,7 @@ const enhance = compose(
 )
 
 const ManufactureAddStaffDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, openAddShift, setOpenAddShift, openAddStaff, setOpenAddStaff} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {open, loading, onClose, classes, openAddShift, setOpenAddShift, openAddStaff, setOpenAddStaff} = props
 
     return (
         <Dialog
@@ -200,20 +186,16 @@ const ManufactureAddStaffDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '600px'}}
-            bodyClassName={classes.body}>
-
+            contentStyle={loading ? {width: '135px'} : {width: '600px'}}
+            bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>ПРОИЗВОДСТВО КЛЕЯ: ПЕРСОНАЛ</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form}>
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.fieldsWrap}>
+            <div className={classes.bodyContent}>
+                <div className={classes.inContent}>
                     <div className={classes.leftSide}>
                         <div className={classes.innerTitle}>
                             <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Смена</h3>
@@ -223,25 +205,27 @@ const ManufactureAddStaffDialog = enhance((props) => {
                             </a>
                         </div>
                         {openAddShift && <div className={classes.background}>
-                            <Field
-                                name="name"
-                                component={TextField}
-                                className={classes.inputFieldShift}
-                                label="Наименование"
-                                fullWidth={true}/>
-                            <Field
-                                name="address"
-                                component={TextField}
-                                className={classes.inputFieldTime}
-                                label="Время"
-                                fullWidth={true}/>
-                            <div className={classes.buttonSub}>
-                                <FlatButton
-                                    label="Сохранить"
-                                    className={classes.actionButton}
-                                    type="submit"
-                                />
-                            </div>
+                            <form>
+                                <Field
+                                    name="name"
+                                    component={TextField}
+                                    className={classes.inputFieldShift}
+                                    label="Наименование"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="address"
+                                    component={TextField}
+                                    className={classes.inputFieldTime}
+                                    label="Время"
+                                    fullWidth={true}/>
+                                <div className={classes.buttonSub}>
+                                    <FlatButton
+                                        label="Сохранить"
+                                        className={classes.actionButton}
+                                        type="submit"
+                                    />
+                                </div>
+                            </form>
                         </div>}
                         <div className={classes.shift}>
                             <h4>
@@ -271,25 +255,27 @@ const ManufactureAddStaffDialog = enhance((props) => {
                             </a>
                         </div>
                         {openAddStaff && <div className={classes.staffAdd}>
-                            <Field
-                                name="name"
-                                component={TextField}
-                                className={classes.inputFieldShift}
-                                label="Сотрудник"
-                                fullWidth={true}/>
-                            <Field
-                                name="address"
-                                component={TextField}
-                                className={classes.inputFieldTime}
-                                label="Смена"
-                                fullWidth={true}/>
-                            <div className={classes.buttonSub}>
-                                <FlatButton
-                                    label="Применить"
-                                    className={classes.actionButton}
-                                    type="submit"
-                                />
-                            </div>
+                            <form>
+                                <Field
+                                    name="name"
+                                    component={TextField}
+                                    className={classes.inputFieldShift}
+                                    label="Сотрудник"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="address"
+                                    component={TextField}
+                                    className={classes.inputFieldTime}
+                                    label="Смена"
+                                    fullWidth={true}/>
+                                <div className={classes.buttonSub}>
+                                    <FlatButton
+                                        label="Применить"
+                                        className={classes.actionButton}
+                                        type="submit"
+                                    />
+                                </div>
+                            </form>
                         </div>}
                         <div className={classes.personalList}>
                             <div className={classes.shift}>
@@ -361,14 +347,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                         </div>
                     </div>
                 </div>
-                <div className={classes.bottomButton}>
-                    <FlatButton
-                        label="Сохранить"
-                        className={classes.actionButton}
-                        type="submit"
-                    />
-                </div>
-            </form>
+            </div>
         </Dialog>
     )
 })
