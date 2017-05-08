@@ -10,7 +10,6 @@ export const createSerializer = (data) => {
 }
 
 export const createPrimarySerializer = (data) => {
-    console.log(data)
     const currency = _.get(data, ['currency', 'value'])
 
     return {
