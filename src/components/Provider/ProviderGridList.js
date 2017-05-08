@@ -177,8 +177,6 @@ const ProviderGridList = enhance((props) => {
     const address = _.get(detailData, ['data', 'address'])
     const providerName = _.get(detailData, ['data', 'name'])
 
-    console.log(detailData);
-
     const providerDetail = (
         <div className={classes.wrapper} key={_.get(detailData, 'id')}>
             <div className={classes.title}>
