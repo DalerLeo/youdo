@@ -8,10 +8,9 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import TextFieldMU from 'material-ui/TextField'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CurrencySearchField, ExpensiveCategorySearchField} from '../ReduxForm'
+import {TextField, ExpensiveCategorySearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 
 export const TRANSACTION_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -129,7 +128,7 @@ const TransactionCreateDialog = enhance((props) => {
                     </div>
                     <div>
                         <div>Касса:</div>
-                        <div className={classes.label} name="cashbox" value={cashbox}>{_.get(cashbox, 'name')}</div>
+                        <div className={classes.label}>{_.get(cashbox, 'name')}</div>
                         <Field
                             name="categoryId"
                             component={ExpensiveCategorySearchField}
@@ -144,18 +143,15 @@ const TransactionCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </Col>
                             <Col xs={4}>
-                                <Field
-                                    name="typePayment"
-                                    component={CurrencySearchField}
-                                    label="Валята"
-                                    fullWidth={true}/>
+                                <div>
+                                    {_.get(cashbox, ['currency', 'name'])}
+                                </div>
                             </Col>
                         </div>
-                        <TextFieldMU
+                        <Field
                             name="comment"
-                            floatingLabelFocusStyle={{borderBottom: 'none'}}
-                            className={classes.border}
-                            floatingLabelText="Комментары"
+                            component={TextField}
+                            label="Комментары"
                             multiLine={true}
                             rows={3}
                             rowsMax={3}

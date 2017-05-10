@@ -50,6 +50,8 @@ export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
 export const CURRENCY_DELETE = `/${CURRENCY}/%d/`
 export const CURRENCY_PRIMARY = 'currency_primary'
 export const CURRENCY_PRIMARY_CREATE = `/${CURRENCY_PRIMARY}/`
+export const SET_CURRENCY = 'currencies/currency_rate'
+export const SET_CURRENCY_CREATE = `/${SET_CURRENCY}/`
 
 export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`
