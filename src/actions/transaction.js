@@ -3,27 +3,10 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/transactionExpenseSerializer'
+import * as serializers from '../serializers/transactionSerializer'
 
-export const transactionExpenseAction = (formValues, cashboxId) => {
-    const requestData = serializers.expenseSerializer(formValues, cashboxId)
-    const payload = axios()
-        .post(API.TRANSACTION_CREATE, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.TRANSACTION_CREATE,
-        payload
-    }
-}
-
-export const transactionIncomeAction = (formValues, cashboxId) => {
-    const requestData = serializers.incomeSerializer(formValues, cashboxId)
+export const transactionCreateAction = (formValues, cashboxId) => {
+    const requestData = serializers.createSerializer(formValues, cashboxId)
     const payload = axios()
         .post(API.TRANSACTION_CREATE, requestData)
         .then((response) => {
@@ -55,25 +38,8 @@ export const transactionDeleteAction = (id) => {
     }
 }
 
-export const transactionUpdateExpenseAction = (id, formValues) => {
-    const requestData = serializers.expenseSerializer(formValues)
-    const payload = axios()
-        .put(sprintf(API.TRANSACTION_ITEM, id), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.TRANSACTION_UPDATE,
-        payload
-    }
-}
-
-export const transactionUpdateIncomeAction = (id, formValues) => {
-    const requestData = serializers.incomeSerializer(formValues)
+export const transactionUpdateAction = (id, formValues, cashboxId) => {
+    const requestData = serializers.createSerializer(formValues, cashboxId)
     const payload = axios()
         .put(sprintf(API.TRANSACTION_ITEM, id), requestData)
         .then((response) => {

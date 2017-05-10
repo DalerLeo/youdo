@@ -8,13 +8,12 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import TextFieldMU from 'material-ui/TextField'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CurrencySearchField, ExpensiveCategorySearchField} from '../ReduxForm'
+import {TextField, ExpensiveCategorySearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 
-export const TRANSACTION_EXPENSE_DIALOG_OPEN = 'openExpenseDialog'
+export const TRANSACTION_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -98,7 +97,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'TransactionExpenseForm',
+        form: 'TransactionCreateForm',
         enableReinitialize: true
     })
 )
@@ -129,7 +128,7 @@ const TransactionCreateDialog = enhance((props) => {
                     </div>
                     <div>
                         <div>Касса:</div>
-                        <div className={classes.label} name="cashbox" value={cashbox}>{_.get(cashbox, 'name')}</div>
+                        <div className={classes.label}>{_.get(cashbox, 'name')}</div>
                         <Field
                             name="categoryId"
                             component={ExpensiveCategorySearchField}
