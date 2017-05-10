@@ -57,7 +57,7 @@ export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
-export const USERS = 'dist/user'
+export const USERS = 'user/crud'
 export const USERS_CREATE = `/${USERS}/`
 export const USERS_LIST = `/${USERS}/`
 export const USERS_ITEM = `/${USERS}/%d/`
