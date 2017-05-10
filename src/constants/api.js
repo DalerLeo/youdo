@@ -47,9 +47,9 @@ export const CURRENCY = 'currency/currencies'
 export const CURRENCY_CREATE = `/${CURRENCY}/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
-export const CURRENCY_PRIMARY = 'currency_primary'
 export const CURRENCY_DELETE = `/${CURRENCY}/%d/`
-export const CURRENCY_PRIMARY_ITEM = `/${CURRENCY_PRIMARY}/%d/`
+export const CURRENCY_PRIMARY = 'currency_primary'
+export const CURRENCY_PRIMARY_CREATE = `/${CURRENCY_PRIMARY}/`
 
 export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`
@@ -115,4 +115,14 @@ export const MANUFACTURE = 'dist/manufacturing'
 export const MANUFACTURE_CREATE = `/${MANUFACTURE}/`
 export const MANUFACTURE_LIST = `/${MANUFACTURE}/`
 export const MANUFACTURE_ITEM = `/${MANUFACTURE}/%d/`
+
+export const PENDING_EXPENSES = 'supply_expanse'
+export const PENDING_EXPENSES_CREATE = `/${PENDING_EXPENSES}/`
+export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`
+export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`
+
+export const PENDING_PAYMENTS = 'order'
+export const PENDING_PAYMENTS_CREATE = `/${PENDING_PAYMENTS}/`
+export const PENDING_PAYMENTS_LIST = `/${PENDING_PAYMENTS}/`
+export const PENDING_PAYMENTS_ITEM = `/${PENDING_PAYMENTS}/%d/`
 

@@ -1,61 +1,47 @@
 import _ from 'lodash'
 import moment from 'moment'
-import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import ProductFilterForm from './ProductFilterForm'
-import ProductCreateDialog from './ProductCreateDialog'
+import PendingPaymentsFilterForm from './PendingPaymentsFilterForm'
+import PendingPaymentsCreateDialog from './PendingPaymentsCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 
 const listHeader = [
     {
         sorting: true,
-        name: 'name',
-        title: 'Наименование',
-        xs: 3
-    },
-    {
-        sorting: true,
-        name: 'type',
-        title: 'Тип товара',
+        name: 'supply',
+        title: '№ заказа',
         xs: 2
     },
     {
         sorting: true,
+        name: 'type',
+        title: 'Клиент',
+        xs: 4
+    },
+    {
+        sorting: true,
         name: 'brand',
-        title: 'Бренд',
+        title: 'Дата',
         xs: 2
     },
     {
         sorting: true,
         name: 'measurement',
-        title: 'Мера',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'created_date',
-        title: 'Дата создания',
-        xs: 2
+        title: 'Сумма',
+        xs: 3
     }
 ]
 
@@ -75,7 +61,19 @@ const enhance = compose(
     })
 )
 
-const ProductGridList = enhance((props) => {
+const iconStyle = {
+    icon: {
+        color: '#12aaeb',
+        width: 24,
+        height: 24
+    },
+    button: {
+        width: 48,
+        height: 48,
+        padding: 0
+    }
+}
+const PendingPaymentsGridList = enhance((props) => {
     const {
         filter,
         createDialog,
@@ -85,8 +83,7 @@ const ProductGridList = enhance((props) => {
         confirmDialog,
         deleteDialog,
         listData,
-        detailData,
-        classes
+        detailData
     } = props
 
     const actions = (
@@ -101,59 +98,39 @@ const ProductGridList = enhance((props) => {
         </div>
     )
 
-    const productFilterDialog = (
-        <ProductFilterForm
+    const pendingPaymentsFilterDialog = (
+        <PendingPaymentsFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
         />
     )
 
-    const productDetail = (
+    const pendingPaymentsDetail = (
         <span>a</span>
     )
 
-    const productList = _.map(_.get(listData, 'data'), (item) => {
+    const pendingPaymentsList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const type = _.get(item, ['type', 'name']) || 'N/A'
-        const brand = _.get(item, ['brand', 'name']) || 'N/A'
-        const image = _.get(item, ['image', 'url']) || ''
-        const measurement = _.get(item, ['measurement', 'name']) || ''
+        const supplyNo = _.get(item, 'supply')
+        const comment = _.get(item, 'comment')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
+        const summary = _.get(item, 'amount')
+        const currency = _.get(item, ['currency', 'name'])
         return (
             <Row key={id}>
-                <Col xs={3}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.PRODUCT_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}> {image} {name}</Link>
-                </Col>
-                <Col xs={2}>{type}</Col>
-                <Col xs={2}>{brand}</Col>
-                <Col xs={2}>{measurement}</Col>
+                <Col xs={2}>{supplyNo}</Col>
+                <Col xs={4}>{comment}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
-                        />
-                    </IconMenu>
+                <Col xs={3}>{summary} {currency}</Col>
+                <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                        <AddPayment />
+                    </IconButton>
                 </Col>
             </Row>
         )
@@ -161,42 +138,33 @@ const ProductGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: productList,
+        list: pendingPaymentsList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.PRODUCT_LIST_URL}/>
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить продукт">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
+            <SubMenu url={ROUTES.PENDING_PAYMENTS_LIST_URL}/>
 
             <GridList
                 filter={filter}
                 list={list}
-                detail={productDetail}
+                detail={pendingPaymentsDetail}
                 actionsDialog={actions}
-                filterDialog={productFilterDialog}
+                filterDialog={pendingPaymentsFilterDialog}
             />
 
-            <ProductCreateDialog
+            <PendingPaymentsCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <ProductCreateDialog
+            <PendingPaymentsCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
+                detailData={detailData}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
@@ -219,7 +187,7 @@ const ProductGridList = enhance((props) => {
     )
 })
 
-ProductGridList.propTypes = {
+PendingPaymentsGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -263,4 +231,4 @@ ProductGridList.propTypes = {
     }).isRequired
 }
 
-export default ProductGridList
+export default PendingPaymentsGridList

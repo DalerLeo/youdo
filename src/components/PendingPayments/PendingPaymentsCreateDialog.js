@@ -6,16 +6,14 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
-import ClientContactsListField from '../ReduxForm/ClientContactsListField'
+import {CashboxSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
-export const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
-export const CLIENT_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
+export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -28,7 +26,6 @@ const validate = (data) => {
         _error: nonFieldErrors
     })
 }
-
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -43,22 +40,39 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-        contacts: {
-            background: '#f1f5f8',
-            color: '#333',
-            margin: '12px -30px 0',
-            padding: '20px 30px'
+        info: {
+            padding: '20px 0'
+        },
+        infoHeader: {
+            fontWeight: '600',
+            lineHeight: '20px'
+        },
+        infoSummary: {
+            color: '#666',
+            marginTop: '10px'
+        },
+        cashbox: {
+            padding: '0 30px 20px',
+            margin: '0 -30px',
+            background: '#f1f5f8'
         }
     })),
     reduxForm({
-        form: 'ClientCreateForm',
+        form: 'PendingPaymentsCreateForm',
         enableReinitialize: true
     })
 )
 
-const ClientCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+const PendingPaymentsCreateDialog = enhance((props) => {
+    const {open, loading, handleSubmit, onClose, detailData, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+
+    const supply = _.get(detailData, ['data', 'supply'])
+    const currency = _.get(detailData, ['data', 'currency'])
+    const currencyName = _.get(currency, 'name')
+    const summary = _.get(detailData, ['data', 'amount'])
+    const supplyId = _.get(supply, 'id')
+    const supplier = _.get(supply, ['provider', 'name'])
 
     return (
         <Dialog
@@ -66,40 +80,38 @@ const ClientCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '350px'}}
+            bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
-
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение клиента' : 'Добавление клиента'}</span>
+                <span>Расход</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
-                    </div>
-                    <div className={classes.inContent}>
+                    <div className={classes.inContent} style={{minHeight: '220px'}}>
+                        <div className={classes.loader}>
+                            <CircularProgress size={80} thickness={5}/>
+                        </div>
                         <div className={classes.field}>
-                            <Field
-                                name="name"
-                                component={TextField}
-                                className={classes.inputField}
-                                label="Организация"
-                                fullWidth={true}/>
-                            <Field
-                                name="address"
-                                component={TextField}
-                                className={classes.inputField}
-                                label="Местположение"
-                                fullWidth={true}/>
-
-                            <div className={classes.contacts}>
-                                Контактные данные
-                                <FieldArray
-                                    name="contacts"
-                                    component={ClientContactsListField}
+                            <div className={classes.info}>
+                                <div className={classes.infoHeader}>
+                                    <div>{supplier}</div>
+                                    <div>Поставка №{supplyId}</div>
+                                </div>
+                                <div className={classes.infoSummary}>
+                                    <div>Сумма заказа: <span style={{marginLeft: '10px'}}>{summary} {currencyName}</span></div>
+                                </div>
+                            </div>
+                            <div className={classes.cashbox}>
+                                <Field
+                                    name="type"
+                                    className={classes.inputField}
+                                    component={CashboxSearchField}
+                                    label="Касса получатель"
+                                    fullWidth={true}
                                 />
                             </div>
                         </div>
@@ -118,16 +130,11 @@ const ClientCreateDialog = enhance((props) => {
     )
 })
 
-ClientCreateDialog.propTypes = {
-    isUpdate: PropTypes.bool,
+PendingPaymentsCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
-ClientCreateDialog.defaultProps = {
-    isUpdate: false
-}
-
-export default ClientCreateDialog
+export default PendingPaymentsCreateDialog

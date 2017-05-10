@@ -9,9 +9,6 @@ import Dot from '../../Images/dot.png'
 
 const enhance = compose(
     injectSheet({
-        checkbox: {
-            marginLeft: '10px'
-        },
         item: {
             height: '50px',
             padding: '0 30px',
@@ -34,6 +31,10 @@ const enhance = compose(
             '&:last-child:after': {
                 content: '""',
                 backgroundImage: 'none'
+            },
+            '& a': {
+                color: '#333',
+                fontWeight: '600'
             }
 
         },

@@ -40,7 +40,9 @@ export const MenuItems = [
         icon: (<AccountBalanceWallet />),
         url: ROUTES.TRANSACTION_LIST_URL,
         childs: [
-            {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL}
+            {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL},
+            {name: 'Ожидаемые расходы', url: ROUTES.PENDING_EXPENSES_LIST_URL},
+            {name: 'Ожидание оплаты', url: ROUTES.PENDING_PAYMENTS_LIST_URL}
         ]
     },
     {

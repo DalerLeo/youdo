@@ -153,7 +153,7 @@ const ManufactureAddProductDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>BoM</span>
+                <span>Добавление продукта</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>

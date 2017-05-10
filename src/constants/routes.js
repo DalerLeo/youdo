@@ -81,3 +81,13 @@ export const MANUFACTURE = 'manufacture'
 export const MANUFACTURE_LIST_URL = `/${MANUFACTURE}`
 export const MANUFACTURE_ITEM_URL = `${PROVIDER_LIST_URL}/:manufactureId`
 export const MANUFACTURE_ITEM_PATH = `${PROVIDER}/%d`
+
+export const PENDING_EXPENSES = 'pendingExpenses'
+export const PENDING_EXPENSES_LIST_URL = `/${PENDING_EXPENSES}`
+export const PENDING_EXPENSES_ITEM_URL = `${PENDING_EXPENSES_LIST_URL}/:pendingExpensesId`
+export const PENDING_EXPENSES_ITEM_PATH = `${PENDING_EXPENSES}/%d`
+
+export const PENDING_PAYMENTS = 'pendingPayments'
+export const PENDING_PAYMENTS_LIST_URL = `/${PENDING_PAYMENTS}`
+export const PENDING_PAYMENTS_ITEM_URL = `${PENDING_PAYMENTS_LIST_URL}/:pendingPaymentsId`
+export const PENDING_PAYMENTS_ITEM_PATH = `${PENDING_PAYMENTS}/%d`
