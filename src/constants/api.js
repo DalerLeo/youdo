@@ -13,6 +13,12 @@ export const CATEGORY_LIST = `/${CATEGORY}/`
 export const CATEGORY_ITEM = `/${CATEGORY}/%d/`
 export const CATEGORY_DELETE = `/${CATEGORY}/%d/`
 
+export const EQUIPMENT = 'equipment'
+export const EQUIPMENT_CREATE = `/${EQUIPMENT}/`
+export const EQUIPMENT_LIST = `/${EQUIPMENT}/`
+export const EQUIPMENT_ITEM = `/${EQUIPMENT}/%d/`
+export const EQUIPMENT_DELETE = `/${EQUIPMENT}/%d/`
+
 export const STOCK = 'dist/stock'
 export const STOCK_CREATE = `/${STOCK}/`
 export const STOCK_LIST = `/${STOCK}/`

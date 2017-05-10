@@ -65,7 +65,8 @@ export const MenuItems = [
             {name: 'Категории расходов', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL},
             {name: 'Бренды', url: ROUTES.BRAND_LIST_URL},
             {name: 'Пользователи', url: ROUTES.USERS_LIST_URL},
-            {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL}
+            {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL},
+            {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL}
         ]
     }
 ]
