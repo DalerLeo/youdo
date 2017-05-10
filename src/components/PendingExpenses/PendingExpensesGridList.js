@@ -73,7 +73,6 @@ const iconStyle = {
         padding: 0
     }
 }
-const tooltipPosition = 'bottom-center'
 
 const PendingExpensesGridList = enhance((props) => {
     const {
@@ -85,8 +84,7 @@ const PendingExpensesGridList = enhance((props) => {
         confirmDialog,
         deleteDialog,
         listData,
-        detailData,
-        classes
+        detailData
     } = props
 
     const actions = (
