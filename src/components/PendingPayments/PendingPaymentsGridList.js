@@ -9,8 +9,8 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import PendingExpensesFilterForm from './PendingExpensesFilterForm'
-import PendingExpensesCreateDialog from './PendingExpensesCreateDialog'
+import PendingPaymentsFilterForm from './PendingPaymentsFilterForm'
+import PendingPaymentsCreateDialog from './PendingPaymentsCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -28,7 +28,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'type',
-        title: 'Описание',
+        title: 'Клиент',
         xs: 4
     },
     {
@@ -73,8 +73,7 @@ const iconStyle = {
         padding: 0
     }
 }
-
-const PendingExpensesGridList = enhance((props) => {
+const PendingPaymentsGridList = enhance((props) => {
     const {
         filter,
         createDialog,
@@ -99,19 +98,19 @@ const PendingExpensesGridList = enhance((props) => {
         </div>
     )
 
-    const pendingExpensesFilterDialog = (
-        <PendingExpensesFilterForm
+    const pendingPaymentsFilterDialog = (
+        <PendingPaymentsFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
         />
     )
 
-    const pendingExpensesDetail = (
+    const pendingPaymentsDetail = (
         <span>a</span>
     )
 
-    const pendingExpensesList = _.map(_.get(listData, 'data'), (item) => {
+    const pendingPaymentsList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const supplyNo = _.get(item, 'supply')
         const comment = _.get(item, 'comment')
@@ -139,30 +138,30 @@ const PendingExpensesGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: pendingExpensesList,
+        list: pendingPaymentsList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.PENDING_EXPENSES_LIST_URL}/>
+            <SubMenu url={ROUTES.PENDING_PAYMENTS_LIST_URL}/>
 
             <GridList
                 filter={filter}
                 list={list}
-                detail={pendingExpensesDetail}
+                detail={pendingPaymentsDetail}
                 actionsDialog={actions}
-                filterDialog={pendingExpensesFilterDialog}
+                filterDialog={pendingPaymentsFilterDialog}
             />
 
-            <PendingExpensesCreateDialog
+            <PendingPaymentsCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <PendingExpensesCreateDialog
+            <PendingPaymentsCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 detailData={detailData}
@@ -188,7 +187,7 @@ const PendingExpensesGridList = enhance((props) => {
     )
 })
 
-PendingExpensesGridList.propTypes = {
+PendingPaymentsGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -232,4 +231,4 @@ PendingExpensesGridList.propTypes = {
     }).isRequired
 }
 
-export default PendingExpensesGridList
+export default PendingPaymentsGridList
