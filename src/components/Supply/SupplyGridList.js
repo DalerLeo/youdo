@@ -243,7 +243,7 @@ const SupplyGridList = enhance((props) => {
 
             {detailData.data && <ConfirmDialog
                 type="delete"
-                message={_.get(detailData, ['data', 'name'])}
+                message={_.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
@@ -302,7 +302,7 @@ SupplyGridList.propTypes = {
         handleSupplyExpenseSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
     supplyListData: PropTypes.shape({
-        data: PropTypes.object.isRequired,
+        data: PropTypes.array.isRequired,
         supplyExpenseListLoading: PropTypes.bool.isRequired,
         openSupplyExpenseDeleteDialog: PropTypes.bool.isRequired,
         handleSupplyExpenseOpenDeleteDialog: PropTypes.func.isRequired,
