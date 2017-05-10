@@ -19,6 +19,7 @@ import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
 import {ClientList} from '../containers/Client'
 import {ManufactureList} from '../containers/Manufacture'
+import {PendingExpensesList} from '../containers/PendingExpenses'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -193,9 +194,17 @@ export default {
                 }
             ]
         },
+        // Manufacture
         {
             path: ROUTES.MANUFACTURE_LIST_URL,
             component: userIsAuth(ManufactureList),
+            childRoutes: [
+            ]
+        },
+        // Pending Expenses
+        {
+            path: ROUTES.PENDING_EXPENSES_LIST_URL,
+            component: userIsAuth(PendingExpensesList),
             childRoutes: [
             ]
         },
