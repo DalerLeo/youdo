@@ -160,7 +160,7 @@ const StockGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.STOCK_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить категорию">
+                <Tooltip position="left" text="Добавить склад">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
