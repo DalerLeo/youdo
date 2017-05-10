@@ -72,6 +72,9 @@ const enhance = compose(
         handleActionEdit: props => () => {
             return null
         },
+        handleOpenDeleteDialog: props => () => {
+            return null
+        },
 
         handleOpenCSVDialog: props => () => {
             const {dispatch, setOpenCSVDialog} = props
@@ -97,6 +100,7 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CATEGORY_DELETE_DIALOG_OPEN]: false})})
         },
+
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(categoryDeleteAction(detail.id))

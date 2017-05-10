@@ -1,16 +1,15 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
-export const createSerializer = (data) => {
-    const amount = _.get(data, ['amount'])
-    const comment = _.get(data, ['comment'])
-    const cashbox = _.get(data, ['cashbox'])
+export const createSerializer = (data, cashboxId) => {
+    const amount = _.get(data, 'amount')
+    const comment = _.get(data, 'comment')
     const objectId = _.get(data, ['categoryId', 'value'])
 
     return {
         amount,
         comment,
-        cashbox,
+        'cashbox': cashboxId,
         'objectId': objectId
     }
 }
