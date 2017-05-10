@@ -10,16 +10,15 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
-import {CategorySearchField} from '../ReduxForm'
+
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const CASHBOX_FILTER_OPEN = 'openFilterDialog'
+export const PENDING_PAYMENTS_FILTER_OPEN = 'openFilterDialog'
 
-export const CASHBOX_FILTER_KEY = {
-    CATEGORY: 'category',
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+export const PENDING_PAYMENTS_FILTER_KEY = {
+    BRAND: 'brand',
+    TYPE: 'type'
 }
 
 const enhance = compose(
@@ -62,8 +61,8 @@ const enhance = compose(
             position: 'relative',
             '& svg': {
                 position: 'absolute',
-                width: '18px !important',
-                height: '18px !important'
+                width: '13px !important',
+                height: '20px !important'
             }
         },
         header: {
@@ -86,15 +85,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'CashboxFilterForm',
+        form: 'PendingPaymentsFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(CASHBOX_FILTER_KEY)
+            return _(PENDING_PAYMENTS_FILTER_KEY)
                 .values()
-                .filter(item => item !== CASHBOX_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== PENDING_PAYMENTS_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -102,7 +101,7 @@ const enhance = compose(
     })
 )
 
-const CashboxFilterForm = enhance((props) => {
+const PendingPaymentsFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
 
@@ -145,13 +144,8 @@ const CashboxFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="category" component={CategorySearchField} label="Категория"/>
-                    </div>
-
-                    <div>
                         <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
                     </div>
-
                     <div>
                         <RaisedButton
                             type="submit"
@@ -166,7 +160,7 @@ const CashboxFilterForm = enhance((props) => {
     )
 })
 
-CashboxFilterForm.propTypes = {
+PendingPaymentsFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -177,4 +171,4 @@ CashboxFilterForm.propTypes = {
     })
 }
 
-export default CashboxFilterForm
+export default PendingPaymentsFilterForm

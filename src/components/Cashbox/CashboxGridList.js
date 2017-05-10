@@ -10,7 +10,6 @@ import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import CashboxFilterForm from './CashboxFilterForm'
 import CashboxCreateDialog from './CashboxCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -82,7 +81,6 @@ const CashboxGridList = enhance((props) => {
         filter,
         createDialog,
         updateDialog,
-        filterDialog,
         actionsDialog,
         confirmDialog,
         listData,
@@ -100,14 +98,6 @@ const CashboxGridList = enhance((props) => {
                 <DeleteIcon />
             </IconButton>
         </div>
-    )
-
-    const cashboxFilterDialog = (
-        <CashboxFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
     )
 
     const cashboxDetail = (
@@ -178,7 +168,6 @@ const CashboxGridList = enhance((props) => {
                 list={list}
                 detail={cashboxDetail}
                 actionsDialog={actions}
-                filterDialog={cashboxFilterDialog}
             />
 
             <CashboxCreateDialog
@@ -209,7 +198,6 @@ const CashboxGridList = enhance((props) => {
 })
 
 CashboxGridList.propTypes = {
-    filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
     createDialog: PropTypes.shape({
@@ -235,14 +223,6 @@ CashboxGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
-    filterDialog: PropTypes.shape({
-        initialValues: PropTypes.object,
-        filterLoading: PropTypes.bool,
-        openFilterDialog: PropTypes.bool.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

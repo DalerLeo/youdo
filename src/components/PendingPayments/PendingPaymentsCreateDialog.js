@@ -13,7 +13,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
-export const PENDING_EXPENSES_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -58,12 +58,12 @@ const enhance = compose(
         }
     })),
     reduxForm({
-        form: 'PendingExpensesCreateForm',
+        form: 'PendingPaymentsCreateForm',
         enableReinitialize: true
     })
 )
 
-const PendingExpensesCreateDialog = enhance((props) => {
+const PendingPaymentsCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, detailData, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -130,11 +130,11 @@ const PendingExpensesCreateDialog = enhance((props) => {
     )
 })
 
-PendingExpensesCreateDialog.propTyeps = {
+PendingPaymentsCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
-export default PendingExpensesCreateDialog
+export default PendingPaymentsCreateDialog
