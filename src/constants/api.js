@@ -116,3 +116,8 @@ export const MANUFACTURE_CREATE = `/${MANUFACTURE}/`
 export const MANUFACTURE_LIST = `/${MANUFACTURE}/`
 export const MANUFACTURE_ITEM = `/${MANUFACTURE}/%d/`
 
+export const PENDING_EXPENSES = 'supply_expanse'
+export const PENDING_EXPENSES_CREATE = `/${PENDING_EXPENSES}/`
+export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`
+export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`
+
