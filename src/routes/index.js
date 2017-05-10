@@ -20,6 +20,7 @@ import {ProviderList} from '../containers/Provider'
 import {ClientList} from '../containers/Client'
 import {ManufactureList} from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
+import {PendingPaymentsList} from '../containers/PendingPayments'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -205,8 +206,20 @@ export default {
         {
             path: ROUTES.PENDING_EXPENSES_LIST_URL,
             component: userIsAuth(PendingExpensesList),
-            childRoutes: [
-            ]
+            childRoutes: [{
+                path: ROUTES.PENDING_EXPENSES_ITEM_URL,
+                component: userIsAuth(PendingExpensesList)
+            }]
+        },
+
+        // Pending Payments
+        {
+            path: ROUTES.PENDING_PAYMENTS_LIST_URL,
+            component: userIsAuth(PendingPaymentsList),
+            childRoutes: [{
+                path: ROUTES.PENDING_PAYMENTS_ITEM_URL,
+                component: userIsAuth(PendingPaymentsList)
+            }]
         },
 
         {

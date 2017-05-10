@@ -118,6 +118,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.PENDING_EXPENSES_UPDATE),
         item: createThunkReducer(actionTypes.PENDING_EXPENSES_ITEM)
     }),
+    pendingPayments: combineReducers({
+        create: createThunkReducer(actionTypes.PENDING_PAYMENTS_CREATE),
+        list: createThunkReducer(actionTypes.PENDING_PAYMENTS_LIST),
+        update: createThunkReducer(actionTypes.PENDING_PAYMENTS_UPDATE),
+        item: createThunkReducer(actionTypes.PENDING_PAYMENTS_ITEM)
+    }),
     snackbar: snackbarReducer(),
     form: formReducer,
     toastr: toastrReducer,
