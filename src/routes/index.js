@@ -20,6 +20,8 @@ import {ProviderList} from '../containers/Provider'
 import {ClientList} from '../containers/Client'
 import {ManufactureList} from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
+import {StatStock} from '../containers/StatStock'
+import {StatDebtors} from '../containers/StatDebtors'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -205,6 +207,20 @@ export default {
         {
             path: ROUTES.PENDING_EXPENSES_LIST_URL,
             component: userIsAuth(PendingExpensesList),
+            childRoutes: [
+            ]
+        },
+        // METRICA (Stat Stock)
+        {
+            path: ROUTES.STATSTOCK_LIST_URL,
+            component: userIsAuth(StatStock),
+            childRoutes: [
+            ]
+        },
+        // METRICA (Stat Debtors)
+        {
+            path: ROUTES.STATDEBTORS_LIST_URL,
+            component: userIsAuth(StatDebtors),
             childRoutes: [
             ]
         },

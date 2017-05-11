@@ -1,18 +1,20 @@
 import React from 'react'
 import * as ROUTES from '../../constants/routes'
-import TrendingUp from 'material-ui/svg-icons/action/trending-up'
 import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
 import Home from 'material-ui/svg-icons/action/home'
 import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
 import Map from 'material-ui/svg-icons/maps/map'
 import Settings from 'material-ui/svg-icons/action/settings'
+import Statistics from 'material-ui/svg-icons/action/trending-up'
 
 export const MenuItems = [
     {
         name: 'Метрика',
-        url: ROUTES.SHOP_LIST_URL,
-        icon: (<TrendingUp />),
+        icon: (<Statistics />),
+        url: ROUTES.STATSTOCK_LIST_URL,
         childs: [
+            {name: 'Склады', url: ROUTES.STATSTOCK_LIST_URL},
+            {name: 'Должники', url: ROUTES.STATDEBTORS_LIST_URL}
         ]
     },
     {

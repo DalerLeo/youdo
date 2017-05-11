@@ -118,6 +118,18 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.PENDING_EXPENSES_UPDATE),
         item: createThunkReducer(actionTypes.PENDING_EXPENSES_ITEM)
     }),
+    statStock: combineReducers({
+        create: createThunkReducer(actionTypes.STATSTOCK_CREATE),
+        list: createThunkReducer(actionTypes.STATSTOCK_LIST),
+        update: createThunkReducer(actionTypes.STATSTOCK_UPDATE),
+        item: createThunkReducer(actionTypes.STATSTOCK_ITEM)
+    }),
+    statDebtors: combineReducers({
+        create: createThunkReducer(actionTypes.STATDEBTORS_CREATE),
+        list: createThunkReducer(actionTypes.STATDEBTORS_LIST),
+        update: createThunkReducer(actionTypes.STATDEBTORS_UPDATE),
+        item: createThunkReducer(actionTypes.STATDEBTORS_ITEM)
+    }),
     snackbar: snackbarReducer(),
     form: formReducer,
     toastr: toastrReducer,
