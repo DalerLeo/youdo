@@ -31,11 +31,20 @@ export const SUPPLY_ITEM_URL = `${SUPPLY_LIST_URL}/:supplyId`
 export const SUPPLY_ITEM_PATH = `/${SUPPLY}/%d`
 
 export const ORDER = 'order'
-export const ORDER_HISTORY_LIST_URL = `/${ORDER}/history`
+export const ORDER_LIST_URL = `/${ORDER}`
+export const ORDER_ITEM_URL = `${ORDER_LIST_URL}/:orderId`
+export const ORDER_ITEM_PATH = `/${ORDER}/%d`
+export const ORDER_ITEM_TAB_PATH = `/${ORDER}/%d/%s`
 
 export const PRODUCT = 'product'
 export const PRODUCT_LIST_URL = `/${PRODUCT}`
+export const PRODUCT_ITEM_URL = `${PRODUCT_LIST_URL}/:productId`
 export const PRODUCT_ITEM_PATH = `/${PRODUCT}/%d`
+
+export const PRODUCT_PRICE = 'productPrice'
+export const PRODUCT_PRICE_LIST_URL = `/${PRODUCT_PRICE}`
+export const PRODUCT_PRICE_ITEM_URL = `${PRODUCT_PRICE_LIST_URL}/:productPriceId`
+export const PRODUCT_PRICE_ITEM_PATH = `/${PRODUCT_PRICE}/%d`
 
 export const CATEGORY = 'category'
 export const CATEGORY_LIST_URL = `/${CATEGORY}`
