@@ -113,7 +113,7 @@ SetCurrencyDialog.propTypes = {
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     currencyData: PropTypes.object.isRequired,
-    currentCurrency: PropTypes.string.isRequired
+    currentCurrency: PropTypes.string
 }
 
 SetCurrencyDialog.defaultProps = {

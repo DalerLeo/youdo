@@ -12,21 +12,17 @@ import {TextField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
-
 export const CURRENCY_CREATE_DIALOG_OPEN = 'openCreateDialog'
-
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
     const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
     throw new SubmissionError({
         ...errors,
         latLng,
         _error: nonFieldErrors
     })
 }
-
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -47,11 +43,9 @@ const enhance = compose(
         enableReinitialize: true
     })
 )
-
 const CurrencyCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
     return (
         <Dialog
             modal={true}
@@ -96,7 +90,6 @@ const CurrencyCreateDialog = enhance((props) => {
         </Dialog>
     )
 })
-
 CurrencyCreateDialog.propTypes = {
     isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
@@ -104,9 +97,7 @@ CurrencyCreateDialog.propTypes = {
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
-
 CurrencyCreateDialog.defaultProps = {
     isUpdate: false
 }
-
 export default CurrencyCreateDialog

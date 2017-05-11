@@ -150,7 +150,7 @@ export const setCurrencyCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.CURRENCY_PRIMARY_UPDATE,
+        type: actionTypes.SET_CURRENCY_UPDATE,
         payload
     }
 }
