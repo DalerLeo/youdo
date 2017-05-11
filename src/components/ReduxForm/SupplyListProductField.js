@@ -20,23 +20,27 @@ import TextField from './TextField'
 const enhance = compose(
     injectSheet({
         wrapper: {
-            marginTop: '20px',
             display: 'flex',
             flexDirection: 'column'
         },
         table: {
-            paddingTop: '20px'
+            marginTop: '20px',
+            maxHeight: '300px',
+            overflow: 'auto'
         },
         tableTitle: {
-            fontWeight: 'bold',
-            color: 'black !important',
+            fontWeight: '600',
+            color: '#333 !important',
             textAlign: 'left'
         },
         tableRow: {
-            borderBottom: '1px dashed #dadfe4 !important',
             height: '40px !important',
+            border: 'none !important',
             '& td:first-child': {
                 width: '250px'
+            },
+            '& tr': {
+                border: 'none !important'
             },
             '& td': {
                 height: '40px !important',
@@ -45,32 +49,27 @@ const enhance = compose(
             '& th:first-child': {
                 width: '250px',
                 textAlign: 'left !important',
-                borderBottom: '1px dashed #dadfe4 !important',
-                fontWeight: 'bold !important'
+                fontWeight: '600 !important'
             },
             '& th': {
                 textAlign: 'left !important',
+                border: 'none !important',
                 height: '40px !important',
                 padding: '0 5px !important',
-                borderBottom: '1px dashed #dadfe4 !important',
-                fontWeight: 'bold !important'
+                fontWeight: '600 !important'
             }
         },
         title: {
-            paddingTop: '8px',
-            fontWeight: 'bold',
-            color: 'black !important'
+            fontWeight: '600',
+            border: 'none !important'
         },
         headers: {
             display: 'flex',
-            position: 'relative',
-            '& button': {
-                position: 'absolute !important',
-                right: '0',
-                '& > div > span': {
-                    textTransform: 'inherit !important',
-                    fontSize: '16 !important'
-                }
+            alignItems: 'center',
+            height: '40px',
+            justifyContent: 'space-between',
+            '& span': {
+                textTransform: 'lowercase !important'
             }
         },
         background: {
@@ -87,9 +86,7 @@ const enhance = compose(
                 }
             },
             '& > button > div > span': {
-                padding: '0 !important',
-                textTransform: 'inherit !important',
-                fontSize: '13px'
+                padding: '0 !important'
             },
             '& > div:last-child': {
                 width: '100% !important'
@@ -187,7 +184,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                                 <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'cost')}</TableRowColumn>
-                                <TableRowColumn>
+                                <TableRowColumn style={{textAlign: 'right'}}>
                                     <IconButton onTouchTap={() => handleRemove(index)}>
                                         <DeleteIcon color="#666666"/>
                                     </IconButton>
