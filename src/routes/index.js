@@ -32,7 +32,7 @@ export default {
     path: '/',
     component: App,
     indexRoute: {
-        component: userIsAuth(ShopList)
+        component: userIsAuth(StatStock)
     },
     childRoutes: [
         {

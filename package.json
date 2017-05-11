@@ -1,9 +1,9 @@
 {
-  "name": "crowtechui",
+  "name": "system",
   "version": "1.0.0",
-  "description": "CrowtechUI",
+  "description": "Fennec ERP system",
   "main": "index.js",
-  "author": "bekhzod.tillakhanov",
+  "author": "Fennec systems",
   "license": "MIT",
   "eslintConfig": {
     "env": {
