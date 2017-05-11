@@ -1,3 +1,3 @@
-import OrderList from './OrderList'
+import SupplyList from './SupplyList'
 
-export {OrderList}
+export {SupplyList}

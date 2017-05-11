@@ -29,12 +29,16 @@ const validate = (data) => {
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
-            width: '120px',
-            margin: '0 auto',
-            padding: '15px',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
             textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none',
-            flexDirection: 'center'
+            display: ({loading}) => loading ? 'flex' : 'none'
         }
     })),
     reduxForm({
@@ -55,67 +59,69 @@ const ProductCreateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading ? {width: '300px'} : {}}
             bodyStyle={{minHeight: 'auto'}}
-            bodyClassName={classes.body}>
+            bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>Добавить продукт</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form} style={{height: 'auto', overflow: 'hidden'}}>
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.fieldsWrap} style={{minHeight: '320px'}}>
-                    <div className={classes.field}>
-                        <Field
-                            name="name"
-                            className={classes.inputField}
-                            component={TextField}
-                            label="Наименование"
-                            fullWidth={true}
-                        />
-                        <Field
-                            name="type"
-                            className={classes.inputField}
-                            component={ProductTypeSearchField}
-                            label="Тип продукта"
-                            fullWidth={true}
-                        />
-                        <Field
-                            name="brand"
-                            className={classes.inputField}
-                            component={BrandSearchField}
-                            label="Бренд"
-                            fullWidth={true}
-                        />
-                        <Field
-                            name="measurement"
-                            className={classes.inputField}
-                            component={MeasurementSearchField}
-                            label="Мера"
-                            fullWidth={true}
+            <div className={classes.bodyContent}>
+                <form onSubmit={onSubmit} className={classes.form}>
+                    <div className={classes.inContent} style={{minHeight: '320px'}}>
+                        <div className={classes.loader}>
+                            <CircularProgress size={80} thickness={5}/>
+                        </div>
+                        <div className={classes.field}>
+                            <Field
+                                name="name"
+                                className={classes.inputField}
+                                component={TextField}
+                                label="Наименование"
+                                fullWidth={true}
+                            />
+                            <Field
+                                name="type"
+                                className={classes.inputField}
+                                component={ProductTypeSearchField}
+                                label="Тип продукта"
+                                fullWidth={true}
+                            />
+                            <Field
+                                name="brand"
+                                className={classes.inputField}
+                                component={BrandSearchField}
+                                label="Бренд"
+                                fullWidth={true}
+                            />
+                            <Field
+                                name="measurement"
+                                className={classes.inputField}
+                                component={MeasurementSearchField}
+                                label="Мера"
+                                fullWidth={true}
+                            />
+                        </div>
+                        <div className={classes.field} style={{maxWidth: '224px'}}>
+                            <Field
+                                name="image"
+                                className={classes.imageUpload}
+                                component={ImageUploadField}
+                                label="Изображения"
+                                fullWidth={true}
+                            />
+                        </div>
+                    </div>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
                         />
                     </div>
-                    <div className={classes.field} style={{maxWidth: '224px'}}>
-                        <Field
-                            name="image"
-                            className={classes.imageUpload}
-                            component={ImageUploadField}
-                            label="Изображения"
-                            fullWidth={true}
-                        />
-                    </div>
-                </div>
-                <div className={classes.bottomButton}>
-                    <FlatButton
-                        label="Сохранить"
-                        className={classes.actionButton}
-                        primary={true}
-                        type="submit"
-                    />
-                </div>
-            </form>
+                </form>
+            </div>
         </Dialog>
     )
 })

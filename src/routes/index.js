@@ -18,7 +18,10 @@ import {MeasurementList} from '../containers/Measurement'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
+import {ClientList} from '../containers/Client'
 import {ManufactureList} from '../containers/Manufacture'
+import {PendingExpensesList} from '../containers/PendingExpenses'
+import {PendingPaymentsList} from '../containers/PendingPayments'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -182,6 +185,17 @@ export default {
                 }
             ]
         },
+        // Client
+        {
+            path: ROUTES.CLIENT_LIST_URL,
+            component: userIsAuth(ClientList),
+            childRoutes: [
+                {
+                    path: ROUTES.CLIENT_ITEM_URL,
+                    component: userIsAuth(ClientList)
+                }
+            ]
+        },
         // Brand
         {
             path: ROUTES.BRAND_LIST_URL,
@@ -193,11 +207,31 @@ export default {
                 }
             ]
         },
+        // Manufacture
         {
             path: ROUTES.MANUFACTURE_LIST_URL,
             component: userIsAuth(ManufactureList),
             childRoutes: [
             ]
+        },
+        // Pending Expenses
+        {
+            path: ROUTES.PENDING_EXPENSES_LIST_URL,
+            component: userIsAuth(PendingExpensesList),
+            childRoutes: [{
+                path: ROUTES.PENDING_EXPENSES_ITEM_URL,
+                component: userIsAuth(PendingExpensesList)
+            }]
+        },
+
+        // Pending Payments
+        {
+            path: ROUTES.PENDING_PAYMENTS_LIST_URL,
+            component: userIsAuth(PendingPaymentsList),
+            childRoutes: [{
+                path: ROUTES.PENDING_PAYMENTS_ITEM_URL,
+                component: userIsAuth(PendingPaymentsList)
+            }]
         },
 
         {

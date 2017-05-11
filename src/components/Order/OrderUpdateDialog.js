@@ -11,7 +11,7 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, LocationField, CategorySearchField} from '../ReduxForm'
 
-export const ORDER_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
+export const SUPPLY_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -39,12 +39,16 @@ const enhance = compose(
         },
 
         loader: {
-            width: '120px',
-            margin: '0 auto',
-            padding: '15px',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
             textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none',
-            flexDirection: 'center'
+            display: ({loading}) => loading ? 'flex' : 'none'
         },
 
         fields: {
@@ -77,11 +81,11 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'OrderCreateForm'
+        form: 'SupplyCreateForm'
     })
 )
 
-const OrderCreateDialog = enhance((props) => {
+const SupplyCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -100,7 +104,7 @@ const OrderCreateDialog = enhance((props) => {
                 <div className={classes.fields}>
                     <Col xs={5}>
                         <div>
-                            <h4 className={classes.title}>Add Order</h4>
+                            <h4 className={classes.title}>Add Supply</h4>
                         </div>
                         <div>
                             <div>
@@ -182,7 +186,7 @@ const OrderCreateDialog = enhance((props) => {
     )
 })
 
-OrderCreateDialog.propTyeps = {
+SupplyCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -190,4 +194,4 @@ OrderCreateDialog.propTyeps = {
     loading: PropTypes.bool.isRequired
 }
 
-export default OrderCreateDialog
+export default SupplyCreateDialog

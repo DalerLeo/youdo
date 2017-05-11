@@ -10,9 +10,7 @@ import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import CashboxFilterForm from './CashboxFilterForm'
 import CashboxCreateDialog from './CashboxCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -83,10 +81,8 @@ const CashboxGridList = enhance((props) => {
         filter,
         createDialog,
         updateDialog,
-        filterDialog,
         actionsDialog,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -104,14 +100,6 @@ const CashboxGridList = enhance((props) => {
         </div>
     )
 
-    const cashboxFilterDialog = (
-        <CashboxFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
-    )
-
     const cashboxDetail = (
         <span>a</span>
     )
@@ -120,15 +108,15 @@ const CashboxGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const currency = _.get(item, ['currency', 'name']) || 'N/A'
-        const cashier = _.get(item, ['cashier', 'first_name']) + ' ' + _.get(item, ['cashier', 'second_name'])
-        const type = _.get(item, 'type') === bank ? 'банковский счет' : 'наличный'
+        const cashier = _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName'])
+        const type = _.toInteger(_.get(item, 'type')) === bank ? 'банковский счет' : 'наличный'
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
             </IconButton>
         )
         return (
-            <Row key={id} style={{alignItems: 'center'}}>
+            <Row key={id}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={2}>{name}</Col>
                 <Col xs={2}>{currency}</Col>
@@ -147,7 +135,7 @@ const CashboxGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Удалить "
                             leftIcon={<DeleteIcon />}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                         />
                     </IconMenu>
                 </Col>
@@ -180,7 +168,6 @@ const CashboxGridList = enhance((props) => {
                 list={list}
                 detail={cashboxDetail}
                 actionsDialog={actions}
-                filterDialog={cashboxFilterDialog}
             />
 
             <CashboxCreateDialog
@@ -199,12 +186,6 @@ const CashboxGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
-            />
-
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -217,7 +198,6 @@ const CashboxGridList = enhance((props) => {
 })
 
 CashboxGridList.propTypes = {
-    filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
     createDialog: PropTypes.shape({
@@ -233,11 +213,6 @@ CashboxGridList.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
-    }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
         openUpdateDialog: PropTypes.bool.isRequired,
@@ -248,14 +223,6 @@ CashboxGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
-    filterDialog: PropTypes.shape({
-        initialValues: PropTypes.object,
-        filterLoading: PropTypes.bool,
-        openFilterDialog: PropTypes.bool.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

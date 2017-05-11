@@ -8,10 +8,10 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     CATEGORY_CREATE_DIALOG_OPEN,
     CATEGORY_UPDATE_DIALOG_OPEN,
+    CATEGORY_DELETE_DIALOG_OPEN,
     CategoryGridList
 } from '../../components/Category'
 import {
@@ -67,10 +67,12 @@ const enhance = compose(
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
-    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
+            return null
+        },
+        handleOpenDeleteDialog: props => () => {
             return null
         },
 
@@ -86,37 +88,29 @@ const enhance = compose(
             setOpenCSVDialog(false)
         },
 
-        handleOpenConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(true)
-        },
-
-        handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(false)
-        },
-        handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
-            dispatch(categoryDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
-                })
-                .then(() => {
-                    setOpenConfirmDialog(false)
-                })
-        },
-
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
+        handleOpenConfirmDialog: props => (id) => {
+            const {filter} = props
             hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
+                pathname: sprintf(ROUTER.CATEGORY_ITEM_PATH, id),
+                query: filter.getParams({[CATEGORY_DELETE_DIALOG_OPEN]: true})
             })
         },
 
-        handleCloseDeleteDialog: props => () => {
+        handleCloseConfirmDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
+            hashHistory.push({pathname, query: filter.getParams({[CATEGORY_DELETE_DIALOG_OPEN]: false})})
+        },
+
+        handleSendConfirmDialog: props => () => {
+            const {dispatch, detail, filter, location: {pathname}} = props
+            dispatch(categoryDeleteAction(detail.id))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[CATEGORY_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(categoryListFetchAction(filter))
+                })
         },
 
         handleOpenCreateDialog: props => () => {
@@ -130,14 +124,15 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
 
             return dispatch(categoryCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[CATEGORY_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[CATEGORY_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(categoryListFetchAction(filter))
                 })
         },
 
@@ -163,10 +158,11 @@ const enhance = compose(
                     return dispatch(categoryItemFetchAction(categoryId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CATEGORY_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(categoryListFetchAction(filter))
                 })
         }
     })
@@ -188,7 +184,8 @@ const CategoryList = enhance((props) => {
 
     const openCreateDialog = toBoolean(_.get(location, ['query', CATEGORY_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CATEGORY_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
+    const openConfirmDialog = toBoolean(_.get(location, ['query', CATEGORY_DELETE_DIALOG_OPEN]))
+
     const detailId = _.toInteger(_.get(params, 'categoryId'))
 
     const actionsDialog = {
@@ -204,14 +201,8 @@ const CategoryList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
-    }
-
     const confirmDialog = {
-        openConfirmDialog: props.openConfirmDialog,
+        openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
@@ -259,7 +250,6 @@ const CategoryList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}

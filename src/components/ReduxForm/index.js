@@ -10,6 +10,7 @@ import BrandSearchField from './BrandSearchField'
 import MeasurementSearchField from './MeasurementSearchField'
 import CurrencySearchField from './CurrencySearchField'
 import ProviderSearchField from './ProviderSearchField'
+import ClientSearchField from './ClientSearchField'
 import StockSearchField from './StockSearchField'
 import ImageUploadField from './ImageUploadField'
 import DateField from './DateField'
@@ -18,6 +19,7 @@ import SupplyListProductField from './SupplyListProductField'
 import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
 import PaymentTypeSearchField from './PaymentTypeSearchField'
 import StockTypeSearchField from './StockTypeSearchField'
+import CashboxSearchField from './CashboxSearchField'
 
 export {
     ProductSearchField,
@@ -35,9 +37,11 @@ export {
     ImageUploadField,
     CurrencySearchField,
     ProviderSearchField,
+    ClientSearchField,
     StockSearchField,
     SupplyListProductField,
     ExpensiveCategorySearchField,
     PaymentTypeSearchField,
-    StockTypeSearchField
+    StockTypeSearchField,
+    CashboxSearchField
 }

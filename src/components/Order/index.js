@@ -1,17 +1,15 @@
-import OrderGridList from './OrderGridList'
-import {ORDER_CREATE_DIALOG_OPEN} from './OrderCreateDialog'
-import {ORDER_UPDATE_DIALOG_OPEN} from './OrderUpdateDialog'
-import {ORDER_EXPENSE_CREATE_DIALOG_OPEN} from './OrderExpenseCreateDialog'
-import {ORDER_FILTER_KEY, ORDER_FILTER_OPEN} from './OrderFilterForm'
-
-const ORDER_EXPENSE_DELETE_DIALOG_OPEN = 'delexpsup'
-
+import SupplyGridList from './SupplyGridList'
+import {SUPPLY_CREATE_DIALOG_OPEN} from './SupplyCreateDialog'
+import {SUPPLY_UPDATE_DIALOG_OPEN} from './SupplyUpdateDialog'
+import {SUPPLY_EXPENSE_CREATE_DIALOG_OPEN} from './SupplyExpenseCreateDialog'
+import {SUPPLY_FILTER_KEY, SUPPLY_FILTER_OPEN} from './SupplyFilterForm'
+const SUPPLY_EXPENSE_DELETE_DIALOG_OPEN = 'delexpsup'
 export {
-    ORDER_EXPENSE_CREATE_DIALOG_OPEN,
-    ORDER_CREATE_DIALOG_OPEN,
-    ORDER_UPDATE_DIALOG_OPEN,
-    ORDER_FILTER_KEY,
-    ORDER_FILTER_OPEN,
-    ORDER_EXPENSE_DELETE_DIALOG_OPEN,
-    OrderGridList
+    SUPPLY_EXPENSE_CREATE_DIALOG_OPEN,
+    SUPPLY_CREATE_DIALOG_OPEN,
+    SUPPLY_UPDATE_DIALOG_OPEN,
+    SUPPLY_FILTER_KEY,
+    SUPPLY_FILTER_OPEN,
+    SUPPLY_EXPENSE_DELETE_DIALOG_OPEN,
+    SupplyGridList
 }

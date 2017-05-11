@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/transactionSerializer'
 
-export const transactionCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const transactionCreateAction = (formValues, cashboxId) => {
+    const requestData = serializers.createSerializer(formValues, cashboxId)
     const payload = axios()
         .post(API.TRANSACTION_CREATE, requestData)
         .then((response) => {
@@ -38,8 +38,8 @@ export const transactionDeleteAction = (id) => {
     }
 }
 
-export const transactionUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const transactionUpdateAction = (id, formValues, cashboxId) => {
+    const requestData = serializers.createSerializer(formValues, cashboxId)
     const payload = axios()
         .put(sprintf(API.TRANSACTION_ITEM, id), requestData)
         .then((response) => {

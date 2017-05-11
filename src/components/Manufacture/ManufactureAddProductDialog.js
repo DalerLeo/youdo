@@ -24,12 +24,16 @@ export const MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN = 'addProduct'
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
-            width: '120px',
-            margin: '0 auto',
-            padding: '15px',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
             textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none',
-            flexDirection: 'center'
+            display: ({loading}) => loading ? 'flex' : 'none'
         },
         buttonSub: {
             textAlign: 'right',
@@ -149,7 +153,7 @@ const ManufactureAddProductDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>BoM</span>
+                <span>Добавление продукта</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>

@@ -1,7 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
-import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -9,12 +8,10 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     CASHBOX_CREATE_DIALOG_OPEN,
     CASHBOX_UPDATE_DIALOG_OPEN,
-    CASHBOX_FILTER_KEY,
-    CASHBOX_FILTER_OPEN,
+    CASHBOX_DELETE_DIALOG_OPEN,
     CashboxGridList
 } from '../../components/Cashbox'
 import {
@@ -39,7 +36,6 @@ const enhance = compose(
         const listLoading = _.get(state, ['cashbox', 'list', 'loading'])
         const csvData = _.get(state, ['cashbox', 'csv', 'data'])
         const csvLoading = _.get(state, ['cashbox', 'csv', 'loading'])
-        const filterForm = _.get(state, ['form', 'CashboxFilterForm'])
         const createForm = _.get(state, ['form', 'CashboxCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -53,7 +49,6 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
-            filterForm,
             createForm
         }
     }),
@@ -72,7 +67,6 @@ const enhance = compose(
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
-    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
@@ -91,34 +85,28 @@ const enhance = compose(
             setOpenCSVDialog(false)
         },
 
-        handleOpenConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(true)
+        handleOpenConfirmDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.CASHBOX_ITEM_PATH, id),
+                query: filter.getParams({[CASHBOX_DELETE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(false)
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_DELETE_DIALOG_OPEN]: false})})
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
+            const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(cashboxDeleteAction(detail.id))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
-                    setOpenConfirmDialog(false)
+                    hashHistory.push({pathname, query: filter.getParams({[CASHBOX_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(cashboxListFetchAction(filter))
                 })
-        },
-
-        handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_FILTER_OPEN]: true})})
-        },
-
-        handleCloseFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_FILTER_OPEN]: false})})
         },
 
         handleClearFilterDialog: props => () => {
@@ -126,19 +114,6 @@ const enhance = compose(
             hashHistory.push({pathname, query: {}})
         },
 
-        handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const category = _.get(filterForm, ['values', 'category', 'value']) || null
-
-            filter.filterBy({
-                [CASHBOX_FILTER_OPEN]: false,
-                [CASHBOX_FILTER_KEY.CATEGORY]: category,
-                [CASHBOX_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [CASHBOX_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
-            })
-        },
         handleOpenDeleteDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({
@@ -163,14 +138,15 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
 
             return dispatch(cashboxCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(cashboxListFetchAction(filter))
                 })
         },
 
@@ -196,10 +172,11 @@ const enhance = compose(
                     return dispatch(cashboxItemFetchAction(cashboxId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CASHBOX_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(cashboxListFetchAction(filter))
                 })
         }
     })
@@ -219,13 +196,9 @@ const CashboxList = enhance((props) => {
         params
     } = props
 
-    const openFilterDialog = toBoolean(_.get(location, ['query', CASHBOX_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', CASHBOX_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CASHBOX_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
-    const category = _.toInteger(filter.getParam(CASHBOX_FILTER_KEY.CATEGORY))
-    const fromDate = filter.getParam(CASHBOX_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(CASHBOX_FILTER_KEY.TO_DATE)
+    const openConfirmDialog = toBoolean(_.get(location, ['query', CASHBOX_DELETE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'cashboxId'))
 
     const actionsDialog = {
@@ -241,14 +214,8 @@ const CashboxList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
-    }
-
     const confirmDialog = {
-        openConfirmDialog: props.openConfirmDialog,
+        openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
@@ -280,24 +247,6 @@ const CashboxList = enhance((props) => {
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
 
-    const filterDialog = {
-        initialValues: {
-            category: {
-                value: category
-            },
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
-            }
-        },
-        filterLoading: false,
-        openFilterDialog,
-        handleOpenFilterDialog: props.handleOpenFilterDialog,
-        handleCloseFilterDialog: props.handleCloseFilterDialog,
-        handleClearFilterDialog: props.handleClearFilterDialog,
-        handleSubmitFilterDialog: props.handleSubmitFilterDialog
-    }
-
     const csvDialog = {
         csvData: props.csvData,
         csvLoading: props.csvLoading,
@@ -324,11 +273,9 @@ const CashboxList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                filterDialog={filterDialog}
                 csvDialog={csvDialog}
             />
         </Layout>

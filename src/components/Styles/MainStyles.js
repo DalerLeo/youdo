@@ -35,14 +35,13 @@ const MainStyles = {
         color: '#333',
         fontWeight: 'bold',
         textTransform: 'uppercase',
-        top: '0',
-        left: '0',
-        right: '0',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         borderBottom: '1px solid #efefef',
         padding: '20px 30px',
         zIndex: '999',
         '& button': {
-            marginTop: '-17px !important',
             right: '13px',
             padding: '0 !important',
             position: 'absolute !important'
@@ -58,6 +57,9 @@ const MainStyles = {
     },
     bodyContent: {
         width: '100%'
+    },
+    form: {
+        position: 'relative'
     },
     field: {
         width: '100%'
@@ -79,7 +81,6 @@ const MainStyles = {
         borderTop: '1px solid #efefef',
         background: '#fff',
         textAlign: 'right',
-        margin: '0 -30px',
         '& span': {
             fontSize: '13px !important',
             fontWeight: '600 !important',

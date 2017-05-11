@@ -218,8 +218,8 @@ const iconStyle = {
 
 const tooltipPosition = 'bottom-center'
 
-const OrderDetails = enhance((props) => {
-    const {classes, loading, data, setOpenDetails, openDetails} = props
+const SupplyDetails = enhance((props) => {
+    const {classes, loading, data, setOpenDetails, openDetails, handleSupplyExpenseOpenCreateDialog, supplyListData} = props
     const id = _.get(data, 'id')
     const provider = _.get(data, ['provider', 'name'])
     const products = _.get(data, 'products')
@@ -234,6 +234,9 @@ const OrderDetails = enhance((props) => {
     const finishedTime = _.get(data, 'finishedTime') || 'N/A'
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
+
+    const supplyExpenseList = _.get(supplyListData, 'data')
+    const supplyExpenseListLoading = _.get(supplyListData, 'supplyExpenseListLoading')
 
     if (loading) {
         return (
@@ -298,7 +301,7 @@ const OrderDetails = enhance((props) => {
                 <div className={classes.storeInfo}>
                     <div className={classes.store}>Склад: <span
                         style={{color: '#999', fontWeight: 'bold'}}>{stock}</span></div>
-                    <div className={classes.orderDate} style={{marginLeft: '45px'}}>Дата поставки: <span
+                    <div className={classes.supplyDate} style={{marginLeft: '45px'}}>Дата поставки: <span
                         style={{color: '#e57373', fontWeight: 'bold'}}>{dataDelivery}</span></div>
                 </div>
                 <div className={classes.dateInfo}>
@@ -356,21 +359,35 @@ const OrderDetails = enhance((props) => {
                         <div>Дополнительные расходы по заказу</div>
                         <div>
                             <FlatButton
+                                onTouchTap={handleSupplyExpenseOpenCreateDialog}
                                 className="expenseButton"
                                 label="+ добавить доп. расход"/>
                         </div>
                     </div>
                     <div className="expenseInfo">
-                        <Row>
-                            <Col xs={10}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia, nostrum,
-                                quas. Ad aliquid asperiores beatae debitis ex facere, id ipsa ipsam iste iure, iusto
-                                labore maxime minus neque perferendis perspiciatis placeat, quam repellendus similique
-                                sunt totam veniam vitae! Doloremque expedita in inventore, laborum perferendis placeat
-                                repellendus reprehenderit suscipit temporibus voluptatibus!</Col>
-                            <Col xs={2}>
-                                <div style={{textAlign: 'right'}}>2000 USD</div>
-                            </Col>
-                        </Row>
+                        {supplyExpenseListLoading && <div className={classes.loader}>
+                            <div>
+                                <CircularProgress size={100} thickness={6}/>
+                            </div>
+                        </div>}
+                        {!supplyExpenseListLoading && _.map(supplyExpenseList, (item) => {
+                            const expId = _.get(item, 'id')
+                            const expComment = _.get(item, 'comment')
+                            const expAmount = _.get(item, 'amount')
+                            const expCurrency = _.get(item, 'currency')
+                            return (
+                                <Row key={expId}>
+                                    <Col xs={8}>{expComment}</Col>
+                                    <Col xs={2}>
+                                        <div style={{textAlign: 'right'}}>{expAmount} {expCurrency}</div>
+                                    </Col>
+                                    <Col xs={2}>
+                                        <IconButton
+                                            onTouchTap={supplyListData.hamdleDelete}><Delete/></IconButton>
+                                    </Col>
+                                </Row>
+                            )
+                        })}
                     </div>
                 </div>
                 <div className="comment">
@@ -386,7 +403,7 @@ const OrderDetails = enhance((props) => {
     )
 })
 
-OrderDetails.propTypes = {
+SupplyDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     confirmDialog: PropTypes.shape({
@@ -395,7 +412,9 @@ OrderDetails.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired
+    handleOpenUpdateDialog: PropTypes.func.isRequired,
+    handleOpenSupplyExpenseDialog: PropTypes.func.isRequired,
+    supplyListData: PropTypes.object.isRequired
 }
 
-export default OrderDetails
+export default SupplyDetails

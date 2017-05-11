@@ -8,10 +8,10 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     STOCK_CREATE_DIALOG_OPEN,
     STOCK_UPDATE_DIALOG_OPEN,
+    STOCK_DELETE_DIALOG_OPEN,
     StockGridList
 } from '../../components/Stock'
 import {
@@ -67,7 +67,6 @@ const enhance = compose(
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
-    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
@@ -86,23 +85,27 @@ const enhance = compose(
             setOpenCSVDialog(false)
         },
 
-        handleOpenConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(true)
+        handleOpenConfirmDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.STOCK_ITEM_PATH, id),
+                query: filter.getParams({[STOCK_DELETE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(false)
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_DELETE_DIALOG_OPEN]: false})})
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
+            const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(stockDeleteAction(detail.id))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
-                    setOpenConfirmDialog(false)
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(stockListFetchAction(filter))
                 })
         },
 
@@ -130,14 +133,15 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
 
             return dispatch(stockCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[STOCK_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(stockListFetchAction(filter))
                 })
         },
 
@@ -162,7 +166,7 @@ const enhance = compose(
                     return dispatch(stockItemFetchAction(stockId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[STOCK_UPDATE_DIALOG_OPEN]: false}))
@@ -187,7 +191,8 @@ const StockList = enhance((props) => {
 
     const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', STOCK_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
+    const openConfirmDialog = toBoolean(_.get(location, ['query', STOCK_DELETE_DIALOG_OPEN]))
+
     const detailId = _.toInteger(_.get(params, 'stockId'))
 
     const actionsDialog = {
@@ -203,14 +208,8 @@ const StockList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
-    }
-
     const confirmDialog = {
-        openConfirmDialog: props.openConfirmDialog,
+        openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
@@ -264,7 +263,6 @@ const StockList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}

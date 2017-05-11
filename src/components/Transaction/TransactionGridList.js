@@ -1,9 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
-import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -12,9 +10,7 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import TransactionFilterForm from './TransactionFilterForm'
-import TransactionDetails from './TransactionDetails'
 import TransactionCreateDialog from './TransactionCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -25,6 +21,10 @@ import Tooltip from '../ToolTip'
 import CashPayment from '../CashPayment'
 import BankPayment from '../BankPayment'
 import CircularProgress from 'material-ui/CircularProgress'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Edit from 'material-ui/svg-icons/image/edit'
 
 const listHeader = [
     {
@@ -128,7 +128,6 @@ const TransactionGridList = enhance((props) => {
         actionsDialog,
         cashboxListLoading,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -155,42 +154,54 @@ const TransactionGridList = enhance((props) => {
     )
 
     const transactionDetail = (
-        <TransactionDetails
-            key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            deleteDialog={deleteDialog}
-            confirmDialog={confirmDialog}
-            loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-        />
+        <span>a</span>
     )
+
+    const minus = 0
+    const expense = 1
+    const income = 2
 
     const transactionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
         const amount = _.get(item, 'amount') || 'N/A'
+        const type = amount < minus ? expense : income
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-
+        const iconButton = (
+            <IconButton style={{padding: '0 12px'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={5}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.TRANSACTION_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{comment}</Link>
-                </Col>
-                <Col xs={2}>{amount}</Col>
+                <Col xs={5}>{comment}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}></Col>
+                <Col xs={2}>{amount}</Col>
+                <Col xs={2}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id, type) }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                        />
+                    </IconMenu>
+                </Col>
             </Row>
         )
     })
     const cashboxList = _.map(_.get(cashboxData, 'data'), (item, index) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const type = _.get(item, 'type')
-        const cashier = _.toInteger(_.get(item, 'cashier'))
+        const type = _.toInteger(_.get(item, 'type'))
         const balance = _.toInteger(_.get(item, 'balance'))
         const isActive = item.id === _.get(cashboxData, 'cashboxId')
         const BANK_ID = 1
@@ -203,7 +214,7 @@ const TransactionGridList = enhance((props) => {
                 <Col xs={8}>
                     <div>{name}</div>
                     <div className={item.id === cashboxData.cashboxId && classes.blue}>
-                        {cashier === BANK_ID
+                        {type === BANK_ID
                             ? <div>
                                 <BankPayment style={{height: '16px', width: '16px'}}/>
                                 <span className={classes.desc}>банковский счет</span>
@@ -235,11 +246,20 @@ const TransactionGridList = enhance((props) => {
             <SubMenu url={ROUTES.TRANSACTION_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
+                <Tooltip position="left" text="Расход">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
                         onTouchTap={createDialog.handleOpenCreateDialog}>
+                        <ContentAdd />
+                    </FloatingActionButton>
+                </Tooltip>
+                <Tooltip position="left" text="Доход">
+                    <FloatingActionButton
+                        mini={true}
+                        className={classes.addButton}
+                        onTouchTap={createDialog.handleOpenCreateDialog}
+                    >
                         <ContentAdd />
                     </FloatingActionButton>
                 </Tooltip>
@@ -288,16 +308,9 @@ const TransactionGridList = enhance((props) => {
                         onClose={updateDialog.handleCloseUpdateDialog}
                         onSubmit={updateDialog.handleSubmitUpdateDialog}
                     />
-
-                    <DeleteDialog
-                        filter={filter}
-                        open={deleteDialog.openDeleteDialog}
-                        onClose={deleteDialog.handleCloseDeleteDialog}
-                    />
-
                     {detailData.data && <ConfirmDialog
                         type="delete"
-                        message={_.get(detailData, ['data', 'name'])}
+                        message={_.get(detailData, ['data', 'comment'])}
                         onClose={confirmDialog.handleCloseConfirmDialog}
                         onSubmit={confirmDialog.handleSendConfirmDialog}
                         open={confirmDialog.openConfirmDialog}
@@ -326,11 +339,6 @@ TransactionGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,

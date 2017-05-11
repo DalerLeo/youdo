@@ -19,9 +19,12 @@ export const listFilterSerializer = (data) => {
     return {
         'id': _.get(defaultData, 'id'),
         'name': _.get(defaultData, 'name'),
-        'stock_type': _.get(defaultData, 'stock_type'),
+        'stockType': _.get(defaultData, 'stock_type'),
         'manager': _.get(defaultData, 'manager'),
         'data_created': _.get(defaultData, 'dataCreated'),
+        'search': _.get(defaultData, 'search'),
+        'page': _.get(defaultData, 'page'),
+        'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }

@@ -15,13 +15,13 @@ import {
     CurrencySearchField,
     ProviderSearchField,
     StockSearchField,
-    OrderListProductField,
+    SupplyListProductField,
     TextField,
     DateField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
-export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -33,12 +33,16 @@ const validate = (data) => {
 const enhance = compose(
     injectSheet({
         loader: {
-            width: '120px',
-            margin: '0 auto',
-            padding: '15px',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
             textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none',
-            flexDirection: 'center'
+            display: ({loading}) => loading ? 'flex' : 'none'
         },
         title: {
             paddingTop: '15px',
@@ -155,7 +159,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'OrderCreateForm',
+        form: 'SupplyCreateForm',
         enableReinitialize: true
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -167,7 +171,7 @@ const customContentStyle = {
     width: '1000px',
     maxWidth: 'none'
 }
-const OrderCreateDialog = enhance((props) => {
+const SupplyCreateDialog = enhance((props) => {
     const {state, dispatch, open, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
@@ -233,7 +237,7 @@ const OrderCreateDialog = enhance((props) => {
                     <Col md={8} className={classes.right}>
                         <Fields
                             names={['products', 'product', 'amount', 'cost']}
-                            component={OrderListProductField}
+                            component={SupplyListProductField}
                         />
                     </Col>
                 </div>
@@ -289,10 +293,10 @@ const OrderCreateDialog = enhance((props) => {
         </Dialog>
     )
 })
-OrderCreateDialog.propTyeps = {
+SupplyCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
-export default OrderCreateDialog
+export default SupplyCreateDialog

@@ -9,6 +9,9 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {CurrencySearchField} from '../ReduxForm'
+import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
+import MainStyles from '../Styles/MainStyles'
 
 export const PRIMARY_CURRENCY_DIALOG_OPEN = 'openPrimaryDialog'
 
@@ -25,36 +28,24 @@ const validate = (data) => {
 }
 
 const enhance = compose(
-    injectSheet({
-        dialog: {
-            '& div:last-child': {
-                textAlign: 'left !important',
-                '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
-                    color: '#12aaeb !important'
-                }
-            }
-        },
-
+    injectSheet(_.merge(MainStyles, {
         loader: {
-            width: '120px',
-            margin: '0 auto',
-            padding: '15px',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
             textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none',
-            justifyContent: 'space-around'
+            display: ({loading}) => loading ? 'flex' : 'none'
         },
 
         fields: {
             display: ({loading}) => !loading ? 'flex' : 'none'
-        },
-
-        body: {
-            maxHeight: '600px !important',
-            overflow: 'hidden !important'
         }
-    }),
+    })),
     reduxForm({
         form: 'BaseCurrencyCreateForm',
         enableReinitialize: true
@@ -71,34 +62,38 @@ const PrimaryCurrencyDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '200px'} : {}}
-            bodyClassName={classes.body}>
-            <form onSubmit={onSubmit} className={classes.form}>
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.fields}>
-                    <Field
-                        name="currency"
-                        component={CurrencySearchField}
-                        label="Валюта"
-                        fullWidth={true}
-                    />
-                    <div>
+            contentStyle={loading ? {width: '200px'} : {width: '400px'}}
+            bodyClassName={classes.popUp}>
+            <div className={classes.titleContent}>
+                <span>Выбрать основную валюту</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
+            <div className={classes.bodyContent}>
+                <form onSubmit={onSubmit} className={classes.form}>
+                    <div className={classes.loader}>
+                        <CircularProgress size={80} thickness={5}/>
+                    </div>
+                    <div className={classes.inContent}>
+                        <div className={classes.fields}>
+                            <Field
+                                name="currency"
+                                component={CurrencySearchField}
+                                className={classes.inputField}
+                                label="Валюта"
+                                fullWidth={true}
+                            />
+                        </div>
+                    </div>
+                    <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Отменить"
-                            primary={true}
-                            onTouchTap={onClose}
-                        />
-
-                        <FlatButton
-                            label="Отправить"
-                            primary={true}
+                            label="Сохранить"
                             type="submit"
                         />
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </Dialog>
     )
 })

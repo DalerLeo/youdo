@@ -45,7 +45,8 @@ const errorStyle = {
 const enhance = compose(
     injectSheet({
         wrapper: {
-            position: 'relative'
+            position: 'relative',
+            width: '100%'
         },
         icon: {
             position: 'absolute',

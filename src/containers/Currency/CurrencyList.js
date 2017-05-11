@@ -8,11 +8,11 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     CURRENCY_CREATE_DIALOG_OPEN,
     CURRENCY_UPDATE_DIALOG_OPEN,
     PRIMARY_CURRENCY_DIALOG_OPEN,
+    CURRENCY_DELETE_DIALOG_OPEN,
     CurrencyGridList
 } from '../../components/Currency'
 import {
@@ -23,7 +23,7 @@ import {
     currencyDeleteAction,
     currencyItemFetchAction,
     currencyPrimaryFetchAction,
-    currencyPrimaryUpdateAction
+    currencyPrimaryCreateAction
 } from '../../actions/currency'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -42,6 +42,7 @@ const enhance = compose(
         const csvData = _.get(state, ['currency', 'csv', 'data'])
         const csvLoading = _.get(state, ['currency', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'CurrencyCreateForm'])
+        const baseCreateForm = _.get(state, ['form', 'BaseCurrencyCreateForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -55,6 +56,7 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
+            baseCreateForm,
             createForm
         }
     }),
@@ -98,23 +100,27 @@ const enhance = compose(
             setOpenCSVDialog(false)
         },
 
-        handleOpenConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(true)
+        handleOpenConfirmDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id),
+                query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(false)
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: false})})
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
+            const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(currencyDeleteAction(detail.id))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
-                    setOpenConfirmDialog(false)
+                    hashHistory.push({pathname, query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(currencyListFetchAction(filter))
                 })
         },
 
@@ -136,35 +142,9 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: true})})
         },
 
-        handlePrimaryOpenDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: true})})
-        },
-
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: false})})
-        },
-        handlePrimaryCloseDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitPrimaryDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-            const currency = _.toInteger(_.get(props, ['params', 'currency']))
-
-            return dispatch(currencyPrimaryUpdateAction(currency, _.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[PRIMARY_CURRENCY_DIALOG_OPEN]: false}))
-                })
-        },
-        handleClosePrimaryDialog: props => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
@@ -172,10 +152,33 @@ const enhance = compose(
 
             return dispatch(currencyCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: false})})
+                })
+        },
+
+        handlePrimaryOpenDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: true})})
+        },
+
+        handlePrimaryCloseDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitPrimaryDialog: props => () => {
+            const {dispatch, baseCreateForm, filter, location: {pathname}} = props
+
+            return dispatch(currencyPrimaryCreateAction(_.get(baseCreateForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
+                    dispatch(currencyPrimaryFetchAction())
                 })
         },
 
@@ -201,7 +204,7 @@ const enhance = compose(
                     return dispatch(currencyItemFetchAction(currencyId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CURRENCY_UPDATE_DIALOG_OPEN]: false}))
@@ -229,7 +232,8 @@ const CurrencyList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', CURRENCY_CREATE_DIALOG_OPEN]))
     const openPrimaryDialog = toBoolean(_.get(location, ['query', PRIMARY_CURRENCY_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CURRENCY_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
+    const openConfirmDialog = toBoolean(_.get(location, ['query', CURRENCY_DELETE_DIALOG_OPEN]))
+
     const detailId = _.toInteger(_.get(params, 'currencyId'))
 
     const actionsDialog = {
@@ -244,7 +248,7 @@ const CurrencyList = enhance((props) => {
             }
             return {
                 currency: {
-                    value: _.get(primaryCurrency, 'id')
+                    value: _.get(primaryCurrency, 'currency')
                 }
             }
         })(),
@@ -252,7 +256,6 @@ const CurrencyList = enhance((props) => {
         openPrimaryDialog,
         primaryCurrencyLoading,
         handlePrimaryOpenDialog: props.handlePrimaryOpenDialog,
-        handleClosePrimaryDialog: props.handleClosePrimaryDialog,
         handlePrimaryCloseDialog: props.handlePrimaryCloseDialog,
         handleSubmitPrimaryDialog: props.handleSubmitPrimaryDialog
     }
@@ -264,14 +267,8 @@ const CurrencyList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
-    }
-
     const confirmDialog = {
-        openConfirmDialog: props.openConfirmDialog,
+        openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
@@ -320,7 +317,6 @@ const CurrencyList = enhance((props) => {
                 detailData={detailData}
                 createDialog={createDialog}
                 primaryDialog={primaryDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}

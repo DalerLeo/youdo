@@ -14,7 +14,6 @@ export const USERS = 'users'
 export const USERS_LIST_URL = `/${USERS}`
 export const USERS_ITEM_URL = `${USERS_LIST_URL}/:usersId`
 export const USERS_ITEM_PATH = `/${USERS}/%d`
-export const USERS_ITEM_TAB_PATH = `/${USERS}/%d/%s`
 
 export const CASHBOX = 'cashbox'
 export const CASHBOX_LIST_URL = `/${CASHBOX}`
@@ -25,13 +24,11 @@ export const TRANSACTION = 'transaction'
 export const TRANSACTION_LIST_URL = `/${TRANSACTION}`
 export const TRANSACTION_ITEM_URL = `${TRANSACTION_LIST_URL}/:transactionId`
 export const TRANSACTION_ITEM_PATH = `/${TRANSACTION}/%d`
-export const TRANSACTION_ITEM_TAB_PATH = `/${TRANSACTION}/%d/%s`
 
 export const SUPPLY = 'supply'
 export const SUPPLY_LIST_URL = `/${SUPPLY}`
 export const SUPPLY_ITEM_URL = `${SUPPLY_LIST_URL}/:supplyId`
 export const SUPPLY_ITEM_PATH = `/${SUPPLY}/%d`
-export const SUPPLY_ITEM_TAB_PATH = `/${SUPPLY}/%d/%s`
 
 export const ORDER = 'order'
 export const ORDER_LIST_URL = `/${ORDER}`
@@ -78,7 +75,22 @@ export const PROVIDER_LIST_URL = `/${PROVIDER}`
 export const PROVIDER_ITEM_URL = `${PROVIDER_LIST_URL}/:providerId`
 export const PROVIDER_ITEM_PATH = `${PROVIDER}/%d`
 
+export const CLIENT = 'client'
+export const CLIENT_LIST_URL = `/${CLIENT}`
+export const CLIENT_ITEM_URL = `${CLIENT_LIST_URL}/:clientId`
+export const CLIENT_ITEM_PATH = `${CLIENT}/%d`
+
 export const MANUFACTURE = 'manufacture'
 export const MANUFACTURE_LIST_URL = `/${MANUFACTURE}`
-export const MANUFACTURE_ITEM_URL = `${PROVIDER_LIST_URL}/:providerId`
+export const MANUFACTURE_ITEM_URL = `${PROVIDER_LIST_URL}/:manufactureId`
 export const MANUFACTURE_ITEM_PATH = `${PROVIDER}/%d`
+
+export const PENDING_EXPENSES = 'pendingExpenses'
+export const PENDING_EXPENSES_LIST_URL = `/${PENDING_EXPENSES}`
+export const PENDING_EXPENSES_ITEM_URL = `${PENDING_EXPENSES_LIST_URL}/:pendingExpensesId`
+export const PENDING_EXPENSES_ITEM_PATH = `${PENDING_EXPENSES}/%d`
+
+export const PENDING_PAYMENTS = 'pendingPayments'
+export const PENDING_PAYMENTS_LIST_URL = `/${PENDING_PAYMENTS}`
+export const PENDING_PAYMENTS_ITEM_URL = `${PENDING_PAYMENTS_LIST_URL}/:pendingPaymentsId`
+export const PENDING_PAYMENTS_ITEM_PATH = `${PENDING_PAYMENTS}/%d`

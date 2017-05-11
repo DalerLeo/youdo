@@ -3,13 +3,13 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/orderSerializer'
+import * as serializers from '../serializers/supplySerializer'
 
-export const orderCreateAction = (formValues) => {
+export const supplyCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
 
     const payload = axios()
-        .post(API.ORDER_CREATE, requestData)
+        .post(API.SUPPLY_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -18,14 +18,14 @@ export const orderCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.ORDER_CREATE,
+        type: actionTypes.SUPPLY_CREATE,
         payload
     }
 }
 
-export const orderDeleteAction = (id) => {
+export const supplyDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.ORDER_DELETE, id))
+        .delete(sprintf(API.SUPPLY_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -34,15 +34,15 @@ export const orderDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.ORDER_DELETE,
+        type: actionTypes.SUPPLY_DELETE,
         payload
     }
 }
 
-export const orderUpdateAction = (id, formValues) => {
+export const supplyUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.ORDER_ITEM, id), requestData)
+        .put(sprintf(API.SUPPLY_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -51,15 +51,15 @@ export const orderUpdateAction = (id, formValues) => {
         })
 
     return {
-        type: actionTypes.ORDER_UPDATE,
+        type: actionTypes.SUPPLY_UPDATE,
         payload
     }
 }
 
-export const orderListFetchAction = (filter) => {
+export const supplyListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.ORDER_LIST, {params})
+        .get(API.SUPPLY_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -68,15 +68,15 @@ export const orderListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.ORDER_LIST,
+        type: actionTypes.SUPPLY_LIST,
         payload
     }
 }
 
-export const orderCSVFetchAction = (filter) => {
+export const supplyCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.ORDER_LIST, {params})
+        .get(API.SUPPLY_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -85,14 +85,14 @@ export const orderCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.ORDER_LIST_CSV,
+        type: actionTypes.SUPPLY_LIST_CSV,
         payload
     }
 }
 
-export const orderItemFetchAction = (id) => {
+export const supplyItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.ORDER_ITEM, id))
+        .get(sprintf(API.SUPPLY_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -101,7 +101,7 @@ export const orderItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.ORDER_ITEM,
+        type: actionTypes.SUPPLY_ITEM,
         payload
     }
 }

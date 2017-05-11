@@ -10,9 +10,9 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import OrderFilterForm from './OrderFilterForm'
-import OrderDetails from './OrderDetails'
-import OrderCreateDialog from './OrderCreateDialog'
+import SupplyFilterForm from './SupplyFilterForm'
+import SupplyDetails from './SupplyDetails'
+import SupplyCreateDialog from './SupplyCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -20,6 +20,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import SupplyExpenseCreateDialog from './SupplyExpenseCreateDialog'
 import Tooltip from '../ToolTip'
 
 const listHeader = [
@@ -104,19 +105,21 @@ const enhance = compose(
     })
 )
 
-const OrderGridList = enhance((props) => {
+const SupplyGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
-        expenseDialog,
         filterDialog,
         actionsDialog,
         confirmDialog,
         deleteDialog,
         listData,
         detailData,
-        classes
+        classes,
+
+        supplyExpenseCreateDialog,
+        supplyListData
     } = props
 
     const actions = (
@@ -131,27 +134,28 @@ const OrderGridList = enhance((props) => {
         </div>
     )
 
-    const orderFilterDialog = (
-        <OrderFilterForm
+    const supplyFilterDialog = (
+        <SupplyFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
         />
     )
 
-    const orderDetail = (
-        <OrderDetails
+    const supplyDetail = (
+        <SupplyDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-            hanleExpenseOpenDialog={expenseDialog.handleOpenExpenseDialog}
+            handleSupplyExpenseOpenCreateDialog={supplyExpenseCreateDialog.handleSupplyExpenseOpenCreateDialog}
+            supplyListData={supplyListData}
         />
     )
 
-    const orderList = _.map(_.get(listData, 'data'), (item) => {
+    const supplyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(_.get(item, 'provider'), 'name')
         const stock = _.get(_.get(item, 'stock'), 'name') || 'N/A'
@@ -166,7 +170,7 @@ const OrderGridList = enhance((props) => {
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>
                     <Link to={{
-                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                        pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{name}</Link>
                 </Col>
@@ -182,13 +186,13 @@ const OrderGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: orderList,
+        list: supplyList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.ORDER_LIST_URL}/>
+            <SubMenu url={ROUTES.SUPPLY_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить поставку">
@@ -204,19 +208,19 @@ const OrderGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={orderDetail}
+                detail={supplyDetail}
                 actionsDialog={actions}
-                filterDialog={orderFilterDialog}
+                filterDialog={supplyFilterDialog}
             />
 
-            <OrderCreateDialog
+            <SupplyCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <OrderCreateDialog
+            <SupplyCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -224,11 +228,11 @@ const OrderGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
-            <ExpenseCreateDialog
-                open={expenseDialog.handleOpenExpenseDialog}
-                loading={expenseDialog.expenseLoading}
-                onClose={expenseDialog.handleCloseExpenseDialog}
-                onSubmit={expenseDialog.handleSubmitExpenseDialog}
+            <SupplyExpenseCreateDialog
+                open={supplyExpenseCreateDialog.openSupplyExpenseCreateDialog}
+                loading={supplyExpenseCreateDialog.supplyExpenseLoading}
+                onClose={supplyExpenseCreateDialog.handleSupplyExpenseCloseCreateDialog}
+                onSubmit={supplyExpenseCreateDialog.handleSupplyExpenseSubmitCreateDialog}
             />
 
             <DeleteDialog
@@ -248,7 +252,7 @@ const OrderGridList = enhance((props) => {
     )
 })
 
-OrderGridList.propTypes = {
+SupplyGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -277,13 +281,6 @@ OrderGridList.propTypes = {
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
-    expenseDialog: PropTypes.shape({
-        expenseLoading: PropTypes.bool.isRequired,
-        openExpenseDialog: PropTypes.bool.isRequired,
-        handleOpenExpenseDialog: PropTypes.func.isRequired,
-        handleCloseExpenseDialog: PropTypes.func.isRequired,
-        handleSubmitExpenseDialog: PropTypes.func.isRequired
-    }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
@@ -297,28 +294,26 @@ OrderGridList.propTypes = {
         handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired,
 
-    orderExpenseCreateDialog: PropTypes.shape({
-        orderExpenseLoading: PropTypes.bool.isRequired,
-        openOrderExpenseCreateDialog: PropTypes.bool.isRequired,
-        handleOrderExpenseOpenOrderExpenseCreateDialog: PropTypes.func.isRequired,
-        handleOrderExpenseCloseCreateDialog: PropTypes.func.isRequired,
-        handleOrderExpenseSubmitCreateDialog: PropTypes.func.isRequired
+    supplyExpenseCreateDialog: PropTypes.shape({
+        supplyExpenseLoading: PropTypes.bool.isRequired,
+        openSupplyExpenseCreateDialog: PropTypes.bool.isRequired,
+        handleSupplyExpenseOpenCreateDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseCloseCreateDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
-    orderExpenseConfirmDialog: PropTypes.shape({
-        openOrderExpenseConfirmDialog: PropTypes.bool.isRequired,
-        handleOrderExpenseOpenOrderExpenseConfirmDialog: PropTypes.func.isRequired,
-        handleOrderExpenseCloseConfirmDialog: PropTypes.func.isRequired,
-        handleOrderExpenseSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    orderExpenseDeleteDialog: PropTypes.shape({
-        openOrderExpenseDeleteDialog: PropTypes.bool.isRequired,
-        handleOrderExpenseOpenDeleteDialog: PropTypes.func.isRequired,
-        handleOrderExpenseCloseDeleteDialog: PropTypes.func.isRequired
-    }).isRequired,
-    orderExpenseActionsDialog: PropTypes.shape({
-        handleOrderExpenseActionEdit: PropTypes.func.isRequired,
-        handleOrderExpenseActionDelete: PropTypes.func.isRequired
-    }).isRequired
+    supplyListData: PropTypes.shape({
+        data: PropTypes.object.isRequired,
+        supplyExpenseListLoading: PropTypes.bool.isRequired,
+        openSupplyExpenseDeleteDialog: PropTypes.bool.isRequired,
+        handleSupplyExpenseOpenDeleteDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseCloseDeleteDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseActionDelete: PropTypes.func.isRequired,
+        openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired,
+        handleSupplyExpenseOpenConfirmDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSupplyExpenseSendConfirmDialog: PropTypes.func.isRequired
+
+    })
 }
 
-export default OrderGridList
+export default SupplyGridList

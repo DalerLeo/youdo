@@ -9,7 +9,6 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import MeasurementCreateDialog from './MeasurementCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -72,7 +71,6 @@ const MeasurementGridList = enhance((props) => {
         updateDialog,
         actionsDialog,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -104,7 +102,7 @@ const MeasurementGridList = enhance((props) => {
             </IconButton>
         )
         return (
-            <Row key={id} style={{alignItems: 'center'}}>
+            <Row key={id}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={5}>{name}</Col>
                 <Col xs={4}>{amount}</Col>
@@ -121,7 +119,7 @@ const MeasurementGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Удалить "
                             leftIcon={<DeleteIcon />}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                         />
                     </IconMenu>
                 </Col>
@@ -173,12 +171,6 @@ const MeasurementGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
-            />
-
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -207,11 +199,6 @@ MeasurementGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,

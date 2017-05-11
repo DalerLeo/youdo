@@ -14,9 +14,9 @@ import {ProviderSearchField, StockSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const ORDER_FILTER_OPEN = 'openFilterDialog'
+export const SUPPLY_FILTER_OPEN = 'openFilterDialog'
 
-export const ORDER_FILTER_KEY = {
+export const SUPPLY_FILTER_KEY = {
     PROVIDER: 'provider',
     STOCK: 'stock',
     FROM_DATE: 'fromDate',
@@ -63,8 +63,8 @@ const enhance = compose(
             position: 'relative',
             '& svg': {
                 position: 'absolute',
-                width: '18px !important',
-                height: '18px !important'
+                width: '13px !important',
+                height: '20px !important'
             }
         },
         header: {
@@ -87,15 +87,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'OrderFilterForm',
+        form: 'SupplyFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(ORDER_FILTER_KEY)
+            return _(SUPPLY_FILTER_KEY)
                 .values()
-                .filter(item => item !== ORDER_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== SUPPLY_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -103,7 +103,7 @@ const enhance = compose(
     })
 )
 
-const OrderFilterForm = enhance((props) => {
+const SupplyFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
 
@@ -168,7 +168,7 @@ const OrderFilterForm = enhance((props) => {
     )
 })
 
-OrderFilterForm.propTypes = {
+SupplyFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -179,4 +179,4 @@ OrderFilterForm.propTypes = {
     })
 }
 
-export default OrderFilterForm
+export default SupplyFilterForm

@@ -9,39 +9,48 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
-    ORDER_CREATE_DIALOG_OPEN,
-    ORDER_UPDATE_DIALOG_OPEN,
-    ORDER_FILTER_KEY,
-    ORDER_FILTER_OPEN,
-    ORDER_EXPENSE_CREATE_DIALOG_OPEN,
-    ORDER_EXPENSE_DELETE_DIALOG_OPEN,
-    OrderGridList
-} from '../../components/Order'
+    SUPPLY_CREATE_DIALOG_OPEN,
+    SUPPLY_UPDATE_DIALOG_OPEN,
+    SUPPLY_FILTER_KEY,
+    SUPPLY_FILTER_OPEN,
+    SUPPLY_EXPENSE_CREATE_DIALOG_OPEN,
+    SupplyGridList
+} from '../../components/Supply'
 import {
-    orderCreateAction,
-    orderUpdateAction,
-    orderListFetchAction,
-    orderCSVFetchAction,
-    orderDeleteAction,
-    orderItemFetchAction
-} from '../../actions/order'
+    supplyCreateAction,
+    supplyUpdateAction,
+    supplyListFetchAction,
+    supplyCSVFetchAction,
+    supplyDeleteAction,
+    supplyItemFetchAction
+} from '../../actions/supply'
+import {
+    supplyExpenseCreateAction,
+    supplyExpenseDeleteAction,
+    supplyExpenseListFetchAction
+} from '../../actions/supplyExpense'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['order', 'item', 'data'])
-        const detailLoading = _.get(state, ['order', 'item', 'loading'])
-        const createLoading = _.get(state, ['order', 'create', 'loading'])
-        const updateLoading = _.get(state, ['order', 'update', 'loading'])
-        const list = _.get(state, ['order', 'list', 'data'])
-        const listLoading = _.get(state, ['order', 'list', 'loading'])
-        const csvData = _.get(state, ['order', 'csv', 'data'])
-        const csvLoading = _.get(state, ['order', 'csv', 'loading'])
-        const filterForm = _.get(state, ['form', 'OrderFilterForm'])
-        const createForm = _.get(state, ['form', 'OrderCreateForm'])
+        const detail = _.get(state, ['supply', 'item', 'data'])
+        const detailLoading = _.get(state, ['supply', 'item', 'loading'])
+        const createLoading = _.get(state, ['supply', 'create', 'loading'])
+        const updateLoading = _.get(state, ['supply', 'update', 'loading'])
+        const list = _.get(state, ['supply', 'list', 'data'])
+        const listLoading = _.get(state, ['supply', 'list', 'loading'])
+        const csvData = _.get(state, ['supply', 'csv', 'data'])
+        const csvLoading = _.get(state, ['supply', 'csv', 'loading'])
+        const filterForm = _.get(state, ['form', 'SupplyFilterForm'])
+        const createForm = _.get(state, ['form', 'SupplyCreateForm'])
         const filter = filterHelper(list, pathname, query)
+
+        const supplyExpenseLoading = _.get(state, ['supplyExpense', 'create', 'loading'])
+        const createSupplyExpenseForm = _.get(state, ['form', 'SupplyExpenseCreateForm'])
+        const supplyExpenseList = _.get(state, ['supplyExpense', 'list', 'data'])
+        const supplyExpenseListLoading = _.get(state, ['supplyExpense', 'list', 'loading'])
 
         return {
             list,
@@ -54,26 +63,38 @@ const enhance = compose(
             csvLoading,
             filter,
             filterForm,
-            createForm
+            createForm,
+
+            supplyExpenseLoading,
+            createSupplyExpenseForm,
+            supplyExpenseList,
+            supplyExpenseListLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(orderListFetchAction(filter))
+        dispatch(supplyListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const orderId = _.get(nextProps, ['params', 'orderId'])
+        return props.supplyExpenseList && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+    }, ({dispatch, filter}) => {
+        dispatch(supplyExpenseListFetchAction(filter))
+    }),
 
-        return orderId && _.get(props, ['params', 'orderId']) !== orderId
+    withPropsOnChange((props, nextProps) => {
+        const supplyId = _.get(nextProps, ['params', 'supplyId'])
+
+        return supplyId && _.get(props, ['params', 'supplyId']) !== supplyId
     }, ({dispatch, params}) => {
-        const orderId = _.toInteger(_.get(params, 'orderId'))
-        orderId && dispatch(orderItemFetchAction(orderId))
+        const supplyId = _.toInteger(_.get(params, 'supplyId'))
+        supplyId && dispatch(supplyItemFetchAction(supplyId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openSupplyExpenseConfirmDialog', 'setOpenSupplyExpenseConfirmDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
@@ -84,7 +105,7 @@ const enhance = compose(
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
 
-            dispatch(orderCSVFetchAction(props.filter))
+            dispatch(supplyCSVFetchAction(props.filter))
         },
 
         handleCloseCSVDialog: props => () => {
@@ -103,9 +124,9 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog} = props
-            dispatch(orderDeleteAction(detail.id))
+            dispatch(supplyDeleteAction(detail.id))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
                     setOpenConfirmDialog(false)
@@ -114,12 +135,12 @@ const enhance = compose(
 
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_FILTER_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_FILTER_OPEN]: true})})
         },
 
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_FILTER_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_FILTER_OPEN]: false})})
         },
 
         handleClearFilterDialog: props => () => {
@@ -135,11 +156,11 @@ const enhance = compose(
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
 
             filter.filterBy({
-                [ORDER_FILTER_OPEN]: false,
-                [ORDER_FILTER_KEY.PROVIDER]: provider,
-                [ORDER_FILTER_KEY.STOCK]: stock,
-                [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [SUPPLY_FILTER_OPEN]: false,
+                [SUPPLY_FILTER_KEY.PROVIDER]: provider,
+                [SUPPLY_FILTER_KEY.STOCK]: stock,
+                [SUPPLY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [SUPPLY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
         handleOpenDeleteDialog: props => () => {
@@ -157,54 +178,112 @@ const enhance = compose(
 
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: true})})
         },
 
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
         },
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter} = props
 
-            return dispatch(orderCreateAction(_.get(createForm, ['values'])))
+            return dispatch(supplyCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
                 })
         },
 
         handleOpenUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_UPDATE_DIALOG_OPEN]: true})})
         },
 
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
-            const orderId = _.toInteger(_.get(props, ['params', 'orderId']))
+            const supplyId = _.toInteger(_.get(props, ['params', 'supplyId']))
 
-            return dispatch(orderUpdateAction(orderId, _.get(createForm, ['values'])))
+            return dispatch(supplyUpdateAction(supplyId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(orderItemFetchAction(orderId))
+                    return dispatch(supplyItemFetchAction(supplyId))
                 })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[SUPPLY_UPDATE_DIALOG_OPEN]: false}))
+                })
+        }
+    }),
+
+    withHandlers({
+        handleSupplyExpenseOpenConfirmDialog: props => () => {
+            const {setOpenSupplyExpenseConfirmDialog} = props
+            setOpenSupplyExpenseConfirmDialog(true)
+        },
+
+        handleSupplyExpenseCloseConfirmDialog: props => () => {
+            const {setOpenSupplyExpenseConfirmDialog} = props
+            setOpenSupplyExpenseConfirmDialog(false)
+        },
+        handleSupplyExpenseSendConfirmDialog: props => () => {
+            const {dispatch, detail, setOpenSupplyExpenseConfirmDialog} = props
+            dispatch(supplyExpenseDeleteAction(detail.id))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
+                })
+                .then(() => {
+                    setOpenSupplyExpenseConfirmDialog(false)
+                })
+        },
+
+        handleSupplyExpenseOpenDeleteDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({openDeleteDialog: 'yes'})
+            })
+        },
+
+        handleSupplyExpenseCloseDeleteDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
+        },
+
+        handleSupplyExpenseOpenCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: true})})
+        },
+
+        handleSupplyExpenseCloseCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: false})})
+        },
+        handleSupplyExpenseSubmitCreateDialog: props => () => {
+            const {dispatch, createSupplyExpenseForm, filter, detail, location: {pathname}} = props
+            const id = _.get(detail, 'id')
+
+            return dispatch(supplyExpenseCreateAction(_.get(createSupplyExpenseForm, ['values']), id))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Successful saved'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[ORDER_UPDATE_DIALOG_OPEN]: false}))
+                    hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(supplyItemFetchAction(id))
                 })
         }
     })
 )
 
-const OrderList = enhance((props) => {
+const SupplyList = enhance((props) => {
     const {
         location,
         list,
@@ -215,18 +294,22 @@ const OrderList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+
+        supplyExpenseLoading,
+        supplyExpenseList,
+        supplyExpenseListLoading
     } = props
 
-    const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
-    const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
+    const openFilterDialog = toBoolean(_.get(location, ['query', SUPPLY_FILTER_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', SUPPLY_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', SUPPLY_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
-    const provider = _.toInteger(filter.getParam(ORDER_FILTER_KEY.PROVIDER))
-    const stock = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STOCK))
-    const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
-    const detailId = _.toInteger(_.get(params, 'orderId'))
+    const provider = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
+    const stock = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STOCK))
+    const fromDate = filter.getParam(SUPPLY_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(SUPPLY_FILTER_KEY.TO_DATE)
+    const detailId = _.toInteger(_.get(params, 'supplyId'))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -315,9 +398,32 @@ const OrderList = enhance((props) => {
         detailLoading
     }
 
+    // Supply Expense
+
+    const supplyListData = {
+        data: _.get(supplyExpenseList, 'results'),
+        supplyExpenseListLoading,
+        handleSupplyExpenseOpenDeleteDialog: props.handleSupplyExpenseOpenDeleteDialog,
+        handleSupplyExpenseCloseDeleteDialog: props.handleSupplyExpenseCloseDeleteDialog,
+        openSupplyExpenseConfirmDialog: props.openSupplyExpenseConfirmDialog,
+        handleSupplyExpenseOpenConfirmDialog: props.handleSupplyExpenseOpenConfirmDialog,
+        handleSupplyExpenseCloseConfirmDialog: props.handleSupplyExpenseCloseConfirmDialog,
+        handleSupplyExpenseSendConfirmDialog: props.handleSupplyExpenseSendConfirmDialog,
+        handleSupplyExpenseActionDelete: props.handleSupplyExpenseOpenDeleteDialog
+    }
+    const openSupplyExpenseCreateDialog = toBoolean(_.get(location, ['query', SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]))
+
+    const supplyExpenseCreateDialog = {
+        supplyExpenseLoading,
+        openSupplyExpenseCreateDialog,
+        handleSupplyExpenseOpenCreateDialog: props.handleSupplyExpenseOpenCreateDialog,
+        handleSupplyExpenseCloseCreateDialog: props.handleSupplyExpenseCloseCreateDialog,
+        handleSupplyExpenseSubmitCreateDialog: props.handleSupplyExpenseSubmitCreateDialog
+    }
+
     return (
         <Layout {...layout}>
-            <OrderGridList
+            <SupplyGridList
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
@@ -328,9 +434,12 @@ const OrderList = enhance((props) => {
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
+
+                supplyListData={supplyListData}
+                supplyExpenseCreateDialog={supplyExpenseCreateDialog}
             />
         </Layout>
     )
 })
 
-export default OrderList
+export default SupplyList

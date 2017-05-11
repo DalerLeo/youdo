@@ -11,9 +11,6 @@ import FlatButton from 'material-ui/FlatButton'
 
 const enhance = compose(
     injectSheet({
-        checkbox: {
-            marginLeft: '10px'
-        },
         header: {
             position: 'absolute',
             top: '50px',
@@ -54,8 +51,14 @@ const enhance = compose(
         button: {
             color: '#fff !important',
             minWidth: 'auto !important',
-            padding: '0px 30px 0px 10px !important',
-            position: 'relative !important'
+            padding: '0px 30px 0px 0px !important',
+            position: 'relative !important',
+            '&:hover': {
+                backgroundColor: 'transparent !important'
+            },
+            '& span': {
+                fontWeight: '600'
+            }
         }
     }),
     withHandlers({
@@ -132,9 +135,11 @@ const GridListHeader = enhance((props) => {
                 <Checkbox onCheck={onChecked} checked={checkboxChecked}/>
                 }
             </div>
-            <Row>
-                {items}
-            </Row>
+            <div style={{padding: '0 30px', width: '100%'}}>
+                <Row>
+                    {items}
+                </Row>
+            </div>
         </div>
     )
 })
