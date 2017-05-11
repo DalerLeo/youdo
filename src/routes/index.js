@@ -22,6 +22,8 @@ import {ProviderList} from '../containers/Provider'
 import {ClientList} from '../containers/Client'
 import {ManufactureList} from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
+import {StatStock} from '../containers/StatStock'
+import {StatDebtors} from '../containers/StatDebtors'
 import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
 import NotFound from '../containers/NotFound'
@@ -260,6 +262,20 @@ export default {
                 path: ROUTES.PENDING_PAYMENTS_ITEM_URL,
                 component: userIsAuth(PendingPaymentsList)
             }]
+        },
+        // METRICA (Stat Stock)
+        {
+            path: ROUTES.STATSTOCK_LIST_URL,
+            component: userIsAuth(StatStock),
+            childRoutes: [
+            ]
+        },
+        // METRICA (Stat Debtors)
+        {
+            path: ROUTES.STATDEBTORS_LIST_URL,
+            component: userIsAuth(StatDebtors),
+            childRoutes: [
+            ]
         },
 
         {
