@@ -58,45 +58,47 @@ const ExpenseCreateDialog = enhance((props) => {
             onRequestClose={onClose}
             className={classes.dialog}
             contentStyle={loading ? {width: '300px'} : {width: '500px'}}
-            bodyClassName={classes.body}>
+            bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменение расхода' : 'Добавление расхода'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form}>
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.fieldsWrap}>
-                    <div className={classes.field}>
-                        <Field
-                            name="comment"
-                            component={TextField}
-                            label="Описания раскода"
-                            fullWidth={true}/>
-                        <Field
-                            name="amount"
-                            component={TextField}
-                            label="Сумма"
-                            fullWidth={true}/>
-                        <Field
-                            name="currency"
-                            component={CurrencySearchField}
-                            label="Валюта"
-                            fullWidth={true}/>
+            <div className={classes.bodyContent}>
+                <form onSubmit={onSubmit} className={classes.form}>
+                    <div className={classes.loader}>
+                        <CircularProgress size={80} thickness={5}/>
                     </div>
-                </div>
-                <div className={classes.bottomButton}>
-                    <FlatButton
-                        label="Применить"
-                        className={classes.actionButton}
-                        primary={true}
-                        type="submit"
-                    />
-                </div>
-            </form>
+                    <div className={classes.inContent} style={{minHeight: '250px'}}>
+                        <div className={classes.field}>
+                            <Field
+                                name="comment"
+                                component={TextField}
+                                label="Описания раскода"
+                                fullWidth={true}/>
+                            <Field
+                                name="amount"
+                                component={TextField}
+                                label="Сумма"
+                                fullWidth={true}/>
+                            <Field
+                                name="currency"
+                                component={CurrencySearchField}
+                                label="Валюта"
+                                fullWidth={true}/>
+                        </div>
+                    </div>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Применить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
+                        />
+                    </div>
+                </form>
+            </div>
         </Dialog>
     )
 })
