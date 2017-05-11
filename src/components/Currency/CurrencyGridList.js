@@ -244,6 +244,13 @@ const CurrencyGridList = enhance((props) => {
             />
 
             <CurrencyCreateDialog
+                open={createDialog.openCreateDialog}
+                loading={createDialog.createLoading}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
+            />
+
+            <CurrencyCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
@@ -299,7 +306,6 @@ CurrencyGridList.propTypes = {
         primaryCurrencyLoading: PropTypes.bool.isRequired,
         openPrimaryDialog: PropTypes.bool.isRequired,
         handlePrimaryOpenDialog: PropTypes.func.isRequired,
-        handleClosePrimaryDialog: PropTypes.func.isRequired,
         handleSubmitPrimaryDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
