@@ -38,7 +38,13 @@ export const ORDER_ITEM_TAB_PATH = `/${ORDER}/%d/%s`
 
 export const PRODUCT = 'product'
 export const PRODUCT_LIST_URL = `/${PRODUCT}`
+export const PRODUCT_ITEM_URL = `${PRODUCT_LIST_URL}/:productId`
 export const PRODUCT_ITEM_PATH = `/${PRODUCT}/%d`
+
+export const PRODUCT_PRICE = 'productPrice'
+export const PRODUCT_PRICE_LIST_URL = `/${PRODUCT_PRICE}`
+export const PRODUCT_PRICE_ITEM_URL = `${PRODUCT_PRICE_LIST_URL}/:productPriceId`
+export const PRODUCT_PRICE_ITEM_PATH = `/${PRODUCT_PRICE}/%d`
 
 export const CATEGORY = 'category'
 export const CATEGORY_LIST_URL = `/${CATEGORY}`

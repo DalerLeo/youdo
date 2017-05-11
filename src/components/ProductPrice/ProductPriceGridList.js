@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -10,8 +9,8 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import ProductFilterForm from './ProductFilterForm'
-import ProductCreateDialog from './ProductCreateDialog'
+import ProductPriceFilterForm from './ProductPriceFilterForm'
+import ProductPriceCreateDialog from './ProductPriceCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -19,9 +18,6 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 
 const listHeader = [
     {
@@ -50,9 +46,15 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'created_date',
-        title: 'Дата создания',
+        name: 'price',
+        title: 'Цена',
         xs: 2
+    },
+    {
+        sorting: true,
+        name: 'action',
+        title: '',
+        xs: 1
     }
 ]
 
@@ -72,7 +74,7 @@ const enhance = compose(
     })
 )
 
-const ProductGridList = enhance((props) => {
+const ProductPriceGridList = enhance((props) => {
     const {
         filter,
         createDialog,
@@ -97,53 +99,36 @@ const ProductGridList = enhance((props) => {
         </div>
     )
 
-    const productFilterDialog = (
-        <ProductFilterForm
+    const productPriceFilterDialog = (
+        <ProductPriceFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
         />
     )
 
-    const productDetail = (
+    const productPriceDetail = (
         <span>a</span>
     )
 
-    const productList = _.map(_.get(listData, 'data'), (item) => {
+    const productPriceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const type = _.get(item, ['type', 'name']) || 'N/A'
         const brand = _.get(item, ['brand', 'name']) || 'N/A'
         const measurement = _.get(item, ['measurement', 'name']) || ''
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
+        const price = _.get(item, 'price') || 'N/A'
         return (
             <Row key={id}>
                 <Col xs={3}>{name}</Col>
                 <Col xs={2}>{type}</Col>
                 <Col xs={2}>{brand}</Col>
                 <Col xs={2}>{measurement}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={2}>{price}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        />
-                    </IconMenu>
+                    <IconButton onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                        <Edit />
+                    </IconButton>
                 </Col>
             </Row>
         )
@@ -151,13 +136,13 @@ const ProductGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: productList,
+        list: productPriceList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.PRODUCT_LIST_URL}/>
+            <SubMenu url={ROUTES.PRODUCT_PRICE_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить продукт">
                     <FloatingActionButton
@@ -172,19 +157,12 @@ const ProductGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={productDetail}
+                detail={productPriceDetail}
                 actionsDialog={actions}
-                filterDialog={productFilterDialog}
+                filterDialog={productPriceFilterDialog}
             />
 
-            <ProductCreateDialog
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
-            <ProductCreateDialog
+            <ProductPriceCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -203,7 +181,7 @@ const ProductGridList = enhance((props) => {
     )
 })
 
-ProductGridList.propTypes = {
+ProductPriceGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -242,4 +220,4 @@ ProductGridList.propTypes = {
     }).isRequired
 }
 
-export default ProductGridList
+export default ProductPriceGridList
