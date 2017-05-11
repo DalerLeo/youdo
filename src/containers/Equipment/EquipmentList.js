@@ -9,34 +9,34 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
-    CATEGORY_CREATE_DIALOG_OPEN,
-    CATEGORY_UPDATE_DIALOG_OPEN,
-    CATEGORY_DELETE_DIALOG_OPEN,
-    CategoryGridList
-} from '../../components/Category'
+    EQUIPMENT_CREATE_DIALOG_OPEN,
+    EQUIPMENT_UPDATE_DIALOG_OPEN,
+    EQUIPMENT_DELETE_DIALOG_OPEN,
+    EquipmentGridList
+} from '../../components/Equipment'
 import {
-    categoryCreateAction,
-    categoryUpdateAction,
-    categoryListFetchAction,
-    categoryCSVFetchAction,
-    categoryDeleteAction,
-    categoryItemFetchAction
-} from '../../actions/category'
+    equipmentCreateAction,
+    equipmentUpdateAction,
+    equipmentListFetchAction,
+    equipmentCSVFetchAction,
+    equipmentDeleteAction,
+    equipmentItemFetchAction
+} from '../../actions/equipment'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['category', 'item', 'data'])
-        const detailLoading = _.get(state, ['category', 'item', 'loading'])
-        const createLoading = _.get(state, ['category', 'create', 'loading'])
-        const updateLoading = _.get(state, ['category', 'update', 'loading'])
-        const list = _.get(state, ['category', 'list', 'data'])
-        const listLoading = _.get(state, ['category', 'list', 'loading'])
-        const csvData = _.get(state, ['category', 'csv', 'data'])
-        const csvLoading = _.get(state, ['category', 'csv', 'loading'])
-        const createForm = _.get(state, ['form', 'CategoryCreateForm'])
+        const detail = _.get(state, ['equipment', 'item', 'data'])
+        const detailLoading = _.get(state, ['equipment', 'item', 'loading'])
+        const createLoading = _.get(state, ['equipment', 'create', 'loading'])
+        const updateLoading = _.get(state, ['equipment', 'update', 'loading'])
+        const list = _.get(state, ['equipment', 'list', 'data'])
+        const listLoading = _.get(state, ['equipment', 'list', 'loading'])
+        const csvData = _.get(state, ['equipment', 'csv', 'data'])
+        const csvLoading = _.get(state, ['equipment', 'csv', 'loading'])
+        const createForm = _.get(state, ['form', 'EquipmentCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -55,15 +55,15 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(categoryListFetchAction(filter))
+        dispatch(equipmentListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const categoryId = _.get(nextProps, ['params', 'categoryId'])
-        return categoryId && _.get(props, ['params', 'categoryId']) !== categoryId
+        const equipmentId = _.get(nextProps, ['params', 'equipmentId'])
+        return equipmentId && _.get(props, ['params', 'equipmentId']) !== equipmentId
     }, ({dispatch, params}) => {
-        const categoryId = _.toInteger(_.get(params, 'categoryId'))
-        categoryId && dispatch(categoryItemFetchAction(categoryId))
+        const equipmentId = _.toInteger(_.get(params, 'equipmentId'))
+        equipmentId && dispatch(equipmentItemFetchAction(equipmentId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -80,7 +80,7 @@ const enhance = compose(
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
 
-            dispatch(categoryCSVFetchAction(props.filter))
+            dispatch(equipmentCSVFetchAction(props.filter))
         },
 
         handleCloseCSVDialog: props => () => {
@@ -91,84 +91,84 @@ const enhance = compose(
         handleOpenConfirmDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.CATEGORY_ITEM_PATH, id),
-                query: filter.getParams({[CATEGORY_DELETE_DIALOG_OPEN]: true})
+                pathname: sprintf(ROUTER.EQUIPMENT_ITEM_PATH, id),
+                query: filter.getParams({[EQUIPMENT_DELETE_DIALOG_OPEN]: true})
             })
         },
 
         handleCloseConfirmDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CATEGORY_DELETE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[EQUIPMENT_DELETE_DIALOG_OPEN]: false})})
         },
 
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
-            dispatch(categoryDeleteAction(detail.id))
+            dispatch(equipmentDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[CATEGORY_DELETE_DIALOG_OPEN]: false})})
-                    dispatch(categoryListFetchAction(filter))
+                    hashHistory.push({pathname, query: filter.getParams({[EQUIPMENT_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(equipmentListFetchAction(filter))
                 })
         },
 
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CATEGORY_CREATE_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[EQUIPMENT_CREATE_DIALOG_OPEN]: true})})
         },
 
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CATEGORY_CREATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[EQUIPMENT_CREATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}} = props
 
-            return dispatch(categoryCreateAction(_.get(createForm, ['values'])))
+            return dispatch(equipmentCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[CATEGORY_CREATE_DIALOG_OPEN]: false})})
-                    dispatch(categoryListFetchAction(filter))
+                    hashHistory.push({pathname, query: filter.getParams({[EQUIPMENT_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(equipmentListFetchAction(filter))
                 })
         },
 
         handleOpenUpdateDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.CATEGORY_ITEM_PATH, id),
-                query: filter.getParams({[CATEGORY_UPDATE_DIALOG_OPEN]: true})
+                pathname: sprintf(ROUTER.EQUIPMENT_ITEM_PATH, id),
+                query: filter.getParams({[EQUIPMENT_UPDATE_DIALOG_OPEN]: true})
             })
         },
 
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CATEGORY_UPDATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[EQUIPMENT_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
-            const categoryId = _.toInteger(_.get(props, ['params', 'categoryId']))
+            const equipmentId = _.toInteger(_.get(props, ['params', 'equipmentId']))
 
-            return dispatch(categoryUpdateAction(categoryId, _.get(createForm, ['values'])))
+            return dispatch(equipmentUpdateAction(equipmentId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(categoryItemFetchAction(categoryId))
+                    return dispatch(equipmentItemFetchAction(equipmentId))
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[CATEGORY_UPDATE_DIALOG_OPEN]: false}))
-                    dispatch(categoryListFetchAction(filter))
+                    hashHistory.push(filter.createURL({[EQUIPMENT_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(equipmentListFetchAction(filter))
                 })
         }
     })
 )
 
-const CategoryList = enhance((props) => {
+const EquipmentList = enhance((props) => {
     const {
         location,
         list,
@@ -182,11 +182,11 @@ const CategoryList = enhance((props) => {
         params
     } = props
 
-    const openCreateDialog = toBoolean(_.get(location, ['query', CATEGORY_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', CATEGORY_UPDATE_DIALOG_OPEN]))
-    const openConfirmDialog = toBoolean(_.get(location, ['query', CATEGORY_DELETE_DIALOG_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', EQUIPMENT_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', EQUIPMENT_UPDATE_DIALOG_OPEN]))
+    const openConfirmDialog = toBoolean(_.get(location, ['query', EQUIPMENT_DELETE_DIALOG_OPEN]))
 
-    const detailId = _.toInteger(_.get(params, 'categoryId'))
+    const detailId = _.toInteger(_.get(params, 'equipmentId'))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -214,7 +214,11 @@ const CategoryList = enhance((props) => {
                 return {}
             }
             return {
-                name: _.get(detail, 'name')
+                name: _.get(detail, 'name'),
+                manufacture: {
+                    value: _.get(detail, 'manufacture')
+                },
+                image: _.get(detail, 'image')
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -245,7 +249,7 @@ const CategoryList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <CategoryGridList
+            <EquipmentGridList
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
@@ -259,4 +263,4 @@ const CategoryList = enhance((props) => {
     )
 })
 
-export default CategoryList
+export default EquipmentList

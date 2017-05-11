@@ -22,6 +22,8 @@ import {ManufactureList} from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
 import {StatStock} from '../containers/StatStock'
 import {StatDebtors} from '../containers/StatDebtors'
+import {PendingPaymentsList} from '../containers/PendingPayments'
+import {EquipmentList} from '../containers/Equipment'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -119,6 +121,17 @@ export default {
                 }
             ]
         },
+        // Equipment
+        {
+            path: ROUTES.EQUIPMENT_LIST_URL,
+            component: userIsAuth(EquipmentList),
+            childRoutes: [
+                {
+                    path: ROUTES.EQUIPMENT_ITEM_URL,
+                    component: userIsAuth(EquipmentList)
+                }
+            ]
+        },
         // Stock
         {
             path: ROUTES.STOCK_LIST_URL,
@@ -207,8 +220,20 @@ export default {
         {
             path: ROUTES.PENDING_EXPENSES_LIST_URL,
             component: userIsAuth(PendingExpensesList),
-            childRoutes: [
-            ]
+            childRoutes: [{
+                path: ROUTES.PENDING_EXPENSES_ITEM_URL,
+                component: userIsAuth(PendingExpensesList)
+            }]
+        },
+
+        // Pending Payments
+        {
+            path: ROUTES.PENDING_PAYMENTS_LIST_URL,
+            component: userIsAuth(PendingPaymentsList),
+            childRoutes: [{
+                path: ROUTES.PENDING_PAYMENTS_ITEM_URL,
+                component: userIsAuth(PendingPaymentsList)
+            }]
         },
         // METRICA (Stat Stock)
         {

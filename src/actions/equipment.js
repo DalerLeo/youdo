@@ -3,12 +3,12 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/pendingExpensesSerializer'
+import * as serializers from '../serializers/equipmentSerializer'
 
-export const pendingExpensesCreateAction = (formValues) => {
+export const equipmentCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .post(API.PENDING_EXPENSES_CREATE, requestData)
+        .post(API.EQUIPMENT_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,14 +17,14 @@ export const pendingExpensesCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.PENDING_EXPENSES_CREATE,
+        type: actionTypes.EQUIPMENT_CREATE,
         payload
     }
 }
 
-export const pendingExpensesDeleteAction = (id) => {
+export const equipmentDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.PENDING_EXPENSES_DELETE, id))
+        .delete(sprintf(API.EQUIPMENT_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,15 +33,15 @@ export const pendingExpensesDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.PENDING_EXPENSES_DELETE,
+        type: actionTypes.EQUIPMENT_DELETE,
         payload
     }
 }
 
-export const pendingExpensesUpdateAction = (id, formValues) => {
+export const equipmentUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.PENDING_EXPENSES_ITEM, id), requestData)
+        .put(sprintf(API.EQUIPMENT_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,15 +50,15 @@ export const pendingExpensesUpdateAction = (id, formValues) => {
         })
 
     return {
-        type: actionTypes.PENDING_EXPENSES_UPDATE,
+        type: actionTypes.EQUIPMENT_UPDATE,
         payload
     }
 }
 
-export const pendingExpensesListFetchAction = (filter) => {
+export const equipmentListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.PENDING_EXPENSES_LIST, {params})
+        .get(API.EQUIPMENT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,15 +67,15 @@ export const pendingExpensesListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.PENDING_EXPENSES_LIST,
+        type: actionTypes.EQUIPMENT_LIST,
         payload
     }
 }
 
-export const pendingExpensesCSVFetchAction = (filter) => {
+export const equipmentCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.PENDING_EXPENSES_LIST, {params})
+        .get(API.EQUIPMENT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -84,14 +84,14 @@ export const pendingExpensesCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.PENDING_EXPENSES_LIST_CSV,
+        type: actionTypes.EQUIPMENT_LIST_CSV,
         payload
     }
 }
 
-export const pendingExpensesItemFetchAction = (id) => {
+export const equipmentItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.PENDING_EXPENSES_ITEM, id))
+        .get(sprintf(API.EQUIPMENT_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -100,7 +100,7 @@ export const pendingExpensesItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.PENDING_EXPENSES_ITEM,
+        type: actionTypes.EQUIPMENT_ITEM,
         payload
     }
 }

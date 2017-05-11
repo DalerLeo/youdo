@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -374,7 +373,7 @@ const SupplyDetails = enhance((props) => {
                             const expId = _.get(item, 'id')
                             const expComment = _.get(item, 'comment')
                             const expAmount = _.get(item, 'amount')
-                            const expCurrency = _.get(item, 'currency')
+                            const expCurrency = _.get(item, ['currency', 'name'])
                             return (
                                 <Row key={expId}>
                                     <Col xs={8}>{expComment}</Col>
@@ -383,7 +382,7 @@ const SupplyDetails = enhance((props) => {
                                     </Col>
                                     <Col xs={2}>
                                         <IconButton
-                                            onTouchTap={supplyListData.hamdleDelete}><Delete/></IconButton>
+                                            onTouchTap={supplyListData.handleDelete}><Delete/></IconButton>
                                     </Col>
                                 </Row>
                             )
@@ -402,19 +401,5 @@ const SupplyDetails = enhance((props) => {
         </div>
     )
 })
-
-SupplyDetails.propTypes = {
-    data: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
-    handleOpenSupplyExpenseDialog: PropTypes.func.isRequired,
-    supplyListData: PropTypes.object.isRequired
-}
 
 export default SupplyDetails

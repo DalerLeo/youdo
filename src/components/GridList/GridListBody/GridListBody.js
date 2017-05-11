@@ -17,7 +17,14 @@ const enhance = compose(
             '& .row': {
                 width: '100%',
                 alignItems: 'center',
-                height: '100%'
+                height: '100%',
+                margin: '0',
+                '&>div:first-child': {
+                    paddingLeft: '0'
+                },
+                '&>div:last-child': {
+                    paddingRight: '0'
+                }
             },
             '&:after': {
                 content: '""',

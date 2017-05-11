@@ -3,60 +3,47 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import CashboxCreateDialog from './CashboxCreateDialog'
+import EquipmentCreateDialog from './EquipmentCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Edit from 'material-ui/svg-icons/image/edit'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Edit from 'material-ui/svg-icons/image/edit'
 
 const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: 'Id',
-        xs: 2
+        xs: 2,
+        title: 'Id'
     },
     {
         sorting: true,
         name: 'name',
-        title: 'Name',
-        xs: 2
+        xs: 6,
+        title: 'Наименование'
     },
     {
         sorting: true,
-        name: 'currency',
-        title: 'Валюта',
-        xs: 2
+        name: 'manufacture',
+        title: 'Производство',
+        xs: 3
     },
     {
-        sorting: true,
-        name: 'cashier',
-        title: 'Кассир',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'type',
-        title: 'Тип',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: '',
+        sorting: false,
+        name: 'actions',
         title: '',
-        xs: 2
+        xs: 1
     }
 ]
 
@@ -73,15 +60,14 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         }
-    }),
+    })
 )
 
-const CashboxGridList = enhance((props) => {
+const EquipmentGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
-        actionsDialog,
         confirmDialog,
         listData,
         detailData,
@@ -89,27 +75,17 @@ const CashboxGridList = enhance((props) => {
     } = props
 
     const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
+        <div></div>
     )
 
-    const cashboxDetail = (
+    const equipmentDetail = (
         <span>a</span>
     )
-    const bank = 1
-    const cashboxList = _.map(_.get(listData, 'data'), (item) => {
+
+    const equipmentList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const currency = _.get(item, ['currency', 'name']) || 'N/A'
-        const cashier = _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName'])
-        const type = _.toInteger(_.get(item, 'type')) === bank ? 'банковский счет' : 'наличный'
+        const manufacture = _.get(item, 'manufacture')
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -118,11 +94,9 @@ const CashboxGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={2}>{name}</Col>
-                <Col xs={2}>{currency}</Col>
-                <Col xs={2}>{cashier}</Col>
-                <Col xs={2}>{type}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>
+                <Col xs={6}>{name}</Col>
+                <Col xs={3}>{manufacture}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -145,16 +119,15 @@ const CashboxGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: cashboxList,
+        list: equipmentList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.CASHBOX_LIST_URL}/>
-
+            <SubMenu url={ROUTES.EQUIPMENT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить кассу">
+                <Tooltip position="left" text="Добавить оборудованию">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -163,27 +136,27 @@ const CashboxGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
+
             <GridList
                 filter={filter}
                 list={list}
-                detail={cashboxDetail}
+                detail={equipmentDetail}
                 actionsDialog={actions}
             />
-
-            <CashboxCreateDialog
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
-            <CashboxCreateDialog
-                initialValues={updateDialog.initialValues}
+            <EquipmentCreateDialog
                 isUpdate={true}
+                initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+            />
+
+            <EquipmentCreateDialog
+                open={createDialog.openCreateDialog}
+                loading={createDialog.createLoading}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
             {detailData.data && <ConfirmDialog
@@ -197,7 +170,8 @@ const CashboxGridList = enhance((props) => {
     )
 })
 
-CashboxGridList.propTypes = {
+EquipmentGridList.propTypes = {
+    filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
     createDialog: PropTypes.shape({
@@ -219,11 +193,7 @@ CashboxGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default CashboxGridList
+export default EquipmentGridList

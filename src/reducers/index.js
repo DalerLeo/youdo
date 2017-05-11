@@ -56,6 +56,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.CATEGORY_UPDATE),
         item: createThunkReducer(actionTypes.CATEGORY_ITEM)
     }),
+    equipment: combineReducers({
+        create: createThunkReducer(actionTypes.EQUIPMENT_CREATE),
+        list: createThunkReducer(actionTypes.EQUIPMENT_LIST),
+        update: createThunkReducer(actionTypes.EQUIPMENT_UPDATE),
+        item: createThunkReducer(actionTypes.EQUIPMENT_ITEM)
+    }),
     stock: combineReducers({
         create: createThunkReducer(actionTypes.STOCK_CREATE),
         list: createThunkReducer(actionTypes.STOCK_LIST),
@@ -129,6 +135,12 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STATDEBTORS_LIST),
         update: createThunkReducer(actionTypes.STATDEBTORS_UPDATE),
         item: createThunkReducer(actionTypes.STATDEBTORS_ITEM)
+    }),
+    pendingPayments: combineReducers({
+        create: createThunkReducer(actionTypes.PENDING_PAYMENTS_CREATE),
+        list: createThunkReducer(actionTypes.PENDING_PAYMENTS_LIST),
+        update: createThunkReducer(actionTypes.PENDING_PAYMENTS_UPDATE),
+        item: createThunkReducer(actionTypes.PENDING_PAYMENTS_ITEM)
     }),
     snackbar: snackbarReducer(),
     form: formReducer,

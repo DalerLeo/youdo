@@ -42,6 +42,11 @@ export const CATEGORY_LIST_URL = `/${CATEGORY}`
 export const CATEGORY_ITEM_URL = `${CATEGORY_LIST_URL}/:categoryId`
 export const CATEGORY_ITEM_PATH = `/${CATEGORY}/%d`
 
+export const EQUIPMENT = 'equipment'
+export const EQUIPMENT_LIST_URL = `/${EQUIPMENT}`
+export const EQUIPMENT_ITEM_URL = `${EQUIPMENT_LIST_URL}/:equipmentId`
+export const EQUIPMENT_ITEM_PATH = `/${EQUIPMENT}/%d`
+
 export const STOCK = 'stock'
 export const STOCK_LIST_URL = `/${STOCK}`
 export const STOCK_ITEM_URL = `${STOCK_LIST_URL}/:stockId`
@@ -84,8 +89,9 @@ export const MANUFACTURE_ITEM_PATH = `${PROVIDER}/%d`
 
 export const PENDING_EXPENSES = 'pendingExpenses'
 export const PENDING_EXPENSES_LIST_URL = `/${PENDING_EXPENSES}`
-export const PENDING_EXPENSES_ITEM_URL = `${PENDING_EXPENSES_LIST_URL}/:manufactureId`
+export const PENDING_EXPENSES_ITEM_URL = `${PENDING_EXPENSES_LIST_URL}/:pendingExpensesId`
 export const PENDING_EXPENSES_ITEM_PATH = `${PENDING_EXPENSES}/%d`
+
 
 export const STATSTOCK = 'stockStat'
 export const STATSTOCK_LIST_URL = `/${STATSTOCK}`
@@ -96,3 +102,9 @@ export const STATDEBTORS = 'statDebtors'
 export const STATDEBTORS_LIST_URL = `/${STATDEBTORS}`
 export const STATDEBTORS_ITEM_URL = `${STATDEBTORS_LIST_URL}/:statDebtorsId`
 export const STATDEBTORS_ITEM_PATH = `/${STATDEBTORS}/%d`
+
+export const PENDING_PAYMENTS = 'pendingPayments'
+export const PENDING_PAYMENTS_LIST_URL = `/${PENDING_PAYMENTS}`
+export const PENDING_PAYMENTS_ITEM_URL = `${PENDING_PAYMENTS_LIST_URL}/:pendingPaymentsId`
+export const PENDING_PAYMENTS_ITEM_PATH = `${PENDING_PAYMENTS}/%d`
+

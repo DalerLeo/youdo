@@ -5,15 +5,15 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ExpensiveCategorySearchField} from '../ReduxForm'
+import {CashboxSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
-export const TRANSACTION_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -26,7 +26,6 @@ const validate = (data) => {
         _error: nonFieldErrors
     })
 }
-
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -41,39 +40,39 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-        nav: {
-            fontSize: '18px',
-            fontWeight: 'bold',
-            padding: '20px',
-            color: 'black',
-            borderBottom: '1px solid #efefef',
-            '& button': {
-                float: 'right',
-                marginTop: '-5px !important'
-            }
+        info: {
+            padding: '20px 0'
         },
-        flex: {
-            display: 'flex',
-            alignItems: 'center'
+        infoHeader: {
+            fontWeight: '600',
+            lineHeight: '20px'
         },
-        label: {
-            fontSize: '75%',
-            color: '#999'
+        infoSummary: {
+            color: '#666',
+            marginTop: '10px'
         },
-        itemList: {
-            marginTop: '20px'
+        cashbox: {
+            padding: '0 30px 20px',
+            margin: '0 -30px',
+            background: '#f1f5f8'
         }
     })),
     reduxForm({
-        form: 'TransactionCreateForm',
+        form: 'PendingPaymentsCreateForm',
         enableReinitialize: true
     })
 )
 
-const TransactionCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData} = props
+const PendingPaymentsCreateDialog = enhance((props) => {
+    const {open, loading, handleSubmit, onClose, detailData, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
+
+    const supply = _.get(detailData, ['data', 'supply'])
+    const currency = _.get(detailData, ['data', 'currency'])
+    const currencyName = _.get(currency, 'name')
+    const summary = _.get(detailData, ['data', 'amount'])
+    const supplyId = _.get(supply, 'id')
+    const supplier = _.get(supply, ['provider', 'name'])
 
     return (
         <Dialog
@@ -81,7 +80,8 @@ const TransactionCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '400px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '350px'}}
+            bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>Расход</span>
@@ -91,40 +91,29 @@ const TransactionCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '325px'}}>
+                    <div className={classes.inContent} style={{minHeight: '220px'}}>
                         <div className={classes.loader}>
                             <CircularProgress size={80} thickness={5}/>
                         </div>
                         <div className={classes.field}>
-                            <div className={classes.itemList}>
-                                <div className={classes.label}>Касса:</div>
-                                <div style={{fontWeight: '600'}}>{_.get(cashbox, 'name')}</div>
-                            </div>
-                            <Field
-                                name="categoryId"
-                                component={ExpensiveCategorySearchField}
-                                label="Категория расхода"
-                                fullWidth={true}/>
-                            <div className={classes.flex} style={{alignItems: 'baseline'}}>
-                                <Field
-                                    name="amount"
-                                    component={TextField}
-                                    label="Сумма"
-                                    style={{width: '50%'}}
-                                    fullWidth={false}/>
-                                <div style={{marginLeft: '20px'}}>
-                                   {_.get(cashbox, ['currency', 'name'])}
+                            <div className={classes.info}>
+                                <div className={classes.infoHeader}>
+                                    <div>{supplier}</div>
+                                    <div>Поставка №{supplyId}</div>
+                                </div>
+                                <div className={classes.infoSummary}>
+                                    <div>Сумма заказа: <span style={{marginLeft: '10px'}}>{summary} {currencyName}</span></div>
                                 </div>
                             </div>
-                            <Field
-                                name="comment"
-                                component={TextField}
-                                label="Комментарий..."
-                                className={classes.inputField}
-                                multiLine={true}
-                                rows={3}
-                                rowsMax={3}
-                                fullWidth={true}/>
+                            <div className={classes.cashbox}>
+                                <Field
+                                    name="type"
+                                    className={classes.inputField}
+                                    component={CashboxSearchField}
+                                    label="Касса получатель"
+                                    fullWidth={true}
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
@@ -141,12 +130,11 @@ const TransactionCreateDialog = enhance((props) => {
     )
 })
 
-TransactionCreateDialog.propTyeps = {
+PendingPaymentsCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
-    cashboxData: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
-export default TransactionCreateDialog
+export default PendingPaymentsCreateDialog

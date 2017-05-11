@@ -1,9 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
-import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -12,19 +10,19 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import TransactionFilterForm from './TransactionFilterForm'
-import TransactionDetails from './TransactionDetails'
 import TransactionCreateDialog from './TransactionCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
+import Paper from 'material-ui/Paper'
 import CashPayment from '../CashPayment'
 import BankPayment from '../BankPayment'
 import CircularProgress from 'material-ui/CircularProgress'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Edit from 'material-ui/svg-icons/image/edit'
 
 const listHeader = [
     {
@@ -55,65 +53,69 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
-            }
-        },
-        addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
-        },
-        flex: {
-            display: 'flex'
+        wrap: {
+            display: 'flex',
+            margin: '0 -28px',
+            padding: '0 28px 0 0',
+            minHeight: 'calc(100% - 8px)'
         },
         listWrapper: {
-            boxShadow: '2px 2px 3px #c3c5c7',
-            border: '1px solid #d2d3d5',
-            borderTop: 'none',
-            height: '100%',
-            width: '24%',
-            position: 'absolute',
-            marginLeft: '-36px',
-            paddingRight: '8px'
+            border: '1px solid #d9dde1',
+            borderBottom: 'none',
+            height: '100%'
         },
-        row: {
-            borderTop: '1px solid #c3c5c7',
-            padding: '15px 5px 15px 35px',
+        leftSide: {
+            flexBasis: '25%'
+        },
+        rightSide: {
+            flexBasis: '75%',
+            marginLeft: '28px'
+        },
+        list: {
+            borderBottom: '1px solid #d9dde1',
+            display: 'flex',
+            padding: '20px 30px',
+            margin: '0',
             boxSizing: 'border-box',
-            '& > div:nth-child(2)> div': {
-                textAlign: 'right'
-            },
-            '& > div:nth-child(2)> div:first-child': {
-                color: '#92ce95',
-                marginBottom: '5px'
-            },
-            '& > div:first-child > div:first-child': {
-                marginBottom: '5px',
-                fontWeight: 'bold'
-            },
-            '& > div:first-child > div:nth-child(2)': {
-                color: '#409bcc'
+            cursor: 'pointer',
+            justifyContent: 'space-between'
+        },
+        flex: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+        },
+        outerTitle: {
+            extend: 'flex',
+            fontWeight: '600',
+            paddingBottom: '10px',
+            paddingTop: '5px',
+            '& a': {
+                padding: '2px 10px',
+                border: '1px solid',
+                borderRadius: '2px',
+                marginLeft: '12px'
             }
         },
-        red: {
+        btnAdd: {
+            color: '#8acb8d !important'
+        },
+        btnRemove: {
             color: '#e57373 !important'
         },
-        blue: {
-            color: '#6f6fb5 !important'
-        },
-        desc: {
-            transform: 'translate(5%,0%)',
-            position: 'absolute'
-        },
         title: {
-            fontWeight: 'bold'
+            fontWeight: '600',
+            '& span': {
+                fontSize: '11px !important',
+                display: 'block',
+                color: '#999'
+            }
         },
-        end: {
-            color: '#b1b2b3',
-            width: '100%'
+        green: {
+            color: '#92ce95'
+        },
+        red: {
+            color: '#e57373'
         }
     }),
 )
@@ -128,7 +130,6 @@ const TransactionGridList = enhance((props) => {
         actionsDialog,
         cashboxListLoading,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -155,70 +156,84 @@ const TransactionGridList = enhance((props) => {
     )
 
     const transactionDetail = (
-        <TransactionDetails
-            key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            deleteDialog={deleteDialog}
-            confirmDialog={confirmDialog}
-            loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-        />
+        <span>a</span>
     )
+
+    const minus = 0
+    const expense = 1
+    const income = 2
 
     const transactionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
         const amount = _.get(item, 'amount') || 'N/A'
+        const type = amount < minus ? expense : income
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-
+        const iconButton = (
+            <IconButton style={{padding: '0 12px'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={5}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.TRANSACTION_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{comment}</Link>
-                </Col>
-                <Col xs={2}>{amount}</Col>
+                <Col xs={5}>{comment}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}></Col>
+                <Col xs={2}>{amount}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id, type) }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                        />
+                    </IconMenu>
+                </Col>
             </Row>
         )
     })
     const cashboxList = _.map(_.get(cashboxData, 'data'), (item, index) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const currency = _.get(item, ['currency', 'name'])
         const type = _.toInteger(_.get(item, 'type'))
         const balance = _.toInteger(_.get(item, 'balance'))
         const isActive = item.id === _.get(cashboxData, 'cashboxId')
         const BANK_ID = 1
-
+        const ZERO_NUM = 0
         return (
-            <Row key={id} className={classes.row} onTouchTap={() => {
+            <div key={id} className={classes.list} onClick={() => {
                 cashboxData.handleClickCashbox(id)
             } }
                  style={isActive ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
-                <Col xs={8}>
-                    <div>{name}</div>
-                    <div className={item.id === cashboxData.cashboxId && classes.blue}>
+                <div>
+                    <div className={classes.title}>{name}</div>
+                    <div className={item.id === cashboxData.cashboxId}>
                         {type === BANK_ID
-                            ? <div>
-                                <BankPayment style={{height: '16px', width: '16px'}}/>
-                                <span className={classes.desc}>банковский счет</span>
+                            ? <div className={classes.flex}>
+                                <BankPayment style={{height: '14px', width: '14px', color: '#6261b0'}}/>
+                                <span style={{marginLeft: '5px', color: '#6261b0'}}>банковский счет</span>
                             </div>
-                            : <div>
-                                <CashPayment style={{height: '16px', width: '16px'}}/>
-                                <span className={classes.desc}>наличные</span>
+                            : <div className={classes.flex}>
+                                <CashPayment style={{height: '14px', width: '14px', color: '#12aaeb'}}/>
+                                <span style={{marginLeft: '5px', color: '#12aaeb'}}>наличные</span>
                             </div>
                         }
                     </div>
-                </Col>
-                <Col xs={4}>
-                    <div className={item.id === cashboxData.cashboxId && classes.red}>{balance}</div>
-                    <div>{type}</div>
-                </Col>
-            </Row>
+                </div>
+                <div style={{textAlign: 'right'}}>
+                    <div className={balance >= ZERO_NUM ? classes.green : classes.red}>{balance}</div>
+                    <div>{currency}</div>
+                </div>
+            </div>
         )
     })
 
@@ -233,36 +248,39 @@ const TransactionGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.TRANSACTION_LIST_URL}/>
 
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
-
-            <div className={classes.flex}>
-                <Col xs={3}>
-                    <div className={classes.listWrapper}>
-                        <Row className={classes.row}
-                             onTouchTap={() => { cashboxData.handleClickCashbox(AllCashboxId) } }
-                             style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
-                            <div className={classes.title}>Общий объем</div>
-                            <br/>
-                            <div className={classes.end}>во всех классах</div>
-                        </Row>
-                        {cashboxListLoading &&
+            <div className={classes.wrap}>
+                <div className={classes.leftSide}>
+                    <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
+                        <div>Кассы</div>
+                    </div>
+                    <Paper zDepth={2} style={{height: '100%'}}>
+                        <div className={classes.listWrapper}>
+                            <div className={classes.list}
+                                 onClick={() => { cashboxData.handleClickCashbox(AllCashboxId) } }
+                                 style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
+                                <div className={classes.title}>
+                                    Общий объем
+                                    <span>во всех классах</span>
+                                </div>
+                            </div>
+                            {cashboxListLoading &&
                             <div style={{textAlign: 'center'}}>
                                 <CircularProgress size={100} thickness={6} />
                             </div>
-                        }
-                        {cashboxList}
+                            }
+                            {cashboxList}
+                        </div>
+                    </Paper>
+                </div>
+                <div className={classes.rightSide}>
+                    <div className={classes.outerTitle}>
+                       <div>Транзакции выбранной кассы</div>
+                        <div className={classes.buttons}>
+                            <a onClick={createDialog.handleOpenCreateDialog} className={classes.btnAdd}>+ Доход</a>
+                            <a onClick={createDialog.handleOpenCreateDialog} className={classes.btnRemove}>- Расход</a>
+                        </div>
                     </div>
-                </Col>
-                <Col xs={9}>
+
                     <GridList
                         filter={filter}
                         list={list}
@@ -287,21 +305,14 @@ const TransactionGridList = enhance((props) => {
                         onClose={updateDialog.handleCloseUpdateDialog}
                         onSubmit={updateDialog.handleSubmitUpdateDialog}
                     />
-
-                    <DeleteDialog
-                        filter={filter}
-                        open={deleteDialog.openDeleteDialog}
-                        onClose={deleteDialog.handleCloseDeleteDialog}
-                    />
-
                     {detailData.data && <ConfirmDialog
                         type="delete"
-                        message={_.get(detailData, ['data', 'name'])}
+                        message={_.get(detailData, ['data', 'comment'])}
                         onClose={confirmDialog.handleCloseConfirmDialog}
                         onSubmit={confirmDialog.handleSendConfirmDialog}
                         open={confirmDialog.openConfirmDialog}
                     />}
-                </Col>
+                </div>
             </div>
         </Container>
     )
@@ -325,11 +336,6 @@ TransactionGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,

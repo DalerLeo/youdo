@@ -43,7 +43,8 @@ export const MenuItems = [
         url: ROUTES.TRANSACTION_LIST_URL,
         childs: [
             {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL},
-            {name: 'Ожидаемые расходы', url: ROUTES.PENDING_EXPENSES_LIST_URL}
+            {name: 'Ожидаемые расходы', url: ROUTES.PENDING_EXPENSES_LIST_URL},
+            {name: 'Ожидание оплаты', url: ROUTES.PENDING_PAYMENTS_LIST_URL}
         ]
     },
     {
@@ -66,7 +67,8 @@ export const MenuItems = [
             {name: 'Категории расходов', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL},
             {name: 'Бренды', url: ROUTES.BRAND_LIST_URL},
             {name: 'Пользователи', url: ROUTES.USERS_LIST_URL},
-            {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL}
+            {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL},
+            {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL}
         ]
     }
 ]

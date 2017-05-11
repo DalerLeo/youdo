@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, PendingExpensesTypeSearchField, BrandSearchField, MeasurementSearchField, ImageUploadField} from '../ReduxForm'
+import {CashboxSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -39,6 +39,22 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
+        },
+        info: {
+            padding: '20px 0'
+        },
+        infoHeader: {
+            fontWeight: '600',
+            lineHeight: '20px'
+        },
+        infoSummary: {
+            color: '#666',
+            marginTop: '10px'
+        },
+        cashbox: {
+            padding: '0 30px 20px',
+            margin: '0 -30px',
+            background: '#f1f5f8'
         }
     })),
     reduxForm({
@@ -48,8 +64,15 @@ const enhance = compose(
 )
 
 const PendingExpensesCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, detailData, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+
+    const supply = _.get(detailData, ['data', 'supply'])
+    const currency = _.get(detailData, ['data', 'currency'])
+    const currencyName = _.get(currency, 'name')
+    const summary = _.get(detailData, ['data', 'amount'])
+    const supplyId = _.get(supply, 'id')
+    const supplier = _.get(supply, ['provider', 'name'])
 
     return (
         <Dialog
@@ -57,59 +80,40 @@ const PendingExpensesCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {}}
+            contentStyle={loading ? {width: '300px'} : {width: '350px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Добавить продукт</span>
+                <span>Расход</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '320px'}}>
+                    <div className={classes.inContent} style={{minHeight: '220px'}}>
                         <div className={classes.loader}>
                             <CircularProgress size={80} thickness={5}/>
                         </div>
                         <div className={classes.field}>
-                            <Field
-                                name="name"
-                                className={classes.inputField}
-                                component={TextField}
-                                label="Наименование"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="type"
-                                className={classes.inputField}
-                                component={PendingExpensesTypeSearchField}
-                                label="Тип продукта"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="brand"
-                                className={classes.inputField}
-                                component={BrandSearchField}
-                                label="Бренд"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="measurement"
-                                className={classes.inputField}
-                                component={MeasurementSearchField}
-                                label="Мера"
-                                fullWidth={true}
-                            />
-                        </div>
-                        <div className={classes.field} style={{maxWidth: '224px'}}>
-                            <Field
-                                name="image"
-                                className={classes.imageUpload}
-                                component={ImageUploadField}
-                                label="Изображения"
-                                fullWidth={true}
-                            />
+                            <div className={classes.info}>
+                                <div className={classes.infoHeader}>
+                                    <div>{supplier}</div>
+                                    <div>Поставка №{supplyId}</div>
+                                </div>
+                                <div className={classes.infoSummary}>
+                                    <div>Сумма заказа: <span style={{marginLeft: '10px'}}>{summary} {currencyName}</span></div>
+                                </div>
+                            </div>
+                            <div className={classes.cashbox}>
+                                <Field
+                                    name="type"
+                                    className={classes.inputField}
+                                    component={CashboxSearchField}
+                                    label="Касса получатель"
+                                    fullWidth={true}
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

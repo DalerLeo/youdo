@@ -12,17 +12,21 @@ import {TextField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
-export const CURRENCY_CREATE_DIALOG_OPEN = 'openCreateDialog'
+
+export const SET_CURRENCY_DIALOG_OPEN = 'openSetCurrencyDialog'
+
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
     const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
+
     throw new SubmissionError({
         ...errors,
         latLng,
         _error: nonFieldErrors
     })
 }
+
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -36,27 +40,35 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
+        },
+        currency: {
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%'
         }
     })),
     reduxForm({
-        form: 'CurrencyCreateForm',
+        form: 'SetCurrencyForm',
         enableReinitialize: true
     })
 )
-const CurrencyCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+
+const SetCurrencyDialog = enhance((props) => {
+    const {open, loading, handleSubmit, onClose, classes, currencyData, currentCurrency} = props
+    const currency = _.find(_.get(currencyData, 'data'), {'id': _.get(currencyData, ['detail', 'id'])})
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+
     return (
         <Dialog
             modal={true}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '280px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить валюту' : 'Добавить валюту'}</span>
+                <span>Курс</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -68,13 +80,17 @@ const CurrencyCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.inContent} >
                         <div className={classes.field}>
-                            <Field
-                                name="name"
-                                component={TextField}
-                                className={classes.inputField}
-                                label="Наименование"
-                                fullWidth={true}
-                            />
+                            <div className={classes.currency}>
+                                <div>1 {currentCurrency} = </div>
+                                <Field
+                                    name="rate"
+                                    component={TextField}
+                                    className={classes.inputField}
+                                    style={{width: '110px', margin: '0 10px'}}
+                                    fullWidth={true}
+                                />
+                                <div>{_.get(currency, 'name')}</div>
+                            </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
@@ -90,14 +106,18 @@ const CurrencyCreateDialog = enhance((props) => {
         </Dialog>
     )
 })
-CurrencyCreateDialog.propTypes = {
-    isUpdate: PropTypes.bool,
+
+SetCurrencyDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    currencyData: PropTypes.object.isRequired,
+    currentCurrency: PropTypes.string
 }
-CurrencyCreateDialog.defaultProps = {
+
+SetCurrencyDialog.defaultProps = {
     isUpdate: false
 }
-export default CurrencyCreateDialog
+
+export default SetCurrencyDialog

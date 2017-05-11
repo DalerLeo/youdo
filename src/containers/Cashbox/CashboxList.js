@@ -1,7 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
-import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -13,8 +12,6 @@ import {
     CASHBOX_CREATE_DIALOG_OPEN,
     CASHBOX_UPDATE_DIALOG_OPEN,
     CASHBOX_DELETE_DIALOG_OPEN,
-    CASHBOX_FILTER_KEY,
-    CASHBOX_FILTER_OPEN,
     CashboxGridList
 } from '../../components/Cashbox'
 import {
@@ -39,7 +36,6 @@ const enhance = compose(
         const listLoading = _.get(state, ['cashbox', 'list', 'loading'])
         const csvData = _.get(state, ['cashbox', 'csv', 'data'])
         const csvLoading = _.get(state, ['cashbox', 'csv', 'loading'])
-        const filterForm = _.get(state, ['form', 'CashboxFilterForm'])
         const createForm = _.get(state, ['form', 'CashboxCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -53,7 +49,6 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
-            filterForm,
             createForm
         }
     }),
@@ -114,34 +109,11 @@ const enhance = compose(
                 })
         },
 
-        handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_FILTER_OPEN]: true})})
-        },
-
-        handleCloseFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CASHBOX_FILTER_OPEN]: false})})
-        },
-
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
             hashHistory.push({pathname, query: {}})
         },
 
-        handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const category = _.get(filterForm, ['values', 'category', 'value']) || null
-
-            filter.filterBy({
-                [CASHBOX_FILTER_OPEN]: false,
-                [CASHBOX_FILTER_KEY.CASHBOX]: category,
-                [CASHBOX_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [CASHBOX_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
-            })
-        },
         handleOpenDeleteDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({
@@ -224,13 +196,9 @@ const CashboxList = enhance((props) => {
         params
     } = props
 
-    const openFilterDialog = toBoolean(_.get(location, ['query', CASHBOX_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', CASHBOX_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CASHBOX_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', CASHBOX_DELETE_DIALOG_OPEN]))
-    const category = _.toInteger(filter.getParam(CASHBOX_FILTER_KEY.CASHBOX))
-    const fromDate = filter.getParam(CASHBOX_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(CASHBOX_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'cashboxId'))
 
     const actionsDialog = {
@@ -279,24 +247,6 @@ const CashboxList = enhance((props) => {
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
 
-    const filterDialog = {
-        initialValues: {
-            category: {
-                value: category
-            },
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
-            }
-        },
-        filterLoading: false,
-        openFilterDialog,
-        handleOpenFilterDialog: props.handleOpenFilterDialog,
-        handleCloseFilterDialog: props.handleCloseFilterDialog,
-        handleClearFilterDialog: props.handleClearFilterDialog,
-        handleSubmitFilterDialog: props.handleSubmitFilterDialog
-    }
-
     const csvDialog = {
         csvData: props.csvData,
         csvLoading: props.csvLoading,
@@ -326,7 +276,6 @@ const CashboxList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                filterDialog={filterDialog}
                 csvDialog={csvDialog}
             />
         </Layout>
