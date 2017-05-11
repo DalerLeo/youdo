@@ -13,6 +13,12 @@ export const CATEGORY_LIST = `/${CATEGORY}/`
 export const CATEGORY_ITEM = `/${CATEGORY}/%d/`
 export const CATEGORY_DELETE = `/${CATEGORY}/%d/`
 
+export const EQUIPMENT = 'equipment'
+export const EQUIPMENT_CREATE = `/${EQUIPMENT}/`
+export const EQUIPMENT_LIST = `/${EQUIPMENT}/`
+export const EQUIPMENT_ITEM = `/${EQUIPMENT}/%d/`
+export const EQUIPMENT_DELETE = `/${EQUIPMENT}/%d/`
+
 export const STOCK = 'dist/stock'
 export const STOCK_CREATE = `/${STOCK}/`
 export const STOCK_LIST = `/${STOCK}/`
@@ -50,6 +56,8 @@ export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
 export const CURRENCY_DELETE = `/${CURRENCY}/%d/`
 export const CURRENCY_PRIMARY = 'currency_primary'
 export const CURRENCY_PRIMARY_CREATE = `/${CURRENCY_PRIMARY}/`
+export const SET_CURRENCY = 'currencies/currency_rate'
+export const SET_CURRENCY_CREATE = `/${SET_CURRENCY}/`
 
 export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`
@@ -57,7 +65,7 @@ export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
-export const USERS = 'dist/user'
+export const USERS = 'user/crud'
 export const USERS_CREATE = `/${USERS}/`
 export const USERS_LIST = `/${USERS}/`
 export const USERS_ITEM = `/${USERS}/%d/`

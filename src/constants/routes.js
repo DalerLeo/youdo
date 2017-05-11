@@ -45,6 +45,11 @@ export const CATEGORY_LIST_URL = `/${CATEGORY}`
 export const CATEGORY_ITEM_URL = `${CATEGORY_LIST_URL}/:categoryId`
 export const CATEGORY_ITEM_PATH = `/${CATEGORY}/%d`
 
+export const EQUIPMENT = 'equipment'
+export const EQUIPMENT_LIST_URL = `/${EQUIPMENT}`
+export const EQUIPMENT_ITEM_URL = `${EQUIPMENT_LIST_URL}/:equipmentId`
+export const EQUIPMENT_ITEM_PATH = `/${EQUIPMENT}/%d`
+
 export const STOCK = 'stock'
 export const STOCK_LIST_URL = `/${STOCK}`
 export const STOCK_ITEM_URL = `${STOCK_LIST_URL}/:stockId`

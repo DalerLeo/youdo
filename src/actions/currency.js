@@ -137,3 +137,20 @@ export const currencyPrimaryCreateAction = (formValues) => {
         payload
     }
 }
+
+export const setCurrencyCreateAction = (formValues) => {
+    const requestData = serializers.createPrimarySerializer(formValues)
+    const payload = axios()
+        .post(sprintf(API.SET_CURRENCY_CREATE), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SET_CURRENCY_UPDATE,
+        payload
+    }
+}

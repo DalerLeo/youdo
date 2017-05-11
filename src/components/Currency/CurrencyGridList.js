@@ -6,17 +6,15 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import FlatButton from 'material-ui/FlatButton'
 import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import Paper from 'material-ui/Paper'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
+import SetCurrencyDialog from './SetCurrencyDialog'
 import PrimaryCurrencyDialog from './PrimaryCurrencyDialog'
 import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
@@ -27,22 +25,27 @@ import InfoIcon from '../InfoIcon'
 
 const listHeader = [
     {
-        sorting: true,
-        name: 'id',
-        xs: 2,
-        title: 'Id'
+        name: '',
+        xs: 1,
+        title: ''
     },
     {
         sorting: true,
         name: 'name',
-        xs: 6,
-        title: 'Наименование'
+        xs: 2,
+        title: 'Аббревиатура'
     },
     {
         sorting: true,
-        xs: 3,
+        name: 'name',
+        xs: 2,
+        title: 'Курс'
+    },
+    {
+        sorting: true,
+        xs: 2,
         name: 'created_date',
-        title: 'Дата создания'
+        title: 'Дата обновления'
     },
     {
         sorting: false,
@@ -65,29 +68,48 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         },
+        semibold: {
+            fontWeight: '600'
+        },
         editContent: {
             width: '100%',
-            backgroundColor: '#ffffff',
+            backgroundColor: '#fff',
+            color: '#333',
             padding: '20px 30px',
             boxSizing: 'border-box',
             marginBottom: '30px',
-            boxShadow: '0px 0px 3px #969696',
-            color: '#464646',
-            '& div:first-child': {
-                fontWeight: 'bold'
+            '&>div': {
+                marginBottom: '10px',
+                '&:last-child': {
+                    margin: '0'
+                }
             }
         },
-        button: {
-            padding: '0 15px',
-            '& > div >span': {
-                color: '#12aaeb',
-                padding: '0 !important',
-                textTransform: 'inherit !important',
-                borderBottom: '1px dashed #12aaeb'
-            }
+        information: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        link: {
+            color: '#12aaeb !important',
+            borderBottom: '1px dashed #12aaeb',
+            fontWeight: '600'
         }
     })
 )
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 24,
+        height: 24
+    },
+    button: {
+        width: 48,
+        height: 48,
+        padding: 0
+    }
+}
+
+const tooltipPosition = 'bottom-center'
 
 const CurrencyGridList = enhance((props) => {
     const {
@@ -99,7 +121,10 @@ const CurrencyGridList = enhance((props) => {
         confirmDialog,
         listData,
         detailData,
-        classes
+        classes,
+
+        setCurrencyUpdateDialog,
+        currencyData
     } = props
 
     const actions = (
@@ -118,36 +143,42 @@ const CurrencyGridList = enhance((props) => {
         <span>a</span>
     )
 
+    const currentCurrency = _.get(primaryDialog.primaryCurrency, 'name')
+
     const currencyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
         return (
             <Row key={id}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={6}>{name}</Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
+                <Col xs={1}></Col>
+                <Col xs={2}>{name}</Col>
+                <Col xs={2}>1 {currentCurrency} = 8050 {name}</Col>
+                <Col xs={2}>{createdDate}</Col>
+                <Col xs={2}><a onClick={() => { setCurrencyUpdateDialog.handleOpenSetCurrencyDialog(id) }} className={classes.link}>Установить курс</a></Col>
+                <Col xs={3} style={{textAlign: 'right'}}>
+                    <div className={classes.titleButtons}>
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            disableTouchRipple={true}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
+                            tooltipPosition={tooltipPosition}
+                            tooltip="Изменить">
+                            <Edit />
+                        </IconButton>
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            disableTouchRipple={true}
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        />
-                    </IconMenu>
+                            tooltipPosition={tooltipPosition}
+                            tooltip="Удалить">
+                            <DeleteIcon />
+                        </IconButton>
+                    </div>
                 </Col>
             </Row>
         )
@@ -163,7 +194,7 @@ const CurrencyGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.CURRENCY_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить продукт">
+                <Tooltip position="left" text="Добавить валюту">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -173,22 +204,19 @@ const CurrencyGridList = enhance((props) => {
                 </Tooltip>
             </div>
 
-            <div className={classes.editContent}>
-                <div className={classes.title}>Основная валюта</div>
-                <div>
-                    Вибранная валюта: {_.get(primaryDialog.primaryCurrency, 'name')}
-                    <FlatButton
-                        label="Изменить"
-                        className={classes.button}
-                        onTouchTap={primaryDialog.handlePrimaryOpenDialog}/>
+            <Paper zDepth={2}>
+                <div className={classes.editContent}>
+                    <div className={classes.semibold}>Основная валюта</div>
+                    <div className={classes.information}>
+                        <div style={{marginRight: '10px'}}>Выбранная валюта: <span className={classes.semibold}>{currentCurrency}</span></div>
+                        <a className={classes.link} onClick={primaryDialog.handlePrimaryOpenDialog}>Изменить</a>
+                    </div>
+                    <div className={classes.information}>
+                        <InfoIcon color="#333" style={{marginRight: '10px'}}/>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum laudantium quam tempora temporibus voluptas! Atque eius hic mollitia nam nisi!
+                    </div>
                 </div>
-                <div>
-                    <IconButton>
-                        <InfoIcon color="#464646"/>
-                    </IconButton>
-                    Lorem impus dolar
-                </div>
-            </div>
+            </Paper>
 
             <PrimaryCurrencyDialog
                 open={primaryDialog.openPrimaryDialog}
@@ -203,6 +231,16 @@ const CurrencyGridList = enhance((props) => {
                 list={list}
                 detail={currencyDetail}
                 actionsDialog={actions}
+            />
+
+            <SetCurrencyDialog
+                initialValues={setCurrencyUpdateDialog.initialValues}
+                open={setCurrencyUpdateDialog.openSetCurrencyDialog}
+                loading={setCurrencyUpdateDialog.setCurrencyLoading}
+                onClose={setCurrencyUpdateDialog.handleCloseSetCurrencyDialog}
+                onSubmit={setCurrencyUpdateDialog.handleSubmitSetCurrencyDialog}
+                currencyData={currencyData}
+                currentCurrency={currentCurrency}
             />
 
             <CurrencyCreateDialog
@@ -243,6 +281,13 @@ CurrencyGridList.propTypes = {
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
+    setCurrencyUpdateDialog: PropTypes.shape({
+        setCurrencyLoading: PropTypes.bool.isRequired,
+        openSetCurrencyDialog: PropTypes.bool.isRequired,
+        handleOpenSetCurrencyDialog: PropTypes.func.isRequired,
+        handleCloseSetCurrencyDialog: PropTypes.func.isRequired,
+        handleSubmitSetCurrencyDialog: PropTypes.func.isRequired
+    }),
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
@@ -261,13 +306,13 @@ CurrencyGridList.propTypes = {
         primaryCurrencyLoading: PropTypes.bool.isRequired,
         openPrimaryDialog: PropTypes.bool.isRequired,
         handlePrimaryOpenDialog: PropTypes.func.isRequired,
-        handleClosePrimaryDialog: PropTypes.func.isRequired,
         handleSubmitPrimaryDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    currencyData: PropTypes.object.isRequired
 }
 
 export default CurrencyGridList

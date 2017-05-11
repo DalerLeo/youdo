@@ -22,10 +22,12 @@ import PaymentTypeSearchField from './PaymentTypeSearchField'
 import StockTypeSearchField from './StockTypeSearchField'
 import CashboxSearchField from './CashboxSearchField'
 import DeliveryTypeSearchField from './DeliveryTypeSearchField'
+import ManufactureSearchField from './ManufactureSearchField'
 
 export {
     OrderListProductField,
     DeliveryTypeSearchField,
+    ManufactureSearchField,
     ProductSearchField,
     DateField,
     CheckBox,

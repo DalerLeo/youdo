@@ -1,15 +1,13 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import StockCreateDialog from './StockCreateDialog'
+import EquipmentCreateDialog from './EquipmentCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -26,38 +24,26 @@ const listHeader = [
     {
         sorting: true,
         name: 'id',
-        xs: 1,
+        xs: 2,
         title: 'Id'
     },
     {
         sorting: true,
         name: 'name',
-        xs: 3,
+        xs: 6,
         title: 'Наименование'
     },
     {
         sorting: true,
-        name: 'manager',
-        xs: 3,
-        title: 'Завсклад'
-    },
-    {
-        sorting: true,
-        name: 'stockType',
-        xs: 2,
-        title: 'Тип склада'
-    },
-    {
-        sorting: true,
-        xs: 2,
-        name: 'created_date',
-        title: 'Дата создания'
+        name: 'manufacture',
+        title: 'Производство',
+        xs: 3
     },
     {
         sorting: false,
-        xs: 1,
         name: 'actions',
-        title: ''
+        title: '',
+        xs: 1
     }
 ]
 
@@ -77,12 +63,11 @@ const enhance = compose(
     })
 )
 
-const StockGridList = enhance((props) => {
+const EquipmentGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
-        actionsDialog,
         confirmDialog,
         listData,
         detailData,
@@ -90,29 +75,17 @@ const StockGridList = enhance((props) => {
     } = props
 
     const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
+        <div></div>
     )
 
-    const stockDetail = (
+    const equipmentDetail = (
         <span>a</span>
     )
 
-    const main = 1
-
-    const stockList = _.map(_.get(listData, 'data'), (item) => {
+    const equipmentList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const manager = _.get(item, ['manager', 'firstName']) + ' ' + _.get(item, ['manager', 'secondName'])
-        const stockType = _.toInteger(_.get(item, 'stockType')) === main ? 'Основной' : 'Производственной'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const manufacture = _.get(item, 'manufacture')
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -120,11 +93,9 @@ const StockGridList = enhance((props) => {
         )
         return (
             <Row key={id}>
-                <Col xs={1}>{id}</Col>
-                <Col xs={3}>{name}</Col>
-                <Col xs={3}>{manager}</Col>
-                <Col xs={2}>{stockType}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={2}>{id}</Col>
+                <Col xs={6}>{name}</Col>
+                <Col xs={3}>{manufacture}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -133,16 +104,12 @@ const StockGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Изменить"
                             leftIcon={<Edit />}
-                            onTouchTap={() => {
-                                updateDialog.handleOpenUpdateDialog(id)
-                            }}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
                         />
                         <MenuItem
                             primaryText="Удалить "
                             leftIcon={<DeleteIcon />}
-                            onTouchTap={() => {
-                                confirmDialog.handleOpenConfirmDialog(id)
-                            }}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                         />
                     </IconMenu>
                 </Col>
@@ -152,15 +119,15 @@ const StockGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: stockList,
+        list: equipmentList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.STOCK_LIST_URL}/>
+            <SubMenu url={ROUTES.EQUIPMENT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить склад">
+                <Tooltip position="left" text="Добавить оборудованию">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -173,25 +140,23 @@ const StockGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={stockDetail}
+                detail={equipmentDetail}
                 actionsDialog={actions}
             />
-
-            <StockCreateDialog
-                initialValues={{}}
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
-            <StockCreateDialog
+            <EquipmentCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+            />
+
+            <EquipmentCreateDialog
+                open={createDialog.openCreateDialog}
+                loading={createDialog.createLoading}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
             {detailData.data && <ConfirmDialog
@@ -205,7 +170,7 @@ const StockGridList = enhance((props) => {
     )
 })
 
-StockGridList.propTypes = {
+EquipmentGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -228,11 +193,7 @@ StockGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default StockGridList
+export default EquipmentGridList

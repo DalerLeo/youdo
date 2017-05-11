@@ -3,7 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Col} from 'react-flexbox-grid'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
@@ -12,6 +11,7 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, ExpensiveCategorySearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
+import MainStyles from '../Styles/MainStyles'
 
 export const TRANSACTION_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -28,21 +28,7 @@ const validate = (data) => {
 }
 
 const enhance = compose(
-    injectSheet({
-        dialog: {
-            '& div:last-child': {
-                textAlign: 'le !important',
-                '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
-                    color: '#12aaeb !important'
-                }
-            }
-        },
-        body: {
-            padding: '0 !important'
-        },
-
+    injectSheet(_.merge(MainStyles, {
         loader: {
             position: 'absolute',
             width: '100%',
@@ -55,35 +41,6 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-
-        fields: {
-            display: ({loading}) => !loading ? 'block' : 'none',
-            width: '100%',
-            '& > div:nth-child(2)': {
-                padding: '20px',
-                borderBottom: '1px solid #efefef'
-            }
-        },
-
-        label: {
-            fontWeight: 'bold',
-            color: 'black',
-            padding: '15px 0 0 0 !important'
-        },
-
-        form: {
-            display: 'flex',
-            '& > div:nth-child(2) > button': {
-                float: 'right',
-                margin: '10px !important'
-            }
-        },
-        flex: {
-            display: 'flex',
-            '& > div:first-child': {
-                marginRight: '20px'
-            }
-        },
         nav: {
             fontSize: '18px',
             fontWeight: 'bold',
@@ -94,8 +51,19 @@ const enhance = compose(
                 float: 'right',
                 marginTop: '-5px !important'
             }
+        },
+        flex: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        label: {
+            fontSize: '75%',
+            color: '#999'
+        },
+        itemList: {
+            marginTop: '20px'
         }
-    }),
+    })),
     reduxForm({
         form: 'TransactionCreateForm',
         enableReinitialize: true
@@ -114,56 +82,61 @@ const TransactionCreateDialog = enhance((props) => {
             onRequestClose={onClose}
             className={classes.dialog}
             contentStyle={loading ? {width: '300px'} : {width: '400px'}}
-            bodyClassName={classes.body}>
-            <form onSubmit={onSubmit} className={classes.form}>
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.fields}>
-                    <div className={classes.nav}>
-                        Расход
-                        <IconButton onTouchTap={onClose}>
-                            <CloseIcon2 />
-                        </IconButton>
-                    </div>
-                    <div>
-                        <div>Касса:</div>
-                        <div className={classes.label}>{_.get(cashbox, 'name')}</div>
-                        <Field
-                            name="categoryId"
-                            component={ExpensiveCategorySearchField}
-                            label="Категория расхода"
-                            fullWidth={true}/>
-                        <div className={classes.flex}>
-                            <Col xs={6}>
+            bodyClassName={classes.popUp}>
+            <div className={classes.titleContent}>
+                <span>Расход</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
+            <div className={classes.bodyContent}>
+                <form onSubmit={onSubmit} className={classes.form}>
+                    <div className={classes.inContent} style={{minHeight: '325px'}}>
+                        <div className={classes.loader}>
+                            <CircularProgress size={80} thickness={5}/>
+                        </div>
+                        <div className={classes.field}>
+                            <div className={classes.itemList}>
+                                <div className={classes.label}>Касса:</div>
+                                <div style={{fontWeight: '600'}}>{_.get(cashbox, 'name')}</div>
+                            </div>
+                            <Field
+                                name="categoryId"
+                                component={ExpensiveCategorySearchField}
+                                label="Категория расхода"
+                                fullWidth={true}/>
+                            <div className={classes.flex} style={{alignItems: 'baseline'}}>
                                 <Field
                                     name="amount"
                                     component={TextField}
                                     label="Сумма"
-                                    fullWidth={true}/>
-                            </Col>
-                            <Col xs={4}>
-                                <div>
-                                    {_.get(cashbox, ['currency', 'name'])}
+                                    style={{width: '50%'}}
+                                    fullWidth={false}/>
+                                <div style={{marginLeft: '20px'}}>
+                                   {_.get(cashbox, ['currency', 'name'])}
                                 </div>
-                            </Col>
+                            </div>
+                            <Field
+                                name="comment"
+                                component={TextField}
+                                label="Комментарий..."
+                                className={classes.inputField}
+                                multiLine={true}
+                                rows={3}
+                                rowsMax={3}
+                                fullWidth={true}/>
                         </div>
-                        <Field
-                            name="comment"
-                            component={TextField}
-                            label="Комментары"
-                            multiLine={true}
-                            rows={3}
-                            rowsMax={3}
-                            fullWidth={true}/>
                     </div>
-                    <FlatButton
-                        label="Сохранмть"
-                        primary={true}
-                        type="submit"
-                    />
-                </div>
-            </form>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
+                        />
+                    </div>
+                </form>
+            </div>
         </Dialog>
     )
 })
