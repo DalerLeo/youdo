@@ -3,8 +3,8 @@ import React from 'react'
 import SearchField from './SearchField'
 
 const Items = [
-    {id: 1, name: 'банковский счет'},
-    {id: 2, name: 'наличный'}
+    {id: 0, name: 'самовызов'},
+    {id: 1, name: 'доставка'}
 ]
 
 const getOptions = (search) => {
@@ -16,7 +16,7 @@ const getItem = (id) => {
         _.find(Items, (o) => { return o.id === _.toInteger(id) }))
 }
 
-const CurrencySearchField = (props) => {
+const DeliveryTypeSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -29,4 +29,4 @@ const CurrencySearchField = (props) => {
     )
 }
 
-export default CurrencySearchField
+export default DeliveryTypeSearchField

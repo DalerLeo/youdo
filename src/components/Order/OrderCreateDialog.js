@@ -12,16 +12,15 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
 import {
-    CurrencySearchField,
-    ProviderSearchField,
-    StockSearchField,
-    SupplyListProductField,
+    ClientSearchField,
+    DeliveryTypeSearchField,
+    OrderListProductField,
     TextField,
     DateField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
-export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -159,7 +158,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'SupplyCreateForm',
+        form: 'OrderCreateForm',
         enableReinitialize: true
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -171,8 +170,8 @@ const customContentStyle = {
     width: '1000px',
     maxWidth: 'none'
 }
-const SupplyCreateDialog = enhance((props) => {
-    const {state, dispatch, open, handleSubmit, onClose, classes} = props
+const OrderCreateDialog = enhance((props) => {
+    const {open, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -198,9 +197,9 @@ const SupplyCreateDialog = enhance((props) => {
                             <div className={classes.title}>Выбор поставщика</div>
                             <div className={classes.selectContent}>
                                 <Field
-                                    name="provider"
-                                    component={ProviderSearchField}
-                                    label="Поставщик"
+                                    name="client"
+                                    component={ClientSearchField}
+                                    label="Клиент"
                                     fullWidth={true}/>
                                 <RadioButtonGroup name="contact" defaultSelected="1"
                                                   className={classes.radioButton}>
@@ -217,68 +216,42 @@ const SupplyCreateDialog = enhance((props) => {
                             <div className={classes.title}>Условия доставки</div>
                             <div>
                                 <Field
-                                    name="stock"
-                                    component={StockSearchField}
+                                    name="deliveryType"
+                                    component={DeliveryTypeSearchField}
                                     label="Склад назначения"
                                     fullWidth={true}/>
                                 <Field
-                                    name="date_delivery"
+                                    name="dateDelivery"
                                     component={DateField}
                                     hintText="Дата поставки "
                                     fullWidth={true}/>
+
                                 <Field
-                                    name="currency"
-                                    component={CurrencySearchField}
-                                    label="Валюта оплаты"
+                                    name="deliveryPrice"
+                                    component={TextField}
+                                    label="Стоимость"
                                     fullWidth={true}/>
+                                <div>Скидка
+                                    <Field
+                                        name="discountPrice"
+                                        component={TextField}
+                                        label="Скидка"
+                                        fullWidth={false}/>
+                                </div>
                             </div>
                         </div>
                     </Col>
                     <Col md={8} className={classes.right}>
                         <Fields
                             names={['products', 'product', 'amount', 'cost']}
-                            component={SupplyListProductField}
+                            component={OrderListProductField}
                         />
                     </Col>
                 </div>
                 <div className={classes.bottom}>
-                    <div>
-                        <span className={classes.title}>Дополнительные раскоды по поставке</span>
-                        <FlatButton
-                            label="+ Добавить расход"
-                            style={{color: '#12aaeb'}}
-                            className={classes.span}
-                            onTouchTap={() => dispatch({open: !state.open})}/>
-                    </div>
-                    {state.open && <div className={classes.background}>
-                        <Field
-                            name="additionalDescription"
-                            component={TextField}
-                            label="Описания раскода"/>
-                        <Field
-                            name="additionalCost"
-                            component={TextField}
-                            label="Сумма"
-                            textFieldStyle={{width: '110px'}}/>
-                        <div className={classes.width}>
-                            <Field
-                                name="additionalCurrency"
-                                component={CurrencySearchField}
-                                label="Валюта"
-                                textFieldStyle={{width: '120px'}}/>
-                        </div>
-                        <FlatButton
-                            label="Применить"
-                            style={{color: '#12aaeb'}}
-                            className={classes.span}/>
-                    </div>}
                     <div className={classes.total}>
                         <div>
-                            <div className={classes.title}>Описание</div>
-                            <span className={classes.title}>Сумма</span>
-                        </div>
-                        <div>
-                            <div>asjdlakj lkjslj asdas das da asd</div>
+                            Общая сумма заказа
                             <span>3 500 000</span>
                         </div>
                     </div>
@@ -293,10 +266,10 @@ const SupplyCreateDialog = enhance((props) => {
         </Dialog>
     )
 })
-SupplyCreateDialog.propTyeps = {
+OrderCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
-export default SupplyCreateDialog
+export default OrderCreateDialog

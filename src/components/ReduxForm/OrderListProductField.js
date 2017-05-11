@@ -107,7 +107,7 @@ const enhance = compose(
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
-            const cost = _.get(props, ['cost', 'input', 'value'])
+            const cost = 10000
 
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
@@ -128,7 +128,7 @@ const enhance = compose(
     })
 )
 
-const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
+const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
 
     return (
@@ -153,7 +153,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                         {..._.get(defaultProps, 'amount')}
                     />
                     <TextField
-                        label="Сумма(UZS)"
+                        label="Сумма"
                         {..._.get(defaultProps, 'cost')}
                     />
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
@@ -201,4 +201,4 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
     )
 }
 
-export default enhance(SupplyListProductField)
+export default enhance(OrderListProductField)

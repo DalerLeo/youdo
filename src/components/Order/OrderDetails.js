@@ -218,8 +218,8 @@ const iconStyle = {
 
 const tooltipPosition = 'bottom-center'
 
-const SupplyDetails = enhance((props) => {
-    const {classes, loading, data, setOpenDetails, openDetails, handleSupplyExpenseOpenCreateDialog, supplyListData} = props
+const OrderDetails = enhance((props) => {
+    const {classes, loading, data, setOpenDetails, openDetails, handleOrderExpenseOpenCreateDialog, orderListData} = props
     const id = _.get(data, 'id')
     const provider = _.get(data, ['provider', 'name'])
     const products = _.get(data, 'products')
@@ -235,8 +235,8 @@ const SupplyDetails = enhance((props) => {
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
 
-    const supplyExpenseList = _.get(supplyListData, 'data')
-    const supplyExpenseListLoading = _.get(supplyListData, 'supplyExpenseListLoading')
+    const orderExpenseList = _.get(orderListData, 'data')
+    const orderExpenseListLoading = _.get(orderListData, 'orderExpenseListLoading')
 
     if (loading) {
         return (
@@ -301,7 +301,7 @@ const SupplyDetails = enhance((props) => {
                 <div className={classes.storeInfo}>
                     <div className={classes.store}>Склад: <span
                         style={{color: '#999', fontWeight: 'bold'}}>{stock}</span></div>
-                    <div className={classes.supplyDate} style={{marginLeft: '45px'}}>Дата поставки: <span
+                    <div className={classes.orderDate} style={{marginLeft: '45px'}}>Дата поставки: <span
                         style={{color: '#e57373', fontWeight: 'bold'}}>{dataDelivery}</span></div>
                 </div>
                 <div className={classes.dateInfo}>
@@ -359,18 +359,18 @@ const SupplyDetails = enhance((props) => {
                         <div>Дополнительные расходы по заказу</div>
                         <div>
                             <FlatButton
-                                onTouchTap={handleSupplyExpenseOpenCreateDialog}
+                                onTouchTap={handleOrderExpenseOpenCreateDialog}
                                 className="expenseButton"
                                 label="+ добавить доп. расход"/>
                         </div>
                     </div>
                     <div className="expenseInfo">
-                        {supplyExpenseListLoading && <div className={classes.loader}>
+                        {orderExpenseListLoading && <div className={classes.loader}>
                             <div>
                                 <CircularProgress size={100} thickness={6}/>
                             </div>
                         </div>}
-                        {!supplyExpenseListLoading && _.map(supplyExpenseList, (item) => {
+                        {!orderExpenseListLoading && _.map(orderExpenseList, (item) => {
                             const expId = _.get(item, 'id')
                             const expComment = _.get(item, 'comment')
                             const expAmount = _.get(item, 'amount')
@@ -383,7 +383,7 @@ const SupplyDetails = enhance((props) => {
                                     </Col>
                                     <Col xs={2}>
                                         <IconButton
-                                            onTouchTap={supplyListData.hamdleDelete}><Delete/></IconButton>
+                                            onTouchTap={orderListData.hamdleDelete}><Delete/></IconButton>
                                     </Col>
                                 </Row>
                             )
@@ -403,7 +403,7 @@ const SupplyDetails = enhance((props) => {
     )
 })
 
-SupplyDetails.propTypes = {
+OrderDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     confirmDialog: PropTypes.shape({
@@ -413,8 +413,7 @@ SupplyDetails.propTypes = {
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
     handleOpenUpdateDialog: PropTypes.func.isRequired,
-    handleOpenSupplyExpenseDialog: PropTypes.func.isRequired,
-    supplyListData: PropTypes.object.isRequired
+    orderListData: PropTypes.object
 }
 
-export default SupplyDetails
+export default OrderDetails

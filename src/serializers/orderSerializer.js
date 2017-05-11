@@ -1,11 +1,16 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
-import moment from 'moment'
 
 export const createSerializer = (data) => {
-    const provider = _.get(data, ['provider', 'value'])
-    const stock = _.get(data, ['stock', 'value'])
-    const currency = _.get(data, ['currency', 'value'])
+    const client = _.get(data, ['client', 'value'])
+    const contact = 2
+    const paymentType = 1
+    const paymentTerm = 1
+    const deliveryType = _.get(data, ['deliveryType', 'value'])
+    const deliveryPrice = _.get(data, 'deliveryPrice')
+    const discountPrice = _.get(data, 'discountPrice')
+    const market = 1
+    const totalPrice = 12345
     const products = _.map(_.get(data, ['products']), (item) => {
         return {
             amount: item.amount,
@@ -13,13 +18,16 @@ export const createSerializer = (data) => {
             product: item.product.value
         }
     })
-
     return {
-        provider,
-        stock,
-        'contact': 1,
-        'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
-        currency,
+        client,
+        contact,
+        'delivery_type': deliveryType,
+        'delivery_price': deliveryPrice,
+        'discount_price': discountPrice,
+        'payment_type': paymentType,
+        'payment_term': paymentTerm,
+        'total_price': totalPrice,
+        market,
         products
     }
 }
@@ -29,8 +37,13 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'provider': _.get(defaultData, 'provider'),
-        'stock': _.get(defaultData, 'stock'),
+        'id': _.get(defaultData, 'id'),
+        'client': _.get(defaultData, 'client'),
+        'user': _.get(defaultData, 'user'),
+        'dateDelivery': _.get(defaultData, 'dateDelivery'),
+        'totalCost': _.get(defaultData, 'totalCost'),
+        'totalBalance': _.get(defaultData, 'totalBalance'),
+        'status': _.get(defaultData, 'status'),
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'search': _.get(defaultData, 'search'),

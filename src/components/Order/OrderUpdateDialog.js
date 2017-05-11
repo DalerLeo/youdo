@@ -11,7 +11,7 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, LocationField, CategorySearchField} from '../ReduxForm'
 
-export const SUPPLY_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
+export const ORDER_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -81,11 +81,11 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'SupplyCreateForm'
+        form: 'OrderCreateForm'
     })
 )
 
-const SupplyCreateDialog = enhance((props) => {
+const OrderCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -104,7 +104,7 @@ const SupplyCreateDialog = enhance((props) => {
                 <div className={classes.fields}>
                     <Col xs={5}>
                         <div>
-                            <h4 className={classes.title}>Add Supply</h4>
+                            <h4 className={classes.title}>Add Order</h4>
                         </div>
                         <div>
                             <div>
@@ -186,7 +186,7 @@ const SupplyCreateDialog = enhance((props) => {
     )
 })
 
-SupplyCreateDialog.propTyeps = {
+OrderCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -194,4 +194,4 @@ SupplyCreateDialog.propTyeps = {
     loading: PropTypes.bool.isRequired
 }
 
-export default SupplyCreateDialog
+export default OrderCreateDialog

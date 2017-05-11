@@ -8,13 +8,13 @@ const enhance = compose(
     })
 )
 
-const SupplyDetailsActivity = enhance((props) => {
+const OrderDetailsActivity = enhance((props) => {
     const {classes} = props
     return (
         <div className={classes.imgContent}>
-            Supply details Activity content
+            Order details Activity content
         </div>
     )
 })
 
-export default SupplyDetailsActivity
+export default OrderDetailsActivity
