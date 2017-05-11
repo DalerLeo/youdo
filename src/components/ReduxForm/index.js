@@ -20,8 +20,10 @@ import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
 import PaymentTypeSearchField from './PaymentTypeSearchField'
 import StockTypeSearchField from './StockTypeSearchField'
 import CashboxSearchField from './CashboxSearchField'
+import ManufactureSearchField from './ManufactureSearchField'
 
 export {
+    ManufactureSearchField,
     ProductSearchField,
     DateField,
     CheckBox,

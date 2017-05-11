@@ -56,6 +56,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.CATEGORY_UPDATE),
         item: createThunkReducer(actionTypes.CATEGORY_ITEM)
     }),
+    equipment: combineReducers({
+        create: createThunkReducer(actionTypes.EQUIPMENT_CREATE),
+        list: createThunkReducer(actionTypes.EQUIPMENT_LIST),
+        update: createThunkReducer(actionTypes.EQUIPMENT_UPDATE),
+        item: createThunkReducer(actionTypes.EQUIPMENT_ITEM)
+    }),
     stock: combineReducers({
         create: createThunkReducer(actionTypes.STOCK_CREATE),
         list: createThunkReducer(actionTypes.STOCK_LIST),

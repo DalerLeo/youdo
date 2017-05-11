@@ -21,6 +21,7 @@ import {ClientList} from '../containers/Client'
 import {ManufactureList} from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
 import {PendingPaymentsList} from '../containers/PendingPayments'
+import {EquipmentList} from '../containers/Equipment'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -115,6 +116,17 @@ export default {
                 {
                     path: ROUTES.CATEGORY_ITEM_URL,
                     component: userIsAuth(CategoryList)
+                }
+            ]
+        },
+        // Equipment
+        {
+            path: ROUTES.EQUIPMENT_LIST_URL,
+            component: userIsAuth(EquipmentList),
+            childRoutes: [
+                {
+                    path: ROUTES.EQUIPMENT_ITEM_URL,
+                    component: userIsAuth(EquipmentList)
                 }
             ]
         },
