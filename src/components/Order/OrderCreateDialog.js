@@ -70,10 +70,12 @@ const enhance = compose(
         },
         inContent: {
             display: 'flex',
-            maxHeight: '50vh',
-            minHeight: '184px',
             color: '#333',
             borderBottom: '1px #efefef solid'
+        },
+        innerWrap: {
+            maxHeight: '50vh',
+            overflow: 'auto'
         },
         bodyContent: {
             color: '#333',
@@ -183,60 +185,62 @@ const OrderCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent}>
-                        <div className={classes.left}>
-                            <div className={classes.title}>Выбор клиента</div>
-                            <div className={classes.selectContent}>
-                                <Field
-                                    name="client"
-                                    component={ClientSearchField}
-                                    className={classes.inputField}
-                                    label="Клиент"
-                                    fullWidth={true}/>
-                                <RadioButtonGroup
-                                    name="contact" defaultSelected="1"
-                                    className={classes.radioButton}>
-                                    <RadioButton
-                                        value="1"
-                                        label="Tursunov Bohodir"
-                                    />
-                                    <RadioButton
-                                        value="2"
-                                        label="Ashurov Anvar"
-                                    />
-                                </RadioButtonGroup>
+                    <div className={classes.innerWrap}>
+                        <div className={classes.inContent}>
+                            <div className={classes.left}>
+                                <div className={classes.title}>Выбор клиента</div>
+                                <div className={classes.selectContent}>
+                                    <Field
+                                        name="client"
+                                        component={ClientSearchField}
+                                        className={classes.inputField}
+                                        label="Клиент"
+                                        fullWidth={true}/>
+                                    <RadioButtonGroup
+                                        name="contact" defaultSelected="1"
+                                        className={classes.radioButton}>
+                                        <RadioButton
+                                            value="1"
+                                            label="Tursunov Bohodir"
+                                        />
+                                        <RadioButton
+                                            value="2"
+                                            label="Ashurov Anvar"
+                                        />
+                                    </RadioButtonGroup>
+                                </div>
+                                <div className={classes.condition}>
+                                    <div className={classes.title}>Условия поставки</div>
+                                    <Field
+                                        name="deliveryType"
+                                        component={DeliveryTypeSearchField}
+                                        className={classes.inputField}
+                                        label="Тип поставки"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="deliveryPrice"
+                                        component={TextField}
+                                        className={classes.inputField}
+                                        label="Стоимость"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="discountPrice"
+                                        component={TextField}
+                                        className={classes.inputField}
+                                        label="Скидка (%)"
+                                        style={{width: '50%'}}/>
+                                </div>
                             </div>
-                            <div className={classes.condition}>
-                                <div className={classes.title}>Условия поставки</div>
-                                <Field
-                                    name="deliveryType"
-                                    component={DeliveryTypeSearchField}
-                                    className={classes.inputField}
-                                    label="Тип поставки"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="deliveryPrice"
-                                    component={TextField}
-                                    className={classes.inputField}
-                                    label="Стоимость"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="discountPrice"
-                                    component={TextField}
-                                    className={classes.inputField}
-                                    label="Скидка (%)"
-                                    style={{width: '50%'}}/>
+                            <div className={classes.right}>
+                                <Fields
+                                    names={['products', 'product', 'amount', 'cost']}
+                                    component={OrderListProductField}
+                                />
                             </div>
                         </div>
-                        <div className={classes.right}>
-                            <Fields
-                                names={['products', 'product', 'amount', 'cost']}
-                                component={OrderListProductField}
-                            />
+                        <div className={classes.commentField}>
+                            Общая сумма заказа: <b>350000</b>
                         </div>
-                    </div>
-                    <div className={classes.commentField}>
-                        Общая сумма заказа: <b>350000</b>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton

@@ -72,10 +72,12 @@ const enhance = compose(
         },
         inContent: {
             display: 'flex',
-            maxHeight: '50vh',
-            minHeight: '184px',
             color: '#333',
             borderBottom: '1px #efefef solid'
+        },
+        innerWrap: {
+            maxHeight: '50vh',
+            overflow: 'auto'
         },
         bodyContent: {
             width: '100%'
@@ -182,62 +184,63 @@ const SupplyCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent}>
-                        <div className={classes.left}>
-                            <div className={classes.title}>Выбор поставщика</div>
-                            <div className={classes.selectContent}>
-                                <Field
-                                    name="provider"
-                                    component={ProviderSearchField}
-                                    className={classes.inputField}
-                                    label="Поставщик"
-                                    fullWidth={true}/>
-
-                                <Field
-                                    name="contact"
-                                    component={ProviderContactsField}
+                    <div className={classes.innerWrap}>
+                        <div className={classes.inContent}>
+                            <div className={classes.left}>
+                                <div className={classes.title}>Выбор поставщика</div>
+                                <div className={classes.selectContent}>
+                                    <Field
+                                        name="provider"
+                                        component={ProviderSearchField}
+                                        className={classes.inputField}
+                                        label="Поставщик"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="contact"
+                                        component={ProviderContactsField}
+                                    />
+                                </div>
+                                <div className={classes.condition}>
+                                    <div className={classes.title}>Условия доставки</div>
+                                    <Field
+                                        name="date_delivery"
+                                        component={DateField}
+                                        className={classes.inputField}
+                                        hintText="Дата поставки"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="stock"
+                                        component={StockSearchField}
+                                        className={classes.inputField}
+                                        label="Склад назначения"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="currency"
+                                        component={CurrencySearchField}
+                                        className={classes.inputField}
+                                        label="Валюта оплаты"
+                                        fullWidth={true}/>
+                                </div>
+                            </div>
+                            <div className={classes.right}>
+                                <Fields
+                                    names={['products', 'product', 'amount', 'cost']}
+                                    component={SupplyListProductField}
                                 />
                             </div>
-                            <div className={classes.condition}>
-                                <div className={classes.title}>Условия доставки</div>
-                                <Field
-                                    name="date_delivery"
-                                    component={DateField}
-                                    className={classes.inputField}
-                                    hintText="Дата поставки"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="stock"
-                                    component={StockSearchField}
-                                    className={classes.inputField}
-                                    label="Склад назначения"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="currency"
-                                    component={CurrencySearchField}
-                                    className={classes.inputField}
-                                    label="Валюта оплаты"
-                                    fullWidth={true}/>
-                            </div>
                         </div>
-                        <div className={classes.right}>
-                            <Fields
-                                names={['products', 'product', 'amount', 'cost']}
-                                component={SupplyListProductField}
-                            />
+                        <div className={classes.commentField}>
+                            <div className={classes.title}>Комментарии по заказу</div>
+                            <Field
+                                name="comment"
+                                component={TextField}
+                                label="Оставить комментарий..."
+                                className={classes.inputField}
+                                multiLine={true}
+                                rows={3}
+                                rowsMax={3}
+                                fullWidth={true}/>
                         </div>
-                    </div>
-                    <div className={classes.commentField}>
-                        <div className={classes.title}>Комментарии по заказу</div>
-                        <Field
-                            name="comment"
-                            component={TextField}
-                            label="Оставить комментарий..."
-                            className={classes.inputField}
-                            multiLine={true}
-                            rows={3}
-                            rowsMax={3}
-                            fullWidth={true}/>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
