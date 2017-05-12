@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
@@ -85,24 +86,6 @@ const OrderTransactionsDialog = enhance((props) => {
                                 <Col xs={3}>Касса</Col>
                                 <Col xs={3}>Дата оплаты</Col>
                                 <Col xs={3}>Сумма оплаты</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={3}>3123</Col>
-                                <Col xs={3}>Super Cashbox</Col>
-                                <Col xs={3}>22.01.2016</Col>
-                                <Col xs={3}>150 000 UZS</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={3}>3123</Col>
-                                <Col xs={3}>Super Cashbox</Col>
-                                <Col xs={3}>22.01.2016</Col>
-                                <Col xs={3}>150 000 UZS</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={3}>3123</Col>
-                                <Col xs={3}>Super Cashbox</Col>
-                                <Col xs={3}>22.01.2016</Col>
-                                <Col xs={3}>150 000 UZS</Col>
                             </Row>
                             <Row className="dottedList">
                                 <Col xs={3}>3123</Col>

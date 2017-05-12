@@ -4,6 +4,7 @@ import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
+import Groceries from '../Images/groceries.svg'
 import {
     Table,
     TableBody,
@@ -21,7 +22,23 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            height: '100%',
+            position: 'relative'
+        },
+        imagePlaceholder: {
+            position: 'absolute',
+            bottom: '0',
+            left: '0',
+            width: '100%',
+            height: 'calc(100% - 100px)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            '& img': {
+                width: '100px',
+                marginBottom: '20px'
+            }
         },
         table: {
             marginTop: '20px',
@@ -156,24 +173,25 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
                 </div>}
             </div>
-            <div className={classes.table}>
+            {!_.isEmpty(products) ? <div className={classes.table}>
                 <Table
                     fixedHeader={true}
                     fixedFooter={false}
                     multiSelectable={false}>
-                    <TableHeader
-                        displaySelectAll={false}
-                        adjustForCheckbox={false}
-                        enableSelectAll={false}
-                        className={classes.title}>
-                        <TableRow className={classes.tableRow}>
-                            <TableHeaderColumn
-                                className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
-                            <TableHeaderColumn></TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
+
+                        <TableHeader
+                            displaySelectAll={false}
+                            adjustForCheckbox={false}
+                            enableSelectAll={false}
+                            className={classes.title}>
+                            <TableRow className={classes.tableRow}>
+                                <TableHeaderColumn
+                                    className={classes.tableTitle}>Наименование</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
+                                <TableHeaderColumn></TableHeaderColumn>
+                            </TableRow>
+                        </TableHeader>
                     <TableBody
                         displayRowCheckbox={false}
                         deselectOnClickaway={false}
@@ -194,6 +212,13 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                     </TableBody>
                 </Table>
             </div>
+                : <div className={classes.imagePlaceholder}>
+                    <div style={{textAlign: 'center', color: '#adadad'}}>
+                        <img src={Groceries} alt=""/>
+                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>
+                    </div>
+                </div>
+            }
         </div>
     )
 }

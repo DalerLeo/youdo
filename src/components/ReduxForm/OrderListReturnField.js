@@ -5,7 +5,6 @@ import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../Images/groceries.svg'
-
 import {
     Table,
     TableBody,
@@ -122,7 +121,7 @@ const enhance = compose(
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
-            const cost = _.get(props, ['cost', 'input', 'value'])
+            const cost = 10000
 
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
@@ -143,7 +142,7 @@ const enhance = compose(
     })
 )
 
-const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
+const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
 
     return (
@@ -168,7 +167,9 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                         {..._.get(defaultProps, 'amount')}
                     />
                     <TextField
-                        label="Сумма(UZS)"
+                        label="Сумма"
+                        disabled={true}
+                        value={'10000'}
                         {..._.get(defaultProps, 'cost')}
                     />
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
@@ -179,19 +180,20 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                     fixedHeader={true}
                     fixedFooter={false}
                     multiSelectable={false}>
-                    <TableHeader
-                        displaySelectAll={false}
-                        adjustForCheckbox={false}
-                        enableSelectAll={false}
-                        className={classes.title}>
-                        <TableRow className={classes.tableRow}>
-                            <TableHeaderColumn
-                                className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
-                            <TableHeaderColumn></TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
+
+                        <TableHeader
+                            displaySelectAll={false}
+                            adjustForCheckbox={false}
+                            enableSelectAll={false}
+                            className={classes.title}>
+                            <TableRow className={classes.tableRow}>
+                                <TableHeaderColumn
+                                    className={classes.tableTitle}>Наименование</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
+                                <TableHeaderColumn></TableHeaderColumn>
+                            </TableRow>
+                        </TableHeader>
                     <TableBody
                         displayRowCheckbox={false}
                         deselectOnClickaway={false}
@@ -223,4 +225,4 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
     )
 }
 
-export default enhance(SupplyListProductField)
+export default enhance(OrderListReturnField)

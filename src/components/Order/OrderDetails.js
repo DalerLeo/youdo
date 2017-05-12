@@ -5,12 +5,11 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
+import OrderReturnDialog from './OrderReturnDialog'
 import IconButton from 'material-ui/IconButton'
-import FlatButton from 'material-ui/FlatButton'
-import Edit from 'material-ui/svg-icons/image/edit'
-import Delete from 'material-ui/svg-icons/action/delete'
+import Return from 'material-ui/svg-icons/content/reply'
+import File from 'material-ui/svg-icons/editor/insert-drive-file'
 import {Row, Col} from 'react-flexbox-grid'
-import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
 
 const enhance = compose(
@@ -66,12 +65,51 @@ const enhance = compose(
             borderBottom: '1px #efefef solid',
             alignItems: 'center',
             width: '100%',
-            padding: '20px 30px'
+            height: '65px',
+            padding: '0 30px'
         },
         titleLabel: {
             fontSize: '18px',
             color: '#333',
             fontWeight: '600'
+        },
+        titleSupplier: {
+            fontSize: '18px',
+            position: 'relative',
+            '& .supplierDetails': {
+                background: '#fff',
+                boxShadow: '0 2px 5px 0px rgba(0, 0, 0, 0.16)',
+                fontSize: '13px',
+                position: 'absolute',
+                padding: '64px 28px 20px',
+                top: '-21px',
+                left: '50%',
+                zIndex: '9',
+                minWidth: '300px',
+                transform: 'translate(-50%, 0)',
+                '& .detailsWrap': {
+                    position: 'relative',
+                    paddingTop: '10px',
+                    '&:before': {
+                        content: '""',
+                        background: 'url(' + Dot + ')',
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        right: '0',
+                        height: '2px'
+                    }
+                },
+                '& .detailsList': {
+                    padding: '10px 0',
+                    '&:last-child': {
+                        paddingBottom: '0'
+                    },
+                    '& div:first-child': {
+                        color: '#666'
+                    }
+                }
+            }
         },
         titleClient: {
             '& span': {
@@ -141,9 +179,6 @@ const enhance = compose(
                 },
                 '& > div:first-child': {
                     textAlign: 'left'
-                },
-                '&:last-child': {
-                    position: 'static'
                 }
             }
         },
@@ -167,25 +202,28 @@ const enhance = compose(
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 18,
-        height: 18
+        width: 20,
+        height: 20
     },
     button: {
-        width: 30,
-        height: 30,
+        width: 48,
+        height: 48,
         padding: 0
     }
 }
-
+withState('openDetails', 'setOpenDetails', false)
 
 const tooltipPosition = 'bottom-center'
 
 const OrderDetails = enhance((props) => {
-    const {classes, loading, data, setOpenDetails, openDetails, handleOrderExpenseOpenCreateDialog, orderListData, transactionsDialog} = props
+    const {classes, loading, data, setOpenDetails, openDetails, transactionsDialog, returnDialog} = props
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
-    const stock = _.get(data, ['stock', 'name'])
-    const currency = _.get(data, 'currency') || 'N/A'
+    const contact = _.get(data, 'contact')
+    const contactName = _.get(contact, 'name')
+    const contactEmail = _.get(contact, 'email') || 'N/A'
+    const contactPhone = _.get(contact, 'telephone') || 'N/A'
+
     const client = _.get(data, 'client')
     const clientPerson = _.get(client, 'name')
     const deliveryType = _.get(data, 'deliveryType')
@@ -197,11 +235,6 @@ const OrderDetails = enhance((props) => {
     const totalPrice = _.get(data, 'totalPrice')
     const totalBalance = _.get(data, 'totalBalance')
     const discountPrice = deliveryPrice * (discount / percent)
-    console.log(data)
-    console.log(deliveryType)
-
-    const orderExpenseList = _.get(orderListData, 'data')
-    const orderExpenseListLoading = _.get(orderListData, 'orderExpenseListLoading')
 
     if (loading) {
         return (
@@ -217,7 +250,50 @@ const OrderDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}>Заказ №{id}</div>
-                <div className={classes.titleClient}>Клиент: <span>{clientPerson}</span></div>
+                <div className={classes.titleSupplier}>
+                    <a className={classes.dropdown} onMouseEnter={() => {
+                        setOpenDetails(true)
+                    }}>{clientPerson}</a>
+                    {openDetails &&
+                    <div className="supplierDetails" onMouseLeave={() => {
+                        setOpenDetails(false)
+                    }}>
+                        <div className="detailsWrap">
+                            <Row className="detailsList">
+                                <Col xs={6}>Контактное лицо</Col>
+                                <Col xs={6}>{contactName}</Col>
+                            </Row>
+                            <Row className="detailsList">
+                                <Col xs={6}>Телефон</Col>
+                                <Col xs={6}>{contactPhone}</Col>
+                            </Row>
+                            <Row className="detailsList">
+                                <Col xs={6}>Email</Col>
+                                <Col xs={6}>{contactEmail}</Col>
+                            </Row>
+                        </div>
+                    </div>
+                    }
+                </div>
+                <div className={classes.titleButtons}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        onTouchTap={returnDialog.handleOpenReturnDialog}
+                        tooltip="Добавить возврат">
+                        <Return />
+                    </IconButton>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Скачать договор">
+                        <File />
+                    </IconButton>
+                </div>
             </div>
 
             <div className={classes.content}>
@@ -304,6 +380,12 @@ const OrderDetails = enhance((props) => {
                 loading={transactionsDialog.transactionsLoading}
                 onClose={transactionsDialog.handleCloseTransactionsDialog}
             />
+            <OrderReturnDialog
+                open={returnDialog.openReturnDialog}
+                loading={returnDialog.returnLoading}
+                onClose={returnDialog.handleCloseReturnDialog}
+                onSubmit={returnDialog.handleSubmitReturnDialog}
+            />
         </div>
     )
 })
@@ -317,11 +399,11 @@ OrderDetails.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    transactionsDialog: PropTypes.shape({
-        transactionsLoading: PropTypes.bool.isRequired,
-        openTransactionsDialog: PropTypes.bool.isRequired,
-        handleOpenTransactionsDialog: PropTypes.func.isRequired,
-        handleCloseTransactionsDialog: PropTypes.func.isRequired
+    returnDialog: PropTypes.shape({
+        returnLoading: PropTypes.bool.isRequired,
+        openReturnDialog: PropTypes.bool.isRequired,
+        handleOpenReturnDialog: PropTypes.func.isRequired,
+        handleCloseReturnDialog: PropTypes.func.isRequired
     }).isRequired,
     handleOpenUpdateDialog: PropTypes.func.isRequired,
     orderListData: PropTypes.object

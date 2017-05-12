@@ -106,6 +106,7 @@ const OrderGridList = enhance((props) => {
         filterDialog,
         actionsDialog,
         transactionsDialog,
+        returnDialog,
         confirmDialog,
         deleteDialog,
         listData,
@@ -139,6 +140,7 @@ const OrderGridList = enhance((props) => {
             data={_.get(detailData, 'data') || {}}
             deleteDialog={deleteDialog}
             transactionsDialog={transactionsDialog}
+            returnDialog={returnDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
@@ -182,7 +184,7 @@ const OrderGridList = enhance((props) => {
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить поставку">
+                <Tooltip position="left" text="Добавить заказ">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -270,6 +272,12 @@ OrderGridList.propTypes = {
         openTransactionsDialog: PropTypes.bool.isRequired,
         handleOpenTransactionsDialog: PropTypes.func.isRequired,
         handleCloseTransactionsDialog: PropTypes.func.isRequired
+    }).isRequired,
+    returnDialog: PropTypes.shape({
+        returnLoading: PropTypes.bool.isRequired,
+        openReturnDialog: PropTypes.bool.isRequired,
+        handleOpenReturnDialog: PropTypes.func.isRequired,
+        handleCloseReturnDialog: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,
