@@ -86,6 +86,12 @@ strong {
     right: 0;
 }
 
+hr.lineDote {
+    height: 2px;
+    border: none;
+    background-image: url(../components/Images/dot.png);
+}
+
 .greenFont {color:#81c784 !important;}
 .greenFont svg {color:#81c784 !important;}
 .redFont {color:#e57373 !important;}
