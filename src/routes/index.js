@@ -242,6 +242,10 @@ export default {
             path: ROUTES.MANUFACTURE_LIST_URL,
             component: userIsAuth(ManufactureList),
             childRoutes: [
+                {
+                    path: ROUTES.MANUFACTURE_ITEM_URL,
+                    component: userIsAuth(ManufactureList)
+                }
             ]
         },
         // Pending Expenses
@@ -267,15 +271,13 @@ export default {
         {
             path: ROUTES.STATSTOCK_LIST_URL,
             component: userIsAuth(StatStock),
-            childRoutes: [
-            ]
+            childRoutes: []
         },
         // METRICA (Stat Debtors)
         {
             path: ROUTES.STATDEBTORS_LIST_URL,
             component: userIsAuth(StatDebtors),
-            childRoutes: [
-            ]
+            childRoutes: []
         },
 
         {

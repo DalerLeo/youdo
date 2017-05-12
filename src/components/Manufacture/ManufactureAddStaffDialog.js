@@ -13,6 +13,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MainStyles from '../Styles/MainStyles'
 import Person from '../Images/person.png'
+import ManufactureShiftCreateForm from './ManufactureShiftCreateForm'
 
 export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
 
@@ -182,8 +183,46 @@ const enhance = compose(
 )
 
 const ManufactureAddStaffDialog = enhance((props) => {
-    const {open, loading, onClose, classes, openAddShift, setOpenAddShift, openAddStaff, setOpenAddStaff} = props
+    const {
+        open,
+        loading,
+        onClose,
+        classes,
+        openAddShift,
+        setOpenAddShift,
+        openAddStaff,
+        setOpenAddStaff,
+        shiftData
+    } = props
 
+    const shiftList = _.map(_.get(shiftData, 'shiftList'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        const beginTime = _.get(item, 'beginTime')
+        const endTime = _.get(item, 'endTime')
+
+        return (
+            <div key={id}>
+                <div className={classes.productionStaffGroupTitle}>
+                    <div className="dottedList">
+                        <p>{name}</p>
+                        <span>График: {beginTime} - {endTime}</span>
+                    </div>
+                </div>
+                <ul className={classes.productionStaffUl}>
+                    <li className="dottedList">
+                        <div>
+                            <img src={Person} />
+                        </div>
+                        <div>
+                            Атамбаев Бекзод<br />
+                            <span>Должность</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        )
+    })
     return (
         <Dialog
             modal={true}
@@ -209,46 +248,10 @@ const ManufactureAddStaffDialog = enhance((props) => {
                             </a>
                         </div>
                         {openAddShift && <div className={classes.background}>
-                            <form>
-                                <Field
-                                    name="name"
-                                    component={TextField}
-                                    className={classes.inputFieldShift}
-                                    label="Наименование"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="address"
-                                    component={TextField}
-                                    className={classes.inputFieldTime}
-                                    label="Время"
-                                    fullWidth={true}/>
-                                <div className={classes.buttonSub}>
-                                    <FlatButton
-                                        label="Сохранить"
-                                        className={classes.actionButton}
-                                        type="submit"
-                                    />
-                                </div>
-                            </form>
+                            <ManufactureShiftCreateForm
+                                onSubmit={shiftData.handleSubmitShiftAddForm}/>
                         </div>}
-                        <div className={classes.shift}>
-                            <h4>
-                                Смена А
-                                <span>(00:00 - 00:00)</span>
-                            </h4>
-                            <div className={classes.deleteHideIco}>
-                                <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
-                            </div>
-                        </div>
-                        <div className={classes.shift}>
-                            <h4>
-                                Смена Б
-                                <span>(00:00 - 00:00)</span>
-                            </h4>
-                            <div className={classes.deleteHideIco}>
-                                <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
-                            </div>
-                        </div>
+                        {shiftList}
                     </div>
                     <div className={classes.rightSide}>
                         <div className={classes.innerTitle}>
@@ -360,7 +363,11 @@ ManufactureAddStaffDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func,
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    shiftData: PropTypes.shape({
+        shiftList: PropTypes.array,
+        handleSubmitShiftAddForm: PropTypes.func.isRequired
+    })
 }
 
 ManufactureAddStaffDialog.defaultProps = {

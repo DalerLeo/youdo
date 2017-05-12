@@ -19,11 +19,9 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
 import MainStyles from '../Styles/MainStyles'
 import Glue from '../Images/glue.png'
-import Cylindrical from '../Images/cylindrical.png'
 import Press from '../Images/press.png'
-import Cut from '../Images/cut.png'
-import Badge from '../Images/badge.png'
 import Person from '../Images/person.png'
+import {shiftListFetchAction} from '../../actions/manufacture'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -181,11 +179,72 @@ const enhance = compose(
 
 const ManufactureGridList = enhance((props) => {
     const {
+        listData,
+        detailData,
         addStaff,
         showBom,
         addProductDialog,
-        classes
+        classes,
+        shiftData,
+        equipmentData
     } = props
+
+    const detailId = _.get(detailData, 'id')
+    const manufactureList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        return (
+            <li key={id} className={classes.productionTypeLi}
+                onTouchTap={() => {
+                    listData.handleClickItem(id)
+                }}
+                style={ detailId === id ? {backgroundColor: 'white'} : {}}>
+                <img src={Glue}/>
+                {name}
+            </li>
+        )
+    })
+    const shiftList = _.map(_.get(shiftData, 'shiftList'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        const beginTime = _.get(item, 'beginTime')
+        const endTime = _.get(item, 'endTime')
+
+        return (
+            <div key={id}>
+                <div className={classes.productionStaffGroupTitle}>
+                    <div className="dottedList">
+                        <p>{name}</p>
+                        <span>График: {beginTime} - {endTime}</span>
+                    </div>
+                </div>
+                <ul className={classes.productionStaffUl}>
+                    <li className="dottedList">
+                        <div>
+                            <img src={Person}/>
+                        </div>
+                        <div>
+                            Атамбаев Бекзод<br />
+                            <span>Должность</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        )
+    })
+
+    const equipList = _.map(_.get(equipmentData, 'equipmentList'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+
+        return (
+            <Col xs={4} key={id}>
+                <div className={classes.productionEquipmentElement}>
+                    {name}
+                </div>
+            </Col>
+        )
+    })
 
     const iconButton = (
         <IconButton style={{padding: '0 12px', height: 'auto'}}>
@@ -195,10 +254,11 @@ const ManufactureGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.MANUFACTURE_LIST_URL}/>
+            <SubMenu url={ROUTES.MANUFACTURE_CUSTOM_URL}/>
             <ManufactureAddStaffDialog
                 open={addStaff.open}
                 onClose={addStaff.handleClose}
+                shiftData={shiftData}
             />
             <ManufactureShowBom
                 open={showBom.open}
@@ -212,26 +272,7 @@ const ManufactureGridList = enhance((props) => {
                 <Col xs={3} className={classes.productionLeftSide}>
                     <h2 className={classes.productionH2}>Этапы производства</h2>
                     <ul className={classes.productionUl}>
-                        <li className={classes.productionTypeLi}>
-                            <img src={Glue} />
-                            Производство клея
-                        </li>
-                        <li className={classes.productionTypeLi}>
-                            <img src={Cylindrical} />
-                            Производство втулок
-                        </li>
-                        <li className={classes.productionTypeLi}>
-                            <img src={Press} />
-                            Производство рулонов
-                        </li>
-                        <li className={classes.productionTypeLi}>
-                            <img src={Cut} />
-                            Резка рулонов
-                        </li>
-                        <li className={classes.productionTypeLi}>
-                            <img src={Badge} />
-                            Нанесение логотипа
-                        </li>
+                        {manufactureList}
                     </ul>
                 </Col>
                 <Col xs={9} className={classes.productionRightSide}>
@@ -241,94 +282,47 @@ const ManufactureGridList = enhance((props) => {
                         </Col>
                     </Row>
                     <Row>
-                        <Col xs={4} style={{borderRight: '1px solid #efefef', height: 'calc(100vh - 120px)', padding: '20px 30px 20px 10px'}}>
+                        <Col xs={4} style={{
+                            borderRight: '1px solid #efefef',
+                            height: 'calc(100vh - 120px)',
+                            padding: '20px 30px 20px 10px'
+                        }}>
                             <div>
-                                <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '800', margin: '0'}}>Персонал</h3>
+                                <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '800', margin: '0'}}>
+                                    Персонал</h3>
                                 <a style={{float: 'right'}} onClick={addStaff.handleOpen}>
-                                    <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
+                                    <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
+                                                viewBox="0 0 24 15"/>
                                     добавить
                                 </a>
                             </div>
-                            <div>
-                                <div className={classes.productionStaffGroupTitle}>
-                                    <div className="dottedList">
-                                        <p>Смена А</p>
-                                        <span>График: 09:00 - 18:00</span>
-                                    </div>
-                                </div>
-                                <ul className={classes.productionStaffUl}>
-                                    <li className="dottedList">
-                                        <div>
-                                            <img src={Person} />
-                                        </div>
-                                        <div>
-                                            Атамбаев Бекзод<br />
-                                            <span>Должность</span>
-                                        </div>
-                                    </li>
-                                    <li className="dottedList">
-                                        <div>
-                                            <img src={Person} />
-                                        </div>
-                                        <div>
-                                            Атамбаев Бекзод<br />
-                                            <span>Должность</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div>
-                                <div className={classes.productionStaffGroupTitle}>
-                                    <div className="dottedList">
-                                        <p>Смена А</p>
-                                        <span>График: 09:00 - 18:00</span>
-                                    </div>
-                                </div>
-                                <ul className={classes.productionStaffUl}>
-                                    <li className="dottedList">
-                                        <div>
-                                            <img src={Person} />
-                                        </div>
-                                        <div>
-                                            Атамбаев Бекзод<br />
-                                            <span>Должность</span>
-                                        </div>
-                                    </li>
-                                    <li className="dottedList">
-                                        <div>
-                                            <img src={Person} />
-                                        </div>
-                                        <div>
-                                            Атамбаев Бекзод<br />
-                                            <span>Должность</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                            {shiftList}
                         </Col>
                         <Col xs={8} style={{padding: '20px 25px'}}>
                             <Row>
                                 <Col xs={12}>
-                                    <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '800', margin: '0'}}>Оборудование</h3>
+                                    <h3 style={{
+                                        display: 'inline-block',
+                                        fontSize: '13px',
+                                        fontWeight: '800',
+                                        margin: '0'
+                                    }}>Оборудование</h3>
                                     <Row className={classes.productionEquipment}>
-                                        <Col xs={4}>
-                                            <div className={classes.productionEquipmentElement}>
-                                                Название оборудования
-                                            </div>
-                                        </Col>
-                                        <Col xs={4}>
-                                            <div className={classes.productionEquipmentElement}>
-                                                Название оборудования
-                                            </div>
-                                        </Col>
+                                        {equipList}
                                     </Row>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col xs={12} style={{padding: '20px 7px 10px'}}>
-                                    <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '800', margin: '0'}}>Список производимой продукции</h3>
+                                    <h3 style={{
+                                        display: 'inline-block',
+                                        fontSize: '13px',
+                                        fontWeight: '800',
+                                        margin: '0'
+                                    }}>Список производимой продукции</h3>
                                     <a style={{float: 'right'}} onClick={addProductDialog.handleOpen}>
-                                        <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
+                                        <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
+                                                    viewBox="0 0 24 15"/>
                                         добавить
                                     </a>
                                 </Col>
@@ -340,8 +334,14 @@ const ManufactureGridList = enhance((props) => {
                                             <strong>Название продукта</strong><br />
                                             <span>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</span>
                                         </Col>
-                                        <Col xs={4} style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
-                                            <a onClick={showBom.handleOpen} style={{borderBottom: '1px dashed rgb(18, 170, 235)'}}>BoM </a>
+                                        <Col xs={4} style={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            justifyContent: 'flex-end'
+                                        }}>
+                                            <a onClick={showBom.handleOpen}
+                                               style={{borderBottom: '1px dashed rgb(18, 170, 235)'}}>BoM </a>
                                         </Col>
                                         <Col xs={1}>
                                             <IconMenu
@@ -371,6 +371,7 @@ const ManufactureGridList = enhance((props) => {
 })
 
 ManufactureGridList.propTypes = {
+    listData: PropTypes.object,
     detailData: PropTypes.object,
     addStaff: PropTypes.shape({
         open: PropTypes.bool.isRequired,
@@ -386,7 +387,12 @@ ManufactureGridList.propTypes = {
         open: PropTypes.bool.isRequired,
         handleOpen: PropTypes.func.isRequired,
         handleClose: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    shiftData: PropTypes.shape({
+        shiftList: PropTypes.array,
+        handleSubmitShiftAddForm: PropTypes.func.isRequired
+    }),
+    equipmentData: PropTypes.object
 }
 
 export default ManufactureGridList

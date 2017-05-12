@@ -18,8 +18,12 @@ import {
     manufactureListFetchAction,
     manufactureCSVFetchAction,
     manufactureDeleteAction,
-    manufactureItemFetchAction
+    manufactureItemFetchAction,
+
+    shiftCreateAction,
+    shiftListFetchAction
 } from '../../actions/manufacture'
+import {equipmentListFetchAction} from '../../actions/equipment'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -31,14 +35,20 @@ const enhance = compose(
         const createLoading = _.get(state, ['manufacture', 'create', 'loading'])
         const updateLoading = _.get(state, ['manufacture', 'update', 'loading'])
         const list = _.get(state, ['manufacture', 'list', 'data'])
+        const shiftList = _.get(state, ['shift', 'list', 'data'])
+        const equipmentList = _.get(state, ['equipment', 'list', 'data'])
         const listLoading = _.get(state, ['manufacture', 'list', 'loading'])
         const csvData = _.get(state, ['manufacture', 'csv', 'data'])
         const csvLoading = _.get(state, ['manufacture', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'ManufactureCreateForm'])
+        const shiftCreateForm = _.get(state, ['form', 'ShiftCreateForm'])
+
         const filter = filterHelper(list, pathname, query)
 
         return {
             list,
+            shiftList,
+            equipmentList,
             listLoading,
             detail,
             detailLoading,
@@ -47,13 +57,15 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
-            createForm
+            createForm,
+            shiftCreateForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(manufactureListFetchAction(filter))
+        dispatch(equipmentListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -62,6 +74,8 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
         manufactureId && dispatch(manufactureItemFetchAction(manufactureId))
+        manufactureId && dispatch(shiftListFetchAction(manufactureId))
+        // manufactureId && dispatch(equipmentListFetchAction(manufactureId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -104,11 +118,6 @@ const enhance = compose(
                 })
         },
 
-        handleTabChange: props => (tab) => {
-            const manufactureId = _.toInteger(_.get(props, ['params', 'manufactureId']))
-            hashHistory.push({pathname: sprintf(ROUTER.MANUFACTURE_ITEM_TAB_PATH, manufactureId, tab)})
-        },
-
         handleOpenDeleteDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({
@@ -123,8 +132,9 @@ const enhance = compose(
         },
 
         handleOpenAddStaff: props => () => {
-            const {location: {pathname}, filter} = props
+            const {detailData, dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: true})})
+            dispatch(shiftListFetchAction(_.get(detailData, 'id')))
         },
         handleCloseAddStaff: props => () => {
             const {location: {pathname}, filter} = props
@@ -145,12 +155,33 @@ const enhance = compose(
         handleCloseAddProductDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: false})})
+        },
+        handleSubmitShiftAddForm: props => () => {
+            const {dispatch, shiftCreateForm, filter, location: {pathname}} = props
+
+            return dispatch(shiftCreateAction(_.get(shiftCreateForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname})
+                    dispatch(shiftListFetchAction(filter))
+                })
+        },
+        handleClickItem: props => (id) => {
+            hashHistory.push({
+                pathname: sprintf(ROUTER.MANUFACTURE_ITEM_PATH, id)
+            })
         }
     })
 )
 
 const ManufactureList = enhance((props) => {
     const {
+        list,
+        shiftList,
+        equipmentList,
+        listLoading,
         location,
         detail,
         detailLoading,
@@ -193,13 +224,31 @@ const ManufactureList = enhance((props) => {
         handleSubmit: props.handleCloseAddProductDialog
     }
 
+    const shiftData = {
+        shiftList: _.get(shiftList, 'results'),
+        handleSubmitShiftAddForm: props.handleSubmitShiftAddForm
+    }
+
+    const equipmentData = {
+        equipmentList: _.get(equipmentList, 'results')
+    }
+
+    const listData = {
+        data: _.get(list, 'results'),
+        listLoading,
+        handleClickItem: props.handleClickItem
+    }
+
     return (
         <Layout {...layout}>
             <ManufactureGridList
                 detailData={detailData}
+                listData={listData}
+                equipmentData={equipmentData}
                 addStaff={addStaff}
                 showBom={showBom}
                 addProductDialog={addProductDialog}
+                shiftData={shiftData}
             />
         </Layout>
     )
