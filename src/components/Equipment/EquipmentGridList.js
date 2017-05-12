@@ -127,7 +127,7 @@ const EquipmentGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.EQUIPMENT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить оборудованию">
+                <Tooltip position="left" text="Добавить оборудование">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}

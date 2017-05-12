@@ -23,7 +23,7 @@ const enhance = compose(
         wrapper: {
             display: 'flex',
             flexDirection: 'column',
-            height: '100%',
+            minHeight: '360px',
             position: 'relative'
         },
         imagePlaceholder: {
