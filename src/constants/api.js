@@ -107,6 +107,13 @@ export const PRODUCT_LIST = `/${PRODUCT}/`
 export const PRODUCT_ITEM = `/${PRODUCT}/%d/`
 export const PRODUCT_DELETE = `/${PRODUCT}/%d/`
 
+export const PRODUCT_PRICE = 'dist/product'
+export const PRODUCT_PRICE_CREATE = `/${PRODUCT_PRICE}/`
+export const PRODUCT_PRICE_LIST = `/${PRODUCT_PRICE}/`
+export const PRODUCT_PRICE_ITEM = `/${PRODUCT_PRICE}/%d/`
+export const PRODUCT_PRICE_SET = `/${PRODUCT_PRICE}/%d/set_price/`
+export const PRODUCT_PRICE_DELETE = `/${PRODUCT_PRICE}/%d/`
+
 export const PRODUCT_TYPE = 'dist/product_type'
 export const PRODUCT_TYPE_CREATE = `/${PRODUCT_TYPE}/add/`
 export const PRODUCT_TYPE_LIST = `/${PRODUCT_TYPE}/`
@@ -134,6 +141,18 @@ export const PENDING_EXPENSES = 'supply_expanse'
 export const PENDING_EXPENSES_CREATE = `/${PENDING_EXPENSES}/`
 export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`
 export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`
+
+export const STATSTOCK = 'dist/stock'
+export const STATSTOCK_CREATE = `/${STATSTOCK}/`
+export const STATSTOCK_LIST = `/${STATSTOCK}/`
+export const STATSTOCK_ITEM = `/${STATSTOCK}/%d/`
+export const STATSTOCK_DELETE = `/${STATSTOCK}/%d/`
+
+export const STATDEBTORS = 'dist/stock'
+export const STATDEBTORS_CREATE = `/${STATDEBTORS}/`
+export const STATDEBTORS_LIST = `/${STATDEBTORS}/`
+export const STATDEBTORS_ITEM = `/${STATDEBTORS}/%d/`
+export const STATDEBTORS_DELETE = `/${STATDEBTORS}/%d/`
 
 export const PENDING_PAYMENTS = 'order'
 export const PENDING_PAYMENTS_CREATE = `/${PENDING_PAYMENTS}/`

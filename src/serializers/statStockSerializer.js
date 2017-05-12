@@ -3,17 +3,9 @@ import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
     const name = _.get(data, ['name'])
-    const brand = _.get(data, ['brand', 'value'])
-    const type = _.get(data, ['type', 'value'])
-    const measurement = _.get(data, ['measurement', 'value'])
-    const image = _.get(data, 'image')
 
     return {
-        name,
-        brand,
-        type,
-        measurement,
-        image
+        name
     }
 }
 
@@ -22,8 +14,7 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'brand': _.get(defaultData, 'brand'),
-        'type': _.get(defaultData, 'type'),
+        'name': _.get(defaultData, 'name'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

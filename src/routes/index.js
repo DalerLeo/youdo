@@ -11,6 +11,7 @@ import {SupplyList} from '../containers/Supply'
 import {OrderList} from '../containers/Order'
 import {ProductList} from '../containers/Product'
 import {CategoryList} from '../containers/Category'
+import {ProductPriceList} from '../containers/ProductPrice'
 import {StockList} from '../containers/Stock'
 import {CurrencyList} from '../containers/Currency'
 import {BrandList} from '../containers/Brand'
@@ -21,6 +22,8 @@ import {ProviderList} from '../containers/Provider'
 import {ClientList} from '../containers/Client'
 import {ManufactureList} from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
+import {StatStock} from '../containers/StatStock'
+import {StatDebtors} from '../containers/StatDebtors'
 import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
 import NotFound from '../containers/NotFound'
@@ -29,7 +32,7 @@ export default {
     path: '/',
     component: App,
     indexRoute: {
-        component: userIsAuth(ShopList)
+        component: userIsAuth(StatStock)
     },
     childRoutes: [
         {
@@ -118,6 +121,21 @@ export default {
             path: ROUTES.PRODUCT_LIST_URL,
             component: userIsAuth(ProductList),
             childRoutes: [
+                {
+                    path: ROUTES.PRODUCT_ITEM_URL,
+                    component: userIsAuth(ProductList)
+                }
+            ]
+        },
+        // Product Price
+        {
+            path: ROUTES.PRODUCT_PRICE_LIST_URL,
+            component: userIsAuth(ProductPriceList),
+            childRoutes: [
+                {
+                    path: ROUTES.PRODUCT_PRICE_ITEM_URL,
+                    component: userIsAuth(ProductPriceList)
+                }
             ]
         },
         // Category
@@ -244,6 +262,20 @@ export default {
                 path: ROUTES.PENDING_PAYMENTS_ITEM_URL,
                 component: userIsAuth(PendingPaymentsList)
             }]
+        },
+        // METRICA (Stat Stock)
+        {
+            path: ROUTES.STATSTOCK_LIST_URL,
+            component: userIsAuth(StatStock),
+            childRoutes: [
+            ]
+        },
+        // METRICA (Stat Debtors)
+        {
+            path: ROUTES.STATDEBTORS_LIST_URL,
+            component: userIsAuth(StatDebtors),
+            childRoutes: [
+            ]
         },
 
         {

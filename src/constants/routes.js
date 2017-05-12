@@ -38,7 +38,13 @@ export const ORDER_ITEM_TAB_PATH = `/${ORDER}/%d/%s`
 
 export const PRODUCT = 'product'
 export const PRODUCT_LIST_URL = `/${PRODUCT}`
+export const PRODUCT_ITEM_URL = `${PRODUCT_LIST_URL}/:productId`
 export const PRODUCT_ITEM_PATH = `/${PRODUCT}/%d`
+
+export const PRODUCT_PRICE = 'productPrice'
+export const PRODUCT_PRICE_LIST_URL = `/${PRODUCT_PRICE}`
+export const PRODUCT_PRICE_ITEM_URL = `${PRODUCT_PRICE_LIST_URL}/:productPriceId`
+export const PRODUCT_PRICE_ITEM_PATH = `/${PRODUCT_PRICE}/%d`
 
 export const CATEGORY = 'category'
 export const CATEGORY_LIST_URL = `/${CATEGORY}`
@@ -95,7 +101,18 @@ export const PENDING_EXPENSES_LIST_URL = `/${PENDING_EXPENSES}`
 export const PENDING_EXPENSES_ITEM_URL = `${PENDING_EXPENSES_LIST_URL}/:pendingExpensesId`
 export const PENDING_EXPENSES_ITEM_PATH = `${PENDING_EXPENSES}/%d`
 
+export const STATSTOCK = 'stockStat'
+export const STATSTOCK_LIST_URL = `/${STATSTOCK}`
+export const STATSTOCK_ITEM_URL = `${STATSTOCK_LIST_URL}/:statStockId`
+export const STATSTOCK_ITEM_PATH = `/${STATSTOCK}/%d`
+
+export const STATDEBTORS = 'statDebtors'
+export const STATDEBTORS_LIST_URL = `/${STATDEBTORS}`
+export const STATDEBTORS_ITEM_URL = `${STATDEBTORS_LIST_URL}/:statDebtorsId`
+export const STATDEBTORS_ITEM_PATH = `/${STATDEBTORS}/%d`
+
 export const PENDING_PAYMENTS = 'pendingPayments'
 export const PENDING_PAYMENTS_LIST_URL = `/${PENDING_PAYMENTS}`
 export const PENDING_PAYMENTS_ITEM_URL = `${PENDING_PAYMENTS_LIST_URL}/:pendingPaymentsId`
 export const PENDING_PAYMENTS_ITEM_PATH = `${PENDING_PAYMENTS}/%d`
+

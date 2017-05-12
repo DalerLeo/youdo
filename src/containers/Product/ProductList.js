@@ -8,10 +8,10 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     PRODUCT_CREATE_DIALOG_OPEN,
     PRODUCT_UPDATE_DIALOG_OPEN,
+    PRODUCT_DELETE_DIALOG_OPEN,
     PRODUCT_FILTER_KEY,
     PRODUCT_FILTER_OPEN,
     ProductGridList
@@ -73,7 +73,6 @@ const enhance = compose(
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
-    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
@@ -92,23 +91,28 @@ const enhance = compose(
             setOpenCSVDialog(false)
         },
 
-        handleOpenConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(true)
+        handleOpenConfirmDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.PRODUCT_ITEM_PATH, id),
+                query: filter.getParams({[PRODUCT_DELETE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(false)
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_DELETE_DIALOG_OPEN]: false})})
         },
+
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
+            const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(productDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
-                    setOpenConfirmDialog(false)
+                    hashHistory.push({pathname, query: filter.getParams({[PRODUCT_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(productListFetchAction(filter))
                 })
         },
 
@@ -120,11 +124,6 @@ const enhance = compose(
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRODUCT_FILTER_OPEN]: false})})
-        },
-
-        handleTabChange: props => (tab) => {
-            const productId = _.toInteger(_.get(props, ['params', 'productId']))
-            hashHistory.push({pathname: sprintf(ROUTER.PRODUCT_ITEM_TAB_PATH, productId, tab)})
         },
 
         handleClearFilterDialog: props => () => {
@@ -165,20 +164,24 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
 
             return dispatch(productCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[PRODUCT_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[PRODUCT_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(productListFetchAction(filter))
                 })
         },
 
-        handleOpenUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_UPDATE_DIALOG_OPEN]: true})})
+        handleOpenUpdateDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.PRODUCT_ITEM_PATH, id),
+                query: filter.getParams({[PRODUCT_UPDATE_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseUpdateDialog: props => () => {
@@ -199,6 +202,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[PRODUCT_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(productListFetchAction(filter))
                 })
         }
     })
@@ -221,7 +225,7 @@ const ProductList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', PRODUCT_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', PRODUCT_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PRODUCT_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
+    const openConfirmDialog = toBoolean(_.get(location, ['query', PRODUCT_DELETE_DIALOG_OPEN]))
     const category = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.CATEGORY))
     const detailId = _.toInteger(_.get(params, 'productId'))
     const tab = _.get(params, 'tab')
@@ -239,14 +243,8 @@ const ProductList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
-    }
-
     const confirmDialog = {
-        openConfirmDialog: props.openConfirmDialog,
+        openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
@@ -260,18 +258,16 @@ const ProductList = enhance((props) => {
 
             return {
                 name: _.get(detail, 'name'),
-                category: {
-                    value: _.get(detail, 'category')
+                type: {
+                    value: _.get(detail, 'type')
                 },
-                address: _.get(detail, 'address'),
-                guide: _.get(detail, 'guide'),
-                phone: _.get(detail, 'phone'),
-                contactName: _.get(detail, 'contactName'),
-                official: _.get(detail, 'official'),
-                latLng: {
-                    lat: _.get(detail, 'lat'),
-                    lng: _.get(detail, 'lon')
-                }
+                brand: {
+                    value: _.get(detail, ['brand', 'id'])
+                },
+                measurement: {
+                    value: _.get(detail, ['measurement', 'id'])
+                },
+                image: _.get(detail, 'image')
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -327,7 +323,6 @@ const ProductList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
