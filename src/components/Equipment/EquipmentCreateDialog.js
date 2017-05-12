@@ -41,16 +41,16 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-        fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none',
-            width: '100%'
-        },
-
-        body: {
-            minHeight: 'auto'
-        },
-        form: {
-            minHeight: 'auto'
+        equipmentPhoto: {
+            '& .imageDropZone': {
+                width: '160px',
+                height: '160px',
+                marginLeft: '30px',
+                marginBottom: '30px',
+                '& svg': {
+                    width: '40px !important'
+                }
+            }
         }
     })),
     reduxForm({
@@ -73,7 +73,7 @@ const EquipmentCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить оборудованию' : 'Добавить оборудованию'}</span>
+                <span>{isUpdate ? 'Изменить оборудование' : 'Добавить оборудование'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -99,6 +99,8 @@ const EquipmentCreateDialog = enhance((props) => {
                                 label="Производство"
                                 fullWidth={true}
                             />
+                        </div>
+                        <div className={classes.equipmentPhoto}>
                             <Field
                                 name="image"
                                 className={classes.imageUpload}
