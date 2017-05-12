@@ -11,6 +11,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
 import MainStyles from '../Styles/MainStyles'
+import CloseIcon from '../CloseIcon'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -102,10 +103,14 @@ const enhance = compose(
             }
         },
         details: {
-            extend: 'title',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
             background: '#f2f5f8',
-            padding: '23px 30px',
-            margin: '0 -30px'
+            padding: '0 30px',
+            margin: '0 -30px',
+            minHeight: '60px'
         },
         payInfo: {
             display: 'flex'
@@ -138,25 +143,30 @@ const enhance = compose(
                 }
             },
             '& .addExpenses': {
-                padding: '20px 30px',
+                padding: '20px 30px 0',
                 margin: '0 -30px',
                 borderBottom: '1px #efefef solid',
                 '& .addExpense': {
                     display: 'flex',
+                    alignItems: 'center',
+                    paddingBottom: '20px',
                     width: '100%',
                     justifyContent: 'space-between',
                     fontWeight: 'bold',
-                    paddingBottom: '30px',
                     '& .expenseButton > div > span ': {
-                        color: 'red !important',
+                        color: '#12aaeb !important',
                         textTransform: 'inherit !important'
                     }
                 }
             },
             '& .expenseInfo': {
-                marginBottom: '20px',
+                padding: '0 !important',
+                display: 'block',
                 '&:last-child': {
-                    margin: '0'
+                    position: 'static'
+                },
+                '& .row': {
+                    alignItems: 'center'
                 }
             },
             '& .comment': {
@@ -197,6 +207,11 @@ const enhance = compose(
                     }
                 }
             }
+        },
+        expenseSum: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end'
         }
     })),
     withState('openDetails', 'setOpenDetails', false)
@@ -317,7 +332,7 @@ const SupplyDetails = enhance((props) => {
                         <Col xs={1}>Принято</Col>
                         <Col xs={1}>Брак</Col>
                         <Col xs={1}>
-                            <div>Стоимость</div>
+                            <div style={{textAlign: 'right'}}>Стоимость</div>
                         </Col>
                         <Col xs={2}>
                             <div style={{textAlign: 'right'}}>Итог</div>
@@ -327,6 +342,7 @@ const SupplyDetails = enhance((props) => {
                 <div>
                     {_.map(products, (item) => {
                         const product = _.get(item, 'product')
+                        const productId = _.get(product, 'id')
                         const productName = _.get(product, 'name')
                         const price = _.get(product, 'price')
                         const cost = _.get(item, 'cost')
@@ -335,13 +351,13 @@ const SupplyDetails = enhance((props) => {
                         const defectAmount = _.get(item, 'defectAmount')
                         const measurement = _.get(product, ['measurement', 'name'])
                         return (
-                            <Row className="dataInfo" key={item}>
+                            <Row className="dataInfo dottedList" key={productId}>
                                 <Col xs={6}>{productName}</Col>
                                 <Col xs={1}>{amount} {measurement}</Col>
                                 <Col xs={1}>{postedAmount} {measurement}</Col>
                                 <Col xs={1}>{defectAmount} {measurement}</Col>
                                 <Col xs={1}>
-                                    <div>{price} {currency}</div>
+                                    <div style={{textAlign: 'right'}}>{price} {currency}</div>
                                 </Col>
                                 <Col xs={2}>
                                     <div style={{textAlign: 'right'}}>{cost} {currency}</div>
@@ -363,33 +379,34 @@ const SupplyDetails = enhance((props) => {
                                 label="+ добавить доп. расход"/>
                         </div>
                     </div>
-                    <div className="expenseInfo">
-                        {supplyExpenseListLoading && <div className={classes.loader}>
-                            <div>
-                                <CircularProgress size={100} thickness={6}/>
-                            </div>
-                        </div>}
-                        {!supplyExpenseListLoading && _.map(supplyExpenseList, (item) => {
-                            const expId = _.get(item, 'id')
-                            const expComment = _.get(item, 'comment')
-                            const expAmount = _.get(item, 'amount')
-                            const expCurrency = _.get(item, ['currency', 'name'])
-                            return (
+                    {supplyExpenseListLoading && <div className={classes.loader}>
+                        <div>
+                            <CircularProgress size={100} thickness={6}/>
+                        </div>
+                    </div>}
+                    {!supplyExpenseListLoading && _.map(supplyExpenseList, (item) => {
+                        const expId = _.get(item, 'id')
+                        const expComment = _.get(item, 'comment')
+                        const expAmount = _.get(item, 'amount')
+                        const expCurrency = _.get(item, ['currency', 'name'])
+                        return (
+                            <div className="expenseInfo dottedList" key={expId}>
                                 <Row key={expId}>
-                                    <Col xs={8}>{expComment}</Col>
-                                    <Col xs={2}>
+                                    <Col xs={9}>{expComment}</Col>
+                                    <Col xs={3} className={classes.expenseSum}>
                                         <div style={{textAlign: 'right'}}>{expAmount} {expCurrency}</div>
-                                    </Col>
-                                    <Col xs={2}>
                                         <IconButton
-                                            onTouchTap={supplyListData.handleDelete}><Delete/></IconButton>
+                                            iconStyle={{color: '#666'}}
+                                            onTouchTap={supplyListData.handleDelete}>
+                                            <CloseIcon/>
+                                        </IconButton>
                                     </Col>
                                 </Row>
-                            )
-                        })}
-                    </div>
+                            </div>
+                        )
+                    })}
                 </div>
-                <div className="comment">
+                {comment && <div className="comment">
                     <div className="personImage">
                         <img src={Person} alt=""/>
                     </div>
@@ -397,6 +414,8 @@ const SupplyDetails = enhance((props) => {
                         {comment}
                     </div>
                 </div>
+                }
+
             </div>
         </div>
     )

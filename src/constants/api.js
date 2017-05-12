@@ -89,6 +89,12 @@ export const SUPPLY_LIST = `/${SUPPLY}/`
 export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DELETE = `/${SUPPLY}/%d/`
 
+export const ORDER = 'order'
+export const ORDER_CREATE = `/${ORDER}/`
+export const ORDER_LIST = `/${ORDER}/`
+export const ORDER_ITEM = `/${ORDER}/%d/`
+export const ORDER_DELETE = `/${ORDER}/%d/`
+
 export const SUPPLY_EXPENSE = 'supply_expanse'
 export const SUPPLY_EXPENSE_CREATE = `/${SUPPLY_EXPENSE}/`
 export const SUPPLY_EXPENSE_LIST = `/${SUPPLY_EXPENSE}/`
@@ -100,6 +106,13 @@ export const PRODUCT_CREATE = `/${PRODUCT}/`
 export const PRODUCT_LIST = `/${PRODUCT}/`
 export const PRODUCT_ITEM = `/${PRODUCT}/%d/`
 export const PRODUCT_DELETE = `/${PRODUCT}/%d/`
+
+export const PRODUCT_PRICE = 'dist/product'
+export const PRODUCT_PRICE_CREATE = `/${PRODUCT_PRICE}/`
+export const PRODUCT_PRICE_LIST = `/${PRODUCT_PRICE}/`
+export const PRODUCT_PRICE_ITEM = `/${PRODUCT_PRICE}/%d/`
+export const PRODUCT_PRICE_SET = `/${PRODUCT_PRICE}/%d/set_price/`
+export const PRODUCT_PRICE_DELETE = `/${PRODUCT_PRICE}/%d/`
 
 export const PRODUCT_TYPE = 'dist/product_type'
 export const PRODUCT_TYPE_CREATE = `/${PRODUCT_TYPE}/add/`

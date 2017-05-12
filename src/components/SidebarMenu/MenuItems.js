@@ -23,8 +23,9 @@ export const MenuItems = [
         url: ROUTES.SHOP_LIST_URL,
         childs: [
             {name: 'Торговые точки', url: ROUTES.SHOP_LIST_URL},
+            {name: 'Закази', url: ROUTES.ORDER_LIST_URL},
             {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL},
-            {name: 'История заказов', url: ROUTES.ORDER_HISTORY_LIST_URL}
+            {name: 'Ценообразование', url: ROUTES.PRODUCT_PRICE_LIST_URL}
         ]
     },
     {

@@ -9,18 +9,15 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import DateToDateField from '../ReduxForm/DateToDateField'
-import {ProviderSearchField, StockSearchField} from '../ReduxForm'
+import {ProductPriceTypeSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const ORDER_FILTER_OPEN = 'openFilterDialog'
+export const PRODUCT_PRICE_FILTER_OPEN = 'openFilterDialog'
 
-export const ORDER_FILTER_KEY = {
-    PROVIDER: 'provider',
-    STOCK: 'stock',
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+export const PRODUCT_PRICE_FILTER_KEY = {
+    BRAND: 'brand',
+    TYPE: 'type'
 }
 
 const enhance = compose(
@@ -87,15 +84,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'OrderFilterForm',
+        form: 'ProductPriceFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(ORDER_FILTER_KEY)
+            return _(PRODUCT_PRICE_FILTER_KEY)
                 .values()
-                .filter(item => item !== ORDER_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== PRODUCT_PRICE_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -103,7 +100,7 @@ const enhance = compose(
     })
 )
 
-const OrderFilterForm = enhance((props) => {
+const ProductPriceFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
 
@@ -146,14 +143,14 @@ const OrderFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="provider" component={ProviderSearchField} label="Поставщик"/>
-                        <Field className={classes.inputField} name="stock" component={StockSearchField} label="Склад"/>
+                        <Field className={classes.inputField} name="product_type" component={ProductPriceTypeSearchField} label="Тип продукта"/>
                     </div>
-
                     <div>
-                        <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                        <Field className={classes.inputField} name="measurement" component={MeasurementSearchField} label="Мера"/>
                     </div>
-
+                    <div>
+                        <Field className={classes.inputField} name="brand" component={BrandSearchField} label="Бренд"/>
+                    </div>
                     <div>
                         <RaisedButton
                             type="submit"
@@ -168,7 +165,7 @@ const OrderFilterForm = enhance((props) => {
     )
 })
 
-OrderFilterForm.propTypes = {
+ProductPriceFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -179,4 +176,4 @@ OrderFilterForm.propTypes = {
     })
 }
 
-export default OrderFilterForm
+export default ProductPriceFilterForm

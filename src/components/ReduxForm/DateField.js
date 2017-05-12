@@ -36,6 +36,9 @@ export default injectSheet({
     icon: {
         position: 'absolute',
         right: '0',
-        top: '10px'
+        top: '10px',
+        '& svg': {
+            color: '#ccc !important'
+        }
     }
 })(DateField)

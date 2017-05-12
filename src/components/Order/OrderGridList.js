@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -26,33 +25,45 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
-        name: 'name',
-        title: 'Name'
+        name: 'id',
+        title: 'Заказ №',
+        xs: 1
     },
     {
         sorting: true,
-        name: 'phone',
-        title: 'Phone'
+        name: 'client',
+        title: 'Клиент',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'address',
-        title: 'Address'
+        name: 'user',
+        title: 'Инициатор',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'guide',
-        title: 'Guide'
+        name: 'dateDelivery',
+        title: 'Дата поставки',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'contactName',
-        title: 'Contact name'
+        name: 'totalCost',
+        title: 'Сумма заказа',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'createdDate',
-        title: 'Created date'
+        name: 'status',
+        title: 'Оплата',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'acceptedCost',
+        title: 'Передача',
+        xs: 1
     }
 ]
 
@@ -68,6 +79,21 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        dot: {
+            display: 'inline-block',
+            height: '7px',
+            width: '7px',
+            borderRadius: '50%',
+            marginRight: '6px'
+        },
+        success: {
+            extend: 'dot',
+            backgroundColor: '#81c784'
+        },
+        error: {
+            extend: 'dot',
+            backgroundColor: '#e57373'
         }
     })
 )
@@ -116,29 +142,29 @@ const OrderGridList = enhance((props) => {
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
         />
     )
-
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const phone = _.get(item, 'phone') || 'N/A'
-        const address = _.get(item, 'address') || 'N/A'
-        const guide = _.get(item, 'guide') || 'N/A'
-        const contactName = _.get(item, 'contactName') || 'N/A'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const client = _.get(item, ['client', 'name'])
+        const user = _.get(item, ['user', 'firstName']) + _.get(item, ['user', 'secondName']) || 'N/A'
+        const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
+        const totalPrice = _.get(item, 'totalPrice') || 'N/A'
+        const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
+        const status = _.get(item, ['status', 'name']) || 'N/A'
 
         return (
             <Row key={id}>
+                <Col xs={1}>{id}</Col>
                 <Col xs={2}>
                     <Link to={{
                         pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                         query: filter.getParams()
-                    }}>{name}</Link>
+                    }}>{client}</Link>
                 </Col>
-                <Col xs={2}>{phone}</Col>
-                <Col xs={2}>{address}</Col>
-                <Col xs={2}>{guide}</Col>
-                <Col xs={2}>{contactName}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={2}>{user}</Col>
+                <Col xs={2}>{dateDelivery}</Col>
+                <Col xs={2}>{totalPrice}</Col>
+                <Col xs={2}>{totalBalance}</Col>
+                <Col xs={1}>{status}</Col>
             </Row>
         )
     })
@@ -154,7 +180,7 @@ const OrderGridList = enhance((props) => {
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
+                <Tooltip position="left" text="Добавить поставку">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
