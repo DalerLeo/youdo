@@ -92,7 +92,6 @@ export const PENDING_EXPENSES_LIST_URL = `/${PENDING_EXPENSES}`
 export const PENDING_EXPENSES_ITEM_URL = `${PENDING_EXPENSES_LIST_URL}/:pendingExpensesId`
 export const PENDING_EXPENSES_ITEM_PATH = `${PENDING_EXPENSES}/%d`
 
-
 export const STATSTOCK = 'stockStat'
 export const STATSTOCK_LIST_URL = `/${STATSTOCK}`
 export const STATSTOCK_ITEM_URL = `${STATSTOCK_LIST_URL}/:statStockId`

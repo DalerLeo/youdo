@@ -129,7 +129,6 @@ export const PENDING_EXPENSES_CREATE = `/${PENDING_EXPENSES}/`
 export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`
 export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`
 
-
 export const STATSTOCK = 'dist/stock'
 export const STATSTOCK_CREATE = `/${STATSTOCK}/`
 export const STATSTOCK_LIST = `/${STATSTOCK}/`
@@ -146,4 +145,3 @@ export const PENDING_PAYMENTS = 'order'
 export const PENDING_PAYMENTS_CREATE = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_LIST = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_ITEM = `/${PENDING_PAYMENTS}/%d/`
-
