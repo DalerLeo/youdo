@@ -16,6 +16,7 @@ import {
     ORDER_DELETE_DIALOG_OPEN,
     ORDER_FILTER_KEY,
     ORDER_FILTER_OPEN,
+    ORDER_TRANSACTIONS_DIALOG_OPEN,
     OrderGridList
 } from '../../components/Order'
 import {
@@ -35,6 +36,7 @@ const enhance = compose(
         const detail = _.get(state, ['order', 'item', 'data'])
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const createLoading = _.get(state, ['order', 'create', 'loading'])
+        const transactionsLoading = _.get(state, ['order', 'create', 'loading'])
         const updateLoading = _.get(state, ['order', 'update', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
@@ -50,6 +52,7 @@ const enhance = compose(
             detail,
             detailLoading,
             createLoading,
+            transactionsLoading,
             updateLoading,
             csvData,
             csvLoading,
@@ -170,6 +173,16 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: false})})
         },
+
+        handleOpenTransactionsDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseTransactionsDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: false})})
+        },
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}} = props
 
@@ -223,6 +236,7 @@ const OrderList = enhance((props) => {
         detail,
         detailLoading,
         createLoading,
+        transactionsLoading,
         updateLoading,
         filter,
         layout,
@@ -231,6 +245,7 @@ const OrderList = enhance((props) => {
 
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
+    const openTransactionsDialog = toBoolean(_.get(location, ['query', ORDER_TRANSACTIONS_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
 
@@ -251,6 +266,13 @@ const OrderList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+
+    const transactionsDialog = {
+        transactionsLoading,
+        openTransactionsDialog,
+        handleOpenTransactionsDialog: props.handleOpenTransactionsDialog,
+        handleCloseTransactionsDialog: props.handleCloseTransactionsDialog
     }
 
     const deleteDialog = {
@@ -334,6 +356,7 @@ const OrderList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}
+                transactionsDialog={transactionsDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}

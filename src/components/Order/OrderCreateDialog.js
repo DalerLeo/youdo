@@ -3,7 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {Col} from 'react-flexbox-grid'
 import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -15,8 +14,7 @@ import {
     ClientSearchField,
     DeliveryTypeSearchField,
     OrderListProductField,
-    TextField,
-    DateField
+    TextField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
@@ -41,120 +39,113 @@ const enhance = compose(
             alignItems: 'center',
             zIndex: '999',
             textAlign: 'center',
+            justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-        title: {
-            paddingTop: '15px',
-            fontWeight: 'bold',
-            color: '#333'
+        popUp: {
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%',
+            minHeight: '300px !important'
         },
         titleContent: {
-            display: 'flex',
+            background: '#fff',
             color: '#333',
             fontWeight: 'bold',
             textTransform: 'uppercase',
-            position: 'relative',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             borderBottom: '1px solid #efefef',
-            marginLeft: '-24px',
-            marginRight: '-24px',
-            padding: '0px 30px 20px 30px',
+            padding: '20px 30px',
+            zIndex: '999',
             '& button': {
-                position: 'absolute !important',
-                right: '20px',
-                margin: '-15px -10px 0 0 !important'
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important'
             }
         },
+        inContent: {
+            display: 'flex',
+            maxHeight: '50vh',
+            minHeight: '184px',
+            color: '#333',
+            borderBottom: '1px #efefef solid'
+        },
+        bodyContent: {
+            color: '#333',
+            width: '100%'
+        },
+        form: {
+            position: 'relative'
+        },
+        field: {
+            width: '100%'
+        },
         left: {
-            padding: '0 20px 10px 0'
+            flexBasis: '35%',
+            padding: '15px 30px',
+            borderRight: '1px #efefef solid'
         },
-        underLine: {
-            borderBottom: '1px solid #efefef',
-            display: 'flex'
+        title: {
+            display: 'flex',
+            alignItems: 'center',
+            height: '40px',
+            fontWeight: '600'
         },
-        radioButton: {
-            '& > div': {
-                marginTop: '10px'
+        right: {
+            flexBasis: '65%',
+            maxWidth: '55%',
+            padding: '15px 30px'
+        },
+        inputField: {
+            fontSize: '13px !important',
+            '& div': {
+                fontSize: '13px !important'
             }
         },
         selectContent: {
-            '& > div': {
-                marginTop: '-10px',
-                width: '100% !important'
+            marginTop: '-15px'
+        },
+        radioButton: {
+            marginTop: '10px',
+            '&>div': {
+                marginBottom: '10px'
             }
         },
-        bottom: {
-            '& > div:first-child': {
-                position: 'relative',
-                marginTop: '20px',
-                '& > button': {
-                    position: 'absolute !important',
-                    right: '0'
-                }
-            }
-        },
-        total: {
-            '& > div': {
-                padding: '15px 0',
-                display: 'flex',
-                '& > div:first-child': {
-                    width: '75%'
-                }
-            },
-            '& > div:first-child': {
-                borderBottom: '1px dotted #efefef'
-            }
-        },
-        checkout: {
-            borderTop: '1px solid #efefef',
-            position: 'relative',
-            marginLeft: '-24px',
-            marginRight: '-24px',
-            paddingBottom: '20px',
-            paddingTop: '10px',
-            '& > button': {
-                position: 'absolute !important',
-                right: '25px'
-            }
-        },
-        right: {
-            borderLeft: '1px solid #efefef',
-            padding: '0 0 10px 20px'
-        },
-        span: {
-            '& div > span': {
-                padding: '0 5px !important',
-                textTransform: 'inherit !important',
-                fontSize: '13px !important',
-                color: '#12aaeb !important'
-            }
-        },
-        background: {
-            backgroundColor: '#f1f5f8',
-            display: 'flex',
-            padding: '10px',
+        condition: {
             marginTop: '20px',
-            '& > div': {
-                marginTop: '-20px !important',
-                marginRight: '20px',
-                height: '72px !important',
-                '& input': {
-                    height: '75px !important'
-                }
-            },
-            '& > button > div > span': {
-                padding: '5px !important',
-                textTransform: 'inherit !important',
-                fontSize: '13px'
-            },
-            '& > div:first-child': {
-                width: '100% !important'
-            },
-            '& button': {
-                marginTop: '10px !important'
+            '&>div:first-child': {
+                marginBottom: '-20px'
             }
         },
-        width: {
-            width: '120px !important'
+        commentField: {
+            fontSize: '24px',
+            padding: '20px 30px',
+            textAlign: 'right'
+        },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
         }
     }),
     reduxForm({
@@ -179,30 +170,32 @@ const OrderCreateDialog = enhance((props) => {
             contentStyle={customContentStyle}
             open={open}
             onRequestClose={onClose}
-            bodyClassName={classes.body}
+            bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
-            <form onSubmit={onSubmit} scrolling="auto">
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.titleContent}>
-                    <span>Добавления заказа</span>
-                    <IconButton onTouchTap={onClose}>
-                        <CloseIcon2 color="#666666"/>
-                    </IconButton>
-                </div>
-                <div className={classes.underLine}>
-                    <Col xs={4}>
+            <div className={classes.titleContent}>
+                <span>Добавления заказа</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
+            <div className={classes.bodyContent}>
+                <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
+                    <div className={classes.loader}>
+                        <CircularProgress size={80} thickness={5}/>
+                    </div>
+                    <div className={classes.inContent}>
                         <div className={classes.left}>
-                            <div className={classes.title}>Выбор поставщика</div>
+                            <div className={classes.title}>Выбор клиента</div>
                             <div className={classes.selectContent}>
                                 <Field
                                     name="client"
                                     component={ClientSearchField}
+                                    className={classes.inputField}
                                     label="Клиент"
                                     fullWidth={true}/>
-                                <RadioButtonGroup name="contact" defaultSelected="1"
-                                                  className={classes.radioButton}>
+                                <RadioButtonGroup
+                                    name="contact" defaultSelected="1"
+                                    className={classes.radioButton}>
                                     <RadioButton
                                         value="1"
                                         label="Tursunov Bohodir"
@@ -213,56 +206,48 @@ const OrderCreateDialog = enhance((props) => {
                                     />
                                 </RadioButtonGroup>
                             </div>
-                            <div className={classes.title}>Условия доставки</div>
-                            <div>
+                            <div className={classes.condition}>
+                                <div className={classes.title}>Условия поставки</div>
                                 <Field
                                     name="deliveryType"
                                     component={DeliveryTypeSearchField}
-                                    label="Склад назначения"
+                                    className={classes.inputField}
+                                    label="Тип поставки"
                                     fullWidth={true}/>
-                                <Field
-                                    name="dateDelivery"
-                                    component={DateField}
-                                    hintText="Дата поставки "
-                                    fullWidth={true}/>
-
                                 <Field
                                     name="deliveryPrice"
                                     component={TextField}
+                                    className={classes.inputField}
                                     label="Стоимость"
                                     fullWidth={true}/>
-                                <div>Скидка
-                                    <Field
-                                        name="discountPrice"
-                                        component={TextField}
-                                        label="Скидка"
-                                        fullWidth={false}/>
-                                </div>
+                                <Field
+                                    name="discountPrice"
+                                    component={TextField}
+                                    className={classes.inputField}
+                                    label="Скидка (%)"
+                                    style={{width: '50%'}}/>
                             </div>
                         </div>
-                    </Col>
-                    <Col md={8} className={classes.right}>
-                        <Fields
-                            names={['products', 'product', 'amount', 'cost']}
-                            component={OrderListProductField}
-                        />
-                    </Col>
-                </div>
-                <div className={classes.bottom}>
-                    <div className={classes.total}>
-                        <div>
-                            Общая сумма заказа
-                            <span>3 500 000</span>
+                        <div className={classes.right}>
+                            <Fields
+                                names={['products', 'product', 'amount', 'cost']}
+                                component={OrderListProductField}
+                            />
                         </div>
                     </div>
-                    <div className={classes.checkout}>
+                    <div className={classes.commentField}>
+                        Общая сумма заказа: <b>350000</b>
+                    </div>
+                    <div className={classes.bottomButton}>
                         <FlatButton
                             label="Оформить заказ"
+                            className={classes.actionButton}
+                            primary={true}
                             type="submit"
-                            className={classes.span}/>
+                        />
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </Dialog>
     )
 })

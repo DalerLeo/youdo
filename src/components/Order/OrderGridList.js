@@ -105,6 +105,7 @@ const OrderGridList = enhance((props) => {
         updateDialog,
         filterDialog,
         actionsDialog,
+        transactionsDialog,
         confirmDialog,
         deleteDialog,
         listData,
@@ -137,6 +138,7 @@ const OrderGridList = enhance((props) => {
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             deleteDialog={deleteDialog}
+            transactionsDialog={transactionsDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
@@ -262,6 +264,12 @@ OrderGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
+    }).isRequired,
+    transactionsDialog: PropTypes.shape({
+        transactionsLoading: PropTypes.bool.isRequired,
+        openTransactionsDialog: PropTypes.bool.isRequired,
+        handleOpenTransactionsDialog: PropTypes.func.isRequired,
+        handleCloseTransactionsDialog: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,
