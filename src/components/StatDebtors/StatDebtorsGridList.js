@@ -1,100 +1,43 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import StatDebtorsCreateDialog from './StatDebtorsCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
+import {compose} from 'recompose'
+import PropTypes from 'prop-types'
+import * as ROUTES from '../../constants/routes'
+import StatDebtorsCreateDialog from './StatDebtorsCreateDialog'
+import sprintf from 'sprintf'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
 import MainStyles from '../Styles/MainStyles'
-import InComing from 'material-ui/svg-icons/navigation/arrow-upward'
-import OutComing from 'material-ui/svg-icons/navigation/arrow-downward'
-
+import {Link} from 'react-router'
 import StatDebtorsFilterForm from './StatDebtorsFilterForm'
 
-const remainderHeader = [
+const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 5,
-        title: 'Наименование'
+        xs: 6,
+        title: 'Клиент'
     },
     {
         sorting: true,
-        name: 'type',
+        name: 'sum',
         xs: 3,
-        title: 'Тип товара'
-    },
-    {
-        sorting: true,
-        xs: 2,
-        name: 'balance',
-        title: 'Остаток'
-    },
-    {
-        sorting: true,
-        xs: 2,
-        name: 'money',
-        title: 'На сумму'
-    }
-]
-const transactionHeader = [
-    {
-        sorting: true,
-        name: 'name',
-        xs: 2,
-        title: 'Баркод'
-    },
-    {
-        sorting: true,
-        name: 'type',
-        xs: 5,
-        title: 'Наименование'
+        title: 'Сумма долга'
     },
     {
         sorting: true,
         xs: 3,
-        name: 'balance',
-        title: 'Транзакция'
-    },
-    {
-        sorting: true,
-        xs: 2,
-        name: 'money',
-        title: 'Обьем'
+        name: 'time',
+        title: 'Прошло дней'
     }
 ]
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
-        stocksList: {
-            margin: '10px 0 0',
-            '& li': {
-                display: 'inline-block',
-                fontSize: '0',
-                padding: '10px 0px 15px',
-                marginRight: '30px',
-                borderBottom: '3px solid #f2f5f8',
-                '& a': {
-                    fontSize: '13px',
-                    color: '#999',
-                    fontWeight: '600'
-                }
-            },
-            '& li.active': {
-                color: '#333',
-                borderBottom: '3px solid #129fdd',
-                '& a': {
-                    color: '#333',
-                    cursor: 'text'
-                }
-            }
-        },
         infoBlock: {
             width: '25%',
             display: 'inline-block',
@@ -140,9 +83,17 @@ const enhance = compose(
 
                 marginLeft: '-38px'
             }
+        },
+        titleLabel: {
+            fontSize: '18px',
+            color: '#333',
+            fontWeight: '700'
+        },
+        bodyTitle: {
+            fontWeight: '600',
+            marginBottom: '10px'
         }
     })),
-    withState('showTransaction', 'setShowTransaction', false)
 )
 
 const StatDebtorsGridList = enhance((props) => {
@@ -153,8 +104,6 @@ const StatDebtorsGridList = enhance((props) => {
         confirmDialog,
         filterDialog,
         listData,
-        setShowTransaction,
-        showTransaction,
         detailData,
         classes
     } = props
@@ -173,84 +122,55 @@ const StatDebtorsGridList = enhance((props) => {
         />
     )
 
-    const statDebtorsDetail = (
-        <span>a</span>
-    )
-    const remainderStockList = _.map(_.get(listData, 'data'), (item) => {
+    const statDebtorsList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const name = 'Наименование фирмы клиента или его имя'
+        const debt = '3 000 000 UZS'
+        const time = '25 дней'
         return (
             <Row key={id}>
-                <Col xs={5}>{name}</Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={2}>{id}</Col>
-                <Col xs={2}>{id}</Col>
-            </Row>
-        )
-    })
-
-    const transactionStockList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        return (
-            <Row key={id}>
-                <Col xs={2}><strong>02016588</strong></Col>
-                <Col xs={5}>Наименование продукта</Col>
-                <Col xs={3}>{createdDate}
-                    <span className={(id % '2') ? 'redFont' : 'greenFont'} style={{top: '2px', position: 'relative', left: '3px'}}>
-                        {(id % '2') ? <OutComing style={{width: '14px', height: '14px'}}/> : <InComing style={{width: '14px', height: '14px'}}/>}
-                    </span>
+                <Col xs={6}>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.STATDEBTORS_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>{name}</Link>
                 </Col>
-                <Col xs={2}>{id} шт</Col>
+                <Col xs={3}>{debt}</Col>
+                <Col xs={3}>{time}</Col>
             </Row>
         )
     })
 
-    const list = (!showTransaction) ? {
-        header: remainderHeader,
-        list: remainderStockList,
-        loading: _.get(listData, 'listLoading')
-    } : {
-        header: transactionHeader,
-        list: transactionStockList,
+    const statDebtorsDetail = (
+        <div className={classes.wrapper} key={_.get(detailData, 'id')}>
+            <div className={classes.title}>
+                <div className={classes.titleLabel}>Наименование фирмы клиента или его имя</div>
+            </div>
+            <div className={classes.container}>
+                &nbsp;
+            </div>
+        </div>
+    )
+
+    const list = {
+        header: listHeader,
+        list: statDebtorsList,
         loading: _.get(listData, 'listLoading')
     }
     return (
         <Container>
             <SubMenu url={ROUTES.STATDEBTORS_LIST_URL}/>
-            <Row>
-                <Col xs={12}>
-                    <div className={classes.stocksList}>
-                        <ul>
-                            <li className="active"><a>Все склады</a></li>
-                            <li><a>Склад на ойбеке</a></li>
-                            <li><a>Склад в Фергане</a></li>
-                            <li><a>Склад на чорсу</a></li>
-                        </ul>
-                    </div>
-                </Col>
-            </Row>
             <Row style={{margin: '0 0 20px', padding: '8px 30px', background: '#fff', boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'}}>
                 <Col xs={3}>
-                    <div className={classes.typeListStock}>
-                        <a onClick={() => { setShowTransaction(false) }} className={!showTransaction && 'active'}>Остаток<br/>товара</a>
-                    </div>
-                    <div className={classes.typeListStock}>
-                        <a onClick={() => { setShowTransaction(true) }} className={showTransaction && 'active'}>Движение<br/>товаров</a>
-                    </div>
+                    &nbsp;
                 </Col>
                 <Col xs={9} style={{textAlign: 'right'}}>
                     <div className={classes.infoBlock}>
-                        Товара на складе<br />
-                        <span>555</span>
-                    </div>
-                    <div className={classes.infoBlock}>
-                        Видов продукции:<br />
+                        Всего должников:<br />
                         <span>100</span>
                     </div>
                     <div className={classes.infoBlock}>
-                        Товаров на сумму:<br />
+                        Общий долг:<br />
                         <span>1 000 000 UZS</span>
                     </div>
                 </Col>

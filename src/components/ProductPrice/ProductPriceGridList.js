@@ -2,6 +2,10 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
+import {Field, reduxForm} from 'redux-form'
+import {compose, withState, withHandlers} from 'recompose'
+import {TextField} from '../ReduxForm'
+import sprintf from 'sprintf'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
@@ -12,12 +16,15 @@ import Container from '../Container'
 import ProductPriceFilterForm from './ProductPriceFilterForm'
 import ProductPriceCreateDialog from './ProductPriceCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
+import Popover from 'material-ui/Popover'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import {Link} from 'react-router'
+import MainStyles from '../Styles/MainStyles'
+import FlatButton from 'material-ui/FlatButton'
 
 const listHeader = [
     {
@@ -59,7 +66,7 @@ const listHeader = [
 ]
 
 const enhance = compose(
-    injectSheet({
+    injectSheet(_.merge(MainStyles, {
         addButton: {
             '& button': {
                 backgroundColor: '#275482 !important'
@@ -70,9 +77,128 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        title: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+            margin: '-20px -30px -5px',
+            padding: '20px 30px',
+            borderBottom: '1px #efefef solid'
+        },
+        titleLabel: {
+            fontSize: '18px',
+            color: '#333',
+            fontWeight: '700'
+        },
+        bodyTitle: {
+            fontWeight: '600',
+            marginBottom: '10px'
+        },
+        containerPrice: {
+            display: 'flex',
+            width: '100%',
+            paddingTop: '5px',
+            marginBottom: '-20px'
+        },
+        leftPrSide: {
+            padding: '0 30px 0 0',
+            width: '30%',
+            borderRight: '1px solid #efefef'
+        },
+        aboutPrice: {
+            padding: '20px 0',
+            '& span': {
+                color: '#999'
+            },
+            '& p': {
+                display: 'inline-block',
+                '& span': {
+                    fontSize: '11px !important'
+                }
+            },
+            '& p:last-child': {
+                fontWeight: '600',
+                paddingLeft: '15px'
+            }
+        },
+        rightPrSide: {
+            padding: '10px  0 20px 30px',
+            width: '70%'
+        },
+        rawMaterials: {
+            '& .dottedList': {
+                padding: '10px 0'
+            },
+            '& li:last-child:after': {
+                backgroundImage: 'none'
+            },
+            '& li div:last-child': {
+                textAlign: 'right',
+                paddingRight: '10px'
+            },
+            '& a': {
+                borderBottom: '1px dashed'
+            }
+        },
+        changePrice: {
+            background: '#f1f5f8',
+            margin: '0 -30px 20px',
+            padding: '20px 30px'
+        },
+        addPrice: {
+            display: 'flex',
+            alignItems: 'baseline'
+        },
+        popoverMode: {
+            padding: '10px 30px',
+            '& h4': {
+                padding: '10px 0'
+            },
+            '& div p': {
+                display: 'inline-block'
+            },
+            '& div p:first-child': {
+                width: '120px'
+            }
         }
+    })),
+
+    withState('showAddPrice', 'setShowAddPrice', false),
+    withState('priceDetailsOpen', 'setPriceDetailsOpen', false),
+    withState('anchorEl', 'setAnchorEl', (<div></div>)),
+
+    withHandlers({
+        handleOpenDetails: props => (event) => {
+            props.setAnchorEl(event.currentTarget)
+            props.setPriceDetailsOpen(true)
+        },
+        handleCloseDetails: props => (event) => {
+            props.setPriceDetailsOpen(false)
+        }
+    }),
+
+    reduxForm({
+        form: 'ProductPriceCreateForm',
+        enableReinitialize: true
     })
 )
+
+const tooltipPosition = 'bottom-center'
+
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 18,
+        height: 18
+    },
+    button: {
+        width: 30,
+        height: 30,
+        padding: 0
+    }
+}
 
 const ProductPriceGridList = enhance((props) => {
     const {
@@ -80,8 +206,14 @@ const ProductPriceGridList = enhance((props) => {
         createDialog,
         updateDialog,
         filterDialog,
+        anchorEl,
         actionsDialog,
         confirmDialog,
+        setShowAddPrice,
+        handleOpenDetails,
+        handleCloseDetails,
+        priceDetailsOpen,
+        showAddPrice,
         listData,
         detailData,
         classes
@@ -108,7 +240,221 @@ const ProductPriceGridList = enhance((props) => {
     )
 
     const productPriceDetail = (
-        <span>a</span>
+        <div className={classes.wrapper} key={_.get(detailData, 'id')}>
+            <div className={classes.title}>
+                <div className={classes.titleLabel}>Прозрачный скотч на пластиковой втулке 300х2 см</div>
+                <div className={classes.titleButtons}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        disableTouchRipple={true}
+                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Изменить">
+                        <Edit />
+                    </IconButton>
+                </div>
+            </div>
+            <div className={classes.containerPrice}>
+                <div className={classes.leftPrSide}>
+                    <div className={classes.aboutPrice}>
+                        <span>Расчет производиться на 1 еденицу продукта</span><br /><br />
+                        <p className={classes.priceLabel}>Cебестоимость:</p>
+                        <p className={classes.priceCost}>20 000 UZS <span>(22 Апр, 2017)</span></p>
+                    </div>
+                    <hr className="lineDote"/>
+                    <div className={classes.aboutPrice}>
+                        <p className={classes.priceLabel}>Рыночная цена:</p>
+                        <p className={classes.priceCost}>30 000 UZS <span>(22 Апр, 2017)</span></p>
+                    </div>
+                    <div className={classes.changePrice}>
+                        <a onClick={() => { setShowAddPrice(!showAddPrice) }}>Изменить рыночную стоимость</a>
+                        {showAddPrice && <div className={classes.addPrice}>
+                            <div style={{width: '100px', marginRight: '20px'}}>
+                                <Field
+                                    name="name"
+                                    label="Сумма"
+                                    component={TextField}
+                                    className={classes.inputFieldMaterials}
+                                    fullWidth={true}/>
+                            </div>
+                            <div style={{width: '70px', marginRight: '10px'}}>
+                                <Field
+                                    name="name"
+                                    label="Валюта"
+                                    component={TextField}
+                                    className={classes.inputFieldMaterials}
+                                    fullWidth={true}/>
+                            </div>
+                            <div className={classes.buttonSub}>
+                                <FlatButton
+                                    label="ПРИМЕНИТЬ"
+                                    className={classes.actionButton}
+                                    type="submit"
+                                />
+                            </div>
+                        </div>}
+                    </div>
+                </div>
+                <div className={classes.rightPrSide}>
+                    <ul className={classes.rawMaterials}>
+                        <li className="dottedList">
+                            <Col xs={7}>
+                                <strong>Сырье</strong>
+                            </Col>
+                            <Col xs={2}>
+                                <strong>Обьем</strong>
+                            </Col>
+                            <Col xs={3}>
+                                <strong>Стоимость</strong>
+                            </Col>
+                        </li>
+                        <li className="dottedList">
+                            <Col xs={7}>
+                                Дистилированная вода
+                            </Col>
+                            <Col xs={2}>
+                                100 л
+                            </Col>
+                            <Col xs={3}>
+                                <a onClick={handleOpenDetails}>1 000 000 UZS</a>
+                                <Popover
+                                    open={priceDetailsOpen}
+                                    anchorEl={anchorEl}
+                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                    onRequestClose={handleCloseDetails}
+                                >
+                                    <div className={classes.popoverMode}>
+                                        <h4>Дистилированая вода</h4>
+                                        <div>
+                                            <p>Объем:</p>
+                                            <p>100 л</p>
+                                        </div>
+                                        <div>
+                                            <p>Стоимость:</p>
+                                            <p>500 000 UZS</p>
+                                        </div>
+                                        <div>
+                                            <p>Доп. расход:</p>
+                                            <p>100 000 UZS</p>
+                                        </div>
+                                        <h4>Примерная стоимость 1 л = 6 000 UZS</h4>
+                                    </div>
+                                </Popover>
+                            </Col>
+                        </li>
+                        <li className="dottedList">
+                            <Col xs={7}>
+                                Дистилированная вода
+                            </Col>
+                            <Col xs={2}>
+                                100 л
+                            </Col>
+                            <Col xs={3}>
+                                <a onClick={handleOpenDetails}>1 000 000 UZS</a>
+                                <Popover
+                                    open={priceDetailsOpen}
+                                    anchorEl={anchorEl}
+                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                    onRequestClose={handleCloseDetails}
+                                >
+                                    <div className={classes.popoverMode}>
+                                        <h4>Дистилированая вода</h4>
+                                        <div>
+                                            <p>Объем:</p>
+                                            <p>100 л</p>
+                                        </div>
+                                        <div>
+                                            <p>Стоимость:</p>
+                                            <p>500 000 UZS</p>
+                                        </div>
+                                        <div>
+                                            <p>Доп. расход:</p>
+                                            <p>100 000 UZS</p>
+                                        </div>
+                                        <h4>Примерная стоимость 1 л = 6 000 UZS</h4>
+                                    </div>
+                                </Popover>
+                            </Col>
+                        </li>
+                        <li className="dottedList">
+                            <Col xs={7}>
+                                Дистилированная вода
+                            </Col>
+                            <Col xs={2}>
+                                100 л
+                            </Col>
+                            <Col xs={3}>
+                                <a onClick={handleOpenDetails}>1 000 000 UZS</a>
+                                <Popover
+                                    open={priceDetailsOpen}
+                                    anchorEl={anchorEl}
+                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                    onRequestClose={handleCloseDetails}
+                                >
+                                    <div className={classes.popoverMode}>
+                                        <h4>Дистилированая вода</h4>
+                                        <div>
+                                            <p>Объем:</p>
+                                            <p>100 л</p>
+                                        </div>
+                                        <div>
+                                            <p>Стоимость:</p>
+                                            <p>500 000 UZS</p>
+                                        </div>
+                                        <div>
+                                            <p>Доп. расход:</p>
+                                            <p>100 000 UZS</p>
+                                        </div>
+                                        <h4>Примерная стоимость 1 л = 6 000 UZS</h4>
+                                    </div>
+                                </Popover>
+                            </Col>
+                        </li>
+                        <li className="dottedList">
+                            <Col xs={7}>
+                                Дистилированная вода
+                            </Col>
+                            <Col xs={2}>
+                                100 л
+                            </Col>
+                            <Col xs={3}>
+                                <a onClick={handleOpenDetails}>1 000 000 UZS</a>
+                                <Popover
+                                    open={priceDetailsOpen}
+                                    anchorEl={anchorEl}
+                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                    onRequestClose={handleCloseDetails}
+                                >
+                                    <div className={classes.popoverMode}>
+                                        <h4>Дистилированая вода</h4>
+                                        <div>
+                                            <p>Объем:</p>
+                                            <p>100 л</p>
+                                        </div>
+                                        <div>
+                                            <p>Стоимость:</p>
+                                            <p>500 000 UZS</p>
+                                        </div>
+                                        <div>
+                                            <p>Доп. расход:</p>
+                                            <p>100 000 UZS</p>
+                                        </div>
+                                        <h4><i>Примерная стоимость 1 л = 6 000 UZS</i></h4>
+                                    </div>
+                                </Popover>
+                            </Col>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
     )
 
     const productPriceList = _.map(_.get(listData, 'data'), (item) => {
@@ -120,7 +466,12 @@ const ProductPriceGridList = enhance((props) => {
         const price = _.get(item, 'price') || 'N/A'
         return (
             <Row key={id}>
-                <Col xs={3}>{name}</Col>
+                <Col xs={3}>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.PRODUCT_PRICE_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>{name}</Link>
+                </Col>
                 <Col xs={2}>{type}</Col>
                 <Col xs={2}>{brand}</Col>
                 <Col xs={2}>{measurement}</Col>

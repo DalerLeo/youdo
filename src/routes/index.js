@@ -274,8 +274,10 @@ export default {
         {
             path: ROUTES.STATDEBTORS_LIST_URL,
             component: userIsAuth(StatDebtors),
-            childRoutes: [
-            ]
+            childRoutes: [{
+                path: ROUTES.STATDEBTORS_ITEM_URL,
+                component: userIsAuth(StatDebtors)
+            }]
         },
 
         {
