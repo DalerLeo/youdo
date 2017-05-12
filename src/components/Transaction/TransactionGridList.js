@@ -57,7 +57,7 @@ const enhance = compose(
             display: 'flex',
             margin: '0 -28px',
             padding: '0 28px 0 0',
-            minHeight: 'calc(100% - 8px)'
+            minHeight: 'calc(100% - 41px)'
         },
         listWrapper: {
             border: '1px solid #d9dde1',

@@ -35,17 +35,6 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'
-        },
-        fields: {
-            display: ({loading}) => !loading ? 'block' : 'none',
-            width: '100%'
-        },
-
-        body: {
-            minHeight: 'auto'
-        },
-        form: {
-            minHeight: 'auto'
         }
     })),
     reduxForm({
@@ -73,30 +62,32 @@ const CategoryCreateDialog = enhance((props) => {
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.fieldsWrap} style={{minHeight: '135px'}}>
-                    <div className={classes.field}>
-                        <Field
-                            name="name"
-                            component={TextField}
-                            className={classes.inputField}
-                            label="Наименование"
-                            fullWidth={true}
+            <div className={classes.bodyContent}>
+                <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
+                    <div className={classes.loader}>
+                        <CircularProgress size={80} thickness={5}/>
+                    </div>
+                    <div className={classes.inContent}>
+                        <div className={classes.field}>
+                            <Field
+                                name="name"
+                                component={TextField}
+                                className={classes.inputField}
+                                label="Наименование"
+                                fullWidth={true}
+                            />
+                        </div>
+                    </div>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
                         />
                     </div>
-                </div>
-                <div className={classes.bottomButton}>
-                    <FlatButton
-                        label="Сохранить"
-                        className={classes.actionButton}
-                        primary={true}
-                        type="submit"
-                    />
-                </div>
-            </form>
+                </form>
+            </div>
         </Dialog>
     )
 })

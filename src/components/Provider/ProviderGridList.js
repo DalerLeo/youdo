@@ -55,12 +55,12 @@ const listHeader = [
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 18,
-        height: 18
+        width: 20,
+        height: 20
     },
     button: {
-        width: 30,
-        height: 30,
+        width: 48,
+        height: 48,
         padding: 0
     }
 }
@@ -98,7 +98,8 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
-            padding: '20px 30px',
+            height: '65px',
+            padding: '0 30px',
             borderBottom: '1px #efefef solid'
         },
         container: {

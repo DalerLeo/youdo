@@ -14,8 +14,6 @@ import {TextField, CurrencySearchField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
 
 export const SUPPLY_EXPENSE_CREATE_DIALOG_OPEN = 'openSupplyExpenseCreateDialog'
-export const SUPPLY_EXPENSE_UPDATE_DIALOG_OPEN = 'openSupplyExpenseUpdateDialog'
-
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -49,7 +47,7 @@ const enhance = compose(
 )
 
 const ExpenseCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, isUpdate, loading} = props
+    const {open, handleSubmit, onClose, classes, loading} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -60,7 +58,7 @@ const ExpenseCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '300px'} : {width: '500px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение расхода' : 'Добавление расхода'}</span>
+                <span>Добавление расхода</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -75,7 +73,7 @@ const ExpenseCreateDialog = enhance((props) => {
                             <Field
                                 name="comment"
                                 component={TextField}
-                                label="Описания раскода"
+                                label="Описание раскода"
                                 fullWidth={true}/>
                             <Field
                                 name="amount"
@@ -103,7 +101,6 @@ const ExpenseCreateDialog = enhance((props) => {
     )
 })
 ExpenseCreateDialog.propTyeps = {
-    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,

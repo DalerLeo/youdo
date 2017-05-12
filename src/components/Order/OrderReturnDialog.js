@@ -66,10 +66,13 @@ const enhance = compose(
         },
         inContent: {
             display: 'flex',
+            color: '#333',
+            padding: '15px 30px',
+            borderBottom: '1px #efefef solid'
+        },
+        innerWrap: {
             maxHeight: '50vh',
-            padding: '20px 30px',
-            minHeight: '400px',
-            color: '#333'
+            overflow: 'auto'
         },
         bodyContent: {
             color: '#333',
@@ -176,16 +179,18 @@ const OrderReturnDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent}>
-                        <div className={classes.field}>
-                            <Fields
-                                names={['products', 'product', 'amount', 'cost']}
-                                component={OrderListReturnField}
-                            />
+                    <div className={classes.innerWrap}>
+                        <div className={classes.inContent}>
+                            <div className={classes.field}>
+                                <Fields
+                                    names={['products', 'product', 'amount', 'cost']}
+                                    component={OrderListReturnField}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div className={classes.commentField}>
-                        Общая сумма возврата: <b>350000</b>
+                        <div className={classes.commentField}>
+                            Общая сумма возврата: <b>350000</b>
+                        </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
