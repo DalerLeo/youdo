@@ -180,14 +180,13 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
         },
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-
+            const {location: {pathname}, dispatch, createForm, filter} = props
             return dispatch(supplyCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
                 })
         },
 

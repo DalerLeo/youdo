@@ -22,7 +22,6 @@ export const MenuItems = [
         icon: (<AttachMoney />),
         url: ROUTES.ORDER_LIST_URL,
         childs: [
-            {name: 'Торговые точки', url: ROUTES.SHOP_LIST_URL},
             {name: 'Заказы', url: ROUTES.ORDER_LIST_URL},
             {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL},
             {name: 'Ценообразование', url: ROUTES.PRODUCT_PRICE_LIST_URL}
@@ -61,7 +60,6 @@ export const MenuItems = [
         icon: (<Settings />),
         url: ROUTES.CATEGORY_LIST_URL,
         childs: [
-            {name: 'Категории', url: ROUTES.CATEGORY_LIST_URL},
             {name: 'Склады', url: ROUTES.STOCK_LIST_URL},
             {name: 'Валюты', url: ROUTES.CURRENCY_LIST_URL},
             {name: 'Кассы', url: ROUTES.CASHBOX_LIST_URL},

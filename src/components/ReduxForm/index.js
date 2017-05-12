@@ -24,6 +24,7 @@ import StockTypeSearchField from './StockTypeSearchField'
 import CashboxSearchField from './CashboxSearchField'
 import DeliveryTypeSearchField from './DeliveryTypeSearchField'
 import ManufactureSearchField from './ManufactureSearchField'
+import ProviderContactsField from './ProviderContactsField'
 
 export {
     OrderListProductField,
@@ -49,6 +50,7 @@ export {
     StockSearchField,
     SupplyListProductField,
     ExpensiveCategorySearchField,
+    ProviderContactsField,
     PaymentTypeSearchField,
     StockTypeSearchField,
     CashboxSearchField

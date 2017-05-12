@@ -7,12 +7,12 @@ import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
 import {
     CurrencySearchField,
     ProviderSearchField,
+    ProviderContactsField,
     StockSearchField,
     SupplyListProductField,
     TextField,
@@ -192,17 +192,11 @@ const SupplyCreateDialog = enhance((props) => {
                                     className={classes.inputField}
                                     label="Поставщик"
                                     fullWidth={true}/>
-                                <RadioButtonGroup name="contact" defaultSelected="1"
-                                                  className={classes.radioButton}>
-                                    <RadioButton
-                                        value="1"
-                                        label="Tursunov Bohodir"
-                                    />
-                                    <RadioButton
-                                        value="2"
-                                        label="Ashurov Anvar"
-                                    />
-                                </RadioButtonGroup>
+
+                                <Field
+                                    name="contact"
+                                    component={ProviderContactsField}
+                                />
                             </div>
                             <div className={classes.condition}>
                                 <div className={classes.title}>Условия доставки</div>
