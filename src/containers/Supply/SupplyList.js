@@ -78,18 +78,12 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        return props.supplyExpenseList && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
-        dispatch(supplyExpenseListFetchAction(filter))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
         const supplyId = _.get(nextProps, ['params', 'supplyId'])
-
         return supplyId && _.get(props, ['params', 'supplyId']) !== supplyId
     }, ({dispatch, params}) => {
         const supplyId = _.toInteger(_.get(params, 'supplyId'))
         supplyId && dispatch(supplyItemFetchAction(supplyId))
+        supplyId && dispatch(supplyExpenseListFetchAction(supplyId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),

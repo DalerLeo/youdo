@@ -134,6 +134,9 @@ const filter = (data, pathname, query = {}) => {
             select: null,
             openFilterDialog: null,
             openCreateDialog: null,
+            openTransactionsDialog: null,
+            openSupplyExpenseCreateDialog: null,
+            openReturnDialog: null,
             openSetCurrencyDialog: null,
             openDeleteDialog: null,
             openUpdateDialog: null

@@ -31,6 +31,12 @@ export const listFilterSerializer = (data) => {
     }
 }
 
+export const expenseSupplySerializer = (supplyId) => {
+    return {
+        'supply': supplyId
+    }
+}
+
 export const csvFilterSerializer = (data) => {
     const {...defaultData} = listFilterSerializer(data)
 

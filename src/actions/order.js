@@ -23,6 +23,24 @@ export const orderCreateAction = (formValues) => {
     }
 }
 
+export const orderReturnAction = (formValues) => {
+    const requestData = serializers.createSerializer(formValues)
+
+    const payload = axios()
+        .post(API.ORDER_RETURN, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_RETURN,
+        payload
+    }
+}
+
 export const orderDeleteAction = (id) => {
     const payload = axios()
         .delete(sprintf(API.ORDER_DELETE, id))

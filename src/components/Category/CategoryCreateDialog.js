@@ -32,7 +32,6 @@ const enhance = compose(
         loader: {
             width: '120px',
             margin: '0 auto',
-            padding: '15px',
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none',
             flexDirection: 'center'

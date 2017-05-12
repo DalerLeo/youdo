@@ -16,6 +16,7 @@ import ImageUploadField from './ImageUploadField'
 import DateField from './DateField'
 import ProductSearchField from './ProductSearchField'
 import SupplyListProductField from './SupplyListProductField'
+import OrderListReturnField from './OrderListReturnField'
 import OrderListProductField from './OrderListProductField'
 import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
 import PaymentTypeSearchField from './PaymentTypeSearchField'
@@ -26,6 +27,7 @@ import ManufactureSearchField from './ManufactureSearchField'
 
 export {
     OrderListProductField,
+    OrderListReturnField,
     DeliveryTypeSearchField,
     ManufactureSearchField,
     ProductSearchField,

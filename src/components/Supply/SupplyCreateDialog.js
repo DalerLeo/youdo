@@ -99,7 +99,7 @@ const enhance = compose(
         },
         right: {
             flexBasis: '65%',
-            maxWidth: '65%',
+            maxWidth: '55%',
             padding: '15px 30px'
         },
         inputField: {
@@ -172,7 +172,7 @@ const SupplyCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Добавления заказа</span>
+                <span>Добавление поставки</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
