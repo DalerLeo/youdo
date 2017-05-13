@@ -17,7 +17,7 @@ import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import BrandCreateDialog from './BrandCreateDialog'
+import ProductTypeCreateDialog from './ProductTypeCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
@@ -72,7 +72,7 @@ const enhance = compose(
     })
 )
 
-const BrandGridList = enhance((props) => {
+const ProductTypeGridList = enhance((props) => {
     const {
         filter,
         createDialog,
@@ -96,11 +96,11 @@ const BrandGridList = enhance((props) => {
         </div>
     )
 
-    const brandDetail = (
+    const productTypeDetail = (
         <span>a</span>
     )
 
-    const brandList = _.map(_.get(listData, 'data'), (item) => {
+    const productTypeList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
@@ -137,15 +137,15 @@ const BrandGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: brandList,
+        list: productTypeList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.BRAND_LIST_URL}/>
+            <SubMenu url={ROUTES.PRODUCT_TYPE_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить бренд">
+                <Tooltip position="left" text="Добавить тип продукта">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -158,18 +158,18 @@ const BrandGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={brandDetail}
+                detail={productTypeDetail}
                 actionsDialog={actions}
             />
 
-            <BrandCreateDialog
+            <ProductTypeCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <BrandCreateDialog
+            <ProductTypeCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
@@ -189,7 +189,7 @@ const BrandGridList = enhance((props) => {
     )
 })
 
-BrandGridList.propTypes = {
+ProductTypeGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -220,4 +220,4 @@ BrandGridList.propTypes = {
     }).isRequired
 }
 
-export default BrandGridList
+export default ProductTypeGridList

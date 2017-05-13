@@ -116,7 +116,7 @@ export const PRODUCT_PRICE_SET = `/${PRODUCT_PRICE}/%d/set_price/`
 export const PRODUCT_PRICE_DELETE = `/${PRODUCT_PRICE}/%d/`
 
 export const PRODUCT_TYPE = 'dist/product_type'
-export const PRODUCT_TYPE_CREATE = `/${PRODUCT_TYPE}/add/`
+export const PRODUCT_TYPE_CREATE = `/${PRODUCT_TYPE}/`
 export const PRODUCT_TYPE_LIST = `/${PRODUCT_TYPE}/`
 export const PRODUCT_TYPE_ITEM = `/${PRODUCT_TYPE}/%d/`
 
