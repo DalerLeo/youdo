@@ -57,7 +57,7 @@ const ProductPriceCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {}}
+            contentStyle={loading ? {width: '300px'} : {width: '400px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -68,7 +68,7 @@ const ProductPriceCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '320px'}}>
+                    <div className={classes.inContent}>
                         <div className={classes.loader}>
                             <CircularProgress size={80} thickness={5}/>
                         </div>
@@ -77,7 +77,7 @@ const ProductPriceCreateDialog = enhance((props) => {
                                 name="price"
                                 className={classes.inputField}
                                 component={TextField}
-                                label="Наименование"
+                                label="Стоимость"
                                 fullWidth={true}
                             />
                         </div>

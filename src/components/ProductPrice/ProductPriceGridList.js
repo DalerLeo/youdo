@@ -2,9 +2,8 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import {Field, reduxForm} from 'redux-form'
+import {reduxForm} from 'redux-form'
 import {compose, withState, withHandlers} from 'recompose'
-import {TextField} from '../ReduxForm'
 import sprintf from 'sprintf'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -24,7 +23,6 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import {Link} from 'react-router'
 import MainStyles from '../Styles/MainStyles'
-import FlatButton from 'material-ui/FlatButton'
 
 const listHeader = [
     {
@@ -78,13 +76,15 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         },
+        wrapper: {
+            width: '100%'
+        },
         title: {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            width: '100%',
-            margin: '-20px -30px -5px',
-            padding: '20px 30px',
+            height: '65px',
+            padding: '0 30px',
             borderBottom: '1px #efefef solid'
         },
         titleLabel: {
@@ -97,14 +97,11 @@ const enhance = compose(
             marginBottom: '10px'
         },
         containerPrice: {
-            display: 'flex',
-            width: '100%',
-            paddingTop: '5px',
-            marginBottom: '-20px'
+            display: 'flex'
         },
         leftPrSide: {
-            padding: '0 30px 0 0',
-            width: '30%',
+            padding: '20px 30px',
+            flexBasis: '30%',
             borderRight: '1px solid #efefef'
         },
         aboutPrice: {
@@ -124,8 +121,8 @@ const enhance = compose(
             }
         },
         rightPrSide: {
-            padding: '10px  0 20px 30px',
-            width: '70%'
+            padding: '20px 30px',
+            flexBasis: '70%'
         },
         rawMaterials: {
             '& .dottedList': {
@@ -144,15 +141,17 @@ const enhance = compose(
         },
         changePrice: {
             background: '#f1f5f8',
-            margin: '0 -30px 20px',
+            margin: '0 -30px 0',
             padding: '20px 30px'
         },
         addPrice: {
             display: 'flex',
-            alignItems: 'baseline'
+            alignItems: 'baseline',
+            justifyContent: 'space-between'
         },
         popoverMode: {
             padding: '10px 30px',
+            boxShadow: 'none !important',
             '& h4': {
                 padding: '10px 0'
             },
@@ -190,12 +189,12 @@ const tooltipPosition = 'bottom-center'
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 18,
-        height: 18
+        width: 20,
+        height: 20
     },
     button: {
-        width: 30,
-        height: 30,
+        width: 48,
+        height: 48,
         padding: 0
     }
 }
@@ -209,15 +208,16 @@ const ProductPriceGridList = enhance((props) => {
         anchorEl,
         actionsDialog,
         confirmDialog,
-        setShowAddPrice,
         handleOpenDetails,
         handleCloseDetails,
         priceDetailsOpen,
-        showAddPrice,
         listData,
         detailData,
         classes
     } = props
+
+    const detId = _.get(detailData, 'id')
+    const detnName = _.get(detailData, ['data', 'name'])
 
     const actions = (
         <div>
@@ -242,24 +242,12 @@ const ProductPriceGridList = enhance((props) => {
     const productPriceDetail = (
         <div className={classes.wrapper} key={_.get(detailData, 'id')}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>Прозрачный скотч на пластиковой втулке 300х2 см</div>
-                <div className={classes.titleButtons}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        disableTouchRipple={true}
-                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Изменить">
-                        <Edit />
-                    </IconButton>
-                </div>
+                <div className={classes.titleLabel}>{detnName}</div>
             </div>
             <div className={classes.containerPrice}>
                 <div className={classes.leftPrSide}>
+                    <div>Расчет произведен на 1 еденицу продукта</div>
                     <div className={classes.aboutPrice}>
-                        <span>Расчет производиться на 1 еденицу продукта</span><br /><br />
                         <p className={classes.priceLabel}>Cебестоимость:</p>
                         <p className={classes.priceCost}>20 000 UZS <span>(22 Апр, 2017)</span></p>
                     </div>
@@ -269,32 +257,7 @@ const ProductPriceGridList = enhance((props) => {
                         <p className={classes.priceCost}>30 000 UZS <span>(22 Апр, 2017)</span></p>
                     </div>
                     <div className={classes.changePrice}>
-                        <a onClick={() => { setShowAddPrice(!showAddPrice) }}>Изменить рыночную стоимость</a>
-                        {showAddPrice && <div className={classes.addPrice}>
-                            <div style={{width: '100px', marginRight: '20px'}}>
-                                <Field
-                                    name="name"
-                                    label="Сумма"
-                                    component={TextField}
-                                    className={classes.inputFieldMaterials}
-                                    fullWidth={true}/>
-                            </div>
-                            <div style={{width: '70px', marginRight: '10px'}}>
-                                <Field
-                                    name="name"
-                                    label="Валюта"
-                                    component={TextField}
-                                    className={classes.inputFieldMaterials}
-                                    fullWidth={true}/>
-                            </div>
-                            <div className={classes.buttonSub}>
-                                <FlatButton
-                                    label="ПРИМЕНИТЬ"
-                                    className={classes.actionButton}
-                                    type="submit"
-                                />
-                            </div>
-                        </div>}
+                        <a onClick={() => { updateDialog.handleOpenUpdateDialog(detId) }}>Изменить рыночную стоимость</a>
                     </div>
                 </div>
                 <div className={classes.rightPrSide}>
@@ -319,30 +282,6 @@ const ProductPriceGridList = enhance((props) => {
                             </Col>
                             <Col xs={3}>
                                 <a onClick={handleOpenDetails}>1 000 000 UZS</a>
-                                <Popover
-                                    open={priceDetailsOpen}
-                                    anchorEl={anchorEl}
-                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                                    onRequestClose={handleCloseDetails}
-                                >
-                                    <div className={classes.popoverMode}>
-                                        <h4>Дистилированая вода</h4>
-                                        <div>
-                                            <p>Объем:</p>
-                                            <p>100 л</p>
-                                        </div>
-                                        <div>
-                                            <p>Стоимость:</p>
-                                            <p>500 000 UZS</p>
-                                        </div>
-                                        <div>
-                                            <p>Доп. расход:</p>
-                                            <p>100 000 UZS</p>
-                                        </div>
-                                        <h4>Примерная стоимость 1 л = 6 000 UZS</h4>
-                                    </div>
-                                </Popover>
                             </Col>
                         </li>
                         <li className="dottedList">
@@ -354,30 +293,6 @@ const ProductPriceGridList = enhance((props) => {
                             </Col>
                             <Col xs={3}>
                                 <a onClick={handleOpenDetails}>1 000 000 UZS</a>
-                                <Popover
-                                    open={priceDetailsOpen}
-                                    anchorEl={anchorEl}
-                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                                    onRequestClose={handleCloseDetails}
-                                >
-                                    <div className={classes.popoverMode}>
-                                        <h4>Дистилированая вода</h4>
-                                        <div>
-                                            <p>Объем:</p>
-                                            <p>100 л</p>
-                                        </div>
-                                        <div>
-                                            <p>Стоимость:</p>
-                                            <p>500 000 UZS</p>
-                                        </div>
-                                        <div>
-                                            <p>Доп. расход:</p>
-                                            <p>100 000 UZS</p>
-                                        </div>
-                                        <h4>Примерная стоимость 1 л = 6 000 UZS</h4>
-                                    </div>
-                                </Popover>
                             </Col>
                         </li>
                         <li className="dottedList">
@@ -389,30 +304,6 @@ const ProductPriceGridList = enhance((props) => {
                             </Col>
                             <Col xs={3}>
                                 <a onClick={handleOpenDetails}>1 000 000 UZS</a>
-                                <Popover
-                                    open={priceDetailsOpen}
-                                    anchorEl={anchorEl}
-                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                                    onRequestClose={handleCloseDetails}
-                                >
-                                    <div className={classes.popoverMode}>
-                                        <h4>Дистилированая вода</h4>
-                                        <div>
-                                            <p>Объем:</p>
-                                            <p>100 л</p>
-                                        </div>
-                                        <div>
-                                            <p>Стоимость:</p>
-                                            <p>500 000 UZS</p>
-                                        </div>
-                                        <div>
-                                            <p>Доп. расход:</p>
-                                            <p>100 000 UZS</p>
-                                        </div>
-                                        <h4>Примерная стоимость 1 л = 6 000 UZS</h4>
-                                    </div>
-                                </Popover>
                             </Col>
                         </li>
                         <li className="dottedList">
@@ -424,36 +315,36 @@ const ProductPriceGridList = enhance((props) => {
                             </Col>
                             <Col xs={3}>
                                 <a onClick={handleOpenDetails}>1 000 000 UZS</a>
-                                <Popover
-                                    open={priceDetailsOpen}
-                                    anchorEl={anchorEl}
-                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                                    onRequestClose={handleCloseDetails}
-                                >
-                                    <div className={classes.popoverMode}>
-                                        <h4>Дистилированая вода</h4>
-                                        <div>
-                                            <p>Объем:</p>
-                                            <p>100 л</p>
-                                        </div>
-                                        <div>
-                                            <p>Стоимость:</p>
-                                            <p>500 000 UZS</p>
-                                        </div>
-                                        <div>
-                                            <p>Доп. расход:</p>
-                                            <p>100 000 UZS</p>
-                                        </div>
-                                        <h4><i>Примерная стоимость 1 л = 6 000 UZS</i></h4>
-                                    </div>
-                                </Popover>
                             </Col>
                         </li>
 
                     </ul>
                 </div>
             </div>
+            <Popover
+                open={priceDetailsOpen}
+                anchorEl={anchorEl}
+                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                onRequestClose={handleCloseDetails}
+            >
+                <div className={classes.popoverMode}>
+                    <h4>Дистилированая вода</h4>
+                    <div>
+                        <p>Объем:</p>
+                        <p>100 л</p>
+                    </div>
+                    <div>
+                        <p>Стоимость:</p>
+                        <p>500 000 UZS</p>
+                    </div>
+                    <div>
+                        <p>Доп. расход:</p>
+                        <p>100 000 UZS</p>
+                    </div>
+                    <h4><i>Примерная стоимость 1 л = 6 000 UZS</i></h4>
+                </div>
+            </Popover>
         </div>
     )
 
@@ -477,7 +368,13 @@ const ProductPriceGridList = enhance((props) => {
                 <Col xs={2}>{measurement}</Col>
                 <Col xs={2}>{price}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconButton onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                    <IconButton
+                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                        tooltip="Изменить"
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}>
                         <Edit />
                     </IconButton>
                 </Col>
