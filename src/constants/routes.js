@@ -41,6 +41,11 @@ export const PRODUCT_LIST_URL = `/${PRODUCT}`
 export const PRODUCT_ITEM_URL = `${PRODUCT_LIST_URL}/:productId`
 export const PRODUCT_ITEM_PATH = `/${PRODUCT}/%d`
 
+export const PRODUCT_TYPE = 'productType'
+export const PRODUCT_TYPE_LIST_URL = `/${PRODUCT_TYPE}`
+export const PRODUCT_TYPE_ITEM_URL = `${PRODUCT_TYPE_LIST_URL}/:productTypeId`
+export const PRODUCT_TYPE_ITEM_PATH = `/${PRODUCT_TYPE}/%d`
+
 export const PRODUCT_PRICE = 'productPrice'
 export const PRODUCT_PRICE_LIST_URL = `/${PRODUCT_PRICE}`
 export const PRODUCT_PRICE_ITEM_URL = `${PRODUCT_PRICE_LIST_URL}/:productPriceId`
