@@ -89,6 +89,7 @@ strong {
 hr.lineDote {
     height: 2px;
     border: none;
+    margin: 0;
     background-image: url(../components/Images/dot.png);
 }
 
