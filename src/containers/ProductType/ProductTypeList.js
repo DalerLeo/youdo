@@ -74,6 +74,10 @@ const enhance = compose(
             return null
         },
 
+        handleOpenDeleteDialog: props => () => {
+            return null
+        },
+
         handleOpenCSVDialog: props => () => {
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)

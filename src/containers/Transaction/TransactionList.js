@@ -11,15 +11,21 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
     TRANSACTION_CREATE_DIALOG_OPEN,
+    TRANSACTION_SEND_DIALOG_OPEN,
     TRANSACTION_UPDATE_DIALOG_OPEN,
+    TRANSACTION_UPDATE_INCOME_DIALOG_OPEN,
     TRANSACTION_DELETE_DIALOG_OPEN,
+    TRANSACTION_INCOME_DIALOG_OPEN,
     TRANSACTION_FILTER_KEY,
     TRANSACTION_FILTER_OPEN,
     TransactionGridList
 } from '../../components/Transaction'
 import {
     transactionCreateAction,
+    transactionSendAction,
+    transactionIncomeAction,
     transactionUpdateAction,
+    transactionUpdateIncomeAction,
     transactionListFetchAction,
     transactionCSVFetchAction,
     transactionDeleteAction,
@@ -37,7 +43,10 @@ const enhance = compose(
         const detail = _.get(state, ['transaction', 'item', 'data'])
         const detailLoading = _.get(state, ['transaction', 'item', 'loading'])
         const createLoading = _.get(state, ['transaction', 'create', 'loading'])
+        const sendLoading = _.get(state, ['transaction', 'create', 'loading'])
+        const incomeLoading = _.get(state, ['transaction', 'create', 'loading'])
         const updateLoading = _.get(state, ['transaction', 'update', 'loading'])
+        const updateIncomeLoading = _.get(state, ['transaction', 'update', 'loading'])
         const list = _.get(state, ['transaction', 'list', 'data'])
         const cashboxList = _.get(state, ['cashbox', 'list', 'data'])
         const cashboxListLoading = _.get(state, ['cashbox', 'list', 'loading'])
@@ -55,8 +64,11 @@ const enhance = compose(
             listLoading,
             detail,
             detailLoading,
+            sendLoading,
             createLoading,
+            incomeLoading,
             updateLoading,
+            updateIncomeLoading,
             csvData,
             csvLoading,
             filter,
@@ -181,17 +193,63 @@ const enhance = compose(
                 })
         },
 
+        handleOpenIncomeDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_INCOME_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseIncomeDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_INCOME_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitIncomeDialog: props => () => {
+            const {dispatch, createForm, filter, location: {pathname}, cashboxId} = props
+            return dispatch(transactionIncomeAction(_.get(createForm, ['values']), cashboxId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_INCOME_DIALOG_OPEN]: false})})
+                    dispatch(transactionListFetchAction(filter))
+                })
+        },
+
+        handleOpenSendDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_SEND_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseSendDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_SEND_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitSendDialog: props => () => {
+            const {dispatch, createForm, filter, location: {pathname}, cashboxId} = props
+            return dispatch(transactionSendAction(_.get(createForm, ['values']), cashboxId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_SEND_DIALOG_OPEN]: false})})
+                    dispatch(transactionListFetchAction(filter))
+                })
+        },
+
         handleClickCashbox: props => (id) => {
             const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({'cashboxId': id})})
             dispatch(transactionListFetchAction(filter))
         },
 
-        handleOpenUpdateDialog: props => (id, type) => {
+        handleOpenUpdateDialog: props => (id, amount) => {
             const {filter} = props
+            const zero = 0
+            const popupName = (amount < zero) ? TRANSACTION_UPDATE_DIALOG_OPEN : TRANSACTION_UPDATE_INCOME_DIALOG_OPEN
             hashHistory.push({
                 pathname: sprintf(ROUTER.TRANSACTION_ITEM_PATH, id),
-                query: filter.getParams({[TRANSACTION_UPDATE_DIALOG_OPEN]: true})
+                query: filter.getParams({[popupName]: true})
             })
         },
 
@@ -214,6 +272,27 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[TRANSACTION_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(transactionListFetchAction(filter))
                 })
+        },
+
+        handleCloseUpdateIncomeDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitUpdateIncomeDialog: props => () => {
+            const {dispatch, createForm, filter, cashboxId} = props
+            const transactionId = _.toInteger(_.get(props, ['params', 'transactionId']))
+            return dispatch(transactionUpdateIncomeAction(transactionId, _.get(createForm, ['values']), cashboxId))
+                .then(() => {
+                    return dispatch(transactionItemFetchAction(transactionId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]: false}))
+                    dispatch(transactionListFetchAction(filter))
+                })
         }
     })
 )
@@ -228,7 +307,10 @@ const TransactionList = enhance((props) => {
         detail,
         detailLoading,
         createLoading,
+        sendLoading,
+        incomeLoading,
         updateLoading,
+        updateIncomeLoading,
         filter,
         layout,
         params
@@ -237,7 +319,10 @@ const TransactionList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', TRANSACTION_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', TRANSACTION_UPDATE_DIALOG_OPEN]))
+    const openUpdateIncomeDialog = toBoolean(_.get(location, ['query', TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', TRANSACTION_DELETE_DIALOG_OPEN]))
+    const openSendDialog = toBoolean(_.get(location, ['query', TRANSACTION_SEND_DIALOG_OPEN]))
+    const openIncomeDialog = toBoolean(_.get(location, ['query', TRANSACTION_INCOME_DIALOG_OPEN]))
 
     const category = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY))
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
@@ -255,6 +340,22 @@ const TransactionList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+
+    const sendDialog = {
+        sendLoading,
+        openSendDialog,
+        handleOpenSendDialog: props.handleOpenSendDialog,
+        handleCloseSendDialog: props.handleCloseSendDialog,
+        handleSubmitSendDialog: props.handleSubmitSendDialog
+    }
+
+    const incomeDialog = {
+        incomeLoading,
+        openIncomeDialog,
+        handleOpenIncomeDialog: props.handleOpenIncomeDialog,
+        handleCloseIncomeDialog: props.handleCloseIncomeDialog,
+        handleSubmitIncomeDialog: props.handleSubmitIncomeDialog
     }
 
     const confirmDialog = {
@@ -283,6 +384,24 @@ const TransactionList = enhance((props) => {
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
+    }
+
+    const updateIncomeDialog = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            }
+
+            return {
+                comment: _.get(detail, 'comment'),
+                amount: _.get(detail, 'amount')
+            }
+        })(),
+        updateIncomeLoading: detailLoading || updateIncomeLoading,
+        openUpdateIncomeDialog,
+        handleOpenUpdateIncomeDialog: props.handleOpenUpdateIncomeDialog,
+        handleCloseUpdateIncomeDialog: props.handleCloseUpdateIncomeDialog,
+        handleSubmitUpdateIncomeDialog: props.handleSubmitUpdateIncomeDialog
     }
 
     const filterDialog = {
@@ -339,8 +458,11 @@ const TransactionList = enhance((props) => {
                 cashboxData={cashboxData}
                 detailData={detailData}
                 createDialog={createDialog}
+                sendDialog={sendDialog}
+                incomeDialog={incomeDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
+                updateIncomeDialog={updateIncomeDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}

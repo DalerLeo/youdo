@@ -22,6 +22,40 @@ export const transactionCreateAction = (formValues, cashboxId) => {
     }
 }
 
+export const transactionIncomeAction = (formValues, cashboxId) => {
+    const requestData = serializers.createSerializer(formValues, cashboxId)
+    const payload = axios()
+        .post(API.TRANSACTION_INCOME, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.TRANSACTION_INCOME,
+        payload
+    }
+}
+
+export const transactionSendAction = (formValues, cashboxId) => {
+    const requestData = serializers.createSerializer(formValues, cashboxId)
+    const payload = axios()
+        .post(API.TRANSACTION_SEND, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.TRANSACTION_SEND,
+        payload
+    }
+}
+
 export const transactionDeleteAction = (id) => {
     const payload = axios()
         .delete(sprintf(API.TRANSACTION_DELETE, id))
@@ -51,6 +85,23 @@ export const transactionUpdateAction = (id, formValues, cashboxId) => {
 
     return {
         type: actionTypes.TRANSACTION_UPDATE,
+        payload
+    }
+}
+
+export const transactionUpdateIncomeAction = (id, formValues, cashboxId) => {
+    const requestData = serializers.createSerializer(formValues, cashboxId)
+    const payload = axios()
+        .put(sprintf(API.TRANSACTION_ITEM, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.TRANSACTION_UPDATE_INCOME,
         payload
     }
 }

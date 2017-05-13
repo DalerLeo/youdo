@@ -5,15 +5,15 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
+import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {CashboxSearchField} from '../ReduxForm'
+import {TextField, CashboxSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
-import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
-export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const TRANSACTION_SEND_DIALOG_OPEN = 'openSendDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -26,6 +26,7 @@ const validate = (data) => {
         _error: nonFieldErrors
     })
 }
+
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -40,37 +41,39 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-        info: {
-            padding: '20px 0'
+        nav: {
+            fontSize: '18px',
+            fontWeight: 'bold',
+            padding: '20px',
+            color: 'black',
+            borderBottom: '1px solid #efefef',
+            '& button': {
+                float: 'right',
+                marginTop: '-5px !important'
+            }
         },
-        infoHeader: {
-            fontWeight: '600',
-            lineHeight: '20px'
+        flex: {
+            display: 'flex',
+            alignItems: 'center'
         },
-        infoSummary: {
-            color: '#666',
-            marginTop: '10px'
+        label: {
+            fontSize: '75%',
+            color: '#999'
         },
-        cashbox: {
-            padding: '0 30px 20px',
-            margin: '0 -30px',
-            background: '#f1f5f8'
+        itemList: {
+            marginTop: '20px'
         }
     })),
     reduxForm({
-        form: 'PendingPaymentsCreateForm',
+        form: 'TransactionCreateForm',
         enableReinitialize: true
     })
 )
 
-const PendingPaymentsCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, detailData, classes} = props
+const TransactionSendDialog = enhance((props) => {
+    const {open, loading, handleSubmit, onClose, classes, cashboxData} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
-    const id = _.get(detailData, 'id')
-    const client = _.get(detailData, ['data', 'client'])
-    const totalBalance = _.get(detailData, ['data', 'totalBalance'])
-    const clientName = _.get(client, 'name')
+    const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
 
     return (
         <Dialog
@@ -78,45 +81,46 @@ const PendingPaymentsCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '350px'}}
-            bodyStyle={{minHeight: 'auto'}}
+            contentStyle={loading ? {width: '300px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Расход</span>
+                <span>Перевод транзакции</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '220px'}}>
+                    <div className={classes.inContent} style={{minHeight: '325px'}}>
                         <div className={classes.loader}>
                             <CircularProgress size={80} thickness={5}/>
                         </div>
                         <div className={classes.field}>
-                            <div className={classes.info}>
-                                <div className={classes.infoHeader}>
-                                    <div>{clientName}</div>
-                                    <div>Заказ №{id}</div>
-                                </div>
-                                <div className={classes.infoSummary}>
-                                    <div>Сумма заказа:<span style={{marginLeft: '10px'}}>{totalBalance}</span></div>
-                                </div>
+                            <div className={classes.itemList}>
+                                <div className={classes.label}>Текущая касса:</div>
+                                <div style={{fontWeight: '600'}}>{_.get(cashbox, 'name')}</div>
                             </div>
-                            <div className={classes.cashbox}>
+                            <Field
+                                name="categoryId"
+                                component={CashboxSearchField}
+                                label="Касса получатель"
+                                fullWidth={true}/>
+                            <div className={classes.flex} style={{alignItems: 'baseline'}}>
                                 <Field
-                                    name="type"
-                                    className={classes.inputField}
-                                    component={CashboxSearchField}
-                                    label="Касса получатель"
-                                    fullWidth={true}
-                                />
+                                    name="amount"
+                                    component={TextField}
+                                    label="Сумма"
+                                    style={{width: '50%'}}
+                                    fullWidth={false}/>
+                                <div style={{marginLeft: '20px'}}>
+                                   {_.get(cashbox, ['currency', 'name'])}
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label="Отправить"
                             className={classes.actionButton}
                             primary={true}
                             type="submit"
@@ -128,11 +132,12 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     )
 })
 
-PendingPaymentsCreateDialog.propTyeps = {
+TransactionSendDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
+    cashboxData: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
-export default PendingPaymentsCreateDialog
+export default TransactionSendDialog
