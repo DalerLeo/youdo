@@ -4,7 +4,6 @@ import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/manufactureSerializer'
-import * as shiftSerializers from '../serializers/shiftSerializer'
 
 export const manufactureCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
@@ -85,40 +84,6 @@ export const manufactureItemFetchAction = (id) => {
 
     return {
         type: actionTypes.MANUFACTURE_ITEM,
-        payload
-    }
-}
-
-export const shiftCreateAction = (formValues) => {
-    const requestData = shiftSerializers.createSerializer(formValues)
-    const payload = axios()
-        .post(API.SHIFT_CREATE, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SHIFT_CREATE,
-        payload
-    }
-}
-
-export const shiftListFetchAction = (manufactureId) => {
-    const params = shiftSerializers.shiftManufactureSerializer(manufactureId)
-    const payload = axios()
-        .get(API.SHIFT_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SHIFT_LIST,
         payload
     }
 }

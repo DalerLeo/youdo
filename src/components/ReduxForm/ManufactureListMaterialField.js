@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withReducer, withHandlers} from 'recompose'
+import {compose, withReducer, withState, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import {Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
@@ -12,10 +12,9 @@ import {
     TableRow,
     TableRowColumn
 } from 'material-ui/Table'
-import {Field} from 'redux-form'
 import ImageCheck from '../Icons/check'
 import DeleteIcon from '../DeleteIcon'
-
+import ContentAdd from 'material-ui/svg-icons/content/add'
 import ProductSearchField from './ProductSearchField'
 import TextField from './TextField'
 
@@ -98,6 +97,7 @@ const enhance = compose(
             }
         }
     }),
+    withState('openAddMaterials', 'setOpenAddMaterials', false),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
@@ -105,8 +105,7 @@ const enhance = compose(
     withHandlers({
         handleAdd: props => () => {
             const ingredient = _.get(props, ['ingredient', 'input', 'value'])
-            const amount = _.get(props, ['amount', 'input'])
-
+            const amount = _.get(props, ['amount', 'input', 'value'])
             const onChange = _.get(props, ['ingredients', 'input', 'onChange'])
             const ingredients = _.get(props, ['ingredients', 'input', 'value'])
 
@@ -126,49 +125,49 @@ const enhance = compose(
     })
 )
 
-const ManufactureListMaterialField = ({classes, state, handleRemove, ...defaultProps}) => {
+const ManufactureListMaterialField = ({classes, state, handleAdd, handleRemove, openAddMaterials, setOpenAddMaterials, ...defaultProps}) => {
     const ingredients = _.get(defaultProps, ['ingredients', 'input', 'value']) || []
 
     return (
         <div className={classes.wrapper}>
+            <div className={classes.titleAdd}>
+                <h3>Сырье</h3>
+                <a onClick={() => {
+                    setOpenAddMaterials(!openAddMaterials)
+                }}>
+                    <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
+                                viewBox="0 0 24 15"/>
+                    добавить сырье
+                </a>
+            </div>
             {openAddMaterials && <div className={classes.addMaterials}>
-                <Fields
-                    names={['products', 'ingredient', 'amount', 'measurement']}
-                    component={ManufactureListMaterialField}
-                />
+                <div>
+                    <Col xs={8}>
+                        <ProductSearchField
+                            label="Наименование товара"
+                            {..._.get(defaultProps, 'ingredient')}
+                        />
+                    </Col>
+                    <Col xs={2}>
+                        <TextField
+                            label="Кол-во"
+                            {..._.get(defaultProps, 'amount')}
+                        />
+                    </Col>
+                    <Col xs={1}>
+                        <span>15</span>
+                    </Col>
+                    <Col xs={1}>
+                        <IconButton
+                            onTouchTap={handleAdd}>
+                            <div>
+                                <ImageCheck style={{color: '#129fdd'}}/>
+                            </div>
+                        </IconButton>
+                    </Col>
+                </div>
             </div>}
-            {state.open &&
-            <div>
-                <Col xs={8}>
-                    <div>
-                        <Field
-                            name="name"
-                            component={ProductSearchField}
-                            className={classes.inputFieldMaterials}
-                            label="Наименование"
-                            fullWidth={true}/>
-                    </div>
-
-                </Col>
-                <Col xs={2}>
-                    <Field
-                        name="amount"
-                        component={TextField}
-                        className={classes.inputFieldMaterials}
-                        label="Кол-во"
-                        fullWidth={true}/>
-                </Col>
-                <Col xs={1}>
-                    <span>15</span>
-                </Col>
-                <Col xs={1}>
-                    <IconButton>
-                        <div>
-                            <ImageCheck style={{color: '#129fdd'}}/>
-                        </div>
-                    </IconButton>
-                </Col>
-            </div>}
+            {state.open && <div>rjngk</div>}
             <div className={classes.table}>
                 <Table
                     fixedHeader={true}

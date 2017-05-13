@@ -21,7 +21,7 @@ import MainStyles from '../Styles/MainStyles'
 import Glue from '../Images/glue.png'
 import Press from '../Images/press.png'
 import Person from '../Images/person.png'
-import {shiftListFetchAction} from '../../actions/manufacture'
+import ConfirmDialog from '../ConfirmDialog'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -186,7 +186,9 @@ const ManufactureGridList = enhance((props) => {
         addProductDialog,
         classes,
         shiftData,
-        equipmentData
+        equipmentData,
+        productData,
+        confirmDialog
     } = props
 
     const detailId = _.get(detailData, 'id')
@@ -251,6 +253,11 @@ const ManufactureGridList = enhance((props) => {
             <MoreVertIcon />
         </IconButton>
     )
+    const shiftListExp = _.get(shiftData, 'shiftList')
+    const shiftId = _.get(shiftData, 'shiftId')
+    const shift = _.find(shiftListExp, (o) => {
+        return _.toInteger(o.id) === _.toInteger(shiftId)
+    })
 
     return (
         <Container>
@@ -259,9 +266,11 @@ const ManufactureGridList = enhance((props) => {
                 open={addStaff.open}
                 onClose={addStaff.handleClose}
                 shiftData={shiftData}
+                confirmDialog={confirmDialog}
             />
             <ManufactureShowBom
                 open={showBom.open}
+                onSubmit={productData.handleSubmitAddIngredient}
                 onClose={showBom.handleClose}
             />
             <ManufactureAddProductDialog
@@ -366,6 +375,13 @@ const ManufactureGridList = enhance((props) => {
                 </Col>
             </Row>
 
+            {_.get(shiftData, 'shiftId') && <ConfirmDialog
+                type="delete"
+                message={_.get(shift, 'name')}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.handleSendConfirmDialog}
+                open={confirmDialog.openConfirmDialog}
+            />}
         </Container>
     )
 })
@@ -373,6 +389,12 @@ const ManufactureGridList = enhance((props) => {
 ManufactureGridList.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
     addStaff: PropTypes.shape({
         open: PropTypes.bool.isRequired,
         handleOpen: PropTypes.func.isRequired,
@@ -388,10 +410,8 @@ ManufactureGridList.propTypes = {
         handleOpen: PropTypes.func.isRequired,
         handleClose: PropTypes.func.isRequired
     }).isRequired,
-    shiftData: PropTypes.shape({
-        shiftList: PropTypes.array,
-        handleSubmitShiftAddForm: PropTypes.func.isRequired
-    }),
+    shiftData: PropTypes.object,
+    productData: PropTypes.object.isRequired,
     equipmentData: PropTypes.object
 }
 

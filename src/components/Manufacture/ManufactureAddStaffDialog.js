@@ -11,8 +11,15 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import Edit from 'material-ui/svg-icons/image/edit'
+
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+
 import MainStyles from '../Styles/MainStyles'
 import Person from '../Images/person.png'
+
 import ManufactureShiftCreateForm from './ManufactureShiftCreateForm'
 
 export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
@@ -192,7 +199,8 @@ const ManufactureAddStaffDialog = enhance((props) => {
         setOpenAddShift,
         openAddStaff,
         setOpenAddStaff,
-        shiftData
+        shiftData,
+        confirmDialog
     } = props
 
     const shiftList = _.map(_.get(shiftData, 'shiftList'), (item) => {
@@ -201,25 +209,36 @@ const ManufactureAddStaffDialog = enhance((props) => {
         const beginTime = _.get(item, 'beginTime')
         const endTime = _.get(item, 'endTime')
 
+        const iconButton = (
+            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
+
         return (
             <div key={id}>
-                <div className={classes.productionStaffGroupTitle}>
-                    <div className="dottedList">
-                        <p>{name}</p>
-                        <span>График: {beginTime} - {endTime}</span>
+                <div className={classes.shift}>
+                    <h4>
+                        {name}
+                        <span>({beginTime} - {endTime})</span>
+                    </h4>
+                    <div className={classes.deleteHideIco}>
+                        <IconMenu
+                            iconButtonElement={iconButton}
+                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                            <MenuItem
+                                primaryText="Изменить"
+                                leftIcon={<Edit />}
+                            />
+                            <MenuItem
+                                primaryText="Удалить "
+                                leftIcon={<DeleteIcon />}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                            />
+                        </IconMenu>
                     </div>
                 </div>
-                <ul className={classes.productionStaffUl}>
-                    <li className="dottedList">
-                        <div>
-                            <img src={Person} />
-                        </div>
-                        <div>
-                            Атамбаев Бекзод<br />
-                            <span>Должность</span>
-                        </div>
-                    </li>
-                </ul>
             </div>
         )
     })
@@ -365,9 +384,14 @@ ManufactureAddStaffDialog.propTypes = {
     onSubmit: PropTypes.func,
     loading: PropTypes.bool,
     shiftData: PropTypes.shape({
-        shiftList: PropTypes.array,
-        handleSubmitShiftAddForm: PropTypes.func.isRequired
-    })
+        shiftList: PropTypes.array
+    }),
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 ManufactureAddStaffDialog.defaultProps = {

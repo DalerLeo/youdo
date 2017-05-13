@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Col} from 'react-flexbox-grid'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
@@ -9,14 +8,8 @@ import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, Fields} from 'redux-form'
 import {ManufactureListMaterialField, ProductSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MainStyles from '../Styles/MainStyles'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
-import Edit from 'material-ui/svg-icons/image/edit'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 
 export const MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN = 'addProduct'
 
@@ -134,13 +127,7 @@ const enhance = compose(
 )
 
 const ManufactureAddProductDialog = enhance((props) => {
-    const {open, loading, onClose, classes, openAddMaterials, setOpenAddMaterials} = props
-
-    const iconButton = (
-        <IconButton style={{padding: '0 12px', height: 'auto'}}>
-            <MoreVertIcon />
-        </IconButton>
-    )
+    const {open, loading, onClose, classes} = props
 
     return (
         <Dialog
@@ -161,69 +148,15 @@ const ManufactureAddProductDialog = enhance((props) => {
                 <div className={classes.inContent}>
                     <div style={{width: '100%'}}>
                         <Field
-                            name="productName"
+                            name="product"
                             label="Наименование продукта"
                             component={ProductSearchField}
                             className={classes.inputFieldMaterials}
                             fullWidth={true}/>
-                        <div className={classes.titleAdd}>
-                            <h3>Сырье</h3>
-                            <a onClick={() => {
-                                setOpenAddMaterials(!openAddMaterials)
-                            }}>
-                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
-                                            viewBox="0 0 24 15"/>
-                                добавить сырье
-                            </a>
-                        </div>
-                        {openAddMaterials && <div className={classes.addMaterials}>
-                            <Fields
-                                names={['products', 'ingredient', 'amount', 'measurement']}
-                                component={ManufactureListMaterialField}
-                            />
-                        </div>}
-                        {/*<ul className={classes.modalListTable}>*/}
-                            {/*<li className="dottedList">*/}
-                                {/*<Col xs={8}>*/}
-                                    {/*<strong>Наименование</strong>*/}
-                                {/*</Col>*/}
-                                {/*<Col xs={2}>*/}
-                                    {/*<strong>Кол-во</strong>*/}
-                                {/*</Col>*/}
-                                {/*<Col xs={1}>*/}
-                                    {/*<strong>Ед.</strong>*/}
-                                {/*</Col>*/}
-                                {/*<Col xs={1}>*/}
-                                    {/*&nbsp;*/}
-                                {/*</Col>*/}
-                            {/*</li>*/}
-                            {/*<li className="dottedList">*/}
-                                {/*<Col xs={8}>*/}
-                                    {/*Дистилированная вода*/}
-                                {/*</Col>*/}
-                                {/*<Col xs={2}>*/}
-                                    {/*100*/}
-                                {/*</Col>*/}
-                                {/*<Col xs={1}>*/}
-                                    {/*л*/}
-                                {/*</Col>*/}
-                                {/*<Col xs={1}>*/}
-                                    {/*<IconMenu*/}
-                                        {/*iconButtonElement={iconButton}*/}
-                                        {/*anchorOrigin={{horizontal: 'right', vertical: 'top'}}*/}
-                                        {/*targetOrigin={{horizontal: 'right', vertical: 'top'}}>*/}
-                                        {/*<MenuItem*/}
-                                            {/*primaryText="Изменить"*/}
-                                            {/*leftIcon={<Edit />}*/}
-                                        {/*/>*/}
-                                        {/*<MenuItem*/}
-                                            {/*primaryText="Удалить "*/}
-                                            {/*leftIcon={<DeleteIcon />}*/}
-                                        {/*/>*/}
-                                    {/*</IconMenu>*/}
-                                {/*</Col>*/}
-                            {/*</li>*/}
-                        {/*</ul>*/}
+                        <Fields
+                            names={['ingredients', 'ingredient', 'amount', 'measurement']}
+                            component={ManufactureListMaterialField}
+                        />
                     </div>
                 </div>
                 <div className={classes.bottomButton}>
