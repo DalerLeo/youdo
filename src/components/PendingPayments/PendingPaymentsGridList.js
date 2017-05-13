@@ -21,26 +21,32 @@ import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 const listHeader = [
     {
         sorting: true,
-        name: 'supply',
+        name: 'id',
         title: '№ заказа',
-        xs: 2
+        xs: 1
     },
     {
-        sorting: true,
-        name: 'type',
+        sorting: false,
+        name: 'clientName',
         title: 'Клиент',
-        xs: 4
+        xs: 3
     },
     {
         sorting: true,
-        name: 'brand',
+        name: 'created_date',
         title: 'Дата',
         xs: 2
     },
     {
         sorting: true,
-        name: 'measurement',
-        title: 'Сумма',
+        name: 'total_price',
+        title: 'Сумма заказа',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'total_balance',
+        title: 'Остаток',
         xs: 3
     }
 ]
@@ -85,7 +91,6 @@ const PendingPaymentsGridList = enhance((props) => {
         listData,
         detailData
     } = props
-
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
@@ -112,17 +117,19 @@ const PendingPaymentsGridList = enhance((props) => {
 
     const pendingPaymentsList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const supplyNo = _.get(item, 'supply')
-        const comment = _.get(item, 'comment')
+        const client = _.get(item, 'client')
+        const clientName = _.get(client, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const summary = _.get(item, 'amount')
+        const totalPrice = _.get(item, 'totalPrice')
+        const totalBalance = _.get(item, 'totalBalance')
         const currency = _.get(item, ['currency', 'name'])
         return (
             <Row key={id}>
-                <Col xs={2}>{supplyNo}</Col>
-                <Col xs={4}>{comment}</Col>
+                <Col xs={1}>{id}</Col>
+                <Col xs={3}>{clientName}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={3}>{summary} {currency}</Col>
+                <Col xs={2}>{totalPrice} {currency}</Col>
+                <Col xs={3}>{totalBalance}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
                         iconStyle={iconStyle.icon}
