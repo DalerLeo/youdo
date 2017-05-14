@@ -259,7 +259,7 @@ const ProductList = enhance((props) => {
             return {
                 name: _.get(detail, 'name'),
                 type: {
-                    value: _.get(detail, 'type')
+                    value: _.get(detail, ['type', 'id'])
                 },
                 brand: {
                     value: _.get(detail, ['brand', 'id'])

@@ -10,12 +10,12 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
-import MainStyles from '../Styles/MainStyles'
 import CloseIcon from '../CloseIcon'
+import numberFormat from '../../helpers/numberFormat'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         dottedList: {
             padding: '20px 0'
         },
@@ -42,7 +42,7 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
-            padding: '20px 0',
+            height: '65px',
             margin: '-20px 0 0'
         },
         titleLabel: {
@@ -59,7 +59,7 @@ const enhance = compose(
                 fontSize: '13px',
                 position: 'absolute',
                 padding: '64px 28px 20px',
-                top: '-18px',
+                top: '-21px',
                 left: '50%',
                 zIndex: '9',
                 minWidth: '300px',
@@ -213,19 +213,19 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'flex-end'
         }
-    })),
+    }),
     withState('openDetails', 'setOpenDetails', false)
 )
 
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 18,
-        height: 18
+        width: 20,
+        height: 20
     },
     button: {
-        width: 30,
-        height: 30,
+        width: 48,
+        height: 48,
         padding: 0
     }
 }
@@ -233,19 +233,20 @@ const iconStyle = {
 const tooltipPosition = 'bottom-center'
 
 const SupplyDetails = enhance((props) => {
-    const {classes, loading, data, setOpenDetails, openDetails, handleSupplyExpenseOpenCreateDialog, supplyListData} = props
+    const {classes, loading, data, setOpenDetails, openDetails, handleSupplyExpenseOpenCreateDialog, supplyListData, updateDialog,
+        confirmDialog} = props
     const id = _.get(data, 'id')
     const provider = _.get(data, ['provider', 'name'])
     const products = _.get(data, 'products')
     const stock = _.get(data, ['stock', 'name'])
-    const currency = _.get(data, 'currency') || 'N/A'
+    const currency = _.get(data, ['currency', 'name']) || 'N/A'
     const contact = _.get(data, 'contact')
     const contactPerson = _.get(contact, 'name')
     const contactEmail = _.get(contact, 'email')
     const contactPhone = _.get(contact, 'phone')
-    const dataDelivery = _.get(data, 'dataDelivery') || 'N/A'
-    const acceptedTime = _.get(data, 'acceptedTime') || 'N/A'
-    const finishedTime = _.get(data, 'finishedTime') || 'N/A'
+    const dataDelivery = _.get(data, 'dateDelivery') || 'Не указано'
+    const acceptedTime = _.get(data, 'acceptedTime') || 'Не начался'
+    const finishedTime = _.get(data, 'finishedTime') || 'Не закончилась '
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
 
@@ -297,6 +298,7 @@ const SupplyDetails = enhance((props) => {
                         style={iconStyle.button}
                         touch={true}
                         tooltipPosition={tooltipPosition}
+                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
                         tooltip="Изменить">
                         <Edit />
                     </IconButton>
@@ -305,6 +307,7 @@ const SupplyDetails = enhance((props) => {
                         style={iconStyle.button}
                         touch={true}
                         tooltipPosition={tooltipPosition}
+                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                         tooltip="Удалить">
                         <Delete />
                     </IconButton>
@@ -353,28 +356,28 @@ const SupplyDetails = enhance((props) => {
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
                                 <Col xs={6}>{productName}</Col>
-                                <Col xs={1}>{amount} {measurement}</Col>
-                                <Col xs={1}>{postedAmount} {measurement}</Col>
-                                <Col xs={1}>{defectAmount} {measurement}</Col>
+                                <Col xs={1}>{numberFormat(amount, measurement)}</Col>
+                                <Col xs={1}>{numberFormat(postedAmount, measurement)}</Col>
+                                <Col xs={1}>{numberFormat(defectAmount, measurement)}</Col>
                                 <Col xs={1}>
-                                    <div style={{textAlign: 'right'}}>{price} {currency}</div>
+                                    <div style={{textAlign: 'right'}}>{numberFormat(price, currency)}</div>
                                 </Col>
                                 <Col xs={2}>
-                                    <div style={{textAlign: 'right'}}>{cost} {currency}</div>
+                                    <div style={{textAlign: 'right'}}>{numberFormat(cost, currency)}</div>
                                 </Col>
                             </Row>
                         )
                     })}
                 </div>
                 <div className="summary">
-                    <div>Сумма заказа <span style={{marginLeft: '40px'}}>{totalCost} {currency}</span></div>
+                    <div>Сумма заказа <span style={{marginLeft: '40px'}}>{numberFormat(totalCost, currency)}</span></div>
                 </div>
                 <div className="addExpenses">
                     <div className="addExpense">
                         <div>Дополнительные расходы по заказу</div>
                         <div>
                             <FlatButton
-                                onTouchTap={handleSupplyExpenseOpenCreateDialog}
+                                onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}
                                 className="expenseButton"
                                 label="+ добавить доп. расход"/>
                         </div>
@@ -397,7 +400,7 @@ const SupplyDetails = enhance((props) => {
                                         <div style={{textAlign: 'right'}}>{expAmount} {expCurrency}</div>
                                         <IconButton
                                             iconStyle={{color: '#666'}}
-                                            onTouchTap={supplyListData.handleDelete}>
+                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(expId) }}>
                                             <CloseIcon/>
                                         </IconButton>
                                     </Col>

@@ -7,12 +7,12 @@ import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
 import {
     CurrencySearchField,
     ProviderSearchField,
+    ProviderContactsField,
     StockSearchField,
     SupplyListProductField,
     TextField,
@@ -72,10 +72,12 @@ const enhance = compose(
         },
         inContent: {
             display: 'flex',
-            maxHeight: '50vh',
-            minHeight: '184px',
             color: '#333',
             borderBottom: '1px #efefef solid'
+        },
+        innerWrap: {
+            maxHeight: '50vh',
+            overflow: 'auto'
         },
         bodyContent: {
             width: '100%'
@@ -99,7 +101,7 @@ const enhance = compose(
         },
         right: {
             flexBasis: '65%',
-            maxWidth: '65%',
+            maxWidth: '55%',
             padding: '15px 30px'
         },
         inputField: {
@@ -172,7 +174,7 @@ const SupplyCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Добавления заказа</span>
+                <span>Добавление поставки</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -182,68 +184,63 @@ const SupplyCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent}>
-                        <div className={classes.left}>
-                            <div className={classes.title}>Выбор поставщика</div>
-                            <div className={classes.selectContent}>
-                                <Field
-                                    name="provider"
-                                    component={ProviderSearchField}
-                                    className={classes.inputField}
-                                    label="Поставщик"
-                                    fullWidth={true}/>
-                                <RadioButtonGroup name="contact" defaultSelected="1"
-                                                  className={classes.radioButton}>
-                                    <RadioButton
-                                        value="1"
-                                        label="Tursunov Bohodir"
+                    <div className={classes.innerWrap}>
+                        <div className={classes.inContent}>
+                            <div className={classes.left}>
+                                <div className={classes.title}>Выбор поставщика</div>
+                                <div className={classes.selectContent}>
+                                    <Field
+                                        name="provider"
+                                        component={ProviderSearchField}
+                                        className={classes.inputField}
+                                        label="Поставщик"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="contact"
+                                        component={ProviderContactsField}
                                     />
-                                    <RadioButton
-                                        value="2"
-                                        label="Ashurov Anvar"
-                                    />
-                                </RadioButtonGroup>
+                                </div>
+                                <div className={classes.condition}>
+                                    <div className={classes.title}>Условия доставки</div>
+                                    <Field
+                                        name="date_delivery"
+                                        component={DateField}
+                                        className={classes.inputField}
+                                        hintText="Дата поставки"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="stock"
+                                        component={StockSearchField}
+                                        className={classes.inputField}
+                                        label="Склад назначения"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="currency"
+                                        component={CurrencySearchField}
+                                        className={classes.inputField}
+                                        label="Валюта оплаты"
+                                        fullWidth={true}/>
+                                </div>
                             </div>
-                            <div className={classes.condition}>
-                                <div className={classes.title}>Условия доставки</div>
-                                <Field
-                                    name="date_delivery"
-                                    component={DateField}
-                                    className={classes.inputField}
-                                    hintText="Дата поставки"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="stock"
-                                    component={StockSearchField}
-                                    className={classes.inputField}
-                                    label="Склад назначения"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="currency"
-                                    component={CurrencySearchField}
-                                    className={classes.inputField}
-                                    label="Валюта оплаты"
-                                    fullWidth={true}/>
+                            <div className={classes.right}>
+                                <Fields
+                                    names={['products', 'product', 'amount', 'cost']}
+                                    component={SupplyListProductField}
+                                />
                             </div>
                         </div>
-                        <div className={classes.right}>
-                            <Fields
-                                names={['products', 'product', 'amount', 'cost']}
-                                component={SupplyListProductField}
-                            />
+                        <div className={classes.commentField}>
+                            <div className={classes.title}>Комментарии по заказу</div>
+                            <Field
+                                name="comment"
+                                component={TextField}
+                                label="Оставить комментарий..."
+                                className={classes.inputField}
+                                multiLine={true}
+                                rows={3}
+                                rowsMax={3}
+                                fullWidth={true}/>
                         </div>
-                    </div>
-                    <div className={classes.commentField}>
-                        <div className={classes.title}>Комментарии по заказу</div>
-                        <Field
-                            name="comment"
-                            component={TextField}
-                            label="Оставить комментарий..."
-                            className={classes.inputField}
-                            multiLine={true}
-                            rows={3}
-                            rowsMax={3}
-                            fullWidth={true}/>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton

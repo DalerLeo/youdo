@@ -14,16 +14,16 @@ input:-webkit-autofill {
     height: 0;
 }
 ::-webkit-scrollbar-track {
-    background: #eeeff3
+    background: #bebebe
 }
 ::-webkit-scrollbar-track-piece {
-    background: #eeeff3
+    background: #bebebe
 }
 ::-webkit-scrollbar-thumb {
-    background: #DFE4E6;
+    background: #6c6c6c;
 }
 ::-webkit-scrollbar {
-    width: 7px;
+    width: 4px;
     height: 7px;
 }
 
@@ -84,6 +84,13 @@ strong {
     height: 2px;
     left: 0;
     right: 0;
+}
+
+hr.lineDote {
+    height: 2px;
+    border: none;
+    margin: 0;
+    background-image: url(../components/Images/dot.png);
 }
 
 .greenFont {color:#81c784 !important;}

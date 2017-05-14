@@ -4,18 +4,16 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
+import OrderTransactionsDialog from './OrderTransactionsDialog'
+import OrderReturnDialog from './OrderReturnDialog'
 import IconButton from 'material-ui/IconButton'
-import FlatButton from 'material-ui/FlatButton'
-import Edit from 'material-ui/svg-icons/image/edit'
-import Delete from 'material-ui/svg-icons/action/delete'
+import Return from 'material-ui/svg-icons/content/reply'
+import File from 'material-ui/svg-icons/editor/insert-drive-file'
 import {Row, Col} from 'react-flexbox-grid'
-import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
-import MainStyles from '../Styles/MainStyles'
 
-const colorBlue = '#12aaeb !important'
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         dottedList: {
             padding: '20px 0'
         },
@@ -23,11 +21,35 @@ const enhance = compose(
             color: '#333 !important',
             width: '100%',
             display: 'flex',
-            flexWrap: 'wrap',
-            padding: '20px 30px',
-            '& a': {
-                color: colorBlue
+            flexWrap: 'wrap'
+        },
+        dropdown: {
+            position: 'relative',
+            paddingRight: '18px',
+            zIndex: '10',
+            '&:after': {
+                top: '10px',
+                right: '0',
+                content: '""',
+                position: 'absolute',
+                borderTop: '5px solid',
+                borderLeft: '5px solid transparent',
+                borderRight: '5px solid transparent'
             }
+        },
+        link: {
+            extend: 'blue',
+            borderBottom: '1px dashed',
+            fontWeight: '600'
+        },
+        red: {
+            color: '#e57373 !important'
+        },
+        blue: {
+            color: '#12aaeb !important'
+        },
+        green: {
+            color: '#81c784 !important'
         },
         loader: {
             width: '100%',
@@ -40,10 +62,11 @@ const enhance = compose(
         title: {
             display: 'flex',
             justifyContent: 'space-between',
+            borderBottom: '1px #efefef solid',
             alignItems: 'center',
             width: '100%',
-            padding: '20px 0',
-            margin: '-20px 0 0'
+            height: '65px',
+            padding: '0 30px'
         },
         titleLabel: {
             fontSize: '18px',
@@ -59,7 +82,7 @@ const enhance = compose(
                 fontSize: '13px',
                 position: 'absolute',
                 padding: '64px 28px 20px',
-                top: '-18px',
+                top: '-21px',
                 left: '50%',
                 zIndex: '9',
                 minWidth: '300px',
@@ -88,155 +111,130 @@ const enhance = compose(
                 }
             }
         },
-        dropdown: {
-            position: 'relative',
-            paddingRight: '18px',
-            zIndex: '10',
-            '&:after': {
-                top: '10px',
-                right: '0',
-                content: '""',
-                position: 'absolute',
-                borderTop: '5px solid',
-                borderLeft: '5px solid transparent',
-                borderRight: '5px solid transparent'
+        titleClient: {
+            '& span': {
+                fontWeight: '600'
             }
         },
-        details: {
-            extend: 'title',
-            background: '#f2f5f8',
-            padding: '23px 30px',
-            margin: '0 -30px'
+        content: {
+            display: 'flex',
+            width: '100%'
         },
-        payInfo: {
-            display: 'flex'
+        padding: {
+            padding: '20px 30px'
         },
-        storeInfo: {
-            display: 'flex'
+        leftSide: {
+            flexBasis: '30%',
+            borderRight: '1px #efefef solid'
         },
-        dateInfo: {
-            textAlign: 'right'
+        subBlock: {
+            extend: 'padding',
+            borderBottom: '1px #efefef solid',
+            '&:last-child': {
+                border: 'none'
+            }
         },
-        data: {
-            width: '100%',
-            '& .dataHeader': {
-                fontWeight: 'bold',
-                padding: '20px 0',
-                width: '100%'
+        rightSide: {
+            flexBasis: '70%',
+            padding: '0 30px 20px'
+        },
+        subtitle: {
+            fontWeight: '600',
+            textTransform: 'uppercase',
+            marginBottom: '10px'
+        },
+        dataBox: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            '& ul:last-child': {
+                fontWeight: '600',
+                marginLeft: '30px',
+                textAlign: 'right'
             },
-            '& .summary': {
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                textAlign: 'right',
-                padding: '20px 30px',
-                margin: '0 -30px',
-                borderBottom: '1px #efefef solid'
-            },
-            '& .dottedList': {
-                '&:after': {
-                    left: '0.5rem',
-                    right: '0.5rem'
+            '& li': {
+                lineHeight: '25px'
+            }
+        },
+        tabNav: {
+            padding: '15px 0',
+            borderBottom: '1px #f2f5f8 solid',
+            '& a': {
+                margin: '-15px 0',
+                padding: '15px 0',
+                marginRight: '40px',
+                color: '#9b9b9b',
+                '&.active': {
+                    color: '#12aaeb',
+                    borderBottom: '1px solid'
                 }
+            }
+        },
+        tabContent: {
+            '& .row:first-child': {
+                fontWeight: '600'
             },
-            '& .addExpenses': {
-                padding: '20px 30px',
-                margin: '0 -30px',
-                borderBottom: '1px #efefef solid',
-                '& .addExpense': {
-                    display: 'flex',
-                    width: '100%',
-                    justifyContent: 'space-between',
-                    fontWeight: 'bold',
-                    paddingBottom: '30px',
-                    '& .expenseButton > div > span ': {
-                        color: 'red !important',
-                        textTransform: 'inherit !important'
-                    }
-                }
-            },
-            '& .expenseInfo': {
-                marginBottom: '20px',
-                '&:last-child': {
-                    margin: '0'
-                }
-            },
-            '& .comment': {
-                display: 'flex',
-                padding: '20px 0 0',
-                alignItems: 'center',
-                '& .personImage': {
-                    borderRadius: '50%',
-                    overflow: 'hidden',
-                    flexBasis: '35px',
-                    flexGrow: '1',
-                    height: '35px',
-                    width: '35px',
-                    '& img': {
-                        display: 'block',
-                        height: '100%',
-                        width: '100%'
-                    }
+            '& .row': {
+                '& > div': {
+                    textAlign: 'right'
                 },
-                '& .personText': {
-                    background: '#f2f5f8',
-                    borderRadius: '2px',
-                    marginLeft: '15px',
-                    padding: '15px',
-                    position: 'relative',
-                    width: 'calc(100% - 50px)',
-                    '&:after': {
-                        content: '""',
-                        position: 'absolute',
-                        borderRightColor: '#f2f5f8',
-                        borderRightStyle: 'solid',
-                        borderRightWidth: '7px',
-                        borderTop: '7px solid transparent',
-                        borderBottom: '7px solid transparent',
-                        left: '-7px',
-                        top: '50%',
-                        marginTop: '-7px'
-                    }
+                '& > div:first-child': {
+                    textAlign: 'left'
                 }
             }
+        },
+        tabWrapper: {
+            maxHeight: '232px',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            paddingRight: '30px'
+        },
+        summary: {
+            fontWeight: '600',
+            marginTop: '20px',
+            paddingRight: '30px',
+            textTransform: 'uppercase',
+            textAlign: 'right'
         }
-    })),
+    }),
     withState('openDetails', 'setOpenDetails', false)
 )
 
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 18,
-        height: 18
+        width: 20,
+        height: 20
     },
     button: {
-        width: 30,
-        height: 30,
+        width: 48,
+        height: 48,
         padding: 0
     }
 }
+withState('openDetails', 'setOpenDetails', false)
 
 const tooltipPosition = 'bottom-center'
 
 const OrderDetails = enhance((props) => {
-    const {classes, loading, data, setOpenDetails, openDetails, handleOrderExpenseOpenCreateDialog, orderListData} = props
+    const {classes, loading, data, setOpenDetails, openDetails, transactionsDialog, returnDialog} = props
     const id = _.get(data, 'id')
-    const provider = _.get(data, ['provider', 'name'])
     const products = _.get(data, 'products')
-    const stock = _.get(data, ['stock', 'name'])
-    const currency = _.get(data, 'currency') || 'N/A'
     const contact = _.get(data, 'contact')
-    const contactPerson = _.get(contact, 'name')
-    const contactEmail = _.get(contact, 'email')
-    const contactPhone = _.get(contact, 'phone')
-    const dataDelivery = _.get(data, 'dataDelivery') || 'N/A'
-    const acceptedTime = _.get(data, 'acceptedTime') || 'N/A'
-    const finishedTime = _.get(data, 'finishedTime') || 'N/A'
-    const totalCost = _.get(data, 'totalCost')
-    const comment = _.get(data, 'comment')
+    const contactName = _.get(contact, 'name')
+    const contactEmail = _.get(contact, 'email') || 'N/A'
+    const contactPhone = _.get(contact, 'telephone') || 'N/A'
 
-    const orderExpenseList = _.get(orderListData, 'data')
-    const orderExpenseListLoading = _.get(orderListData, 'orderExpenseListLoading')
+    const client = _.get(data, 'client')
+    const clientPerson = _.get(client, 'name')
+    const deliveryType = _.get(data, 'deliveryType')
+
+    const percent = 100
+    const zero = 0
+    const deliveryPrice = _.get(data, 'deliveryPrice')
+    const discount = _.get(data, 'discountPrice')
+    const totalPrice = _.get(data, 'totalPrice')
+    const totalBalance = _.get(data, 'totalBalance')
+    const discountPrice = deliveryPrice * (discount / percent)
 
     if (loading) {
         return (
@@ -255,7 +253,7 @@ const OrderDetails = enhance((props) => {
                 <div className={classes.titleSupplier}>
                     <a className={classes.dropdown} onMouseEnter={() => {
                         setOpenDetails(true)
-                    }}>{provider}</a>
+                    }}>{clientPerson}</a>
                     {openDetails &&
                     <div className="supplierDetails" onMouseLeave={() => {
                         setOpenDetails(false)
@@ -263,7 +261,7 @@ const OrderDetails = enhance((props) => {
                         <div className="detailsWrap">
                             <Row className="detailsList">
                                 <Col xs={6}>Контактное лицо</Col>
-                                <Col xs={6}>{contactPerson}</Col>
+                                <Col xs={6}>{contactName}</Col>
                             </Row>
                             <Row className="detailsList">
                                 <Col xs={6}>Телефон</Col>
@@ -283,122 +281,111 @@ const OrderDetails = enhance((props) => {
                         style={iconStyle.button}
                         touch={true}
                         tooltipPosition={tooltipPosition}
-                        tooltip="Изменить">
-                        <Edit />
+                        onTouchTap={returnDialog.handleOpenReturnDialog}
+                        tooltip="Добавить возврат">
+                        <Return />
                     </IconButton>
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
                         touch={true}
                         tooltipPosition={tooltipPosition}
-                        tooltip="Удалить">
-                        <Delete />
+                        tooltip="Скачать договор">
+                        <File />
                     </IconButton>
                 </div>
             </div>
 
-            <div className={classes.details}>
-                <div className={classes.storeInfo}>
-                    <div className={classes.store}>Склад: <span
-                        style={{color: '#999', fontWeight: 'bold'}}>{stock}</span></div>
-                    <div className={classes.orderDate} style={{marginLeft: '45px'}}>Дата поставки: <span
-                        style={{color: '#e57373', fontWeight: 'bold'}}>{dataDelivery}</span></div>
-                </div>
-                <div className={classes.dateInfo}>
-                    <div>Начало приемки: <span style={{fontWeight: '600'}}>{acceptedTime}</span></div>
-                    <div>Конец приемки: <span style={{fontWeight: '600'}}>{finishedTime}</span></div>
-                </div>
-            </div>
-
-            <div className={classes.data}>
-                <div className="dataHeader">
-                    <Row>
-                        <Col xs={6}>Товар</Col>
-                        <Col xs={1}>Количество</Col>
-                        <Col xs={1}>Принято</Col>
-                        <Col xs={1}>Брак</Col>
-                        <Col xs={1}>
-                            <div>Стоимость</div>
-                        </Col>
-                        <Col xs={2}>
-                            <div style={{textAlign: 'right'}}>Итог</div>
-                        </Col>
-                    </Row>
-                </div>
-                <div>
-                    {_.map(products, (item) => {
-                        const product = _.get(item, 'product')
-                        const productName = _.get(product, 'name')
-                        const price = _.get(product, 'price')
-                        const cost = _.get(item, 'cost')
-                        const amount = _.get(item, 'amount')
-                        const postedAmount = _.get(item, 'postedAmount')
-                        const defectAmount = _.get(item, 'defectAmount')
-                        const measurement = _.get(product, ['measurement', 'name'])
-                        return (
-                            <Row className="dataInfo" key={item}>
-                                <Col xs={6}>{productName}</Col>
-                                <Col xs={1}>{amount} {measurement}</Col>
-                                <Col xs={1}>{postedAmount} {measurement}</Col>
-                                <Col xs={1}>{defectAmount} {measurement}</Col>
-                                <Col xs={1}>
-                                    <div>{price} {currency}</div>
-                                </Col>
-                                <Col xs={2}>
-                                    <div style={{textAlign: 'right'}}>{cost} {currency}</div>
-                                </Col>
-                            </Row>
-                        )
-                    })}
-                </div>
-                <div className="summary">
-                    <div>Сумма заказа <span style={{marginLeft: '40px'}}>{totalCost} {currency}</span></div>
-                </div>
-                <div className="addExpenses">
-                    <div className="addExpense">
-                        <div>Дополнительные расходы по заказу</div>
-                        <div>
-                            <FlatButton
-                                onTouchTap={handleOrderExpenseOpenCreateDialog}
-                                className="expenseButton"
-                                label="+ добавить доп. расход"/>
+            <div className={classes.content}>
+                <div className={classes.leftSide}>
+                    <div className={classes.subBlock}>
+                        <div className={classes.subtitle}>Баланс</div>
+                        <div className={classes.dataBox}>
+                            <ul>
+                                <li>Тип оплаты:</li>
+                                <li>Дата оплаты:</li>
+                                <li>Стоимость доставки:</li>
+                                <li>Скидка({discount}%):</li>
+                                <li>Оплачено:</li>
+                                <li>Остаток:</li>
+                            </ul>
+                            <ul>
+                                <li>Перечисление</li>
+                                <li>22.05.2017</li>
+                                <li>{deliveryPrice}</li>
+                                <li>{discountPrice}</li>
+                                <li>
+                                    <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>500 000 UZS</a>
+                                </li>
+                                <li className={totalBalance > zero ? classes.red : classes.green}>{totalBalance}</li>
+                            </ul>
                         </div>
                     </div>
-                    <div className="expenseInfo">
-                        {orderExpenseListLoading && <div className={classes.loader}>
-                            <div>
-                                <CircularProgress size={100} thickness={6}/>
-                            </div>
-                        </div>}
-                        {!orderExpenseListLoading && _.map(orderExpenseList, (item) => {
-                            const expId = _.get(item, 'id')
-                            const expComment = _.get(item, 'comment')
-                            const expAmount = _.get(item, 'amount')
-                            const expCurrency = _.get(item, 'currency')
-                            return (
-                                <Row key={expId}>
-                                    <Col xs={8}>{expComment}</Col>
-                                    <Col xs={2}>
-                                        <div style={{textAlign: 'right'}}>{expAmount} {expCurrency}</div>
-                                    </Col>
-                                    <Col xs={2}>
-                                        <IconButton
-                                            onTouchTap={orderListData.hamdleDelete}><Delete/></IconButton>
-                                    </Col>
-                                </Row>
-                            )
-                        })}
+
+                    <div className={classes.subBlock}>
+                        <div className={classes.subtitle}>Передача</div>
+                        <div className={classes.dataBox}>
+                            <ul>
+                                <li>Тип передачи:</li>
+                                <li>Статус передачи:</li>
+                            </ul>
+                            <ul>
+                                <li>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</li>
+                                <li className={classes.red}>не доставлен</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <div className="comment">
-                    <div className="personImage">
-                        <img src={Person} alt=""/>
-                    </div>
-                    <div className="personText">
-                        {comment}
+                <div className={classes.rightSide}>
+                    <div className={classes.tab}>
+                        <div className={classes.tabNav}>
+                            <a className="active">Список товаров</a>
+                            <a>Возврат</a>
+                        </div>
+                        <div className={classes.tabContent}>
+                            <div className={classes.tabWrapper}>
+                                <Row className="dottedList">
+                                    <Col xs={6}>Товар</Col>
+                                    <Col xs={2}>Количество</Col>
+                                    <Col xs={2}>Цена (UZS)</Col>
+                                    <Col xs={2}>Сумма (UZS)</Col>
+                                </Row>
+
+                                {_.map(products, (item) => {
+                                    const product = _.get(item, 'product')
+                                    const productId = _.get(product, 'id')
+                                    const productName = _.get(product, 'name')
+                                    const price = _.get(item, 'price')
+                                    const cost = _.get(item, 'cost')
+                                    const amount = _.get(item, 'amount')
+                                    const measurement = _.get(product, ['measurement', 'name'])
+                                    return (
+                                        <Row className="dottedList" key={productId}>
+                                            <Col xs={6}>{productName}</Col>
+                                            <Col xs={2}>{amount} {measurement}</Col>
+                                            <Col xs={2}>{price}</Col>
+                                            <Col xs={2}>{cost}</Col>
+                                        </Row>
+                                    )
+                                })}
+                            </div>
+
+                            <div className={classes.summary}>Итого: {totalPrice} UZS</div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <OrderTransactionsDialog
+                open={transactionsDialog.openTransactionsDialog}
+                loading={transactionsDialog.transactionsLoading}
+                onClose={transactionsDialog.handleCloseTransactionsDialog}
+            />
+            <OrderReturnDialog
+                open={returnDialog.openReturnDialog}
+                loading={returnDialog.returnLoading}
+                onClose={returnDialog.handleCloseReturnDialog}
+                onSubmit={returnDialog.handleSubmitReturnDialog}
+            />
         </div>
     )
 })
@@ -411,6 +398,12 @@ OrderDetails.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
+    returnDialog: PropTypes.shape({
+        returnLoading: PropTypes.bool.isRequired,
+        openReturnDialog: PropTypes.bool.isRequired,
+        handleOpenReturnDialog: PropTypes.func.isRequired,
+        handleCloseReturnDialog: PropTypes.func.isRequired
     }).isRequired,
     handleOpenUpdateDialog: PropTypes.func.isRequired,
     orderListData: PropTypes.object

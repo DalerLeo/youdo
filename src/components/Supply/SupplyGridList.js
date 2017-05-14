@@ -22,6 +22,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import SupplyExpenseCreateDialog from './SupplyExpenseCreateDialog'
 import Tooltip from '../ToolTip'
+import numberFormat from '../../helpers/numberFormat'
 
 const listHeader = [
     {
@@ -159,8 +160,8 @@ const SupplyGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(_.get(item, 'provider'), 'name')
         const stock = _.get(_.get(item, 'stock'), 'name') || 'N/A'
-        const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
-        const totalCost = _.get(item, 'totalCost') || 'N/A'
+        const dateDelivery = _.get(item, 'dateDelivery') || 'Не указано'
+        const totalCost = numberFormat(_.get(item, 'totalCost'), _.get(item, ['currency', 'name']))
         const status = _.get(item, 'status') || 'N/A'
         const acceptedCost = _.get(item, 'acceptedCost') || 'N/A'
         const defectedCost = _.get(item, 'defectedCost') || 'N/A'

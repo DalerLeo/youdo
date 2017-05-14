@@ -79,6 +79,8 @@ export const CASHBOX_DELETE = `/${CASHBOX}/%d/`
 
 export const TRANSACTION = 'transactions/transaction'
 export const TRANSACTION_CREATE = `/${TRANSACTION}/`
+export const TRANSACTION_INCOME = `/${TRANSACTION}/`
+export const TRANSACTION_SEND = `/${TRANSACTION}/`
 export const TRANSACTION_LIST = `/${TRANSACTION}/`
 export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
@@ -91,6 +93,7 @@ export const SUPPLY_DELETE = `/${SUPPLY}/%d/`
 
 export const ORDER = 'order'
 export const ORDER_CREATE = `/${ORDER}/`
+export const ORDER_RETURN = `/${ORDER}/`
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_DELETE = `/${ORDER}/%d/`
@@ -115,7 +118,7 @@ export const PRODUCT_PRICE_SET = `/${PRODUCT_PRICE}/%d/set_price/`
 export const PRODUCT_PRICE_DELETE = `/${PRODUCT_PRICE}/%d/`
 
 export const PRODUCT_TYPE = 'dist/product_type'
-export const PRODUCT_TYPE_CREATE = `/${PRODUCT_TYPE}/add/`
+export const PRODUCT_TYPE_CREATE = `/${PRODUCT_TYPE}/`
 export const PRODUCT_TYPE_LIST = `/${PRODUCT_TYPE}/`
 export const PRODUCT_TYPE_ITEM = `/${PRODUCT_TYPE}/%d/`
 
@@ -164,4 +167,3 @@ export const PENDING_PAYMENTS = 'order'
 export const PENDING_PAYMENTS_CREATE = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_LIST = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_ITEM = `/${PENDING_PAYMENTS}/%d/`
-

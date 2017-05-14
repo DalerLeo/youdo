@@ -2,53 +2,52 @@ import _ from 'lodash'
 import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
+import injectSheet from 'react-jss'
+import {compose} from 'recompose'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+import Edit from 'material-ui/svg-icons/image/edit'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import PendingPaymentsFilterForm from './PendingPaymentsFilterForm'
-import PendingPaymentsCreateDialog from './PendingPaymentsCreateDialog'
-import DeleteDialog from '../DeleteDialog'
+import ProductTypeCreateDialog from './ProductTypeCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
-import injectSheet from 'react-jss'
-import {compose} from 'recompose'
-import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
+import Tooltip from '../ToolTip'
 
 const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: '№ заказа',
-        xs: 1
-    },
-    {
-        sorting: false,
-        name: 'clientName',
-        title: 'Клиент',
-        xs: 3
+        xs: 2,
+        title: 'Id'
     },
     {
         sorting: true,
+        name: 'name',
+        xs: 5,
+        title: 'Наименование'
+    },
+    {
+        sorting: true,
+        xs: 4,
         name: 'created_date',
-        title: 'Дата',
-        xs: 2
+        title: 'Дата создания'
     },
     {
         sorting: true,
-        name: 'total_price',
-        title: 'Сумма заказа',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'total_balance',
-        title: 'Остаток',
-        xs: 3
+        xs: 1,
+        name: 'actions',
+        title: ''
     }
+
 ]
 
 const enhance = compose(
@@ -63,34 +62,28 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        marginLeft: {
+            marginLeft: '20px !important'
+        },
+        right: {
+            textAlign: 'right'
         }
     })
 )
 
-const iconStyle = {
-    icon: {
-        color: '#12aaeb',
-        width: 24,
-        height: 24
-    },
-    button: {
-        width: 48,
-        height: 48,
-        padding: 0
-    }
-}
-const PendingPaymentsGridList = enhance((props) => {
+const ProductTypeGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
-        filterDialog,
         actionsDialog,
         confirmDialog,
-        deleteDialog,
         listData,
-        detailData
+        detailData,
+        classes
     } = props
+
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
@@ -103,41 +96,40 @@ const PendingPaymentsGridList = enhance((props) => {
         </div>
     )
 
-    const pendingPaymentsFilterDialog = (
-        <PendingPaymentsFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
-    )
-
-    const pendingPaymentsDetail = (
+    const productTypeDetail = (
         <span>a</span>
     )
 
-    const pendingPaymentsList = _.map(_.get(listData, 'data'), (item) => {
+    const productTypeList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const client = _.get(item, 'client')
-        const clientName = _.get(client, 'name')
+        const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const totalPrice = _.get(item, 'totalPrice')
-        const totalBalance = _.get(item, 'totalBalance')
-        const currency = _.get(item, ['currency', 'name'])
+        const iconButton = (
+            <IconButton style={{padding: '0 12px'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
             <Row key={id}>
-                <Col xs={1}>{id}</Col>
-                <Col xs={3}>{clientName}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}>{totalPrice} {currency}</Col>
-                <Col xs={3}>{totalBalance}</Col>
-                <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
-                        <AddPayment />
-                    </IconButton>
+                <Col xs={2}>{id}</Col>
+                <Col xs={5}>{name}</Col>
+                <Col xs={4}>{createdDate}</Col>
+                <Col xs={1} className={classes.right}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                        />
+                    </IconMenu>
                 </Col>
             </Row>
         )
@@ -145,42 +137,45 @@ const PendingPaymentsGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: pendingPaymentsList,
+        list: productTypeList,
         loading: _.get(listData, 'listLoading')
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.PENDING_PAYMENTS_LIST_URL}/>
+            <SubMenu url={ROUTES.PRODUCT_TYPE_LIST_URL}/>
+            <div className={classes.addButtonWrapper}>
+                <Tooltip position="left" text="Добавить тип продукта">
+                    <FloatingActionButton
+                        mini={true}
+                        className={classes.addButton}
+                        onTouchTap={createDialog.handleOpenCreateDialog}>
+                        <ContentAdd />
+                    </FloatingActionButton>
+                </Tooltip>
+            </div>
 
             <GridList
                 filter={filter}
                 list={list}
-                detail={pendingPaymentsDetail}
+                detail={productTypeDetail}
                 actionsDialog={actions}
-                filterDialog={pendingPaymentsFilterDialog}
             />
 
-            <PendingPaymentsCreateDialog
+            <ProductTypeCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <PendingPaymentsCreateDialog
+            <ProductTypeCreateDialog
+                isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
-                detailData={detailData}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
-
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
             />
 
             {detailData.data && <ConfirmDialog
@@ -194,11 +189,10 @@ const PendingPaymentsGridList = enhance((props) => {
     )
 })
 
-PendingPaymentsGridList.propTypes = {
+ProductTypeGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
@@ -212,11 +206,6 @@ PendingPaymentsGridList.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
-    }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
         openUpdateDialog: PropTypes.bool.isRequired,
@@ -227,15 +216,7 @@ PendingPaymentsGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
-    filterDialog: PropTypes.shape({
-        initialValues: PropTypes.object,
-        filterLoading: PropTypes.bool,
-        openFilterDialog: PropTypes.bool.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default PendingPaymentsGridList
+export default ProductTypeGridList
