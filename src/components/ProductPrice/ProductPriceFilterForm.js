@@ -9,7 +9,7 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {ProductPriceTypeSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
+import {ProductTypeSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -17,7 +17,8 @@ export const PRODUCT_PRICE_FILTER_OPEN = 'openFilterDialog'
 
 export const PRODUCT_PRICE_FILTER_KEY = {
     BRAND: 'brand',
-    TYPE: 'type'
+    TYPE: 'type',
+    MEASUREMENT: 'measurement'
 }
 
 const enhance = compose(
@@ -143,7 +144,7 @@ const ProductPriceFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="product_type" component={ProductPriceTypeSearchField} label="Тип продукта"/>
+                        <Field className={classes.inputField} name="type" component={ProductTypeSearchField} label="Тип продукта"/>
                     </div>
                     <div>
                         <Field className={classes.inputField} name="measurement" component={MeasurementSearchField} label="Мера"/>

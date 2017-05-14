@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
+import Edit from 'material-ui/svg-icons/image/edit'
+import Delete from 'material-ui/svg-icons/action/delete'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
 import IconButton from 'material-ui/IconButton'
@@ -216,7 +218,16 @@ withState('openDetails', 'setOpenDetails', false)
 const tooltipPosition = 'bottom-center'
 
 const OrderDetails = enhance((props) => {
-    const {classes, loading, data, setOpenDetails, openDetails, transactionsDialog, returnDialog} = props
+    const {classes,
+        loading,
+        data,
+        setOpenDetails,
+        openDetails,
+        transactionsDialog,
+        returnDialog,
+        confirmDialog,
+        handleOpenUpdateDialog
+    } = props
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
     const contact = _.get(data, 'contact')
@@ -292,6 +303,24 @@ const OrderDetails = enhance((props) => {
                         tooltipPosition={tooltipPosition}
                         tooltip="Скачать договор">
                         <File />
+                    </IconButton>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        onTouchTap={handleOpenUpdateDialog}
+                        tooltip="Изменить">
+                        <Edit />
+                    </IconButton>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                        tooltip="Удалить">
+                        <Delete />
                     </IconButton>
                 </div>
             </div>
@@ -393,12 +422,7 @@ const OrderDetails = enhance((props) => {
 OrderDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
+    handleOpenConfirmDialog: PropTypes.func.isRequired,
     returnDialog: PropTypes.shape({
         returnLoading: PropTypes.bool.isRequired,
         openReturnDialog: PropTypes.bool.isRequired,

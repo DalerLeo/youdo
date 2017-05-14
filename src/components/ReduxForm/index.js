@@ -27,8 +27,10 @@ import DeliveryTypeSearchField from './DeliveryTypeSearchField'
 import ManufactureSearchField from './ManufactureSearchField'
 import ManufactureListMaterialField from './ManufactureListMaterialField'
 import ProviderContactsField from './ProviderContactsField'
+import ClientContactsField from './ClientContactsField'
 
 export {
+    ClientContactsField,
     ManufactureListMaterialField,
     OrderListProductField,
     OrderListReturnField,

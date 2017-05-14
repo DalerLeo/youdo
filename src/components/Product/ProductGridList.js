@@ -185,6 +185,7 @@ const ProductGridList = enhance((props) => {
             />
 
             <ProductCreateDialog
+                isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}

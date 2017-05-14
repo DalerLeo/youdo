@@ -133,7 +133,15 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.CLIENT_CREATE),
         list: createThunkReducer(actionTypes.CLIENT_LIST),
         update: createThunkReducer(actionTypes.CLIENT_UPDATE),
-        item: createThunkReducer(actionTypes.CLIENT_ITEM)
+        item: createThunkReducer(actionTypes.CLIENT_ITEM),
+        contacts: createReducer({
+            data: null,
+            loading: false
+        }, {
+            [actionTypes.CLIENT_CONTACTS] (state, action) {
+                return {...state, data: action.data, loading: action.loading}
+            }
+        })
     }),
     brand: combineReducers({
         create: createThunkReducer(actionTypes.BRAND_CREATE),

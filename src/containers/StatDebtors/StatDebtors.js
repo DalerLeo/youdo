@@ -25,6 +25,7 @@ import {
     statDebtorsDeleteAction,
     statDebtorsItemFetchAction
 } from '../../actions/statDebtors'
+import {orderListFetchAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -36,6 +37,8 @@ const enhance = compose(
         const createLoading = _.get(state, ['statDebtors', 'create', 'loading'])
         const updateLoading = _.get(state, ['statDebtors', 'update', 'loading'])
         const list = _.get(state, ['statDebtors', 'list', 'data'])
+        const orderList = _.get(state, ['order', 'list', 'data'])
+        const orderLoading = _.get(state,['order', 'list', 'loading'])
         const listLoading = _.get(state, ['statDebtors', 'list', 'loading'])
         const csvData = _.get(state, ['statDebtors', 'csv', 'data'])
         const csvLoading = _.get(state, ['statDebtors', 'csv', 'loading'])
@@ -45,6 +48,8 @@ const enhance = compose(
         return {
             list,
             listLoading,
+            orderList,
+            orderLoading,
             detail,
             detailLoading,
             createLoading,
@@ -59,14 +64,16 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statDebtorsListFetchAction(filter))
+        dispatch(orderListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
         const statDebtorsId = _.get(nextProps, ['params', 'statDebtorsId'])
         return statDebtorsId && _.get(props, ['params', 'statDebtorsId']) !== statDebtorsId
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, filter}) => {
         const statDebtorsId = _.toInteger(_.get(params, 'statDebtorsId'))
         statDebtorsId && dispatch(statDebtorsItemFetchAction(statDebtorsId))
+        dispatch(orderListFetchAction(filter))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -198,6 +205,8 @@ const StatDebtors = enhance((props) => {
     const {
         location,
         list,
+        orderList,
+        orderLoading,
         listLoading,
         detail,
         detailLoading,
@@ -288,6 +297,11 @@ const StatDebtors = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
+    const orderData = {
+        orderList,
+        orderLoading
+    }
+
     return (
         <Layout {...layout}>
             <StatDebtorsGridList
@@ -300,6 +314,7 @@ const StatDebtors = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 csvDialog={csvDialog}
+                orderData={orderData}
             />
         </Layout>
     )

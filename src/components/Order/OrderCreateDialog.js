@@ -7,14 +7,15 @@ import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
 import {
     ClientSearchField,
     DeliveryTypeSearchField,
     OrderListProductField,
-    TextField
+    ClientContactsField,
+    TextField,
+    DateField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
@@ -196,18 +197,10 @@ const OrderCreateDialog = enhance((props) => {
                                         className={classes.inputField}
                                         label="Клиент"
                                         fullWidth={true}/>
-                                    <RadioButtonGroup
-                                        name="contact" defaultSelected="1"
-                                        className={classes.radioButton}>
-                                        <RadioButton
-                                            value="1"
-                                            label="Tursunov Bohodir"
-                                        />
-                                        <RadioButton
-                                            value="2"
-                                            label="Ashurov Anvar"
-                                        />
-                                    </RadioButtonGroup>
+                                    <Field
+                                        name="contact"
+                                        component={ClientContactsField}
+                                    />
                                 </div>
                                 <div className={classes.condition}>
                                     <div className={classes.title}>Условия поставки</div>
@@ -216,6 +209,18 @@ const OrderCreateDialog = enhance((props) => {
                                         component={DeliveryTypeSearchField}
                                         className={classes.inputField}
                                         label="Тип поставки"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="deliveryDate"
+                                        component={DateField}
+                                        className={classes.inputField}
+                                        hintText="Дата поставки"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="paymentDate"
+                                        component={DateField}
+                                        className={classes.inputField}
+                                        hintText="Дата оплата"
                                         fullWidth={true}/>
                                     <Field
                                         name="deliveryPrice"

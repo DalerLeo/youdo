@@ -233,8 +233,17 @@ const iconStyle = {
 const tooltipPosition = 'bottom-center'
 
 const SupplyDetails = enhance((props) => {
-    const {classes, loading, data, setOpenDetails, openDetails, handleSupplyExpenseOpenCreateDialog, supplyListData, updateDialog,
-        confirmDialog} = props
+    const {
+        classes,
+        loading,
+        data,
+        setOpenDetails,
+        openDetails,
+        handleSupplyExpenseOpenCreateDialog,
+        supplyListData,
+        updateDialog,
+        confirmDialog
+    } = props
     const id = _.get(data, 'id')
     const provider = _.get(data, ['provider', 'name'])
     const products = _.get(data, 'products')
@@ -298,7 +307,7 @@ const SupplyDetails = enhance((props) => {
                         style={iconStyle.button}
                         touch={true}
                         tooltipPosition={tooltipPosition}
-                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                        onTouchTap={updateDialog.handleOpenUpdateDialog}
                         tooltip="Изменить">
                         <Edit />
                     </IconButton>

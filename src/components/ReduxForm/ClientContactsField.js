@@ -16,8 +16,8 @@ const enhance = compose(
     })
     ,
     connect((state) => {
-        const contacts = _.get(state, ['provider', 'contacts', 'data'])
-        const contactsLoading = _.get(state, ['provider', 'contacts', 'loading'])
+        const contacts = _.get(state, ['client', 'contacts', 'data'])
+        const contactsLoading = _.get(state, ['client', 'contacts', 'loading'])
         return {
             contacts,
             contactsLoading
@@ -25,18 +25,18 @@ const enhance = compose(
     })
 )
 
-const ProviderContactsField = enhance((props) => {
+const ClientContactsField = enhance((props) => {
     const {classes, contacts, contactsLoading} = props
     return (
         <div>
             { contactsLoading && <div>Загрузка  ...</div> }
-            {!contactsLoading && <RadioButtonGroup name="contact" className={classes.radioButton}
-            >
+            {!contactsLoading && <RadioButtonGroup name="contact" className={classes.radioButton} >
                 {_.map(contacts, (item) => {
                     const id = _.get(item, 'id')
                     const value = _.get(item, 'name') + ' ' + _.get(item, 'phone') + ' ' + _.get(item, 'email')
                     return (
-                        <RadioButton key={id}
+                        <RadioButton
+                            key={id}
                             value={id}
                             label={value}
                         />
@@ -47,4 +47,4 @@ const ProviderContactsField = enhance((props) => {
     )
 })
 
-export default ProviderContactsField
+export default ClientContactsField

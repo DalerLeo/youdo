@@ -3,6 +3,7 @@ import {orderingSnakeCase} from '../helpers/serializer'
 import moment from 'moment'
 
 export const createSerializer = (data) => {
+    console.log(data)
     const provider = _.get(data, ['provider', 'value'])
     const stock = _.get(data, ['stock', 'value'])
     const currency = _.get(data, ['currency', 'value'])
