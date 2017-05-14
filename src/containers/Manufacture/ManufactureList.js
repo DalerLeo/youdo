@@ -115,6 +115,7 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
+            console.log(detail, 'dgnm,.bm ,fgmn,f.gfm,f.g')
             dispatch(shiftDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
@@ -171,31 +172,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname})
-                    dispatch(shiftListFetchAction(filter))
-                })
-        },
-        handleOpenConfirmShiftDialog: props => (id) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.SHIFT_ITEM_PATH, id),
-                query: filter.getParams({[SHIFT_DELETE_DIALOG_OPEN]: true})
-            })
-        },
-
-        handleCloseConfirmShiftDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SHIFT_DELETE_DIALOG_OPEN]: false})})
-        },
-
-        handleSendConfirmShiftDialog: props => () => {
-            const {dispatch, detail, filter, location: {pathname}} = props
-            dispatch(shiftDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[SHIFT_DELETE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: true})} )
                     dispatch(shiftListFetchAction(filter))
                 })
         },
@@ -277,7 +254,8 @@ const ManufactureList = enhance((props) => {
 
     const shiftData = {
         shiftList: _.get(shiftList, 'results'),
-        shiftId: shiftId
+        shiftId: shiftId,
+        handleSubmitShiftAddForm: props.handleSubmitShiftAddForm
     }
 
     const equipmentData = {

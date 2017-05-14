@@ -185,8 +185,8 @@ const enhance = compose(
 )
 
 const ManufactureAddStaffDialog = enhance((props) => {
-    const {classes, handleSubmit} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {classes, handleSubmit, openAddShift, setOpenAddShift} = props
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate).then(setOpenAddShift(!openAddShift)))
 
     return (
         <form onSubmit={onSubmit}>
@@ -220,7 +220,9 @@ const ManufactureAddStaffDialog = enhance((props) => {
 })
 
 ManufactureAddStaffDialog.propTypes = {
-    onSubmit: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired,
+    openAddShift: PropTypes.object,
+    setOpenAddShift: PropTypes.object
 }
 
 ManufactureAddStaffDialog.defaultProps = {

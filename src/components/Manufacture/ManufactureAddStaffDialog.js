@@ -268,7 +268,9 @@ const ManufactureAddStaffDialog = enhance((props) => {
                         </div>
                         {openAddShift && <div className={classes.background}>
                             <ManufactureShiftCreateForm
-                                onSubmit={shiftData.handleSubmitShiftAddForm}/>
+                                onSubmit={shiftData.handleSubmitShiftAddForm}
+                                openAddShift={openAddShift}
+                                setOpenAddShift={setOpenAddShift} />
                         </div>}
                         {shiftList}
                     </div>
@@ -384,7 +386,8 @@ ManufactureAddStaffDialog.propTypes = {
     onSubmit: PropTypes.func,
     loading: PropTypes.bool,
     shiftData: PropTypes.shape({
-        shiftList: PropTypes.array
+        shiftList: PropTypes.array,
+        handleSubmitShiftAddForm: PropTypes.func.isRequired
     }),
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,
