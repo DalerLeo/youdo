@@ -9,34 +9,34 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
-    MEASUREMENT_CREATE_DIALOG_OPEN,
-    MEASUREMENT_UPDATE_DIALOG_OPEN,
-    MEASUREMENT_DELETE_DIALOG_OPEN,
-    MeasurementGridList
-} from '../../components/Measurement'
+    PRODUCT_TYPE_CREATE_DIALOG_OPEN,
+    PRODUCT_TYPE_UPDATE_DIALOG_OPEN,
+    PRODUCT_TYPE_DELETE_DIALOG_OPEN,
+    ProductTypeGridList
+} from '../../components/ProductType'
 import {
-    measurementCreateAction,
-    measurementUpdateAction,
-    measurementListFetchAction,
-    measurementCSVFetchAction,
-    measurementDeleteAction,
-    measurementItemFetchAction
-} from '../../actions/measurement'
+    productTypeCreateAction,
+    productTypeUpdateAction,
+    productTypeListFetchAction,
+    productTypeCSVFetchAction,
+    productTypeDeleteAction,
+    productTypeItemFetchAction
+} from '../../actions/productType'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['measurement', 'item', 'data'])
-        const detailLoading = _.get(state, ['measurement', 'item', 'loading'])
-        const createLoading = _.get(state, ['measurement', 'create', 'loading'])
-        const updateLoading = _.get(state, ['measurement', 'update', 'loading'])
-        const list = _.get(state, ['measurement', 'list', 'data'])
-        const listLoading = _.get(state, ['measurement', 'list', 'loading'])
-        const csvData = _.get(state, ['measurement', 'csv', 'data'])
-        const csvLoading = _.get(state, ['measurement', 'csv', 'loading'])
-        const createForm = _.get(state, ['form', 'MeasurementCreateForm'])
+        const detail = _.get(state, ['productType', 'item', 'data'])
+        const detailLoading = _.get(state, ['productType', 'item', 'loading'])
+        const createLoading = _.get(state, ['productType', 'create', 'loading'])
+        const updateLoading = _.get(state, ['productType', 'update', 'loading'])
+        const list = _.get(state, ['productType', 'list', 'data'])
+        const listLoading = _.get(state, ['productType', 'list', 'loading'])
+        const csvData = _.get(state, ['productType', 'csv', 'data'])
+        const csvLoading = _.get(state, ['productType', 'csv', 'loading'])
+        const createForm = _.get(state, ['form', 'ProductTypeCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -55,15 +55,16 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(measurementListFetchAction(filter))
+        dispatch(productTypeListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const measurementId = _.get(nextProps, ['params', 'measurementId'])
-        return measurementId && _.get(props, ['params', 'measurementId']) !== measurementId
+        const productTypeId = _.get(nextProps, ['params', 'productTypeId'])
+
+        return productTypeId && _.get(props, ['params', 'productTypeId']) !== productTypeId
     }, ({dispatch, params}) => {
-        const measurementId = _.toInteger(_.get(params, 'measurementId'))
-        measurementId && dispatch(measurementItemFetchAction(measurementId))
+        const productTypeId = _.toInteger(_.get(params, 'productTypeId'))
+        productTypeId && dispatch(productTypeItemFetchAction(productTypeId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -81,7 +82,7 @@ const enhance = compose(
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
 
-            dispatch(measurementCSVFetchAction(props.filter))
+            dispatch(productTypeCSVFetchAction(props.filter))
         },
 
         handleCloseCSVDialog: props => () => {
@@ -92,83 +93,83 @@ const enhance = compose(
         handleOpenConfirmDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.MEASUREMENT_ITEM_PATH, id),
-                query: filter.getParams({[MEASUREMENT_DELETE_DIALOG_OPEN]: true})
+                pathname: sprintf(ROUTER.PRODUCT_TYPE_ITEM_PATH, id),
+                query: filter.getParams({[PRODUCT_TYPE_DELETE_DIALOG_OPEN]: true})
             })
         },
 
         handleCloseConfirmDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[MEASUREMENT_DELETE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_TYPE_DELETE_DIALOG_OPEN]: false})})
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
-            dispatch(measurementDeleteAction(detail.id))
+            dispatch(productTypeDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[MEASUREMENT_DELETE_DIALOG_OPEN]: false})})
-                    dispatch(measurementListFetchAction(filter))
+                    hashHistory.push({pathname, query: filter.getParams({[PRODUCT_TYPE_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(productTypeListFetchAction(filter))
                 })
         },
 
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[MEASUREMENT_CREATE_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_TYPE_CREATE_DIALOG_OPEN]: true})})
         },
 
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[MEASUREMENT_CREATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_TYPE_CREATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}} = props
 
-            return dispatch(measurementCreateAction(_.get(createForm, ['values'])))
+            return dispatch(productTypeCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[MEASUREMENT_CREATE_DIALOG_OPEN]: false})})
-                    dispatch(measurementListFetchAction(filter))
+                    hashHistory.push({pathname, query: filter.getParams({[PRODUCT_TYPE_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(productTypeListFetchAction(filter))
                 })
         },
 
         handleOpenUpdateDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.MEASUREMENT_ITEM_PATH, id),
-                query: filter.getParams({[MEASUREMENT_UPDATE_DIALOG_OPEN]: true})
+                pathname: sprintf(ROUTER.PRODUCT_TYPE_ITEM_PATH, id),
+                query: filter.getParams({[PRODUCT_TYPE_UPDATE_DIALOG_OPEN]: true})
             })
         },
 
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[MEASUREMENT_UPDATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_TYPE_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
-            const measurementId = _.toInteger(_.get(props, ['params', 'measurementId']))
+            const productTypeId = _.toInteger(_.get(props, ['params', 'productTypeId']))
 
-            return dispatch(measurementUpdateAction(measurementId, _.get(createForm, ['values'])))
+            return dispatch(productTypeUpdateAction(productTypeId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(measurementItemFetchAction(measurementId))
+                    return dispatch(productTypeItemFetchAction(productTypeId))
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[MEASUREMENT_UPDATE_DIALOG_OPEN]: false}))
-                    dispatch(measurementListFetchAction(filter))
+                    hashHistory.push(filter.createURL({[PRODUCT_TYPE_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(productTypeListFetchAction(filter))
                 })
         }
     })
 )
 
-const MeasurementList = enhance((props) => {
+const ProductTypeList = enhance((props) => {
     const {
         location,
         list,
@@ -182,10 +183,11 @@ const MeasurementList = enhance((props) => {
         params
     } = props
 
-    const openCreateDialog = toBoolean(_.get(location, ['query', MEASUREMENT_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', MEASUREMENT_UPDATE_DIALOG_OPEN]))
-    const openConfirmDialog = toBoolean(_.get(location, ['query', MEASUREMENT_DELETE_DIALOG_OPEN]))
-    const detailId = _.toInteger(_.get(params, 'measurementId'))
+    const openCreateDialog = toBoolean(_.get(location, ['query', PRODUCT_TYPE_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', PRODUCT_TYPE_UPDATE_DIALOG_OPEN]))
+    const openConfirmDialog = toBoolean(_.get(location, ['query', PRODUCT_TYPE_DELETE_DIALOG_OPEN]))
+
+    const detailId = _.toInteger(_.get(params, 'productTypeId'))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -212,9 +214,9 @@ const MeasurementList = enhance((props) => {
             if (!detail) {
                 return {}
             }
+
             return {
-                name: _.get(detail, 'name'),
-                amount: _.get(detail, 'amount')
+                name: _.get(detail, 'name')
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -245,7 +247,7 @@ const MeasurementList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <MeasurementGridList
+            <ProductTypeGridList
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
@@ -259,4 +261,4 @@ const MeasurementList = enhance((props) => {
     )
 })
 
-export default MeasurementList
+export default ProductTypeList

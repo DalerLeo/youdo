@@ -64,11 +64,6 @@ const MainStyles = {
     field: {
         width: '100%'
     },
-    title: {
-        paddingTop: '15px',
-        fontWeight: 'bold',
-        color: '#333'
-    },
     inputField: {
         fontSize: '13px !important'
     },

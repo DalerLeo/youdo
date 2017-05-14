@@ -10,7 +10,7 @@ export const createSerializer = (data, cashboxId) => {
         amount,
         comment,
         'cashbox': cashboxId,
-        'objectId': objectId
+        'object_id': objectId
     }
 }
 

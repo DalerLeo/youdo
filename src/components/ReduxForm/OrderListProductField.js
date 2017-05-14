@@ -4,6 +4,7 @@ import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
+import Groceries from '../Images/groceries.svg'
 import {
     Table,
     TableBody,
@@ -20,23 +21,43 @@ import TextField from './TextField'
 const enhance = compose(
     injectSheet({
         wrapper: {
-            marginTop: '20px',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            height: '100%',
+            position: 'relative'
+        },
+        imagePlaceholder: {
+            position: 'absolute',
+            bottom: '0',
+            left: '0',
+            width: '100%',
+            height: 'calc(100% - 100px)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            '& img': {
+                width: '100px',
+                marginBottom: '20px'
+            }
         },
         table: {
-            paddingTop: '20px'
+            marginTop: '20px',
+            maxHeight: '300px',
+            overflow: 'auto'
         },
         tableTitle: {
-            fontWeight: 'bold',
-            color: 'black !important',
+            fontWeight: '600',
+            color: '#333 !important',
             textAlign: 'left'
         },
         tableRow: {
-            borderBottom: '1px dashed #dadfe4 !important',
             height: '40px !important',
+            border: 'none !important',
             '& td:first-child': {
                 width: '250px'
+            },
+            '& tr': {
+                border: 'none !important'
             },
             '& td': {
                 height: '40px !important',
@@ -45,32 +66,27 @@ const enhance = compose(
             '& th:first-child': {
                 width: '250px',
                 textAlign: 'left !important',
-                borderBottom: '1px dashed #dadfe4 !important',
-                fontWeight: 'bold !important'
+                fontWeight: '600 !important'
             },
             '& th': {
                 textAlign: 'left !important',
+                border: 'none !important',
                 height: '40px !important',
                 padding: '0 5px !important',
-                borderBottom: '1px dashed #dadfe4 !important',
-                fontWeight: 'bold !important'
+                fontWeight: '600 !important'
             }
         },
         title: {
-            paddingTop: '8px',
-            fontWeight: 'bold',
-            color: 'black !important'
+            fontWeight: '600',
+            border: 'none !important'
         },
         headers: {
             display: 'flex',
-            position: 'relative',
-            '& button': {
-                position: 'absolute !important',
-                right: '0',
-                '& > div > span': {
-                    textTransform: 'inherit !important',
-                    fontSize: '16 !important'
-                }
+            alignItems: 'center',
+            height: '40px',
+            justifyContent: 'space-between',
+            '& span': {
+                textTransform: 'lowercase !important'
             }
         },
         background: {
@@ -87,9 +103,7 @@ const enhance = compose(
                 }
             },
             '& > button > div > span': {
-                padding: '0 !important',
-                textTransform: 'inherit !important',
-                fontSize: '13px'
+                padding: '0 !important'
             },
             '& > div:last-child': {
                 width: '100% !important'
@@ -159,24 +173,25 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
                 </div>}
             </div>
-            <div className={classes.table}>
+            {!_.isEmpty(products) ? <div className={classes.table}>
                 <Table
                     fixedHeader={true}
                     fixedFooter={false}
                     multiSelectable={false}>
-                    <TableHeader
-                        displaySelectAll={false}
-                        adjustForCheckbox={false}
-                        enableSelectAll={false}
-                        className={classes.title}>
-                        <TableRow className={classes.tableRow}>
-                            <TableHeaderColumn
-                                className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
-                            <TableHeaderColumn></TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
+
+                        <TableHeader
+                            displaySelectAll={false}
+                            adjustForCheckbox={false}
+                            enableSelectAll={false}
+                            className={classes.title}>
+                            <TableRow className={classes.tableRow}>
+                                <TableHeaderColumn
+                                    className={classes.tableTitle}>Наименование</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
+                                <TableHeaderColumn></TableHeaderColumn>
+                            </TableRow>
+                        </TableHeader>
                     <TableBody
                         displayRowCheckbox={false}
                         deselectOnClickaway={false}
@@ -187,7 +202,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                                 <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'cost')}</TableRowColumn>
-                                <TableRowColumn>
+                                <TableRowColumn style={{textAlign: 'right'}}>
                                     <IconButton onTouchTap={() => handleRemove(index)}>
                                         <DeleteIcon color="#666666"/>
                                     </IconButton>
@@ -197,6 +212,13 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                     </TableBody>
                 </Table>
             </div>
+                : <div className={classes.imagePlaceholder}>
+                    <div style={{textAlign: 'center', color: '#adadad'}}>
+                        <img src={Groceries} alt=""/>
+                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>
+                    </div>
+                </div>
+            }
         </div>
     )
 }

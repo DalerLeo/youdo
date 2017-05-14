@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
-import ExportExel from 'material-ui/svg-icons/communication/import-export'
+import ExportExel from '../Images/excel.png'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -125,7 +125,7 @@ const StatStockFilterForm = enhance((props) => {
 
         return (
             <div>
-                <div style={{position: 'absolute', top: '15px', right: '260px'}}><a><ExportExel style={{color: '#129fdd'}}/></a></div>
+                <div style={{position: 'absolute', top: '15px', right: '260px'}}><a><img src={ExportExel} style={{width: '24px'}} /></a></div>
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>

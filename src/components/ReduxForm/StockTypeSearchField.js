@@ -3,8 +3,8 @@ import React from 'react'
 import SearchField from './SearchField'
 
 const Items = [
-    {id: 1, name: 'Основной'},
-    {id: 2, name: 'Производственный'}
+    {id: 0, name: 'Основной'},
+    {id: 1, name: 'Производственный'}
 ]
 
 const getOptions = (search) => {

@@ -3,22 +3,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
+import {Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
 import {
-    ClientSearchField,
-    DeliveryTypeSearchField,
-    OrderListProductField,
-    TextField
+    OrderListReturnField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
-export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const ORDER_RETURN_DIALOG_OPEN = 'openReturnDialog'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -71,6 +67,7 @@ const enhance = compose(
         inContent: {
             display: 'flex',
             color: '#333',
+            padding: '15px 30px',
             borderBottom: '1px #efefef solid'
         },
         innerWrap: {
@@ -127,7 +124,8 @@ const enhance = compose(
         commentField: {
             fontSize: '24px',
             padding: '20px 30px',
-            textAlign: 'right'
+            textAlign: 'right',
+            borderTop: '1px #efefef solid'
         },
         bottomButton: {
             bottom: '0',
@@ -159,23 +157,19 @@ const enhance = compose(
     }, {open: false}),
 )
 
-const customContentStyle = {
-    width: '1000px',
-    maxWidth: 'none'
-}
-const OrderCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes} = props
+const OrderReturnDialog = enhance((props) => {
+    const {open, loading, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
             modal={true}
-            contentStyle={customContentStyle}
+            contentStyle={loading ? {width: '300px'} : {width: '800px'}}
             open={open}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Добавление заказа</span>
+                <span>Возврат товаров заказа №1231</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -187,64 +181,20 @@ const OrderCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent}>
-                            <div className={classes.left}>
-                                <div className={classes.title}>Выбор клиента</div>
-                                <div className={classes.selectContent}>
-                                    <Field
-                                        name="client"
-                                        component={ClientSearchField}
-                                        className={classes.inputField}
-                                        label="Клиент"
-                                        fullWidth={true}/>
-                                    <RadioButtonGroup
-                                        name="contact" defaultSelected="1"
-                                        className={classes.radioButton}>
-                                        <RadioButton
-                                            value="1"
-                                            label="Tursunov Bohodir"
-                                        />
-                                        <RadioButton
-                                            value="2"
-                                            label="Ashurov Anvar"
-                                        />
-                                    </RadioButtonGroup>
-                                </div>
-                                <div className={classes.condition}>
-                                    <div className={classes.title}>Условия поставки</div>
-                                    <Field
-                                        name="deliveryType"
-                                        component={DeliveryTypeSearchField}
-                                        className={classes.inputField}
-                                        label="Тип поставки"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="deliveryPrice"
-                                        component={TextField}
-                                        className={classes.inputField}
-                                        label="Стоимость"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="discountPrice"
-                                        component={TextField}
-                                        className={classes.inputField}
-                                        label="Скидка (%)"
-                                        style={{width: '50%'}}/>
-                                </div>
-                            </div>
-                            <div className={classes.right}>
+                            <div className={classes.field}>
                                 <Fields
                                     names={['products', 'product', 'amount', 'cost']}
-                                    component={OrderListProductField}
+                                    component={OrderListReturnField}
                                 />
                             </div>
                         </div>
                         <div className={classes.commentField}>
-                            Общая сумма заказа: <b>350000</b>
+                            Общая сумма возврата: <b>350000</b>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Оформить заказ"
+                            label="Возврат"
                             className={classes.actionButton}
                             primary={true}
                             type="submit"
@@ -255,10 +205,10 @@ const OrderCreateDialog = enhance((props) => {
         </Dialog>
     )
 })
-OrderCreateDialog.propTyeps = {
+OrderReturnDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
-export default OrderCreateDialog
+export default OrderReturnDialog

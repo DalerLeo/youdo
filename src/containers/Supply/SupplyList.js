@@ -78,18 +78,12 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        return props.supplyExpenseList && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
-        dispatch(supplyExpenseListFetchAction(filter))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
         const supplyId = _.get(nextProps, ['params', 'supplyId'])
-
         return supplyId && _.get(props, ['params', 'supplyId']) !== supplyId
     }, ({dispatch, params}) => {
         const supplyId = _.toInteger(_.get(params, 'supplyId'))
         supplyId && dispatch(supplyItemFetchAction(supplyId))
+        supplyId && dispatch(supplyExpenseListFetchAction(supplyId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -186,14 +180,13 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
         },
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-
+            const {location: {pathname}, dispatch, createForm, filter} = props
             return dispatch(supplyCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
                 })
         },
 

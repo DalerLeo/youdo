@@ -5,6 +5,7 @@ import {combineReducers} from 'redux'
 import createThunkReducer from '../helpers/createThunkReducer'
 import * as actionTypes from '../constants/actionTypes'
 import snackbarReducer from './snackbarReducer'
+import createReducer from '../helpers/createReducer'
 
 const rootReducer = combineReducers({
     signIn: createThunkReducer(actionTypes.SIGN_IN),
@@ -56,6 +57,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.PRODUCT_UPDATE),
         item: createThunkReducer(actionTypes.PRODUCT_ITEM),
         csv: createThunkReducer(actionTypes.PRODUCT_LIST_CSV)
+    }),
+    productType: combineReducers({
+        create: createThunkReducer(actionTypes.PRODUCT_TYPE_CREATE),
+        list: createThunkReducer(actionTypes.PRODUCT_TYPE_LIST),
+        update: createThunkReducer(actionTypes.PRODUCT_TYPE_UPDATE),
+        item: createThunkReducer(actionTypes.PRODUCT_TYPE_ITEM)
     }),
     productPrice: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_PRICE_CREATE),
@@ -112,7 +119,15 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.PROVIDER_CREATE),
         list: createThunkReducer(actionTypes.PROVIDER_LIST),
         update: createThunkReducer(actionTypes.PROVIDER_UPDATE),
-        item: createThunkReducer(actionTypes.PROVIDER_ITEM)
+        item: createThunkReducer(actionTypes.PROVIDER_ITEM),
+        contacts: createReducer({
+            data: null,
+            loading: false
+        }, {
+            [actionTypes.PROVIDER_CONTACTS] (state, action) {
+                return {...state, data: action.data, loading: action.loading}
+            }
+        })
     }),
     client: combineReducers({
         create: createThunkReducer(actionTypes.CLIENT_CREATE),
