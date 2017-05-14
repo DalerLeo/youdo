@@ -92,7 +92,14 @@ hr.lineDote {
     margin: 0;
     background-image: url(../components/Images/dot.png);
 }
-
+.notificationText {
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .greenFont {color:#81c784 !important;}
 .greenFont svg {color:#81c784 !important;}
 .redFont {color:#e57373 !important;}
