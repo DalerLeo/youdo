@@ -24,7 +24,7 @@ const style = {
 const touch = true
 
 const SideBarMenu = (props) => {
-    const {classes, handleSignOut} = props
+    const {classes, handleSignOut, setOpenNotifications} = props
     const items = _.map(MenuItems, (item, index) => {
         return (
             <Link to={item.url} key={index}>
@@ -45,7 +45,7 @@ const SideBarMenu = (props) => {
         <div className={classes.wrapper}>
             <div className={classes.logo}>
             </div>
-            <div className={classes.items}>
+            <div className={classes.items} onClick={() => { setOpenNotifications(true) }}>
                 <Badge
                     className={classes.badge}
                     badgeContent={5}
