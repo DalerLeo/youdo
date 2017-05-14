@@ -6,6 +6,8 @@ import IconButton from 'material-ui/IconButton'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
 import ToolTip from '../ToolTip'
 import {MenuItems} from './MenuItems'
+import Notification from 'material-ui/svg-icons/social/notifications'
+import Badge from 'material-ui/Badge'
 
 const style = {
     iconStyle: {
@@ -44,6 +46,22 @@ const SideBarMenu = (props) => {
             <div className={classes.logo}>
             </div>
             <div className={classes.items}>
+                <Badge
+                    className={classes.badge}
+                    badgeContent={5}
+                    badgeStyle={{top: 8, right: 10}}>
+                    <ToolTip position="right" text="Уведомления">
+                        <IconButton
+                            iconStyle={style.iconStyle}
+                            style={style.style}
+                            className="ass23"
+                            touch={touch}
+                            disableTouchRipple={true}>
+                            <Notification />
+                        </IconButton>
+                    </ToolTip>
+                </Badge>
+
                 {items}
 
                 <div className={classes.logout}>
@@ -80,7 +98,7 @@ export default injectSheet({
         width: '100%',
         '& button': {
             width: '100% !important',
-            height: '65px !important',
+            height: '70px !important',
             opacity: '0.5',
             '&:hover': {
                 opacity: '1'
@@ -98,5 +116,17 @@ export default injectSheet({
         bottom: '0',
         left: '0',
         right: '0'
+    },
+    badge: {
+        padding: '0 !important',
+        width: '100%',
+        '& span': {
+            fontSize: '11px !important',
+            backgroundColor: '#009688 !important',
+            color: '#fff !important',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }
     }
 })(SideBarMenu)
