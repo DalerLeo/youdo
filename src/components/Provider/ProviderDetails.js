@@ -191,7 +191,7 @@ ProviderDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     confirmDialog: PropTypes.object.isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
+    handleOpenUpdateDialog: PropTypes.func.isRequired
 }
 
 export default ProviderDetails

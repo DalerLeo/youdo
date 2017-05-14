@@ -6,6 +6,7 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
+import GridList from '../GridList'
 
 const enhance = compose(
     injectSheet({
@@ -61,7 +62,10 @@ const StatDebtorsDetail = enhance((props) => {
     return (
         <div className={classes.title}>
             <div className={classes.titleLabel}>Наименование фирмы клиента или его имя</div>
-            {orderList}
+            <GridList
+                filter={filter}
+                list={orderList}
+            />
         </div>
     )
 })

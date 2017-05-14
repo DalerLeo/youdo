@@ -1,6 +1,5 @@
 import React from 'react'
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
@@ -8,7 +7,6 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import * as ROUTER from '../../constants/routes'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     SUPPLY_CREATE_DIALOG_OPEN,

@@ -1,11 +1,9 @@
 import React from 'react'
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import * as ROUTER from '../../constants/routes'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -13,7 +11,6 @@ import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     ORDER_CREATE_DIALOG_OPEN,
     ORDER_UPDATE_DIALOG_OPEN,
-    ORDER_DELETE_DIALOG_OPEN,
     ORDER_FILTER_KEY,
     ORDER_FILTER_OPEN,
     ORDER_TRANSACTIONS_DIALOG_OPEN,
