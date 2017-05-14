@@ -45,7 +45,7 @@ const SideBarMenu = (props) => {
         <div className={classes.wrapper}>
             <div className={classes.logo}>
             </div>
-            <div className={classes.items} onClick={() => { setOpenNotifications(true) }}>
+            <div className={classes.items}>
                 <Badge
                     className={classes.badge}
                     badgeContent={5}
@@ -56,6 +56,7 @@ const SideBarMenu = (props) => {
                             style={style.style}
                             className="ass23"
                             touch={touch}
+                            onTouchTap={() => { setOpenNotifications(true) }}
                             disableTouchRipple={true}>
                             <Notification />
                         </IconButton>

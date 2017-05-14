@@ -58,7 +58,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'status',
-        title: 'Оплата',
+        title: 'Статус',
         xs: 1
     },
     {
@@ -100,6 +100,10 @@ const enhance = compose(
             backgroundColor: '#81c784'
         },
         error: {
+            extend: 'dot',
+            backgroundColor: '#e57373'
+        },
+        waiting: {
             extend: 'dot',
             backgroundColor: '#e57373'
         }
@@ -162,10 +166,9 @@ const SupplyGridList = enhance((props) => {
         const stock = _.get(_.get(item, 'stock'), 'name') || 'N/A'
         const dateDelivery = _.get(item, 'dateDelivery') || 'Не указано'
         const totalCost = numberFormat(_.get(item, 'totalCost'), _.get(item, ['currency', 'name']))
-        const status = _.get(item, 'status') || 'N/A'
-        const acceptedCost = _.get(item, 'acceptedCost') || 'N/A'
-        const defectedCost = _.get(item, 'defectedCost') || 'N/A'
-
+        const acceptedCost = numberFormat(_.get(item, 'acceptedCost'), _.get(item, ['currency', 'name']))
+        const defectedCost = numberFormat(_.get(item, 'defectedCost'), _.get(item, ['currency', 'name']))
+        const ZERO_NUM = 0
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
@@ -178,7 +181,7 @@ const SupplyGridList = enhance((props) => {
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
                 <Col xs={2}>{totalCost}</Col>
-                <Col xs={1}>{status}</Col>
+                <Col xs={1}>{_.get(item, 'acceptedCost') > ZERO_NUM ? (<span><i className={classes.success} /> Принято</span>) : (<span><i className={classes.waiting} /> ожидает</span>)}</Col>
                 <Col xs={1}>{acceptedCost}</Col>
                 <Col xs={1}>{defectedCost}</Col>
             </Row>

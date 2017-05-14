@@ -24,6 +24,7 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import {Link} from 'react-router'
+import CircularProgress from 'material-ui/CircularProgress'
 
 const listHeader = [
     {
@@ -92,6 +93,14 @@ const enhance = compose(
             '& a': {
                 color: colorBlue
             }
+        },
+        loader: {
+            width: '100%',
+            background: '#fff',
+            height: '400px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         },
         title: {
             display: 'flex',
@@ -179,8 +188,15 @@ const ProviderGridList = enhance((props) => {
     const date = moment(_.get(detailData, ['data', 'createdDate'])).format('DD.MM.YYYY')
     const address = _.get(detailData, ['data', 'address']) || 'N/A'
     const providerName = _.get(detailData, ['data', 'name'])
+    const providerDetail = (detailData.detailLoading) ? (
 
-    const providerDetail = (
+            <div className={classes.loader} key={_.get(detailData, 'id')}>
+                <div>
+                    <CircularProgress size={100} thickness={6} />
+                </div>
+            </div>
+
+    ) : (
         <div className={classes.wrapper} key={_.get(detailData, 'id')}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}>{providerName}</div>
