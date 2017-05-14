@@ -115,7 +115,6 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
-            console.log(detail, 'dgnm,.bm ,fgmn,f.gfm,f.g')
             dispatch(shiftDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
@@ -172,7 +171,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: true})} )
+                    hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: true})})
                     dispatch(shiftListFetchAction(filter))
                 })
         },
