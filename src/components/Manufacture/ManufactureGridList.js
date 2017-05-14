@@ -18,10 +18,14 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
 import MainStyles from '../Styles/MainStyles'
-import Glue from '../Images/glue.png'
-import Press from '../Images/press.png'
 import Person from '../Images/person.png'
 import ConfirmDialog from '../ConfirmDialog'
+
+import Glue from '../Images/glue.png'
+import Cylindrical from '../Images/cylindrical.png'
+import Press from '../Images/press.png'
+import Cut from '../Images/cut.png'
+import Badge from '../Images/badge.png'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -192,6 +196,11 @@ const ManufactureGridList = enhance((props) => {
     } = props
 
     const detailId = _.get(detailData, 'id')
+    const glue = 3
+    const cylindrical = 4
+    const press = 6
+    const cut = 7
+    const badge = 8
     const manufactureList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -201,7 +210,15 @@ const ManufactureGridList = enhance((props) => {
                     listData.handleClickItem(id)
                 }}
                 style={ detailId === id ? {backgroundColor: 'white'} : {}}>
-                <img src={Glue}/>
+                { id === glue ? <img src={Glue}/> : (
+                    id === cylindrical ? <img src={Cylindrical}/> : (
+                        id === press ? <img src={Press}/> : (
+                            id === cut ? <img src={Cut}/> : (
+                                id === badge ? <img src={Badge}/> : '')
+                        )
+                    )
+                )}
+
                 {name}
             </li>
         )
