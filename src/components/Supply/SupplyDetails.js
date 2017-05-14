@@ -246,7 +246,7 @@ const SupplyDetails = enhance((props) => {
     const contactPhone = _.get(contact, 'phone')
     const dataDelivery = _.get(data, 'dateDelivery') || 'Не указано'
     const acceptedTime = _.get(data, 'acceptedTime') || 'Не начался'
-    const finishedTime = _.get(data, 'finishedTime') || 'Не закончилась '
+    const finishedTime = _.get(data, 'finishedTime') || 'Не закончилась'
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
 
