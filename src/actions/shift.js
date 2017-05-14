@@ -3,12 +3,12 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/manufactureSerializer'
+import * as serializers from '../serializers/shiftSerializer'
 
-export const manufactureCreateAction = (formValues) => {
+export const shiftCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .post(API.MANUFACTURE_CREATE, requestData)
+        .post(API.SHIFT_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,14 +17,14 @@ export const manufactureCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.MANUFACTURE_CREATE,
+        type: actionTypes.SHIFT_CREATE,
         payload
     }
 }
 
-export const manufactureDeleteAction = (id) => {
+export const shiftDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.MANUFACTURE_DELETE, id))
+        .delete(sprintf(API.SHIFT_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,15 +33,15 @@ export const manufactureDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.MANUFACTURE_DELETE,
+        type: actionTypes.SHIFT_DELETE,
         payload
     }
 }
 
-export const manufactureListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const shiftUpdateAction = (id, formValues) => {
+    const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .get(API.MANUFACTURE_LIST, {params})
+        .put(sprintf(API.SHIFT_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,15 +50,32 @@ export const manufactureListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.MANUFACTURE_LIST,
+        type: actionTypes.SHIFT_UPDATE,
         payload
     }
 }
 
-export const manufactureCSVFetchAction = (filter) => {
+export const shiftListFetchAction = (manufactureId) => {
+    const params = serializers.listFilterSerializer(manufactureId)
+    const payload = axios()
+        .get(API.SHIFT_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIFT_LIST,
+        payload
+    }
+}
+
+export const shiftCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.MANUFACTURE_LIST, {params})
+        .get(API.SHIFT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,14 +84,14 @@ export const manufactureCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.MANUFACTURE_LIST_CSV,
+        type: actionTypes.SHIFT_LIST_CSV,
         payload
     }
 }
 
-export const manufactureItemFetchAction = (id) => {
+export const shiftItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.MANUFACTURE_ITEM, id))
+        .get(sprintf(API.SHIFT_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -83,7 +100,7 @@ export const manufactureItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.MANUFACTURE_ITEM,
+        type: actionTypes.SHIFT_ITEM,
         payload
     }
 }

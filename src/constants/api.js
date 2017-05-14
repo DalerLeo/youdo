@@ -140,6 +140,12 @@ export const MANUFACTURE_CREATE = `/${MANUFACTURE}/`
 export const MANUFACTURE_LIST = `/${MANUFACTURE}/`
 export const MANUFACTURE_ITEM = `/${MANUFACTURE}/%d/`
 
+export const SHIFT = 'dist/shift'
+export const SHIFT_CREATE = `/${SHIFT}/`
+export const SHIFT_LIST = `/${SHIFT}/`
+export const SHIFT_ITEM = `/${SHIFT}/%d/`
+export const SHIFT_DELETE = `/${SHIFT}/%d/`
+
 export const PENDING_EXPENSES = 'supply_expanse'
 export const PENDING_EXPENSES_CREATE = `/${PENDING_EXPENSES}/`
 export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`

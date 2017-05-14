@@ -11,8 +11,16 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import Edit from 'material-ui/svg-icons/image/edit'
+
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+
 import MainStyles from '../Styles/MainStyles'
 import Person from '../Images/person.png'
+
+import ManufactureShiftCreateForm from './ManufactureShiftCreateForm'
 
 export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
 
@@ -182,8 +190,58 @@ const enhance = compose(
 )
 
 const ManufactureAddStaffDialog = enhance((props) => {
-    const {open, loading, onClose, classes, openAddShift, setOpenAddShift, openAddStaff, setOpenAddStaff} = props
+    const {
+        open,
+        loading,
+        onClose,
+        classes,
+        openAddShift,
+        setOpenAddShift,
+        openAddStaff,
+        setOpenAddStaff,
+        shiftData,
+        confirmDialog
+    } = props
 
+    const shiftList = _.map(_.get(shiftData, 'shiftList'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        const beginTime = _.get(item, 'beginTime')
+        const endTime = _.get(item, 'endTime')
+
+        const iconButton = (
+            <IconButton style={{padding: '0 12px', height: 'auto'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
+
+        return (
+            <div key={id}>
+                <div className={classes.shift}>
+                    <h4>
+                        {name}
+                        <span>({beginTime} - {endTime})</span>
+                    </h4>
+                    <div className={classes.deleteHideIco}>
+                        <IconMenu
+                            iconButtonElement={iconButton}
+                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                            <MenuItem
+                                primaryText="Изменить"
+                                leftIcon={<Edit />}
+                            />
+                            <MenuItem
+                                primaryText="Удалить "
+                                leftIcon={<DeleteIcon />}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                            />
+                        </IconMenu>
+                    </div>
+                </div>
+            </div>
+        )
+    })
     return (
         <Dialog
             modal={true}
@@ -209,46 +267,12 @@ const ManufactureAddStaffDialog = enhance((props) => {
                             </a>
                         </div>
                         {openAddShift && <div className={classes.background}>
-                            <form>
-                                <Field
-                                    name="name"
-                                    component={TextField}
-                                    className={classes.inputFieldShift}
-                                    label="Наименование"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="address"
-                                    component={TextField}
-                                    className={classes.inputFieldTime}
-                                    label="Время"
-                                    fullWidth={true}/>
-                                <div className={classes.buttonSub}>
-                                    <FlatButton
-                                        label="Сохранить"
-                                        className={classes.actionButton}
-                                        type="submit"
-                                    />
-                                </div>
-                            </form>
+                            <ManufactureShiftCreateForm
+                                onSubmit={shiftData.handleSubmitShiftAddForm}
+                                openAddShift={openAddShift}
+                                setOpenAddShift={setOpenAddShift} />
                         </div>}
-                        <div className={classes.shift}>
-                            <h4>
-                                Смена А
-                                <span>(00:00 - 00:00)</span>
-                            </h4>
-                            <div className={classes.deleteHideIco}>
-                                <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
-                            </div>
-                        </div>
-                        <div className={classes.shift}>
-                            <h4>
-                                Смена Б
-                                <span>(00:00 - 00:00)</span>
-                            </h4>
-                            <div className={classes.deleteHideIco}>
-                                <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
-                            </div>
-                        </div>
+                        {shiftList}
                     </div>
                     <div className={classes.rightSide}>
                         <div className={classes.innerTitle}>
@@ -360,7 +384,17 @@ ManufactureAddStaffDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func,
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    shiftData: PropTypes.shape({
+        shiftList: PropTypes.array,
+        handleSubmitShiftAddForm: PropTypes.func.isRequired
+    }),
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 ManufactureAddStaffDialog.defaultProps = {
