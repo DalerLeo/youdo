@@ -1,11 +1,9 @@
 import React from 'react'
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import * as ROUTER from '../../constants/routes'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -13,7 +11,6 @@ import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     ORDER_CREATE_DIALOG_OPEN,
     ORDER_UPDATE_DIALOG_OPEN,
-    ORDER_DELETE_DIALOG_OPEN,
     ORDER_FILTER_KEY,
     ORDER_FILTER_OPEN,
     ORDER_TRANSACTIONS_DIALOG_OPEN,
@@ -100,27 +97,23 @@ const enhance = compose(
             setOpenCSVDialog(false)
         },
 
-        handleOpenConfirmDialog: props => (id) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.ORDER_ITEM_PATH, id),
-                query: filter.getParams({[ORDER_DELETE_DIALOG_OPEN]: true})
-            })
+        handleOpenConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(true)
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_DELETE_DIALOG_OPEN]: false})})
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(false)
         },
-
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, filter, location: {pathname}} = props
+            const {dispatch, detail, setOpenConfirmDialog, filter} = props
             dispatch(orderDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ORDER_DELETE_DIALOG_OPEN]: false})})
+                    setOpenConfirmDialog(false)
                     dispatch(orderListFetchAction(filter))
                 })
         },
@@ -221,12 +214,9 @@ const enhance = compose(
                 })
         },
 
-        handleOpenUpdateDialog: props => (id) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.ORDER_ITEM_PATH, id),
-                query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})
-            })
+        handleOpenUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})})
         },
 
         handleCloseUpdateDialog: props => () => {
@@ -322,7 +312,6 @@ const OrderList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
-
     const updateDialog = {
         initialValues: (() => {
             if (!detail) {
@@ -330,11 +319,24 @@ const OrderList = enhance((props) => {
             }
 
             return {
-                provider: _.get(detail, 'provider'),
-                stock: _.get(detail, 'stock'),
-                dataDelivery: _.get(detail, 'dataDelivery'),
-                contact: _.get(detail, 'contact'),
-                currency: _.get(detail, 'currency')
+                client: {
+                    value: _.get(detail, ['client', 'id'])
+                },
+                currency: {
+                    value: _.get(detail, ['currency', 'id'])
+                },
+                deliveryType: {
+                    value: _.get(detail, ['deliveryType', 'id'])
+                },
+                deliveryData: {
+                    value: _.get(detail, 'deliveryData')
+                },
+                deliveryPrice: _.get(detail, 'detailPrice'),
+                discountPrice: _.get(detail, 'discountType'),
+                paymentData: {
+                    value: _.get(detail, 'paymentData')
+                }
+
             }
         })(),
         updateLoading: detailLoading || updateLoading,

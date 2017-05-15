@@ -14,6 +14,7 @@ import injectSheet from 'react-jss'
 import MainStyles from '../Styles/MainStyles'
 import {Link} from 'react-router'
 import StatDebtorsFilterForm from './StatDebtorsFilterForm'
+import StatDebtorsDetail from './StatDebtorsDetail'
 
 const listHeader = [
     {
@@ -105,7 +106,8 @@ const StatDebtorsGridList = enhance((props) => {
         filterDialog,
         listData,
         detailData,
-        classes
+        classes,
+        orderData
     } = props
 
     const actions = (
@@ -140,16 +142,11 @@ const StatDebtorsGridList = enhance((props) => {
             </Row>
         )
     })
-
     const statDebtorsDetail = (
-        <div className={classes.wrapper} key={_.get(detailData, 'id')}>
-            <div className={classes.title}>
-                <div className={classes.titleLabel}>Наименование фирмы клиента или его имя</div>
-            </div>
-            <div className={classes.container}>
-                &nbsp;
-            </div>
-        </div>
+        <StatDebtorsDetail
+            data={_.get(orderData, 'orderList')}
+            loding={_.get(orderData, 'orderLoading')}
+        />
     )
 
     const list = {
@@ -233,7 +230,8 @@ StatDebtorsGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    orderData: PropTypes.object
 }
 
 export default StatDebtorsGridList

@@ -17,7 +17,8 @@ export const PRODUCT_FILTER_OPEN = 'openFilterDialog'
 
 export const PRODUCT_FILTER_KEY = {
     BRAND: 'brand',
-    TYPE: 'type'
+    TYPE: 'type',
+    MEASUREMENT: 'measurement'
 }
 
 const enhance = compose(
@@ -143,7 +144,7 @@ const ProductFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="product_type" component={ProductTypeSearchField} label="Тип продукта"/>
+                        <Field className={classes.inputField} name="type" component={ProductTypeSearchField} label="Тип продукта"/>
                     </div>
                     <div>
                         <Field className={classes.inputField} name="measurement" component={MeasurementSearchField} label="Мера"/>

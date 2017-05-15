@@ -117,13 +117,14 @@ const enhance = compose(
             setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
+            const {dispatch, detail, setOpenConfirmDialog, filter} = props
             dispatch(supplyDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
                     setOpenConfirmDialog(false)
+                    dispatch(supplyListFetchAction(filter))
                 })
         },
 
@@ -187,6 +188,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(supplyListFetchAction(filter))
                 })
         },
 
@@ -213,6 +215,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[SUPPLY_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(supplyListFetchAction(filter))
                 })
         }
     }),
@@ -335,13 +338,19 @@ const SupplyList = enhance((props) => {
             if (!detail) {
                 return {}
             }
-
             return {
-                provider: _.get(detail, 'provider'),
-                stock: _.get(detail, 'stock'),
-                dataDelivery: _.get(detail, 'dataDelivery'),
-                contact: _.get(detail, 'contact'),
-                currency: _.get(detail, 'currency')
+                provider: {
+                    value: _.get(detail, ['provider', 'id'])
+                },
+                stock: {
+                    value: _.get(detail, ['stock', 'id'])
+                },
+                currency: {
+                    value: _.get(detail, ['currency', 'id'])
+                },
+                deliveryData: {
+                    value: _.get(detail, 'deliveryData')
+                }
             }
         })(),
         updateLoading: detailLoading || updateLoading,

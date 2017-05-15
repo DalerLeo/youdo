@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
@@ -6,6 +7,8 @@ export const createSerializer = (data) => {
     const contact = 2
     const paymentType = 1
     const paymentTerm = 1
+    const paymentDate = moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD')
+    const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
     const deliveryType = _.get(data, ['deliveryType', 'value'])
     const deliveryPrice = _.get(data, 'deliveryPrice')
     const discountPrice = _.get(data, 'discountPrice')
@@ -21,9 +24,11 @@ export const createSerializer = (data) => {
     return {
         client,
         contact,
+        'date_delivery': deliveryDate,
         'delivery_type': deliveryType,
         'delivery_price': deliveryPrice,
         'discount_price': discountPrice,
+        'payment_date': paymentDate,
         'payment_type': paymentType,
         'payment_term': paymentTerm,
         'total_price': totalPrice,

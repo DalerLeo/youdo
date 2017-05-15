@@ -227,7 +227,7 @@ const OrderGridList = enhance((props) => {
 
             {detailData.data && <ConfirmDialog
                 type="delete"
-                message={_.get(detailData, ['data', 'name'])}
+                message={'Заказ № ' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}

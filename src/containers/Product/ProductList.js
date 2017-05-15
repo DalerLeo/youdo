@@ -133,11 +133,15 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const category = _.get(filterForm, ['values', 'category', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
+            const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
 
             filter.filterBy({
                 [PRODUCT_FILTER_OPEN]: false,
-                [PRODUCT_FILTER_KEY.CATEGORY]: category
+                [PRODUCT_FILTER_KEY.TYPE]: type,
+                [PRODUCT_FILTER_KEY.MEASUREMENT]: measurement,
+                [PRODUCT_FILTER_KEY.BRAND]: brand
             })
         },
         handleOpenDeleteDialog: props => () => {

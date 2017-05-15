@@ -167,6 +167,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[PROVIDER_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(providerListFetchAction(filter))
                 })
         }
     })

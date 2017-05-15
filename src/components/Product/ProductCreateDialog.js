@@ -48,7 +48,7 @@ const enhance = compose(
 )
 
 const ProductCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -61,7 +61,7 @@ const ProductCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Добавить продукт</span>
+                <span>{isUpdate ? 'Изменить продукт' : 'Добавить продукт'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>

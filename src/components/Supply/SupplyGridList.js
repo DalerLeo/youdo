@@ -13,7 +13,6 @@ import Container from '../Container'
 import SupplyFilterForm from './SupplyFilterForm'
 import SupplyDetails from './SupplyDetails'
 import SupplyCreateDialog from './SupplyCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -153,8 +152,8 @@ const SupplyGridList = enhance((props) => {
             data={_.get(detailData, 'data') || {}}
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
+            updateDialog={updateDialog}
             loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
             handleSupplyExpenseOpenCreateDialog={supplyExpenseCreateDialog.handleSupplyExpenseOpenCreateDialog}
             supplyListData={supplyListData}
         />
@@ -237,12 +236,6 @@ const SupplyGridList = enhance((props) => {
                 loading={supplyExpenseCreateDialog.supplyExpenseLoading}
                 onClose={supplyExpenseCreateDialog.handleSupplyExpenseCloseCreateDialog}
                 onSubmit={supplyExpenseCreateDialog.handleSupplyExpenseSubmitCreateDialog}
-            />
-
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
             />
 
             {detailData.data && <ConfirmDialog
