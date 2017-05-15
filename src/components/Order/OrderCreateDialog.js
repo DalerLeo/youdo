@@ -74,7 +74,6 @@ const enhance = compose(
             borderBottom: '1px #efefef solid'
         },
         innerWrap: {
-            maxHeight: '50vh',
             overflow: 'auto'
         },
         bodyContent: {

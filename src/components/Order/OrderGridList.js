@@ -21,6 +21,8 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import numberFormat from '../../helpers/numberFormat'
+
 
 const listHeader = [
     {
@@ -44,7 +46,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'dateDelivery',
-        title: 'Дата поставки',
+        title: 'Дата доставки',
         xs: 2
     },
     {
@@ -151,9 +153,9 @@ const OrderGridList = enhance((props) => {
         const client = _.get(item, ['client', 'name'])
         const user = _.get(item, ['user', 'firstName']) + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
-        const totalPrice = _.get(item, 'totalPrice') || 'N/A'
         const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
         const status = _.get(item, ['status', 'name']) || 'N/A'
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), _.get(item, ['currency', 'name']))
 
         return (
             <Row key={id}>
