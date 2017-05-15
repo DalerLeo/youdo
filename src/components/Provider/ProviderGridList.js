@@ -24,7 +24,6 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import {Link} from 'react-router'
-import CircularProgress from 'material-ui/CircularProgress'
 import ProviderDetail from './ProviderDetails'
 
 const listHeader = [
@@ -96,7 +95,6 @@ const ProviderGridList = enhance((props) => {
             </IconButton>
         </div>
     )
-
 
     const providerDetail = (
         <ProviderDetail

@@ -20,9 +20,12 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import MapsLocalShipping from 'material-ui/svg-icons/maps/local-shipping'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
-
+import Home from 'material-ui/svg-icons/action/home'
+import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
+import moment from 'moment'
 
 const listHeader = [
     {
@@ -57,14 +60,14 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'status',
-        title: 'Оплата',
+        name: 'createdDate',
+        title: 'Дата создания',
         xs: 2
     },
     {
         sorting: true,
         name: 'acceptedCost',
-        title: 'Передача',
+        title: 'Статус',
         xs: 1
     }
 ]
@@ -135,7 +138,20 @@ const OrderGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
+    const tooltipPosition = 'bottom-center'
 
+    const iconStyle = {
+        icon: {
+            color: '#666',
+            width: 20,
+            height: 20
+        },
+        button: {
+            width: 48,
+            height: 48,
+            padding: 0
+        }
+    }
     const orderDetail = (
         <OrderDetails
             key={_.get(detailData, 'id')}
@@ -153,10 +169,10 @@ const OrderGridList = enhance((props) => {
         const client = _.get(item, ['client', 'name'])
         const user = _.get(item, ['user', 'firstName']) + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
         const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
-        const status = _.get(item, ['status', 'name']) || 'N/A'
-        const totalPrice = numberFormat(_.get(item, 'totalPrice'), _.get(item, ['currency', 'name']))
-
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), 'SUM')
+        const ZERO = 0
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
@@ -168,9 +184,35 @@ const OrderGridList = enhance((props) => {
                 </Col>
                 <Col xs={2}>{user}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
-                <Col xs={2}>{totalPrice}</Col>
-                <Col xs={2}>{totalBalance}</Col>
-                <Col xs={1}>{status}</Col>
+                <Col xs={1}>{totalPrice}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Есть на складе">
+                        <Home color="#4db6ac" />
+                    </IconButton>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Есть долг">
+                        <AccountBalanceWallet color={totalBalance > ZERO ? '#e57373' : '#4db6ac'} />
+                    </IconButton>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Не забрали товар">
+                        <MapsLocalShipping />
+                    </IconButton>
+
+                    </Col>
             </Row>
         )
     })

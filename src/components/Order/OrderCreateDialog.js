@@ -96,6 +96,7 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             height: '40px',
+            justifyContent: 'space-between',
             fontWeight: '600'
         },
         right: {
@@ -188,7 +189,11 @@ const OrderCreateDialog = enhance((props) => {
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent}>
                             <div className={classes.left}>
-                                <div className={classes.title}>Выбор клиента</div>
+                                <div className={classes.title}>
+                                    <span>Выбор клиента</span>
+                                    <a style={{color: '#12aaeb'}}
+                                    >+ добавить</a>
+                                </div>
                                 <div className={classes.selectContent}>
                                     <Field
                                         name="client"
@@ -202,30 +207,33 @@ const OrderCreateDialog = enhance((props) => {
                                     />
                                 </div>
                                 <div className={classes.condition}>
-                                    <div className={classes.title}>Условия поставки</div>
+                                    <div className={classes.title}>Условия доставки</div>
                                     <Field
                                         name="deliveryType"
                                         component={DeliveryTypeSearchField}
                                         className={classes.inputField}
-                                        label="Тип поставки"
+                                        label="Тип доставки"
                                         fullWidth={true}/>
                                     <Field
                                         name="deliveryDate"
                                         component={DateField}
                                         className={classes.inputField}
-                                        hintText="Дата поставки"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="paymentDate"
-                                        component={DateField}
-                                        className={classes.inputField}
-                                        hintText="Дата оплата"
+                                        hintText="Дата доставки"
                                         fullWidth={true}/>
                                     <Field
                                         name="deliveryPrice"
                                         component={TextField}
                                         className={classes.inputField}
-                                        label="Стоимость"
+                                        label="Стоимость доставки"
+                                        fullWidth={true}/>
+                                </div>
+                                <div className={classes.condition}>
+                                    <div className={classes.title}>Оплата</div>
+                                    <Field
+                                        name="paymentDate"
+                                        component={DateField}
+                                        className={classes.inputField}
+                                        hintText="Дата оплаты"
                                         fullWidth={true}/>
                                     <Field
                                         name="discountPrice"
@@ -243,7 +251,7 @@ const OrderCreateDialog = enhance((props) => {
                             </div>
                         </div>
                         <div className={classes.commentField}>
-                            Общая сумма заказа: <b>350000</b>
+                            Общая сумма заказа: <b>0</b>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
