@@ -25,6 +25,7 @@ import {ManufactureList} from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
 import {StatStock} from '../containers/StatStock'
 import {StatDebtors} from '../containers/StatDebtors'
+import {StatManufacture} from '../containers/StatManufacture'
 import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
 import NotFound from '../containers/NotFound'
@@ -292,6 +293,15 @@ export default {
             childRoutes: [{
                 path: ROUTES.STATDEBTORS_ITEM_URL,
                 component: userIsAuth(StatDebtors)
+            }]
+        },
+        // METRICA (Stat Manufacture)
+        {
+            path: ROUTES.STAT_MANUFACTURE_LIST_URL,
+            component: userIsAuth(StatManufacture),
+            childRoutes: [{
+                path: ROUTES.STAT_MANUFACTURE_ITEM_URL,
+                component: userIsAuth(StatManufacture)
             }]
         },
 

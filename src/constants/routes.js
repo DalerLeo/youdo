@@ -122,6 +122,11 @@ export const STATDEBTORS_LIST_URL = `/${STATDEBTORS}`
 export const STATDEBTORS_ITEM_URL = `${STATDEBTORS_LIST_URL}/:statDebtorsId`
 export const STATDEBTORS_ITEM_PATH = `/${STATDEBTORS}/%d`
 
+export const STAT_MANUFACTURE = 'statManufacture'
+export const STAT_MANUFACTURE_LIST_URL = `/${STAT_MANUFACTURE}`
+export const STAT_MANUFACTURE_ITEM_URL = `${STAT_MANUFACTURE_LIST_URL}/:statManufactureId`
+export const STAT_MANUFACTURE_ITEM_PATH = `/${STAT_MANUFACTURE}/%d`
+
 export const PENDING_PAYMENTS = 'pendingPayments'
 export const PENDING_PAYMENTS_LIST_URL = `/${PENDING_PAYMENTS}`
 export const PENDING_PAYMENTS_ITEM_URL = `${PENDING_PAYMENTS_LIST_URL}/:pendingPaymentsId`
