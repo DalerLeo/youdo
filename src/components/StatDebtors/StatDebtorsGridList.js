@@ -1,20 +1,28 @@
 import _ from 'lodash'
-import React from 'react'
-import {Row, Col} from 'react-flexbox-grid'
-import GridList from '../GridList'
-import Container from '../Container'
-import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
-import {compose} from 'recompose'
-import PropTypes from 'prop-types'
-import * as ROUTES from '../../constants/routes'
-import StatDebtorsCreateDialog from './StatDebtorsCreateDialog'
 import sprintf from 'sprintf'
 import injectSheet from 'react-jss'
+import React from 'react'
+import moment from 'moment'
+import {compose} from 'recompose'
+import PropTypes from 'prop-types'
+import IconButton from 'material-ui/IconButton'
+import MapsLocalShipping from 'material-ui/svg-icons/maps/local-shipping'
+import Home from 'material-ui/svg-icons/action/home'
+import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
+import CircularProgress from 'material-ui/CircularProgress'
+import Dialog from 'material-ui/Dialog'
+import {Row, Col} from 'react-flexbox-grid'
+import StatDebtorsFilterForm from './StatDebtorsFilterForm'
+import GridList from '../GridList'
+import Container from '../Container'
+import StatDebtorsOrderDetails from './StatDebtorsOrderDetails'
+import ConfirmDialog from '../ConfirmDialog'
+import SubMenu from '../SubMenu'
+import * as ROUTES from '../../constants/routes'
+import StatDebtorsCreateDialog from './StatDebtorsCreateDialog'
 import MainStyles from '../Styles/MainStyles'
 import {Link} from 'react-router'
-import StatDebtorsFilterForm from './StatDebtorsFilterForm'
-import StatDebtorsDetail from './StatDebtorsDetail'
+import numberFormat from '../../helpers/numberFormat'
 
 const listHeader = [
     {
@@ -36,7 +44,6 @@ const listHeader = [
         title: 'Прошло дней'
     }
 ]
-
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         infoBlock: {
@@ -93,6 +100,13 @@ const enhance = compose(
         bodyTitle: {
             fontWeight: '600',
             marginBottom: '10px'
+        },
+        loader: {
+            background: '#fff',
+            height: '400px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         }
     })),
 )
@@ -115,6 +129,82 @@ const StatDebtorsGridList = enhance((props) => {
 
         </div>
     )
+
+    const iconStyle = {
+        icon: {
+            color: '#666',
+            width: 20,
+            height: 20
+        },
+        button: {
+            width: 48,
+            height: 48,
+            padding: 0
+        }
+    }
+    const tooltipPosition = 'bottom-center'
+
+    const orderListHeader = (
+        <Row>
+            <Col xs={1}>Заказ №</Col>
+            <Col xs={2}>Клиент</Col>
+            <Col xs={2}>Инициатор</Col>
+            <Col xs={2}>Дата доставки</Col>
+            <Col xs={2}>Сумма заказа</Col>
+            <Col xs={2}>Дата создания</Col>
+            <Col xs={2}>Статус</Col>
+        </Row>
+    )
+
+    const orderList = _.map(_.get(orderData, ['orderList', 'results']), (item) => {
+        const id = _.get(item, 'id')
+        const client = _.get(item, ['client', 'name'])
+        const user = _.get(item, ['user', 'firstName']) + _.get(item, ['user', 'secondName']) || 'N/A'
+        const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
+        const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), 'SUM')
+        const ZERO = 0
+        return (
+            <Row key={id}>
+                <Col xs={1}>{id}</Col>
+                <Col xs={2} onTouchTap={ () => { orderData.handleOrderClick(id) }}>
+                    {client}
+                </Col>
+                <Col xs={2}>{user}</Col>
+                <Col xs={2}>{dateDelivery}</Col>
+                <Col xs={1}>{totalPrice}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Есть на складе">
+                        <Home color="#4db6ac"/>
+                    </IconButton>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Есть долг">
+                        <AccountBalanceWallet color={totalBalance > ZERO ? '#e57373' : '#4db6ac'}/>
+                    </IconButton>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        tooltip="Не забрали товар">
+                        <MapsLocalShipping />
+                    </IconButton>
+
+                </Col>
+            </Row>
+        )
+    })
 
     const statDebtorsFilterDialog = (
         <StatDebtorsFilterForm
@@ -142,13 +232,18 @@ const StatDebtorsGridList = enhance((props) => {
             </Row>
         )
     })
-    const statDebtorsDetail = (
-        <StatDebtorsDetail
-            data={_.get(orderData, 'orderList')}
-            loding={_.get(orderData, 'orderLoading')}
-        />
-    )
 
+    const statDebtorsDetail = (
+        <div key={_.get(detailData, 'id')}>
+            { _.get(orderData, 'orderLoading')
+                ? <CircularProgress size={100} thickness={6}/>
+                : <div>
+                    <div>{orderListHeader}</div>
+                    {orderList}
+                </div>
+            }
+        </div>
+    )
     const list = {
         header: listHeader,
         list: statDebtorsList,
@@ -157,7 +252,12 @@ const StatDebtorsGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.STATDEBTORS_LIST_URL}/>
-            <Row style={{margin: '0 0 20px', padding: '8px 30px', background: '#fff', boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'}}>
+            <Row style={{
+                margin: '0 0 20px',
+                padding: '8px 30px',
+                background: '#fff',
+                boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'
+            }}>
                 <Col xs={3}>
                     &nbsp;
                 </Col>
@@ -195,6 +295,21 @@ const StatDebtorsGridList = enhance((props) => {
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
+
+            <Dialog
+                open={_.get(orderData, 'orderDetailOpen')}
+                modal={true}
+                onRequestClose={orderData.handleOrderDetailClose}
+                bodyClassName={classes.popUp}
+                autoScrollBodyContent={true}>
+                <StatDebtorsOrderDetails
+                    key={_.get(orderData, 'id')}
+                    data={_.get(orderData, 'orderDetail') || {}}
+                    loading={_.get(orderData, 'detailLoading')}
+                    handleOrderClick={orderData.handleOrderClick}
+                    close={orderData.handleOrderDetailClose}
+                />
+            </Dialog>
 
             {detailData.data && <ConfirmDialog
                 type="delete"

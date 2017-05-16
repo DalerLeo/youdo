@@ -15,6 +15,7 @@ import {
     STATDEBTORS_FILTER_OPEN,
     STATDEBTORS_DELETE_DIALOG_OPEN,
     STATDEBTORS_FILTER_KEY,
+    ORDER_DETAIL_OPEN,
     StatDebtorsGridList
 } from '../../components/StatDebtors'
 import {
@@ -25,7 +26,7 @@ import {
     statDebtorsDeleteAction,
     statDebtorsItemFetchAction
 } from '../../actions/statDebtors'
-import {orderListFetchAction} from '../../actions/order'
+import {orderListFetchAction, orderItemFetchAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -33,6 +34,7 @@ const enhance = compose(
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['statDebtors', 'item', 'data'])
+        const orderDetail = _.get(state, ['order', 'item', 'data'])
         const detailLoading = _.get(state, ['statDebtors', 'item', 'loading'])
         const createLoading = _.get(state, ['statDebtors', 'create', 'loading'])
         const updateLoading = _.get(state, ['statDebtors', 'update', 'loading'])
@@ -43,6 +45,8 @@ const enhance = compose(
         const csvData = _.get(state, ['statDebtors', 'csv', 'data'])
         const csvLoading = _.get(state, ['statDebtors', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'StatDebtorsCreateForm'])
+        const orderId = _.toInteger(_.get(['location', 'query', 'orderId']))
+
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -51,6 +55,8 @@ const enhance = compose(
             orderList,
             orderLoading,
             detail,
+            orderDetail,
+            orderId,
             detailLoading,
             createLoading,
             updateLoading,
@@ -197,6 +203,23 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[STATDEBTORS_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(statDebtorsListFetchAction(filter))
                 })
+        },
+
+        handleOrderClick: props => (id) => {
+            const {filter, location: {pathname}, dispatch} = props
+            hashHistory.push({
+                pathname: pathname,
+                query: filter.getParams({[ORDER_DETAIL_OPEN]: true, 'orderId': id})
+            })
+            dispatch(orderItemFetchAction(id))
+        },
+
+        handleOrderDetailClose: props => () => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({
+                pathname: pathname,
+                query: filter.getParams({[ORDER_DETAIL_OPEN]: false, 'orderId': -1})
+            })
         }
     })
 )
@@ -207,6 +230,7 @@ const StatDebtors = enhance((props) => {
         list,
         orderList,
         orderLoading,
+        orderDetail,
         listLoading,
         detail,
         detailLoading,
@@ -221,6 +245,7 @@ const StatDebtors = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', STATDEBTORS_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', STATDEBTORS_DELETE_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', STATDEBTORS_FILTER_OPEN]))
+    const orderDetailOpen = toBoolean(_.get(location, ['query', ORDER_DETAIL_OPEN]))
 
     const detailId = _.toInteger(_.get(params, 'statDebtorsId'))
 
@@ -299,7 +324,11 @@ const StatDebtors = enhance((props) => {
 
     const orderData = {
         orderList,
-        orderLoading
+        orderDetail,
+        orderLoading,
+        orderDetailOpen: orderDetailOpen,
+        handleOrderDetailClose: props.handleOrderDetailClose,
+        handleOrderClick: props.handleOrderClick
     }
 
     return (
