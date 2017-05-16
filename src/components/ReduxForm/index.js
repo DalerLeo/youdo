@@ -28,8 +28,10 @@ import ManufactureSearchField from './ManufactureSearchField'
 import ManufactureListMaterialField from './ManufactureListMaterialField'
 import ProviderContactsField from './ProviderContactsField'
 import ClientContactsField from './ClientContactsField'
+import UsersGroupSearchField from './UsersGroupSearchField'
 
 export {
+    UsersGroupSearchField,
     ClientContactsField,
     ManufactureListMaterialField,
     OrderListProductField,

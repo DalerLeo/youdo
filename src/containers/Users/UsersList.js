@@ -266,8 +266,7 @@ const UsersList = enhance((props) => {
                 phoneNumber: _.get(detail, 'phoneNumber'),
                 region: _.get(detail, 'region'),
                 password: _.get(detail, 'password'),
-                typeUser: _.get(detail, 'typeUser'),
-                email: _.get(detail, 'email')
+                typeUser: _.get(detail, 'typeUser')
             }
         })(),
         updateLoading: detailLoading || updateLoading,

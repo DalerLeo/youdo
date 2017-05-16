@@ -9,7 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ImageUploadField} from '../ReduxForm'
+import {TextField, ImageUploadField, UsersGroupSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -128,7 +128,7 @@ const UsersCreateDialog = enhance((props) => {
                             <Col xs={6}>
                                 <Field
                                     name="typeUser"
-                                    component={TextField}
+                                    component={UsersGroupSearchField}
                                     label="Тип Пользователя"
                                     className={classes.inputField}
                                     fullWidth={true}/>

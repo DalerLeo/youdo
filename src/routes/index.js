@@ -283,7 +283,10 @@ export default {
         {
             path: ROUTES.STATSTOCK_LIST_URL,
             component: userIsAuth(StatStock),
-            childRoutes: []
+            childRoutes: [{
+                path: ROUTES.STATSTOCK_ITEM_URL,
+                component: userIsAuth(StatStock)
+            }]
         },
         // METRICA (Stat Debtors)
         {

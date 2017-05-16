@@ -11,7 +11,6 @@ import sprintf from 'sprintf'
 import GridList from '../GridList'
 import Container from '../Container'
 import ProviderCreateDialog from './ProviderCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -19,10 +18,6 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Edit from 'material-ui/svg-icons/image/edit'
 import {Link} from 'react-router'
 import ProviderDetail from './ProviderDetails'
 
@@ -36,7 +31,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 6,
+        xs: 7,
         title: 'Наименование'
     },
     {
@@ -44,12 +39,6 @@ const listHeader = [
         xs: 3,
         name: 'created_date',
         title: 'Дата создания'
-    },
-    {
-        sorting: false,
-        xs: 1,
-        name: 'actions',
-        title: ''
     }
 ]
 
@@ -79,7 +68,6 @@ const ProviderGridList = enhance((props) => {
         updateDialog,
         actionsDialog,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -100,49 +88,25 @@ const ProviderGridList = enhance((props) => {
         <ProviderDetail
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
-            confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}/>
+            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
+            confirmDialog={confirmDialog}/>
     )
 
     const providerList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton className={classes.actionBtn}>
-                <MoreVertIcon/>
-            </IconButton>
-        )
         return (
             <Row key={id} style={{alignItems: 'center'}}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={6}>
+                <Col xs={7}>
                     <Link to={{
                         pathname: sprintf(ROUTES.PROVIDER_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{name}</Link>
                 </Col>
                 <Col xs={3}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => {
-                                updateDialog.handleOpenUpdateDialog(id)
-                            }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
-                        />
-                    </IconMenu>
-                </Col>
             </Row>
         )
     })
@@ -190,12 +154,6 @@ const ProviderGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
-            />
-
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -224,11 +182,6 @@ ProviderGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
