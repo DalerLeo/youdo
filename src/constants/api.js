@@ -167,3 +167,9 @@ export const PENDING_PAYMENTS = 'order'
 export const PENDING_PAYMENTS_CREATE = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_LIST = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_ITEM = `/${PENDING_PAYMENTS}/%d/`
+
+export const STAT_MANUFACTURE = 'dist/manufacturing'
+export const STAT_MANUFACTURE_CREATE = `/${STAT_MANUFACTURE}/`
+export const STAT_MANUFACTURE_LIST = `/${STAT_MANUFACTURE}/`
+export const STAT_MANUFACTURE_ITEM = `/${STAT_MANUFACTURE}/%d/`
+export const STAT_MANUFACTURE_DELETE = `/${STAT_MANUFACTURE}/%d/`
