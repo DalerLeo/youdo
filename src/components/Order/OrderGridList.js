@@ -26,6 +26,7 @@ import numberFormat from '../../helpers/numberFormat'
 import Home from 'material-ui/svg-icons/action/home'
 import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
 import moment from 'moment'
+import CachedIcon from 'material-ui/svg-icons/action/cached'
 
 const listHeader = [
     {
@@ -187,14 +188,23 @@ const OrderGridList = enhance((props) => {
                 <Col xs={1}>{totalPrice}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Есть на складе">
-                        <Home color="#4db6ac" />
-                    </IconButton>
+                    {(id % '2') ? <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            tooltipPosition={tooltipPosition}
+                            tooltip="В процессе">
+                            <CachedIcon color="#666"/>
+                        </IconButton>
+                        : <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            tooltipPosition={tooltipPosition}
+                            tooltip="Есть на складе">
+                            <Home color="#81c784"/>
+                        </IconButton>
+                    }
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
