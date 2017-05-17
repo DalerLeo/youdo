@@ -260,7 +260,7 @@ const StatDebtorsGridList = enhance((props) => {
 
     const statDebtorsDetail = (
         <div key={_.get(detailData, 'id')} style={{width: '100%'}}>
-            <div className={classes.title}>
+            <div className={classes.title} style={{width: 'initial'}}>
                 <div className={classes.titleLabel}>sdsdfsdf</div>
                 <div className={classes.subTitle}>
                     <div>
