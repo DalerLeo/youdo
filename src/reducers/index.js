@@ -179,6 +179,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.STATDEBTORS_UPDATE),
         item: createThunkReducer(actionTypes.STATDEBTORS_ITEM)
     }),
+    statManufacture: combineReducers({
+        create: createThunkReducer(actionTypes.STAT_MANUFACTURE_CREATE),
+        list: createThunkReducer(actionTypes.STAT_MANUFACTURE_LIST),
+        update: createThunkReducer(actionTypes.STAT_MANUFACTURE_UPDATE),
+        item: createThunkReducer(actionTypes.STAT_MANUFACTURE_ITEM)
+    }),
     pendingPayments: combineReducers({
         create: createThunkReducer(actionTypes.PENDING_PAYMENTS_CREATE),
         list: createThunkReducer(actionTypes.PENDING_PAYMENTS_LIST),

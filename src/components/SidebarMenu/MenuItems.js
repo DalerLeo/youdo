@@ -14,7 +14,8 @@ export const MenuItems = [
         url: ROUTES.STATSTOCK_LIST_URL,
         childs: [
             {name: 'Склады', url: ROUTES.STATSTOCK_LIST_URL},
-            {name: 'Должники', url: ROUTES.STATDEBTORS_LIST_URL}
+            {name: 'Должники', url: ROUTES.STATDEBTORS_LIST_URL},
+            {name: 'Производство', url: ROUTES.STAT_MANUFACTURE_LIST_URL}
         ]
     },
     {
