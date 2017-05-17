@@ -19,10 +19,6 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Edit from 'material-ui/svg-icons/image/edit'
 import {Link} from 'react-router'
 import ProviderDetail from './ProviderDetails'
 
@@ -36,7 +32,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 6,
+        xs: 7,
         title: 'Наименование'
     },
     {
@@ -44,12 +40,6 @@ const listHeader = [
         xs: 3,
         name: 'created_date',
         title: 'Дата создания'
-    },
-    {
-        sorting: false,
-        xs: 1,
-        name: 'actions',
-        title: ''
     }
 ]
 
@@ -109,40 +99,17 @@ const ProviderGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton className={classes.actionBtn}>
-                <MoreVertIcon/>
-            </IconButton>
-        )
+
         return (
             <Row key={id} style={{alignItems: 'center'}}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={6}>
+                <Col xs={7}>
                     <Link to={{
                         pathname: sprintf(ROUTES.PROVIDER_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{name}</Link>
                 </Col>
                 <Col xs={3}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => {
-                                updateDialog.handleOpenUpdateDialog(id)
-                            }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
-                        />
-                    </IconMenu>
-                </Col>
             </Row>
         )
     })
