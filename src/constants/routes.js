@@ -127,6 +127,11 @@ export const STAT_MANUFACTURE_LIST_URL = `/${STAT_MANUFACTURE}`
 export const STAT_MANUFACTURE_ITEM_URL = `${STAT_MANUFACTURE_LIST_URL}/:statManufactureId`
 export const STAT_MANUFACTURE_ITEM_PATH = `/${STAT_MANUFACTURE}/%d`
 
+export const STAT_CASHBOX = 'statCashbox'
+export const STAT_CASHBOX_LIST_URL = `/${STAT_CASHBOX}`
+export const STAT_CASHBOX_ITEM_URL = `${STAT_CASHBOX_LIST_URL}/:statCashboxId`
+export const STAT_CASHBOX_ITEM_PATH = `/${STAT_CASHBOX}/%d`
+
 export const PENDING_PAYMENTS = 'pendingPayments'
 export const PENDING_PAYMENTS_LIST_URL = `/${PENDING_PAYMENTS}`
 export const PENDING_PAYMENTS_ITEM_URL = `${PENDING_PAYMENTS_LIST_URL}/:pendingPaymentsId`
