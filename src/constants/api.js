@@ -45,7 +45,7 @@ export const PROVIDER_ITEM = `/${PROVIDER}/%d/`
 
 export const CLIENT = 'client/client'
 export const CLIENT_CREATE = `/${CLIENT}/`
-export const CLIENT_DELETE = `/${CLIENT}/`
+export const CLIENT_DELETE = `/${CLIENT}/%d/`
 export const CLIENT_LIST = `/${CLIENT}/`
 export const CLIENT_ITEM = `/${CLIENT}/%d/`
 
