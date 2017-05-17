@@ -1,4 +1,6 @@
 import _ from 'lodash'
+import sprintf from 'sprintf'
+import {Link} from 'react-router'
 import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -14,25 +16,25 @@ import {compose, withState} from 'recompose'
 import MainStyles from '../Styles/MainStyles'
 import InComing from 'material-ui/svg-icons/navigation/arrow-upward'
 import OutComing from 'material-ui/svg-icons/navigation/arrow-downward'
-
+import numberFormat from '../../helpers/numberFormat'
 import StatStockFilterForm from './StatStockFilterForm'
 
 const remainderHeader = [
     {
         sorting: true,
         name: 'name',
+        xs: 2,
+        title: '№'
+    },
+    {
+        sorting: true,
+        name: 'title',
         xs: 5,
         title: 'Наименование'
     },
     {
         sorting: true,
-        name: 'type',
         xs: 3,
-        title: 'Тип товара'
-    },
-    {
-        sorting: true,
-        xs: 2,
         name: 'balance',
         title: 'Остаток'
     },
@@ -153,8 +155,6 @@ const StatStockGridList = enhance((props) => {
         confirmDialog,
         filterDialog,
         listData,
-        setShowTransaction,
-        showTransaction,
         detailData,
         classes
     } = props
@@ -165,6 +165,7 @@ const StatStockGridList = enhance((props) => {
         </div>
     )
 
+    const handleClickTapChange = _.get(listData, 'handleClickTapChange')
     const statStockFilterDialog = (
         <StatStockFilterForm
             initialValues={filterDialog.initialValues}
@@ -176,68 +177,106 @@ const StatStockGridList = enhance((props) => {
     const statStockDetail = (
         <span>a</span>
     )
-    const remainderStockList = _.map(_.get(listData, 'data'), (item) => {
+    const remainderStockList = _.map(_.get(listData, 'remainderList'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const title = _.get(item, 'title')
+        const cost = _.get(item, 'cost') || '0.00'
+        const balance = numberFormat(_.get(item, 'balance'), _.get(item, ['measurement', 'name']))
         return (
             <Row key={id}>
-                <Col xs={5}>{name}</Col>
-                <Col xs={3}>{createdDate}</Col>
                 <Col xs={2}>{id}</Col>
-                <Col xs={2}>{id}</Col>
+                <Col xs={5}>{title}</Col>
+                <Col xs={3}>{balance}</Col>
+                <Col xs={2}>{cost}</Col>
             </Row>
         )
     })
 
-    const transactionStockList = _.map(_.get(listData, 'data'), (item) => {
+    const ZERO = 0
+
+    const transactionStockList = _.map(_.get(listData, 'transactionList'), (item) => {
         const id = _.get(item, 'id')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const barcode = _.get(item, 'barcode')
+        const amount = _.get(item, 'amount')
+        const name = _.get(item, ['product', 'name'])
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY - HH:mm:ss')
+        const balance = numberFormat(_.get(item, 'amount'), _.get(item, ['product', 'measurement', 'name']))
+
         return (
             <Row key={id}>
-                <Col xs={2}><strong>02016588</strong></Col>
-                <Col xs={5}>Наименование продукта</Col>
+                <Col xs={2}><strong>{barcode}</strong></Col>
+                <Col xs={5}>{name}</Col>
                 <Col xs={3}>{createdDate}
-                    <span className={(id % '2') ? 'redFont' : 'greenFont'} style={{top: '2px', position: 'relative', left: '3px'}}>
-                        {(id % '2') ? <OutComing style={{width: '14px', height: '14px'}}/> : <InComing style={{width: '14px', height: '14px'}}/>}
+                    <span className={(amount < ZERO) ? 'redFont' : 'greenFont'}
+                          style={{top: '2px', position: 'relative', left: '3px'}}>
+                        {(amount < ZERO) ? <OutComing style={{width: '14px', height: '14px'}}/>
+                            : <InComing style={{width: '14px', height: '14px'}}/>}
                     </span>
                 </Col>
-                <Col xs={2}>{id} шт</Col>
+                <Col xs={2}>{balance}</Col>
             </Row>
         )
     })
 
-    const list = (!showTransaction) ? {
+    const balanceTab = 1
+    const transactionTab = 2
+    const tab = _.get(listData, 'tab')
+
+    const list = (tab === balanceTab) ? {
         header: remainderHeader,
         list: remainderStockList,
-        loading: _.get(listData, 'listLoading')
+        loading: _.get(listData, 'remainderLoading')
     } : {
         header: transactionHeader,
         list: transactionStockList,
-        loading: _.get(listData, 'listLoading')
+        loading: _.get(listData, 'transactionLoading')
     }
+
+    const stockList = _.map(_.get(listData, 'stockList'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        return (
+                <li
+                    key={id}
+                    className={_.get(detailData, 'id') === id ? 'active' : ''}>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.STATSTOCK_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>{name}</Link>
+                </li>
+        )
+    })
+
     return (
         <Container>
             <SubMenu url={ROUTES.STATSTOCK_LIST_URL}/>
             <Row>
                 <Col xs={12}>
                     <div className={classes.stocksList}>
-                        <ul>
-                            <li className="active"><a>Все склады</a></li>
-                            <li><a>Склад на ойбеке</a></li>
-                            <li><a>Склад в Фергане</a></li>
-                            <li><a>Склад на чорсу</a></li>
-                        </ul>
+                        <li className={ !_.get(detailData, 'id') ? 'active' : ''}>
+                            <Link to={{
+                                pathname: sprintf(ROUTES.STATSTOCK_LIST_URL),
+                                query: filter.getParams()
+                            }}>Все склады</Link>
+                        </li>
+                        {stockList}
                     </div>
                 </Col>
             </Row>
-            <Row style={{margin: '0 0 20px', padding: '8px 30px', background: '#fff', boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'}}>
+            <Row style={{
+                margin: '0 0 20px',
+                padding: '8px 30px',
+                background: '#fff',
+                boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'
+            }}>
                 <Col xs={3}>
                     <div className={classes.typeListStock}>
-                        <a onClick={() => { setShowTransaction(false) }} className={!showTransaction && 'active'}>Остаток<br/>товара</a>
+                        <a onClick={() => { handleClickTapChange(balanceTab) }}
+                           className={tab === balanceTab ? 'active' : ''}>Остаток<br/>товара</a>
                     </div>
                     <div className={classes.typeListStock}>
-                        <a onClick={() => { setShowTransaction(true) }} className={showTransaction && 'active'}>Движение<br/>товаров</a>
+                        <a onClick={() => { handleClickTapChange(transactionTab) }}
+                           className={tab === transactionTab ? 'active' : ''}>Движение<br/>товаров</a>
                     </div>
                 </Col>
                 <Col xs={9} style={{textAlign: 'right'}}>

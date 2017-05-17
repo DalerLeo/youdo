@@ -8,7 +8,6 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     PROVIDER_CREATE_DIALOG_OPEN,
     PROVIDER_UPDATE_DIALOG_OPEN,
@@ -96,13 +95,14 @@ const enhance = compose(
             setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
+            const {dispatch, detail, setOpenConfirmDialog, filter} = props
             dispatch(providerDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
                     setOpenConfirmDialog(false)
+                    dispatch(providerListFetchAction(filter))
                 })
         },
 
@@ -130,14 +130,15 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
 
             return dispatch(providerCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[PROVIDER_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[PROVIDER_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(providerListFetchAction(filter))
                 })
         },
 
@@ -189,7 +190,6 @@ const ProviderList = enhance((props) => {
 
     const openCreateDialog = toBoolean(_.get(location, ['query', PROVIDER_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PROVIDER_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'providerId'))
     const tab = _.get(params, 'tab')
 
@@ -204,12 +204,6 @@ const ProviderList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
-    }
-
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
     }
 
     const confirmDialog = {
@@ -280,7 +274,6 @@ const ProviderList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}

@@ -25,6 +25,12 @@ import {
     statStockDeleteAction,
     statStockItemFetchAction
 } from '../../actions/statStock'
+import {
+    remainderStockListFetchAction
+} from '../../actions/remainderStock'
+import {
+    transactionStockListFetchAction
+} from '../../actions/transactionStock'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -36,14 +42,23 @@ const enhance = compose(
         const createLoading = _.get(state, ['statStock', 'create', 'loading'])
         const updateLoading = _.get(state, ['statStock', 'update', 'loading'])
         const list = _.get(state, ['statStock', 'list', 'data'])
+        const remainderList = _.get(state, ['remainderStock', 'list', 'data'])
+        const remainderLoading = _.get(state, ['remainderStock', 'list', 'loading'])
+        const transactionList = _.get(state, ['transactionStock', 'list', 'data'])
+        const transactionLoading = _.get(state, ['transactionStock', 'list', 'loading'])
         const listLoading = _.get(state, ['statStock', 'list', 'loading'])
         const csvData = _.get(state, ['statStock', 'csv', 'data'])
         const csvLoading = _.get(state, ['statStock', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'StatStockCreateForm'])
+        const tab = _.get(props, ['location', 'query', 'tab']) || '1'
         const filter = filterHelper(list, pathname, query)
 
         return {
             list,
+            remainderList,
+            remainderLoading,
+            transactionList,
+            transactionLoading,
             listLoading,
             detail,
             detailLoading,
@@ -52,6 +67,7 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
+            tab,
             createForm
         }
     }),
@@ -64,9 +80,11 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const statStockId = _.get(nextProps, ['params', 'statStockId'])
         return statStockId && _.get(props, ['params', 'statStockId']) !== statStockId
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, filter}) => {
         const statStockId = _.toInteger(_.get(params, 'statStockId'))
         statStockId && dispatch(statStockItemFetchAction(statStockId))
+        statStockId && dispatch(remainderStockListFetchAction(filter, statStockId))
+        statStockId && dispatch(transactionStockListFetchAction(filter, statStockId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -190,6 +208,17 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[STATSTOCK_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(statStockListFetchAction(filter))
                 })
+        },
+
+        handleClickTapChange: props => (id) => {
+            const {filter, dispatch, location: {pathname}} = props
+            const statStockId = _.toInteger(_.get(props, ['params', 'statStockId']))
+            if (id === _.toInteger('1')) {
+                dispatch(remainderStockListFetchAction(filter, statStockId))
+            } else {
+                dispatch(transactionStockListFetchAction(filter, statStockId))
+            }
+            hashHistory.push({pathname, query: filter.getParams({'tab': id})})
         }
     })
 )
@@ -198,6 +227,10 @@ const StatStock = enhance((props) => {
     const {
         location,
         list,
+        remainderList,
+        remainderLoading,
+        transactionList,
+        transactionLoading,
         listLoading,
         detail,
         detailLoading,
@@ -205,7 +238,8 @@ const StatStock = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+        tab
     } = props
 
     const openCreateDialog = toBoolean(_.get(location, ['query', STATSTOCK_CREATE_DIALOG_OPEN]))
@@ -263,8 +297,15 @@ const StatStock = enhance((props) => {
     }
 
     const listData = {
-        data: _.get(list, 'results'),
-        listLoading
+        stockList: _.get(list, 'results'),
+        transactionList: _.get(transactionList, 'results'),
+        remainderList: _.get(remainderList, 'results'),
+        remainderLoading,
+        transactionLoading,
+        listLoading,
+        handleClickTapChange: props.handleClickTapChange,
+        tab: _.toInteger(tab)
+
     }
 
     const detailData = {
