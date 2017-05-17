@@ -1,28 +1,19 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import moment from 'moment'
 
 export const createSerializer = (data) => {
-    const name = _.get(data, ['name'])
+    const product = _.get(data, ['product', 'value'])
+    const ingridients = _.map(_.get(data, ['ingridients']), (item) => {
+        return {
+            amount: item.amount,
+            ingridient: item.ingridient.value
+        }
+    })
 
     return {
-        name
-    }
-}
-
-export const createPrimarySerializer = (data) => {
-    const currency = _.get(data, ['currency', 'value'])
-
-    return {
-        currency
-    }
-}
-
-export const setCurrencySerializer = (data, currency) => {
-    const rate = _.get(data, 'rate')
-
-    return {
-        rate,
-        currency
+        'product_id': product,
+        ingridients
     }
 }
 
@@ -31,7 +22,10 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'name': _.get(defaultData, 'name'),
+        'provider': _.get(defaultData, 'provider'),
+        'stock': _.get(defaultData, 'stock'),
+        'date_delivery_0': _.get(defaultData, 'fromDate'),
+        'date_delivery_1': _.get(defaultData, 'toDate'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

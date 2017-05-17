@@ -34,7 +34,6 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['pendingPayments', 'item', 'data'])
         const detailLoading = _.get(state, ['pendingPayments', 'item', 'loading'])
-        const createLoading = _.get(state, ['pendingPayments', 'create', 'loading'])
         const updateLoading = _.get(state, ['pendingPayments', 'update', 'loading'])
         const list = _.get(state, ['pendingPayments', 'list', 'data'])
         const listLoading = _.get(state, ['pendingPayments', 'list', 'loading'])
@@ -49,7 +48,6 @@ const enhance = compose(
             listLoading,
             detail,
             detailLoading,
-            createLoading,
             updateLoading,
             csvData,
             csvLoading,
@@ -152,27 +150,29 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
-        handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PENDING_PAYMENTS_CREATE_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PENDING_PAYMENTS_CREATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-
-            return dispatch(pendingPaymentsCreateAction(_.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push({query: filter.getParams({[PENDING_PAYMENTS_CREATE_DIALOG_OPEN]: false})})
-                })
-        },
+        // handleOpenCreateDialog: props => () => {
+        //     console.log('open')
+        //     const {location: {pathname}, filter} = props
+        //     hashHistory.push({pathname, query: filter.getParams({[PENDING_PAYMENTS_CREATE_DIALOG_OPEN]: true})})
+        // },
+        //
+        // handleCloseCreateDialog: props => () => {
+        //     console.log('close')
+        //     const {location: {pathname}, filter} = props
+        //     hashHistory.push({pathname, query: filter.getParams({[PENDING_PAYMENTS_CREATE_DIALOG_OPEN]: false})})
+        // },
+        //
+        // handleSubmitCreateDialog: props => () => {
+        //     const {dispatch, createForm, filter, detail} = props
+        //     console.log('submit')
+        //     return dispatch(pendingPaymentsCreateAction(_.get(createForm, ['values']), detail.id))
+        //         .then(() => {
+        //             return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+        //         })
+        //         .then(() => {
+        //             hashHistory.push({query: filter.getParams({[PENDING_PAYMENTS_CREATE_DIALOG_OPEN]: false})})
+        //         })
+        // },
 
         handleOpenUpdateDialog: props => (id) => {
             const {filter} = props
@@ -191,10 +191,7 @@ const enhance = compose(
             const {dispatch, createForm, filter} = props
             const pendingPaymentsId = _.toInteger(_.get(props, ['params', 'pendingPaymentsId']))
 
-            return dispatch(pendingPaymentsUpdateAction(pendingPaymentsId, _.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(pendingPaymentsItemFetchAction(pendingPaymentsId))
-                })
+            return dispatch(pendingPaymentsUpdateAction(_.get(createForm, ['values']), pendingPaymentsId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -212,7 +209,6 @@ const PendingPaymentsList = enhance((props) => {
         listLoading,
         detail,
         detailLoading,
-        createLoading,
         updateLoading,
         filter,
         layout,
@@ -220,7 +216,6 @@ const PendingPaymentsList = enhance((props) => {
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', PENDING_PAYMENTS_FILTER_OPEN]))
-    const openCreateDialog = toBoolean(_.get(location, ['query', PENDING_PAYMENTS_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PENDING_PAYMENTS_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const fromDate = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.FROM_DATE)
@@ -230,14 +225,6 @@ const PendingPaymentsList = enhance((props) => {
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
         handleActionDelete: props.handleOpenDeleteDialog
-    }
-
-    const createDialog = {
-        createLoading,
-        openCreateDialog,
-        handleOpenCreateDialog: props.handleOpenCreateDialog,
-        handleCloseCreateDialog: props.handleCloseCreateDialog,
-        handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
     const deleteDialog = {
@@ -322,7 +309,6 @@ const PendingPaymentsList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                createDialog={createDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}

@@ -31,14 +31,8 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 5,
+        xs: 9,
         title: 'Наименование'
-    },
-    {
-        sorting: true,
-        xs: 4,
-        name: 'amount',
-        title: 'Количество'
     },
     {
         sorting: false,
@@ -95,7 +89,6 @@ const MeasurementGridList = enhance((props) => {
     const measurementList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const amount = _.get(item, 'amount') || 'N/A'
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -104,8 +97,7 @@ const MeasurementGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={5}>{name}</Col>
-                <Col xs={4}>{amount}</Col>
+                <Col xs={9}>{name}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}

@@ -173,8 +173,11 @@ const TransactionGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
         const type = _.get(item, 'amount') || 'N/A'
+        const cashbox = _.get(item, 'cashbox') || 'N/A'
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
+
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -185,7 +188,7 @@ const TransactionGridList = enhance((props) => {
                 <Col xs={1}>{id}</Col>
                 <Col xs={5}>{comment}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col className={type >= zero ? classes.green : classes.red} xs={2}>{amount}</Col>
+                <Col className={type >= zero ? classes.green : classes.red} xs={2}>{amount} {currentCurrency}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
