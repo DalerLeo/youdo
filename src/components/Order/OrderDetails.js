@@ -422,7 +422,6 @@ const OrderDetails = enhance((props) => {
 OrderDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
     returnDialog: PropTypes.shape({
         returnLoading: PropTypes.bool.isRequired,
         openReturnDialog: PropTypes.bool.isRequired,

@@ -96,13 +96,14 @@ const enhance = compose(
             setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
+            const {dispatch, detail, setOpenConfirmDialog, filter} = props
             dispatch(clientDeleteAction(detail.id))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
                     setOpenConfirmDialog(false)
+                    dispatch(clientListFetchAction(filter))
                 })
         },
 
@@ -167,8 +168,8 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    dispatch(clientListFetchAction(filter))
                     hashHistory.push(filter.createURL({[CLIENT_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(clientListFetchAction(filter))
                 })
         }
     })

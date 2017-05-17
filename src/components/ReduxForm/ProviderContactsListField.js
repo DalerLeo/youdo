@@ -67,7 +67,7 @@ const ProviderContactsListField = ({classes, fields}) => {
         <div>
             {fields.map((contact, index) => {
                 return (
-                    <div className={classes.contactBlock}>
+                    <div className={classes.contactBlock} key={index}>
                         <div className={classes.headers}>
                             <FloatingActionButton
                                 backgroundColor="#12aaeb"
@@ -76,7 +76,7 @@ const ProviderContactsListField = ({classes, fields}) => {
                                 {fields.length !== index + ONE ? <ContentRemove/> : <ContentAdd />}
                             </FloatingActionButton>
                         </div>
-                        <div key={index}>
+                        <div >
                             <Field
                                 label="Контактное лицо"
                                 name={`${contact}.name`}

@@ -149,7 +149,7 @@ const ProviderDetails = enhance((props) => {
                         style={iconStyle.button}
                         touch={true}
                         disableTouchRipple={true}
-                        onTouchTap={confirmDialog.handleOpenConfirmDialog}
+                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(providerId) }}
                         tooltipPosition={tooltipPosition}
                         tooltip="Удалить">
                         <DeleteIcon />
@@ -191,6 +191,7 @@ ProviderDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     confirmDialog: PropTypes.object.isRequired,
+    handleOpenConfirmDialog: PropTypes.func.isRequired,
     handleOpenUpdateDialog: PropTypes.func.isRequired
 }
 

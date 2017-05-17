@@ -59,6 +59,16 @@ const enhance = compose(
             '& span': {
                 fontWeight: '600'
             }
+        },
+        headerPadding: {
+            padding: '0 30px',
+            width: '100%',
+            '& div div': {
+                paddingLeft: '10px'
+            },
+            '& div div:first-child': {
+                paddingLeft: '5px'
+            }
         }
     }),
     withHandlers({
@@ -135,7 +145,7 @@ const GridListHeader = enhance((props) => {
                 <Checkbox onCheck={onChecked} checked={checkboxChecked}/>
                 }
             </div>
-            <div style={{padding: '0 30px', width: '100%'}}>
+            <div className={classes.headerPadding}>
                 <Row>
                     {items}
                 </Row>

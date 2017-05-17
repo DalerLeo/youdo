@@ -39,13 +39,13 @@ export const EXPENSIVE_CATEGORY_DELETE = `/${EXPENSIVE_CATEGORY}/%d/`
 
 export const PROVIDER = 'dist/provider'
 export const PROVIDER_CREATE = `/${PROVIDER}/`
-export const PROVIDER_DELETE = `/${PROVIDER}/`
+export const PROVIDER_DELETE = `/${PROVIDER}/%d/`
 export const PROVIDER_LIST = `/${PROVIDER}/`
 export const PROVIDER_ITEM = `/${PROVIDER}/%d/`
 
 export const CLIENT = 'client/client'
 export const CLIENT_CREATE = `/${CLIENT}/`
-export const CLIENT_DELETE = `/${CLIENT}/`
+export const CLIENT_DELETE = `/${CLIENT}/%d/`
 export const CLIENT_LIST = `/${CLIENT}/`
 export const CLIENT_ITEM = `/${CLIENT}/%d/`
 
@@ -70,6 +70,8 @@ export const USERS_CREATE = `/${USERS}/`
 export const USERS_LIST = `/${USERS}/`
 export const USERS_ITEM = `/${USERS}/%d/`
 export const USERS_DELETE = `/${USERS}/%d/`
+export const USERS_GROUP = 'group/gcrud/'
+export const USERS_GROUP_ITEM = 'group/gcrud/%d/'
 
 export const CASHBOX = 'cashbox'
 export const CASHBOX_CREATE = `/${CASHBOX}/`
@@ -156,6 +158,18 @@ export const STATSTOCK_CREATE = `/${STATSTOCK}/`
 export const STATSTOCK_LIST = `/${STATSTOCK}/`
 export const STATSTOCK_ITEM = `/${STATSTOCK}/%d/`
 export const STATSTOCK_DELETE = `/${STATSTOCK}/%d/`
+
+export const REMAINDER_STOCK = 'dist/stock'
+export const REMAINDER_STOCK_CREATE = `/${REMAINDER_STOCK}/%d/balances/`
+export const REMAINDER_STOCK_LIST = `/${REMAINDER_STOCK}/%d/balances/`
+export const REMAINDER_STOCK_ITEM = `/${REMAINDER_STOCK}/%d/balances/%d`
+export const REMAINDER_STOCK_DELETE = `/${REMAINDER_STOCK}/%d/balances/%d`
+
+export const TRANSACTION_STOCK = 'dist/barcode_history'
+export const TRANSACTION_STOCK_CREATE = `/${TRANSACTION_STOCK}/`
+export const TRANSACTION_STOCK_LIST = `/${TRANSACTION_STOCK}/`
+export const TRANSACTION_STOCK_ITEM = `/${TRANSACTION_STOCK}/%d`
+export const TRANSACTION_STOCK_DELETE = `/${TRANSACTION_STOCK}/%d`
 
 export const STATDEBTORS = 'dist/stock'
 export const STATDEBTORS_CREATE = `/${STATDEBTORS}/`
