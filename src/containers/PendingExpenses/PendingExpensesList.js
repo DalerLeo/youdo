@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
@@ -122,11 +123,6 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[PENDING_EXPENSES_FILTER_OPEN]: false})})
         },
 
-        handleTabChange: props => (tab) => {
-            const pendingExpensesId = _.toInteger(_.get(props, ['params', 'pendingExpensesId']))
-            hashHistory.push({pathname: sprintf(ROUTER.PENDING_EXPENSES_ITEM_TAB_PATH, pendingExpensesId, tab)})
-        },
-
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
             hashHistory.push({pathname, query: {}})
@@ -134,13 +130,16 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const category = _.get(filterForm, ['values', 'category', 'value']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 [PENDING_EXPENSES_FILTER_OPEN]: false,
-                [PENDING_EXPENSES_FILTER_KEY.CATEGORY]: category
+                [PENDING_EXPENSES_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [PENDING_EXPENSES_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
+
         handleOpenDeleteDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({
@@ -225,9 +224,9 @@ const PendingExpensesList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', PENDING_EXPENSES_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PENDING_EXPENSES_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
-    const category = _.toInteger(filter.getParam(PENDING_EXPENSES_FILTER_KEY.CATEGORY))
+    const fromDate = filter.getParam(PENDING_EXPENSES_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(PENDING_EXPENSES_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'pendingExpensesId'))
-    const tab = _.get(params, 'tab')
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -286,8 +285,9 @@ const PendingExpensesList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            category: {
-                value: category
+            date: {
+                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
+                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
             }
         },
         filterLoading: false,
@@ -304,11 +304,6 @@ const PendingExpensesList = enhance((props) => {
         openCSVDialog: props.openCSVDialog,
         handleOpenCSVDialog: props.handleOpenCSVDialog,
         handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
-    const tabData = {
-        tab,
-        handleTabChange: props.handleTabChange
     }
 
     const listData = {
@@ -328,7 +323,6 @@ const PendingExpensesList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                tabData={tabData}
                 createDialog={createDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}

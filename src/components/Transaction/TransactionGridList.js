@@ -204,7 +204,7 @@ const TransactionGridList = enhance((props) => {
             </Row>
         )
     })
-    const cashboxList = _.map(_.get(cashboxData, 'data'), (item, index) => {
+    const cashboxList = _.map(_.get(cashboxData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const currency = _.get(item, ['currency', 'name'])
@@ -279,14 +279,13 @@ const TransactionGridList = enhance((props) => {
                     </Paper>
                 </div>
                 <div className={classes.rightSide}>
-                    <div className={classes.outerTitle}>
+                    { _.get(cashboxData, 'cashboxId') !== AllCashboxId && <div className={classes.outerTitle}>
                        <div>{cashboxName}</div>
                         <div className={classes.buttons}>
-                            <a onClick={sendDialog.handleOpenSendDialog} className={classes.btnSend}>Перевод</a>
                             <a onClick={incomeDialog.handleOpenIncomeDialog} className={classes.btnAdd}>+ Доход</a>
                             <a onClick={createDialog.handleOpenCreateDialog} className={classes.btnRemove}>- Расход</a>
                         </div>
-                    </div>
+                    </div>}
 
                     <GridList
                         filter={filter}
