@@ -18,11 +18,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import Popover from 'material-ui/Popover'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
 import {Link} from 'react-router'
-import MainStyles from '../Styles/MainStyles'
 
 const listHeader = [
     {
@@ -64,7 +60,7 @@ const listHeader = [
 ]
 
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         addButton: {
             '& button': {
                 backgroundColor: '#275482 !important'
@@ -162,7 +158,7 @@ const enhance = compose(
                 width: '120px'
             }
         }
-    })),
+    }),
 
     withState('showAddPrice', 'setShowAddPrice', false),
     withState('priceDetailsOpen', 'setPriceDetailsOpen', false),
@@ -202,7 +198,6 @@ const iconStyle = {
 const ProductPriceGridList = enhance((props) => {
     const {
         filter,
-        createDialog,
         updateDialog,
         filterDialog,
         anchorEl,
@@ -391,16 +386,6 @@ const ProductPriceGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.PRODUCT_PRICE_LIST_URL}/>
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить продукт">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
 
             <GridList
                 filter={filter}
