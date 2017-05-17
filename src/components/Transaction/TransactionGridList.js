@@ -172,7 +172,7 @@ const TransactionGridList = enhance((props) => {
         const zero = 0
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
-        const type = _.get(item, 'amount')|| 'N/A'
+        const type = _.get(item, 'amount') || 'N/A'
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
