@@ -120,7 +120,6 @@ const enhance = compose(
 
     withHandlers({
         handleAdd: props => () => {
-            console.log(props)
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
             const cost = _.get(props, ['cost', 'input', 'value'])
