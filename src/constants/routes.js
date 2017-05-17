@@ -117,6 +117,11 @@ export const STATSTOCK_LIST_URL = `/${STATSTOCK}`
 export const STATSTOCK_ITEM_URL = `${STATSTOCK_LIST_URL}/:statStockId`
 export const STATSTOCK_ITEM_PATH = `/${STATSTOCK}/%d`
 
+export const REMAINDER_STOCK = 'stockRemainder'
+export const REMAINDER_STOCK_LIST_URL = `/${REMAINDER_STOCK}/%d/balances/`
+export const REMAINDER_STOCK_ITEM_URL = `${REMAINDER_STOCK_LIST_URL}/%d/balances/:remainderStockId`
+export const REMAINDER_STOCK_ITEM_PATH = `/${REMAINDER_STOCK}/%d/balances/%d`
+
 export const STATDEBTORS = 'statDebtors'
 export const STATDEBTORS_LIST_URL = `/${STATDEBTORS}`
 export const STATDEBTORS_ITEM_URL = `${STATDEBTORS_LIST_URL}/:statDebtorsId`

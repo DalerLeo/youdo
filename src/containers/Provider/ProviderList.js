@@ -8,7 +8,6 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     PROVIDER_CREATE_DIALOG_OPEN,
     PROVIDER_UPDATE_DIALOG_OPEN,
@@ -191,7 +190,6 @@ const ProviderList = enhance((props) => {
 
     const openCreateDialog = toBoolean(_.get(location, ['query', PROVIDER_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PROVIDER_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'providerId'))
     const tab = _.get(params, 'tab')
 
@@ -206,12 +204,6 @@ const ProviderList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
-    }
-
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
     }
 
     const confirmDialog = {
@@ -282,7 +274,6 @@ const ProviderList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}

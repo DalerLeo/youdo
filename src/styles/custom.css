@@ -86,6 +86,24 @@ strong {
     right: 0;
 }
 
+.dottedListSpec {
+    width: 100%;
+    padding: 10px 0;
+    position: relative;
+}
+.dottedListSpec:last-child:after {
+    background-image: none;
+}
+.dottedListSpec:after {
+    content: "";
+    background-image: url(../components/Images/dot.png);
+    position: absolute;
+    bottom: 0;
+    height: 2px;
+    left: 30px;
+    right: 30px;
+}
+
 hr.lineDote {
     height: 2px;
     border: none;

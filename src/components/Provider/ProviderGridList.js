@@ -11,7 +11,6 @@ import sprintf from 'sprintf'
 import GridList from '../GridList'
 import Container from '../Container'
 import ProviderCreateDialog from './ProviderCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -69,7 +68,6 @@ const ProviderGridList = enhance((props) => {
         updateDialog,
         actionsDialog,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -90,16 +88,15 @@ const ProviderGridList = enhance((props) => {
         <ProviderDetail
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
-            confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}/>
+            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
+            confirmDialog={confirmDialog}/>
     )
 
     const providerList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-
         return (
             <Row key={id} style={{alignItems: 'center'}}>
                 <Col xs={2}>{id}</Col>
@@ -157,12 +154,6 @@ const ProviderGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
-            />
-
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -191,11 +182,6 @@ ProviderGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
