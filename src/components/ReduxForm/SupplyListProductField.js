@@ -126,8 +126,12 @@ const enhance = compose(
 
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
+            const find_product = _(props)
+                .get(['products', 'input', 'value'])
+                .filter((item, index) => index === product)
 
             if (!_.isEmpty(product) && amount && cost) {
+
                 onChange(_.union(products, [{product, amount, cost}]))
             }
         },

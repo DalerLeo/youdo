@@ -85,11 +85,11 @@ const enhance = compose(
         },
         flex: {
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
+            alignItems: 'center'
         },
         outerTitle: {
             extend: 'flex',
+            justifyContent: 'space-between',
             fontWeight: '600',
             paddingBottom: '10px',
             paddingTop: '5px',

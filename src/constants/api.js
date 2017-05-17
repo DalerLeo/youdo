@@ -187,3 +187,9 @@ export const STAT_MANUFACTURE_CREATE = `/${STAT_MANUFACTURE}/`
 export const STAT_MANUFACTURE_LIST = `/${STAT_MANUFACTURE}/`
 export const STAT_MANUFACTURE_ITEM = `/${STAT_MANUFACTURE}/%d/`
 export const STAT_MANUFACTURE_DELETE = `/${STAT_MANUFACTURE}/%d/`
+
+export const STAT_CASHBOX = 'cashbox'
+export const STAT_CASHBOX_CREATE = `/${STAT_CASHBOX}/`
+export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`
+export const STAT_CASHBOX_ITEM = `/${STAT_CASHBOX}/%d/`
+export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
