@@ -198,7 +198,6 @@ const iconStyle = {
 const ProductPriceGridList = enhance((props) => {
     const {
         filter,
-        createDialog,
         updateDialog,
         filterDialog,
         anchorEl,
