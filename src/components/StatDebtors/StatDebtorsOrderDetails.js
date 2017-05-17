@@ -6,9 +6,15 @@ import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import Dot from '../Images/dot.png'
+import Dialog from 'material-ui/Dialog'
+import MainStyles from '../Styles/MainStyles'
+import CloseIcon2 from '../CloseIcon2'
+import IconButton from 'material-ui/IconButton'
+
+export const STAT_DEBTORS_ORDER_D = 'statDebtors'
 
 const enhance = compose(
-    injectSheet({
+    injectSheet(_.merge(MainStyles, {
         dottedList: {
             padding: '20px 0'
         },
@@ -20,16 +26,16 @@ const enhance = compose(
         },
         dropdown: {
             position: 'relative',
-            paddingRight: '18px',
+            paddingRight: '15px',
             zIndex: '10',
             '&:after': {
-                top: '10px',
+                top: '8px',
                 right: '0',
                 content: '""',
                 position: 'absolute',
-                borderTop: '5px solid',
-                borderLeft: '5px solid transparent',
-                borderRight: '5px solid transparent'
+                borderTop: '4px solid',
+                borderLeft: '4px solid transparent',
+                borderRight: '4px solid transparent'
             }
         },
         link: {
@@ -69,8 +75,12 @@ const enhance = compose(
             fontWeight: '600'
         },
         titleSupplier: {
-            fontSize: '18px',
-            position: 'relative',
+            width: '34%',
+            padding: '0 33%',
+            position: 'absolute',
+            marginLeft: '-30px',
+            textAlign: 'center',
+            fontSize: '14px',
             '& .supplierDetails': {
                 background: '#fff',
                 boxShadow: '0 2px 5px 0px rgba(0, 0, 0, 0.16)',
@@ -97,6 +107,9 @@ const enhance = compose(
                 },
                 '& .detailsList': {
                     padding: '10px 0',
+                    textAlign: 'left',
+                    textTransform: 'initial',
+                    fontWeight: '600',
                     '&:last-child': {
                         paddingBottom: '0'
                     },
@@ -119,7 +132,7 @@ const enhance = compose(
             padding: '20px 30px'
         },
         leftSide: {
-            flexBasis: '30%',
+            flexBasis: '35%',
             borderRight: '1px #efefef solid'
         },
         subBlock: {
@@ -130,7 +143,7 @@ const enhance = compose(
             }
         },
         rightSide: {
-            flexBasis: '70%',
+            flexBasis: '65%',
             padding: '0 30px 20px'
         },
         subtitle: {
@@ -181,7 +194,7 @@ const enhance = compose(
             maxHeight: '232px',
             overflowY: 'auto',
             overflowX: 'hidden',
-            paddingRight: '30px'
+            paddingRight: '0'
         },
         summary: {
             fontWeight: '600',
@@ -190,11 +203,9 @@ const enhance = compose(
             textTransform: 'uppercase',
             textAlign: 'right'
         }
-    }),
+    })),
     withState('openDetails', 'setOpenDetails', false)
 )
-
-withState('openDetails', 'setOpenDetails', false)
 
 const StatDebtorsOrderDetails = enhance((props) => {
     const {classes,
@@ -202,6 +213,7 @@ const StatDebtorsOrderDetails = enhance((props) => {
         data,
         setOpenDetails,
         openDetails,
+        open,
         close
     } = props
 
@@ -233,123 +245,134 @@ const StatDebtorsOrderDetails = enhance((props) => {
             </div>
         )
     }
-
     return (
-        <div className={classes.wrapper}>
-            <div className={classes.title}>
-                <div className={classes.titleLabel}>Заказ №{id}</div>
-                <div className={classes.titleSupplier}>
-                    <a className={classes.dropdown} onMouseEnter={() => {
-                        setOpenDetails(true)
-                    }}>{clientPerson}</a>
-                    {openDetails &&
-                    <div className="supplierDetails" onMouseLeave={() => {
-                        setOpenDetails(false)
-                    }}>
-                        <div className="detailsWrap">
-                            <Row className="detailsList">
-                                <Col xs={6}>Контактное лицо</Col>
-                                <Col xs={6}>{contactName}</Col>
-                            </Row>
-                            <Row className="detailsList">
-                                <Col xs={6}>Телефон</Col>
-                                <Col xs={6}>{contactPhone}</Col>
-                            </Row>
-                            <Row className="detailsList">
-                                <Col xs={6}>Email</Col>
-                                <Col xs={6}>{contactEmail}</Col>
-                            </Row>
-                        </div>
-                    </div>
-                    }
-                </div>
-            </div>
-
-            <div className={classes.content}>
-                <div className={classes.leftSide}>
-                    <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Баланс</div>
-                        <div className={classes.dataBox}>
-                            <ul>
-                                <li>Тип оплаты:</li>
-                                <li>Дата оплаты:</li>
-                                <li>Стоимость доставки:</li>
-                                <li>Скидка({discount}%):</li>
-                                <li>Оплачено:</li>
-                                <li>Остаток:</li>
-                            </ul>
-                            <ul>
-                                <li>Перечисление</li>
-                                <li>22.05.2017</li>
-                                <li>{deliveryPrice}</li>
-                                <li>{discountPrice}</li>
-                                <li>
-                                    <span className={classes.link}>500 000 UZS</span>
-                                </li>
-                                <li className={totalBalance > zero ? classes.red : classes.green}>{totalBalance}</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Передача</div>
-                        <div className={classes.dataBox}>
-                            <ul>
-                                <li>Тип передачи:</li>
-                                <li>Статус передачи:</li>
-                            </ul>
-                            <ul>
-                                <li>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</li>
-                                <li className={classes.red}>не доставлен</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div className={classes.rightSide}>
-                    <div className={classes.tab}>
-                        <div className={classes.tabNav}>
-                            <a className="active">Список товаров</a>
-                            <a>Возврат</a>
-                        </div>
-                        <div className={classes.tabContent}>
-                            <div className={classes.tabWrapper}>
-                                <Row className="dottedList">
-                                    <Col xs={6}>Товар</Col>
-                                    <Col xs={2}>Количество</Col>
-                                    <Col xs={2}>Цена (UZS)</Col>
-                                    <Col xs={2}>Сумма (UZS)</Col>
+            <Dialog
+                modal={true}
+                open={open}
+                onRequestClose={close}
+                className={classes.dialog}
+                contentStyle={loading ? {width: '300px'} : {width: '1000px', maxWidth: '1000px'}}
+                bodyStyle={{minHeight: 'auto'}}
+                bodyClassName={classes.popUp}>
+                <div className={classes.titleContent}>
+                    <span>Заказ №{id}</span>
+                    <div className={classes.titleSupplier}>
+                        <a className={classes.dropdown} onMouseEnter={() => {
+                            setOpenDetails(true)
+                        }}>{clientPerson}</a>
+                        {openDetails &&
+                        <div className="supplierDetails" onMouseLeave={() => {
+                            setOpenDetails(false)
+                        }}>
+                            <div className="detailsWrap">
+                                <Row className="detailsList">
+                                    <Col xs={6}>Контактное лицо</Col>
+                                    <Col xs={6}>{contactName}</Col>
                                 </Row>
-
-                                {_.map(products, (item) => {
-                                    const product = _.get(item, 'product')
-                                    const productId = _.get(product, 'id')
-                                    const productName = _.get(product, 'name')
-                                    const price = _.get(item, 'price')
-                                    const cost = _.get(item, 'cost')
-                                    const amount = _.get(item, 'amount')
-                                    const measurement = _.get(product, ['measurement', 'name'])
-                                    return (
-                                        <Row className="dottedList" key={productId}>
-                                            <Col xs={6}>{productName}</Col>
-                                            <Col xs={2}>{amount} {measurement}</Col>
-                                            <Col xs={2}>{price}</Col>
-                                            <Col xs={2}>{cost}</Col>
-                                        </Row>
-                                    )
-                                })}
+                                <Row className="detailsList">
+                                    <Col xs={6}>Телефон</Col>
+                                    <Col xs={6}>{contactPhone}</Col>
+                                </Row>
+                                <Row className="detailsList">
+                                    <Col xs={6}>Email</Col>
+                                    <Col xs={6}>{contactEmail}</Col>
+                                </Row>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    <IconButton onTouchTap={close}>
+                        <CloseIcon2 color="#666666"/>
+                    </IconButton>
+                </div>
+                <div className={classes.wrapper}>
+                    <div className={classes.content}>
+                        <div className={classes.leftSide} style={{paddingRight: '0'}}>
+                            <div className={classes.subBlock}>
+                                <div className={classes.subtitle}>Баланс</div>
+                                <div className={classes.dataBox}>
+                                    <ul style={{width: '50%'}}>
+                                        <li>Тип оплаты:</li>
+                                        <li>Дата оплаты:</li>
+                                        <li>Стоимость:</li>
+                                        <li>Скидка ({discount}%):</li>
+                                        <li>Оплачено:</li>
+                                        <li>Остаток:</li>
+                                    </ul>
+                                    <ul style={{width: '50%', textAlign: 'left'}}>
+                                        <li>Перечисление</li>
+                                        <li>22.05.2017</li>
+                                        <li>{deliveryPrice}</li>
+                                        <li>{discountPrice}</li>
+                                        <li>
+                                            <span className={classes.link}>500 000 UZS</span>
+                                        </li>
+                                        <li className={totalBalance > zero ? classes.red : classes.green}>{totalBalance}</li>
+                                    </ul>
+                                </div>
                             </div>
 
-                            <div className={classes.summary}>Итого: {totalPrice} UZS</div>
+                            <div className={classes.subBlock}>
+                                <div className={classes.subtitle}>Передача</div>
+                                <div className={classes.dataBox}>
+                                    <ul>
+                                        <li>Тип передачи:</li>
+                                        <li>Статус передачи:</li>
+                                    </ul>
+                                    <ul>
+                                        <li>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</li>
+                                        <li className={classes.red}>не доставлен</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={classes.rightSide}>
+                            <div className={classes.tab}>
+                                <div className={classes.tabNav}>
+                                    <a className="active">Список товаров</a>
+                                    <a>Возврат</a>
+                                </div>
+                                <div className={classes.tabContent}>
+                                    <div className={classes.tabWrapper}>
+                                        <Row className="dottedList">
+                                            <Col xs={6}>Товар</Col>
+                                            <Col xs={2}>Количество</Col>
+                                            <Col xs={2}>Цена (UZS)</Col>
+                                            <Col xs={2}>Сумма (UZS)</Col>
+                                        </Row>
+
+                                        {_.map(products, (item) => {
+                                            const product = _.get(item, 'product')
+                                            const productId = _.get(product, 'id')
+                                            const productName = _.get(product, 'name')
+                                            const price = _.get(item, 'price')
+                                            const cost = _.get(item, 'cost')
+                                            const amount = _.get(item, 'amount')
+                                            const measurement = _.get(product, ['measurement', 'name'])
+                                            return (
+                                                <Row className="dottedList" key={productId}>
+                                                    <Col xs={6}>{productName}</Col>
+                                                    <Col xs={2}>{amount} {measurement}</Col>
+                                                    <Col xs={2}>{price}</Col>
+                                                    <Col xs={2}>{cost}</Col>
+                                                </Row>
+                                            )
+                                        })}
+                                    </div>
+
+                                    <div className={classes.summary}>Итого: {totalPrice} UZS</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <button onTouchTap={close}>Close</button>
-        </div>
+            </Dialog>
+
     )
 })
 
 StatDebtorsOrderDetails.propTypes = {
+    open: PropTypes.bool.isRequired,
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     orderListData: PropTypes.object,
