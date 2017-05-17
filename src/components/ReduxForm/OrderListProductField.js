@@ -144,7 +144,7 @@ const enhance = compose(
 
 const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
-
+    const stockMin = true
     return (
         <div className={classes.wrapper}>
             <div>
@@ -187,6 +187,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                             <TableRow className={classes.tableRow}>
                                 <TableHeaderColumn
                                     className={classes.tableTitle}>Наименование</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>На складе</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
                                 <TableHeaderColumn></TableHeaderColumn>
@@ -198,8 +199,9 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                         showRowHover={false}
                         stripedRows={false}>
                         {_.map(products, (item, index) => (
-                            <TableRow key={index} className={classes.tableRow}>
+                            <TableRow key={index} className={classes.tableRow} style={{background: (stockMin) ? '#ffecec' : 'transparent'}}>stockMin
                                 <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
+                                <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'cost')}</TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>

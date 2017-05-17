@@ -13,6 +13,7 @@ import Return from 'material-ui/svg-icons/content/reply'
 import File from 'material-ui/svg-icons/editor/insert-drive-file'
 import {Row, Col} from 'react-flexbox-grid'
 import Dot from '../Images/dot.png'
+import Person from '../Images/person.png'
 
 const enhance = compose(
     injectSheet({
@@ -196,6 +197,23 @@ const enhance = compose(
             paddingRight: '30px',
             textTransform: 'uppercase',
             textAlign: 'right'
+        },
+        personOrder: {
+            '& div:first-child': {
+                width: '30px',
+                height: '30px',
+                display: 'inline-block',
+                overflow: 'hidden',
+                marginRight: '10px',
+                borderRadius: '50%',
+                '& img': {
+                    width: '30px'
+                }
+            },
+            '& div:last-child': {
+                verticalAlign: 'top',
+                display: 'inline-block'
+            }
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -357,10 +375,19 @@ const OrderDetails = enhance((props) => {
                             <ul>
                                 <li>Тип передачи:</li>
                                 <li>Статус передачи:</li>
+                                <li>Исполнитель:</li>
                             </ul>
                             <ul>
                                 <li>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</li>
                                 <li className={classes.red}>не доставлен</li>
+                                <li className={classes.personOrder}>
+                                    <div>
+                                        <img src={Person}/>
+                                    </div>
+                                    <div>
+                                        Атамбаев Бекзод
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </div>
