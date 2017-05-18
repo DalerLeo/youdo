@@ -1,7 +1,20 @@
+import _ from 'lodash'
+import sprintf from 'sprintf'
+import PropTypes from 'prop-types'
+import axios from '../../helpers/axios'
+import filterHelper from '../../helpers/filter'
+import * as actionTypes from '../../constants/actionTypes'
+import * as API from '../../constants/api'
+import * as ROUTER from '../../constants/routes'
+import * as serializers from '../../serializers/stockSerializer'
+import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import React from 'react'
 import injectSheet from 'react-jss'
 import SideBarMenu from '../SidebarMenu'
 import SnakeBar from '../Snackbar'
+import {connect} from 'react-redux'
+import {hashHistory} from 'react-router'
+import ConfirmDialog from '../ConfirmDialog'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
@@ -9,7 +22,6 @@ import Money from 'material-ui/svg-icons/editor/attach-money'
 import Clear from 'material-ui/svg-icons/action/delete'
 import Storehouse from 'material-ui/svg-icons/action/home'
 import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
-import {compose, withState} from 'recompose'
 
 const iconStyle = {
     icon: {
@@ -27,7 +39,82 @@ const moneyIcon = '#64b5f6'
 const balanceIcon = '#4db6ac'
 const storeIcon = '#f06292'
 
+const STOCK_DELETE_DIALOG_OPEN = 'openDeleteDialog'
+
+const openSnackbarAction = (payload) => {
+    return {
+        type: actionTypes.SNACKBAR_OPEN,
+        payload
+    }
+}
+const stockListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get(API.STOCK_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_LIST,
+        payload
+    }
+}
+const stockDeleteAction = (id) => {
+    const payload = axios()
+        .delete(sprintf(API.STOCK_DELETE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_DELETE,
+        payload
+    }
+}
+
 const enhance = compose(
+    connect((state, props) => {
+        const query = _.get(props, ['location', 'query'])
+        const pathname = _.get(props, ['location', 'pathname'])
+        const filter = filterHelper(pathname, query)
+
+        return {
+            filter
+        }
+    }),
+    withHandlers({
+        handleOpenConfirmDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.STOCK_ITEM_PATH, id),
+                query: filter.getParams({[STOCK_DELETE_DIALOG_OPEN]: true})
+            })
+        },
+
+        handleCloseConfirmDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_DELETE_DIALOG_OPEN]: false})})
+        },
+        handleSendConfirmDialog: props => () => {
+            const {dispatch, detail, filter, location: {pathname}} = props
+            dispatch(stockDeleteAction(detail.id))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(stockListFetchAction(filter))
+                })
+        }
+
+    }),
     injectSheet({
         wrapper: {
             height: '100%',
@@ -83,6 +170,7 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between',
             borderBottom: '1px #efefef solid',
+            cursor: 'pointer',
             '& .notifIcon': {
                 display: 'flex',
                 position: 'relative',
@@ -161,9 +249,10 @@ const enhance = compose(
             }
         }
     }),
-    withState('openNotifications', 'setOpenNotifications', false)
+    withState('openNotifications', 'setOpenNotifications', false),
+    withState('clickNotifications', 'setClickNotifications', false)
     )
-const Layout = ({classes, handleSignOut, children, setOpenNotifications, openNotifications}) => {
+const Layout = ({classes, detailData, confirmDialog, actionsDialog, handleSignOut, children, setOpenNotifications, openNotifications, clickNotifications, setClickNotifications}) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.notifications} style={openNotifications ? {} : {display: 'none'}}>
@@ -174,14 +263,13 @@ const Layout = ({classes, handleSignOut, children, setOpenNotifications, openNot
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
-                                onTouchTap={() => { setOpenNotifications(false) }}
-                            >
+                                onTouchTap={() => { setOpenNotifications(false) }}>
                                 <CloseIcon2 color="#fff"/>
                             </IconButton>
                         </div>
                     </div>
                     <div className={classes.notifBody}>
-                        <div className={classes.notif}>
+                        <div className={classes.notif} onClick={() => { setClickNotifications(true) }} style={clickNotifications ? {opacity: '0.5'} : {opacity: '1'}}>
                             <div className="notifIcon money">
                                 <Money/>
                             </div>
@@ -195,6 +283,7 @@ const Layout = ({classes, handleSignOut, children, setOpenNotifications, openNot
                                 </div>
                             </div>
                             <IconButton
+                                onTouchTap={actionsDialog.handleActionDelete}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}>
                                 <Clear color="#dadada"/>
@@ -287,6 +376,13 @@ const Layout = ({classes, handleSignOut, children, setOpenNotifications, openNot
             </div>
 
             <SnakeBar />
+            <ConfirmDialog
+                type="delete"
+                message={_.get(detailData, ['data', 'name'])}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.handleSendConfirmDialog}
+                open={confirmDialog.openConfirmDialog}
+            />
         </div>
     )
 }
