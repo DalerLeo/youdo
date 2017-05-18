@@ -8,6 +8,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
+import OrderShortageDialog from './OrderShortage'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import File from 'material-ui/svg-icons/editor/insert-drive-file'
@@ -243,6 +244,7 @@ const OrderDetails = enhance((props) => {
         openDetails,
         transactionsDialog,
         returnDialog,
+        shortageDialog,
         confirmDialog,
         handleOpenUpdateDialog
     } = props
@@ -305,6 +307,15 @@ const OrderDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        onTouchTap={shortageDialog.handleOpenShortageDialog}
+                        tooltip="Временно">
+                        <Return />
+                    </IconButton>
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
@@ -441,6 +452,12 @@ const OrderDetails = enhance((props) => {
                 loading={returnDialog.returnLoading}
                 onClose={returnDialog.handleCloseReturnDialog}
                 onSubmit={returnDialog.handleSubmitReturnDialog}
+            />
+            <OrderShortageDialog
+                open={shortageDialog.openShortageDialog}
+                loading={shortageDialog.shortageLoading}
+                onClose={shortageDialog.handleCloseShortageDialog}
+                onSubmit={shortageDialog.handleSubmitShortageDialog}
             />
         </div>
     )
