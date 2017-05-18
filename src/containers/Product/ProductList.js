@@ -10,6 +10,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
     PRODUCT_CREATE_DIALOG_OPEN,
+    PRODUCT_SHOW_PHOTO_OPEN,
     PRODUCT_UPDATE_DIALOG_OPEN,
     PRODUCT_DELETE_DIALOG_OPEN,
     PRODUCT_FILTER_KEY,
@@ -34,6 +35,7 @@ const enhance = compose(
         const detail = _.get(state, ['product', 'item', 'data'])
         const detailLoading = _.get(state, ['product', 'item', 'loading'])
         const createLoading = _.get(state, ['product', 'create', 'loading'])
+        const showBigImgLoading = _.get(state, ['product', 'item', 'loading'])
         const updateLoading = _.get(state, ['product', 'update', 'loading'])
         const list = _.get(state, ['product', 'list', 'data'])
         const listLoading = _.get(state, ['product', 'list', 'loading'])
@@ -49,6 +51,7 @@ const enhance = compose(
             detail,
             detailLoading,
             createLoading,
+            showBigImgLoading,
             updateLoading,
             csvData,
             csvLoading,
@@ -167,6 +170,16 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[PRODUCT_CREATE_DIALOG_OPEN]: false})})
         },
 
+        handleOpenShowBigImg: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_SHOW_PHOTO_OPEN]: true})})
+        },
+
+        handleCloseShowBigImg: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_SHOW_PHOTO_OPEN]: false})})
+        },
+
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}} = props
 
@@ -220,6 +233,7 @@ const ProductList = enhance((props) => {
         detail,
         detailLoading,
         createLoading,
+        showBigImgLoading,
         updateLoading,
         filter,
         layout,
@@ -228,6 +242,7 @@ const ProductList = enhance((props) => {
 
     const openFilterDialog = toBoolean(_.get(location, ['query', PRODUCT_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', PRODUCT_CREATE_DIALOG_OPEN]))
+    const openShowBigImg = toBoolean(_.get(location, ['query', PRODUCT_SHOW_PHOTO_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PRODUCT_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', PRODUCT_DELETE_DIALOG_OPEN]))
     const category = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.CATEGORY))
@@ -246,7 +261,12 @@ const ProductList = enhance((props) => {
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
-
+    const showBigImg = {
+        showBigImgLoading,
+        openShowBigImg,
+        handleOpenShowBigImg: props.handleOpenShowBigImg,
+        handleCloseShowBigImg: props.handleCloseShowBigImg
+    }
     const confirmDialog = {
         openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
@@ -327,6 +347,7 @@ const ProductList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
+                showBigImg={showBigImg}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
