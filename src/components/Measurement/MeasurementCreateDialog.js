@@ -81,13 +81,6 @@ const MeasurementCreateDialog = enhance((props) => {
                                 label="Наименование"
                                 fullWidth={true}
                             />
-                            <Field
-                                name="amount"
-                                component={TextField}
-                                className={classes.inputField}
-                                label="Количество"
-                                fullWidth={true}
-                            />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

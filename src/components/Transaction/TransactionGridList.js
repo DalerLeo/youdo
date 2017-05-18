@@ -25,6 +25,7 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
+import numberFormat from '../../helpers/numberFormat'
 
 const listHeader = [
     {
@@ -171,8 +172,12 @@ const TransactionGridList = enhance((props) => {
         const zero = 0
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
-        const amount = _.get(item, 'amount') || 'N/A'
+        const type = _.get(item, 'amount') || 'N/A'
+        const cashbox = _.get(item, 'cashbox') || 'N/A'
+        const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
+
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -183,7 +188,7 @@ const TransactionGridList = enhance((props) => {
                 <Col xs={1}>{id}</Col>
                 <Col xs={5}>{comment}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col className={amount >= zero ? classes.green : classes.red} xs={2}>{amount}</Col>
+                <Col className={type >= zero ? classes.green : classes.red} xs={2}>{amount} {currentCurrency}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -192,19 +197,23 @@ const TransactionGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Изменить"
                             leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id, amount) }}
+                            onTouchTap={() => {
+                                updateDialog.handleOpenUpdateDialog(id, amount)
+                            }}
                         />
                         <MenuItem
                             primaryText="Удалить "
                             leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                            onTouchTap={() => {
+                                confirmDialog.handleOpenConfirmDialog(id)
+                            }}
                         />
                     </IconMenu>
                 </Col>
             </Row>
         )
     })
-    const cashboxList = _.map(_.get(cashboxData, 'data'), (item, index) => {
+    const cashboxList = _.map(_.get(cashboxData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const currency = _.get(item, ['currency', 'name'])
@@ -248,7 +257,9 @@ const TransactionGridList = enhance((props) => {
     }
     const AllCashboxId = 0
     const selectedCashbox = _.find(_.get(cashboxData, 'data'),
-        (o) => { return _.toInteger(o.id) === _.toInteger(_.get(cashboxData, 'cashboxId')) })
+        (o) => {
+            return _.toInteger(o.id) === _.toInteger(_.get(cashboxData, 'cashboxId'))
+        })
     const cashboxName = _.get(cashboxData, 'cashboxId') === AllCashboxId ? 'Все кассы' : _.get(selectedCashbox, 'name')
     return (
         <Container>
@@ -262,31 +273,32 @@ const TransactionGridList = enhance((props) => {
                     <Paper zDepth={2} style={{height: '100%'}}>
                         <div className={classes.listWrapper}>
                             <div className={classes.list}
-                                 onClick={() => { cashboxData.handleClickCashbox(AllCashboxId) } }
+                                 onClick={() => {
+                                     cashboxData.handleClickCashbox(AllCashboxId)
+                                 } }
                                  style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                                 <div className={classes.title}>
                                     Общий объем
                                     <span>во всех классах</span>
                                 </div>
                             </div>
-                            {cashboxListLoading &&
-                            <div style={{textAlign: 'center'}}>
-                                <CircularProgress size={100} thickness={6} />
-                            </div>
+                            {cashboxListLoading
+                                ? <div style={{textAlign: 'center'}}>
+                                    <CircularProgress size={100} thickness={6}/>
+                                </div>
+                                : cashboxList
                             }
-                            {cashboxList}
                         </div>
                     </Paper>
                 </div>
                 <div className={classes.rightSide}>
-                    <div className={classes.outerTitle}>
-                       <div>{cashboxName}</div>
+                    { _.get(cashboxData, 'cashboxId') !== AllCashboxId && <div className={classes.outerTitle}>
+                        <div>{cashboxName}</div>
                         <div className={classes.buttons}>
-                            <a onClick={sendDialog.handleOpenSendDialog} className={classes.btnSend}>Перевод</a>
                             <a onClick={incomeDialog.handleOpenIncomeDialog} className={classes.btnAdd}>+ Доход</a>
                             <a onClick={createDialog.handleOpenCreateDialog} className={classes.btnRemove}>- Расход</a>
                         </div>
-                    </div>
+                    </div>}
 
                     <GridList
                         filter={filter}

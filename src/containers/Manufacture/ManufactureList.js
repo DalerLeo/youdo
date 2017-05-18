@@ -25,6 +25,9 @@ import {
     shiftListFetchAction,
     shiftDeleteAction
 } from '../../actions/shift'
+import {
+    manufactureProductCreateAction
+} from '../../actions/manufactureProduct'
 import {equipmentListFetchAction} from '../../actions/equipment'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -44,6 +47,7 @@ const enhance = compose(
         const csvLoading = _.get(state, ['manufacture', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'ManufactureCreateForm'])
         const shiftCreateForm = _.get(state, ['form', 'ShiftCreateForm'])
+        const productAddForm = _.get(state, ['form', 'ProviderCreateForm'])
         const shiftId = _.get(props, ['location', 'query', 'shiftId'])
 
         const filter = filterHelper(list, pathname, query)
@@ -62,6 +66,7 @@ const enhance = compose(
             filter,
             createForm,
             shiftCreateForm,
+            productAddForm,
             shiftId
         }
     }),
@@ -147,6 +152,18 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: false})})
         },
+        handleSubmitShiftAddForm: props => () => {
+            const {dispatch, shiftCreateForm, filter, location: {pathname}} = props
+
+            return dispatch(shiftCreateAction(_.get(shiftCreateForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: true})})
+                    dispatch(shiftListFetchAction(filter))
+                })
+        },
         handleOpenShowBom: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_SHOW_BOM_DIALOG_OPEN]: true})})
@@ -154,6 +171,18 @@ const enhance = compose(
         handleCloseShowBom: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_SHOW_BOM_DIALOG_OPEN]: false})})
+        },
+        handleSubmitShowBom: props => () => {
+            const {dispatch, shiftCreateForm, filter, location: {pathname}} = props
+
+            return dispatch(shiftCreateAction(_.get(shiftCreateForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: true})})
+                    dispatch(shiftListFetchAction(filter))
+                })
         },
         handleOpenAddProductDialog: props => () => {
             const {location: {pathname}, filter} = props
@@ -163,10 +192,10 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: false})})
         },
-        handleSubmitShiftAddForm: props => () => {
-            const {dispatch, shiftCreateForm, filter, location: {pathname}} = props
+        handleSubmitAddProductDialog: props => () => {
+            const {dispatch, productAddForm, filter, location: {pathname}} = props
 
-            return dispatch(shiftCreateAction(_.get(shiftCreateForm, ['values'])))
+            return dispatch(manufactureProductCreateAction(_.get(productAddForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -241,14 +270,14 @@ const ManufactureList = enhance((props) => {
         handleOpen: props.handleOpenShowBom,
         handleClose: props.handleCloseShowBom,
         handleLoading: props.handleCloseShowBom,
-        handleSubmit: props.handleCloseShowBom
+        handleSubmit: props.handleSubmitShowBom
     }
     const addProductDialog = {
         open: openAddProductDialog,
         handleOpen: props.handleOpenAddProductDialog,
         handleClose: props.handleCloseAddProductDialog,
         handleLoading: props.handleCloseAddProductDialog,
-        handleSubmit: props.handleCloseAddProductDialog
+        handleSubmit: props.handleSubmitAddProductDialog
     }
 
     const shiftData = {

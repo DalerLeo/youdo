@@ -178,7 +178,7 @@ export const STATDEBTORS_ITEM = `/${STATDEBTORS}/%d/`
 export const STATDEBTORS_DELETE = `/${STATDEBTORS}/%d/`
 
 export const PENDING_PAYMENTS = 'order'
-export const PENDING_PAYMENTS_CREATE = `/${PENDING_PAYMENTS}/`
+export const PENDING_PAYMENTS_CREATE = '/order_payment/'
 export const PENDING_PAYMENTS_LIST = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_ITEM = `/${PENDING_PAYMENTS}/%d/`
 
@@ -193,3 +193,9 @@ export const STAT_CASHBOX_CREATE = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_ITEM = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
+
+export const MANUFACTURE_PRODUCT = 'manufacture_product'
+export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
+export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
+export const MANUFACTURE_PRODUCT_ITEM = `/${MANUFACTURE_PRODUCT}/%d/`
+export const MANUFACTURE_PRODUCT_DELETE = `/${MANUFACTURE_PRODUCT}/%d/`

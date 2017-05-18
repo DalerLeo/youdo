@@ -5,11 +5,12 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import {Field, reduxForm, Fields} from 'redux-form'
+import {Field, reduxForm, Fields, SubmissionError} from 'redux-form'
 import {ManufactureListMaterialField, ProductSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import IconButton from 'material-ui/IconButton'
+import toCamelCase from '../../helpers/toCamelCase'
 
 export const MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN = 'addProduct'
 
@@ -125,9 +126,20 @@ const enhance = compose(
         enableReinitialize: true
     })
 )
+const validate = (data) => {
+    const errors = toCamelCase(data)
+    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
 
+    throw new SubmissionError({
+        ...errors,
+        latLng,
+        _error: nonFieldErrors
+    })
+}
 const ManufactureAddProductDialog = enhance((props) => {
-    const {open, loading, onClose, classes} = props
+    const {open, handleSubmit, loading, onClose, classes} = props
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
         <Dialog
@@ -137,37 +149,38 @@ const ManufactureAddProductDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading ? {width: '135px'} : {width: '600px'}}
             bodyClassName={classes.popUp}>
-
-            <div className={classes.titleContent}>
-                <span>Добавление продукта</span>
-                <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
-                </IconButton>
-            </div>
-            <div className={classes.bodyContent}>
-                <div className={classes.inContent}>
-                    <div style={{width: '100%'}}>
-                        <Field
-                            name="product"
-                            label="Наименование продукта"
-                            component={ProductSearchField}
-                            className={classes.inputFieldMaterials}
-                            fullWidth={true}/>
-                        <Fields
-                            names={['ingredients', 'ingredient', 'amount', 'measurement']}
-                            component={ManufactureListMaterialField}
+            <form onSubmit={onSubmit} className={classes.form}>
+                <div className={classes.titleContent}>
+                    <span>Добавление продукта</span>
+                    <IconButton onTouchTap={onClose}>
+                        <CloseIcon2 color="#666666"/>
+                    </IconButton>
+                </div>
+                <div className={classes.bodyContent}>
+                    <div className={classes.inContent}>
+                        <div style={{width: '100%'}}>
+                            <Field
+                                name="product"
+                                label="Наименование продукта"
+                                component={ProductSearchField}
+                                className={classes.inputFieldMaterials}
+                                fullWidth={true}/>
+                            <Fields
+                                names={['ingredients', 'ingredient', 'amount', 'measurement']}
+                                component={ManufactureListMaterialField}
+                            />
+                        </div>
+                    </div>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
                         />
                     </div>
                 </div>
-                <div className={classes.bottomButton}>
-                    <FlatButton
-                        label="Сохранить"
-                        className={classes.actionButton}
-                        primary={true}
-                        type="submit"
-                    />
-                </div>
-            </div>
+            </form>
         </Dialog>
     )
 })

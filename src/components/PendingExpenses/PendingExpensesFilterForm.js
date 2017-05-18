@@ -17,8 +17,8 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 export const PENDING_EXPENSES_FILTER_OPEN = 'openFilterDialog'
 
 export const PENDING_EXPENSES_FILTER_KEY = {
-    BRAND: 'brand',
-    TYPE: 'type'
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate'
 }
 
 const enhance = compose(

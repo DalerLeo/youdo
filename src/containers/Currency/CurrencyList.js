@@ -46,6 +46,7 @@ const enhance = compose(
         const csvLoading = _.get(state, ['currency', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'CurrencyCreateForm'])
         const baseCreateForm = _.get(state, ['form', 'BaseCurrencyCreateForm'])
+        const setCurrency = _.get(state, ['form', 'SetCurrencyForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -61,7 +62,8 @@ const enhance = compose(
             csvLoading,
             filter,
             baseCreateForm,
-            createForm
+            createForm,
+            setCurrency
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -200,9 +202,9 @@ const enhance = compose(
         },
 
         handleSubmitSetCurrencyDialog: props => () => {
-            const {dispatch, baseCreateForm, filter, location: {pathname}} = props
+            const {dispatch, setCurrency, filter, location: {pathname}, detail} = props
 
-            return dispatch(setCurrencyCreateAction(_.get(baseCreateForm, ['values'])))
+            return dispatch(setCurrencyCreateAction(_.get(setCurrency, ['values']), detail.id))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })

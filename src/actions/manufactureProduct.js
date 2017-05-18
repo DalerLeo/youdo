@@ -3,12 +3,13 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/pendingPaymentsSerializer'
+import * as serializers from '../serializers/manufactureProductSerializer'
 
-export const pendingPaymentsUpdateAction = (formValues, order) => {
-    const requestData = serializers.createSerializer(formValues, order)
+export const manufactureProductCreateAction = (formValues) => {
+    const requestData = serializers.createSerializer(formValues)
+
     const payload = axios()
-        .post(API.PENDING_PAYMENTS_CREATE, requestData)
+        .post(API.MANUFACTURE_PRODUCT_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,14 +18,14 @@ export const pendingPaymentsUpdateAction = (formValues, order) => {
         })
 
     return {
-        type: actionTypes.PENDING_PAYMENTS_CREATE,
+        type: actionTypes.MANUFACTURE_PRODUCT_CREATE,
         payload
     }
 }
 
-export const pendingPaymentsDeleteAction = (id) => {
+export const manufactureProductDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.PENDING_PAYMENTS_DELETE, id))
+        .delete(sprintf(API.MANUFACTURE_PRODUCT_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,15 +34,32 @@ export const pendingPaymentsDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.PENDING_PAYMENTS_DELETE,
+        type: actionTypes.MANUFACTURE_PRODUCT_DELETE,
         payload
     }
 }
 
-export const pendingPaymentsListFetchAction = (filter) => {
+export const manufactureProductUpdateAction = (id, formValues) => {
+    const requestData = serializers.createSerializer(formValues)
+    const payload = axios()
+        .put(sprintf(API.MANUFACTURE_PRODUCT_ITEM, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.MANUFACTURE_PRODUCT_UPDATE,
+        payload
+    }
+}
+
+export const manufactureProductListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.PENDING_PAYMENTS_LIST, {params})
+        .get(API.MANUFACTURE_PRODUCT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,15 +68,15 @@ export const pendingPaymentsListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.PENDING_PAYMENTS_LIST,
+        type: actionTypes.MANUFACTURE_PRODUCT_LIST,
         payload
     }
 }
 
-export const pendingPaymentsCSVFetchAction = (filter) => {
+export const manufactureProductCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.PENDING_PAYMENTS_LIST, {params})
+        .get(API.MANUFACTURE_PRODUCT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,14 +85,14 @@ export const pendingPaymentsCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.PENDING_PAYMENTS_LIST_CSV,
+        type: actionTypes.MANUFACTURE_PRODUCT_LIST_CSV,
         payload
     }
 }
 
-export const pendingPaymentsItemFetchAction = (id) => {
+export const manufactureProductItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.PENDING_PAYMENTS_ITEM, id))
+        .get(sprintf(API.MANUFACTURE_PRODUCT_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -83,7 +101,8 @@ export const pendingPaymentsItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.PENDING_PAYMENTS_ITEM,
+        type: actionTypes.MANUFACTURE_PRODUCT_ITEM,
         payload
     }
 }
+

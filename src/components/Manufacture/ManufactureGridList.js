@@ -293,6 +293,7 @@ const ManufactureGridList = enhance((props) => {
             <ManufactureAddProductDialog
                 open={addProductDialog.open}
                 onClose={addProductDialog.handleClose}
+                inSubmit={addProductDialog.handleSubmitAddProductDialog}
             />
             <Row className={classes.productionMainRow}>
                 <Col xs={3} className={classes.productionLeftSide}>
@@ -425,7 +426,8 @@ ManufactureGridList.propTypes = {
     addProductDialog: PropTypes.shape({
         open: PropTypes.bool.isRequired,
         handleOpen: PropTypes.func.isRequired,
-        handleClose: PropTypes.func.isRequired
+        handleClose: PropTypes.func.isRequired,
+        handleSubmitAddProductDialog: PropTypes.func.isRequired
     }).isRequired,
     shiftData: PropTypes.object,
     productData: PropTypes.object.isRequired,
