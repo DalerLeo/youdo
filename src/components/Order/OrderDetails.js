@@ -11,8 +11,10 @@ import OrderReturnDialog from './OrderReturnDialog'
 import OrderShortageDialog from './OrderShortage'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
+import Time from 'material-ui/svg-icons/device/access-time'
 import File from 'material-ui/svg-icons/editor/insert-drive-file'
 import {Row, Col} from 'react-flexbox-grid'
+import Tooltip from '../ToolTip'
 import Dot from '../Images/dot.png'
 import Person from '../Images/person.png'
 
@@ -119,6 +121,10 @@ const enhance = compose(
             '& span': {
                 fontWeight: '600'
             }
+        },
+        titleButtons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
         },
         content: {
             display: 'flex',
@@ -234,8 +240,6 @@ const iconStyle = {
 }
 withState('openDetails', 'setOpenDetails', false)
 
-const tooltipPosition = 'bottom-center'
-
 const OrderDetails = enhance((props) => {
     const {classes,
         loading,
@@ -307,50 +311,50 @@ const OrderDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        onTouchTap={shortageDialog.handleOpenShortageDialog}
-                        tooltip="Временно">
-                        <Return />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        onTouchTap={returnDialog.handleOpenReturnDialog}
-                        tooltip="Добавить возврат">
-                        <Return />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Скачать договор">
-                        <File />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        onTouchTap={handleOpenUpdateDialog}
-                        tooltip="Изменить">
-                        <Edit />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        tooltip="Удалить">
-                        <Delete />
-                    </IconButton>
+                    <Tooltip position="bottom" text="Временно">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={shortageDialog.handleOpenShortageDialog}>
+                            <Time />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Добавить возврат">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={returnDialog.handleOpenReturnDialog}>
+                            <Return />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Скачать договор">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
+                            <File />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Изменить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={handleOpenUpdateDialog}>
+                            <Edit />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Удалить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                            <Delete />
+                        </IconButton>
+                    </Tooltip>
                 </div>
             </div>
 

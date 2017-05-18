@@ -19,6 +19,7 @@ import Popover from 'material-ui/Popover'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
+import Tooltip from '../ToolTip'
 
 const listHeader = [
     {
@@ -87,6 +88,10 @@ const enhance = compose(
             fontSize: '18px',
             color: '#333',
             fontWeight: '700'
+        },
+        buttons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
         },
         bodyTitle: {
             fontWeight: '600',
@@ -179,8 +184,6 @@ const enhance = compose(
         enableReinitialize: true
     })
 )
-
-const tooltipPosition = 'bottom-center'
 
 const iconStyle = {
     icon: {
@@ -362,16 +365,16 @@ const ProductPriceGridList = enhance((props) => {
                 <Col xs={2}>{brand}</Col>
                 <Col xs={2}>{measurement}</Col>
                 <Col xs={2}>{price}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconButton
-                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                        tooltip="Изменить"
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}>
-                        <Edit />
-                    </IconButton>
+                <Col xs={1} className={classes.buttons}>
+                    <Tooltip position="bottom" text="Изменить">
+                        <IconButton
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                            touch={true}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}>
+                            <Edit />
+                        </IconButton>
+                    </Tooltip>
                 </Col>
             </Row>
         )
