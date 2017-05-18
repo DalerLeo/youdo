@@ -23,7 +23,7 @@ export const transactionCreateAction = (formValues, cashboxId) => {
 }
 
 export const transactionIncomeAction = (formValues, cashboxId) => {
-    const requestData = serializers.createSerializer(formValues, cashboxId)
+    const requestData = serializers.createIncomeSerializer(formValues, cashboxId)
     const payload = axios()
         .post(API.TRANSACTION_INCOME, requestData)
         .then((response) => {
@@ -40,7 +40,7 @@ export const transactionIncomeAction = (formValues, cashboxId) => {
 }
 
 export const transactionSendAction = (formValues, cashboxId) => {
-    const requestData = serializers.createSerializer(formValues, cashboxId)
+    const requestData = serializers.createSendSerializer(formValues, cashboxId)
     const payload = axios()
         .post(API.TRANSACTION_SEND, requestData)
         .then((response) => {
@@ -106,8 +106,8 @@ export const transactionUpdateIncomeAction = (id, formValues, cashboxId) => {
     }
 }
 
-export const transactionListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const transactionListFetchAction = (filter, cashboxId) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), cashboxId)
     const payload = axios()
         .get(API.TRANSACTION_LIST, {params})
         .then((response) => {

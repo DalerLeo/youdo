@@ -10,14 +10,15 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
-import {CategorySearchField} from '../ReduxForm'
+import {TransactionTypeSearchField, ExpensiveCategorySearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const TRANSACTION_FILTER_OPEN = 'openFilterDialog'
 
 export const TRANSACTION_FILTER_KEY = {
-    CATEGORY: 'category',
+    TYPE: 'type',
+    CATEGORY_EXPENSE: 'categoryExpense',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
@@ -145,9 +146,11 @@ const TransactionFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="category" component={CategorySearchField} label="Категория"/>
+                        <Field className={classes.inputField} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов"/>
                     </div>
-
+                    <div>
+                        <Field className={classes.inputField} name="type" component={TransactionTypeSearchField} label="Тип"/>
+                    </div>
                     <div>
                         <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
                     </div>

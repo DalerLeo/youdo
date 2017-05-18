@@ -213,8 +213,7 @@ const MeasurementList = enhance((props) => {
                 return {}
             }
             return {
-                name: _.get(detail, 'name'),
-                amount: _.get(detail, 'amount')
+                name: _.get(detail, 'name')
             }
         })(),
         updateLoading: detailLoading || updateLoading,

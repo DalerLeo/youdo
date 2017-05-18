@@ -138,8 +138,8 @@ export const currencyPrimaryCreateAction = (formValues) => {
     }
 }
 
-export const setCurrencyCreateAction = (formValues) => {
-    const requestData = serializers.createPrimarySerializer(formValues)
+export const setCurrencyCreateAction = (formValues, currency) => {
+    const requestData = serializers.setCurrencySerializer(formValues, currency)
     const payload = axios()
         .post(sprintf(API.SET_CURRENCY_CREATE), requestData)
         .then((response) => {

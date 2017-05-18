@@ -8,10 +8,11 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {CashboxSearchField} from '../ReduxForm'
+import {TextField, CashboxSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import numberformat from '../../helpers/numberFormat'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -69,7 +70,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
 
     const id = _.get(detailData, 'id')
     const client = _.get(detailData, ['data', 'client'])
-    const totalBalance = _.get(detailData, ['data', 'totalBalance'])
+    const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']))
     const clientName = _.get(client, 'name')
 
     return (
@@ -82,7 +83,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Расход</span>
+                <span>Оплата</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -105,10 +106,17 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                             </div>
                             <div className={classes.cashbox}>
                                 <Field
-                                    name="type"
+                                    name="cashbox"
                                     className={classes.inputField}
                                     component={CashboxSearchField}
                                     label="Касса получатель"
+                                    fullWidth={true}
+                                />
+                                <Field
+                                    name="amount"
+                                    className={classes.inputField}
+                                    component={TextField}
+                                    label="Сумма"
                                     fullWidth={true}
                                 />
                             </div>

@@ -17,6 +17,7 @@ import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
+import numberFormat from '../../helpers/numberFormat'
 
 const listHeader = [
     {
@@ -82,7 +83,6 @@ const iconStyle = {
 const PendingPaymentsGridList = enhance((props) => {
     const {
         filter,
-        createDialog,
         updateDialog,
         filterDialog,
         actionsDialog,
@@ -120,8 +120,8 @@ const PendingPaymentsGridList = enhance((props) => {
         const client = _.get(item, 'client')
         const clientName = _.get(client, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const totalPrice = _.get(item, 'totalPrice')
-        const totalBalance = _.get(item, 'totalBalance')
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'))
+        const totalBalance = numberFormat(_.get(item, 'totalBalance'))
         const currency = _.get(item, ['currency', 'name'])
         return (
             <Row key={id}>
@@ -162,13 +162,6 @@ const PendingPaymentsGridList = enhance((props) => {
             />
 
             <PendingPaymentsCreateDialog
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
-            <PendingPaymentsCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 detailData={detailData}
@@ -198,14 +191,6 @@ PendingPaymentsGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,

@@ -17,6 +17,7 @@ import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
+import numberFormat from '../../helpers/numberFormat'
 
 const listHeader = [
     {
@@ -116,7 +117,7 @@ const PendingExpensesGridList = enhance((props) => {
         const supplyNo = _.get(item, 'supply')
         const comment = _.get(item, 'comment')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const summary = _.get(item, 'amount')
+        const summary = numberFormat(_.get(item, 'amount'))
         const currency = _.get(item, ['currency', 'name'])
         return (
             <Row key={id}>
@@ -192,7 +193,6 @@ PendingExpensesGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,

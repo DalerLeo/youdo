@@ -148,12 +148,13 @@ const CurrencyGridList = enhance((props) => {
     const currencyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const rate = _.get(item, 'rate') || 'N/A'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
             <Row key={id}>
                 <Col xs={1}></Col>
                 <Col xs={2}>{name}</Col>
-                <Col xs={2}>1 {currentCurrency} = 8050 {name}</Col>
+                <Col xs={2}>1 {currentCurrency} = {rate} {name}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={2}><a onClick={() => { setCurrencyUpdateDialog.handleOpenSetCurrencyDialog(id) }} className={classes.link}>Установить курс</a></Col>
                 <Col xs={3} style={{textAlign: 'right'}}>

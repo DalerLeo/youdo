@@ -104,3 +104,20 @@ export const shiftItemFetchAction = (id) => {
         payload
     }
 }
+
+export const addProductAction = (formValues) => {
+    const requestData = serializers.addProductSerializer(formValues)
+    const payload = axios()
+        .post(API.SHIFT_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIFT_CREATE,
+        payload
+    }
+}

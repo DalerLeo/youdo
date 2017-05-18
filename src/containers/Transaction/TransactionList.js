@@ -161,11 +161,13 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const category = _.get(filterForm, ['values', 'category', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const categoryExpense = _.get(filterForm, ['values', 'categoryExpense', 'value']) || null
 
             filter.filterBy({
                 [TRANSACTION_FILTER_OPEN]: false,
-                [TRANSACTION_FILTER_KEY.CATEGORY]: category,
+                [TRANSACTION_FILTER_KEY.TYPE]: type,
+                [TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: categoryExpense,
                 [TRANSACTION_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [TRANSACTION_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
@@ -240,7 +242,7 @@ const enhance = compose(
         handleClickCashbox: props => (id) => {
             const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({'cashboxId': id})})
-            dispatch(transactionListFetchAction(filter))
+            dispatch(transactionListFetchAction(filter, id))
         },
 
         handleOpenUpdateDialog: props => (id, amount) => {
@@ -324,7 +326,8 @@ const TransactionList = enhance((props) => {
     const openSendDialog = toBoolean(_.get(location, ['query', TRANSACTION_SEND_DIALOG_OPEN]))
     const openIncomeDialog = toBoolean(_.get(location, ['query', TRANSACTION_INCOME_DIALOG_OPEN]))
 
-    const category = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY))
+    const categoryExpense = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
+    const type = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'transactionId'))
@@ -407,7 +410,10 @@ const TransactionList = enhance((props) => {
     const filterDialog = {
         initialValues: {
             category: {
-                value: category
+                value: categoryExpense
+            },
+            type: {
+                value: type
             },
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
