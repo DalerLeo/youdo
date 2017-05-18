@@ -12,6 +12,7 @@ import {DateField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import {Col} from 'react-flexbox-grid'
 import MainStyles from '../Styles/MainStyles'
+import Person from '../Images/person.png'
 
 export const ORDER_SHORTAGE_DIALOG_OPEN = 'openShortageDialog'
 const validate = (data) => {
@@ -115,6 +116,20 @@ const enhance = compose(
                 },
                 '& div:last-child': {
                     paddingRight: '0'
+                },
+                '& div div:first-child': {
+                    width: '30px',
+                    height: '30px',
+                    display: 'inline-block',
+                    overflow: 'hidden',
+                    marginRight: '10px',
+                    borderRadius: '50%',
+                    '& img': {
+                        width: '30px'
+                    }
+                },
+                '& div div:last-child': {
+                    display: 'inline-block'
                 }
             },
             '& .dottedList:last-child:after': {
@@ -188,7 +203,13 @@ const OrderShortageDialog = enhance((props) => {
                                     100
                                 </Col>
                                 <Col xs={3}>
-                                    sfdf
+                                    <div>
+                                        <img src={Person}/>
+                                    </div>
+                                    <div>
+                                        Атамбаев Бекзод<br />
+                                        <span>Должность</span>
+                                    </div>
                                 </Col>
                             </li>
                             <li className="dottedList">
@@ -199,7 +220,13 @@ const OrderShortageDialog = enhance((props) => {
                                     100
                                 </Col>
                                 <Col xs={3}>
-                                    sfdf
+                                    <div>
+                                        <img src={Person}/>
+                                    </div>
+                                    <div>
+                                        Атамбаев Бекзод<br />
+                                        <span>Должность</span>
+                                    </div>
                                 </Col>
                             </li>
                             <li className="dottedList">
@@ -210,7 +237,13 @@ const OrderShortageDialog = enhance((props) => {
                                     100
                                 </Col>
                                 <Col xs={3}>
-                                    sfdf
+                                    <div>
+                                        <img src={Person}/>
+                                    </div>
+                                    <div>
+                                        Атамбаев Бекзод<br />
+                                        <span>Должность</span>
+                                    </div>
                                 </Col>
                             </li>
                             <li className="dottedList">
@@ -221,7 +254,13 @@ const OrderShortageDialog = enhance((props) => {
                                     100
                                 </Col>
                                 <Col xs={3}>
-                                    sfdf
+                                    <div>
+                                        <img src={Person}/>
+                                    </div>
+                                    <div>
+                                        Атамбаев Бекзод<br />
+                                        <span>Должность</span>
+                                    </div>
                                 </Col>
                             </li>
                         </ul>
