@@ -272,12 +272,19 @@ const OrderCreateDialog = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                        <FlatButton
-                            label="Далее"
-                            className={classes.actionButton}
-                            primary={true}
-                            type="submit"
-                        />
+                        {(stockMin) ? <FlatButton
+                                label="Далее"
+                                className={classes.actionButton}
+                                primary={true}
+                                type="submit"
+                            />
+                            : <FlatButton
+                                label="Оформить заказ"
+                                className={classes.actionButton}
+                                primary={true}
+                                type="submit"
+                            />
+                        }
                     </div>
                 </form>
             </div>
