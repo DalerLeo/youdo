@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withReducer, withState, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
-import {Col} from 'react-flexbox-grid'
+import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import {
     Table,
@@ -27,7 +27,7 @@ const enhance = compose(
             flexDirection: 'column'
         },
         table: {
-            marginTop: '20px',
+            margin: '20px 0 10px',
             maxHeight: '300px',
             overflow: 'auto'
         },
@@ -97,6 +97,17 @@ const enhance = compose(
             '& button': {
                 marginTop: '10px !important'
             }
+        },
+        titleAdd: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '20px'
+        },
+        addRaw: {
+            alignItems: 'flex-end',
+            justifyContent: 'space-between',
+            margin: '0'
         }
     }),
     withState('openAddMaterials', 'setOpenAddMaterials', false),
@@ -149,34 +160,33 @@ const ManufactureListMaterialField = ({classes, state, measurementName, handleAd
                 </a>
             </div>
             {openAddMaterials && <div className={classes.addMaterials}>
-                <div>
-                    <Col xs={8}>
+                <Row className={classes.addRaw}>
+                    <Col xs={7}>
                         <ProductSearchField
                             label="Наименование товара"
+                            fullWidth={true}
                             {..._.get(defaultProps, 'ingredient')}
                         />
                     </Col>
                     <Col xs={2}>
                         <TextField
                             label="Кол-во"
+                            fullWidth={true}
                             {..._.get(defaultProps, 'amount')}
                         />
                     </Col>
-                    <Col xs={1}>
+                    <Col xs={1} style={{height: '32px'}}>
                         <ProductMeasurementField />
                     </Col>
-                    <Col xs={1}>
-                        <IconButton
-                            onTouchTap={() => { handleAdd(measurementName) }}>
-                            <div>
-                                <ImageCheck style={{color: '#129fdd'}}/>
-                            </div>
-                        </IconButton>
-                    </Col>
-                </div>
+                    <IconButton
+                        onTouchTap={() => { handleAdd(measurementName) }}>
+                        <div>
+                            <ImageCheck color="#129fdd"/>
+                        </div>
+                    </IconButton>
+                </Row>
             </div>}
-            {state.open && <div>rjngk</div>}
-            <div className={classes.table}>
+            {!_.isEmpty(ingredients) ? <div className={classes.table}>
                 <Table
                     fixedHeader={true}
                     fixedFooter={false}
@@ -214,6 +224,8 @@ const ManufactureListMaterialField = ({classes, state, measurementName, handleAd
                     </TableBody>
                 </Table>
             </div>
+                : <div></div>
+            }
         </div>
     )
 }
