@@ -56,7 +56,15 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.PRODUCT_LIST),
         update: createThunkReducer(actionTypes.PRODUCT_UPDATE),
         item: createThunkReducer(actionTypes.PRODUCT_ITEM),
-        csv: createThunkReducer(actionTypes.PRODUCT_LIST_CSV)
+        csv: createThunkReducer(actionTypes.PRODUCT_LIST_CSV),
+        measurement: createReducer({
+            data: null,
+            loading: false
+        }, {
+            [actionTypes.PRODUCT_MEASUREMENT] (state, action) {
+                return {...state, data: action.data, loading: action.loading}
+            }
+        })
     }),
     productType: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_TYPE_CREATE),
