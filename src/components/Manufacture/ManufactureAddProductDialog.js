@@ -8,14 +8,13 @@ import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, Fields, SubmissionError} from 'redux-form'
 import {ManufactureListMaterialField, ProductSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
-import MainStyles from '../Styles/MainStyles'
 import IconButton from 'material-ui/IconButton'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN = 'addProduct'
 
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
             position: 'absolute',
             width: '100%',
@@ -27,6 +26,72 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
+        },
+        popUp: {
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%',
+            minHeight: '300px !important'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important'
+            }
+        },
+        inContent: {
+            display: 'flex',
+            maxHeight: '50vh',
+            minHeight: '220px',
+            overflow: 'auto',
+            padding: '0 30px',
+            color: '#333'
+        },
+        bodyContent: {
+            width: '100%'
+        },
+        form: {
+            position: 'relative'
+        },
+        field: {
+            width: '100%'
+        },
+        inputField: {
+            fontSize: '13px !important'
+        },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
         },
         buttonSub: {
             textAlign: 'right',
@@ -119,7 +184,7 @@ const enhance = compose(
                 height: '50px !important'
             }
         }
-    })),
+    }),
     withState('openAddMaterials', 'setOpenAddMaterials', false),
     reduxForm({
         form: 'ProviderCreateForm',
@@ -161,9 +226,8 @@ const ManufactureAddProductDialog = enhance((props) => {
                         <div style={{width: '100%'}}>
                             <Field
                                 name="product"
-                                label="Наименование продукта"
+                                label="Продукт"
                                 component={ProductSearchField}
-                                className={classes.inputFieldMaterials}
                                 fullWidth={true}/>
                             <Fields
                                 names={['ingredients', 'ingredient', 'amount', 'measurement']}

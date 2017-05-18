@@ -18,7 +18,7 @@ const ProductMeasurementField = enhance((props) => {
     const {measurement, measurementLoading} = props
     return (
         <div>
-            { measurementLoading && <div>Загрузка  ...</div> }
+            { measurementLoading && <div>...</div> }
             {!measurementLoading && <div>{measurement}</div>}
         </div>
     )
