@@ -8,7 +8,7 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import {TextField, TimeField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
-export const MANUFACTURE_ADD_SHIFT_FORM_OPEN = 'addShiftForm'
+export const MANUFACTURE_ADD_STAF_FORM_OPEN = 'addStafForm'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -61,12 +61,12 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ShiftCreateForm',
+        form: 'StafCreateForm',
         enableReinitialize: true
     })
 )
 
-const ManufactureAddShiftDialog = enhance((props) => {
+const ManufactureAddStaffDialog = enhance((props) => {
     const {classes, handleSubmit} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -76,22 +76,14 @@ const ManufactureAddShiftDialog = enhance((props) => {
                 name="name"
                 component={TextField}
                 className={classes.inputFieldShift}
-                label="Наименование"
+                label="Сотрудник"
                 fullWidth={true}/>
-            <div className={classes.timePick}>
-                <Field
-                    name="beginTime"
-                    component={TimeField}
-                    className={classes.inputFieldTime}
-                    label="Начало"
-                    fullWidth={true}/>
-                <Field
-                    name="endTime"
-                    component={TimeField}
-                    className={classes.inputFieldTime}
-                    label="Конец"
-                    fullWidth={true}/>
-            </div>
+            <Field
+                name="address"
+                component={TextField}
+                className={classes.inputFieldTime}
+                label="Смена"
+                fullWidth={true}/>
             <div className={classes.buttonSub}>
                 <FlatButton
                     label="Применить"
@@ -103,12 +95,12 @@ const ManufactureAddShiftDialog = enhance((props) => {
     )
 })
 
-ManufactureAddShiftDialog.propTypes = {
+ManufactureAddStaffDialog.propTypes = {
     onSubmit: PropTypes.func.isRequired
 }
 
-ManufactureAddShiftDialog.defaultProps = {
+ManufactureAddStaffDialog.defaultProps = {
     isUpdate: false
 }
 
-export default ManufactureAddShiftDialog
+export default ManufactureAddStaffDialog

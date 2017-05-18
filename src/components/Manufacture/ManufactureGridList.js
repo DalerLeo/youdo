@@ -190,6 +190,7 @@ const ManufactureGridList = enhance((props) => {
         addProductDialog,
         classes,
         shiftData,
+        stafData,
         equipmentData,
         productData,
         confirmDialog
@@ -283,6 +284,7 @@ const ManufactureGridList = enhance((props) => {
                 open={addStaff.open}
                 onClose={addStaff.handleClose}
                 shiftData={shiftData}
+                stafData={stafData}
                 confirmDialog={confirmDialog}
             />
             <ManufactureShowBom
@@ -430,6 +432,7 @@ ManufactureGridList.propTypes = {
         handleSubmitAddProductDialog: PropTypes.func.isRequired
     }).isRequired,
     shiftData: PropTypes.object,
+    stafData: PropTypes.object,
     productData: PropTypes.object.isRequired,
     equipmentData: PropTypes.object
 }

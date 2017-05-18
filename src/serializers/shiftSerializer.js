@@ -2,6 +2,7 @@ import _ from 'lodash'
 import moment from 'moment'
 
 export const createSerializer = (data) => {
+    console.log(data)
     const name = _.get(data, ['name'])
     const beginTime = _.get(data, ['beginTime'])
     const endTime = _.get(data, ['endTime'])
