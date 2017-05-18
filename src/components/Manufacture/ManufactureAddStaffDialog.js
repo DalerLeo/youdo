@@ -12,12 +12,6 @@ import IconButton from 'material-ui/IconButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import Edit from 'material-ui/svg-icons/image/edit'
-
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-
-import MainStyles from '../Styles/MainStyles'
 import Person from '../Images/person.png'
 
 import ManufactureShiftCreateForm from './ManufactureShiftCreateForm'
@@ -26,7 +20,7 @@ export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
 
 const colorBlue = '#129fdd !important'
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
             position: 'absolute',
             width: '100%',
@@ -39,23 +33,87 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        popUp: {
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%',
+            minHeight: '300px !important'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important'
+            }
+        },
+        inContent: {
+            display: 'flex',
+            maxHeight: '50vh',
+            minHeight: '184px',
+            overflow: 'auto',
+            color: '#333'
+        },
+        bodyContent: {
+            width: '100%'
+        },
+        form: {
+            position: 'relative'
+        },
+        field: {
+            width: '100%'
+        },
+        inputField: {
+            fontSize: '13px !important'
+        },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
+        },
         leftSide: {
-            width: '40%',
-            paddingRight: '20px',
-            height: '100%'
+            maxWidth: '40%',
+            flexBasis: '40%',
+            padding: '20px 30px'
         },
         rightSide: {
-            width: '60%',
+            maxWidth: '60%',
+            flexBasis: '60%',
             borderLeft: '1px solid #efefef',
-            padding: '0 0 20px 20px',
-            height: '100%'
+            padding: '20px 30px'
         },
         innerTitle: {
-            marginTop: '20px'
+            margin: '20px 0 10px'
         },
         inputFieldShift: {
             fontSize: '13px !important',
-            width: '55% !important',
             marginRight: '20px',
             height: '50px !important',
             '& input': {
@@ -67,7 +125,6 @@ const enhance = compose(
         },
         inputFieldTime: {
             fontSize: '13px !important',
-            width: 'calc(45% - 20px) !important',
             height: '50px !important',
             '& input': {
                 top: '-10px'
@@ -84,19 +141,16 @@ const enhance = compose(
             marginTop: '10px',
             '& span': {
                 fontSize: '13px !important',
-                fontWeight: '600 !important',
                 color: colorBlue,
-                paddingLeft: '10px',
-                paddingRight: '10px'
-            },
-            '& button': {
-                margin: '0 !important',
-                fontSize: '13px !important',
-                marginRight: '-20px !important'
+                padding: '0 10px'
             }
         },
         shift: {
-            padding: '20px 0 0',
+            padding: '15px 0',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            position: 'relative',
             '& h4': {
                 margin: '0',
                 fontSize: '13px',
@@ -105,33 +159,32 @@ const enhance = compose(
             '& span': {
                 marginLeft: '5px',
                 color: '#999',
-                fontSize: '11px',
-                fontWeight: '100'
+                fontSize: '10px !important',
+                fontWeight: '400'
             },
             '&:hover': {
-                '& div:last-child': {
-                    display: 'table-cell'
+                '& > div:last-child': {
+                    display: 'flex'
                 }
             }
         },
         deleteHideIco: {
-            position: 'relative',
             display: 'none',
-            float: 'right',
-            top: '-15px',
-            cursor: 'pointer'
+            position: 'absolute',
+            right: '0',
+            alignItems: 'center'
         },
         background: {
             background: '#f1f5f8',
             color: '#333',
-            margin: '10px -20px 0 -30px',
-            padding: '10px 20px 5px 30px'
+            margin: '10px -30px 0',
+            padding: '10px 30px 10px'
         },
         staffAdd: {
             background: '#f1f5f8',
             color: '#333',
-            margin: '10px -30px 0 -20px',
-            padding: '10px 30px 5px 20px'
+            margin: '10px -30px 0',
+            padding: '10px 30px'
         },
         personalList: {
             '& ul': {
@@ -170,7 +223,6 @@ const enhance = compose(
                     color: '#666'
                 },
                 '& div:last-child': {
-                    top: '0px !important',
                     display: 'none'
                 },
                 '&:hover': {
@@ -180,7 +232,7 @@ const enhance = compose(
                 }
             }
         }
-    })),
+    }),
     withState('openAddShift', 'setOpenAddShift', false),
     withState('openAddStaff', 'setOpenAddStaff', false),
     reduxForm({
@@ -188,6 +240,19 @@ const enhance = compose(
         enableReinitialize: true
     })
 )
+
+const iconStyle = {
+    icon: {
+        color: '#999',
+        width: 16,
+        height: 16
+    },
+    button: {
+        width: 24,
+        height: 24,
+        padding: 0
+    }
+}
 
 const ManufactureAddStaffDialog = enhance((props) => {
     const {
@@ -209,35 +274,26 @@ const ManufactureAddStaffDialog = enhance((props) => {
         const beginTime = _.get(item, 'beginTime')
         const endTime = _.get(item, 'endTime')
 
-        const iconButton = (
-            <IconButton style={{padding: '0 12px', height: 'auto'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
-
         return (
-            <div key={id}>
-                <div className={classes.shift}>
-                    <h4>
-                        {name}
-                        <span>({beginTime} - {endTime})</span>
-                    </h4>
-                    <div className={classes.deleteHideIco}>
-                        <IconMenu
-                            iconButtonElement={iconButton}
-                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                            <MenuItem
-                                primaryText="Изменить"
-                                leftIcon={<Edit />}
-                            />
-                            <MenuItem
-                                primaryText="Удалить "
-                                leftIcon={<DeleteIcon />}
-                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                            />
-                        </IconMenu>
-                    </div>
+            <div key={id} className={classes.shift}>
+                <h4>
+                    {name}
+                    <span>({beginTime} - {endTime})</span>
+                </h4>
+                <div className={classes.deleteHideIco}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        disableTouchRipple={true}
+                        style={iconStyle.button}>
+                        <Edit/>
+                    </IconButton>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        disableTouchRipple={true}
+                        style={iconStyle.button}
+                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                        <DeleteIcon/>
+                    </IconButton>
                 </div>
             </div>
         )
@@ -248,10 +304,10 @@ const ManufactureAddStaffDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '600px'}}
+            contentStyle={loading ? {width: '135px'} : {width: '700px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>ПРОИЗВОДСТВО КЛЕЯ: ПЕРСОНАЛ</span>
+                <span>Производство клея: персонал</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -322,7 +378,12 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                         <span>Должность</span>
                                     </div>
                                     <div className={classes.deleteHideIco}>
-                                        <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            disableTouchRipple={true}
+                                            style={iconStyle.button}>
+                                            <DeleteIcon/>
+                                        </IconButton>
                                     </div>
                                 </li>
                                 <li>
@@ -334,7 +395,12 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                         <span>Должность</span>
                                     </div>
                                     <div className={classes.deleteHideIco}>
-                                        <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            disableTouchRipple={true}
+                                            style={iconStyle.button}>
+                                            <DeleteIcon/>
+                                        </IconButton>
                                     </div>
                                 </li>
                             </ul>
@@ -356,7 +422,12 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                         <span>Должность</span>
                                     </div>
                                     <div className={classes.deleteHideIco}>
-                                        <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            disableTouchRipple={true}
+                                            style={iconStyle.button}>
+                                            <DeleteIcon/>
+                                        </IconButton>
                                     </div>
                                 </li>
                                 <li>
@@ -368,7 +439,12 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                         <span>Должность</span>
                                     </div>
                                     <div className={classes.deleteHideIco}>
-                                        <DeleteIcon style={{width: '16px', height: '16px', color: '#999'}}/>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            disableTouchRipple={true}
+                                            style={iconStyle.button}>
+                                            <DeleteIcon/>
+                                        </IconButton>
                                     </div>
                                 </li>
                             </ul>

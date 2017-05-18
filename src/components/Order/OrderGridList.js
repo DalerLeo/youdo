@@ -26,6 +26,7 @@ import numberFormat from '../../helpers/numberFormat'
 import Home from 'material-ui/svg-icons/action/home'
 import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
 import moment from 'moment'
+import CachedIcon from 'material-ui/svg-icons/action/cached'
 
 const listHeader = [
     {
@@ -112,6 +113,7 @@ const OrderGridList = enhance((props) => {
         actionsDialog,
         transactionsDialog,
         returnDialog,
+        shortageDialog,
         confirmDialog,
         deleteDialog,
         listData,
@@ -159,6 +161,7 @@ const OrderGridList = enhance((props) => {
             deleteDialog={deleteDialog}
             transactionsDialog={transactionsDialog}
             returnDialog={returnDialog}
+            shortageDialog={shortageDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
@@ -187,14 +190,23 @@ const OrderGridList = enhance((props) => {
                 <Col xs={1}>{totalPrice}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Есть на складе">
-                        <Home color="#4db6ac" />
-                    </IconButton>
+                    {(id % '2') ? <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            tooltipPosition={tooltipPosition}
+                            tooltip="В процессе">
+                            <CachedIcon color="#666"/>
+                        </IconButton>
+                        : <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            tooltipPosition={tooltipPosition}
+                            tooltip="Есть на складе">
+                            <Home color="#81c784"/>
+                        </IconButton>
+                    }
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
@@ -322,6 +334,12 @@ OrderGridList.propTypes = {
         openReturnDialog: PropTypes.bool.isRequired,
         handleOpenReturnDialog: PropTypes.func.isRequired,
         handleCloseReturnDialog: PropTypes.func.isRequired
+    }).isRequired,
+    shortageDialog: PropTypes.shape({
+        shortageLoading: PropTypes.bool.isRequired,
+        openShortageDialog: PropTypes.bool.isRequired,
+        handleOpenShortageDialog: PropTypes.func.isRequired,
+        handleCloseShortageDialog: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,

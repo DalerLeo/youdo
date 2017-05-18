@@ -15,6 +15,7 @@ import {
     ORDER_FILTER_OPEN,
     ORDER_TRANSACTIONS_DIALOG_OPEN,
     ORDER_RETURN_DIALOG_OPEN,
+    ORDER_SHORTAGE_DIALOG_OPEN,
     OrderGridList
 } from '../../components/Order'
 import {
@@ -37,6 +38,7 @@ const enhance = compose(
         const createLoading = _.get(state, ['order', 'create', 'loading'])
         const transactionsLoading = _.get(state, ['order', 'create', 'loading'])
         const returnLoading = _.get(state, ['order', 'create', 'loading'])
+        const shortageLoading = _.get(state, ['order', 'create', 'loading'])
         const updateLoading = _.get(state, ['order', 'update', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
@@ -54,6 +56,7 @@ const enhance = compose(
             createLoading,
             transactionsLoading,
             returnLoading,
+            shortageLoading,
             updateLoading,
             csvData,
             csvLoading,
@@ -214,6 +217,27 @@ const enhance = compose(
                 })
         },
 
+        handleOpenShortageDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_SHORTAGE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseShortageDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_SHORTAGE_DIALOG_OPEN]: false})})
+        },
+        handleSubmitShortageDialog: props => () => {
+            const {dispatch, createForm, filter, location: {pathname}} = props
+            return dispatch(orderReturnAction(_.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[ORDER_SHORTAGE_DIALOG_OPEN]: false})})
+                    dispatch(orderListFetchAction(filter))
+                })
+        },
+
         handleOpenUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})})
@@ -253,6 +277,7 @@ const OrderList = enhance((props) => {
         createLoading,
         transactionsLoading,
         returnLoading,
+        shortageLoading,
         updateLoading,
         filter,
         layout,
@@ -263,6 +288,7 @@ const OrderList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
     const openTransactionsDialog = toBoolean(_.get(location, ['query', ORDER_TRANSACTIONS_DIALOG_OPEN]))
     const openReturnDialog = toBoolean(_.get(location, ['query', ORDER_RETURN_DIALOG_OPEN]))
+    const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
 
@@ -298,6 +324,13 @@ const OrderList = enhance((props) => {
         handleOpenReturnDialog: props.handleOpenReturnDialog,
         handleCloseReturnDialog: props.handleCloseReturnDialog,
         handleSubmitReturnDialog: props.handleSubmitReturnDialog
+    }
+    const shortageDialog = {
+        shortageLoading,
+        openShortageDialog,
+        handleOpenShortageDialog: props.handleOpenShortageDialog,
+        handleCloseShortageDialog: props.handleCloseShortageDialog,
+        handleSubmitShortageDialog: props.handleSubmitShortageDialog
     }
 
     const deleteDialog = {
@@ -395,6 +428,7 @@ const OrderList = enhance((props) => {
                 createDialog={createDialog}
                 transactionsDialog={transactionsDialog}
                 returnDialog={returnDialog}
+                shortageDialog={shortageDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}

@@ -8,11 +8,13 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
+import OrderShortageDialog from './OrderShortage'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import File from 'material-ui/svg-icons/editor/insert-drive-file'
 import {Row, Col} from 'react-flexbox-grid'
 import Dot from '../Images/dot.png'
+import Person from '../Images/person.png'
 
 const enhance = compose(
     injectSheet({
@@ -196,6 +198,23 @@ const enhance = compose(
             paddingRight: '30px',
             textTransform: 'uppercase',
             textAlign: 'right'
+        },
+        personOrder: {
+            '& div:first-child': {
+                width: '30px',
+                height: '30px',
+                display: 'inline-block',
+                overflow: 'hidden',
+                marginRight: '10px',
+                borderRadius: '50%',
+                '& img': {
+                    width: '30px'
+                }
+            },
+            '& div:last-child': {
+                verticalAlign: 'top',
+                display: 'inline-block'
+            }
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -225,6 +244,7 @@ const OrderDetails = enhance((props) => {
         openDetails,
         transactionsDialog,
         returnDialog,
+        shortageDialog,
         confirmDialog,
         handleOpenUpdateDialog
     } = props
@@ -287,6 +307,15 @@ const OrderDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        tooltipPosition={tooltipPosition}
+                        onTouchTap={shortageDialog.handleOpenShortageDialog}
+                        tooltip="Временно">
+                        <Return />
+                    </IconButton>
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
@@ -357,10 +386,19 @@ const OrderDetails = enhance((props) => {
                             <ul>
                                 <li>Тип передачи:</li>
                                 <li>Статус передачи:</li>
+                                <li>Исполнитель:</li>
                             </ul>
                             <ul>
                                 <li>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</li>
                                 <li className={classes.red}>не доставлен</li>
+                                <li className={classes.personOrder}>
+                                    <div>
+                                        <img src={Person}/>
+                                    </div>
+                                    <div>
+                                        Атамбаев Бекзод
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -414,6 +452,12 @@ const OrderDetails = enhance((props) => {
                 loading={returnDialog.returnLoading}
                 onClose={returnDialog.handleCloseReturnDialog}
                 onSubmit={returnDialog.handleSubmitReturnDialog}
+            />
+            <OrderShortageDialog
+                open={shortageDialog.openShortageDialog}
+                loading={shortageDialog.shortageLoading}
+                onClose={shortageDialog.handleCloseShortageDialog}
+                onSubmit={shortageDialog.handleSubmitShortageDialog}
             />
         </div>
     )

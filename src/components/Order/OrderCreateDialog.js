@@ -111,6 +111,13 @@ const enhance = compose(
                 fontSize: '13px !important'
             }
         },
+        inputFieldDis: {
+            fontSize: '13px !important',
+            paddingTop: '24px',
+            '& div': {
+                color: 'rgb(229, 115, 115) !important'
+            }
+        },
         selectContent: {
             marginTop: '-15px'
         },
@@ -168,6 +175,7 @@ const customContentStyle = {
 const OrderCreateDialog = enhance((props) => {
     const {open, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const stockMin = true
     return (
         <Dialog
             modal={true}
@@ -215,12 +223,20 @@ const OrderCreateDialog = enhance((props) => {
                                         className={classes.inputField}
                                         label="Тип доставки"
                                         fullWidth={true}/>
-                                    <Field
-                                        name="deliveryDate"
-                                        component={DateField}
-                                        className={classes.inputField}
-                                        hintText="Дата доставки"
-                                        fullWidth={true}/>
+                                    {(!stockMin) ? <Field
+                                            name="deliveryDate"
+                                            component={DateField}
+                                            className={classes.inputField}
+                                            hintText="Дата доставки"
+                                            fullWidth={true}/>
+                                        : <Field
+                                            name="deliveryDate"
+                                            component={TextField}
+                                            className={classes.inputFieldDis}
+                                            hintText="Не достаточно товарв на складе"
+                                            disabled={true}
+                                            fullWidth={true}/>
+                                    }
                                     <Field
                                         name="deliveryPrice"
                                         component={TextField}
@@ -256,12 +272,19 @@ const OrderCreateDialog = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                        <FlatButton
-                            label="Оформить заказ"
-                            className={classes.actionButton}
-                            primary={true}
-                            type="submit"
-                        />
+                        {(stockMin) ? <FlatButton
+                                label="Далее"
+                                className={classes.actionButton}
+                                primary={true}
+                                type="submit"
+                            />
+                            : <FlatButton
+                                label="Оформить заказ"
+                                className={classes.actionButton}
+                                primary={true}
+                                type="submit"
+                            />
+                        }
                     </div>
                 </form>
             </div>
