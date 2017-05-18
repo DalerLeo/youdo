@@ -17,6 +17,8 @@ import DeleteIcon from '../DeleteIcon'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import ProductSearchField from './ProductSearchField'
 import TextField from './TextField'
+import {ProductMeasurementField} from '../ReduxForm'
+import {connect} from 'react-redux'
 
 const enhance = compose(
     injectSheet({
@@ -101,16 +103,22 @@ const enhance = compose(
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
-
+    connect((state) => {
+        const measurementName = _.get(state, ['product', 'measurement', 'data'])
+        return {
+            measurementName
+        }
+    }),
     withHandlers({
-        handleAdd: props => () => {
+        handleAdd: props => (measurementName) => {
             const ingredient = _.get(props, ['ingredient', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
+            const measurement = measurementName
             const onChange = _.get(props, ['ingredients', 'input', 'onChange'])
             const ingredients = _.get(props, ['ingredients', 'input', 'value'])
 
             if (!_.isEmpty(ingredient) && amount) {
-                onChange(_.union(ingredients, [{ingredient, amount}]))
+                onChange(_.union(ingredients, [{ingredient, amount, measurement}]))
             }
         },
 
@@ -125,7 +133,7 @@ const enhance = compose(
     })
 )
 
-const ManufactureListMaterialField = ({classes, state, handleAdd, handleRemove, openAddMaterials, setOpenAddMaterials, ...defaultProps}) => {
+const ManufactureListMaterialField = ({classes, state, measurementName, handleAdd, handleRemove, openAddMaterials, setOpenAddMaterials, ...defaultProps}) => {
     const ingredients = _.get(defaultProps, ['ingredients', 'input', 'value']) || []
 
     return (
@@ -155,11 +163,11 @@ const ManufactureListMaterialField = ({classes, state, handleAdd, handleRemove, 
                         />
                     </Col>
                     <Col xs={1}>
-                        <span>15</span>
+                        <ProductMeasurementField />
                     </Col>
                     <Col xs={1}>
                         <IconButton
-                            onTouchTap={handleAdd}>
+                            onTouchTap={() => { handleAdd(measurementName) }}>
                             <div>
                                 <ImageCheck style={{color: '#129fdd'}}/>
                             </div>
@@ -195,7 +203,7 @@ const ManufactureListMaterialField = ({classes, state, handleAdd, handleRemove, 
                             <TableRow key={index} className={classes.tableRow}>
                                 <TableRowColumn>{_.get(item, ['ingredient', 'text'])}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
-                                <TableRowColumn>15</TableRowColumn>
+                                <TableRowColumn>{_.get(item, 'measurement')}</TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>
                                     <IconButton onTouchTap={() => handleRemove(index)}>
                                         <DeleteIcon color="#666666"/>
