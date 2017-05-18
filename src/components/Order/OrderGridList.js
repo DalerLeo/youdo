@@ -100,6 +100,10 @@ const enhance = compose(
         error: {
             extend: 'dot',
             backgroundColor: '#e57373'
+        },
+        buttons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
         }
     })
 )
@@ -140,8 +144,6 @@ const OrderGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
-    const tooltipPosition = 'bottom-center'
-
     const iconStyle = {
         icon: {
             color: '#666',
@@ -151,7 +153,8 @@ const OrderGridList = enhance((props) => {
         button: {
             width: 48,
             height: 48,
-            padding: 0
+            padding: 0,
+            zIndex: 0
         }
     }
     const orderDetail = (
@@ -189,42 +192,41 @@ const OrderGridList = enhance((props) => {
                 <Col xs={2}>{dateDelivery}</Col>
                 <Col xs={1}>{totalPrice}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>
-                    {(id % '2') ? <IconButton
+                <Col xs={2} className={classes.buttons}>
+                    {(id % '2') ? <Tooltip position="bottom" text="В процессе">
+                        <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            touch={true}
-                            tooltipPosition={tooltipPosition}
-                            tooltip="В процессе">
-                            <CachedIcon color="#666"/>
+                            touch={true}>
+                        <CachedIcon color="#666"/>
                         </IconButton>
-                        : <IconButton
+                    </Tooltip>
+                    : <Tooltip position="bottom" text="Есть на складе">
+                        <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            touch={true}
-                            tooltipPosition={tooltipPosition}
-                            tooltip="Есть на складе">
-                            <Home color="#81c784"/>
+                            touch={true}>
+                        <Home color="#81c784"/>
                         </IconButton>
+                    </Tooltip>
                     }
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Есть долг">
+                    <Tooltip position="bottom" text="Есть долг">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
                         <AccountBalanceWallet color={totalBalance > ZERO ? '#e57373' : '#4db6ac'} />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Не забрали товар">
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Не забрали товар">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
                         <MapsLocalShipping />
-                    </IconButton>
-
-                    </Col>
+                        </IconButton>
+                    </Tooltip>
+                </Col>
             </Row>
         )
     })

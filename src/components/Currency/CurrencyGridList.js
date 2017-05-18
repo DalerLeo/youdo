@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import Delete from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -85,6 +85,10 @@ const enhance = compose(
                 }
             }
         },
+        titleButtons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
+        },
         information: {
             display: 'flex',
             alignItems: 'center'
@@ -99,8 +103,8 @@ const enhance = compose(
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 24,
-        height: 24
+        width: 20,
+        height: 20
     },
     button: {
         width: 48,
@@ -108,8 +112,6 @@ const iconStyle = {
         padding: 0
     }
 }
-
-const tooltipPosition = 'bottom-center'
 
 const CurrencyGridList = enhance((props) => {
     const {
@@ -134,7 +136,7 @@ const CurrencyGridList = enhance((props) => {
             </IconButton>
 
             <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
+                <Delete />
             </IconButton>
         </div>
     )
@@ -159,26 +161,24 @@ const CurrencyGridList = enhance((props) => {
                 <Col xs={2}><a onClick={() => { setCurrencyUpdateDialog.handleOpenSetCurrencyDialog(id) }} className={classes.link}>Установить курс</a></Col>
                 <Col xs={3} style={{textAlign: 'right'}}>
                     <div className={classes.titleButtons}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            disableTouchRipple={true}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                            tooltipPosition={tooltipPosition}
-                            tooltip="Изменить">
-                            <Edit />
-                        </IconButton>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            disableTouchRipple={true}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                            tooltipPosition={tooltipPosition}
-                            tooltip="Удалить">
-                            <DeleteIcon />
-                        </IconButton>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Удалить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                                <Delete />
+                            </IconButton>
+                        </Tooltip>
                     </div>
                 </Col>
             </Row>

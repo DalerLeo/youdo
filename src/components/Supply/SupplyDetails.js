@@ -12,6 +12,7 @@ import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
 import CloseIcon from '../CloseIcon'
 import numberFormat from '../../helpers/numberFormat'
+import Tooltip from '../ToolTip'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -49,6 +50,10 @@ const enhance = compose(
             fontSize: '18px',
             color: '#333',
             fontWeight: '600'
+        },
+        titleButtons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
         },
         titleSupplier: {
             fontSize: '18px',
@@ -230,8 +235,6 @@ const iconStyle = {
     }
 }
 
-const tooltipPosition = 'bottom-center'
-
 const SupplyDetails = enhance((props) => {
     const {
         classes,
@@ -302,24 +305,24 @@ const SupplyDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        onTouchTap={updateDialog.handleOpenUpdateDialog}
-                        tooltip="Изменить">
-                        <Edit />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        tooltip="Удалить">
-                        <Delete />
-                    </IconButton>
+                    <Tooltip position="bottom" text="Изменить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={updateDialog.handleOpenUpdateDialog}>
+                            <Edit />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Удалить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                            <Delete />
+                        </IconButton>
+                    </Tooltip>
                 </div>
             </div>
 
