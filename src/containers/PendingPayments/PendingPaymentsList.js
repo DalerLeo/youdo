@@ -11,14 +11,12 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
-    PENDING_PAYMENTS_CREATE_DIALOG_OPEN,
     PENDING_PAYMENTS_UPDATE_DIALOG_OPEN,
     PENDING_PAYMENTS_FILTER_KEY,
     PENDING_PAYMENTS_FILTER_OPEN,
     PendingPaymentsGridList
 } from '../../components/PendingPayments'
 import {
-    pendingPaymentsCreateAction,
     pendingPaymentsUpdateAction,
     pendingPaymentsListFetchAction,
     pendingPaymentsCSVFetchAction,
@@ -149,30 +147,6 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
-
-        // handleOpenCreateDialog: props => () => {
-        //     console.log('open')
-        //     const {location: {pathname}, filter} = props
-        //     hashHistory.push({pathname, query: filter.getParams({[PENDING_PAYMENTS_CREATE_DIALOG_OPEN]: true})})
-        // },
-        //
-        // handleCloseCreateDialog: props => () => {
-        //     console.log('close')
-        //     const {location: {pathname}, filter} = props
-        //     hashHistory.push({pathname, query: filter.getParams({[PENDING_PAYMENTS_CREATE_DIALOG_OPEN]: false})})
-        // },
-        //
-        // handleSubmitCreateDialog: props => () => {
-        //     const {dispatch, createForm, filter, detail} = props
-        //     console.log('submit')
-        //     return dispatch(pendingPaymentsCreateAction(_.get(createForm, ['values']), detail.id))
-        //         .then(() => {
-        //             return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-        //         })
-        //         .then(() => {
-        //             hashHistory.push({query: filter.getParams({[PENDING_PAYMENTS_CREATE_DIALOG_OPEN]: false})})
-        //         })
-        // },
 
         handleOpenUpdateDialog: props => (id) => {
             const {filter} = props
