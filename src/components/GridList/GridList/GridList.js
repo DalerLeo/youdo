@@ -29,7 +29,7 @@ const enhance = compose(
 )
 
 const GridList = enhance((props) => {
-    const {classes, list, detail, filter, filterDialog, actionsDialog, withoutCheckboxes} = props
+    const {classes, list, detail, filter, filterDialog, actionsDialog, withoutCheckboxes, withoutRow} = props
     const header = _.get(list, 'header')
     const listItems = _.get(list, 'list')
     const loading = _.get(list, 'loading')
@@ -65,6 +65,7 @@ const GridList = enhance((props) => {
                     filter={filter}
                     listIds={listIds}
                     withoutCheckboxes={withoutCheckboxes}
+                    withoutRow={withoutRow}
                     column={header}
                 />
             </div>
@@ -76,6 +77,7 @@ const GridList = enhance((props) => {
 GridList.propTypes = {
     filter: PropTypes.object.isRequired,
     withoutCheckboxes: PropTypes.bool,
+    withoutRow: PropTypes.bool,
     list: PropTypes.shape({
         header: PropTypes.array.isRequired,
         list: PropTypes.array.isRequired,

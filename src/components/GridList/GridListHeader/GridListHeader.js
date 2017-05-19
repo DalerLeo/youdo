@@ -69,6 +69,18 @@ const enhance = compose(
             '& div div:first-child': {
                 paddingLeft: '5px'
             }
+        },
+        withoutRowDiv: {
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            '& div': {
+                paddingLeft: '0 !important'
+            },
+            '& div:last-child': {
+                textAlign: 'right',
+                paddingRight: '10px'
+            }
         }
     }),
     withHandlers({
@@ -94,7 +106,7 @@ const enhance = compose(
 )
 
 const GridListHeader = enhance((props) => {
-    const {classes, filter, column, listIds, onChecked, withoutCheckboxes} = props
+    const {classes, filter, column, listIds, onChecked, withoutCheckboxes, withoutRow} = props
 
     // Calculate row size for correct showing grid list
     const rowSize = 12
@@ -120,8 +132,8 @@ const GridListHeader = enhance((props) => {
                         <ArrowUpIcon className={classes.icon}/>
                     ) : (<ArrowDownIcon className={classes.icon}/>) : null
 
-            return (
-                <Col xs={xs} key={index}>
+            if (withoutRow) {
+                return (<Col style={{width: xs}} key={index}>
                     <Link
                         className={classes.sortingButton}
                         onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
@@ -129,8 +141,17 @@ const GridListHeader = enhance((props) => {
                             <span>{_.get(item, 'title')}</span> {Icon}
                         </FlatButton>
                     </Link>
-                </Col>
-            )
+                </Col>)
+            }
+            return (<Col xs={xs} key={index}>
+                        <Link
+                            className={classes.sortingButton}
+                            onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
+                            <FlatButton className={classes.button}>
+                                <span>{_.get(item, 'title')}</span> {Icon}
+                            </FlatButton>
+                        </Link>
+                    </Col>)
         }
 
         return (
@@ -146,9 +167,12 @@ const GridListHeader = enhance((props) => {
                 }
             </div>
             <div className={classes.headerPadding}>
-                <Row>
+                {!withoutRow && <Row>
                     {items}
-                </Row>
+                </Row>}
+                {withoutRow && <div className={classes.withoutRowDiv}>
+                    {items}
+                </div>}
             </div>
         </div>
     )
