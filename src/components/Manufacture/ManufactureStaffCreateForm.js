@@ -5,10 +5,10 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
-import {TextField, TimeField} from '../ReduxForm'
+import {ShiftSearchField, UsersSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
-export const MANUFACTURE_ADD_STAF_FORM_OPEN = 'addStafForm'
+export const MANUFACTURE_ADD_STAF_FORM_OPEN = 'addStaffForm'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -61,26 +61,26 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StafCreateForm',
+        form: 'StaffCreateForm',
         enableReinitialize: true
     })
 )
 
-const ManufactureAddStaffDialog = enhance((props) => {
+const ManufactureStaffCreateForm = enhance((props) => {
     const {classes, handleSubmit} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
         <form onSubmit={onSubmit}>
             <Field
-                name="name"
-                component={TextField}
+                name="user"
+                component={UsersSearchField}
                 className={classes.inputFieldShift}
                 label="Сотрудник"
                 fullWidth={true}/>
             <Field
-                name="address"
-                component={TextField}
+                name="shift"
+                component={ShiftSearchField}
                 className={classes.inputFieldTime}
                 label="Смена"
                 fullWidth={true}/>
@@ -95,12 +95,12 @@ const ManufactureAddStaffDialog = enhance((props) => {
     )
 })
 
-ManufactureAddStaffDialog.propTypes = {
+ManufactureStaffCreateForm.propTypes = {
     onSubmit: PropTypes.func.isRequired
 }
 
-ManufactureAddStaffDialog.defaultProps = {
+ManufactureStaffCreateForm.defaultProps = {
     isUpdate: false
 }
 
-export default ManufactureAddStaffDialog
+export default ManufactureStaffCreateForm

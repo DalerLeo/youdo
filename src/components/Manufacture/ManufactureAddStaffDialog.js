@@ -15,7 +15,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import Person from '../Images/person.png'
 
 import ManufactureShiftCreateForm from './ManufactureShiftCreateForm'
-import ManufactureStafCreateForm from './ManufactureStafCreateForm'
+import ManufactureStaffCreateForm from './ManufactureStaffCreateForm'
 
 export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
 
@@ -259,8 +259,9 @@ const ManufactureAddStaffDialog = enhance((props) => {
         loading,
         onClose,
         classes,
-        stafData,
+        staffData,
         shiftData,
+        userShift,
         confirmDialog
     } = props
 
@@ -281,14 +282,18 @@ const ManufactureAddStaffDialog = enhance((props) => {
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         style={iconStyle.button}
-                        onTouchTap={() => { shiftData.handleUpdateShiftForm(id) }}>
+                        onTouchTap={() => {
+                            shiftData.handleUpdateShiftForm(id)
+                        }}>
                         <Edit/>
                     </IconButton>
                     <IconButton
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         style={iconStyle.button}
-                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                        onTouchTap={() => {
+                            confirmDialog.handleOpenConfirmDialog(id)
+                        }}>
                         <DeleteIcon/>
                     </IconButton>
                 </div>
@@ -296,34 +301,50 @@ const ManufactureAddStaffDialog = enhance((props) => {
         )
     })
 
-    const stafList = _.map(_.get(shiftData, 'shiftList'), (item) => {
+    const staffList = _.map(_.get(shiftData, 'shiftList'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const beginTime = _.get(item, 'beginTime')
         const endTime = _.get(item, 'endTime')
 
         return (
-            <div key={id} className={classes.shift}>
+            <div key={id} className={classes.personalList}>
                 <h4>
                     {name}
                     <span>({beginTime} - {endTime})</span>
                 </h4>
-                <div className={classes.deleteHideIco}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        disableTouchRipple={true}
-                        style={iconStyle.button}
-                        onTouchTap={() => { shiftData.handleUpdateShiftForm(id) }}>
-                        <Edit/>
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        disableTouchRipple={true}
-                        style={iconStyle.button}
-                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
-                        <DeleteIcon/>
-                    </IconButton>
-                </div>
+                <ul>
+                    {
+                        _.map(_.get(userShift, 'userShiftList'), (item2) => {
+                            const itemId = _.get(item2, 'id')
+                            const shift = _.get(item2, 'shift')
+                            const user = _.get(item2, ['user', 'firstName']) + _.get(item2, ['user', 'secondName'])
+                            const position = _.get(item2, ['user', 'position'])
+                            if (id === shift) {
+                                return (
+                                    <li key={itemId}>
+                                        <div>
+                                            <img src={Person}/>
+                                        </div>
+                                        <div>{user}<br />
+                                            <span>worker {position}</span>
+                                        </div>
+                                        <div className={classes.deleteHideIco}>
+                                            <IconButton
+                                                iconStyle={iconStyle.icon}
+                                                disableTouchRipple={true}
+                                                style={iconStyle.button}
+                                                onTouchTap={ () => { userShift.handleOpenUserShiftConfirmDialog(itemId) }}
+                                                >
+                                                <DeleteIcon/>
+                                            </IconButton>
+                                        </div>
+                                    </li>
+                                )
+                            }
+                        })
+                    }
+                </ul>
             </div>
         )
     })
@@ -345,10 +366,14 @@ const ManufactureAddStaffDialog = enhance((props) => {
                 <div className={classes.inContent}>
                     <div className={classes.leftSide}>
                         <div className={classes.innerTitle}>
-                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Смена</h3>
+                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>
+                                Смена</h3>
                             <a style={{float: 'right'}}
-                               onClick={() => { shiftData.handleOpenAddShiftForm(!_.get(shiftData, 'openAddShiftForm')) }}>
-                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
+                               onClick={() => {
+                                   shiftData.handleOpenAddShiftForm(!_.get(shiftData, 'openAddShiftForm'))
+                               }}>
+                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
+                                            viewBox="0 0 24 15"/>
                                 добавить
                             </a>
                         </div>
@@ -361,63 +386,23 @@ const ManufactureAddStaffDialog = enhance((props) => {
                     </div>
                     <div className={classes.rightSide}>
                         <div className={classes.innerTitle}>
-                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Персонал</h3>
+                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>
+                                Персонал</h3>
                             <a style={{float: 'right'}}
-                               onClick={() => { stafData.handleOpenAddStafForm(!_.get(stafData, 'openAddStafForm')) }}>
-                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
+                               onClick={() => {
+                                   staffData.handleOpenAddStaffForm(!_.get(staffData, 'openAddStaffForm'))
+                               }}>
+                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
+                                            viewBox="0 0 24 15"/>
                                 добавить
                             </a>
                         </div>
-                        {_.get(stafData, 'openAddStafForm') && <div className={classes.staffAdd}>
-                            <ManufactureStafCreateForm
-                                initialValues={shiftData.initialValues}
-                                onSubmit={shiftData.handleSubmitStafAddForm}/>
+                        {_.get(staffData, 'openAddStaffForm') && <div className={classes.staffAdd}>
+                            <ManufactureStaffCreateForm
+                                initialValues={staffData.initialValues}
+                                onSubmit={staffData.handleSubmitStaffAddForm}/>
                         </div>}
-                        {stafList}
-                        <div className={classes.personalList}>
-                            <div className={classes.shift}>
-                                <h4>
-                                    Смена Б
-                                    <span>(00:00 - 00:00)</span>
-                                </h4>
-                            </div>
-                            <ul>
-                                <li>
-                                    <div>
-                                        <img src={Person} />
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод<br />
-                                        <span>Должность</span>
-                                    </div>
-                                    <div className={classes.deleteHideIco}>
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            disableTouchRipple={true}
-                                            style={iconStyle.button}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <img src={Person} />
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод<br />
-                                        <span>Должность</span>
-                                    </div>
-                                    <div className={classes.deleteHideIco}>
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            disableTouchRipple={true}
-                                            style={iconStyle.button}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                        {staffList}
                     </div>
                 </div>
             </div>
@@ -436,12 +421,17 @@ ManufactureAddStaffDialog.propTypes = {
         handleSubmitShiftAddForm: PropTypes.func.isRequired,
         handleUpdateShiftForm: PropTypes.func.isRequired
     }),
-    stafData: PropTypes.shape({
-        openAddStafForm: PropTypes.bool.isRequired,
-        handleOpenAddStafForm: PropTypes.bool.isRequired,
-        stafList: PropTypes.array,
-        handleSubmitStafAddForm: PropTypes.func.isRequired,
-        handleUpdateStafForm: PropTypes.func.isRequired
+    staffData: PropTypes.shape({
+        openAddStaffForm: PropTypes.bool.isRequired,
+        handleOpenAddStaffForm: PropTypes.func.isRequired,
+        staffList: PropTypes.array,
+        handleSubmitStaffAddForm: PropTypes.func.isRequired,
+        handleUpdateStaffForm: PropTypes.func
+    }),
+    userShift: PropTypes.shape({
+        userShiftLoading: PropTypes.bool,
+        userShiftList: PropTypes.array,
+        handleOpenUserShiftConfirmDialog: PropTypes.func.isRequired
     }),
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,

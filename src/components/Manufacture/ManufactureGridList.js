@@ -190,7 +190,8 @@ const ManufactureGridList = enhance((props) => {
         addProductDialog,
         classes,
         shiftData,
-        stafData,
+        staffData,
+        userShift,
         equipmentData,
         productData,
         confirmDialog
@@ -276,6 +277,9 @@ const ManufactureGridList = enhance((props) => {
     const shift = _.find(shiftListExp, (o) => {
         return _.toInteger(o.id) === _.toInteger(shiftId)
     })
+    console.log(_.get(userShift, 'userShiftId'))
+    console.log(_.get(userShift, 'userShiftList'))
+    console.log(_.find(_.get(userShift, 'userShiftList'), (o) => {return o.id ===  _.get(userShift, 'userShiftId')}))
 
     return (
         <Container>
@@ -284,13 +288,16 @@ const ManufactureGridList = enhance((props) => {
                 open={addStaff.open}
                 onClose={addStaff.handleClose}
                 shiftData={shiftData}
-                stafData={stafData}
+                staffData={staffData}
+                userShift={userShift}
                 confirmDialog={confirmDialog}
+                userShiftConfirmClick={userShift.handleOpenUserShiftConfirmDialog}
             />
             <ManufactureShowBom
                 open={showBom.open}
                 onSubmit={productData.handleSubmitAddIngredient}
                 onClose={showBom.handleClose}
+
             />
             <ManufactureAddProductDialog
                 open={addProductDialog.open}
@@ -402,6 +409,13 @@ const ManufactureGridList = enhance((props) => {
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
             />}
+            {_.get(userShift, 'userShiftId') !== -1 && <ConfirmDialog
+                type="delete"
+                message={_.get(_.find(_.get(shiftData, 'shiftList'), {'id': _.toInteger(_.get(userShift, 'userShiftId'))}), 'name')}
+                onClose={userShift.handleCloseUserShiftConfirmDialog}
+                onSubmit={userShift.handleSendUserShiftConfirmDialog}
+                open={userShift.openUserShiftConfirmDialog}
+            />}
         </Container>
     )
 })
@@ -432,7 +446,14 @@ ManufactureGridList.propTypes = {
         handleSubmitAddProductDialog: PropTypes.func.isRequired
     }).isRequired,
     shiftData: PropTypes.object,
-    stafData: PropTypes.object,
+    staffData: PropTypes.object,
+    userShift: PropTypes.shape({
+        userShiftId: PropTypes.number,
+        openUserShiftConfirmDialog: PropTypes.bool,
+        handleOpenUserShiftConfirmDialog: PropTypes.func.isRequired,
+        handleCloseUserShiftConfirmDialog: PropTypes.func.isRequired,
+        handleSendUserShiftConfirmDialog: PropTypes.func.isRequired
+    }),
     productData: PropTypes.object.isRequired,
     equipmentData: PropTypes.object
 }
