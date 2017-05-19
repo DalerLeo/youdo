@@ -7,6 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
+import numberFormat from '../../helpers/numberFormat'
 import toCamelCase from '../../helpers/toCamelCase'
 import {CashboxSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
@@ -70,7 +71,7 @@ const PendingExpensesCreateDialog = enhance((props) => {
     const supply = _.get(detailData, ['data', 'supply'])
     const currency = _.get(detailData, ['data', 'currency'])
     const currencyName = _.get(currency, 'name')
-    const summary = _.get(detailData, ['data', 'amount'])
+    const summary = numberFormat(_.get(detailData, ['data', 'amount']))
     const supplyId = _.get(supply, 'id')
     const supplier = _.get(supply, ['provider', 'name'])
 
