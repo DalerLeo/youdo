@@ -88,6 +88,7 @@ const enhance = compose(
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openConfirmExpenseDialog', 'setOpenConfirmExpenseDialog', false),
     withState('openSupplyExpenseConfirmDialog', 'setOpenSupplyExpenseConfirmDialog', false),
 
     withHandlers({
@@ -111,7 +112,6 @@ const enhance = compose(
             const {setOpenConfirmDialog} = props
             setOpenConfirmDialog(true)
         },
-
         handleCloseConfirmDialog: props => () => {
             const {setOpenConfirmDialog} = props
             setOpenConfirmDialog(false)
@@ -126,6 +126,31 @@ const enhance = compose(
                     setOpenConfirmDialog(false)
                     dispatch(supplyListFetchAction(filter))
                 })
+        },
+
+        handleOpenConfirmExpenseDialog: props => () => {
+            const {setOpenConfirmExpenseDialog} = props
+            setOpenConfirmExpenseDialog(true)
+        },
+
+        handleCloseConfirmExpenseDialog: props => () => {
+            const {setOpenConfirmExpenseDialog} = props
+            setOpenConfirmExpenseDialog(false)
+        },
+        handleSendConfirmExpenseDialog: props => () => {
+            const {dispatch, supplyExpenseList, setOpenConfirmExpenseDialog, filter} = props
+            const expenseResults = _.get(supplyExpenseList, 'results')
+            _.map(expenseResults, (item) => {
+                const id = _.get(item, 'id')
+                dispatch(supplyExpenseDeleteAction(id))
+                    .catch(() => {
+                        return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    })
+                    .then(() => {
+                        setOpenConfirmExpenseDialog(false)
+                        dispatch(supplyExpenseListFetchAction(filter))
+                    })
+            })
         },
 
         handleOpenFilterDialog: props => () => {
@@ -273,7 +298,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: false})})
-                    dispatch(supplyItemFetchAction(id))
+                    dispatch(supplyExpenseListFetchAction(id))
                 })
         }
     })
@@ -331,6 +356,13 @@ const SupplyList = enhance((props) => {
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
+    }
+
+    const confirmExpenseDialog = {
+        openConfirmExpenseDialog: props.openConfirmExpenseDialog,
+        handleOpenConfirmExpenseDialog: props.handleOpenConfirmExpenseDialog,
+        handleCloseConfirmExpenseDialog: props.handleCloseConfirmExpenseDialog,
+        handleSendConfirmExpenseDialog: props.handleSendConfirmExpenseDialog
     }
 
     const updateDialog = {
@@ -432,6 +464,7 @@ const SupplyList = enhance((props) => {
                 createDialog={createDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
+                confirmExpenseDialog={confirmExpenseDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
