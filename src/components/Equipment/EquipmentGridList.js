@@ -85,7 +85,7 @@ const EquipmentGridList = enhance((props) => {
     const equipmentList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const manufacture = _.get(item, 'manufacture')
+        const manufacture = _.get(item, ['manufacture', 'name'])
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
