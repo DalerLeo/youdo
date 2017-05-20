@@ -90,8 +90,9 @@ export const productCSVFetchAction = (filter) => {
 }
 
 export const productItemFetchAction = (id) => {
+    const params = {'thumbnail_type': 'large'}
     const payload = axios()
-        .get(sprintf(API.PRODUCT_ITEM, id))
+        .get(sprintf(API.PRODUCT_ITEM, id), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
