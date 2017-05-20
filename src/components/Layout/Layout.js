@@ -1,6 +1,4 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
-import axios from '../../helpers/axios'
 import moment from 'moment'
 import filterHelper from '../../helpers/filter'
 import {compose, withState, withHandlers} from 'recompose'
@@ -9,7 +7,6 @@ import injectSheet from 'react-jss'
 import SideBarMenu from '../SidebarMenu'
 import SnakeBar from '../Snackbar'
 import {connect} from 'react-redux'
-import {hashHistory} from 'react-router'
 import ConfirmDialog from '../ConfirmDialog'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
@@ -20,8 +17,7 @@ import Storehouse from 'material-ui/svg-icons/action/home'
 import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
 import {
     notificationListFetchAction,
-    notificationDeleteAction,
-    notificationItemFetchAction
+    notificationDeleteAction
 } from '../../actions/notifications'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -40,8 +36,6 @@ const iconStyle = {
 const moneyIcon = '#64b5f6'
 const balanceIcon = '#4db6ac'
 const storeIcon = '#f06292'
-
-const STOCK_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 
 const enhance = compose(
     connect((state, props) => {
@@ -229,9 +223,7 @@ const enhance = compose(
 )
 const Layout = enhance((props) => {
     const {
-        state,
         classes,
-        detailData,
         handleSignOut,
         children,
         notificationId,
@@ -239,7 +231,7 @@ const Layout = enhance((props) => {
         clickNotifications,
         setClickNotifications,
         notificationsList,
-        notificationsLoading,
+        notificationsLoading
     } = props
 
     const notificationData = {
@@ -275,14 +267,15 @@ const Layout = enhance((props) => {
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
-                    onTouchTap={ () => { notificationData.handleOpenConfirmDialog(id) }}
+                    onTouchTap={ () => {
+                        notificationData.handleOpenConfirmDialog(id)
+                    }}
                 >
                     <Clear color="#dadada"/>
                 </IconButton>
             </div>
         )
     })
-    console.log(notificationId)
     return (
         <div className={classes.wrapper}>
             <div className={classes.notifications} style={openNotifications ? {} : {display: 'none'}}>
@@ -301,7 +294,10 @@ const Layout = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.notifBody}>
-                        {notificationListExp}
+                        {
+                            notificationsLoading ? <div></div>
+                                : notificationListExp
+                        }
                         <div className={classes.notif} onClick={() => {
                             setClickNotifications(true)
                         }} style={clickNotifications ? {opacity: '0.5'} : {opacity: '1'}}>
@@ -319,9 +315,7 @@ const Layout = enhance((props) => {
                             </div>
                             <IconButton
                                 iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                onTouchTap={ () => { notificationData.handleOpenConfirmDialog(1) }}
-                            >
+                                style={iconStyle.button}>
                                 <Clear color="#dadada"/>
                             </IconButton>
                         </div>
@@ -405,7 +399,8 @@ const Layout = enhance((props) => {
                 </Paper>
             </div>
             <div className={classes.sidenav}>
-                <SideBarMenu handleSignOut={handleSignOut} handleOpenNotificationBar={notificationData.handleOpenNotificationBar}/>
+                <SideBarMenu handleSignOut={handleSignOut}
+                             handleOpenNotificationBar={notificationData.handleOpenNotificationBar}/>
             </div>
             <div className={classes.content}>
                 {children}
