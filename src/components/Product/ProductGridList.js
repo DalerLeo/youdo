@@ -139,9 +139,6 @@ const ProductGridList = enhance((props) => {
         )
         return (
             <Row key={id}>
-                <Col xs={3}>
-                    <img src={image}></img>{name}
-                </Col>
                 <Col xs={3} style={{display: 'flex', alignItems: 'center'}}>
                     <div className={classes.productImg}>
                         {_.isEmpty(image) ? <Landscape style={{color: '#999', paddingTop: '2px'}} />
