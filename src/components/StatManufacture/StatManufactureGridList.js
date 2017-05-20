@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog'
 import Paper from 'material-ui/Paper'
 import {Row, Col} from 'react-flexbox-grid'
+import ReactHighcharts from 'react-highcharts'
 import GridList from '../GridList'
 import Container from '../Container'
 import StatManufactureOrderDetails from './StatManufactureOrderDetails'
@@ -235,6 +236,15 @@ const StatManufactureGridList = enhance((props) => {
         list: statManufactureList,
         loading: _.get(listData, 'listLoading')
     }
+    const exampleNumber = 2
+    const config = {
+        xAxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        },
+        series: [{
+            data: [exampleNumber, exampleNumber + exampleNumber]
+        }]
+    }
     return (
         <Container>
             <SubMenu url={ROUTES.STAT_MANUFACTURE_LIST_URL}/>
@@ -251,7 +261,7 @@ const StatManufactureGridList = enhance((props) => {
                 </div>
                 <Row className={classes.diagram}>
                     <Col xs={9}>
-                        312z
+                        <ReactHighcharts config ={config} />
                     </Col>
                     <Col xs={3}>1456</Col>
                 </Row>
