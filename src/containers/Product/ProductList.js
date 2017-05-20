@@ -170,9 +170,12 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[PRODUCT_CREATE_DIALOG_OPEN]: false})})
         },
 
-        handleOpenShowBigImg: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_SHOW_PHOTO_OPEN]: true})})
+        handleOpenShowBigImg: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.PRODUCT_ITEM_PATH, id),
+                query: filter.getParams({[PRODUCT_SHOW_PHOTO_OPEN]: true})
+            })
         },
 
         handleCloseShowBigImg: props => () => {
@@ -262,6 +265,15 @@ const ProductList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
     const showBigImg = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            }
+
+            return {
+                image: _.get(detail, 'image')
+            }
+        })(),
         showBigImgLoading,
         openShowBigImg,
         handleOpenShowBigImg: props.handleOpenShowBigImg,
