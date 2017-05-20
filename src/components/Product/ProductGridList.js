@@ -128,7 +128,6 @@ const ProductGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const type = _.get(item, ['type', 'name']) || 'N/A'
-        const image = _.get(item, ['image', 'file']) || 'N/A'
         const brand = _.get(item, ['brand', 'name']) || 'N/A'
         const image = _.get(item, ['image', 'file'])
         const measurement = _.get(item, ['measurement', 'name']) || ''
