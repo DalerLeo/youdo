@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
-import PropTypes from 'prop-types'
 import axios from '../../helpers/axios'
 import filterHelper from '../../helpers/filter'
 import * as actionTypes from '../../constants/actionTypes'
@@ -252,7 +251,7 @@ const enhance = compose(
     withState('openNotifications', 'setOpenNotifications', false),
     withState('clickNotifications', 'setClickNotifications', false)
     )
-const Layout = ({classes, detailData, confirmDialog, actionsDialog, handleSignOut, children, setOpenNotifications, openNotifications, clickNotifications, setClickNotifications}) => {
+const Layout = ({classes, detailData, handleCloseConfirmDialog, handleSendConfirmDialog, handleSignOut, children, setOpenNotifications, openNotifications, clickNotifications, setClickNotifications}) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.notifications} style={openNotifications ? {} : {display: 'none'}}>
@@ -283,7 +282,6 @@ const Layout = ({classes, detailData, confirmDialog, actionsDialog, handleSignOu
                                 </div>
                             </div>
                             <IconButton
-                                onTouchTap={actionsDialog.handleActionDelete}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}>
                                 <Clear color="#dadada"/>
@@ -379,9 +377,9 @@ const Layout = ({classes, detailData, confirmDialog, actionsDialog, handleSignOu
             <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
+                onClose={handleCloseConfirmDialog}
+                onSubmit={handleSendConfirmDialog}
+                open={false}
             />
         </div>
     )
