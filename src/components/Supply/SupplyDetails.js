@@ -6,12 +6,13 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Delete from 'material-ui/svg-icons/action/delete'
+import Cancel from 'material-ui/svg-icons/navigation/cancel'
 import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
 import CloseIcon from '../CloseIcon'
 import numberFormat from '../../helpers/numberFormat'
+import Tooltip from '../ToolTip'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -49,6 +50,10 @@ const enhance = compose(
             fontSize: '18px',
             color: '#333',
             fontWeight: '600'
+        },
+        titleButtons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
         },
         titleSupplier: {
             fontSize: '18px',
@@ -126,7 +131,10 @@ const enhance = compose(
             '& .dataHeader': {
                 fontWeight: 'bold',
                 padding: '20px 0',
-                width: '100%'
+                width: '100%',
+                '& .row': {
+                    alignItems: 'center'
+                }
             },
             '& .summary': {
                 fontWeight: 'bold',
@@ -230,8 +238,6 @@ const iconStyle = {
     }
 }
 
-const tooltipPosition = 'bottom-center'
-
 const SupplyDetails = enhance((props) => {
     const {
         classes,
@@ -242,7 +248,8 @@ const SupplyDetails = enhance((props) => {
         handleSupplyExpenseOpenCreateDialog,
         supplyListData,
         updateDialog,
-        confirmDialog
+        confirmDialog,
+        confirmExpenseDialog
     } = props
     const id = _.get(data, 'id')
     const provider = _.get(data, ['provider', 'name'])
@@ -253,7 +260,7 @@ const SupplyDetails = enhance((props) => {
     const contactPerson = _.get(contact, 'name')
     const contactEmail = _.get(contact, 'email')
     const contactPhone = _.get(contact, 'phone')
-    const dataDelivery = _.get(data, 'dateDelivery') || 'Не указано'
+    const dateDelivery = _.get(data, 'dateDelivery') || 'Не указано'
     const acceptedTime = _.get(data, 'acceptedTime') || 'Не начался'
     const finishedTime = _.get(data, 'finishedTime') || 'Не закончилась'
     const totalCost = _.get(data, 'totalCost')
@@ -275,7 +282,7 @@ const SupplyDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>Заказ №{id}</div>
+                <div className={classes.titleLabel}>Поставка №{id}</div>
                 <div className={classes.titleSupplier}>
                     <a className={classes.dropdown} onMouseEnter={() => {
                         setOpenDetails(true)
@@ -302,24 +309,24 @@ const SupplyDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        onTouchTap={updateDialog.handleOpenUpdateDialog}
-                        tooltip="Изменить">
-                        <Edit />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        tooltip="Удалить">
-                        <Delete />
-                    </IconButton>
+                    <Tooltip position="bottom" text="Изменить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={updateDialog.handleOpenUpdateDialog}>
+                            <Edit />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Отменить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                            <Cancel />
+                        </IconButton>
+                    </Tooltip>
                 </div>
             </div>
 
@@ -328,7 +335,7 @@ const SupplyDetails = enhance((props) => {
                     <div className={classes.store}>Склад: <span
                         style={{color: '#999', fontWeight: 'bold'}}>{stock}</span></div>
                     <div className={classes.supplyDate} style={{marginLeft: '45px'}}>Дата поставки: <span
-                        style={{color: '#e57373', fontWeight: 'bold'}}>{dataDelivery}</span></div>
+                        style={{color: '#e57373', fontWeight: 'bold'}}>{dateDelivery}</span></div>
                 </div>
                 <div className={classes.dateInfo}>
                     <div>Начало приемки: <span style={{fontWeight: '600'}}>{acceptedTime}</span></div>
@@ -339,10 +346,11 @@ const SupplyDetails = enhance((props) => {
             <div className={classes.data}>
                 <div className="dataHeader">
                     <Row>
-                        <Col xs={6}>Товар</Col>
+                        <Col xs={5}>Товар</Col>
                         <Col xs={1}>Количество</Col>
                         <Col xs={1}>Принято</Col>
                         <Col xs={1}>Брак</Col>
+                        <Col xs={1}>Не поставлено</Col>
                         <Col xs={1}>
                             <div style={{textAlign: 'right'}}>Стоимость</div>
                         </Col>
@@ -356,20 +364,22 @@ const SupplyDetails = enhance((props) => {
                         const product = _.get(item, 'product')
                         const productId = _.get(product, 'id')
                         const productName = _.get(product, 'name')
-                        const price = _.get(product, 'price')
-                        const cost = _.get(item, 'cost')
-                        const amount = _.get(item, 'amount')
+                        const cost = _.toInteger(_.get(item, 'cost'))
+                        const amount = _.toInteger(_.get(item, 'amount'))
+                        const itemPrice = cost / amount
                         const postedAmount = _.get(item, 'postedAmount')
                         const defectAmount = _.get(item, 'defectAmount')
                         const measurement = _.get(product, ['measurement', 'name'])
+                        const notAccepted = amount - (postedAmount + defectAmount)
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
-                                <Col xs={6}>{productName}</Col>
+                                <Col xs={5}>{productName}</Col>
                                 <Col xs={1}>{numberFormat(amount, measurement)}</Col>
                                 <Col xs={1}>{numberFormat(postedAmount, measurement)}</Col>
                                 <Col xs={1}>{numberFormat(defectAmount, measurement)}</Col>
+                                <Col xs={1}>{notAccepted}</Col>
                                 <Col xs={1}>
-                                    <div style={{textAlign: 'right'}}>{numberFormat(price, currency)}</div>
+                                    <div style={{textAlign: 'right'}}>{numberFormat(itemPrice, currency)}</div>
                                 </Col>
                                 <Col xs={2}>
                                     <div style={{textAlign: 'right'}}>{numberFormat(cost, currency)}</div>
@@ -399,7 +409,7 @@ const SupplyDetails = enhance((props) => {
                     {!supplyExpenseListLoading && _.map(supplyExpenseList, (item) => {
                         const expId = _.get(item, 'id')
                         const expComment = _.get(item, 'comment')
-                        const expAmount = _.get(item, 'amount')
+                        const expAmount = numberFormat(_.get(item, 'amount'))
                         const expCurrency = _.get(item, ['currency', 'name'])
                         return (
                             <div className="expenseInfo dottedList" key={expId}>
@@ -409,7 +419,7 @@ const SupplyDetails = enhance((props) => {
                                         <div style={{textAlign: 'right'}}>{expAmount} {expCurrency}</div>
                                         <IconButton
                                             iconStyle={{color: '#666'}}
-                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(expId) }}>
+                                            onTouchTap={() => { confirmExpenseDialog.handleOpenConfirmExpenseDialog(expId) }}>
                                             <CloseIcon/>
                                         </IconButton>
                                     </Col>

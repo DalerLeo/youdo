@@ -66,7 +66,7 @@ const SideBarMenu = (props) => {
                 {items}
 
                 <div className={classes.logout}>
-                    <ToolTip position="right" text="Log out">
+                    <ToolTip position="right" text="Выйти">
                         <IconButton
                             iconStyle={style.iconStyle}
                             style={style.style}

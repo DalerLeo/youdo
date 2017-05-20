@@ -117,6 +117,7 @@ const SupplyGridList = enhance((props) => {
         filterDialog,
         actionsDialog,
         confirmDialog,
+        confirmExpenseDialog,
         deleteDialog,
         listData,
         detailData,
@@ -152,6 +153,7 @@ const SupplyGridList = enhance((props) => {
             data={_.get(detailData, 'data') || {}}
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
+            confirmExpenseDialog={confirmExpenseDialog}
             updateDialog={updateDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleSupplyExpenseOpenCreateDialog={supplyExpenseCreateDialog.handleSupplyExpenseOpenCreateDialog}
@@ -245,6 +247,14 @@ const SupplyGridList = enhance((props) => {
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
             />}
+
+            <ConfirmDialog
+                type="delete"
+                message={'weqwe' + _.get(detailData, ['data', 'id'])}
+                onClose={confirmExpenseDialog.handleCloseConfirmExpenseDialog}
+                onSubmit={confirmExpenseDialog.handleSendConfirmExpenseDialog}
+                open={confirmExpenseDialog.openConfirmExpenseDialog}
+            />
         </Container>
     )
 })
@@ -265,6 +275,12 @@ SupplyGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
+    confirmExpenseDialog: PropTypes.shape({
+        openConfirmExpenseDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmExpenseDialog: PropTypes.func.isRequired,
+        handleCloseConfirmExpenseDialog: PropTypes.func.isRequired,
+        handleSendConfirmExpenseDialog: PropTypes.func.isRequired
     }).isRequired,
     deleteDialog: PropTypes.shape({
         openDeleteDialog: PropTypes.bool.isRequired,

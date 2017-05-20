@@ -3,7 +3,6 @@ import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router'
-import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
@@ -25,6 +24,7 @@ import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import Home from 'material-ui/svg-icons/action/home'
 import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
+import VisibilityOff from 'material-ui/svg-icons/action/visibility-off'
 import moment from 'moment'
 import CachedIcon from 'material-ui/svg-icons/action/cached'
 
@@ -33,43 +33,43 @@ const listHeader = [
         sorting: true,
         name: 'id',
         title: 'Заказ №',
-        xs: 1
+        xs: '10%'
     },
     {
         sorting: true,
         name: 'client',
         title: 'Клиент',
-        xs: 2
+        xs: '20%'
     },
     {
         sorting: true,
         name: 'user',
         title: 'Инициатор',
-        xs: 2
+        xs: '15%'
     },
     {
         sorting: true,
         name: 'dateDelivery',
         title: 'Дата доставки',
-        xs: 2
+        xs: '15%'
     },
     {
         sorting: true,
         name: 'totalCost',
         title: 'Сумма заказа',
-        xs: 2
+        xs: '15%'
     },
     {
         sorting: true,
         name: 'createdDate',
         title: 'Дата создания',
-        xs: 2
+        xs: '15%'
     },
     {
         sorting: true,
         name: 'acceptedCost',
         title: 'Статус',
-        xs: 1
+        xs: '10%'
     }
 ]
 
@@ -100,6 +100,10 @@ const enhance = compose(
         error: {
             extend: 'dot',
             backgroundColor: '#e57373'
+        },
+        buttons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
         }
     })
 )
@@ -140,8 +144,6 @@ const OrderGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
-    const tooltipPosition = 'bottom-center'
-
     const iconStyle = {
         icon: {
             color: '#666',
@@ -151,7 +153,8 @@ const OrderGridList = enhance((props) => {
         button: {
             width: 48,
             height: 48,
-            padding: 0
+            padding: 0,
+            zIndex: 0
         }
     }
     const orderDetail = (
@@ -177,55 +180,73 @@ const OrderGridList = enhance((props) => {
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), 'SUM')
         const ZERO = 0
         return (
-            <Row key={id}>
-                <Col xs={1}>{id}</Col>
-                <Col xs={2}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{client}</Link>
-                </Col>
-                <Col xs={2}>{user}</Col>
-                <Col xs={2}>{dateDelivery}</Col>
-                <Col xs={1}>{totalPrice}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>
-                    {(id % '2') ? <IconButton
+        <div style={{width: '100%', display: 'flex', alignItems: 'center'}} key={id}>
+            <div style={{width: '10%'}}>
+                {id}
+            </div>
+            <div style={{width: '20%'}}>
+                <Link to={{
+                    pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                    query: filter.getParams()
+                }}>{client}</Link>
+            </div>
+            <div style={{width: '15%'}}>
+                {user}
+            </div>
+            <div style={{width: '15%'}}>
+                {dateDelivery}
+            </div>
+            <div style={{width: '15%'}}>
+                {totalPrice}
+            </div>
+            <div style={{width: '15%'}}>
+                {createdDate}
+            </div>
+            <div style={{width: '10%'}} className={classes.buttons}>
+                {(id % '2') ? <Tooltip position="bottom" text="В процессе">
+                        <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            touch={true}
-                            tooltipPosition={tooltipPosition}
-                            tooltip="В процессе">
+                            touch={true}>
                             <CachedIcon color="#666"/>
                         </IconButton>
-                        : <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            tooltipPosition={tooltipPosition}
-                            tooltip="Есть на складе">
-                            <Home color="#81c784"/>
-                        </IconButton>
-                    }
+                    </Tooltip>
+                    : (id % '3') ? <Tooltip position="bottom" text="Есть на складе">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}>
+                                <Home color="#81c784"/>
+                            </IconButton>
+                        </Tooltip>
+                        : <Tooltip position="bottom" text="Не забрали товар">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}>
+                                <MapsLocalShipping />
+                            </IconButton>
+                        </Tooltip>
+                }
+               <Tooltip position="bottom" text="Есть долг">
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Есть долг">
-                        <AccountBalanceWallet color={totalBalance > ZERO ? '#e57373' : '#4db6ac'} />
+                        touch={true}>
+                        <AccountBalanceWallet color={totalBalance > ZERO ? '#e57373' : '#4db6ac'}/>
                     </IconButton>
+                </Tooltip>
+                <Tooltip position="bottom" text="Заказ отменен">
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
-                        touch={true}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Не забрали товар">
-                        <MapsLocalShipping />
+                        touch={true}>
+                        <VisibilityOff color='#e57373'/>
                     </IconButton>
+                </Tooltip>
+            </div>
 
-                    </Col>
-            </Row>
+        </div>
         )
     })
 
@@ -254,6 +275,7 @@ const OrderGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={orderDetail}
+                withoutRow={true}
                 actionsDialog={actions}
                 filterDialog={orderFilterDialog}
             />

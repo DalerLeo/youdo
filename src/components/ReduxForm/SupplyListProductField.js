@@ -168,7 +168,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                         {..._.get(defaultProps, 'amount')}
                     />
                     <TextField
-                        label="Сумма(UZS)"
+                        label="Сумма"
                         {..._.get(defaultProps, 'cost')}
                     />
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>

@@ -6,6 +6,7 @@ import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import Checkbox from 'material-ui/Checkbox'
 import Dot from '../../Images/dot.png'
+import NotFound from '../../Images/not-found.png'
 
 const enhance = compose(
     injectSheet({
@@ -51,6 +52,19 @@ const enhance = compose(
             borderBottom: '1px dotted #eee',
             alignItems: 'center',
             boxShadow: 'rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '285px',
+            padding: '260px 0 0',
+            textAlign: 'center',
+            fontSize: '15px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
     withHandlers({
@@ -108,10 +122,13 @@ const GridListBody = enhance((props) => {
             </div>
         )
     })
-
     return (
         <div>
-            {items}
+            {!_.isEmpty(items)
+                ? <div>{items}</div>
+                : <div className={classes.emptyQuery}>
+                    <div>По вашему запросу ничего не найдено</div>
+                  </div>}
         </div>
     )
 })

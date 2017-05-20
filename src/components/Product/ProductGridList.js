@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import moment from 'moment'
 import React from 'react'
-import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -12,6 +11,7 @@ import GridList from '../GridList'
 import Container from '../Container'
 import ProductFilterForm from './ProductFilterForm'
 import ProductCreateDialog from './ProductCreateDialog'
+import ProductShowPhotoDialog from './ProductShowPhotoDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -22,6 +22,8 @@ import Tooltip from '../ToolTip'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import Product from '../Images/product.png'
+import Landscape from 'material-ui/svg-icons/image/landscape'
 
 const listHeader = [
     {
@@ -68,6 +70,18 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        productImg: {
+            width: '30px',
+            height: '30px',
+            overflow: 'hidden',
+            marginRight: '5px',
+            display: 'inline-block',
+            borderRadius: '4px',
+            textAlign: 'center',
+            '& img': {
+                height: '30px'
+            }
         }
     })
 )
@@ -79,6 +93,7 @@ const ProductGridList = enhance((props) => {
         updateDialog,
         filterDialog,
         actionsDialog,
+        showBigImg,
         confirmDialog,
         listData,
         detailData,
@@ -125,7 +140,17 @@ const ProductGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={3}>
-                    <img src={image}></img>{name}</Col>
+                    <img src={image}></img>{name}
+                </Col>
+                <Col xs={3} style={{display: 'flex', alignItems: 'center'}}>
+                    <div className={classes.productImg}>
+                        <a onClick={showBigImg.handleOpenShowBigImg}>
+                            {(id % '2') ? <Landscape style={{color: '#999', paddingTop: '2px'}} />
+                                : <img src={Product} /> }
+                        </a>
+                    </div>
+                    <div style={{display: 'inline-block'}}>{name}</div>
+                </Col>
                 <Col xs={2}>{type}</Col>
                 <Col xs={2}>{brand}</Col>
                 <Col xs={2}>{measurement}</Col>
@@ -193,6 +218,12 @@ const ProductGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+            />
+
+            <ProductShowPhotoDialog
+                open={showBigImg.openShowBigImg}
+                loading={showBigImg.showBigImgLoading}
+                onClose={showBigImg.handleCloseShowBigImg}
             />
 
             {detailData.data && <ConfirmDialog

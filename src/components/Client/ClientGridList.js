@@ -6,7 +6,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import sprintf from 'sprintf'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import Delete from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -61,8 +61,6 @@ const iconStyle = {
         padding: 0
     }
 }
-
-const tooltipPosition = 'bottom-center'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -141,6 +139,10 @@ const enhance = compose(
             color: '#333',
             fontWeight: '700'
         },
+        titleButtons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
+        },
         bodyTitle: {
             fontWeight: '600',
             marginBottom: '10px'
@@ -168,40 +170,39 @@ const ClientGridList = enhance((props) => {
             </IconButton>
 
             <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
+                <Delete />
             </IconButton>
         </div>
     )
+    const detId = _.get(detailData, 'id')
     const contacts = _.get(detailData, ['data', 'contacts'])
     const date = moment(_.get(detailData, ['data', 'createdDate'])).format('DD.MM.YYYY')
     const address = _.get(detailData, ['data', 'address']) || 'N/A'
     const providerName = _.get(detailData, ['data', 'name'])
 
     const clientDetail = (
-        <div className={classes.wrapper} key={_.get(detailData, 'id')}>
+        <div className={classes.wrapper} key={detId}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}>{providerName}</div>
                 <div className={classes.titleButtons}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        disableTouchRipple={true}
-                        onTouchTap={updateDialog.handleOpenUpdateDialog}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Изменить">
-                        <Edit />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        disableTouchRipple={true}
-                        onTouchTap={confirmDialog.handleOpenConfirmDialog}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Удалить">
-                        <DeleteIcon />
-                    </IconButton>
+                    <Tooltip position="bottom" text="Изменить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={ () => { updateDialog.handleOpenUpdateDialog(detId) }}>
+                            <Edit />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Удалить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={confirmDialog.handleOpenConfirmDialog}>
+                            <Delete />
+                        </IconButton>
+                    </Tooltip>
                 </div>
             </div>
             <div className={classes.container}>

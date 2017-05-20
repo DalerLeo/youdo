@@ -8,7 +8,8 @@ import CircularProgress from 'material-ui/CircularProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import Delete from 'material-ui/svg-icons/action/delete'
+import Tooltip from '../ToolTip'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -81,6 +82,10 @@ const enhance = compose(
             color: '#333',
             fontWeight: '700'
         },
+        titleButtons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
+        },
         bodyTitle: {
             fontWeight: '600',
             marginBottom: '10px'
@@ -102,8 +107,6 @@ const iconStyle = {
     }
 }
 withState('openDetails', 'setOpenDetails', false)
-
-const tooltipPosition = 'bottom-center'
 
 const ProviderDetails = enhance((props) => {
     const {classes,
@@ -134,26 +137,24 @@ const ProviderDetails = enhance((props) => {
             <div className={classes.title}>
                 <div className={classes.titleLabel}>{providerName}</div>
                 <div className={classes.titleButtons}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        disableTouchRipple={true}
-                        onTouchTap={() => { handleOpenUpdateDialog(providerId) }}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Изменить">
-                        <Edit />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        disableTouchRipple={true}
-                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(providerId) }}
-                        tooltipPosition={tooltipPosition}
-                        tooltip="Удалить">
-                        <DeleteIcon />
-                    </IconButton>
+                    <Tooltip position="bottom" text="Изменить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { handleOpenUpdateDialog(providerId) }}>
+                            <Edit />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Удалить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(providerId) }}>
+                            <Delete />
+                        </IconButton>
+                    </Tooltip>
                 </div>
             </div>
             <div className={classes.container}>
