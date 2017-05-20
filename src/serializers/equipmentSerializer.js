@@ -13,11 +13,12 @@ export const createSerializer = (data) => {
     }
 }
 
-export const listFilterSerializer = (data) => {
+export const listFilterSerializer = (data, manufacture) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
     return {
+        'manufacture': manufacture,
         'name': _.get(defaultData, 'name'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),

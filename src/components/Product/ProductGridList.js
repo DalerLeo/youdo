@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -129,6 +129,7 @@ const ProductGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const type = _.get(item, ['type', 'name']) || 'N/A'
+        const image = _.get(item, ['image', 'file']) || 'N/A'
         const brand = _.get(item, ['brand', 'name']) || 'N/A'
         const measurement = _.get(item, ['measurement', 'name']) || ''
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
@@ -139,6 +140,9 @@ const ProductGridList = enhance((props) => {
         )
         return (
             <Row key={id}>
+                <Col xs={3}>
+                    <img src={image}></img>{name}
+                </Col>
                 <Col xs={3} style={{display: 'flex', alignItems: 'center'}}>
                     <div className={classes.productImg}>
                         <a onClick={showBigImg.handleOpenShowBigImg}>

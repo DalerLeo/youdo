@@ -31,8 +31,10 @@ import ClientContactsField from './ClientContactsField'
 import UsersGroupSearchField from './UsersGroupSearchField'
 import TransactionTypeSearchField from './TransactionTypeSearchField'
 import ProductMeasurementField from './ProductMeasurementField'
+import ShiftSearchField from './ShiftSearchField'
 
 export {
+    ShiftSearchField,
     ProductMeasurementField,
     TransactionTypeSearchField,
     UsersGroupSearchField,

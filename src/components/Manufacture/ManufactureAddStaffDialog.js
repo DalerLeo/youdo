@@ -1,20 +1,20 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import FlatButton from 'material-ui/FlatButton'
-import {Field, reduxForm} from 'redux-form'
-import {TextField} from '../ReduxForm'
+import {reduxForm} from 'redux-form'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import CircularProgress from 'material-ui/CircularProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Person from '../Images/person.png'
 
 import ManufactureShiftCreateForm from './ManufactureShiftCreateForm'
+import ManufactureStaffCreateForm from './ManufactureStaffCreateForm'
 
 export const MANUFACTURE_ADD_STAFF_DIALOG_OPEN = 'addStaff'
 
@@ -233,8 +233,6 @@ const enhance = compose(
             }
         }
     }),
-    withState('openAddShift', 'setOpenAddShift', false),
-    withState('openAddStaff', 'setOpenAddStaff', false),
     reduxForm({
         form: 'ProviderCreateForm',
         enableReinitialize: true
@@ -260,14 +258,12 @@ const ManufactureAddStaffDialog = enhance((props) => {
         loading,
         onClose,
         classes,
-        openAddShift,
-        setOpenAddShift,
-        openAddStaff,
-        setOpenAddStaff,
+        staffData,
         shiftData,
+        userShift,
         confirmDialog
     } = props
-
+    const MINUS_ONE = -1
     const shiftList = _.map(_.get(shiftData, 'shiftList'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -284,17 +280,73 @@ const ManufactureAddStaffDialog = enhance((props) => {
                     <IconButton
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
-                        style={iconStyle.button}>
+                        style={iconStyle.button}
+                        onTouchTap={() => {
+                            shiftData.handleUpdateShiftForm(id)
+                        }}>
                         <Edit/>
                     </IconButton>
                     <IconButton
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         style={iconStyle.button}
-                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                        onTouchTap={() => {
+                            confirmDialog.handleOpenConfirmDialog(id)
+                        }}>
                         <DeleteIcon/>
                     </IconButton>
                 </div>
+            </div>
+        )
+    })
+
+    const staffList = _.map(_.get(shiftData, 'shiftList'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        const beginTime = _.get(item, 'beginTime')
+        const endTime = _.get(item, 'endTime')
+
+        return (
+            <div key={id} className={classes.personalList}>
+                <h4>
+                    {name}
+                    <span>({beginTime} - {endTime})</span>
+                </h4>
+                <ul>
+                    {
+                        _.map(_.get(userShift, 'userShiftList'), (item2) => {
+                            const itemId = _.get(item2, 'id')
+                            const shift = _.get(item2, 'shift')
+                            const user = _.get(item2, ['user', 'firstName']) + _.get(item2, ['user', 'secondName'])
+                            const position = _.get(item2, ['user', 'position'])
+                            if (id === shift) {
+                                return (
+                                    <li key={itemId}>
+                                        <div>
+                                            <img src={Person}/>
+                                        </div>
+                                        <div>{user}<br />
+                                            <span>worker {position}</span>
+                                        </div>
+                                        <div className={classes.deleteHideIco}>
+                                            <IconButton
+                                                iconStyle={iconStyle.icon}
+                                                disableTouchRipple={true}
+                                                style={iconStyle.button}
+                                                onTouchTap={ () => {
+                                                    userShift.handleOpenUserShiftConfirmDialog(itemId)
+                                                }}
+                                            >
+                                                <DeleteIcon/>
+                                            </IconButton>
+                                        </div>
+                                    </li>
+                                )
+                            }
+                            return (<li>no content</li>)
+                        })
+                    }
+                </ul>
             </div>
         )
     })
@@ -316,139 +368,60 @@ const ManufactureAddStaffDialog = enhance((props) => {
                 <div className={classes.inContent}>
                     <div className={classes.leftSide}>
                         <div className={classes.innerTitle}>
-                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Смена</h3>
-                            <a style={{float: 'right'}} onClick={() => { setOpenAddShift(!openAddShift) }}>
-                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
+                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>
+                                Смена</h3>
+                            <a style={{float: 'right'}}
+                               onClick={() => {
+                                   shiftData.handleOpenAddShiftForm(!_.get(shiftData, 'openAddShiftForm'))
+                               }}>
+                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
+                                            viewBox="0 0 24 15"/>
                                 добавить
                             </a>
                         </div>
-                        {openAddShift && <div className={classes.background}>
-                            <ManufactureShiftCreateForm
-                                onSubmit={shiftData.handleSubmitShiftAddForm}
-                                openAddShift={openAddShift}
-                                setOpenAddShift={setOpenAddShift} />
-                        </div>}
-                        {shiftList}
+                        {_.get(shiftData, 'openAddShiftForm') && (
+                        _.get(shiftData, 'shiftId') !== MINUS_ONE
+                            ? <div className={classes.background}>
+                                <ManufactureShiftCreateForm
+                                    initialValues={_.get(shiftData, 'initialValues')}
+                                    onSubmit={shiftData.handleSubmitUpdateShiftAddForm}/>
+                            </div>
+                            : <div className={classes.background}>
+                                <ManufactureShiftCreateForm
+                                    onSubmit={shiftData.handleSubmitShiftAddForm}/>
+                            </div>)}
+                        {
+                            _.get(userShift, 'userShiftLoading')
+                                ? <div style={{textAlign: 'center'}}>
+                                <CircularProgress size={100} thickness={6}/>
+                            </div>
+                                : shiftList
+                        }
                     </div>
                     <div className={classes.rightSide}>
                         <div className={classes.innerTitle}>
-                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>Персонал</h3>
-                            <a style={{float: 'right'}} onClick={() => { setOpenAddStaff(!openAddStaff) }}>
-                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
+                            <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '600', margin: '0'}}>
+                                Персонал</h3>
+                            <a style={{float: 'right'}}
+                               onClick={() => {
+                                   staffData.handleOpenAddStaffForm(!_.get(staffData, 'openAddStaffForm'))
+                               }}>
+                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
+                                            viewBox="0 0 24 15"/>
                                 добавить
                             </a>
                         </div>
-                        {openAddStaff && <div className={classes.staffAdd}>
-                            <form>
-                                <Field
-                                    name="name"
-                                    component={TextField}
-                                    className={classes.inputFieldShift}
-                                    label="Сотрудник"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="address"
-                                    component={TextField}
-                                    className={classes.inputFieldTime}
-                                    label="Смена"
-                                    fullWidth={true}/>
-                                <div className={classes.buttonSub}>
-                                    <FlatButton
-                                        label="Применить"
-                                        className={classes.actionButton}
-                                        type="submit"
-                                    />
-                                </div>
-                            </form>
+                        {_.get(staffData, 'openAddStaffForm') && <div className={classes.staffAdd}>
+                            <ManufactureStaffCreateForm
+                                initialValues={staffData.initialValues}
+                                onSubmit={staffData.handleSubmitStaffAddForm}/>
                         </div>}
-                        <div className={classes.personalList}>
-                            <div className={classes.shift}>
-                                <h4>
-                                    Смена Б
-                                    <span>(00:00 - 00:00)</span>
-                                </h4>
+                        {
+                            _.get(userShift, 'userShiftLoading')
+                            ? <div style={{textAlign: 'center'}}>
+                                <CircularProgress size={100} thickness={6}/>
                             </div>
-                            <ul>
-                                <li>
-                                    <div>
-                                        <img src={Person} />
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод<br />
-                                        <span>Должность</span>
-                                    </div>
-                                    <div className={classes.deleteHideIco}>
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            disableTouchRipple={true}
-                                            style={iconStyle.button}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <img src={Person} />
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод<br />
-                                        <span>Должность</span>
-                                    </div>
-                                    <div className={classes.deleteHideIco}>
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            disableTouchRipple={true}
-                                            style={iconStyle.button}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className={classes.personalList}>
-                            <div className={classes.shift}>
-                                <h4>
-                                    Смена Б
-                                    <span>(00:00 - 00:00)</span>
-                                </h4>
-                            </div>
-                            <ul>
-                                <li>
-                                    <div>
-                                        <img src={Person} />
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод<br />
-                                        <span>Должность</span>
-                                    </div>
-                                    <div className={classes.deleteHideIco}>
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            disableTouchRipple={true}
-                                            style={iconStyle.button}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <img src={Person} />
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод<br />
-                                        <span>Должность</span>
-                                    </div>
-                                    <div className={classes.deleteHideIco}>
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            disableTouchRipple={true}
-                                            style={iconStyle.button}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                            : staffList}
                     </div>
                 </div>
             </div>
@@ -462,8 +435,23 @@ ManufactureAddStaffDialog.propTypes = {
     onSubmit: PropTypes.func,
     loading: PropTypes.bool,
     shiftData: PropTypes.shape({
+        openAddShiftForm: PropTypes.bool.isRequired,
         shiftList: PropTypes.array,
-        handleSubmitShiftAddForm: PropTypes.func.isRequired
+        handleSubmitShiftAddForm: PropTypes.func.isRequired,
+        handleUpdateShiftForm: PropTypes.func.isRequired,
+        handleSubmitUpdateShiftAddForm: PropTypes.func.isRequired
+    }),
+    staffData: PropTypes.shape({
+        openAddStaffForm: PropTypes.bool.isRequired,
+        handleOpenAddStaffForm: PropTypes.func.isRequired,
+        staffList: PropTypes.array,
+        handleSubmitStaffAddForm: PropTypes.func.isRequired,
+        handleUpdateStaffForm: PropTypes.func
+    }),
+    userShift: PropTypes.shape({
+        userShiftLoading: PropTypes.bool,
+        userShiftList: PropTypes.array,
+        handleOpenUserShiftConfirmDialog: PropTypes.func.isRequired
     }),
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,

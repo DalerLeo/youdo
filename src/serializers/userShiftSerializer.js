@@ -1,23 +1,20 @@
 import _ from 'lodash'
-import moment from 'moment'
 
-export const createSerializer = (data) => {
-    const name = _.get(data, ['name'])
-    const beginTime = _.get(data, ['beginTime'])
-    const endTime = _.get(data, ['endTime'])
+export const createSerializer = (data, manufacture) => {
+    const user = _.get(data, ['user', 'value'])
+    const shift = _.get(data, ['shift', 'value'])
 
     return {
-        name,
-        'begin_time': moment(beginTime).format('HH:mm:ss'),
-        'end_time': moment(endTime).format('HH:mm:ss')
+        user,
+        shift,
+        manufacture
     }
 }
 
-export const listFilterSerializer = (data, manufacture) => {
+export const listFilterSerializer = (data) => {
     const {...defaultData} = data
 
     return {
-        'manufacture': manufacture,
         'name': _.get(defaultData, 'name'),
         'begin_time': _.get(defaultData, 'begin_time'),
         'end_time': _.get(defaultData, 'end_time')

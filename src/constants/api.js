@@ -148,6 +148,12 @@ export const SHIFT_LIST = `/${SHIFT}/`
 export const SHIFT_ITEM = `/${SHIFT}/%d/`
 export const SHIFT_DELETE = `/${SHIFT}/%d/`
 
+export const USER_SHIFT = 'dist/user_shift'
+export const USER_SHIFT_CREATE = `/${USER_SHIFT}/`
+export const USER_SHIFT_LIST = `/${USER_SHIFT}/`
+export const USER_SHIFT_ITEM = `/${USER_SHIFT}/%d/`
+export const USER_SHIFT_DELETE = `/${USER_SHIFT}/%d/`
+
 export const PENDING_EXPENSES = 'supply_expanse'
 export const PENDING_EXPENSES_CREATE = `/${PENDING_EXPENSES}/`
 export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`

@@ -170,8 +170,10 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const deliveryFromDate = _.get(filterForm, ['values', 'dateDelivery', 'fromDate']) || null
+            const deliveryToDate = _.get(filterForm, ['values', 'dateDelivery', 'toDate']) || null
+            const createdFromDate = _.get(filterForm, ['values', 'dateCreated', 'fromDate']) || null
+            const createdToDate = _.get(filterForm, ['values', 'dateCreated', 'toDate']) || null
             const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
 
@@ -179,8 +181,10 @@ const enhance = compose(
                 [SUPPLY_FILTER_OPEN]: false,
                 [SUPPLY_FILTER_KEY.PROVIDER]: provider,
                 [SUPPLY_FILTER_KEY.STOCK]: stock,
-                [SUPPLY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [SUPPLY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
+                [SUPPLY_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD'),
+                [SUPPLY_FILTER_KEY.CREATED_FROM_DATE]: createdFromDate && createdFromDate.format('YYYY-MM-DD'),
+                [SUPPLY_FILTER_KEY.CREATED_TO_DATE]: createdToDate && createdToDate.format('YYYY-MM-DD')
             })
         },
         handleOpenDeleteDialog: props => () => {
@@ -328,8 +332,10 @@ const SupplyList = enhance((props) => {
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const provider = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
     const stock = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STOCK))
-    const fromDate = filter.getParam(SUPPLY_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(SUPPLY_FILTER_KEY.TO_DATE)
+    const deliveryFromDate = filter.getParam(SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE)
+    const deliveryToDate = filter.getParam(SUPPLY_FILTER_KEY.DELIVERY_TO_DATE)
+    const createdFromDate = filter.getParam(SUPPLY_FILTER_KEY.CREATED_FROM_DATE)
+    const createdToDate = filter.getParam(SUPPLY_FILTER_KEY.CREATED_TO_DATE)
     const detailId = _.toInteger(_.get(params, 'supplyId'))
 
     const actionsDialog = {
@@ -400,9 +406,13 @@ const SupplyList = enhance((props) => {
             stock: {
                 value: stock
             },
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            dateDelivery: {
+                fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
+                toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
+            },
+            dateCreated: {
+                fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
+                toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
             }
         },
         filterLoading: false,

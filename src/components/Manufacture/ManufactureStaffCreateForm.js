@@ -5,10 +5,10 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
-import {TextField, TimeField} from '../ReduxForm'
+import {ShiftSearchField, UsersSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
-export const MANUFACTURE_ADD_SHIFT_FORM_OPEN = 'addShiftForm'
+export const MANUFACTURE_ADD_STAF_FORM_OPEN = 'addStaffForm'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -61,37 +61,29 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ShiftCreateForm',
+        form: 'StaffCreateForm',
         enableReinitialize: true
     })
 )
 
-const ManufactureAddShiftDialog = enhance((props) => {
+const ManufactureStaffCreateForm = enhance((props) => {
     const {classes, handleSubmit} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
         <form onSubmit={onSubmit}>
             <Field
-                name="name"
-                component={TextField}
+                name="user"
+                component={UsersSearchField}
                 className={classes.inputFieldShift}
-                label="Наименование"
+                label="Сотрудник"
                 fullWidth={true}/>
-            <div className={classes.timePick}>
-                <Field
-                    name="beginTime"
-                    component={TimeField}
-                    className={classes.inputFieldTime}
-                    label="Начало"
-                    fullWidth={true}/>
-                <Field
-                    name="endTime"
-                    component={TimeField}
-                    className={classes.inputFieldTime}
-                    label="Конец"
-                    fullWidth={true}/>
-            </div>
+            <Field
+                name="shift"
+                component={ShiftSearchField}
+                className={classes.inputFieldTime}
+                label="Смена"
+                fullWidth={true}/>
             <div className={classes.buttonSub}>
                 <FlatButton
                     label="Применить"
@@ -103,12 +95,12 @@ const ManufactureAddShiftDialog = enhance((props) => {
     )
 })
 
-ManufactureAddShiftDialog.propTypes = {
+ManufactureStaffCreateForm.propTypes = {
     onSubmit: PropTypes.func.isRequired
 }
 
-ManufactureAddShiftDialog.defaultProps = {
+ManufactureStaffCreateForm.defaultProps = {
     isUpdate: false
 }
 
-export default ManufactureAddShiftDialog
+export default ManufactureStaffCreateForm

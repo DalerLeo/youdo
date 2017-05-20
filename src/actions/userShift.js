@@ -3,12 +3,45 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/shiftSerializer'
+import * as serializers from '../serializers/userShiftSerializer'
 
-export const shiftCreateAction = (formValues) => {
+export const userShiftCreateAction = (formValues, manufacture) => {
+    const requestData = serializers.createSerializer(formValues, manufacture)
+    const payload = axios()
+        .post(API.USER_SHIFT_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.USER_SHIFT_CREATE,
+        payload
+    }
+}
+
+export const userShiftDeleteAction = (id) => {
+    const payload = axios()
+        .delete(sprintf(API.USER_SHIFT_DELETE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.USER_SHIFT_DELETE,
+        payload
+    }
+}
+
+export const userShiftUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .post(API.SHIFT_CREATE, requestData)
+        .put(sprintf(API.USER_SHIFT_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,14 +50,15 @@ export const shiftCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.SHIFT_CREATE,
+        type: actionTypes.USER_SHIFT_UPDATE,
         payload
     }
 }
 
-export const shiftDeleteAction = (id) => {
+export const userShiftListFetchAction = (manufactureId) => {
+    const params = serializers.listFilterSerializer(manufactureId)
     const payload = axios()
-        .delete(sprintf(API.SHIFT_DELETE, id))
+        .get(API.USER_SHIFT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,49 +67,15 @@ export const shiftDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.SHIFT_DELETE,
+        type: actionTypes.USER_SHIFT_LIST,
         payload
     }
 }
 
-export const shiftUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .put(sprintf(API.SHIFT_ITEM, id), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SHIFT_UPDATE,
-        payload
-    }
-}
-
-export const shiftListFetchAction = (filter, manufactureId) => {
-    const params = serializers.listFilterSerializer(filter.getParam(), manufactureId)
-    const payload = axios()
-        .get(API.SHIFT_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SHIFT_LIST,
-        payload
-    }
-}
-
-export const shiftCSVFetchAction = (filter) => {
+export const userShiftCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.SHIFT_LIST, {params})
+        .get(API.USER_SHIFT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -84,14 +84,14 @@ export const shiftCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.SHIFT_LIST_CSV,
+        type: actionTypes.USER_SHIFT_LIST_CSV,
         payload
     }
 }
 
-export const shiftItemFetchAction = (id) => {
+export const userShiftItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.SHIFT_ITEM, id))
+        .get(sprintf(API.USER_SHIFT_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -100,7 +100,7 @@ export const shiftItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.SHIFT_ITEM,
+        type: actionTypes.USER_SHIFT_ITEM,
         payload
     }
 }
@@ -108,7 +108,7 @@ export const shiftItemFetchAction = (id) => {
 export const addProductAction = (formValues) => {
     const requestData = serializers.addProductSerializer(formValues)
     const payload = axios()
-        .post(API.SHIFT_CREATE, requestData)
+        .post(API.USER_SHIFT_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -117,7 +117,7 @@ export const addProductAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.SHIFT_CREATE,
+        type: actionTypes.USER_SHIFT_CREATE,
         payload
     }
 }
