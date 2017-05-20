@@ -1,12 +1,9 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import axios from '../../helpers/axios'
+import moment from 'moment'
 import filterHelper from '../../helpers/filter'
-import * as actionTypes from '../../constants/actionTypes'
-import * as API from '../../constants/api'
-import * as ROUTER from '../../constants/routes'
-import * as serializers from '../../serializers/stockSerializer'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withState, withHandlers} from 'recompose'
 import React from 'react'
 import injectSheet from 'react-jss'
 import SideBarMenu from '../SidebarMenu'
@@ -21,6 +18,12 @@ import Money from 'material-ui/svg-icons/editor/attach-money'
 import Clear from 'material-ui/svg-icons/action/delete'
 import Storehouse from 'material-ui/svg-icons/action/home'
 import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
+import {
+    notificationListFetchAction,
+    notificationDeleteAction,
+    notificationItemFetchAction
+} from '../../actions/notifications'
+import {openSnackbarAction} from '../../actions/snackbar'
 
 const iconStyle = {
     icon: {
@@ -40,77 +43,52 @@ const storeIcon = '#f06292'
 
 const STOCK_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 
-const openSnackbarAction = (payload) => {
-    return {
-        type: actionTypes.SNACKBAR_OPEN,
-        payload
-    }
-}
-const stockListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.STOCK_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STOCK_LIST,
-        payload
-    }
-}
-const stockDeleteAction = (id) => {
-    const payload = axios()
-        .delete(sprintf(API.STOCK_DELETE, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STOCK_DELETE,
-        payload
-    }
-}
-
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const filter = filterHelper(pathname, query)
+        const notificationsList = _.get(state, ['notifications', 'list', 'data', 'results'])
+        const notificationsLoading = _.get(state, ['notifications', 'list', 'loading'])
 
         return {
-            filter
+            filter,
+            notificationsList,
+            notificationsLoading
         }
     }),
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('notificationId', 'setNotificationId', null),
+    withState('openNotifications', 'setOpenNotifications', false),
+    withState('clickNotifications', 'setClickNotifications', false),
+
     withHandlers({
         handleOpenConfirmDialog: props => (id) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.STOCK_ITEM_PATH, id),
-                query: filter.getParams({[STOCK_DELETE_DIALOG_OPEN]: true})
-            })
+            const {setOpenConfirmDialog, setNotificationId} = props
+            setOpenConfirmDialog(true)
+            setNotificationId(id)
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STOCK_DELETE_DIALOG_OPEN]: false})})
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, filter, location: {pathname}} = props
-            dispatch(stockDeleteAction(detail.id))
+            const {dispatch, setOpenConfirmDialog, notificationId} = props
+            dispatch(notificationDeleteAction(notificationId))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[STOCK_DELETE_DIALOG_OPEN]: false})})
-                    dispatch(stockListFetchAction(filter))
+                    setOpenConfirmDialog(false)
+                    dispatch(notificationListFetchAction())
                 })
+        },
+
+        handleOpenNotificationBar: props => (status) => {
+            const {setOpenNotifications, dispatch} = props
+            setOpenNotifications(status)
+            dispatch(notificationListFetchAction())
         }
 
     }),
@@ -247,11 +225,64 @@ const enhance = compose(
                 color: '#999'
             }
         }
-    }),
-    withState('openNotifications', 'setOpenNotifications', false),
-    withState('clickNotifications', 'setClickNotifications', false)
-    )
-const Layout = ({classes, detailData, handleCloseConfirmDialog, handleSendConfirmDialog, handleSignOut, children, setOpenNotifications, openNotifications, clickNotifications, setClickNotifications}) => {
+    })
+)
+const Layout = enhance((props) => {
+    const {
+        state,
+        classes,
+        detailData,
+        handleSignOut,
+        children,
+        notificationId,
+        openNotifications,
+        clickNotifications,
+        setClickNotifications,
+        notificationsList,
+        notificationsLoading,
+    } = props
+
+    const notificationData = {
+        open: props.openConfirmDialog,
+        notificationsId: props.notificationsId,
+        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
+        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
+        handleSendConfirmDialog: props.handleSendConfirmDialog,
+        handleOpenNotificationBar: props.handleOpenNotificationBar
+    }
+    const notificationListExp = _.map(notificationsList, (item) => {
+        const id = _.get(item, 'id')
+        const title = _.get(item, 'title')
+        const text = _.get(item, 'text')
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+
+        return (
+            <div key={id} className={classes.notif} onClick={() => {
+                setClickNotifications(true)
+            }} style={clickNotifications ? {opacity: '0.5'} : {opacity: '1'}}>
+                <div className="notifIcon money">
+                    <Money/>
+                </div>
+                <div className={classes.notifContent}>
+                    <div className={classes.notifTitle}>
+                        <div>{title}</div>
+                        <span>{createdDate}</span>
+                    </div>
+                    <div className="notificationText">
+                        {text}
+                    </div>
+                </div>
+                <IconButton
+                    iconStyle={iconStyle.icon}
+                    style={iconStyle.button}
+                    onTouchTap={ () => { notificationData.handleOpenConfirmDialog(id) }}
+                >
+                    <Clear color="#dadada"/>
+                </IconButton>
+            </div>
+        )
+    })
+    console.log(notificationId)
     return (
         <div className={classes.wrapper}>
             <div className={classes.notifications} style={openNotifications ? {} : {display: 'none'}}>
@@ -262,13 +293,18 @@ const Layout = ({classes, detailData, handleCloseConfirmDialog, handleSendConfir
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
-                                onTouchTap={() => { setOpenNotifications(false) }}>
+                                onTouchTap={() => {
+                                    notificationData.handleOpenNotificationBar(false)
+                                }}>
                                 <CloseIcon2 color="#fff"/>
                             </IconButton>
                         </div>
                     </div>
                     <div className={classes.notifBody}>
-                        <div className={classes.notif} onClick={() => { setClickNotifications(true) }} style={clickNotifications ? {opacity: '0.5'} : {opacity: '1'}}>
+                        {notificationListExp}
+                        <div className={classes.notif} onClick={() => {
+                            setClickNotifications(true)
+                        }} style={clickNotifications ? {opacity: '0.5'} : {opacity: '1'}}>
                             <div className="notifIcon money">
                                 <Money/>
                             </div>
@@ -283,7 +319,9 @@ const Layout = ({classes, detailData, handleCloseConfirmDialog, handleSendConfir
                             </div>
                             <IconButton
                                 iconStyle={iconStyle.icon}
-                                style={iconStyle.button}>
+                                style={iconStyle.button}
+                                onTouchTap={ () => { notificationData.handleOpenConfirmDialog(1) }}
+                            >
                                 <Clear color="#dadada"/>
                             </IconButton>
                         </div>
@@ -367,7 +405,7 @@ const Layout = ({classes, detailData, handleCloseConfirmDialog, handleSendConfir
                 </Paper>
             </div>
             <div className={classes.sidenav}>
-                <SideBarMenu handleSignOut={handleSignOut} setOpenNotifications={setOpenNotifications} />
+                <SideBarMenu handleSignOut={handleSignOut} handleOpenNotificationBar={notificationData.handleOpenNotificationBar}/>
             </div>
             <div className={classes.content}>
                 {children}
@@ -376,13 +414,13 @@ const Layout = ({classes, detailData, handleCloseConfirmDialog, handleSendConfir
             <SnakeBar />
             <ConfirmDialog
                 type="delete"
-                message={_.get(detailData, ['data', 'name'])}
-                onClose={handleCloseConfirmDialog}
-                onSubmit={handleSendConfirmDialog}
-                open={false}
+                message={_.get(_.find(notificationsList, {'id': notificationId}), 'title')}
+                onClose={notificationData.handleCloseConfirmDialog}
+                onSubmit={notificationData.handleSendConfirmDialog}
+                open={notificationData.open}
             />
         </div>
     )
-}
+})
 
-export default enhance(Layout)
+export default Layout

@@ -175,6 +175,10 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.USER_SHIFT_UPDATE),
         item: createThunkReducer(actionTypes.USER_SHIFT_ITEM)
     }),
+    notifications: combineReducers({
+        list: createThunkReducer(actionTypes.NOTIFICATIONS_LIST),
+        item: createThunkReducer(actionTypes.NOTIFICATIONS_ITEM)
+    }),
     pendingExpenses: combineReducers({
         create: createThunkReducer(actionTypes.PENDING_EXPENSES_CREATE),
         list: createThunkReducer(actionTypes.PENDING_EXPENSES_LIST),
