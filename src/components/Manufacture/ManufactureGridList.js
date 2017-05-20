@@ -279,7 +279,7 @@ const ManufactureGridList = enhance((props) => {
                                 </div>
                             )
                         }
-                        // Return (<div>no content</div>)
+                        return ''
                     })
                 }
             </div>
