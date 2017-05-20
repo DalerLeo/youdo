@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import moment from 'moment'
+import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'

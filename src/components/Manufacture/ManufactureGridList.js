@@ -17,6 +17,7 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
+import CircularProgress from 'material-ui/CircularProgress'
 import MainStyles from '../Styles/MainStyles'
 import Person from '../Images/person.png'
 import ConfirmDialog from '../ConfirmDialog'
@@ -239,17 +240,27 @@ const ManufactureGridList = enhance((props) => {
                         <span>График: {beginTime} - {endTime}</span>
                     </div>
                 </div>
-                <ul className={classes.productionStaffUl}>
-                    <li className="dottedList">
-                        <div>
-                            <img src={Person}/>
-                        </div>
-                        <div>
-                            Атамбаев Бекзод<br />
-                            <span>Должность</span>
-                        </div>
-                    </li>
-                </ul>
+                {
+                    _.map(_.get(userShift, 'userShiftList'), (item2) => {
+                        const itemId = _.get(item2, 'id')
+                        const shift = _.get(item2, 'shift')
+                        const user = _.get(item2, ['user', 'firstName']) + _.get(item2, ['user', 'secondName'])
+                        const position = _.get(item2, ['user', 'position'])
+                        if (id === shift) {
+                            return (
+                                <li key={itemId}>
+                                    <div>
+                                        <img src={Person}/>
+                                    </div>
+                                    <div>{user}<br />
+                                        <span>worker {position}</span>
+                                    </div>
+                                </li>
+                            )
+                        }
+                        return (<div>no content</div>)
+                    })
+                }
             </div>
         )
     })
@@ -277,10 +288,9 @@ const ManufactureGridList = enhance((props) => {
     const shift = _.find(shiftListExp, (o) => {
         return _.toInteger(o.id) === _.toInteger(shiftId)
     })
-    console.log(_.get(userShift, 'userShiftId'))
-    console.log(_.get(userShift, 'userShiftList'))
-    console.log(_.find(_.get(userShift, 'userShiftList'), (o) => {return o.id ===  _.get(userShift, 'userShiftId')}))
-
+    const currentUserShift = _.get(_.find(_.get(userShift, 'userShiftList'), {'id': _.get(userShift, 'userShiftId')}), ['user', 'firstName']) + ' ' +
+        _.get(_.find(_.get(userShift, 'userShiftList'), {'id': _.get(userShift, 'userShiftId')}), ['user', 'secondName'])
+    const MINUS_ONE = -1
     return (
         <Container>
             <SubMenu url={ROUTES.MANUFACTURE_CUSTOM_URL}/>
@@ -308,7 +318,13 @@ const ManufactureGridList = enhance((props) => {
                 <Col xs={3} className={classes.productionLeftSide}>
                     <h2 className={classes.productionH2}>Этапы производства</h2>
                     <ul className={classes.productionUl}>
-                        {manufactureList}
+                        {
+                            _.get(listData, 'listLoading')
+                            ? <div style={{textAlign: 'center'}}>
+                                <CircularProgress size={100} thickness={6}/>
+                            </div>
+                            : manufactureList
+                        }
                     </ul>
                 </Col>
                 <Col xs={9} className={classes.productionRightSide}>
@@ -332,7 +348,13 @@ const ManufactureGridList = enhance((props) => {
                                     добавить
                                 </a>
                             </div>
-                            {shiftList}
+                            {
+                                _.get(userShift, 'userShiftLoading')
+                                ? <div style={{textAlign: 'center'}}>
+                                    <CircularProgress size={100} thickness={6}/>
+                                </div>
+                                : shiftList
+                            }
                         </Col>
                         <Col xs={8} style={{padding: '20px 25px'}}>
                             <Row>
@@ -344,7 +366,13 @@ const ManufactureGridList = enhance((props) => {
                                         margin: '0'
                                     }}>Оборудование</h3>
                                     <Row className={classes.productionEquipment}>
-                                        {equipList}
+                                        {
+                                            _.get(equipmentData, 'equipmentListLoading')
+                                                ? <div style={{textAlign: 'center'}}>
+                                                <CircularProgress size={100} thickness={6}/>
+                                            </div>
+                                                : equipList
+                                        }
                                     </Row>
                                 </Col>
                             </Row>
@@ -409,9 +437,9 @@ const ManufactureGridList = enhance((props) => {
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
             />}
-            {_.get(userShift, 'userShiftId') !== -1 && <ConfirmDialog
+            {_.get(userShift, 'userShiftId') !== MINUS_ONE && <ConfirmDialog
                 type="delete"
-                message={_.get(_.find(_.get(shiftData, 'shiftList'), {'id': _.toInteger(_.get(userShift, 'userShiftId'))}), 'name')}
+                message={currentUserShift}
                 onClose={userShift.handleCloseUserShiftConfirmDialog}
                 onSubmit={userShift.handleSendUserShiftConfirmDialog}
                 open={userShift.openUserShiftConfirmDialog}

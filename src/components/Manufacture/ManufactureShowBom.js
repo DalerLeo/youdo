@@ -126,7 +126,7 @@ const enhance = compose(
 )
 
 const ManufactureShowBom = enhance((props) => {
-    const {open, loading, onClose, classes, openAddMaterials, setOpenAddMaterials, userShiftConfirmClick} = props
+    const {open, loading, onClose, classes, openAddMaterials, setOpenAddMaterials} = props
 
     const iconButton = (
         <IconButton style={{padding: '0 12px', height: 'auto'}}>
@@ -305,7 +305,7 @@ ManufactureShowBom.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func,
-    loading: PropTypes.bool,
+    loading: PropTypes.bool
 }
 
 ManufactureShowBom.defaultProps = {

@@ -27,6 +27,7 @@ import {
 import {
     shiftCreateAction,
     shiftListFetchAction,
+    shiftUpdateAction,
     shiftDeleteAction
 } from '../../actions/shift'
 import {
@@ -50,7 +51,9 @@ const enhance = compose(
         const updateLoading = _.get(state, ['manufacture', 'update', 'loading'])
         const list = _.get(state, ['manufacture', 'list', 'data'])
         const shiftList = _.get(state, ['shift', 'list', 'data'])
+        const shiftListLoading = _.get(state, ['shift', 'list', 'loading'])
         const equipmentList = _.get(state, ['equipment', 'list', 'data'])
+        const equipmentListLoading = _.get(state, ['equipment', 'list', 'loading'])
         const userShiftList = _.get(state, ['userShift', 'list', 'data'])
         const userShiftLoading = _.get(state, ['userShift', 'list', 'loading'])
         const listLoading = _.get(state, ['manufacture', 'list', 'loading'])
@@ -68,6 +71,8 @@ const enhance = compose(
             list,
             shiftList,
             equipmentList,
+            equipmentListLoading,
+            shiftListLoading,
             listLoading,
             detail,
             detailLoading,
@@ -87,19 +92,38 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        return !nextProps.listLoading && _.isNil(nextProps.list)
     }, ({dispatch, filter}) => {
         dispatch(manufactureListFetchAction(filter))
-        dispatch(equipmentListFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return !nextProps.shiftListLoading && _.isNil(nextProps.shiftList)
+    }, ({dispatch, filter, params}) => {
+        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        manufactureId && dispatch(shiftListFetchAction(filter, manufactureId))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return !nextProps.userShiftLoading && _.isNil(nextProps.userShiftList)
+    }, ({dispatch, filter, params}) => {
+        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        manufactureId && dispatch(userShiftListFetchAction(filter, manufactureId))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return !nextProps.equipmentListLoading && _.isNil(nextProps.equipmentList)
+    }, ({dispatch, filter, params}) => {
+        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        manufactureId && dispatch(equipmentListFetchAction(filter, manufactureId))
     }),
 
     withPropsOnChange((props, nextProps) => {
         const manufactureId = _.get(nextProps, ['params', 'manufactureId'])
         return manufactureId && _.get(props, ['params', 'manufactureId']) !== manufactureId
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, filter}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
         manufactureId && dispatch(manufactureItemFetchAction(manufactureId))
-        manufactureId && dispatch(shiftListFetchAction(manufactureId))
+        manufactureId && dispatch(shiftListFetchAction(filter, manufactureId))
+        manufactureId && dispatch(userShiftListFetchAction(filter))
+        manufactureId && dispatch(equipmentListFetchAction(filter, manufactureId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -134,15 +158,14 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[SHIFT_DELETE_DIALOG_OPEN]: false, 'shiftId': -1})})
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, filter, location: {pathname}, shiftId} = props
-            const shiftIdExp = _.toInteger(shiftId)
-            dispatch(shiftDeleteAction(shiftIdExp))
+            const {dispatch, filter, location: {pathname}, shiftId, detail} = props
+            dispatch(shiftDeleteAction(_.toInteger(shiftId)))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SHIFT_DELETE_DIALOG_OPEN]: false})})
-                    dispatch(shiftListFetchAction(filter))
+                    dispatch(shiftListFetchAction(filter, detail.id))
                 })
         },
         handleOpenUserShiftConfirmDialog: props => (id) => {
@@ -158,7 +181,7 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[USER_SHIFT_DELETE_DIALOG_OPEN]: false, 'userShiftId': -1})})
         },
         handleSendUserShiftConfirmDialog: props => () => {
-            const {dispatch, filter, location: {pathname}, userShiftId} = props
+            const {dispatch, filter, location: {pathname}, userShiftId, detail} = props
             const userShiftIdExp = _.toInteger(userShiftId)
             dispatch(userShiftDeleteAction(userShiftIdExp))
                 .catch(() => {
@@ -166,29 +189,14 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[USER_SHIFT_DELETE_DIALOG_OPEN]: false})})
-                    dispatch(shiftListFetchAction(filter))
+                    dispatch(shiftListFetchAction(filter, detail.id))
                     dispatch(userShiftListFetchAction(filter))
                 })
         },
 
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
-
         handleOpenAddStaff: props => () => {
-            const {detailData, dispatch, location: {pathname}, filter} = props
+            const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: true})})
-            dispatch(shiftListFetchAction(_.get(detailData, 'id')))
-            dispatch(userShiftListFetchAction())
         },
         handleCloseAddStaff: props => () => {
             const {location: {pathname}, filter} = props
@@ -210,20 +218,35 @@ const enhance = compose(
         },
 
         handleSubmitShiftAddForm: props => () => {
-            const {dispatch, shiftCreateForm, filter, location: {pathname}} = props
+            const {dispatch, shiftCreateForm, filter, location: {pathname}, detail} = props
 
             return dispatch(shiftCreateAction(_.get(shiftCreateForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_SHIFT_FORM_OPEN]: false})})
-                    dispatch(shiftListFetchAction(filter))
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[MANUFACTURE_ADD_SHIFT_FORM_OPEN]: false})})
+                    dispatch(shiftListFetchAction(filter, detail.id))
                 })
         },
+
         handleUpdateShiftForm: props => (id) => {
             const {filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_SHIFT_FORM_OPEN]: true, 'staffId': id})})
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_SHIFT_FORM_OPEN]: true, 'shiftId': id})})
+        },
+        handleSubmitUpdateShiftAddForm: props => () => {
+            const {dispatch, shiftCreateForm, filter, location: {pathname}, shiftId, detail} = props
+
+            return dispatch(shiftUpdateAction(_.toInteger(shiftId), _.get(shiftCreateForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_SHIFT_FORM_OPEN]: false})})
+                    dispatch(shiftListFetchAction(filter, detail.id))
+                })
         },
 
         handleOpenAddStaffForm: props => (open) => {
@@ -249,7 +272,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAF_FORM_OPEN]: false})})
-                    dispatch(shiftListFetchAction(filter))
+                    dispatch(shiftListFetchAction(filter, detail.id))
                     dispatch(userShiftListFetchAction(filter))
                 })
         },
@@ -265,7 +288,7 @@ const enhance = compose(
         },
 
         handleSubmitShowBom: props => () => {
-            const {dispatch, shiftCreateForm, filter, location: {pathname}} = props
+            const {dispatch, shiftCreateForm, filter, location: {pathname}, detail} = props
 
             return dispatch(shiftCreateAction(_.get(shiftCreateForm, ['values'])))
                 .then(() => {
@@ -273,7 +296,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_STAFF_DIALOG_OPEN]: true})})
-                    dispatch(shiftListFetchAction(filter))
+                    dispatch(shiftListFetchAction(filter, detail.id))
                 })
         },
         handleOpenAddProductDialog: props => () => {
@@ -285,7 +308,7 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: false})})
         },
         handleSubmitAddProductDialog: props => () => {
-            const {dispatch, productAddForm, filter, location: {pathname}} = props
+            const {dispatch, productAddForm, filter, location: {pathname}, detail} = props
 
             return dispatch(manufactureProductCreateAction(_.get(productAddForm, ['values'])))
                 .then(() => {
@@ -293,16 +316,19 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: true})})
-                    dispatch(shiftListFetchAction(filter))
+                    dispatch(shiftListFetchAction(filter, detail.id))
                 })
         },
         handleClickItem: props => (id) => {
+            const {dispatch, filter, detail} = props
             hashHistory.push({
                 pathname: sprintf(ROUTER.MANUFACTURE_ITEM_PATH, id)
             })
+            dispatch(shiftListFetchAction(filter, detail.id))
+            dispatch(equipmentListFetchAction(filter, detail.id))
         },
         handleSubmitAddIngredient: props => () => {
-            const {dispatch, shiftCreateForm, filter, location: {pathname}} = props
+            const {dispatch, shiftCreateForm, filter, location: {pathname}, detail} = props
 
             return dispatch(shiftCreateAction(_.get(shiftCreateForm, ['values'])))
                 .then(() => {
@@ -310,7 +336,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname})
-                    dispatch(shiftListFetchAction(filter))
+                    dispatch(shiftListFetchAction(filter, detail.id))
                 })
         }
     })
@@ -320,11 +346,13 @@ const ManufactureList = enhance((props) => {
     const {
         list,
         shiftList,
+        shiftListLoading,
         shiftId,
         userShiftList,
         userShiftLoading,
         userShiftId,
         equipmentList,
+        equipmentListLoading,
         listLoading,
         location,
         detail,
@@ -380,11 +408,13 @@ const ManufactureList = enhance((props) => {
     const currentShift = _.find(_.get(shiftList, 'results'), {'id': _.toInteger(shiftId)})
     const shiftData = {
         openAddShiftForm,
+        shiftListLoading,
         handleOpenAddShiftForm: props.handleOpenAddShiftForm,
         handleUpdateShiftForm: props.handleUpdateShiftForm,
         shiftList: _.get(shiftList, 'results'),
         shiftId: shiftId,
         handleSubmitShiftAddForm: props.handleSubmitShiftAddForm,
+        handleSubmitUpdateShiftAddForm: props.handleSubmitUpdateShiftAddForm,
         initialValues: (() => {
             if (!shiftId) {
                 return {}
@@ -427,6 +457,7 @@ const ManufactureList = enhance((props) => {
     }
 
     const equipmentData = {
+        equipmentListLoading,
         equipmentList: _.get(equipmentList, 'results')
     }
 

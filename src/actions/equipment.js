@@ -55,8 +55,8 @@ export const equipmentUpdateAction = (id, formValues) => {
     }
 }
 
-export const equipmentListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const equipmentListFetchAction = (filter, manufacture) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), manufacture)
     const payload = axios()
         .get(API.EQUIPMENT_LIST, {params})
         .then((response) => {

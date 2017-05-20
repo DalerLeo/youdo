@@ -1,16 +1,15 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import FlatButton from 'material-ui/FlatButton'
-import {Field, reduxForm} from 'redux-form'
-import {TextField} from '../ReduxForm'
+import {reduxForm} from 'redux-form'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import CircularProgress from 'material-ui/CircularProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Person from '../Images/person.png'
 
@@ -264,7 +263,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
         userShift,
         confirmDialog
     } = props
-
+    const MINUS_ONE = -1
     const shiftList = _.map(_.get(shiftData, 'shiftList'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -334,14 +333,17 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                                 iconStyle={iconStyle.icon}
                                                 disableTouchRipple={true}
                                                 style={iconStyle.button}
-                                                onTouchTap={ () => { userShift.handleOpenUserShiftConfirmDialog(itemId) }}
-                                                >
+                                                onTouchTap={ () => {
+                                                    userShift.handleOpenUserShiftConfirmDialog(itemId)
+                                                }}
+                                            >
                                                 <DeleteIcon/>
                                             </IconButton>
                                         </div>
                                     </li>
                                 )
                             }
+                            return (<li>no content</li>)
                         })
                     }
                 </ul>
@@ -377,12 +379,24 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                 добавить
                             </a>
                         </div>
-                        {_.get(shiftData, 'openAddShiftForm') && <div className={classes.background}>
-                            <ManufactureShiftCreateForm
-                                initialValues={shiftData.initialValues}
-                                onSubmit={shiftData.handleSubmitShiftAddForm}/>
-                        </div>}
-                        {shiftList}
+                        {_.get(shiftData, 'openAddShiftForm') && (
+                        _.get(shiftData, 'shiftId') !== MINUS_ONE
+                            ? <div className={classes.background}>
+                                <ManufactureShiftCreateForm
+                                    initialValues={_.get(shiftData, 'initialValues')}
+                                    onSubmit={shiftData.handleSubmitUpdateShiftAddForm}/>
+                            </div>
+                            : <div className={classes.background}>
+                                <ManufactureShiftCreateForm
+                                    onSubmit={shiftData.handleSubmitShiftAddForm}/>
+                            </div>)}
+                        {
+                            _.get(userShift, 'userShiftLoading')
+                                ? <div style={{textAlign: 'center'}}>
+                                <CircularProgress size={100} thickness={6}/>
+                            </div>
+                                : shiftList
+                        }
                     </div>
                     <div className={classes.rightSide}>
                         <div className={classes.innerTitle}>
@@ -402,7 +416,12 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                 initialValues={staffData.initialValues}
                                 onSubmit={staffData.handleSubmitStaffAddForm}/>
                         </div>}
-                        {staffList}
+                        {
+                            _.get(userShift, 'userShiftLoading')
+                            ? <div style={{textAlign: 'center'}}>
+                                <CircularProgress size={100} thickness={6}/>
+                            </div>
+                            : staffList}
                     </div>
                 </div>
             </div>
@@ -419,7 +438,8 @@ ManufactureAddStaffDialog.propTypes = {
         openAddShiftForm: PropTypes.bool.isRequired,
         shiftList: PropTypes.array,
         handleSubmitShiftAddForm: PropTypes.func.isRequired,
-        handleUpdateShiftForm: PropTypes.func.isRequired
+        handleUpdateShiftForm: PropTypes.func.isRequired,
+        handleSubmitUpdateShiftAddForm: PropTypes.func.isRequired
     }),
     staffData: PropTypes.shape({
         openAddStaffForm: PropTypes.bool.isRequired,

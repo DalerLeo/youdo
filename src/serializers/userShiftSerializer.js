@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 
 export const createSerializer = (data, manufacture) => {
     const user = _.get(data, ['user', 'value'])
