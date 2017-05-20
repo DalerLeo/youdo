@@ -57,7 +57,6 @@ const SetCurrencyDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, currencyData, currentCurrency} = props
     const currency = _.find(_.get(currencyData, 'data'), {'id': _.get(currencyData, ['detail', 'id'])})
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
     return (
         <Dialog
             modal={true}

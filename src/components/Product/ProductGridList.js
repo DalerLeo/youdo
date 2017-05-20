@@ -23,7 +23,6 @@ import Tooltip from '../ToolTip'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Product from '../Images/product.png'
 import Landscape from 'material-ui/svg-icons/image/landscape'
 
 const listHeader = [
@@ -131,6 +130,7 @@ const ProductGridList = enhance((props) => {
         const type = _.get(item, ['type', 'name']) || 'N/A'
         const image = _.get(item, ['image', 'file']) || 'N/A'
         const brand = _.get(item, ['brand', 'name']) || 'N/A'
+        const image = _.get(item, ['image', 'file'])
         const measurement = _.get(item, ['measurement', 'name']) || ''
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
@@ -145,10 +145,8 @@ const ProductGridList = enhance((props) => {
                 </Col>
                 <Col xs={3} style={{display: 'flex', alignItems: 'center'}}>
                     <div className={classes.productImg}>
-                        <a onClick={showBigImg.handleOpenShowBigImg}>
-                            {(id % '2') ? <Landscape style={{color: '#999', paddingTop: '2px'}} />
-                                : <img src={Product} /> }
-                        </a>
+                        {_.isEmpty(image) ? <Landscape style={{color: '#999', paddingTop: '2px'}} />
+                            : <a onClick={() => showBigImg.handleOpenShowBigImg(id)}><img src={image} /> </a>}
                     </div>
                     <div style={{display: 'inline-block'}}>{name}</div>
                 </Col>
@@ -222,9 +220,11 @@ const ProductGridList = enhance((props) => {
             />
 
             <ProductShowPhotoDialog
+                initialValues={showBigImg.initialValues}
                 open={showBigImg.openShowBigImg}
                 loading={showBigImg.showBigImgLoading}
                 onClose={showBigImg.handleCloseShowBigImg}
+                detailData={detailData}
             />
 
             {detailData.data && <ConfirmDialog

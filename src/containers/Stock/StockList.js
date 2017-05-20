@@ -170,6 +170,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[STOCK_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(stockListFetchAction(filter))
                 })
         }
     })

@@ -51,7 +51,9 @@ const enhance = compose(
             background: '#fff',
             borderBottom: '1px dotted #eee',
             alignItems: 'center',
-            boxShadow: 'rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px'
+            boxShadow: 'rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px',
+            position: 'relative',
+            minHeight: '150px'
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',

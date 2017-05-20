@@ -1,9 +1,9 @@
+import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import Product from '../Images/product.png'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 
@@ -73,19 +73,31 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             height: '100%',
+            overflow: 'initial !important',
+            textAlign: 'center',
             minHeight: '300px !important',
             '& img': {
                 margin: '0 auto',
                 display: 'block',
                 boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 45px, rgba(0, 0, 0, 0.22) 0px 10px 18px'
             }
+        },
+        imgWrapper: {
+            display: 'inline-block',
+            position: 'relative'
+        },
+        closeBtn: {
+            position: 'absolute !important',
+            right: '-48px',
+            top: '-48px'
         }
     }),
 )
 
 const ProductShowPhotoDialog = enhance((props) => {
-    const {open, loading, onClose, classes} = props
-
+    const {open, loading, onClose, classes, detailData} = props
+    const items = _.get(detailData, 'data')
+    const image = _.get(items, ['image', 'file'])
     return (
         <Dialog
             modal={true}
@@ -95,12 +107,13 @@ const ProductShowPhotoDialog = enhance((props) => {
             contentStyle={loading ? {width: '300px'} : {}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.imgPopup}>
-            <div className={classes.titleContent}>
-                <IconButton onTouchTap={onClose} style={{color: '#fff'}}>
+
+            <div className={classes.imgWrapper}>
+                <IconButton onTouchTap={onClose} style={{color: '#fff'}} className={classes.closeBtn}>
                     <CloseIcon2 color="#fff"/>
                 </IconButton>
+                <img src={image}/>
             </div>
-            <img src={Product} />
         </Dialog>
     )
 })
@@ -108,7 +121,8 @@ const ProductShowPhotoDialog = enhance((props) => {
 ProductShowPhotoDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    detailData: PropTypes.object
 }
 
 export default ProductShowPhotoDialog

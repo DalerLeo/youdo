@@ -9,6 +9,7 @@ import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
+import ClientDetails from './ClientDetails'
 import Container from '../Container'
 import ClientCreateDialog from './ClientCreateDialog'
 import DeleteDialog from '../DeleteDialog'
@@ -19,7 +20,6 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-import Edit from 'material-ui/svg-icons/image/edit'
 import {Link} from 'react-router'
 
 const listHeader = [
@@ -48,19 +48,6 @@ const listHeader = [
         title: ''
     }
 ]
-
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 20,
-        height: 20
-    },
-    button: {
-        width: 48,
-        height: 48,
-        padding: 0
-    }
-}
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -149,7 +136,6 @@ const enhance = compose(
         }
     })
 )
-
 const ClientGridList = enhance((props) => {
     const {
         filter,
@@ -162,7 +148,16 @@ const ClientGridList = enhance((props) => {
         detailData,
         classes
     } = props
-
+    const clientDetail = (
+        <ClientDetails
+            key={_.get(detailData, 'id')}
+            data={_.get(detailData, 'data') || {}}
+            deleteDialog={deleteDialog}
+            confirmDialog={confirmDialog}
+            loading={_.get(detailData, 'detailLoading')}
+            updateDialog={updateDialog}
+        />
+    )
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
@@ -172,66 +167,6 @@ const ClientGridList = enhance((props) => {
             <IconButton onTouchTap={actionsDialog.handleActionDelete}>
                 <Delete />
             </IconButton>
-        </div>
-    )
-    const detId = _.get(detailData, 'id')
-    const contacts = _.get(detailData, ['data', 'contacts'])
-    const date = moment(_.get(detailData, ['data', 'createdDate'])).format('DD.MM.YYYY')
-    const address = _.get(detailData, ['data', 'address']) || 'N/A'
-    const providerName = _.get(detailData, ['data', 'name'])
-
-    const clientDetail = (
-        <div className={classes.wrapper} key={detId}>
-            <div className={classes.title}>
-                <div className={classes.titleLabel}>{providerName}</div>
-                <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Изменить">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={ () => { updateDialog.handleOpenUpdateDialog(detId) }}>
-                            <Edit />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text="Удалить">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}>
-                            <Delete />
-                        </IconButton>
-                    </Tooltip>
-                </div>
-            </div>
-            <div className={classes.container}>
-                <div className={classes.leftSide}>
-                    <div className={classes.bodyTitle}>Адрес</div>
-                    <div>{address}</div>
-                </div>
-                <div className={classes.body}>
-                    <div className={classes.bodyTitle}>Контакты</div>
-                    <div>
-                        {_.map(contacts, (item) => {
-                            const name = _.get(item, 'name')
-                            const phone = _.get(item, 'telephone')
-                            const email = _.get(item, 'email')
-                            return (
-                                <Row key={item.id} className="dottedList">
-                                    <Col xs={4}>{name}</Col>
-                                    <Col xs={4}>{email}</Col>
-                                    <Col xs={4}>{phone}</Col>
-                                </Row>
-                            )
-                        })}
-                    </div>
-                </div>
-                <div className={classes.rightSide}>
-                    <div className={classes.bodyTitle}>Дата добавления</div>
-                    <div>{date}</div>
-                </div>
-            </div>
         </div>
     )
 
