@@ -1,7 +1,13 @@
+import _ from 'lodash'
+import moment from 'moment'
+import filterHelper from '../../helpers/filter'
+import {compose, withState, withHandlers} from 'recompose'
 import React from 'react'
 import injectSheet from 'react-jss'
 import SideBarMenu from '../SidebarMenu'
 import SnakeBar from '../Snackbar'
+import {connect} from 'react-redux'
+import ConfirmDialog from '../ConfirmDialog'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
@@ -9,7 +15,11 @@ import Money from 'material-ui/svg-icons/editor/attach-money'
 import Clear from 'material-ui/svg-icons/action/delete'
 import Storehouse from 'material-ui/svg-icons/action/home'
 import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
-import {compose, withState} from 'recompose'
+import {
+    notificationListFetchAction,
+    notificationDeleteAction
+} from '../../actions/notifications'
+import {openSnackbarAction} from '../../actions/snackbar'
 
 const iconStyle = {
     icon: {
@@ -28,6 +38,54 @@ const balanceIcon = '#4db6ac'
 const storeIcon = '#f06292'
 
 const enhance = compose(
+    connect((state, props) => {
+        const query = _.get(props, ['location', 'query'])
+        const pathname = _.get(props, ['location', 'pathname'])
+        const filter = filterHelper(pathname, query)
+        const notificationsList = _.get(state, ['notifications', 'list', 'data', 'results'])
+        const notificationsLoading = _.get(state, ['notifications', 'list', 'loading'])
+
+        return {
+            filter,
+            notificationsList,
+            notificationsLoading
+        }
+    }),
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('notificationId', 'setNotificationId', null),
+    withState('openNotifications', 'setOpenNotifications', false),
+    withState('clickNotifications', 'setClickNotifications', false),
+
+    withHandlers({
+        handleOpenConfirmDialog: props => (id) => {
+            const {setOpenConfirmDialog, setNotificationId} = props
+            setOpenConfirmDialog(true)
+            setNotificationId(id)
+        },
+
+        handleCloseConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(false)
+        },
+        handleSendConfirmDialog: props => () => {
+            const {dispatch, setOpenConfirmDialog, notificationId} = props
+            dispatch(notificationDeleteAction(notificationId))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .then(() => {
+                    setOpenConfirmDialog(false)
+                    dispatch(notificationListFetchAction())
+                })
+        },
+
+        handleOpenNotificationBar: props => (status) => {
+            const {setOpenNotifications, dispatch} = props
+            setOpenNotifications(status)
+            dispatch(notificationListFetchAction())
+        }
+
+    }),
     injectSheet({
         wrapper: {
             height: '100%',
@@ -83,6 +141,7 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between',
             borderBottom: '1px #efefef solid',
+            cursor: 'pointer',
             '& .notifIcon': {
                 display: 'flex',
                 position: 'relative',
@@ -160,10 +219,63 @@ const enhance = compose(
                 color: '#999'
             }
         }
-    }),
-    withState('openNotifications', 'setOpenNotifications', false)
-    )
-const Layout = ({classes, handleSignOut, children, setOpenNotifications, openNotifications}) => {
+    })
+)
+const Layout = enhance((props) => {
+    const {
+        classes,
+        handleSignOut,
+        children,
+        notificationId,
+        openNotifications,
+        clickNotifications,
+        setClickNotifications,
+        notificationsList,
+        notificationsLoading
+    } = props
+
+    const notificationData = {
+        open: props.openConfirmDialog,
+        notificationsId: props.notificationsId,
+        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
+        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
+        handleSendConfirmDialog: props.handleSendConfirmDialog,
+        handleOpenNotificationBar: props.handleOpenNotificationBar
+    }
+    const notificationListExp = _.map(notificationsList, (item) => {
+        const id = _.get(item, 'id')
+        const title = _.get(item, 'title')
+        const text = _.get(item, 'text')
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+
+        return (
+            <div key={id} className={classes.notif} onClick={() => {
+                setClickNotifications(true)
+            }} style={clickNotifications ? {opacity: '0.5'} : {opacity: '1'}}>
+                <div className="notifIcon money">
+                    <Money/>
+                </div>
+                <div className={classes.notifContent}>
+                    <div className={classes.notifTitle}>
+                        <div>{title}</div>
+                        <span>{createdDate}</span>
+                    </div>
+                    <div className="notificationText">
+                        {text}
+                    </div>
+                </div>
+                <IconButton
+                    iconStyle={iconStyle.icon}
+                    style={iconStyle.button}
+                    onTouchTap={ () => {
+                        notificationData.handleOpenConfirmDialog(id)
+                    }}
+                >
+                    <Clear color="#dadada"/>
+                </IconButton>
+            </div>
+        )
+    })
     return (
         <div className={classes.wrapper}>
             <div className={classes.notifications} style={openNotifications ? {} : {display: 'none'}}>
@@ -174,14 +286,21 @@ const Layout = ({classes, handleSignOut, children, setOpenNotifications, openNot
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
-                                onTouchTap={() => { setOpenNotifications(false) }}
-                            >
+                                onTouchTap={() => {
+                                    notificationData.handleOpenNotificationBar(false)
+                                }}>
                                 <CloseIcon2 color="#fff"/>
                             </IconButton>
                         </div>
                     </div>
                     <div className={classes.notifBody}>
-                        <div className={classes.notif}>
+                        {
+                            notificationsLoading ? <div></div>
+                                : notificationListExp
+                        }
+                        <div className={classes.notif} onClick={() => {
+                            setClickNotifications(true)
+                        }} style={clickNotifications ? {opacity: '0.5'} : {opacity: '1'}}>
                             <div className="notifIcon money">
                                 <Money/>
                             </div>
@@ -280,15 +399,23 @@ const Layout = ({classes, handleSignOut, children, setOpenNotifications, openNot
                 </Paper>
             </div>
             <div className={classes.sidenav}>
-                <SideBarMenu handleSignOut={handleSignOut} setOpenNotifications={setOpenNotifications} />
+                <SideBarMenu handleSignOut={handleSignOut}
+                             handleOpenNotificationBar={notificationData.handleOpenNotificationBar}/>
             </div>
             <div className={classes.content}>
                 {children}
             </div>
 
             <SnakeBar />
+            <ConfirmDialog
+                type="delete"
+                message={_.get(_.find(notificationsList, {'id': notificationId}), 'title')}
+                onClose={notificationData.handleCloseConfirmDialog}
+                onSubmit={notificationData.handleSendConfirmDialog}
+                open={notificationData.open}
+            />
         </div>
     )
-}
+})
 
-export default enhance(Layout)
+export default Layout

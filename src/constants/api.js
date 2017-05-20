@@ -142,6 +142,12 @@ export const MANUFACTURE_CREATE = `/${MANUFACTURE}/`
 export const MANUFACTURE_LIST = `/${MANUFACTURE}/`
 export const MANUFACTURE_ITEM = `/${MANUFACTURE}/%d/`
 
+export const NOTIFICATIONS = 'notifications'
+export const NOTIFICATIONS_CREATE = `/${NOTIFICATIONS}/`
+export const NOTIFICATIONS_LIST = `/${NOTIFICATIONS}/`
+export const NOTIFICATIONS_ITEM = `/${NOTIFICATIONS}/%d/`
+export const NOTIFICATIONS_DELETE = `/${NOTIFICATIONS}/%d/`
+
 export const SHIFT = 'dist/shift'
 export const SHIFT_CREATE = `/${SHIFT}/`
 export const SHIFT_LIST = `/${SHIFT}/`

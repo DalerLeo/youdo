@@ -24,7 +24,7 @@ const style = {
 const touch = true
 
 const SideBarMenu = (props) => {
-    const {classes, handleSignOut, setOpenNotifications} = props
+    const {classes, handleSignOut, handleOpenNotificationBar} = props
     const items = _.map(MenuItems, (item, index) => {
         return (
             <Link to={item.url} key={index}>
@@ -56,7 +56,7 @@ const SideBarMenu = (props) => {
                             style={style.style}
                             className="ass23"
                             touch={touch}
-                            onTouchTap={() => { setOpenNotifications(true) }}
+                            onTouchTap={() => { handleOpenNotificationBar(true) }}
                             disableTouchRipple={true}>
                             <Notification />
                         </IconButton>
