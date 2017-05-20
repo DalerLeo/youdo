@@ -343,7 +343,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                     </li>
                                 )
                             }
-                            return (<li>no content</li>)
+                            return ''
                         })
                     }
                 </ul>
