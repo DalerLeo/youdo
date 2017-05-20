@@ -136,17 +136,15 @@ const enhance = compose(
             margin: '0',
             '& .dottedList': {
                 padding: '20px 0 10px',
+                display: 'flex',
+                justifyContent: 'space-between',
                 '& p': {
                     margin: '0',
-                    display: 'inline-block',
                     fontWeight: '600 !important'
                 },
                 '& span': {
                     color: '#999',
-                    position: 'absolute',
-                    fontSize: '12px',
-                    marginTop: '1px',
-                    right: '0'
+                    fontSize: '12px !important'
                 }
             }
         },
@@ -177,6 +175,29 @@ const enhance = compose(
             background: '#f2f5f8',
             textAlign: 'center',
             padding: '20px 30px'
+        },
+        workerWrap: {
+            display: 'flex',
+            alignItems: 'center',
+            padding: '10px 0'
+        },
+        workerAvatar: {
+            width: '30px',
+            height: '30px',
+            borderRadius: '50%',
+            marginRight: '10px',
+            overflow: 'hidden',
+            '& img': {
+                width: '100%',
+                height: '100%'
+            }
+        },
+        workerPosition: {
+            '& span': {
+                display: 'block',
+                color: '#666',
+                fontSize: '11px !important'
+            }
         }
 
     }))
@@ -248,17 +269,17 @@ const ManufactureGridList = enhance((props) => {
                         const position = _.get(item2, ['user', 'position'])
                         if (id === shift) {
                             return (
-                                <li key={itemId}>
-                                    <div>
+                                <div key={itemId} className={classes.workerWrap}>
+                                    <div className={classes.workerAvatar}>
                                         <img src={Person}/>
                                     </div>
-                                    <div>{user}<br />
-                                        <span>worker {position}</span>
+                                    <div className={classes.workerPosition}>
+                                        {user}<span>worker {position}</span>
                                     </div>
-                                </li>
+                                </div>
                             )
                         }
-                        return (<div>no content</div>)
+                        // Return (<div>no content</div>)
                     })
                 }
             </div>
