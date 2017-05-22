@@ -27,15 +27,15 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
-        name: 'login',
-        title: 'Логин',
-        xs: 2
+        name: 'username',
+        title: 'Пользователь',
+        xs: 3
     },
     {
         sorting: true,
-        name: 'username',
-        title: 'Пользователь',
-        xs: 2
+        name: 'login',
+        title: 'Логин',
+        xs: 3
     },
     {
         sorting: true,
@@ -109,11 +109,11 @@ const UsersGridList = enhance((props) => {
     const usersDetail = (
         <span>a</span>
     )
-
     const usersList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const username = _.get(item, 'username')
-        const region = _.get(item, 'region') || 'N/A'
+        const firstName = _.get(item, 'firstName')
+        const secondName = _.get(item, 'secondName')
         const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
         const typeUser = _.get(item, 'typeUser') || 'N/A'
 
@@ -125,16 +125,15 @@ const UsersGridList = enhance((props) => {
 
         return (
             <Row key={id}>
-                <Col xs={2}>Логин</Col>
-                <Col xs={2}>
+                <Col xs={3}>
                     <Link to={{
                         pathname: sprintf(ROUTES.USERS_ITEM_PATH, id),
                         query: filter.getParams()
-                    }}>{username}</Link>
+                    }}>{firstName} {secondName}</Link>
                 </Col>
+                <Col xs={3}>{username}</Col>
                 <Col xs={2}>{typeUser}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
-                <Col xs={2}>{region}</Col>
                 <Col xs={1}>12.05.2016</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu

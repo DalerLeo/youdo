@@ -14,6 +14,7 @@ import {
     PRIMARY_CURRENCY_DIALOG_OPEN,
     CURRENCY_DELETE_DIALOG_OPEN,
     SET_CURRENCY_DIALOG_OPEN,
+    CURRENCY_HISTORY_DIALOG_OPEN,
     CurrencyGridList
 } from '../../components/Currency'
 import {
@@ -241,6 +242,19 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[CURRENCY_UPDATE_DIALOG_OPEN]: false}))
                 })
+        },
+
+        handleOpenHistoryDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id),
+                query: filter.getParams({[CURRENCY_HISTORY_DIALOG_OPEN]: true})
+            })
+        },
+
+        handleCloseHistoryDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CURRENCY_HISTORY_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -262,6 +276,7 @@ const CurrencyList = enhance((props) => {
     } = props
 
     const openCreateDialog = toBoolean(_.get(location, ['query', CURRENCY_CREATE_DIALOG_OPEN]))
+    const openHistoryDialog = toBoolean(_.get(location, ['query', CURRENCY_HISTORY_DIALOG_OPEN]))
     const openSetCurrencyDialog = toBoolean(_.get(location, ['query', SET_CURRENCY_DIALOG_OPEN]))
     const openPrimaryDialog = toBoolean(_.get(location, ['query', PRIMARY_CURRENCY_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CURRENCY_UPDATE_DIALOG_OPEN]))
@@ -298,6 +313,13 @@ const CurrencyList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+
+    const historyDialog = {
+        openHistoryDialog,
+        handleOpenHistoryDialog: props.handleOpenHistoryDialog,
+        handleCloseHistoryDialog: props.handleCloseHistoryDialog,
+        handleSubmitHistoryDialog: props.handleSubmitHistoryDialog
     }
 
     const setCurrencyUpdateDialog = {
@@ -370,6 +392,7 @@ const CurrencyList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}
+                historyDialog={historyDialog}
                 primaryDialog={primaryDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}

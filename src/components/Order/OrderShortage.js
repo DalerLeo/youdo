@@ -11,7 +11,6 @@ import CloseIcon2 from '../CloseIcon2'
 import {DateField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import {Col} from 'react-flexbox-grid'
-import MainStyles from '../Styles/MainStyles'
 import Person from '../Images/person.png'
 
 export const ORDER_SHORTAGE_DIALOG_OPEN = 'openShortageDialog'
@@ -24,7 +23,7 @@ const validate = (data) => {
     })
 }
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
             position: 'absolute',
             width: '100%',
@@ -150,7 +149,7 @@ const enhance = compose(
                 fontWeight: '800'
             }
         }
-    })),
+    }),
     reduxForm({
         form: 'OrderCreateForm',
         enableReinitialize: true

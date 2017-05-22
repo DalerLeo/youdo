@@ -13,9 +13,11 @@ import Paper from 'material-ui/Paper'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
+import Time from 'material-ui/svg-icons/action/timeline'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
 import SetCurrencyDialog from './SetCurrencyDialog'
 import PrimaryCurrencyDialog from './PrimaryCurrencyDialog'
+import CurrencyHistoryDialog from './CurrencyHistoryDialog'
 import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
@@ -121,6 +123,7 @@ const CurrencyGridList = enhance((props) => {
         primaryDialog,
         actionsDialog,
         confirmDialog,
+        historyDialog,
         listData,
         detailData,
         classes,
@@ -161,6 +164,15 @@ const CurrencyGridList = enhance((props) => {
                 <Col xs={2}><a onClick={() => { setCurrencyUpdateDialog.handleOpenSetCurrencyDialog(id) }} className={classes.link}>Установить курс</a></Col>
                 <Col xs={3} style={{textAlign: 'right'}}>
                     <div className={classes.titleButtons}>
+                        <Tooltip position="bottom" text="История">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onTouchTap={() => { historyDialog.handleOpenHistoryDialog(id) }}>
+                                <Time />
+                            </IconButton>
+                        </Tooltip>
                         <Tooltip position="bottom" text="Изменить">
                             <IconButton
                                 iconStyle={iconStyle.icon}
@@ -260,6 +272,11 @@ const CurrencyGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
+            <CurrencyHistoryDialog
+                open={historyDialog.openHistoryDialog}
+                onClose={historyDialog.handleCloseHistoryDialog}
+            />
+
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -308,6 +325,11 @@ CurrencyGridList.propTypes = {
         openPrimaryDialog: PropTypes.bool.isRequired,
         handlePrimaryOpenDialog: PropTypes.func.isRequired,
         handleSubmitPrimaryDialog: PropTypes.func.isRequired
+    }).isRequired,
+    historyDialog: PropTypes.shape({
+        openHistoryDialog: PropTypes.bool.isRequired,
+        handleOpenHistoryDialog: PropTypes.func.isRequired,
+        handleCloseHistoryDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
