@@ -86,7 +86,7 @@ const CurrencyHistoryDialog = enhance((props) => {
         },
         plotOptions: {
             series: {
-                lineWidth: 0
+                lineWidth: 1
             },
             areaspline: {
                 fillOpacity: 0.7
@@ -112,12 +112,11 @@ const CurrencyHistoryDialog = enhance((props) => {
         },
         series: [{
             marker: {
-                enabled: false,
                 symbol: 'circle'
             },
             name: 'USD',
             data: [sempl + sempl + sempl + sempl, sempl + sempl + sempl, sempl + sempl + sempl + sempl],
-            color: '#7560a5'
+            color: '#43d0e3'
 
         }]
     }

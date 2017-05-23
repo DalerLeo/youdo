@@ -22,8 +22,6 @@ import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Container from '../Container'
-import Tooltip from '../ToolTip'
-import InfoIcon from '../InfoIcon'
 
 const listHeader = [
     {
@@ -219,14 +217,10 @@ const CurrencyGridList = enhance((props) => {
 
             <Paper zDepth={2}>
                 <div className={classes.editContent}>
-                    <div className={classes.semibold}>Основная валюта</div>
+                    <div className={classes.semibold}>Основная валюта <i style={{fontWeight: '400', color: '#999'}}>(используется при формировании стоимости продукта / заказа)</i></div>
                     <div className={classes.information}>
                         <div style={{marginRight: '10px'}}>Выбранная валюта: <span className={classes.semibold}>{currentCurrency}</span></div>
                         <a className={classes.link} onClick={primaryDialog.handlePrimaryOpenDialog}>Изменить</a>
-                    </div>
-                    <div className={classes.information}>
-                        <InfoIcon color="#333" style={{marginRight: '10px'}}/>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum laudantium quam tempora temporibus voluptas! Atque eius hic mollitia nam nisi!
                     </div>
                 </div>
             </Paper>
