@@ -337,6 +337,19 @@ const ManufactureGridList = enhance((props) => {
     const currentUserShift = _.get(_.find(_.get(userShift, 'userShiftList'), {'id': _.get(userShift, 'userShiftId')}), ['user', 'firstName']) + ' ' +
         _.get(_.find(_.get(userShift, 'userShiftList'), {'id': _.get(userShift, 'userShiftId')}), ['user', 'secondName'])
     const MINUS_ONE = -1
+
+    const productList = _.map(_.get(addProductDialog, 'productList'), (item) => {
+        const name = _.get(item, 'name')
+        return (
+            <li>
+                <span>{name}</span>
+                <IconButton
+                    onTouchTap={productData.handleOpenIngredientConfirmDialog}>
+                    <DeleteIcon/>
+                </IconButton>
+            </li>
+        )
+    })
     return (
         <Container>
             <SubMenu url={ROUTES.MANUFACTURE_CUSTOM_URL}/>
@@ -358,7 +371,7 @@ const ManufactureGridList = enhance((props) => {
             <ManufactureAddProductDialog
                 open={addProductDialog.open}
                 onClose={addProductDialog.handleClose}
-                inSubmit={addProductDialog.handleSubmitAddProductDialog}
+                onSubmit={addProductDialog.handleSubmitAddProductDialog}
             />
             <Row className={classes.productionMainRow}>
                 <Col xs={3} className={classes.productionLeftSide}>
@@ -435,6 +448,9 @@ const ManufactureGridList = enhance((props) => {
                                                     viewBox="0 0 24 15"/>
                                         добавить
                                     </a>
+                                    <ul>
+                                        {productList}
+                                    </ul>
                                 </Col>
                             </Row>
                             <Row>
@@ -490,6 +506,13 @@ const ManufactureGridList = enhance((props) => {
                 onSubmit={userShift.handleSendUserShiftConfirmDialog}
                 open={userShift.openUserShiftConfirmDialog}
             />}
+            {_.get(productData, 'productId') !== MINUS_ONE && <ConfirmDialog
+                type="delete"
+                message={currentUserShift}
+                onClose={productData.handleCloseIngredientConfirmDialog}
+                onSubmit={productData.handleSendIngredientConfirmDialog}
+                open={productData.openIngredientConfirmDialog}
+            />}
         </Container>
     )
 })
@@ -515,6 +538,8 @@ ManufactureGridList.propTypes = {
     }).isRequired,
     addProductDialog: PropTypes.shape({
         open: PropTypes.bool.isRequired,
+        productListLoading: PropTypes.array,
+        productListLoading: PropTypes.bool,
         handleOpen: PropTypes.func.isRequired,
         handleClose: PropTypes.func.isRequired,
         handleSubmitAddProductDialog: PropTypes.func.isRequired
