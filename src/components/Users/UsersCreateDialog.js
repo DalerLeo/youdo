@@ -15,7 +15,6 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
-export const USERS_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -46,7 +45,7 @@ const enhance = compose(
         dialogAddUser: {
             '& .imageDropZone': {
                 width: '150px !important',
-                height: '150px !important',
+                height: '145px !important',
                 '& svg': {
                     width: '30px !important',
                     height: '30px !important'
@@ -83,7 +82,7 @@ const UsersCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent} style={{display: 'block', maxHeight: '400px'}}>
+                    <div className={classes.inContent} style={{display: 'block', minHeight: '420px'}}>
                         <Row className={classes.field}>
                             <Col xs={7}>
                                 <Field
@@ -98,13 +97,18 @@ const UsersCreateDialog = enhance((props) => {
                                     label="Фамилия"
                                     className={classes.inputField}
                                     fullWidth={true}/>
+                                <Field
+                                    name="typeUser"
+                                    component={UsersGroupSearchField}
+                                    label="Тип Пользователя"
+                                    className={classes.inputField}
+                                    fullWidth={true}/>
                             </Col>
                             <Col xs={5}>
                                 <Field
                                     name="image"
                                     className={classes.imageUpload}
                                     component={ImageUploadField}
-                                    label="Изображения"
                                     fullWidth={true}
                                 />
                             </Col>
@@ -115,7 +119,7 @@ const UsersCreateDialog = enhance((props) => {
                                 <Field
                                     name="username"
                                     component={TextField}
-                                    label="Email"
+                                    label="Логин"
                                     className={classes.inputField}
                                     fullWidth={true}/>
                                 <Field
@@ -127,18 +131,6 @@ const UsersCreateDialog = enhance((props) => {
                             </Col>
                             <Col xs={6}>
                                 <Field
-                                    name="typeUser"
-                                    component={UsersGroupSearchField}
-                                    label="Тип Пользователя"
-                                    className={classes.inputField}
-                                    fullWidth={true}/>
-                                <Field
-                                    name="region"
-                                    component={TextField}
-                                    label="Район"
-                                    className={classes.inputField}
-                                    fullWidth={true}/>
-                                <Field
                                     name="password"
                                     component={TextField}
                                     label="Пароль"
@@ -147,7 +139,7 @@ const UsersCreateDialog = enhance((props) => {
                                 <Field
                                     name="password"
                                     component={TextField}
-                                    label="Потвердить пароль"
+                                    label="Подтвердите пароль"
                                     className={classes.inputField}
                                     fullWidth={true}/>
                             </Col>

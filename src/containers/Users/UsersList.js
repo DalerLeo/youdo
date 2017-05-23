@@ -204,6 +204,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[USERS_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(usersListFetchAction(filter))
                 })
         }
     })

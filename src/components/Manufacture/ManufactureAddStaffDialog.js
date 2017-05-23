@@ -157,7 +157,7 @@ const enhance = compose(
                 fontWeight: '600'
             },
             '& span': {
-                marginLeft: '5px',
+                display: 'block',
                 color: '#999',
                 fontSize: '10px !important',
                 fontWeight: '400'
@@ -187,6 +187,15 @@ const enhance = compose(
             padding: '10px 30px'
         },
         personalList: {
+            '& h4': {
+                fontWeight: '600',
+                padding: '15px 0',
+                '& span': {
+                    fontSize: '10px !important',
+                    color: '#999',
+                    fontWeight: '400'
+                }
+            },
             '& ul': {
                 listStyle: 'none',
                 margin: '0',
@@ -308,9 +317,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
 
         return (
             <div key={id} className={classes.personalList}>
-                <h4>
-                    {name}
-                    <span>({beginTime} - {endTime})</span>
+                <h4>{name} <span>({beginTime} - {endTime})</span>
                 </h4>
                 <ul>
                     {

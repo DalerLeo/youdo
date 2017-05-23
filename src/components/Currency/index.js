@@ -4,6 +4,7 @@ import {SET_CURRENCY_DIALOG_OPEN} from './SetCurrencyDialog'
 import {PRIMARY_CURRENCY_DIALOG_OPEN} from './PrimaryCurrencyDialog'
 const CURRENCY_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const CURRENCY_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
+const CURRENCY_HISTORY_DIALOG_OPEN = 'openHistoryDialog'
 
 export {
     CURRENCY_CREATE_DIALOG_OPEN,
@@ -11,5 +12,6 @@ export {
     CURRENCY_UPDATE_DIALOG_OPEN,
     PRIMARY_CURRENCY_DIALOG_OPEN,
     CURRENCY_DELETE_DIALOG_OPEN,
+    CURRENCY_HISTORY_DIALOG_OPEN,
     CurrencyGridList
 }

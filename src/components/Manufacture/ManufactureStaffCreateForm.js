@@ -58,6 +58,11 @@ const enhance = compose(
             '& label': {
                 top: '20px !important'
             }
+        },
+        addStaffForm: {
+            '& > div > div:last-child': {
+                top: '15px !important'
+            }
         }
     }),
     reduxForm({
@@ -71,7 +76,7 @@ const ManufactureStaffCreateForm = enhance((props) => {
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className={classes.addStaffForm}>
             <Field
                 name="user"
                 component={UsersSearchField}

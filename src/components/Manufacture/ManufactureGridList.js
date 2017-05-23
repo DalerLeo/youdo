@@ -18,7 +18,6 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
 import CircularProgress from 'material-ui/CircularProgress'
-import MainStyles from '../Styles/MainStyles'
 import Person from '../Images/person.png'
 import ConfirmDialog from '../ConfirmDialog'
 
@@ -29,7 +28,7 @@ import Cut from '../Images/cut.png'
 import Badge from '../Images/badge.png'
 
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         addButton: {
             '& button': {
                 backgroundColor: '#275482 !important'
@@ -42,19 +41,17 @@ const enhance = compose(
             marginBottom: '0px'
         },
         productionMainRow: {
-            margin: '0 -26px',
+            margin: '0 -28px',
             height: 'calc(100vh - 60px)',
             overflowY: 'auto'
         },
         productionLeftSide: {
             background: '#fcfcfc',
             borderRight: '1px solid #efefef',
-            height: 'calc(100vh - 65px)',
             padding: '0'
         },
         productionRightSide: {
             background: '#fff',
-            height: 'calc(100vh - 65px)',
             padding: '0 30px',
             '& .row:first-child img': {
                 width: '18px',
@@ -166,7 +163,11 @@ const enhance = compose(
                 right: '0.7em'
             }
         },
-
+        deleteHideIco: {
+            display: 'none',
+            position: 'absolute',
+            right: '0'
+        },
         productionEquipment: {
             padding: '20px 0',
             borderBottom: '1px solid #efefef'
@@ -179,7 +180,11 @@ const enhance = compose(
         workerWrap: {
             display: 'flex',
             alignItems: 'center',
-            padding: '10px 0'
+            padding: '10px 0',
+            position: 'relative',
+            '&:hover > div:last-child': {
+                display: 'flex'
+            }
         },
         workerAvatar: {
             width: '30px',
@@ -200,8 +205,20 @@ const enhance = compose(
             }
         }
 
-    }))
+    })
 )
+const iconStyle = {
+    icon: {
+        color: '#999',
+        width: 16,
+        height: 16
+    },
+    button: {
+        width: 24,
+        height: 24,
+        padding: 0
+    }
+}
 
 const ManufactureGridList = enhance((props) => {
     const {
@@ -275,6 +292,14 @@ const ManufactureGridList = enhance((props) => {
                                     </div>
                                     <div className={classes.workerPosition}>
                                         {user}<span>worker {position}</span>
+                                    </div>
+                                    <div className={classes.deleteHideIco}>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            disableTouchRipple={true}
+                                            style={iconStyle.button}>
+                                            <DeleteIcon/>
+                                        </IconButton>
                                     </div>
                                 </div>
                             )
