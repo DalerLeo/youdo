@@ -8,7 +8,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 export const CURRENCY_HISTORY_DIALOG_OPEN = 'openHistoryDialog'
-import HistoryChart from '../Images/chart.svg'
+import ReactHighcharts from 'react-highcharts'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -40,6 +40,88 @@ const enhance = compose(
 )
 const CurrencyHistoryDialog = enhance((props) => {
     const {open, loading, onClose, classes} = props
+
+    const sempl = 1
+
+    const config = {
+        chart: {
+            type: 'areaspline',
+            height: 245
+        },
+        title: {
+            text: '',
+            style: {
+                display: 'none'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            tickmarkPlacement: 'on',
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            },
+            gridLineColor: '#efefef',
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        plotOptions: {
+            series: {
+                lineWidth: 0
+            },
+            areaspline: {
+                fillOpacity: 0.7
+            },
+            column: {
+                pointPlacement: 'on'
+            }
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: ' UZS',
+            backgroundColor: '#363636',
+            style: {
+                color: '#fff'
+            },
+            borderRadius: 2,
+            borderWidth: 0,
+            enabled: true,
+            shadow: false,
+            useHTML: true,
+            crosshairs: true,
+            pointFormat: '{series.name}: <b>{point.y}</b><br/>'
+        },
+        series: [{
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
+            name: 'USD',
+            data: [sempl + sempl + sempl + sempl, sempl + sempl + sempl, sempl + sempl + sempl + sempl],
+            color: '#7560a5'
+
+        }]
+    }
+
     return (
         <Dialog
             modal={true}
@@ -59,7 +141,7 @@ const CurrencyHistoryDialog = enhance((props) => {
                 <div className={classes.inContent} >
                     <div className={classes.historyChart}>
                         <div className={classes.historyShow}>Покаать: <a className={classes.link}>за год</a></div>
-                        <img src={HistoryChart} alt="" width="100%" height="auto"/>
+                        <ReactHighcharts config ={config} />
                     </div>
                 </div>
             </div>
