@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/manufactureProductSerializer'
 
-export const manufactureProductCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const manufactureProductCreateAction = (formValues, manufactureId) => {
+    const requestData = serializers.createSerializer(formValues, manufactureId)
 
     const payload = axios()
         .post(API.MANUFACTURE_PRODUCT_CREATE, requestData)
