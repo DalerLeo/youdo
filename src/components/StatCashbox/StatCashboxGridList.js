@@ -5,6 +5,7 @@ import sprintf from 'sprintf'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog'
+import ReactHighcharts from 'react-highcharts'
 import Paper from 'material-ui/Paper'
 import {Link} from 'react-router'
 import numberFormat from '../../helpers/numberFormat'
@@ -15,6 +16,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import * as ROUTES from '../../constants/routes'
 import StatCashboxCreateDialog from './StatCashboxCreateDialog'
+import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 const enhance = compose(
     injectSheet({
@@ -92,8 +94,7 @@ const enhance = compose(
         },
         tabWrapper: {
             display: 'flex',
-            width: '100%',
-            justifyContent: 'space-between'
+            width: '100%'
         },
         tab: {
             cursor: 'pointer',
@@ -126,7 +127,7 @@ const enhance = compose(
             fontWeight: '600',
             '& span': {
                 display: 'block',
-                fontSize: '15px !important',
+                fontSize: '18px !important',
                 color: '#333'
             }
         },
@@ -135,7 +136,7 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             fontWeight: 'bold',
-            padding: '20px 0',
+            padding: '50px 0 20px',
             borderBottom: '1px #e0e0e0 solid',
             '& a': {
                 fontWeight: '600'
@@ -166,7 +167,7 @@ const enhance = compose(
                 border: 'none'
             },
             '& div:last-child': {
-                fontSize: '20px',
+                fontSize: '24px',
                 fontWeight: '600'
             }
         }
@@ -220,6 +221,166 @@ const StatCashboxGridList = enhance((props) => {
         )
     })
 
+    const sempl = 1
+
+    const configCercle = {
+        chart: {
+            type: 'pie',
+            backgroundColor: 'transparent',
+            height: 150,
+            margin: ['0', '30', '0', '0']
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+
+        plotOptions: {
+            pie: {
+                slicedOffset: 0,
+                innerSize: '70%',
+                size: '100%',
+                dataLabels: {
+                    enabled: false
+                },
+                states: {
+                    hover: {
+                        enabled: false
+                    }
+                }
+            }
+        },
+        tooltip: {
+            enabled: false
+        },
+        title: {
+            style: {
+                display: 'none'
+            }
+        },
+
+        series: [{
+            data: [{
+                data: 'Эффективность',
+                y: 10,
+                color: '#028eff'
+            }, {
+                data: 'Отклонение',
+                y: 15,
+                color: '#ccc'
+            }, {
+                data: 'Отклонение',
+                y: 20,
+                color: '#ccc'
+            }, {
+                data: 'Отклонение',
+                y: 25,
+                color: '#ccc'
+            }, {
+                data: 'Отклонение',
+                y: 10,
+                color: '#ccc'
+            }, {
+                data: 'Отклонение',
+                y: 10,
+                color: '#ccc'
+            }, {
+                data: 'Отклонение',
+                y: 10,
+                color: '#ccc'
+            }]
+        }]
+    }
+
+    const config = {
+        chart: {
+            type: 'areaspline',
+            height: 245
+        },
+        title: {
+            text: '',
+            style: {
+                display: 'none'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            tickmarkPlacement: 'on',
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            },
+            gridLineColor: '#efefef',
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        plotOptions: {
+            series: {
+                lineWidth: 0
+            },
+            areaspline: {
+                fillOpacity: 0.7
+            },
+            column: {
+                pointPlacement: 'on'
+            }
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: ' %',
+            backgroundColor: '#363636',
+            style: {
+                color: '#fff'
+            },
+            borderRadius: 2,
+            borderWidth: 0,
+            enabled: true,
+            shadow: false,
+            useHTML: true,
+            crosshairs: true,
+            pointFormat: '{series.name}: <b>{point.y}</b><br/>в отношении к BoM<br/>'
+        },
+        series: [{
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
+            name: 'Эффективность',
+            data: [sempl + sempl + sempl + sempl, sempl + sempl + sempl, sempl + sempl + sempl + sempl],
+            color: '#7560a5'
+
+        }, {
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
+            name: 'BoM',
+            data: [sempl + sempl + sempl, sempl + sempl + sempl + sempl, sempl + sempl + sempl],
+            color: '#43d0e3'
+        }]
+    }
+
     return (
         <Container>
             <SubMenu url={ROUTES.STAT_CASHBOX_LIST_URL}/>
@@ -232,11 +393,11 @@ const StatCashboxGridList = enhance((props) => {
             <div className={classes.stats}>
                 <div className={classes.statTitle}>
                     <div>Доходы / Расходы</div>
-                    <div><a>6 мая 2017 г. - 12 мая 2017 г.</a></div>
+                    <div><a>6 мая 2017 г. - 12 мая 2017 г. <KeyboardArrowDown color="#12aaeb" style={{width: '13px', height: '13px'}}/></a></div>
                 </div>
                 <Row className={classes.diagram}>
-                    <Col xs={9}>
-                        chart
+                    <Col xs={9} style={{borderRight: '1px solid #efefef'}}>
+                        <ReactHighcharts config ={config} />
                     </Col>
                     <Col xs={3} className={classes.balanceInfo}>
                         <div className={classes.balance}>
@@ -256,6 +417,11 @@ const StatCashboxGridList = enhance((props) => {
                 <div className={classes.statTitle}>
                     <div>Расходы по категории</div>
                 </div>
+                <Row>
+                    <Col xs={3}>
+                        <ReactHighcharts config ={configCercle} />
+                    </Col>
+                </Row>
             </div>
             <StatCashboxCreateDialog
                 isUpdate={true}
