@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
-import {CategorySearchField} from '../ReduxForm'
+import {CategorySearchField, ManufactureSearchField, UsersGroupSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -40,8 +40,8 @@ const enhance = compose(
             display: 'flex',
             backgroundColor: '#efefef',
             position: 'relative',
-            padding: '16px',
-            marginLeft: '-13px',
+            padding: '16px 30px',
+            marginLeft: '-30px',
             '& > div:nth-child(2)': {
                 position: 'absolute',
                 right: '0'
@@ -150,6 +150,12 @@ const UsersFilterForm = enhance((props) => {
 
                     <div>
                         <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field className={classes.inputField} name="date" component={ManufactureSearchField} label="Производство" fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field className={classes.inputField} name="date" component={UsersGroupSearchField} label="Принадлежность к группе" fullWidth={true}/>
                     </div>
 
                     <div>
