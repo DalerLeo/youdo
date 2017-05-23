@@ -27,6 +27,11 @@ const enhance = compose(
             height: '100%',
             position: 'relative'
         },
+        error: {
+            textAlign: 'center',
+            fontSize: '14px',
+            color: 'red'
+        },
         imagePlaceholder: {
             position: 'absolute',
             bottom: '0',
@@ -145,6 +150,7 @@ const enhance = compose(
 
 const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
+    const error = _.get(defaultProps, ['products', 'meta', 'error'])
 
     return (
         <div className={classes.wrapper}>
@@ -174,6 +180,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
                 </div>}
             </div>
+            {error && <div className={classes.error}>{error}</div>}
             {!_.isEmpty(products) ? <div className={classes.table}>
                 <Table
                     fixedHeader={true}

@@ -7,6 +7,7 @@ export const createSerializer = (data) => {
     const stock = _.get(data, ['stock', 'value'])
     const currency = _.get(data, ['currency', 'value'])
     const comment = _.get(data, ['comment'])
+    const contact = _.get(data, ['contact'])
     const products = _.map(_.get(data, ['products']), (item) => {
         return {
             amount: item.amount,
@@ -18,8 +19,8 @@ export const createSerializer = (data) => {
     return {
         provider,
         stock,
-        'contact': 1,
-        'comment': comment,
+        contact,
+        comment,
         'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
         currency,
         products

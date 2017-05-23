@@ -26,6 +26,11 @@ const enhance = compose(
             height: '100%',
             position: 'relative'
         },
+        error: {
+            textAlign: 'center',
+            fontSize: '14px',
+            color: 'red'
+        },
         imagePlaceholder: {
             position: 'absolute',
             bottom: '0',
@@ -142,7 +147,7 @@ const enhance = compose(
     })
 )
 
-const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
+const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, meta: {error}, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const stockMin = true
     return (
@@ -173,6 +178,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
                 </div>}
             </div>
+            {error && <div className={classes.error}>{error}</div>}
             {!_.isEmpty(products) ? <div className={classes.table}>
                 <Table
                     fixedHeader={true}

@@ -12,6 +12,11 @@ const enhance = compose(
             '&>div': {
                 marginBottom: '10px'
             }
+        },
+        error: {
+            textAlign: 'center',
+            fontSize: '14px',
+            color: 'red'
         }
     })
     ,
@@ -26,12 +31,13 @@ const enhance = compose(
 )
 
 const ProviderContactsField = enhance((props) => {
-    const {classes, contacts, contactsLoading} = props
+    const {classes, contacts, contactsLoading, input, meta: {error}} = props
     return (
         <div>
             { contactsLoading && <div>Загрузка  ...</div> }
+            {error && <div className={classes.error}>{error}</div>}
             {!contactsLoading && <RadioButtonGroup name="contact" className={classes.radioButton}
-            >
+                                                   onChange={input.onChange} defaultSelected={input.value}>
                 {_.map(contacts, (item) => {
                     const id = _.get(item, 'id')
                     const value = _.get(item, 'name') + ' ' + _.get(item, 'phone') + ' ' + _.get(item, 'email')
