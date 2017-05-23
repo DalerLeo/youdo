@@ -19,23 +19,24 @@ import Cylindrical from '../Images/cylindrical.png'
 import Press from '../Images/press.png'
 import Cut from '../Images/cut.png'
 import Badge from '../Images/badge.png'
+import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 6,
+        xs: 8,
         title: 'Наименование'
     },
     {
         sorting: true,
         name: 'sum',
-        xs: 3,
+        xs: 2,
         title: 'Количество'
     },
     {
         sorting: true,
-        xs: 3,
+        xs: 2,
         name: 'time',
         title: 'Эффективность'
     }
@@ -156,6 +157,32 @@ const enhance = compose(
         },
         diagram: {
             padding: '20px 0'
+        },
+        divEffectBlock: {
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            margin: '20px 0',
+            '& div': {
+                width: '50%',
+                fontSize: '13px',
+                fontWeight: 600,
+                color: '#666'
+            },
+            '& h3': {
+                fontSize: '36px',
+                color: '#333',
+                textAlign: 'center'
+            },
+            '& h3 span': {
+                fontSize: '14px'
+            },
+            '& div div': {
+                width: '100%'
+            },
+            '& div div div': {
+                width: '100%'
+            }
         }
     }),
 )
@@ -187,7 +214,7 @@ const StatManufactureGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const manufName = _.get(item, 'name')
         return (
-        <div className={classes.activeTab} style={ detailId === id ? {backgroundColor: '#f2f5f8', borderBottom: '3px #12aaeb solid'} : {}}>
+        <div className={classes.activeTab} style={ detailId === id ? {borderBottom: '3px #12aaeb solid'} : {}}>
             <Paper key={id} zDepth={1} className={classes.tab}
                    style={ detailId === id ? {backgroundColor: '#f2f5f8', cursor: 'auto'} : {}}
                    onClick={() => {
@@ -221,9 +248,9 @@ const StatManufactureGridList = enhance((props) => {
         const efficency = '88%'
         return (
             <Row key={id}>
-                <Col xs={6}>{name}</Col>
-                <Col xs={3}>{amount}</Col>
-                <Col xs={3}>
+                <Col xs={8}>{name}</Col>
+                <Col xs={2}>{amount}</Col>
+                <Col xs={2}>
                     <a className={classes.link} onClick={createDialog.handleOpenCreateDialog}>{efficency}</a>
                 </Col>
             </Row>
@@ -231,18 +258,145 @@ const StatManufactureGridList = enhance((props) => {
     })
     const manufName = _.get(detailData, ['data', 'name'])
 
+    const sempl = 1
+
     const list = {
         header: listHeader,
         list: statManufactureList,
         loading: _.get(listData, 'listLoading')
     }
-    const exampleNumber = 2
+    const configCercle = {
+        chart: {
+            type: 'pie',
+            backgroundColor: 'transparent',
+            height: 150,
+            margin: ['0', '30', '0', '0']
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+
+        plotOptions: {
+            pie: {
+                slicedOffset: 0,
+                innerSize: '70%',
+                size: '100%',
+                dataLabels: {
+                    enabled: false
+                },
+                states: {
+                    hover: {
+                        enabled: false
+                    }
+                }
+            }
+        },
+        tooltip: {
+            enabled: false
+        },
+        title: {
+            style: {
+                display: 'none'
+            }
+        },
+
+        series: [{
+            data: [{
+                data: 'Эффективность',
+                y: 80,
+                color: '#028eff'
+            }, {
+                data: 'Отклонение',
+                y: 20,
+                color: '#ccc'
+            }]
+        }]
+    }
+
     const config = {
+        chart: {
+            type: 'areaspline',
+            height: 350
+        },
+        title: {
+            text: '',
+            style: {
+                display: 'none'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
         xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            tickmarkPlacement: 'on',
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        plotOptions: {
+            areaspline: {
+                fillOpacity: 0.1
+            },
+            column: {
+                marker: {
+                    enabled: true
+                },
+                pointPlacement: 'between'
+            }
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: ' %',
+            backgroundColor: '#363636',
+            style: {
+                color: '#fff'
+            },
+            borderRadius: 2,
+            borderWidth: 0,
+            enabled: true,
+            shadow: false,
+            useHTML: true,
+            crosshairs: true,
+            pointFormat: '{series.name}: <b>{point.y}</b><br/>в отношении к BoM<br/>'
         },
         series: [{
-            data: [exampleNumber, exampleNumber + exampleNumber]
+            marker: {
+                symbol: 'circle'
+            },
+            name: 'Эффективность',
+            data: [sempl + sempl + sempl + sempl, sempl + sempl + sempl, sempl + sempl + sempl + sempl],
+            color: '#7560a5'
+
+        }, {
+            marker: {
+                symbol: 'circle'
+            },
+            name: 'BoM',
+            data: [sempl + sempl + sempl, sempl + sempl + sempl + sempl, sempl + sempl + sempl],
+            color: '#43d0e3'
         }]
     }
     return (
@@ -257,13 +411,25 @@ const StatManufactureGridList = enhance((props) => {
             <div className={classes.stats}>
                 <div className={classes.statTitle}>
                     <div>{manufName}</div>
-                    <div><a>6 мая 2017 г. - 12 мая 2017 г.</a></div>
+                    <div><a>6 мая 2017 г. - 12 мая 2017 г. <KeyboardArrowDown color="#12aaeb" style={{width: '13px', height: '13px'}}/></a></div>
                 </div>
                 <Row className={classes.diagram}>
                     <Col xs={9}>
                         <ReactHighcharts config ={config} />
                     </Col>
-                    <Col xs={3}>1456</Col>
+                    <Col xs={3}>
+                        <div style={{background: '#f1f5f8', padding: '25px', height: '82%'}}>
+                            <h2>Эффективность</h2>
+                            <div className={classes.divEffectBlock}>
+                                <div><ReactHighcharts config ={configCercle} /></div>
+                                <div>% эффективности<br/>относительно BoM</div>
+                            </div>
+                            <div className={classes.divEffectBlock}>
+                                <div><h3>1000 <span>кг</span></h3></div>
+                                <div>Произведено<br/>за период</div>
+                            </div>
+                        </div>
+                    </Col>
                 </Row>
             </div>
             <GridList
