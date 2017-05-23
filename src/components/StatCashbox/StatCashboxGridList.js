@@ -17,6 +17,7 @@ import SubMenu from '../SubMenu'
 import * as ROUTES from '../../constants/routes'
 import StatCashboxCreateDialog from './StatCashboxCreateDialog'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import FiberManualRecord from 'material-ui/svg-icons/av/fiber-manual-record'
 
 const enhance = compose(
     injectSheet({
@@ -170,6 +171,26 @@ const enhance = compose(
                 fontSize: '24px',
                 fontWeight: '600'
             }
+        },
+        categoryExpens: {
+            display: 'flex',
+            width: '100%',
+            margin: '20px 0',
+            alignItems: 'center'
+        },
+        bulletProof: {
+            columnCount: '3',
+            columnGap: '20px',
+            margin: '0',
+            padding: '0',
+            '& li': {
+                display: 'flex',
+                alignItems: 'center',
+                padding: '10px',
+                '& div:first-child': {
+                    marginRight: '5px'
+                }
+            }
         }
     }),
 )
@@ -227,8 +248,9 @@ const StatCashboxGridList = enhance((props) => {
         chart: {
             type: 'pie',
             backgroundColor: 'transparent',
-            height: 150,
-            margin: ['0', '30', '0', '0']
+            height: 180,
+            width: 200,
+            margin: 0
         },
         legend: {
             enabled: false
@@ -240,7 +262,7 @@ const StatCashboxGridList = enhance((props) => {
         plotOptions: {
             pie: {
                 slicedOffset: 0,
-                innerSize: '70%',
+                innerSize: '60%',
                 size: '100%',
                 dataLabels: {
                     enabled: false
@@ -263,33 +285,29 @@ const StatCashboxGridList = enhance((props) => {
 
         series: [{
             data: [{
-                data: 'Эффективность',
+                data: 'Производство',
                 y: 10,
-                color: '#028eff'
+                color: '#466d7c'
             }, {
-                data: 'Отклонение',
+                data: 'Производство',
                 y: 15,
-                color: '#ccc'
+                color: '#8dbc2e'
             }, {
-                data: 'Отклонение',
+                data: 'Производство',
                 y: 20,
-                color: '#ccc'
+                color: '#00bfdb'
             }, {
-                data: 'Отклонение',
+                data: 'Производство',
                 y: 25,
-                color: '#ccc'
+                color: '#a16cb4'
             }, {
-                data: 'Отклонение',
+                data: 'Производство',
                 y: 10,
-                color: '#ccc'
+                color: '#ff8500'
             }, {
-                data: 'Отклонение',
-                y: 10,
-                color: '#ccc'
-            }, {
-                data: 'Отклонение',
-                y: 10,
-                color: '#ccc'
+                data: 'Производство',
+                y: 20,
+                color: '#ff6d65'
             }]
         }]
     }
@@ -417,11 +435,61 @@ const StatCashboxGridList = enhance((props) => {
                 <div className={classes.statTitle}>
                     <div>Расходы по категории</div>
                 </div>
-                <Row>
-                    <Col xs={3}>
+                <div className={classes.categoryExpens}>
+                    <div style={{width: '250px'}}>
                         <ReactHighcharts config ={configCercle} />
-                    </Col>
-                </Row>
+                    </div>
+                    <ul className={classes.bulletProof}>
+                        <li>
+                            <div>
+                                <FiberManualRecord />
+                            </div>
+                            <div>
+                                10% (1 000 000 UZS)<br />Категория
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <FiberManualRecord color="#ff6d65"/>
+                            </div>
+                            <div>
+                                10% (1 000 000 UZS)<br />Категория
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <FiberManualRecord />
+                            </div>
+                            <div>
+                                10% (1 000 000 UZS)<br />Категория
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <FiberManualRecord color="#ff6d65"/>
+                            </div>
+                            <div>
+                                10% (1 000 000 UZS)<br />Категория
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <FiberManualRecord />
+                            </div>
+                            <div>
+                                10% (1 000 000 UZS)<br />Категория
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <FiberManualRecord color="#ff6d65"/>
+                            </div>
+                            <div>
+                                10% (1 000 000 UZS)<br />Категория
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <StatCashboxCreateDialog
                 isUpdate={true}
