@@ -9,17 +9,15 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import DateToDateField from '../ReduxForm/DateToDateField'
-import {CategorySearchField, ManufactureSearchField, UsersGroupSearchField} from '../ReduxForm'
+import {ManufactureSearchField, UsersGroupSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const USERS_FILTER_OPEN = 'openFilterDialog'
 
 export const USERS_FILTER_KEY = {
-    CATEGORY: 'category',
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    MANUFACTURE: 'manufacture',
+    GROUP: 'group'
 }
 
 const enhance = compose(
@@ -145,17 +143,10 @@ const UsersFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="category" component={CategorySearchField} label="Категория"/>
-                    </div>
-
-                    <div>
-                        <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                        <Field className={classes.inputField} name="manufacture" component={ManufactureSearchField} label="Производство" fullWidth={true}/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="date" component={ManufactureSearchField} label="Производство" fullWidth={true}/>
-                    </div>
-                    <div>
-                        <Field className={classes.inputField} name="date" component={UsersGroupSearchField} label="Принадлежность к группе" fullWidth={true}/>
+                        <Field className={classes.inputField} name="group" component={UsersGroupSearchField} label="Принадлежность к группе" fullWidth={true}/>
                     </div>
 
                     <div>
