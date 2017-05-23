@@ -38,9 +38,7 @@ import {
 } from '../../actions/userShift'
 
 import {
-    productListFetchAction,
-    productItemFetchAction,
-    productDeleteAction,
+    productListFetchAction
 } from '../../actions/product'
 import {
     manufactureProductCreateAction,

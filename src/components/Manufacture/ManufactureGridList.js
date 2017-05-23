@@ -20,7 +20,6 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import CircularProgress from 'material-ui/CircularProgress'
 import Person from '../Images/person.png'
 import ConfirmDialog from '../ConfirmDialog'
-
 import Glue from '../Images/glue.png'
 import Cylindrical from '../Images/cylindrical.png'
 import Press from '../Images/press.png'
@@ -106,6 +105,7 @@ const enhance = compose(
             display: 'flex',
             position: 'relative',
             alignItems: 'center',
+            cursor: 'pointer',
             '& img': {
                 width: '24px',
                 height: '24px',
@@ -203,8 +203,43 @@ const enhance = compose(
                 color: '#666',
                 fontSize: '11px !important'
             }
+        },
+        tabNav: {
+            padding: '15px 0',
+            borderBottom: '1px #f2f5f8 solid',
+            '& a': {
+                margin: '-15px 0',
+                padding: '15px 0',
+                marginRight: '40px',
+                color: '#9b9b9b',
+                '&.active': {
+                    color: '#12aaeb',
+                    borderBottom: '1px solid'
+                }
+            }
+        },
+        tabContent: {
+            '& .row:first-child': {
+                fontWeight: '600'
+            },
+            '& .row': {
+                '& > div:first-child': {
+                    textAlign: 'left'
+                }
+            }
+        },
+        tabWrapper: {
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            height: 'calc(100vh - 120px)'
+        },
+        tableHeaderPN: {
+            width: '100%',
+            display: 'flex',
+            borderBottom: '1px solid #efefef',
+            height: '60px',
+            alignItems: 'center'
         }
-
     })
 )
 const iconStyle = {
@@ -341,13 +376,24 @@ const ManufactureGridList = enhance((props) => {
     const productList = _.map(_.get(addProductDialog, 'productList'), (item) => {
         const name = _.get(item, 'name')
         return (
-            <li>
-                <span>{name}</span>
-                <IconButton
-                    onTouchTap={productData.handleOpenIngredientConfirmDialog}>
-                    <DeleteIcon/>
-                </IconButton>
-            </li>
+        <Row className="dottedList">
+            <Col xs={4}>{name}</Col>
+            <Col xs={4}>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Col>
+            <Col xs={2} style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                textAlign: 'right'
+            }}>
+                <a onClick={showBom.handleOpen}
+                   style={{borderBottom: '1px dashed rgb(18, 170, 235)'}}>BoM </a>
+            </Col>
+            <Col xs={2} style={{textAlign: 'right'}}>
+                <IconButton onTouchTap={productData.handleOpenIngredientConfirmDialog}> <DeleteIcon/> </IconButton>
+            </Col>
+        </Row>
+
         )
     })
     return (
@@ -389,7 +435,31 @@ const ManufactureGridList = enhance((props) => {
                 <Col xs={9} className={classes.productionRightSide}>
                     <Row>
                         <Col xs={12}>
-                            <h2 className={classes.productionRightH2}><img src={Press}/> Производство рулонов</h2>
+                            <div className={classes.tab}>
+                                <div className={classes.tabNav}>
+                                    <a className="active">Продукция</a>
+                                    <a>Персонал</a>
+                                    <a>Оборудование</a>
+                                </div>
+                                <div className={classes.tabContent}>
+                                    <div className={classes.tabWrapper}>
+                                        <div className={classes.tableHeaderPN}>
+                                            <a style={{float: 'right'}} onClick={addProductDialog.handleOpen}>
+                                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
+                                                            viewBox="0 0 24 15"/>
+                                                добавить продукцию
+                                            </a>
+                                        </div>
+                                        <Row className="dottedList">
+                                            <Col xs={4}><strong>Наименование</strong></Col>
+                                            <Col xs={4}><strong>Описание</strong></Col>
+                                            <Col xs={2} style={{textAlign: 'right'}}><strong>BoM</strong></Col>
+                                            <Col xs={2} style={{textAlign: 'right'}}>&nbsp;</Col>
+                                        </Row>
+                                        {productList}
+                                    </div>
+                                </div>
+                            </div>
                         </Col>
                     </Row>
                     <Row>
@@ -538,7 +608,6 @@ ManufactureGridList.propTypes = {
     }).isRequired,
     addProductDialog: PropTypes.shape({
         open: PropTypes.bool.isRequired,
-        productListLoading: PropTypes.array,
         productListLoading: PropTypes.bool,
         handleOpen: PropTypes.func.isRequired,
         handleClose: PropTypes.func.isRequired,
