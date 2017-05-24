@@ -26,20 +26,15 @@ import Container from '../Container'
 
 const listHeader = [
     {
-        name: '',
-        xs: 1,
-        title: ''
-    },
-    {
         sorting: true,
         name: 'name',
-        xs: 2,
+        xs: 3,
         title: 'Аббревиатура'
     },
     {
         sorting: true,
         name: 'name',
-        xs: 2,
+        xs: 3,
         title: 'Курс'
     },
     {
@@ -50,7 +45,7 @@ const listHeader = [
     },
     {
         sorting: false,
-        xs: 1,
+        xs: 4,
         name: 'actions',
         title: ''
     }
@@ -156,12 +151,11 @@ const CurrencyGridList = enhance((props) => {
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
             <Row key={id}>
-                <Col xs={1}></Col>
-                <Col xs={2}>{name}</Col>
-                <Col xs={2}>1 {currentCurrency} = {rate} {name}</Col>
+                <Col xs={3}>{name}</Col>
+                <Col xs={3}>1 {currentCurrency} = {rate} {name}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={2}><a onClick={() => { setCurrencyUpdateDialog.handleOpenSetCurrencyDialog(id) }} className={classes.link}>Установить курс</a></Col>
-                <Col xs={3} style={{textAlign: 'right'}}>
+                <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={classes.titleButtons}>
                         <Tooltip position="bottom" text="История">
                             <IconButton
