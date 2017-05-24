@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CloseIcon2 from '../CloseIcon2'
@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 export const CURRENCY_HISTORY_DIALOG_OPEN = 'openHistoryDialog'
 import ReactHighcharts from 'react-highcharts'
+import Popover from 'material-ui/Popover'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -35,11 +36,38 @@ const enhance = compose(
         link: {
             borderBottom: '1px dashed',
             fontWeight: '600'
+        },
+        popoverMode: {
+            padding: '10px 30px',
+            boxShadow: 'none !important',
+            '& h4': {
+                padding: '10px 0'
+            },
+            '& div p': {
+                display: 'inline-block'
+            },
+            '& div p:first-child': {
+                width: '120px'
+            }
         }
-    }))
+    }),
+
+        withState('anchorEl', 'setAnchorEl', (<div></div>)),
+        withState('periodSelectOpen', 'setPeriodSelectOpen', false),
+
+        withHandlers({
+            handleOpenDetails: props => (event) => {
+                props.setAnchorEl(event.currentTarget)
+                props.setPriceDetailsOpen(true)
+            },
+            handleCloseDetails: props => (event) => {
+                props.setPriceDetailsOpen(false)
+            }
+        }),
+    )
 )
 const CurrencyHistoryDialog = enhance((props) => {
-    const {open, loading, onClose, classes} = props
+    const {open, loading, onClose, classes, periodSelectOpen, anchorEl, handleCloseDetails, handleOpenDetails} = props
 
     const sempl = 1
 
@@ -139,7 +167,31 @@ const CurrencyHistoryDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <div className={classes.inContent} >
                     <div className={classes.historyChart}>
-                        <div className={classes.historyShow}>Покаать: <a className={classes.link}>за год</a></div>
+                        <div className={classes.historyShow}>Покаать: <a className={classes.link} onClick={handleOpenDetails}>за год</a></div>
+                            <Popover
+                                open={periodSelectOpen}
+                                anchorEl={anchorEl}
+                                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                                targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                                onRequestClose={handleCloseDetails}
+                            >
+                                <div className={classes.popoverMode}>
+                                    <h4>Дистилированая вода</h4>
+                                    <div>
+                                        <p>Объем:</p>
+                                        <p>100 л</p>
+                                    </div>
+                                    <div>
+                                        <p>Стоимость:</p>
+                                        <p>500 000 UZS</p>
+                                    </div>
+                                    <div>
+                                        <p>Доп. расход:</p>
+                                        <p>100 000 UZS</p>
+                                    </div>
+                                    <h4><i>Примерная стоимость 1 л = 6 000 UZS</i></h4>
+                                </div>
+                            </Popover>
                         <ReactHighcharts config ={config} />
                     </div>
                 </div>
