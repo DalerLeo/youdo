@@ -15,7 +15,7 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../DeleteIcon'
 
-import ProductSearchField from './ProductSearchField'
+import OrderProductSearchField from './OrderProductSearchField'
 import TextField from './TextField'
 
 const enhance = compose(
@@ -147,8 +147,9 @@ const enhance = compose(
     })
 )
 
-const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, meta: {error}, ...defaultProps}) => {
+const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
+    const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const stockMin = true
     return (
         <div className={classes.wrapper}>
@@ -163,7 +164,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                     />
                 </div>
                 {state.open && <div className={classes.background}>
-                    <ProductSearchField
+                    <OrderProductSearchField
                         label="Наименование товара"
                         {..._.get(defaultProps, 'product')}
                     />

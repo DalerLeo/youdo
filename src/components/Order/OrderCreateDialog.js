@@ -8,6 +8,7 @@ import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
+import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import CloseIcon2 from '../CloseIcon2'
 import {
     ClientSearchField,
@@ -175,7 +176,7 @@ const customContentStyle = {
 const OrderCreateDialog = enhance((props) => {
     const {open, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const stockMin = true
+    const stockMin = false
     return (
         <Dialog
             modal={true}
@@ -241,7 +242,7 @@ const OrderCreateDialog = enhance((props) => {
                                         name="deliveryPrice"
                                         component={TextField}
                                         className={classes.inputField}
-                                        label="Стоимость доставки"
+                                        label={'Стоимость доставки (' + PRIMARY_CURRENCY_NAME + ')'}
                                         fullWidth={true}/>
                                 </div>
                                 <div className={classes.condition}>

@@ -173,11 +173,15 @@ const OrderGridList = enhance((props) => {
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name'])
-        const user = _.get(item, ['user', 'firstName']) + _.get(item, ['user', 'secondName']) || 'N/A'
+        const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
         const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), 'SUM')
+        const status = _.toInteger(_.get(item, 'status'))
+        const REQUESTED = 0
+        const READY = 1
+        const DELIVERED = 2
         const ZERO = 0
         return (
         <div style={{width: '100%', display: 'flex', alignItems: 'center'}} key={id}>
@@ -203,7 +207,7 @@ const OrderGridList = enhance((props) => {
                 {createdDate}
             </div>
             <div style={{width: '10%'}} className={classes.buttons}>
-                {(id % '2') ? <Tooltip position="bottom" text="В процессе">
+                {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -211,7 +215,7 @@ const OrderGridList = enhance((props) => {
                             <CachedIcon color="#666"/>
                         </IconButton>
                     </Tooltip>
-                    : (id % '3') ? <Tooltip position="bottom" text="Есть на складе">
+                    : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -219,14 +223,23 @@ const OrderGridList = enhance((props) => {
                                 <Home color="#81c784"/>
                             </IconButton>
                         </Tooltip>
-                        : <Tooltip position="bottom" text="Не забрали товар">
+
+                        : (status === DELIVERED) ? <Tooltip position="bottom" text="Забрали товар">
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}>
-                                <MapsLocalShipping />
+                                <MapsLocalShipping color="#81c784" />
                             </IconButton>
                         </Tooltip>
+                            : <Tooltip position="bottom" text="Заказ отменен">
+                                <IconButton
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    touch={true}>
+                                    <VisibilityOff color='#e57373'/>
+                                </IconButton>
+                            </Tooltip>
                 }
                <Tooltip position="bottom" text="Есть долг">
                     <IconButton
@@ -234,14 +247,6 @@ const OrderGridList = enhance((props) => {
                         style={iconStyle.button}
                         touch={true}>
                         <AccountBalanceWallet color={totalBalance > ZERO ? '#e57373' : '#4db6ac'}/>
-                    </IconButton>
-                </Tooltip>
-                <Tooltip position="bottom" text="Заказ отменен">
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}>
-                        <VisibilityOff color='#e57373'/>
                     </IconButton>
                 </Tooltip>
             </div>
