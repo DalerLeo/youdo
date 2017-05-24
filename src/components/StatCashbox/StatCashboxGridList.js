@@ -355,13 +355,11 @@ const StatCashboxGridList = enhance((props) => {
         },
         plotOptions: {
             series: {
-                lineWidth: 0
+                lineWidth: 0,
+                pointPlacement: 'on'
             },
             areaspline: {
                 fillOpacity: 0.7
-            },
-            column: {
-                pointPlacement: 'on'
             }
         },
         tooltip: {

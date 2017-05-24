@@ -67,7 +67,16 @@ const enhance = compose(
     )
 )
 const CurrencyHistoryDialog = enhance((props) => {
-    const {open, loading, onClose, classes, periodSelectOpen, anchorEl, handleCloseDetails, handleOpenDetails} = props
+    const {
+        open,
+        loading,
+        onClose,
+        classes,
+        periodSelectOpen,
+        anchorEl,
+        handleCloseDetails,
+        handleOpenDetails
+    } = props
 
     const sempl = 1
 
@@ -114,13 +123,11 @@ const CurrencyHistoryDialog = enhance((props) => {
         },
         plotOptions: {
             series: {
-                lineWidth: 1
+                lineWidth: 1,
+                pointPlacement: 'on'
             },
             areaspline: {
                 fillOpacity: 0.7
-            },
-            column: {
-                pointPlacement: 'on'
             }
         },
         tooltip: {
@@ -176,20 +183,7 @@ const CurrencyHistoryDialog = enhance((props) => {
                                 onRequestClose={handleCloseDetails}
                             >
                                 <div className={classes.popoverMode}>
-                                    <h4>Дистилированая вода</h4>
-                                    <div>
-                                        <p>Объем:</p>
-                                        <p>100 л</p>
-                                    </div>
-                                    <div>
-                                        <p>Стоимость:</p>
-                                        <p>500 000 UZS</p>
-                                    </div>
-                                    <div>
-                                        <p>Доп. расход:</p>
-                                        <p>100 000 UZS</p>
-                                    </div>
-                                    <h4><i>Примерная стоимость 1 л = 6 000 UZS</i></h4>
+                                    jkj
                                 </div>
                             </Popover>
                         <ReactHighcharts config ={config} />
