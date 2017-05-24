@@ -21,6 +21,7 @@ import CurrencyHistoryDialog from './CurrencyHistoryDialog'
 import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
+import Tooltip from '../ToolTip'
 import Container from '../Container'
 
 const listHeader = [
