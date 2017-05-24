@@ -358,13 +358,11 @@ const StatManufactureGridList = enhance((props) => {
         },
         plotOptions: {
             areaspline: {
-                fillOpacity: 0.1
-            },
-            column: {
+                fillOpacity: 0.1,
+                pointPlacement: 'on',
                 marker: {
                     enabled: true
-                },
-                pointPlacement: 'between'
+                }
             }
         },
         tooltip: {
