@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -18,6 +19,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
 import CircularProgress from 'material-ui/CircularProgress'
+import ManufactureTab from './ManufactureTab'
 import Person from '../Images/person.png'
 import ConfirmDialog from '../ConfirmDialog'
 import Glue from '../Images/glue.png'
@@ -268,7 +270,10 @@ const ManufactureGridList = enhance((props) => {
         userShift,
         equipmentData,
         productData,
-        confirmDialog
+        confirmDialog,
+        tabData,
+        productFilterDialog,
+        updateProductDialog
     } = props
 
     const detailId = _.get(detailData, 'id')
@@ -369,31 +374,26 @@ const ManufactureGridList = enhance((props) => {
     const shift = _.find(shiftListExp, (o) => {
         return _.toInteger(o.id) === _.toInteger(shiftId)
     })
+
     const currentUserShift = _.get(_.find(_.get(userShift, 'userShiftList'), {'id': _.get(userShift, 'userShiftId')}), ['user', 'firstName']) + ' ' +
         _.get(_.find(_.get(userShift, 'userShiftList'), {'id': _.get(userShift, 'userShiftId')}), ['user', 'secondName'])
     const MINUS_ONE = -1
 
-    const productList = _.map(_.get(addProductDialog, 'productList'), (item) => {
+    const productList = _.map(_.get(productData, 'productList'), (item) => {
+        const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const type = _.get(item, ['type', 'name']) || 'N/A'
+        const brand = _.get(item, ['brand', 'name']) || 'N/A'
+        const measurement = _.get(item, ['measurement', 'name']) || ''
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
-        <Row className="dottedList">
-            <Col xs={4}>{name}</Col>
-            <Col xs={4}>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Col>
-            <Col xs={2} style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                textAlign: 'right'
-            }}>
-                <a onClick={showBom.handleOpen}
-                   style={{borderBottom: '1px dashed rgb(18, 170, 235)'}}>BoM </a>
-            </Col>
-            <Col xs={2} style={{textAlign: 'right'}}>
-                <IconButton onTouchTap={productData.handleOpenIngredientConfirmDialog}> <DeleteIcon/> </IconButton>
-            </Col>
-        </Row>
-
+            <Row key={id}>
+                <Col xs={3}>{name}</Col>
+                <Col xs={3}>{type}</Col>
+                <Col xs={2}>{brand}</Col>
+                <Col xs={2}>{measurement}</Col>
+                <Col xs={2}>{createdDate}</Col>
+            </Row>
         )
     })
     return (
@@ -419,6 +419,12 @@ const ManufactureGridList = enhance((props) => {
                 onClose={addProductDialog.handleClose}
                 onSubmit={addProductDialog.handleSubmitAddProductDialog}
             />
+            <ManufactureAddProductDialog
+                invitialValue={updateProductDialog.initionValue}
+                open={updateProductDialog.open}
+                onClose={updateProductDialog.handleClose}
+                onSubmit={updateProductDialog.handleSubmitDialog}
+            />
             <Row className={classes.productionMainRow}>
                 <Col xs={3} className={classes.productionLeftSide}>
                     <h2 className={classes.productionH2}>Этапы производства</h2>
@@ -432,6 +438,12 @@ const ManufactureGridList = enhance((props) => {
                         }
                     </ul>
                 </Col>
+                <ManufactureTab
+                    tabData={tabData}
+                    productList={productList}
+                    onClick={addProductDialog.handleOpen}
+                    productData={productData}
+                    productFilterDialog={productFilterDialog} />
                 <Col xs={9} className={classes.productionRightSide}>
                     <Row>
                         <Col xs={12}>
@@ -623,7 +635,17 @@ ManufactureGridList.propTypes = {
         handleSendUserShiftConfirmDialog: PropTypes.func.isRequired
     }),
     productData: PropTypes.object.isRequired,
-    equipmentData: PropTypes.object
+    equipmentData: PropTypes.object,
+    tabData: PropTypes.object.isRequired,
+    productFilterDialog: PropTypes.shape({
+        initialValues: PropTypes.object,
+        filterLoading: PropTypes.bool,
+        openFilterDialog: PropTypes.bool.isRequired,
+        handleOpenFilterDialog: PropTypes.func.isRequired,
+        handleCloseFilterDialog: PropTypes.func.isRequired,
+        handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired,
+    updateProductDialog: PropTypes.object
 }
 
 export default ManufactureGridList

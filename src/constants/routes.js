@@ -34,7 +34,6 @@ export const ORDER = 'order'
 export const ORDER_LIST_URL = `/${ORDER}`
 export const ORDER_ITEM_URL = `${ORDER_LIST_URL}/:orderId`
 export const ORDER_ITEM_PATH = `/${ORDER}/%d`
-export const ORDER_ITEM_TAB_PATH = `/${ORDER}/%d/%s`
 
 export const PRODUCT = 'product'
 export const PRODUCT_LIST_URL = `/${PRODUCT}`

@@ -8,6 +8,8 @@ import {MANUFACTURE_ADD_STAF_FORM_OPEN} from './ManufactureStaffCreateForm'
 const SHIFT_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const USER_SHIFT_DELETE_DIALOG_OPEN = 'openUserStaffDeleteDialog'
 const INGREDIENT_DELETE_DIALOG_OPEN = 'openIngredientDeleteDialog'
+const OPEN_UPDATE_PRODUCT_DIALOG = 'openUpdateProductDialog'
+const TAB = 'tab'
 
 export {
     MANUFACTURE_ADD_STAFF_DIALOG_OPEN,
@@ -18,5 +20,7 @@ export {
     MANUFACTURE_ADD_STAF_FORM_OPEN,
     USER_SHIFT_DELETE_DIALOG_OPEN,
     INGREDIENT_DELETE_DIALOG_OPEN,
+    OPEN_UPDATE_PRODUCT_DIALOG,
+    TAB,
     ManufactureGridList
 }
