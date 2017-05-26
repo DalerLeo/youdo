@@ -18,11 +18,11 @@ const ManufactureDetails = enhance((props) => {
         classes,
         loading,
         data,
-        updateDialog,
-        confirmDialog
+        handleOpenUpdateDialog,
+        handleOpenConfirmDialog
     } = props
-    const id = _.get(data, 'id')
 
+    const id = _.get(data, 'id')
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -36,17 +36,15 @@ const ManufactureDetails = enhance((props) => {
     return (
         <div key={id} className={classes.wrapper}>
             Detail Content
+            <button onTouchTap={() => { handleOpenConfirmDialog() }}>Delete</button>
+            <button onTouchTap={() => { handleOpenUpdateDialog(id) }}>Update</button>
         </div>
     )
 })
 
 ManufactureDetails.propTypes = {
-    updateDialog: PropTypes.shape({
-        handleOpenUpdateDialog: PropTypes.func.isRequired
-    }),
-    confirmDialog: PropTypes.shape({
-        handleOpenConfirmDialog: PropTypes.func.isRequired
-    })
+    handleOpenUpdateDialog: PropTypes.func.isRequired,
+    handleOpenConfirmDialog: PropTypes.func.isRequired
 }
 
 export default ManufactureDetails

@@ -10,8 +10,8 @@ import ProductFilterForm from '../../Product/ProductFilterForm'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
+import FloatButton from 'material-ui/FlatButton'
 import ManufactureDetails from '../ManufactureDetails'
-
 import GridList from '../../GridList'
 const listHeader = [
     {
@@ -64,7 +64,7 @@ const enhance = compose(
 )
 
 const ManufactureProduct = enhance((props) => {
-    const {classes, onClick, filter, filterDialog, productData} = props
+    const {classes, filter, filterDialog, productData} = props
 
     const productFilterDialog = (
         <ProductFilterForm
@@ -78,9 +78,10 @@ const ManufactureProduct = enhance((props) => {
     const detail = (
         <ManufactureDetails
             key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            confirmDialog={_.get(productData, 'deleteProductDialog')}
-            updateDialog={_.get(productData, 'updateProductDialog')}
+            id={_.get(detailData, 'id')}
+            data={_.get(detailData, 'data')}
+            handleOpenConfirmDialog={_.get(productData, ['confirmDialog', 'handleOpenConfirmDialog'])}
+            handleOpenUpdateDialog={_.get(productData, ['updateDialog', 'handleOpenUpdateDialog'])}
             loading={_.get(detailData, 'detailLoading')}
         />
     )
@@ -97,7 +98,9 @@ const ManufactureProduct = enhance((props) => {
                 <Col xs={3}>
                     <span
                         className={classes.cursor}
-                        onTouchTap={ () => { productData.handleItemClick(id) }}>
+                        onTouchTap={ () => {
+                            productData.handleItemClick(id)
+                        }}>
                         {name}
                     </span>
                 </Col>
@@ -126,31 +129,24 @@ const ManufactureProduct = enhance((props) => {
             </IconButton>
         </div>
     )
-
-
+    const createDialog = _.get(productData, 'createDialog')
     return (
         <Row>
+            <div>
+                <FloatButton onClick={createDialog.handleOpenCreateDialog}>
+                    <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
+                                viewBox="0 0 24 15"/>
+                    добавить продукцию
+                </FloatButton>
+            </div>
             <Col xs={12}>
-                <div className={classes.tab}>
-                    <div className={classes.tabContent}>
-                        <div className={classes.tabWrapper}>
-                            <div className={classes.tableHeaderPN}>
-                                <a style={{float: 'right'}} onClick={onClick}>
-                                    <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
-                                                viewBox="0 0 24 15"/>
-                                    добавить продукцию
-                                </a>
-                            </div>
-                            <GridList
-                                filter={filter}
-                                list={productListExp}
-                                detail={detail}
-                                actionsDialog={actions}
-                                filterDialog={productFilterDialog}
-                            />
-                        </div>
-                    </div>
-                </div>
+                <GridList
+                    filter={filter}
+                    list={productListExp}
+                    detail={detail}
+                    actionsDialog={actions}
+                    filterDialog={productFilterDialog}
+                />
             </Col>
         </Row>
     )
