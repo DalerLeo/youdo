@@ -134,9 +134,10 @@ const enhance = compose(
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
             const extra = _.get(props, ['extra'])
+            const ZERO = 0
 
-            if (!_.isEmpty(product) && amount && _.get(extra, ['product', 'price'])) {
-                const cost = _.toNumber(_.get(extra, ['product', 'price'])) * _.toNumber(amount)
+            if (!_.isEmpty(product) && amount) {
+                const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(amount)
                 const balance = _.toNumber(_.get(extra, 'balance'))
                 const foundIndex = _.findIndex(products,
                     (item) => {
