@@ -1,10 +1,11 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withReducer, withHandlers} from 'recompose'
+import {compose, withHandlers, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../Images/groceries.svg'
+import {connect} from 'react-redux'
 import {
     Table,
     TableBody,
@@ -17,6 +18,7 @@ import DeleteIcon from '../DeleteIcon'
 
 import OrderProductSearchField from './OrderProductSearchField'
 import TextField from './TextField'
+import ProductCostField from '../ReduxForm/ProductCostField'
 
 const enhance = compose(
     injectSheet({
@@ -118,21 +120,43 @@ const enhance = compose(
             }
         }
     }),
-    withReducer('state', 'dispatch', (state, action) => {
-        return {...state, ...action}
-    }, {open: false}),
-
+    withState('openAddProducts', 'setOpenAddProducts', false),
+    connect((state) => {
+        const extra = _.get(state, ['product', 'extra', 'data'])
+        return {
+            extra
+        }
+    }),
     withHandlers({
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
-            const cost = 10000
-
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
+            const extra = _.get(props, ['extra'])
 
-            if (!_.isEmpty(product) && amount && cost) {
-                onChange(_.union(products, [{product, amount, cost}]))
+            if (!_.isEmpty(product) && amount && _.get(extra, ['product', 'price'])) {
+                const cost = _.toNumber(_.get(extra, ['product', 'price'])) * _.toNumber(amount)
+                const balance = _.toNumber(_.get(extra, 'balance'))
+                const foundIndex = _.findIndex(products,
+                    (item) => {
+                        return _.get(item, ['product', 'value']) === _.get(product, ['value'])
+                    })
+                const NOT_FOUND = -1
+
+                if (foundIndex > NOT_FOUND) {
+                    _.update(products, foundIndex, (foundObject) => {
+                        return {
+                            amount: _.toNumber(_.get(foundObject, 'amount')) + _.toNumber(amount),
+                            balance: _.get(foundObject, 'balance'),
+                            cost: _.toNumber(_.get(foundObject, 'cost')) + cost,
+                            product: _.get(foundObject, 'product')
+                        }
+                    })
+                    onChange([])
+                } else {
+                    onChange(_.union(products, [{product, amount, cost, balance}]))
+                }
             }
         },
 
@@ -147,7 +171,7 @@ const enhance = compose(
     })
 )
 
-const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
+const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProducts, setOpenAddProducts, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const stockMin = true
@@ -160,10 +184,10 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}
                         className={classes.span}
-                        onTouchTap={() => dispatch({open: !state.open})}
+                        onTouchTap={() => setOpenAddProducts(!openAddProducts)}
                     />
                 </div>
-                {state.open && <div className={classes.background}>
+                {openAddProducts && <div className={classes.background}>
                     <OrderProductSearchField
                         label="Наименование товара"
                         {..._.get(defaultProps, 'product')}
@@ -172,10 +196,9 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                         label="Кол-во"
                         {..._.get(defaultProps, 'amount')}
                     />
-                    <TextField
-                        label="Сумма"
-                        {..._.get(defaultProps, 'cost')}
-                    />
+                    <div className="summa">
+                        <ProductCostField />
+                    </div>
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
                 </div>}
             </div>
@@ -208,7 +231,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                         {_.map(products, (item, index) => (
                             <TableRow key={index} className={classes.tableRow} style={{background: (stockMin) ? '#ffecec' : 'transparent'}}>stockMin
                                 <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
+                                <TableRowColumn>{_.get(item, 'balance')}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'cost')}</TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>
@@ -224,7 +247,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>
+                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => setOpenAddProducts(true)}>Добавить</a> товар?</div>
                     </div>
                 </div>
             }

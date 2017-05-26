@@ -3,9 +3,9 @@ import {reducer as toastrReducer} from 'react-redux-toastr'
 import {routerReducer} from 'react-router-redux'
 import {combineReducers} from 'redux'
 import createThunkReducer from '../helpers/createThunkReducer'
+import createStandardReducer from '../helpers/createStandardReducer'
 import * as actionTypes from '../constants/actionTypes'
 import snackbarReducer from './snackbarReducer'
-import createReducer from '../helpers/createReducer'
 
 const rootReducer = combineReducers({
     signIn: createThunkReducer(actionTypes.SIGN_IN),
@@ -57,14 +57,8 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.PRODUCT_UPDATE),
         item: createThunkReducer(actionTypes.PRODUCT_ITEM),
         csv: createThunkReducer(actionTypes.PRODUCT_LIST_CSV),
-        measurement: createReducer({
-            data: null,
-            loading: false
-        }, {
-            [actionTypes.PRODUCT_MEASUREMENT] (state, action) {
-                return {...state, data: action.data, loading: action.loading}
-            }
-        })
+        measurement: createStandardReducer(actionTypes.PRODUCT_MEASUREMENT),
+        extra: createStandardReducer(actionTypes.PRODUCT_EXTRA)
     }),
     productType: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_TYPE_CREATE),
@@ -128,28 +122,14 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.PROVIDER_LIST),
         update: createThunkReducer(actionTypes.PROVIDER_UPDATE),
         item: createThunkReducer(actionTypes.PROVIDER_ITEM),
-        contacts: createReducer({
-            data: null,
-            loading: false
-        }, {
-            [actionTypes.PROVIDER_CONTACTS] (state, action) {
-                return {...state, data: action.data, loading: action.loading}
-            }
-        })
+        contacts: createStandardReducer(actionTypes.PROVIDER_CONTACTS)
     }),
     client: combineReducers({
         create: createThunkReducer(actionTypes.CLIENT_CREATE),
         list: createThunkReducer(actionTypes.CLIENT_LIST),
         update: createThunkReducer(actionTypes.CLIENT_UPDATE),
         item: createThunkReducer(actionTypes.CLIENT_ITEM),
-        contacts: createReducer({
-            data: null,
-            loading: false
-        }, {
-            [actionTypes.CLIENT_CONTACTS] (state, action) {
-                return {...state, data: action.data, loading: action.loading}
-            }
-        })
+        contacts: createStandardReducer(actionTypes.CLIENT_CONTACTS)
     }),
     brand: combineReducers({
         create: createThunkReducer(actionTypes.BRAND_CREATE),

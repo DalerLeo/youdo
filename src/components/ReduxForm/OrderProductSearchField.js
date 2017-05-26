@@ -14,21 +14,21 @@ const getOptions = (search) => {
         })
 }
 
-const setMeasurementAction = (data, loading) => {
+const setExtraAction = (data, loading) => {
     return {
-        type: actionTypes.PRODUCT_DETAILS,
+        type: actionTypes.PRODUCT_EXTRA,
         data: data,
         loading: loading
     }
 }
 
-
+const FIRST_ITEM = 0
 const getItem = (id, dispatch) => {
-    dispatch(setMeasurementAction(null, true))
-    return axios().post(PATH.PRODUCT_EXTRA, {'products':[id]})
+    dispatch(setExtraAction(null, true))
+    return axios().post(PATH.PRODUCT_EXTRA, {'products': [id]})
         .then(({data}) => {
-            // dispatch(setMeasurementAction(_.get(data, ['measurement', 'name']), false))
-            return Promise.resolve(toCamelCase(_.get(data, [0, 'product'])))
+            dispatch(setExtraAction(_.get(data, FIRST_ITEM), false))
+            return Promise.resolve(toCamelCase(_.get(data, [FIRST_ITEM, 'product'])))
         })
 }
 
