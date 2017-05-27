@@ -86,7 +86,7 @@ const enhance = compose(
 )
 
 const TransactionCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData} = props
+    const {open, loading, handleSubmit, onClose, classes, cashboxData, isSend} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
 
@@ -115,12 +115,13 @@ const TransactionCreateDialog = enhance((props) => {
                                 <div className={classes.label}>Касса:</div>
                                 <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
                             </div>
-                            <Field
+                            {isSend && <Field
                                 name="categoryId"
                                 component={ExpensiveCategorySearchField}
                                 label="Категория расхода"
                                 className={classes.inputFieldCustom}
                                 fullWidth={true}/>
+                            }
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
                                 <Field
                                     name="amount"
@@ -159,11 +160,15 @@ const TransactionCreateDialog = enhance((props) => {
 })
 
 TransactionCreateDialog.propTyeps = {
+    isSend: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     cashboxData: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
+}
+TransactionCreateDialog.defaultProps = {
+    isSend: false
 }
 
 export default TransactionCreateDialog

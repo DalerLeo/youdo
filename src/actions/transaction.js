@@ -90,7 +90,7 @@ export const transactionUpdateAction = (id, formValues, cashboxId) => {
 }
 
 export const transactionUpdateIncomeAction = (id, formValues, cashboxId) => {
-    const requestData = serializers.createSerializer(formValues, cashboxId)
+    const requestData = serializers.createIncomeSerializer(formValues, cashboxId)
     const payload = axios()
         .put(sprintf(API.TRANSACTION_ITEM, id), requestData)
         .then((response) => {

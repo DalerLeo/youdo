@@ -4,7 +4,7 @@ import {orderingSnakeCase} from '../helpers/serializer'
 const ZERO = 0
 const MINUS_ONE = -1
 
-export const createSendSerializer = (data, cashboxId) => {
+export const createSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount')
     const comment = _.get(data, 'comment')
     const objectId = _.get(data, ['categoryId', 'value'])
@@ -30,7 +30,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
     }
 }
 
-export const createSerializer = (data, cashboxId) => {
+export const createSendSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount') > ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
     const comment = _.get(data, 'comment')
     const objectId = _.get(data, ['categoryId', 'value'])
