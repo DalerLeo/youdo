@@ -19,6 +19,7 @@ import {
     DateField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
+import MainStyles from '../Styles/MainStyles'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
@@ -30,7 +31,7 @@ const validate = (data) => {
     })
 }
 const enhance = compose(
-    injectSheet({
+    injectSheet(_.merge(MainStyles, {
         loader: {
             position: 'absolute',
             width: '100%',
@@ -51,7 +52,7 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            minHeight: '300px !important'
+            maxHeight: 'inherit !important'
         },
         titleContent: {
             background: '#fff',
@@ -73,10 +74,11 @@ const enhance = compose(
         inContent: {
             display: 'flex',
             color: '#333',
-            borderBottom: '1px #efefef solid'
+            borderBottom: '1px #efefef solid',
+            minHeight: '450px'
         },
         innerWrap: {
-            maxHeight: '65vh',
+            maxHeight: '85vh',
             overflow: 'auto'
         },
         bodyContent: {
@@ -89,38 +91,16 @@ const enhance = compose(
         field: {
             width: '100%'
         },
-        left: {
-            flexBasis: '35%',
-            padding: '15px 30px',
-            borderRight: '1px #efefef solid'
-        },
-        title: {
+        subTitleOrder: {
             display: 'flex',
             alignItems: 'center',
-            height: '40px',
+            marginBottom: '5px !important',
             justifyContent: 'space-between',
-            fontWeight: '600'
-        },
-        right: {
-            flexBasis: '65%',
-            maxWidth: '55%',
-            padding: '15px 30px'
-        },
-        inputField: {
-            fontSize: '13px !important',
-            '& div': {
-                fontSize: '13px !important'
+            fontWeight: '600',
+            padding: '0 !important',
+            '& span': {
+                fontWeight: '600 !important'
             }
-        },
-        inputFieldDis: {
-            fontSize: '13px !important',
-            paddingTop: '24px',
-            '& div': {
-                color: 'rgb(229, 115, 115) !important'
-            }
-        },
-        selectContent: {
-            marginTop: '-15px'
         },
         radioButton: {
             marginTop: '10px',
@@ -135,9 +115,11 @@ const enhance = compose(
             }
         },
         commentField: {
-            fontSize: '24px',
-            padding: '20px 30px',
-            textAlign: 'right'
+            padding: '5px 20px',
+            fonSsize: '16px !important',
+            textAlign: 'left',
+            width: '50%',
+            float: 'left'
         },
         bottomButton: {
             bottom: '0',
@@ -158,8 +140,64 @@ const enhance = compose(
         actionButton: {
             fontSize: '13px !important',
             margin: '0 !important'
+        },
+        leftOrderPart: {
+            flexBasis: '35%',
+            padding: '20px 30px 20px 0',
+            borderRight: '1px #efefef solid'
+        },
+        rightOrderPart: {
+            flexBasis: '65%',
+            maxWidth: '65%',
+            padding: '20px 0 20px 30px'
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        inputDateCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            },
+            '& div:first-child': {
+                height: '45px !important',
+            }
+        },
+        inputFieldDis: {
+            fontSize: '13px !important',
+            paddingTop: '24px',
+            '& div': {
+                color: 'rgb(229, 115, 115) !important'
+            }
+        },
+        podlojkaScroll: {
+            overflowY: 'auto !important',
+            '& div:first-child div:first-child': {
+                transform: 'translate(0px, 0px) !important'
+            }
         }
-    }),
+    })),
     reduxForm({
         form: 'OrderCreateForm',
         enableReinitialize: true
@@ -180,6 +218,7 @@ const OrderCreateDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
+            className={classes.podlojkaScroll}
             contentStyle={customContentStyle}
             open={open}
             onRequestClose={onClose}
@@ -197,18 +236,19 @@ const OrderCreateDialog = enhance((props) => {
                         <CircularProgress size={80} thickness={5}/>
                     </div>
                     <div className={classes.innerWrap}>
-                        <div className={classes.inContent}>
-                            <div className={classes.left}>
-                                <div className={classes.title}>
+                        <div style={{minHeight: '470px'}} className={classes.inContent}>
+                            <div className={classes.leftOrderPart}>
+
+                                <div className={classes.subTitleOrder}>
                                     <span>Выбор клиента</span>
                                     <a style={{color: '#12aaeb'}}
                                     >+ добавить</a>
                                 </div>
-                                <div className={classes.selectContent}>
+                                <div>
                                     <Field
                                         name="client"
                                         component={ClientSearchField}
-                                        className={classes.inputField}
+                                        className={classes.inputFieldCustom}
                                         label="Клиент"
                                         fullWidth={true}/>
                                     <Field
@@ -216,63 +256,70 @@ const OrderCreateDialog = enhance((props) => {
                                         component={ClientContactsField}
                                     />
                                 </div>
+
                                 <div className={classes.condition}>
-                                    <div className={classes.title}>Условия доставки</div>
+                                    <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Условия доставки</div>
                                     <Field
                                         name="deliveryType"
                                         component={DeliveryTypeSearchField}
-                                        className={classes.inputField}
+                                        className={classes.inputFieldCustom}
                                         label="Тип доставки"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="deliveryPrice"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label={'Стоимость доставки (' + PRIMARY_CURRENCY_NAME + ')'}
                                         fullWidth={true}/>
                                     {(!stockMin) ? <Field
                                             name="deliveryDate"
                                             component={DateField}
-                                            className={classes.inputField}
-                                            hintText="Дата доставки"
+                                            className={classes.inputDateCustom}
+                                            floatingLabelText="Дата доставки"
+                                            container="inline"
                                             fullWidth={true}/>
                                         : <Field
                                             name="deliveryDate"
                                             component={TextField}
                                             className={classes.inputFieldDis}
-                                            hintText="Не достаточно товарв на складе"
+                                            floatingLabelText="Дата доставки"
+                                            defaultDate="Не достаточно товарв на складе"
                                             disabled={true}
                                             fullWidth={true}/>
                                     }
-                                    <Field
-                                        name="deliveryPrice"
-                                        component={TextField}
-                                        className={classes.inputField}
-                                        label={'Стоимость доставки (' + PRIMARY_CURRENCY_NAME + ')'}
-                                        fullWidth={true}/>
                                 </div>
+
                                 <div className={classes.condition}>
-                                    <div className={classes.title}>Оплата</div>
-                                    <Field
-                                        name="paymentDate"
-                                        component={DateField}
-                                        className={classes.inputField}
-                                        hintText="Дата оплаты"
-                                        fullWidth={true}/>
+                                    <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Оплата</div>
                                     <Field
                                         name="discountPrice"
                                         component={TextField}
-                                        className={classes.inputField}
+                                        className={classes.inputFieldCustom}
                                         label="Скидка (%)"
                                         style={{width: '50%'}}/>
+                                    <Field
+                                        name="paymentDate"
+                                        component={DateField}
+                                        className={classes.inputDateCustom}
+                                        floatingLabelText="Дата оплаты"
+                                        container="inline"
+                                        fullWidth={true}/>
                                 </div>
                             </div>
-                            <div className={classes.right}>
-                                <Fields
-                                    names={['products', 'product', 'amount', 'cost']}
-                                    component={OrderListProductField}
-                                />
+                            <div className={classes.rightOrderPart}>
+                                <div className={classes.productListModal}>
+                                    <Fields
+                                        names={['products', 'product', 'amount', 'cost']}
+                                        component={OrderListProductField}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className={classes.commentField}>
-                            Общая сумма заказа: <b>0</b>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
+                        <div className={classes.commentField}>
+                            Общая сумма заказа: <b>0</b>
+                        </div>
                         {(stockMin) ? <FlatButton
                                 label="Далее"
                                 className={classes.actionButton}

@@ -74,33 +74,33 @@ const CashboxCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent} style={{minHeight: '320px'}}>
+                    <div className={classes.inContent} style={{minHeight: '235px', paddingTop: '15px'}}>
                         <div className={classes.field}>
                             <Field
                                 name="name"
                                 component={TextField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Наименование"
                                 fullWidth={true}
                             />
                             <Field
                                 name="currency"
                                 component={CurrencySearchField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Валюта"
                                 fullWidth={true}
                             />
                             <Field
                                 name="cashier"
                                 component={UsersSearchField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Кассир"
                                 fullWidth={true}
                             />
                             <Field
                                 name="type"
                                 component={PaymentTypeSearchField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Тип оплаты"
                                 fullWidth={true}
                             />

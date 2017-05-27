@@ -83,19 +83,19 @@ const EquipmentCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent}>
-                        <div className={classes.field}>
+                    <div className={classes.inContent} style={{minHeight: '200px'}}>
+                        <div className={classes.field} style={{paddingTop: '15px'}}>
                             <Field
                                 name="name"
                                 component={TextField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Наименование"
                                 fullWidth={true}
                             />
                             <Field
                                 name="manufacture"
                                 component={ManufactureSearchField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Производство"
                                 fullWidth={true}
                             />

@@ -29,16 +29,14 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
 }
 
 export default injectSheet({
-    wrapper: {
-        marginTop: '10px',
-        position: 'relative'
-    },
     icon: {
         position: 'absolute',
         right: '0',
-        top: '10px',
+        top: '14px',
         '& svg': {
-            color: '#ccc !important'
+            color: '#ccc !important',
+            height: '20px !important',
+            width: '20px !important'
         }
     }
 })(DateField)

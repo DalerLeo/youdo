@@ -17,9 +17,9 @@ const enhance = compose(
             '& .imageDropZone': {
                 border: '2px #ccc dashed',
                 width: '200px',
-                height: '216px',
+                height: '200px',
                 display: 'flex',
-                margin: '60px 0 0 auto',
+                margin: '20px 0 0 auto',
                 justifyContent: 'space-around',
                 alignItems: 'center',
                 overflow: 'hidden',

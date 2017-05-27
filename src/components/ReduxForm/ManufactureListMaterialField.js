@@ -98,6 +98,21 @@ const enhance = compose(
                 marginTop: '10px !important'
             }
         },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
         titleAdd: {
             display: 'flex',
             justifyContent: 'space-between',
@@ -107,7 +122,7 @@ const enhance = compose(
         addRaw: {
             alignItems: 'flex-end',
             justifyContent: 'space-between',
-            margin: '0'
+            margin: '5px -7px'
         }
     }),
     withState('openAddMaterials', 'setOpenAddMaterials', false),
@@ -164,6 +179,7 @@ const ManufactureListMaterialField = ({classes, state, measurementName, handleAd
                     <Col xs={7}>
                         <ProductSearchField
                             label="Наименование товара"
+                            className={classes.inputFieldCustom}
                             fullWidth={true}
                             {..._.get(defaultProps, 'ingredient')}
                         />
@@ -172,6 +188,7 @@ const ManufactureListMaterialField = ({classes, state, measurementName, handleAd
                         <TextField
                             label="Кол-во"
                             fullWidth={true}
+                            className={classes.inputFieldCustom}
                             {..._.get(defaultProps, 'amount')}
                         />
                     </Col>
