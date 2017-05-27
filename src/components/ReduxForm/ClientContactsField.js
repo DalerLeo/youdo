@@ -33,7 +33,7 @@ const ClientContactsField = enhance((props) => {
             {!contactsLoading && <RadioButtonGroup name="contact" className={classes.radioButton} >
                 {_.map(contacts, (item) => {
                     const id = _.get(item, 'id')
-                    const value = _.get(item, 'name') + ' ' + _.get(item, 'phone') + ' ' + _.get(item, 'email')
+                    const value = _.get(item, 'name') + ' ' + _.get(item, 'telephone') + ' ' + _.get(item, 'email')
                     return (
                         <RadioButton
                             key={id}

@@ -43,8 +43,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            height: '100%',
-            minHeight: '300px !important'
+            height: '100%'
         },
         titleContent: {
             background: '#fff',

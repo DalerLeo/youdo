@@ -33,8 +33,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            height: '100%',
-            minHeight: '300px !important'
+            height: '100%'
         },
         titleContent: {
             background: '#fff',
@@ -71,7 +70,17 @@ const enhance = compose(
             width: '100%'
         },
         inputField: {
-            fontSize: '13px !important'
+            fontSize: '13px !important',
+            height: '50px !important',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
         bottomButton: {
             bottom: '0',
@@ -167,6 +176,21 @@ const enhance = compose(
                 marginBottom: '20px'
             }
         },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
         addMaterials: {
             background: 'rgb(242, 245, 248)',
             margin: '10px -30px',
@@ -223,10 +247,11 @@ const ManufactureAddProductDialog = enhance((props) => {
                 </div>
                 <div className={classes.bodyContent}>
                     <div className={classes.inContent}>
-                        <div style={{width: '100%'}}>
+                        <div style={{width: '100%', paddingTop: '10px'}}>
                             <Field
                                 name="product"
                                 label="Продукт"
+                                className={classes.inputFieldCustom}
                                 component={ProductSearchField}
                                 fullWidth={true}/>
                             <Fields

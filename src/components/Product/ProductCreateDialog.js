@@ -68,35 +68,35 @@ const ProductCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '320px'}}>
+                    <div className={classes.inContent} style={{minHeight: '250px'}}>
                         <div className={classes.loader}>
                             <CircularProgress size={80} thickness={5}/>
                         </div>
-                        <div className={classes.field}>
+                        <div className={classes.field} style={{marginTop: '10px'}}>
                             <Field
                                 name="name"
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 component={TextField}
                                 label="Наименование"
                                 fullWidth={true}
                             />
                             <Field
                                 name="type"
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 component={ProductTypeSearchField}
                                 label="Тип продукта"
                                 fullWidth={true}
                             />
                             <Field
                                 name="brand"
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 component={BrandSearchField}
                                 label="Бренд"
                                 fullWidth={true}
                             />
                             <Field
                                 name="measurement"
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 component={MeasurementSearchField}
                                 label="Мера"
                                 fullWidth={true}

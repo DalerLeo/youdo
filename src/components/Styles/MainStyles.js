@@ -27,8 +27,7 @@ const MainStyles = {
         position: 'relative',
         padding: '0 !important',
         overflowX: 'hidden',
-        height: '100%',
-        minHeight: '300px !important'
+        height: '100%'
     },
     titleContent: {
         background: '#fff',
@@ -65,7 +64,19 @@ const MainStyles = {
         width: '100%'
     },
     inputField: {
-        fontSize: '13px !important'
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        '& div': {
+            fontSize: '13px !important'
+        },
+        '& label': {
+            top: '20px !important',
+            lineHeight: '5px !important'
+        },
+        '& input': {
+            marginTop: '0 !important'
+        }
     },
     bottomButton: {
         bottom: '0',
@@ -81,6 +92,39 @@ const MainStyles = {
             fontWeight: '600 !important',
             color: '#129fdd',
             verticalAlign: 'inherit !important'
+        }
+    },
+    inputFieldCustom: {
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        '& div': {
+            fontSize: '13px !important'
+        },
+        '& label': {
+            top: '20px !important',
+            lineHeight: '5px !important'
+        },
+        '& input': {
+            marginTop: '0 !important'
+        }
+    },
+    inputDateCustom: {
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        '& div': {
+            fontSize: '13px !important'
+        },
+        '& label': {
+            top: '20px !important',
+            lineHeight: '5px !important'
+        },
+        '& input': {
+            marginTop: '0 !important'
+        },
+        '& div:first-child': {
+            height: '45px !important'
         }
     },
     actionButton: {

@@ -4,9 +4,9 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose, withPropsOnChange, withReducer} from 'recompose'
 import MUIAutoComplete from 'material-ui/AutoComplete'
-import SearchIcon from 'material-ui/svg-icons/action/search'
 import CircularProgress from 'material-ui/CircularProgress'
 import excludeObjKey from '../../helpers/excludeObjKey'
+import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 const DELAY_FOR_TYPE_ATTACK = 300
 
@@ -39,7 +39,8 @@ const fetchItem = (props) => {
 }
 
 const errorStyle = {
-    textAlign: 'left'
+    textAlign: 'left',
+    bottom: '5px'
 }
 
 const enhance = compose(
@@ -51,7 +52,7 @@ const enhance = compose(
         icon: {
             position: 'absolute',
             right: '0',
-            top: '35px'
+            top: '20px'
         }
     }),
 
@@ -103,7 +104,7 @@ const SearchField = enhance((props) => {
                 {...autoCompleteProps}
             />
             {!state.loading && <div className={classes.icon}>
-                <SearchIcon style={{color: '#ccc', height: '20px', width: '20px'}}/>
+                <KeyboardArrowDown style={{color: '#ccc', height: '20px', width: '20px'}}/>
             </div>}
             {state.loading && <div className={classes.icon}>
                 <CircularProgress size={20} thickness={2} />

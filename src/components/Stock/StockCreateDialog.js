@@ -47,6 +47,21 @@ const enhance = compose(
         },
         form: {
             minHeight: 'auto'
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     })),
     reduxForm({
@@ -79,26 +94,26 @@ const StockCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent} style={{minHeight: '250px'}}>
-                        <div className={classes.field}>
+                    <div className={classes.inContent} style={{minHeight: '200px'}}>
+                        <div className={classes.field} style={{paddingTop: '15px'}}>
                             <Field
                                 name="name"
                                 component={TextField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Наименование"
                                 fullWidth={true}
                             />
                             <Field
                                 name="manager"
                                 component={UsersSearchField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Завсклад"
                                 fullWidth={true}
                             />
                             <Field
                                 name="stockType"
                                 component={StockTypeSearchField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Тип склада"
                                 fullWidth={true}
                             />

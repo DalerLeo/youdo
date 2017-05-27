@@ -1,10 +1,11 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withReducer, withHandlers} from 'recompose'
+import {compose, withHandlers, withReducer, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../Images/groceries.svg'
+import {connect} from 'react-redux'
 import {
     Table,
     TableBody,
@@ -15,8 +16,9 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../DeleteIcon'
 
-import ProductSearchField from './ProductSearchField'
+import OrderProductSearchField from './OrderProductSearchField'
 import TextField from './TextField'
+import ProductCostField from '../ReduxForm/ProductCostField'
 
 const enhance = compose(
     injectSheet({
@@ -37,11 +39,11 @@ const enhance = compose(
             left: '0',
             width: '100%',
             height: 'calc(100% - 100px)',
-            display: 'flex',
+            display: 'block',
             justifyContent: 'center',
             alignItems: 'center',
             '& img': {
-                width: '100px',
+                width: '70px',
                 marginBottom: '20px'
             }
         },
@@ -81,6 +83,22 @@ const enhance = compose(
                 fontWeight: '600 !important'
             }
         },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            width: '100% !important',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
         title: {
             fontWeight: '600',
             border: 'none !important'
@@ -95,27 +113,20 @@ const enhance = compose(
             }
         },
         background: {
-            backgroundColor: '#f1f5f8',
             display: 'flex',
-            padding: '10px',
-            marginTop: '20px',
-            '& > div': {
-                marginTop: '-20px !important',
-                marginRight: '20px',
-                height: '72px !important',
-                '& input': {
-                    height: '75px !important'
-                }
-            },
-            '& > button > div > span': {
-                padding: '0 !important'
-            },
-            '& > div:last-child': {
-                width: '100% !important'
-            },
-            '& button': {
-                marginTop: '10px !important'
-            }
+            padding: '10px 30px',
+            margin: '0 -30px',
+            marginTop: '5px',
+            backgroundColor: '#f1f5f8',
+            position: 'relative',
+            zIndex: '2'
+        }
+    }),
+    withState('openAddProducts', 'setOpenAddProducts', false),
+    connect((state) => {
+        const extra = _.get(state, ['product', 'extra', 'data'])
+        return {
+            extra
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -126,13 +137,33 @@ const enhance = compose(
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
-            const cost = 10000
-
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
+            const extra = _.get(props, ['extra'])
+            const ZERO = 0
 
-            if (!_.isEmpty(product) && amount && cost) {
-                onChange(_.union(products, [{product, amount, cost}]))
+            if (!_.isEmpty(product) && amount) {
+                const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(amount)
+                const balance = _.toNumber(_.get(extra, 'balance'))
+                const foundIndex = _.findIndex(products,
+                    (item) => {
+                        return _.get(item, ['product', 'value']) === _.get(product, ['value'])
+                    })
+                const NOT_FOUND = -1
+
+                if (foundIndex > NOT_FOUND) {
+                    _.update(products, foundIndex, (foundObject) => {
+                        return {
+                            amount: _.toNumber(_.get(foundObject, 'amount')) + _.toNumber(amount),
+                            balance: _.get(foundObject, 'balance'),
+                            cost: _.toNumber(_.get(foundObject, 'cost')) + cost,
+                            product: _.get(foundObject, 'product')
+                        }
+                    })
+                    onChange([])
+                } else {
+                    onChange(_.union(products, [{product, amount, cost, balance}]))
+                }
             }
         },
 
@@ -147,35 +178,45 @@ const enhance = compose(
     })
 )
 
-const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, meta: {error}, ...defaultProps}) => {
+const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, openAddProducts, setOpenAddProducts, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
+    const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const stockMin = true
     return (
         <div className={classes.wrapper}>
             <div>
-                <div className={classes.headers}>
+                <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
                     <FlatButton
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}
                         className={classes.span}
-                        onTouchTap={() => dispatch({open: !state.open})}
+                        onTouchTap={() => setOpenAddProducts(!openAddProducts)}
                     />
                 </div>
-                {state.open && <div className={classes.background}>
-                    <ProductSearchField
-                        label="Наименование товара"
-                        {..._.get(defaultProps, 'product')}
-                    />
-                    <TextField
-                        label="Кол-во"
-                        {..._.get(defaultProps, 'amount')}
-                    />
-                    <TextField
-                        label="Сумма"
-                        {..._.get(defaultProps, 'cost')}
-                    />
-                    <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
+                {openAddProducts && <div className={classes.background}>
+                    <div style={{width: '35%', paddingRight: '20px'}}>
+                        <OrderProductSearchField
+                            label="Наименование товара"
+                            className={classes.inputFieldCustom}
+                            style={{width: '100% !mportant'}}
+                            {..._.get(defaultProps, 'product')}
+                        />
+                    </div>
+                    <div style={{width: '20%', paddingRight: '20px'}}>
+                        <TextField
+                            label="Кол-во"
+                            className={classes.inputFieldCustom}
+                            style={{width: '100% !mportant'}}
+                            {..._.get(defaultProps, 'amount')}
+                        />
+                    </div>
+                    <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px'}}>
+                        <ProductCostField />
+                    </div>
+                    <div style={{width: '20%', textAlign: 'right', paddingTop: '9px'}}>
+                        <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
+                    </div>
                 </div>}
             </div>
             {error && <div className={classes.error}>{error}</div>}
@@ -207,7 +248,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                         {_.map(products, (item, index) => (
                             <TableRow key={index} className={classes.tableRow} style={{background: (stockMin) ? '#ffecec' : 'transparent'}}>stockMin
                                 <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
+                                <TableRowColumn>{_.get(item, 'balance')}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'cost')}</TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>
@@ -221,7 +262,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                 </Table>
             </div>
                 : <div className={classes.imagePlaceholder}>
-                    <div style={{textAlign: 'center', color: '#adadad'}}>
+                    <div style={{textAlign: 'center', color: '#adadad', marginTop: '60px'}}>
                         <img src={Groceries} alt=""/>
                         <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>
                     </div>

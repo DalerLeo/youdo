@@ -41,6 +41,21 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
         nav: {
             fontSize: '18px',
             fontWeight: 'bold',
@@ -91,25 +106,27 @@ const TransactionCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '325px'}}>
+                    <div className={classes.inContent} style={{minHeight: '230px'}}>
                         <div className={classes.loader}>
                             <CircularProgress size={80} thickness={5}/>
                         </div>
                         <div className={classes.field}>
                             <div className={classes.itemList}>
                                 <div className={classes.label}>Касса:</div>
-                                <div style={{fontWeight: '600'}}>{_.get(cashbox, 'name')}</div>
+                                <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
                             </div>
                             <Field
                                 name="categoryId"
                                 component={ExpensiveCategorySearchField}
                                 label="Категория расхода"
+                                className={classes.inputFieldCustom}
                                 fullWidth={true}/>
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
                                 <Field
                                     name="amount"
                                     component={TextField}
                                     label="Сумма"
+                                    className={classes.inputFieldCustom}
                                     style={{width: '50%'}}
                                     fullWidth={false}/>
                                 <div style={{marginLeft: '20px'}}>
@@ -118,11 +135,11 @@ const TransactionCreateDialog = enhance((props) => {
                             </div>
                             <Field
                                 name="comment"
+                                style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
                                 component={TextField}
                                 label="Комментарий..."
-                                className={classes.inputField}
                                 multiLine={true}
-                                rows={3}
+                                rows={1}
                                 rowsMax={3}
                                 fullWidth={true}/>
                         </div>

@@ -111,6 +111,7 @@ export const PRODUCT_CREATE = `/${PRODUCT}/`
 export const PRODUCT_LIST = `/${PRODUCT}/`
 export const PRODUCT_ITEM = `/${PRODUCT}/%d/`
 export const PRODUCT_DELETE = `/${PRODUCT}/%d/`
+export const PRODUCT_EXTRA = 'products_extra_list/'
 
 export const PRODUCT_PRICE = 'dist/product'
 export const PRODUCT_PRICE_CREATE = `/${PRODUCT_PRICE}/`

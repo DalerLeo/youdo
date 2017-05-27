@@ -16,6 +16,7 @@ const axiosRequest = () => {
         axios.defaults.headers.common['cache-control'] = 'no-cache'
         axios.defaults.validateStatus = (status) => {
             if (status === UNAUTHORIZATE_STATUS) {
+                axios.defaults.headers.common.Authorization = ''
                 storageHelper.removeToken()
                 hashHistory.push(ROUTES.SIGN_IN)
             }
