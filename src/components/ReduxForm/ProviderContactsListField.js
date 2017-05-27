@@ -32,8 +32,20 @@ const enhance = compose(
                 right: '0 !important'
             }
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
         flex: {
             display: 'flex',
@@ -81,7 +93,7 @@ const ProviderContactsListField = ({classes, fields}) => {
                                 label="Контактное лицо"
                                 name={`${contact}.name`}
                                 component={TextField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 fullWidth={true}
                             />
 
@@ -90,7 +102,7 @@ const ProviderContactsListField = ({classes, fields}) => {
                                     label="Email"
                                     name={`${contact}.email`}
                                     component={TextField}
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}
                                 />
 
@@ -98,7 +110,7 @@ const ProviderContactsListField = ({classes, fields}) => {
                                     label="Телефон номер"
                                     name={`${contact}.phone`}
                                     component={TextField}
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}
                                 />
                             </div>

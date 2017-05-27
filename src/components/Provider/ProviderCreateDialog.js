@@ -43,6 +43,19 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        inputField: {
+            fontSize: '13px !important',
+            height: '50px !important',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
         contacts: {
             background: '#f1f5f8',
             color: '#333',
@@ -77,21 +90,21 @@ const ProviderCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form} style={{width: '100%'}}>
-                    <div className={classes.inContent}>
+                    <div className={classes.inContent} style={{minHeight: '300px'}}>
                         <div className={classes.loader}>
                             <CircularProgress size={80} thickness={5}/>
                         </div>
-                        <div className={classes.field}>
+                        <div className={classes.field} style={{padding: '10px 0 0'}}>
                             <Field
                                 name="name"
                                 component={TextField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Организация"
                                 fullWidth={true}/>
                             <Field
                                 name="address"
                                 component={TextField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Местположение"
                                 fullWidth={true}/>
 

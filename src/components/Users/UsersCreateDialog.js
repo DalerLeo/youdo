@@ -43,6 +43,10 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         dialogAddUser: {
+            overflowY: 'auto !important',
+            '& div:first-child div:first-child': {
+                transform: 'translate(0px, 0px) !important'
+            },
             '& .imageDropZone': {
                 width: '150px !important',
                 height: '145px !important',
@@ -82,26 +86,26 @@ const UsersCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent} style={{display: 'block', minHeight: '420px'}}>
+                    <div className={classes.inContent} style={{display: 'block', minHeight: '350px'}}>
                         <Row className={classes.field}>
-                            <Col xs={7}>
+                            <Col xs={7} style={{paddingTop: '15px'}}>
                                 <Field
                                     name="firstName"
                                     component={TextField}
                                     label="Имя"
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="secondName"
                                     component={TextField}
                                     label="Фамилия"
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="typeUser"
                                     component={UsersGroupSearchField}
                                     label="Тип Пользователя"
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                             </Col>
                             <Col xs={5}>
@@ -114,19 +118,19 @@ const UsersCreateDialog = enhance((props) => {
                             </Col>
                         </Row>
                         <div className="dottedList"></div>
-                        <Row className={classes.field}>
+                        <Row className={classes.field} style={{paddingTop: '15px'}}>
                             <Col xs={6}>
                                 <Field
                                     name="username"
                                     component={TextField}
                                     label="Логин"
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="phoneNumber"
                                     component={TextField}
                                     label="Телефон"
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                             </Col>
                             <Col xs={6}>
@@ -134,13 +138,13 @@ const UsersCreateDialog = enhance((props) => {
                                     name="password"
                                     component={TextField}
                                     label="Пароль"
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="password"
                                     component={TextField}
                                     label="Подтвердите пароль"
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                             </Col>
                         </Row>

@@ -25,7 +25,7 @@ const ProductCostField = enhance((props) => {
     const ZERO = 0
     const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(count)
     return (
-        <div style={{marginTop: '40px'}}>
+        <div style={{marginTop: '20'}}>
             { extraLoading && <div><CircularProgress size={20} thickness={2} /></div> }
             {!extraLoading && <div>{numberFormat(cost, PRIMARY_CURRENCY_NAME)}</div>}
         </div>

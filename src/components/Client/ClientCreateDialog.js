@@ -80,18 +80,18 @@ const ClientCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent}>
-                        <div className={classes.field}>
+                    <div className={classes.inContent} style={{minHeight: '300px'}}>
+                        <div className={classes.field} style={{padding: '10px 0 0'}}>
                             <Field
                                 name="name"
                                 component={TextField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Организация"
                                 fullWidth={true}/>
                             <Field
                                 name="address"
                                 component={TextField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Местположение"
                                 fullWidth={true}/>
 

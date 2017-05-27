@@ -28,7 +28,6 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             height: '100%',
-            minHeight: '300px !important',
             overflow: 'auto !important'
         },
         titleContent: {

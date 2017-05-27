@@ -32,8 +32,20 @@ const enhance = compose(
                 right: '0 !important'
             }
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
         flex: {
             display: 'flex',
@@ -42,6 +54,7 @@ const enhance = compose(
             }
         },
         contactBlock: {
+            marginTop: '10px',
             marginBottom: '15px',
             paddingBottom: '15px',
             '&:last-child': {
@@ -90,7 +103,7 @@ const ClientContactsListField = ({classes, fields}) => {
                                     label="Email"
                                     name={`${contact}.email`}
                                     component={TextField}
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}
                                 />
 
@@ -98,7 +111,7 @@ const ClientContactsListField = ({classes, fields}) => {
                                     label="Телефон номер"
                                     name={`${contact}.telephone`}
                                     component={TextField}
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}
                                 />
                             </div>

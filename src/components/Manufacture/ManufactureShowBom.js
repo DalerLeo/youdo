@@ -51,6 +51,21 @@ const enhance = compose(
                 marginRight: '-20px !important'
             }
         },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
         body: {
             minHeight: '450px'
         },
@@ -112,9 +127,6 @@ const enhance = compose(
             '& label': {
                 fontSize: '13px !important',
                 top: '20px !important'
-            },
-            '& div div:first-child': {
-                height: '50px !important'
             }
         }
     })),
@@ -167,7 +179,7 @@ const ManufactureShowBom = enhance((props) => {
                                 <Field
                                     name="nameAdd"
                                     component={TextField}
-                                    className={classes.inputFieldMaterials}
+                                    className={classes.inputFieldCustom}
                                     label="Наименование"
                                     fullWidth={true}/>
                             </Col>
@@ -175,7 +187,7 @@ const ManufactureShowBom = enhance((props) => {
                                 <Field
                                     name="countAdd"
                                     component={TextField}
-                                    className={classes.inputFieldMaterials}
+                                    className={classes.inputFieldCustom}
                                     label="Кол-во"
                                     fullWidth={true}/>
                             </Col>
@@ -183,7 +195,7 @@ const ManufactureShowBom = enhance((props) => {
                                 <Field
                                     name="edAdd"
                                     component={TextField}
-                                    className={classes.inputFieldMaterials}
+                                    className={classes.inputFieldCustom}
                                     label="Ед."
                                     fullWidth={true}/>
                             </Col>

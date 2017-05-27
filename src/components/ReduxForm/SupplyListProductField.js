@@ -38,11 +38,11 @@ const enhance = compose(
             left: '0',
             width: '100%',
             height: 'calc(100% - 100px)',
-            display: 'flex',
+            display: 'block',
             justifyContent: 'center',
             alignItems: 'center',
             '& img': {
-                width: '100px',
+                width: '70px',
                 marginBottom: '20px'
             }
         },
@@ -82,6 +82,19 @@ const enhance = compose(
                 fontWeight: '600 !important'
             }
         },
+        inputField: {
+            fontSize: '13px !important',
+            height: '50px !important',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
         title: {
             fontWeight: '600',
             border: 'none !important'
@@ -96,17 +109,15 @@ const enhance = compose(
             }
         },
         background: {
-            backgroundColor: '#f1f5f8',
             display: 'flex',
             padding: '10px',
-            marginTop: '20px',
+            marginTop: '5px',
+            backgroundColor: '#f1f5f8',
+            position: 'relative',
+            zIndex: '2',
             '& > div': {
-                marginTop: '-20px !important',
-                marginRight: '20px',
-                height: '72px !important',
-                '& input': {
-                    height: '75px !important'
-                }
+                marginTop: '-2px !important',
+                marginRight: '20px'
             },
             '& > button > div > span': {
                 padding: '0 !important'
@@ -155,7 +166,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
     return (
         <div className={classes.wrapper}>
             <div>
-                <div className={classes.headers}>
+                <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
                     <FlatButton
                         label="+ добавить товар"
@@ -167,14 +178,20 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                 {state.open && <div className={classes.background}>
                     <ProductSearchField
                         label="Наименование товара"
+                        className={classes.inputField}
+                        style={{width: '100% !mportant'}}
                         {..._.get(defaultProps, 'product')}
                     />
                     <TextField
                         label="Кол-во"
+                        className={classes.inputField}
+                        style={{width: '100% !mportant'}}
                         {..._.get(defaultProps, 'amount')}
                     />
                     <TextField
                         label="Сумма"
+                        className={classes.inputField}
+                        style={{width: '100% !mportant'}}
                         {..._.get(defaultProps, 'cost')}
                     />
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>

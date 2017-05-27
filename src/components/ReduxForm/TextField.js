@@ -2,7 +2,8 @@ import React from 'react'
 import MUITextField from 'material-ui/TextField'
 
 const errorStyle = {
-    textAlign: 'left'
+    textAlign: 'left',
+    bottom: '5px'
 }
 
 const TextField = ({input, label, meta: {error}, ...defaultProps}) => {
