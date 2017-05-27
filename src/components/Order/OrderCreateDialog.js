@@ -181,7 +181,7 @@ const enhance = compose(
                 marginTop: '0 !important'
             },
             '& div:first-child': {
-                height: '45px !important',
+                height: '45px !important'
             }
         },
         inputFieldDis: {

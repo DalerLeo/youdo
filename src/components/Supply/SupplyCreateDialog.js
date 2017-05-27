@@ -178,7 +178,7 @@ const enhance = compose(
                 marginTop: '0 !important'
             },
             '& div:first-child': {
-                height: '45px !important',
+                height: '45px !important'
             }
         },
         inputFieldDis: {
@@ -193,7 +193,7 @@ const enhance = compose(
             '& div:first-child div:first-child': {
                 transform: 'translate(0px, 0px) !important'
             }
-        },
+        }
     })),
     reduxForm({
         form: 'SupplyCreateForm',

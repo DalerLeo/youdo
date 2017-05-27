@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withHandlers, withState} from 'recompose'
+import {compose, withHandlers, withReducer, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
@@ -129,6 +129,10 @@ const enhance = compose(
             extra
         }
     }),
+    withReducer('state', 'dispatch', (state, action) => {
+        return {...state, ...action}
+    }, {open: false}),
+
     withHandlers({
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
@@ -174,7 +178,7 @@ const enhance = compose(
     })
 )
 
-const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProducts, setOpenAddProducts, ...defaultProps}) => {
+const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, openAddProducts, setOpenAddProducts, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const stockMin = true
@@ -207,7 +211,7 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                             {..._.get(defaultProps, 'amount')}
                         />
                     </div>
-                    <div className="summa" style={{width: '25%', textAlign: 'right',  paddingRight: '20px'}}>
+                    <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px'}}>
                         <ProductCostField />
                     </div>
                     <div style={{width: '20%', textAlign: 'right', paddingTop: '9px'}}>
