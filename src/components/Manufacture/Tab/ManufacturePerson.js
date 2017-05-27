@@ -18,31 +18,25 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        title: 'Наименование',
+        title: 'Сотрудник',
+        xs: 4
+    },
+    {
+        sorting: true,
+        name: 'position',
+        title: 'Должность',
         xs: 3
     },
     {
         sorting: true,
-        name: 'type',
-        title: 'Тип товара',
+        name: 'shift',
+        title: 'Смена',
         xs: 3
     },
     {
         sorting: true,
-        name: 'brand',
-        title: 'Бренд',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'measurement',
-        title: 'Мера',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'created_date',
-        title: 'Дата создания',
+        name: 'action',
+        title: '',
         xs: 2
     }
 ]
@@ -84,7 +78,6 @@ const ManufacturePerson = (props) => {
         const name = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
         const shift = _.get(item, 'name')
         const beginTime = _.get(item, 'beginTime')
-        const endTime = _.get(item, 'endTime')
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -92,12 +85,10 @@ const ManufacturePerson = (props) => {
         )
         return (
             <Row key={id}>
-                <Col xs={1}>{id}</Col>
-                <Col xs={3}>{name}</Col>
+                <Col xs={4}>{name}</Col>
                 <Col xs={3}>{shift}</Col>
-                <Col xs={2}>{beginTime}</Col>
-                <Col xs={2}>{endTime}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
+                <Col xs={3}>{beginTime}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -133,11 +124,11 @@ const ManufacturePerson = (props) => {
     return (
         <Row>
             <Col xs={12}>
-                <div>
-                    <FloatButton onClick={createDialog.handleOpenDialog}>
+                <div style={{padding: '10px 0', textAlign: 'right'}}>
+                    <FloatButton onClick={createDialog.handleOpenDialog} style={{color: '#12aaeb'}}>
                         <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
                                     viewBox="0 0 24 15"/>
-                        добавить продукцию
+                        добавить сотрудников
                     </FloatButton>
                 </div>
                 <GridList

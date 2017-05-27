@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
 import injectSheet from 'react-jss'
-import moment from 'moment'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import {Row, Col} from 'react-flexbox-grid'
@@ -12,37 +11,32 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import FloatButton from 'material-ui/FlatButton'
 import ManufactureDetails from '../ManufactureDetails'
+
 import GridList from '../../GridList'
 const listHeader = [
     {
         sorting: true,
         name: 'name',
         title: 'Наименование',
-        xs: 3
+        xs: 4
     },
     {
         sorting: true,
-        name: 'type',
-        title: 'Тип товара',
-        xs: 3
+        name: 'description',
+        title: 'Описание',
+        xs: 5
     },
     {
         sorting: true,
-        name: 'brand',
-        title: 'Бренд',
+        name: 'bom',
+        title: 'BoM',
         xs: 2
     },
     {
         sorting: true,
-        name: 'measurement',
-        title: 'Мера',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'created_date',
-        title: 'Дата создания',
-        xs: 2
+        name: 'action',
+        title: '',
+        xs: 1
     }
 ]
 const enhance = compose(
@@ -74,6 +68,18 @@ const ManufactureProduct = enhance((props) => {
         />
     )
 
+    const actions = (
+        <div>
+            <IconButton>
+                <ModEditorIcon />
+            </IconButton>
+
+            <IconButton>
+                <DeleteIcon />
+            </IconButton>
+        </div>
+    )
+
     const detailData = _.get(productData, 'detailData')
     const detail = (
         <ManufactureDetails
@@ -91,11 +97,14 @@ const ManufactureProduct = enhance((props) => {
         const name = _.get(item, 'name')
         const type = _.get(item, ['type', 'name']) || 'N/A'
         const brand = _.get(item, ['brand', 'name']) || 'N/A'
-        const measurement = _.get(item, ['measurement', 'name']) || ''
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const iconButton = (
+            <IconButton style={{padding: '0 12px'}}>
+                <MoreVertIcon />
+            </IconButton>
+        )
         return (
             <Row key={id}>
-                <Col xs={3}>
+                <Col xs={5}>
                     <span
                         className={classes.cursor}
                         onTouchTap={ () => {
@@ -104,10 +113,23 @@ const ManufactureProduct = enhance((props) => {
                         {name}
                     </span>
                 </Col>
-                <Col xs={3}>{type}</Col>
-                <Col xs={2}>{brand}</Col>
-                <Col xs={2}>{measurement}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={5}>{type}</Col>
+                <Col xs={1}>{brand}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>
+                    <IconMenu
+                        iconButtonElement={iconButton}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText="Изменить"
+                            leftIcon={<Edit />}
+                        />
+                        <MenuItem
+                            primaryText="Удалить "
+                            leftIcon={<DeleteIcon />}
+                        />
+                    </IconMenu>
+                </Col>
             </Row>
         )
     })
@@ -116,27 +138,18 @@ const ManufactureProduct = enhance((props) => {
         list: productList,
         loading: _.get(productData, 'listLoading')
     }
-    const actions = (
-        <div>
-            <IconButton>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
     const createDialog = _.get(productData, 'createDialog')
     return (
         <Row>
-            <div>
-                <FloatButton onClick={createDialog.handleOpenCreateDialog}>
-                    <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
-                                viewBox="0 0 24 15"/>
-                    добавить продукцию
-                </FloatButton>
-            </div>
+            <Col xs={12}>
+                <div style={{padding: '10px 0', textAlign: 'right'}}>
+                    <FloatButton onClick={createDialog.handleOpenCreateDialog} style={{color: '#12aaeb'}}>
+                        <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
+                                    viewBox="0 0 24 15"/>
+                        добавить продукцию
+                    </FloatButton>
+                </div>
+            </Col>
             <Col xs={12}>
                 <GridList
                     filter={filter}
