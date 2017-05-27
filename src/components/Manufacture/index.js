@@ -1,22 +1,29 @@
 import ManufactureGridList from './ManufactureGridList'
-import {MANUFACTURE_ADD_STAFF_DIALOG_OPEN} from './ManufactureAddStaffDialog'
+import {OPEN_USER_CREATE_DIALOG} from './ManufactureAddStaffDialog'
 import {MANUFACTURE_SHOW_BOM_DIALOG_OPEN} from './ManufactureShowBom'
 import {MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN} from './ManufactureAddProductDialog'
-import {MANUFACTURE_ADD_SHIFT_FORM_OPEN} from './ManufactureShiftCreateForm'
-import {MANUFACTURE_ADD_STAF_FORM_OPEN} from './ManufactureStaffCreateForm'
 
 const SHIFT_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const USER_SHIFT_DELETE_DIALOG_OPEN = 'openUserStaffDeleteDialog'
 const INGREDIENT_DELETE_DIALOG_OPEN = 'openIngredientDeleteDialog'
+const OPEN_UPDATE_PRODUCT_DIALOG = 'openUpdateProductDialog'
+const OPEN_DELETE_PRODUCT_DIALOG = 'openDeleteProductDialog'
+const OPEN_USER_UPDATE_DIALOG = 'openUserUpdateDialog'
+
+const OPEN_USER_CONFIRM_DIALOG = 'openUserDeleteDialog'
+const TAB = 'tab'
 
 export {
-    MANUFACTURE_ADD_STAFF_DIALOG_OPEN,
+    OPEN_USER_CREATE_DIALOG,
     MANUFACTURE_SHOW_BOM_DIALOG_OPEN,
     MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN,
     SHIFT_DELETE_DIALOG_OPEN,
-    MANUFACTURE_ADD_SHIFT_FORM_OPEN,
-    MANUFACTURE_ADD_STAF_FORM_OPEN,
     USER_SHIFT_DELETE_DIALOG_OPEN,
     INGREDIENT_DELETE_DIALOG_OPEN,
+    OPEN_UPDATE_PRODUCT_DIALOG,
+    OPEN_DELETE_PRODUCT_DIALOG,
+    OPEN_USER_CONFIRM_DIALOG,
+    OPEN_USER_UPDATE_DIALOG,
+    TAB,
     ManufactureGridList
 }

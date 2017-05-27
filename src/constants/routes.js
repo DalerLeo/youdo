@@ -34,7 +34,6 @@ export const ORDER = 'order'
 export const ORDER_LIST_URL = `/${ORDER}`
 export const ORDER_ITEM_URL = `${ORDER_LIST_URL}/:orderId`
 export const ORDER_ITEM_PATH = `/${ORDER}/%d`
-export const ORDER_ITEM_TAB_PATH = `/${ORDER}/%d/%s`
 
 export const PRODUCT = 'product'
 export const PRODUCT_LIST_URL = `/${PRODUCT}`
@@ -102,7 +101,7 @@ export const MANUFACTURE_CUSTOM_URL = `/${MANUFACTURE}/3`
 export const MANUFACTURE_ITEM_URL = `${MANUFACTURE_LIST_URL}/:manufactureId`
 export const MANUFACTURE_ITEM_PATH = `${MANUFACTURE}/%d`
 
-export const SHIFT = 'manufacture'
+export const SHIFT = 'shift'
 export const SHIFT_LIST_URL = `/${SHIFT}`
 export const SHIFT_ITEM_URL = `${SHIFT_LIST_URL}/:shiftId`
 export const SHIFT_ITEM_PATH = `${SHIFT}/%d`

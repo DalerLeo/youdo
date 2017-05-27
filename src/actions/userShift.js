@@ -38,8 +38,8 @@ export const userShiftDeleteAction = (id) => {
     }
 }
 
-export const userShiftUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const userShiftUpdateAction = (id, formValues, manufacture) => {
+    const requestData = serializers.createSerializer(formValues, manufacture)
     const payload = axios()
         .put(sprintf(API.USER_SHIFT_ITEM, id), requestData)
         .then((response) => {
@@ -55,8 +55,8 @@ export const userShiftUpdateAction = (id, formValues) => {
     }
 }
 
-export const userShiftListFetchAction = (manufactureId) => {
-    const params = serializers.listFilterSerializer(manufactureId)
+export const userShiftListFetchAction = (data, manufactureId) => {
+    const params = serializers.listFilterSerializer(data, manufactureId)
     const payload = axios()
         .get(API.USER_SHIFT_LIST, {params})
         .then((response) => {

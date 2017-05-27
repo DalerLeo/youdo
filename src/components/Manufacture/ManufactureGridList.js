@@ -2,8 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
 import ManufactureAddStaffDialog from './ManufactureAddStaffDialog'
@@ -12,13 +10,8 @@ import ManufactureAddProductDialog from './ManufactureAddProductDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import Edit from 'material-ui/svg-icons/image/edit'
 import CircularProgress from 'material-ui/CircularProgress'
-import Person from '../Images/person.png'
+import ManufactureTab from './ManufactureTab'
 import ConfirmDialog from '../ConfirmDialog'
 import Glue from '../Images/glue.png'
 import Cylindrical from '../Images/cylindrical.png'
@@ -242,33 +235,18 @@ const enhance = compose(
         }
     })
 )
-const iconStyle = {
-    icon: {
-        color: '#999',
-        width: 16,
-        height: 16
-    },
-    button: {
-        width: 24,
-        height: 24,
-        padding: 0
-    }
-}
 
 const ManufactureGridList = enhance((props) => {
     const {
         listData,
         detailData,
-        addStaff,
         showBom,
-        addProductDialog,
         classes,
-        shiftData,
-        staffData,
-        userShift,
         equipmentData,
         productData,
-        confirmDialog
+        tabData,
+        productFilterDialog,
+        personData
     } = props
 
     const detailId = _.get(detailData, 'id')
@@ -299,114 +277,29 @@ const ManufactureGridList = enhance((props) => {
             </li>
         )
     })
-    const shiftList = _.map(_.get(shiftData, 'shiftList'), (item) => {
-        const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const beginTime = _.get(item, 'beginTime')
-        const endTime = _.get(item, 'endTime')
-
-        return (
-            <div key={id}>
-                <div className={classes.productionStaffGroupTitle}>
-                    <div className="dottedList">
-                        <p>{name}</p>
-                        <span>График: {beginTime} - {endTime}</span>
-                    </div>
-                </div>
-                {
-                    _.map(_.get(userShift, 'userShiftList'), (item2) => {
-                        const itemId = _.get(item2, 'id')
-                        const shift = _.get(item2, 'shift')
-                        const user = _.get(item2, ['user', 'firstName']) + _.get(item2, ['user', 'secondName'])
-                        const position = _.get(item2, ['user', 'position'])
-                        if (id === shift) {
-                            return (
-                                <div key={itemId} className={classes.workerWrap}>
-                                    <div className={classes.workerAvatar}>
-                                        <img src={Person}/>
-                                    </div>
-                                    <div className={classes.workerPosition}>
-                                        {user}<span>worker {position}</span>
-                                    </div>
-                                    <div className={classes.deleteHideIco}>
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            disableTouchRipple={true}
-                                            style={iconStyle.button}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </div>
-                                </div>
-                            )
-                        }
-                        return ''
-                    })
-                }
-            </div>
-        )
-    })
-
-    const equipList = _.map(_.get(equipmentData, 'equipmentList'), (item) => {
-        const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-
-        return (
-            <Col xs={4} key={id}>
-                <div className={classes.productionEquipmentElement}>
-                    {name}
-                </div>
-            </Col>
-        )
-    })
-
-    const iconButton = (
-        <IconButton style={{padding: '0 12px', height: 'auto'}}>
-            <MoreVertIcon />
-        </IconButton>
-    )
-    const shiftListExp = _.get(shiftData, 'shiftList')
-    const shiftId = _.get(shiftData, 'shiftId')
-    const shift = _.find(shiftListExp, (o) => {
-        return _.toInteger(o.id) === _.toInteger(shiftId)
-    })
-    const currentUserShift = _.get(_.find(_.get(userShift, 'userShiftList'), {'id': _.get(userShift, 'userShiftId')}), ['user', 'firstName']) + ' ' +
-        _.get(_.find(_.get(userShift, 'userShiftList'), {'id': _.get(userShift, 'userShiftId')}), ['user', 'secondName'])
     const MINUS_ONE = -1
 
-    const productList = _.map(_.get(addProductDialog, 'productList'), (item) => {
-        const name = _.get(item, 'name')
-        return (
-        <Row className="dottedList">
-            <Col xs={4}>{name}</Col>
-            <Col xs={4}>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Col>
-            <Col xs={2} style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                textAlign: 'right'
-            }}>
-                <a onClick={showBom.handleOpen}
-                   style={{borderBottom: '1px dashed rgb(18, 170, 235)'}}>BoM </a>
-            </Col>
-            <Col xs={2} style={{textAlign: 'right'}}>
-                <IconButton onTouchTap={productData.handleOpenIngredientConfirmDialog}> <DeleteIcon/> </IconButton>
-            </Col>
-        </Row>
+    const productConfirm = _.get(productData, 'confirmDialog')
+    const productCreate = _.get(productData, 'createDialog')
+    const productUpdate = _.get(productData, 'updateDialog')
 
-        )
-    })
+    const userCreate = _.get(personData, 'createDialog')
+    const userUpdate = _.get(personData, 'updateDialog')
+    const userConfirm = _.get(personData, 'confirmDialog')
     return (
         <Container>
             <SubMenu url={ROUTES.MANUFACTURE_CUSTOM_URL}/>
             <ManufactureAddStaffDialog
-                open={addStaff.open}
-                onClose={addStaff.handleClose}
-                shiftData={shiftData}
-                staffData={staffData}
-                userShift={userShift}
-                confirmDialog={confirmDialog}
-                userShiftConfirmClick={userShift.handleOpenUserShiftConfirmDialog}
+                open={userCreate.open}
+                onClose={userCreate.handleCloseDialog}
+                onSubmit={userCreate.handleSubmitDialog}
+            />
+            <ManufactureAddStaffDialog
+                isUpdate={true}
+                initialValues={userUpdate.initialValues}
+                open={userUpdate.open}
+                onClose={userUpdate.handleCloseUpdateDialog}
+                onSubmit={userUpdate.handleSubmitUpdateDialog}
             />
             <ManufactureShowBom
                 open={showBom.open}
@@ -415,9 +308,15 @@ const ManufactureGridList = enhance((props) => {
 
             />
             <ManufactureAddProductDialog
-                open={addProductDialog.open}
-                onClose={addProductDialog.handleClose}
-                onSubmit={addProductDialog.handleSubmitAddProductDialog}
+                open={productCreate.open}
+                onClose={productCreate.handleCloseCreateDialog}
+                onSubmit={productCreate.handleSubmitCreateDialog}
+            />
+            <ManufactureAddProductDialog
+                initialValues={productUpdate.initialValues}
+                open={productUpdate.open}
+                onClose={productUpdate.handleCloseUpdateDialog}
+                onSubmit={productUpdate.handleSubmitUpdateDialog}
             />
             <Row className={classes.productionMainRow}>
                 <Col xs={3} className={classes.productionLeftSide}>
@@ -432,156 +331,28 @@ const ManufactureGridList = enhance((props) => {
                         }
                     </ul>
                 </Col>
-                <Col xs={9} className={classes.productionRightSide}>
-                    <Row>
-                        <Col xs={12}>
-                            <div className={classes.tab}>
-                                <div className={classes.tabNav}>
-                                    <a className="active">Продукция</a>
-                                    <a>Персонал</a>
-                                    <a>Оборудование</a>
-                                </div>
-                                <div className={classes.tabContent}>
-                                    <div className={classes.tabWrapper}>
-                                        <div className={classes.tableHeaderPN}>
-                                            <a style={{float: 'right'}} onClick={addProductDialog.handleOpen}>
-                                                <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
-                                                            viewBox="0 0 24 15"/>
-                                                добавить продукцию
-                                            </a>
-                                        </div>
-                                        <Row className="dottedList">
-                                            <Col xs={4}><strong>Наименование</strong></Col>
-                                            <Col xs={4}><strong>Описание</strong></Col>
-                                            <Col xs={2} style={{textAlign: 'right'}}><strong>BoM</strong></Col>
-                                            <Col xs={2} style={{textAlign: 'right'}}>&nbsp;</Col>
-                                        </Row>
-                                        {productList}
-                                    </div>
-                                </div>
-                            </div>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={4} style={{
-                            borderRight: '1px solid #efefef',
-                            height: 'calc(100vh - 120px)',
-                            padding: '20px 30px 20px 10px'
-                        }}>
-                            <div>
-                                <h3 style={{display: 'inline-block', fontSize: '13px', fontWeight: '800', margin: '0'}}>
-                                    Персонал</h3>
-                                <a style={{float: 'right'}} onClick={addStaff.handleOpen}>
-                                    <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
-                                                viewBox="0 0 24 15"/>
-                                    добавить
-                                </a>
-                            </div>
-                            {
-                                _.get(userShift, 'userShiftLoading')
-                                ? <div style={{textAlign: 'center'}}>
-                                    <CircularProgress size={100} thickness={6}/>
-                                </div>
-                                : shiftList
-                            }
-                        </Col>
-                        <Col xs={8} style={{padding: '20px 25px'}}>
-                            <Row>
-                                <Col xs={12}>
-                                    <h3 style={{
-                                        display: 'inline-block',
-                                        fontSize: '13px',
-                                        fontWeight: '800',
-                                        margin: '0'
-                                    }}>Оборудование</h3>
-                                    <Row className={classes.productionEquipment}>
-                                        {
-                                            _.get(equipmentData, 'equipmentListLoading')
-                                                ? <div style={{textAlign: 'center'}}>
-                                                <CircularProgress size={100} thickness={6}/>
-                                            </div>
-                                                : equipList
-                                        }
-                                    </Row>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={12} style={{padding: '20px 7px 10px'}}>
-                                    <h3 style={{
-                                        display: 'inline-block',
-                                        fontSize: '13px',
-                                        fontWeight: '800',
-                                        margin: '0'
-                                    }}>Список производимой продукции</h3>
-                                    <a style={{float: 'right'}} onClick={addProductDialog.handleOpen}>
-                                        <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
-                                                    viewBox="0 0 24 15"/>
-                                        добавить
-                                    </a>
-                                    <ul>
-                                        {productList}
-                                    </ul>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <ul className={classes.productList}>
-                                    <li className="dottedList">
-                                        <Col xs={7}>
-                                            <strong>Название продукта</strong><br />
-                                            <span>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</span>
-                                        </Col>
-                                        <Col xs={4} style={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                            justifyContent: 'flex-end'
-                                        }}>
-                                            <a onClick={showBom.handleOpen}
-                                               style={{borderBottom: '1px dashed rgb(18, 170, 235)'}}>BoM </a>
-                                        </Col>
-                                        <Col xs={1}>
-                                            <IconMenu
-                                                iconButtonElement={iconButton}
-                                                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                                                targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                                                <MenuItem
-                                                    primaryText="Изменить"
-                                                    leftIcon={<Edit />}
-                                                />
-                                                <MenuItem
-                                                    primaryText="Удалить "
-                                                    leftIcon={<DeleteIcon />}
-                                                />
-                                            </IconMenu>
-                                        </Col>
-                                    </li>
-                                </ul>
-                            </Row>
-                        </Col>
-                    </Row>
-                </Col>
+                <ManufactureTab
+                    tabData={tabData}
+                    productData={productData}
+                    personData={personData}
+                    equipmentData={equipmentData}
+                    productFilterDialog={productFilterDialog} />
             </Row>
 
-            {_.get(shiftData, 'shiftId') && <ConfirmDialog
+            {_.get(productData, ['detailData', 'id']) !== MINUS_ONE && <ConfirmDialog
                 type="delete"
-                message={_.get(shift, 'name')}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
+                message={_.get(productData, ['detailData', 'data', 'name'])}
+                onClose={productConfirm.handleCloseConfirmDialog}
+                onSubmit={productConfirm.handleSendConfirmDialog}
+                open={productConfirm.openConfirmDialog}
             />}
-            {_.get(userShift, 'userShiftId') !== MINUS_ONE && <ConfirmDialog
+            {_.get(personData, 'userShiftItem') && <ConfirmDialog
                 type="delete"
-                message={currentUserShift}
-                onClose={userShift.handleCloseUserShiftConfirmDialog}
-                onSubmit={userShift.handleSendUserShiftConfirmDialog}
-                open={userShift.openUserShiftConfirmDialog}
-            />}
-            {_.get(productData, 'productId') !== MINUS_ONE && <ConfirmDialog
-                type="delete"
-                message={currentUserShift}
-                onClose={productData.handleCloseIngredientConfirmDialog}
-                onSubmit={productData.handleSendIngredientConfirmDialog}
-                open={productData.openIngredientConfirmDialog}
+                message={_.get(_.get(personData, ['userShiftItem', 'user']), 'firstName') +
+                ' ' + _.get(_.get(personData, ['userShiftItem', 'user']), 'secondName')}
+                onClose={userConfirm.handleCloseConfirmDialog}
+                onSubmit={userConfirm.handleSendConfirmDialog}
+                open={userConfirm.open}
             />}
         </Container>
     )
@@ -590,40 +361,24 @@ const ManufactureGridList = enhance((props) => {
 ManufactureGridList.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    addStaff: PropTypes.shape({
-        open: PropTypes.bool.isRequired,
-        handleOpen: PropTypes.func.isRequired,
-        handleClose: PropTypes.func.isRequired
-    }).isRequired,
     showBom: PropTypes.shape({
         open: PropTypes.bool.isRequired,
         handleOpen: PropTypes.func.isRequired,
         handleClose: PropTypes.func.isRequired
     }).isRequired,
-    addProductDialog: PropTypes.shape({
-        open: PropTypes.bool.isRequired,
-        productListLoading: PropTypes.bool,
-        handleOpen: PropTypes.func.isRequired,
-        handleClose: PropTypes.func.isRequired,
-        handleSubmitAddProductDialog: PropTypes.func.isRequired
-    }).isRequired,
-    shiftData: PropTypes.object,
-    staffData: PropTypes.object,
-    userShift: PropTypes.shape({
-        userShiftId: PropTypes.number,
-        openUserShiftConfirmDialog: PropTypes.bool,
-        handleOpenUserShiftConfirmDialog: PropTypes.func.isRequired,
-        handleCloseUserShiftConfirmDialog: PropTypes.func.isRequired,
-        handleSendUserShiftConfirmDialog: PropTypes.func.isRequired
-    }),
     productData: PropTypes.object.isRequired,
-    equipmentData: PropTypes.object
+    personData: PropTypes.object.isRequired,
+    equipmentData: PropTypes.object,
+    tabData: PropTypes.object.isRequired,
+    productFilterDialog: PropTypes.shape({
+        initialValues: PropTypes.object,
+        filterLoading: PropTypes.bool,
+        openFilterDialog: PropTypes.bool.isRequired,
+        handleOpenFilterDialog: PropTypes.func.isRequired,
+        handleCloseFilterDialog: PropTypes.func.isRequired,
+        handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired,
+    updateProductDialog: PropTypes.object
 }
 
 export default ManufactureGridList
