@@ -106,7 +106,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ProviderCreateForm',
+        form: 'ManufactureCreateUserForm',
         enableReinitialize: true
     })
 )
@@ -117,7 +117,8 @@ const ManufactureAddStaffDialog = enhance((props) => {
         loading,
         onClose,
         handleSubmit,
-        classes
+        classes,
+        isUpdate
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
@@ -141,6 +142,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                             name="user"
                             component={UsersSearchField}
                             className={classes.inputFieldShift}
+                            disabled={Boolean(isUpdate)}
                             label="Сотрудник"
                             fullWidth={true}/>
                         <Field

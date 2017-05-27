@@ -70,7 +70,8 @@ export const MenuItems = [
             {name: 'Типы продуктов', url: ROUTES.PRODUCT_TYPE_LIST_URL},
             {name: 'Пользователи', url: ROUTES.USERS_LIST_URL},
             {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL},
-            {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL}
+            {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL},
+            {name: 'Смена', url: ROUTES.SHIFT_LIST_URL}
         ]
     }
 ]

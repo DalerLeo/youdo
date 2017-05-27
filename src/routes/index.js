@@ -29,6 +29,7 @@ import {StatManufacture} from '../containers/StatManufacture'
 import {StatCashbox} from '../containers/StatCashbox'
 import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
+import {ShiftList} from '../containers/Shift'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -248,6 +249,17 @@ export default {
                 {
                     path: ROUTES.BRAND_ITEM_URL,
                     component: userIsAuth(BrandList)
+                }
+            ]
+        },
+        // Shift
+        {
+            path: ROUTES.SHIFT_LIST_URL,
+            component: userIsAuth(ShiftList),
+            childRoutes: [
+                {
+                    path: ROUTES.SHIFT_ITEM_URL,
+                    component: userIsAuth(ShiftList)
                 }
             ]
         },

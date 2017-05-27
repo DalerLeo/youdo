@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -65,12 +64,10 @@ const ManufacturePerson = (props) => {
     const actions = (
         <div>
             <IconButton>
-                {/* OnTouchTap={actionsDialog.handleActionEdit} */}
                 <ModEditorIcon />
             </IconButton>
 
             <IconButton>
-                {/* OnTouchTap={actionsDialog.handleActionDelete} */}
                 <DeleteIcon />
             </IconButton>
         </div>
@@ -84,7 +81,7 @@ const ManufacturePerson = (props) => {
 
     const personList = _.map(_.get(personData, ['list', 'results']), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, ['user', 'firstName']) + _.get(item, ['user', 'secondName'])
+        const name = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
         const shift = _.get(item, 'name')
         const beginTime = _.get(item, 'beginTime')
         const endTime = _.get(item, 'endTime')

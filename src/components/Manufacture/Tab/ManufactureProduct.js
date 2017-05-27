@@ -119,12 +119,10 @@ const ManufactureProduct = enhance((props) => {
     const actions = (
         <div>
             <IconButton>
-                {/*onTouchTap={actionsDialog.handleActionEdit}*/}
                 <ModEditorIcon />
             </IconButton>
 
             <IconButton>
-                {/*onTouchTap={actionsDialog.handleActionDelete}*/}
                 <DeleteIcon />
             </IconButton>
         </div>

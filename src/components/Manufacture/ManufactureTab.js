@@ -38,7 +38,7 @@ const enhance = compose(
 )
 
 const ManufactureTab = enhance((props) => {
-    const {classes, tabData, productFilterDialog, productData, personData} = props
+    const {classes, tabData, productFilterDialog, productData, personData, equipmentData} = props
     const tab = _.get(tabData, 'tab')
     return (
         <Col className={classes.rightSide} xs={6} md={8}>
@@ -57,7 +57,8 @@ const ManufactureTab = enhance((props) => {
                     filterDialog={productFilterDialog} />}
                 {TAB.MANUFACTURE_TAB_PERSON === tab && <ManufacturePerson
                     personData={personData}/>}
-                {TAB.MANUFACTURE_TAB_EQUIPMENT === tab && <ManufactureEquipment />}
+                {TAB.MANUFACTURE_TAB_EQUIPMENT === tab && <ManufactureEquipment
+                    equipmentData={equipmentData}/>}
             </div>
         </Col>
     )
@@ -68,7 +69,8 @@ ManufactureTab.propTypes = {
         handleTabChange: PropTypes.func.isRequired
     }),
     productData: PropTypes.object.isRequired,
-    personData: PropTypes.object.isRequired
+    personData: PropTypes.object.isRequired,
+    equipmentData: PropTypes.object.isRequired
 }
 
 export default ManufactureTab
