@@ -11,13 +11,14 @@ import ManufacturePerson from './Tab/ManufacturePerson'
 import ManufactureEquipment from './Tab/ManufactureEquipment'
 const enhance = compose(
     injectSheet({
-        rightSide: {
+        ManufactRightSide: {
             boxShadow: '-5px 0px 5px #E0E0E0;',
-            padding: '8px 25px'
+            padding: '0px 25px',
+            zIndex: '2'
         },
         colorCat: {
             borderBottom: '2px solid #e8e8e8',
-            marginBottom: '20px',
+            marginBottom: '0',
             '& > div': {
                 width: '60% !important'
             },
@@ -28,10 +29,15 @@ const enhance = compose(
             },
             '& button': {
                 color: 'black !important',
-                backgroundColor: 'white !important'
+                backgroundColor: '#fefefe !important',
+                height: '30px'
             },
             '& button > span:first-line': {
                 color: '#a6dff7'
+            },
+            '& button div div': {
+                height: '30px !important',
+                justifyContent: 'flex-start !important'
             }
         }
     })
@@ -41,7 +47,7 @@ const ManufactureTab = enhance((props) => {
     const {classes, tabData, productFilterDialog, productData, personData, equipmentData} = props
     const tab = _.get(tabData, 'tab')
     return (
-        <Col className={classes.rightSide} xs={6} md={8}>
+        <Col className={classes.ManufactRightSide} xs={9} md={9}>
             <div>
                 <Tabs
                     className={classes.colorCat}

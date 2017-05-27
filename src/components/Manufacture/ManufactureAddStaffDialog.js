@@ -39,6 +39,21 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
         popUp: {
             overflowY: 'hidden !important',
             fontSize: '13px !important',
@@ -67,8 +82,9 @@ const enhance = compose(
         inContent: {
             display: 'flex',
             maxHeight: '50vh',
-            minHeight: '184px',
+            minHeight: '140px',
             overflow: 'auto',
+            padding: '0 30px',
             color: '#333'
         },
         bodyContent: {
@@ -126,40 +142,43 @@ const ManufactureAddStaffDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '700px'}}
+            contentStyle={loading ? {width: '135px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
-            <div className={classes.titleContent}>
-                <span>Производство клея: персонал</span>
-                <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
-                </IconButton>
-            </div>
-            <div className={classes.bodyContent}>
-                <div className={classes.inContent}>
-                    <form onSubmit={onSubmit} className={classes.addStaffForm}>
-                        <Field
-                            name="user"
-                            component={UsersSearchField}
-                            className={classes.inputFieldShift}
-                            disabled={Boolean(isUpdate)}
-                            label="Сотрудник"
-                            fullWidth={true}/>
-                        <Field
-                            name="shift"
-                            component={ShiftSearchField}
-                            className={classes.inputFieldTime}
-                            label="Смена"
-                            fullWidth={true}/>
-                        <div className={classes.buttonSub}>
-                            <FlatButton
-                                label="Применить"
-                                className={classes.actionButton}
-                                type="submit"
-                            />
-                        </div>
-                    </form>
+            <form onSubmit={onSubmit} className={classes.form}>
+                <div className={classes.titleContent}>
+                    <span>Производство клея: персонал</span>
+                    <IconButton onTouchTap={onClose}>
+                        <CloseIcon2 color="#666666"/>
+                    </IconButton>
                 </div>
-            </div>
+                <div className={classes.bodyContent}>
+                    <div className={classes.inContent}>
+                        <div style={{width: '100%', paddingTop: '10px'}}>
+                            <Field
+                                name="user"
+                                component={UsersSearchField}
+                                className={classes.inputFieldCustom}
+                                disabled={Boolean(isUpdate)}
+                                label="Сотрудник"
+                                fullWidth={true}/>
+                            <Field
+                                name="shift"
+                                component={ShiftSearchField}
+                                className={classes.inputFieldCustom}
+                                label="Смена"
+                                fullWidth={true}/>
+                        </div>
+                    </div>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
+                        />
+                    </div>
+                </div>
+            </form>
         </Dialog>
     )
 })
