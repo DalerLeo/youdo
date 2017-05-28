@@ -80,7 +80,7 @@ const enhance = compose(
         }
     })),
     reduxForm({
-        form: 'TransactionCreateForm',
+        form: 'TransactionIncomeForm',
         enableReinitialize: true
     })
 )

@@ -247,14 +247,21 @@ const Layout = enhance((props) => {
         const title = _.get(item, 'title')
         const text = _.get(item, 'text')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const viewed = _.get(item, 'viewed')
+        const template = _.get(item, ['template', 'name']) === 'accountant'
+            ? <div className="notifIcon balance"><Balance/></div>
+            : (_.get(item, ['template', 'name']) === 'order'
+                    ? <div className="notifIcon money"><Money/></div>
+                    : (_.get(item, ['template', 'name']) === 'supply'
+                        ? <div className="notifIcon store"><Storehouse/></div>
+                        : <div></div>)
+            )
 
         return (
             <div key={id} className={classes.notif} onClick={() => {
                 setClickNotifications(true)
-            }} style={clickNotifications ? {opacity: '0.5'} : {opacity: '1'}}>
-                <div className="notifIcon money">
-                    <Money/>
-                </div>
+            }} style={viewed ? {opacity: '0.5'} : {opacity: '1'}}>
+                {template}
                 <div className={classes.notifContent}>
                     <div className={classes.notifTitle}>
                         <div>{title}</div>

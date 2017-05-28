@@ -81,8 +81,6 @@ export const CASHBOX_DELETE = `/${CASHBOX}/%d/`
 
 export const TRANSACTION = 'transactions/transaction'
 export const TRANSACTION_CREATE = `/${TRANSACTION}/`
-export const TRANSACTION_INCOME = `/${TRANSACTION}/`
-export const TRANSACTION_SEND = `/${TRANSACTION}/`
 export const TRANSACTION_LIST = `/${TRANSACTION}/`
 export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
