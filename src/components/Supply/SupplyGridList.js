@@ -98,13 +98,17 @@ const enhance = compose(
             extend: 'dot',
             backgroundColor: '#81c784'
         },
+        begin: {
+            extend: 'dot',
+            backgroundColor: '#64b5f6'
+        },
         error: {
             extend: 'dot',
             backgroundColor: '#e57373'
         },
         waiting: {
             extend: 'dot',
-            backgroundColor: '#e57373'
+            backgroundColor: '#f0ad4e'
         }
     })
 )
@@ -169,7 +173,7 @@ const SupplyGridList = enhance((props) => {
         const totalCost = numberFormat(_.get(item, 'totalCost'), _.get(item, ['currency', 'name']))
         const acceptedCost = numberFormat(_.get(item, 'acceptedCost'), _.get(item, ['currency', 'name']))
         const defectedCost = numberFormat(_.get(item, 'defectedCost'), _.get(item, ['currency', 'name']))
-        const ZERO_NUM = 0
+        const status = _.get(item, 'status')
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
@@ -182,7 +186,10 @@ const SupplyGridList = enhance((props) => {
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
                 <Col xs={2}>{totalCost}</Col>
-                <Col xs={1}>{_.get(item, 'acceptedCost') > ZERO_NUM ? (<span><i className={classes.success} /> Принято</span>) : (<span><i className={classes.waiting} /> ожидает</span>)}</Col>
+                <Col xs={1}>{status === 'Pending' ? (<span><i className={classes.waiting} /> ожидает</span>)
+                    : ((status === 'In progress') ? (<span><i className={classes.begin} /> начался</span>)
+                        : (status === 'Completed') ? (<span><i className={classes.success} /> принято</span>)
+                            : (<span><i className={classes.error} /> отменен</span>))}</Col>
                 <Col xs={1}>{acceptedCost}</Col>
                 <Col xs={1}>{defectedCost}</Col>
             </Row>

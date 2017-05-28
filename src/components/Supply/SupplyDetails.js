@@ -13,7 +13,7 @@ import Dot from '../Images/dot.png'
 import CloseIcon from '../CloseIcon'
 import numberFormat from '../../helpers/numberFormat'
 import Tooltip from '../ToolTip'
-
+import moment from 'moment'
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
     injectSheet({
@@ -261,8 +261,9 @@ const SupplyDetails = enhance((props) => {
     const contactEmail = _.get(contact, 'email')
     const contactPhone = _.get(contact, 'phone')
     const dateDelivery = _.get(data, 'dateDelivery') || 'Не указано'
-    const acceptedTime = _.get(data, 'acceptedTime') || 'Не начался'
-    const finishedTime = _.get(data, 'finishedTime') || 'Не закончилась'
+    const acceptedTime = (_.get(data, 'acceptedTime')) ? moment(_.get(data, 'acceptedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не начался'
+    const finishedTime = (_.get(data, 'finishedTime')) ? moment(_.get(data, 'finishedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не закончилась'
+
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
 

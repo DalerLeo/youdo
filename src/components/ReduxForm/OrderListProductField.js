@@ -151,15 +151,14 @@ const enhance = compose(
                 const NOT_FOUND = -1
 
                 if (foundIndex > NOT_FOUND) {
-                    _.update(products, foundIndex, (foundObject) => {
-                        return {
-                            amount: _.toNumber(_.get(foundObject, 'amount')) + _.toNumber(amount),
-                            balance: _.get(foundObject, 'balance'),
-                            cost: _.toNumber(_.get(foundObject, 'cost')) + cost,
-                            product: _.get(foundObject, 'product')
-                        }
-                    })
-                    onChange(_.union(products, [{product, amount, cost, balance}]))
+                    // _.update(products, foundIndex, (foundObject) => {
+                    //     return {
+                    //         amount: _.toNumber(_.get(foundObject, 'amount')) + _.toNumber(amount),
+                    //         balance: _.get(foundObject, 'balance'),
+                    //         cost: _.toNumber(_.get(foundObject, 'cost')) + cost,
+                    //         product: _.get(foundObject, 'product')
+                    //     }
+                    // })
                 } else {
                     onChange(_.union(products, [{product, amount, cost, balance}]))
                 }
