@@ -40,23 +40,21 @@ const ManufactureDetails = enhance((props) => {
         )
     }
     const ingredientList = _.map(_.get(data, 'ingredient'), (item) => {
-        const id = _.get(item, 'id')
+        const itemId = _.get(item, 'id')
         const ingredient = _.get(item, ['ingredient', 'name'])
         const amount = _.get(item, 'amount')
         const measurement = _.get(item, ['ingredient', 'measurement', 'name'])
         return (
-        <li key={id} className="dottedList">
+        <li key={itemId} className="dottedList">
             <Col xs={7}>{ingredient}</Col>
             <Col xs={2}>{amount} {measurement}</Col>
             <Col xs={1}>
                 <IconButton>
-                    {/*onTouchTap={actionsDialog.handleActionEdit}*/}
                     <ModEditorIcon />
                 </IconButton>
             </Col>
             <Col xs={1}>
                 <IconButton>
-                    {/*onTouchTap={actionsDialog.handleActionDelete}*/}
                     <DeleteIcon />
                 </IconButton>
             </Col>
@@ -67,11 +65,11 @@ const ManufactureDetails = enhance((props) => {
     return (
         <div key={id} className={classes.wrapper}>
             Detail Content
-            <button onTouchTap={() => {
+            <button onClick={() => {
                 handleOpenConfirmDialog()
             }}>Delete
             </button>
-            <button onTouchTap={() => {
+            <button onClick={() => {
                 handleOpenUpdateDialog(id)
             }}>Update
             </button>
