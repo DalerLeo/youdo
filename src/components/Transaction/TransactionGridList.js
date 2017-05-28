@@ -11,8 +11,6 @@ import GridList from '../GridList'
 import Container from '../Container'
 import TransactionFilterForm from './TransactionFilterForm'
 import TransactionCreateDialog from './TransactionCreateDialog'
-import TransactionSendDialog from './TransactionSendDialog'
-import TransactionIncomeDialog from './TransactionIncomeDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -131,12 +129,8 @@ const TransactionGridList = enhance((props) => {
         filter,
         createSendDialog,
         createIncomeDialog,
-        updateIncomeDialog,
         updateSendDialog,
-        handleOpenUpdateDialog,
-        // incomeDialog,
-        // updateDialog,
-        // updateIncomeDialog,
+        updateIncomeDialog,
         filterDialog,
         cashboxData,
         actionsDialog,
@@ -201,7 +195,7 @@ const TransactionGridList = enhance((props) => {
                             primaryText="Изменить"
                             leftIcon={<Edit />}
                             onTouchTap={() => {
-                                handleOpenUpdateDialog(id, _.get(item, 'amount'))
+                                updateSendDialog.handleOpenUpdateDialog(id, _.get(item, 'amount'))
                             }}
                         />
                         <MenuItem
@@ -298,8 +292,8 @@ const TransactionGridList = enhance((props) => {
                     { _.get(cashboxData, 'cashboxId') !== AllCashboxId && <div className={classes.outerTitle}>
                         <div>{cashboxName}</div>
                         <div className={classes.buttons}>
-                            <a onClick={incomeDialog.handleOpenIncomeDialog} className={classes.btnAdd}>+ Доход</a>
-                            <a onClick={createDialog.handleOpenCreateDialog} className={classes.btnRemove}>- Расход</a>
+                            <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
+                            <a onClick={createSendDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
                         </div>
                     </div>}
 
@@ -312,6 +306,7 @@ const TransactionGridList = enhance((props) => {
                     />
 
                     <TransactionCreateDialog
+                        isSend={true}
                         cashboxData={cashboxData}
                         open={createSendDialog.open}
                         loading={createSendDialog.loading}
@@ -322,7 +317,7 @@ const TransactionGridList = enhance((props) => {
                     <TransactionCreateDialog
                         cashboxData={cashboxData}
                         open={createIncomeDialog.open}
-                        loading={createImcomeDialog.loading}
+                        loading={createIncomeDialog.loading}
                         onClose={createIncomeDialog.handleCloseDialog}
                         onSubmit={createIncomeDialog.handleSubmitDialog}
                     />
@@ -330,10 +325,11 @@ const TransactionGridList = enhance((props) => {
                     <TransactionCreateDialog
                         initialValues={updateSendDialog.initialValues}
                         isUpdate={true}
+                        isSend={true}
                         open={updateSendDialog.open}
                         loading={updateSendDialog.loading}
-                        onClose={updateSendDialog.handleCloseDialog}
-                        onSubmit={updateSendDialog.handleSubmitDialog}
+                        onClose={updateSendDialog.handleCloseUpdateDialog}
+                        onSubmit={updateSendDialog.handleSubmitUpdateDialog}
                     />
 
                     <TransactionCreateDialog
@@ -341,50 +337,16 @@ const TransactionGridList = enhance((props) => {
                         isUpdate={true}
                         open={updateIncomeDialog.open}
                         loading={updateIncomeDialog.loading}
-                        onClose={updateIncomeDialog.handleCloseDialog}
-                        onSubmit={updateIncomeDialog.handleSubmitDialog}
+                        onClose={updateIncomeDialog.handleCloseUpdateDialog}
+                        onSubmit={updateIncomeDialog.handleSubmitUpdateDialog}
                     />
-
-                    {/*<TransactionSendDialog*/}
-                        {/*cashboxData={cashboxData}*/}
-                        {/*open={sendDialog.openSendDialog}*/}
-                        {/*loading={sendDialog.sendLoading}*/}
-                        {/*onClose={sendDialog.handleCloseSendDialog}*/}
-                        {/*onSubmit={sendDialog.handleSubmitSendDialog}*/}
-                    {/*/>*/}
-
-                    {/*<TransactionIncomeDialog*/}
-                        {/*cashboxData={cashboxData}*/}
-                        {/*open={incomeDialog.openIncomeDialog}*/}
-                        {/*loading={incomeDialog.incomeLoading}*/}
-                        {/*onClose={incomeDialog.handleCloseIncomeDialog}*/}
-                        {/*onSubmit={incomeDialog.handleSubmitIncomeDialog}*/}
-                    {/*/>*/}
-
-                    {/*<TransactionCreateDialog*/}
-                        {/*initialValues={updateDialog.initialValues}*/}
-                        {/*isUpdate={true}*/}
-                        {/*open={updateDialog.openUpdateDialog}*/}
-                        {/*loading={updateDialog.updateLoading}*/}
-                        {/*onClose={updateDialog.handleCloseUpdateDialog}*/}
-                        {/*onSubmit={updateDialog.handleSubmitUpdateDialog}*/}
-                    {/*/>*/}
-
-                    {/*<TransactionIncomeDialog*/}
-                        {/*initialValues={updateIncomeDialog.initialValues}*/}
-                        {/*isUpdate={true}*/}
-                        {/*open={updateIncomeDialog.openUpdateIncomeDialog}*/}
-                        {/*loading={updateIncomeDialog.updateIncomeLoading}*/}
-                        {/*onClose={updateIncomeDialog.handleCloseUpdateIncomeDialog}*/}
-                        {/*onSubmit={updateIncomeDialog.handleSubmitUpdateIncomeDialog}*/}
-                    {/*/>*/}
 
                     {detailData.data && <ConfirmDialog
                         type="delete"
                         message={_.get(detailData, ['data', 'comment'])}
                         onClose={confirmDialog.handleCloseConfirmDialog}
                         onSubmit={confirmDialog.handleSendConfirmDialog}
-                        open={confirmDialog.openConfirmDialog}
+                        open={confirmDialog.open}
                     />}
                 </div>
             </div>
@@ -415,44 +377,23 @@ TransactionGridList.propTypes = {
     updateSendDialog: PropTypes.shape({
         loading: PropTypes.bool.isRequired,
         open: PropTypes.bool.isRequired,
-        handleOpenDialog: PropTypes.func.isRequired,
-        handleCloseDialog: PropTypes.func.isRequired,
-        handleSubmitDialog: PropTypes.func.isRequired
+        handleOpenUpdateDialog: PropTypes.func.isRequired,
+        handleCloseUpdateDialog: PropTypes.func.isRequired,
+        handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
     updateIncomeDialog: PropTypes.shape({
         loading: PropTypes.bool.isRequired,
         open: PropTypes.bool.isRequired,
-        handleOpenDialog: PropTypes.func.isRequired,
-        handleCloseDialog: PropTypes.func.isRequired,
-        handleSubmitDialog: PropTypes.func.isRequired
+        handleOpenUpdateDialog: PropTypes.func.isRequired,
+        handleCloseUpdateDialog: PropTypes.func.isRequired,
+        handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
-    // sendDialog: PropTypes.shape({
-    //     sendLoading: PropTypes.bool.isRequired,
-    //     openSendDialog: PropTypes.bool.isRequired,
-    //     handleOpenSendDialog: PropTypes.func.isRequired,
-    //     handleCloseSendDialog: PropTypes.func.isRequired,
-    //     handleSubmitSendDialog: PropTypes.func.isRequired
-    // }).isRequired,
-    // incomeDialog: PropTypes.shape({
-    //     incomeLoading: PropTypes.bool.isRequired,
-    //     openIncomeDialog: PropTypes.bool.isRequired,
-    //     handleOpenIncomeDialog: PropTypes.func.isRequired,
-    //     handleCloseIncomeDialog: PropTypes.func.isRequired,
-    //     handleSubmitIncomeDialog: PropTypes.func.isRequired
-    // }).isRequired,
     confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
+        open: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    // updateDialog: PropTypes.shape({
-    //     updateLoading: PropTypes.bool.isRequired,
-    //     openUpdateDialog: PropTypes.bool.isRequired,
-    //     handleOpenUpdateDialog: PropTypes.func.isRequired,
-    //     handleCloseUpdateDialog: PropTypes.func.isRequired,
-    //     handleSubmitUpdateDialog: PropTypes.func.isRequired
-    // }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired

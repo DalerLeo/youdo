@@ -13,8 +13,6 @@ import {TextField, ExpensiveCategorySearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 
-export const TRANSACTION_CREATE_DIALOG_OPEN = 'openCreateDialog'
-
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -87,6 +85,7 @@ const enhance = compose(
 
 const TransactionCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, cashboxData, isSend} = props
+
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
 
