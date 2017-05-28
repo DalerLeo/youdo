@@ -11,6 +11,14 @@ const enhance = compose(
             marginTop: '10px',
             '&>div': {
                 marginBottom: '10px'
+            },
+            '& svg': {
+                width: '20px !important',
+                height: '20px !important'
+            },
+            '& label': {
+                top: '-2px',
+                marginLeft: '-7px'
             }
         },
         error: {
