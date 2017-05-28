@@ -21,7 +21,6 @@ export const createSendSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount') > ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
     const comment = _.get(data, 'comment')
     const objectId = _.get(data, ['categoryId', 'value'])
-    console.log(data)
     return {
         amount,
         comment,
