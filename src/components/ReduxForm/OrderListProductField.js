@@ -48,8 +48,7 @@ const enhance = compose(
             }
         },
         table: {
-            marginTop: '20px',
-            maxHeight: '300px'
+            marginTop: '20px'
         },
         tableTitle: {
             fontWeight: '600',
