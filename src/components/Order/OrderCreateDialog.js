@@ -236,7 +236,7 @@ const OrderCreateDialog = enhance((props) => {
                         <CircularProgress size={80} thickness={5}/>
                     </div>
                     <div className={classes.innerWrap}>
-                        <div style={{minHeight: '470px'}} className={classes.inContent}>
+                        <div style={{minHeight: '470px', maxHeight: '85vh'}} className={classes.inContent}>
                             <div className={classes.leftOrderPart}>
 
                                 <div className={classes.subTitleOrder}>
