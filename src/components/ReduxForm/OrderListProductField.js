@@ -48,8 +48,7 @@ const enhance = compose(
             }
         },
         table: {
-            marginTop: '20px',
-            maxHeight: '300px'
+            marginTop: '20px'
         },
         tableTitle: {
             fontWeight: '600',
@@ -159,7 +158,7 @@ const enhance = compose(
                             product: _.get(foundObject, 'product')
                         }
                     })
-                    onChange([])
+                    onChange(_.union(products, [{product, amount, cost, balance}]))
                 } else {
                     onChange(_.union(products, [{product, amount, cost, balance}]))
                 }
