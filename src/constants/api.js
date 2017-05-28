@@ -172,10 +172,10 @@ export const STATSTOCK_ITEM = `/${STATSTOCK}/%d/`
 export const STATSTOCK_DELETE = `/${STATSTOCK}/%d/`
 
 export const REMAINDER_STOCK = 'dist/stock'
-export const REMAINDER_STOCK_CREATE = `/${REMAINDER_STOCK}/%d/balances/`
-export const REMAINDER_STOCK_LIST = `/${REMAINDER_STOCK}/%d/balances/`
-export const REMAINDER_STOCK_ITEM = `/${REMAINDER_STOCK}/%d/balances/%d`
-export const REMAINDER_STOCK_DELETE = `/${REMAINDER_STOCK}/%d/balances/%d`
+export const REMAINDER_STOCK_CREATE = `/${REMAINDER_STOCK}/all_balances/`
+export const REMAINDER_STOCK_LIST = `/${REMAINDER_STOCK}/all_balances/`
+export const REMAINDER_STOCK_ITEM = `/${REMAINDER_STOCK}/all_balances/balances/%d/%d`
+export const REMAINDER_STOCK_DELETE = `/${REMAINDER_STOCK}/all_balances/%d/%d`
 
 export const TRANSACTION_STOCK = 'dist/barcode_history'
 export const TRANSACTION_STOCK_CREATE = `/${TRANSACTION_STOCK}/`
