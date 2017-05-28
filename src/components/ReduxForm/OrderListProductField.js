@@ -159,7 +159,7 @@ const enhance = compose(
                             product: _.get(foundObject, 'product')
                         }
                     })
-                    onChange([])
+                    onChange(_.union(products, [{product, amount, cost, balance}]))
                 } else {
                     onChange(_.union(products, [{product, amount, cost, balance}]))
                 }
