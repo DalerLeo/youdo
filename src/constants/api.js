@@ -161,7 +161,7 @@ export const USER_SHIFT_ITEM = `/${USER_SHIFT}/%d/`
 export const USER_SHIFT_DELETE = `/${USER_SHIFT}/%d/`
 
 export const PENDING_EXPENSES = 'supply_expanse'
-export const PENDING_EXPENSES_CREATE = `/${PENDING_EXPENSES}/`
+export const PENDING_EXPENSES_UPDATE = '/transactions/expanse_cashbox/'
 export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`
 export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`
 

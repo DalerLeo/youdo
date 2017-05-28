@@ -108,7 +108,7 @@ const PendingExpensesCreateDialog = enhance((props) => {
                             </div>
                             <div className={classes.cashbox}>
                                 <Field
-                                    name="type"
+                                    name="cashbox"
                                     className={classes.inputField}
                                     component={CashboxSearchField}
                                     label="Касса получатель"

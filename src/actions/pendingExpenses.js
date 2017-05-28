@@ -5,23 +5,6 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/pendingExpensesSerializer'
 
-export const pendingExpensesCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .post(API.PENDING_EXPENSES_CREATE, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.PENDING_EXPENSES_CREATE,
-        payload
-    }
-}
-
 export const pendingExpensesDeleteAction = (id) => {
     const payload = axios()
         .delete(sprintf(API.PENDING_EXPENSES_DELETE, id))
@@ -39,9 +22,9 @@ export const pendingExpensesDeleteAction = (id) => {
 }
 
 export const pendingExpensesUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+    const requestData = serializers.createSerializer(formValues, id)
     const payload = axios()
-        .put(sprintf(API.PENDING_EXPENSES_ITEM, id), requestData)
+        .post(API.PENDING_EXPENSES_UPDATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
