@@ -105,3 +105,18 @@ export const productItemFetchAction = (id) => {
         payload
     }
 }
+
+export const productIngredientFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.PRODUCT_INGREDIENT, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.PRODUCT_INGREDIENT,
+        payload
+    }
+}

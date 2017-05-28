@@ -35,7 +35,8 @@ import {
 
 import {
     productListFetchAction,
-    productItemFetchAction
+    productItemFetchAction,
+    productIngredientFetchAction
 } from '../../actions/product'
 import {
     manufactureProductCreateAction,
@@ -73,8 +74,8 @@ const enhance = compose(
         const filter = filterHelper(list, pathname, query)
 
         const productList = _.get(state, ['product', 'list', 'data'])
-        const productDetail = _.get(state, ['product', 'item', 'data'])
-        const productDetailLoading = _.get(state, ['product', 'item', 'loading'])
+        const productDetail = _.get(state, ['product', 'ingredientList', 'data'])
+        const productDetailLoading = _.get(state, ['product', 'ingredientList', 'loading'])
         const productListLoading = _.get(state, ['product', 'list', 'loading'])
         const productId = _.get(props, ['location', 'query', 'productId']) || '-1'
         const personId = _.get(props, ['location', 'query', 'personId']) || '-1'
@@ -216,6 +217,7 @@ const enhance = compose(
             const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({'productId': id})})
             dispatch(productItemFetchAction(id))
+            dispatch(productIngredientFetchAction(id))
         },
 
         handleOpenAddProductDialog: props => () => {
