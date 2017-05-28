@@ -232,7 +232,7 @@ const SupplyCreateDialog = enhance((props) => {
                         <CircularProgress size={80} thickness={5}/>
                     </div>
                     <div className={classes.innerWrap} style={{minHeight: '480px'}}>
-                        <div className={classes.inContent} style={{minHeight: '350px'}}>
+                        <div className={classes.inContent} style={{minHeight: '350px', maxHeight: '60vh'}}>
                             <div className={classes.leftOrderPart}>
                                 <div className={classes.subTitleOrder}>Выбор поставщика</div>
                                 <div className={classes.selectContent}>

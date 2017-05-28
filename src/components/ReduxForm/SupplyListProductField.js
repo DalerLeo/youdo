@@ -43,7 +43,8 @@ const enhance = compose(
             alignItems: 'center',
             '& img': {
                 width: '70px',
-                marginBottom: '20px'
+                marginBottom: '20px',
+                marginTop: '25px'
             }
         },
         table: {
