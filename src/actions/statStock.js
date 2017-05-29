@@ -104,3 +104,19 @@ export const statStockItemFetchAction = (id) => {
         payload
     }
 }
+
+export const statStockDataFetchAction = (id) => {
+    const payload = axios()
+        .post(API.STATSTOCK_DATA, {stock: id})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STATSTOCK_DATA,
+        payload
+    }
+}

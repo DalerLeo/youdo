@@ -170,6 +170,7 @@ export const STATSTOCK_CREATE = `/${STATSTOCK}/`
 export const STATSTOCK_LIST = `/${STATSTOCK}/`
 export const STATSTOCK_ITEM = `/${STATSTOCK}/%d/`
 export const STATSTOCK_DELETE = `/${STATSTOCK}/%d/`
+export const STATSTOCK_DATA = '/dist/stock_stat/'
 
 export const REMAINDER_STOCK = 'dist/stock'
 export const REMAINDER_STOCK_CREATE = `/${REMAINDER_STOCK}/all_balances/`

@@ -156,7 +156,9 @@ const StatStockGridList = enhance((props) => {
         filterDialog,
         listData,
         detailData,
-        classes
+        classes,
+        statStockData,
+        handleClickStock
     } = props
 
     const actions = (
@@ -236,8 +238,7 @@ const StatStockGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         return (
-                <li
-                    key={id}
+                <li key={id}
                     className={_.get(detailData, 'id') === id ? 'active' : ''}>
                     <Link to={{
                         pathname: sprintf(ROUTES.STATSTOCK_ITEM_PATH, id),
@@ -246,7 +247,10 @@ const StatStockGridList = enhance((props) => {
                 </li>
         )
     })
-
+    const amountProduct = _.get(statStockData, ['productCount'])
+    const amountTypeProduct = _.get(statStockData, ['productTypeCount'])
+    const totalPriceProduct = _.get(statStockData, ['totalPrice'])
+    console.log(statStockData)
     return (
         <Container>
             <SubMenu url={ROUTES.STATSTOCK_LIST_URL}/>
@@ -282,15 +286,15 @@ const StatStockGridList = enhance((props) => {
                 <Col xs={9} style={{textAlign: 'right'}}>
                     <div className={classes.infoBlock}>
                         Товара на складе<br />
-                        <span>555</span>
+                        <span>{amountProduct}</span>
                     </div>
                     <div className={classes.infoBlock}>
                         Видов продукции:<br />
-                        <span>100</span>
+                        <span>{amountTypeProduct}</span>
                     </div>
                     <div className={classes.infoBlock}>
                         Товаров на сумму:<br />
-                        <span>1 000 000 UZS</span>
+                        <span>{totalPriceProduct} UZS</span>
                     </div>
                 </Col>
             </Row>
@@ -352,7 +356,9 @@ StatStockGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    statStockData: PropTypes.object.isRequired,
+    handleClickStock: PropTypes.object.isRequired
 }
 
 export default StatStockGridList
