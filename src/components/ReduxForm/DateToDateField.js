@@ -4,9 +4,11 @@
 import _ from 'lodash'
 import moment from 'moment'
 import React from 'react'
+import injectSheet from 'react-jss'
 import PropTypes from 'prop-types'
 import DatePickerDialog from 'material-ui/DatePicker/DatePickerDialog'
 import MUITextField from 'material-ui/TextField'
+import DateRange from 'material-ui/svg-icons/action/date-range'
 
 const DELAY = 300
 
@@ -70,24 +72,30 @@ class DateToDateField extends React.Component {
     }
 
     render () {
-        const {label, meta: {error}} = this.props
+        const {label, classes, meta: {error}} = this.props
 
         return (
-            <div>
-                <DatePickerDialog
-                    ref={(element) => {
-                        this.datePicker = element
-                    }}
-                    minDate={this.getMinDate()}
-                    onAccept={this.handleOnAccept}
-                    firstDayOfWeek={0}
-                />
-                <MUITextField
-                    errorText={error}
-                    floatingLabelText={label}
-                    onFocus={this.handleOnFocus}
-                    value={this.textField()}
-                />
+            <div className={classes.wrapper}>
+                <div style={{position: 'relative'}}>
+                    <DatePickerDialog
+                        ref={(element) => {
+                            this.datePicker = element
+                        }}
+                        minDate={this.getMinDate()}
+                        onAccept={this.handleOnAccept}
+                        firstDayOfWeek={0}
+                    />
+                    <div className={classes.icon}>
+                        <DateRange />
+                    </div>
+                    <MUITextField
+                        errorText={error}
+                        floatingLabelText={label}
+                        onFocus={this.handleOnFocus}
+                        value={this.textField()}
+                        className={classes.inputDateCustom}
+                    />
+                </div>
             </div>
         )
     }
@@ -101,4 +109,36 @@ DateToDateField.propTypes = {
     format: PropTypes.string
 }
 
-export default DateToDateField
+export default injectSheet({
+    icon: {
+        position: 'absolute',
+        right: '0',
+        top: '19px',
+        '& svg': {
+            color: '#ccc !important',
+            height: '20px !important',
+            width: '20px !important'
+        }
+    },
+    inputDateCustom: {
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        '& div': {
+            fontSize: '13px !important'
+        },
+        '& label': {
+            top: '20px !important',
+            lineHeight: '5px !important'
+        },
+        '& input': {
+            marginTop: '0 !important'
+        },
+        '& div:first-child': {
+            height: '45px !important'
+        },
+        '& div:first-child div:first-child': {
+            transform: 'translate(0px, 0px) !important'
+        }
+    }
+})(DateToDateField)

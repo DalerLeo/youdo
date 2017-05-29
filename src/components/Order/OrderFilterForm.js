@@ -10,15 +10,18 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
-import {ProviderSearchField, StockSearchField} from '../ReduxForm'
+import DateField from '../ReduxForm/DateField'
+import {ClientSearchField} from '../ReduxForm'
+import OrderStatusSearchField from '../ReduxForm/OrderStatusSearchField'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const ORDER_FILTER_OPEN = 'openFilterDialog'
 
 export const ORDER_FILTER_KEY = {
-    PROVIDER: 'provider',
-    STOCK: 'stock',
+    CLIENT: 'client',
+    ORDERSTATUS: 'orderStatus',
+    DOSTDATE: 'dostDate',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
@@ -41,8 +44,8 @@ const enhance = compose(
             display: 'flex',
             backgroundColor: '#efefef',
             position: 'relative',
-            padding: '16px',
-            marginLeft: '-13px',
+            padding: '16px 30px',
+            marginLeft: '-30px',
             '& > div:nth-child(2)': {
                 position: 'absolute',
                 right: '0'
@@ -84,6 +87,42 @@ const enhance = compose(
         },
         inputField: {
             fontSize: '13px !important'
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        inputDateCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            },
+            '& div:first-child': {
+                height: '45px !important'
+            },
+            '& div:first-child div:first-child': {
+                transform: 'translate(0px, 0px) !important'
+            }
         }
     }),
     reduxForm({
@@ -146,12 +185,10 @@ const OrderFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="provider" component={ProviderSearchField} label="Поставщик"/>
-                        <Field className={classes.inputField} name="stock" component={StockSearchField} label="Склад"/>
-                    </div>
-
-                    <div>
-                        <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
+                        <Field className={classes.inputFieldCustom} name="orderStatus" component={OrderStatusSearchField} label="Статус"/>
+                        <Field className={classes.inputDateCustom} name="createDate" component={DateToDateField} label="Период создания"/>
+                        <Field className={classes.inputDateCustom} name="dostDate" component={DateField} label="Дата доставки"/>
                     </div>
 
                     <div>

@@ -132,6 +132,7 @@ const enhance = compose(
                 fontWeight: 'bold',
                 padding: '20px 0',
                 width: '100%',
+                borderBottom: '1px solid #efefef',
                 '& .row': {
                     alignItems: 'center'
                 }
