@@ -250,7 +250,6 @@ const StatStockGridList = enhance((props) => {
     const amountProduct = _.get(statStockData, ['productCount'])
     const amountTypeProduct = _.get(statStockData, ['productTypeCount'])
     const totalPriceProduct = _.get(statStockData, ['totalPrice'])
-    console.log(statStockData)
     return (
         <Container>
             <SubMenu url={ROUTES.STATSTOCK_LIST_URL}/>
