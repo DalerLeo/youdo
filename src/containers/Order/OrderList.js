@@ -140,13 +140,15 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const dostDate = _.get(filterForm, ['values', 'dostDate', 'date']) || null
+            const client = _.get(filterForm, ['values', 'client', 'value']) || null
+            const orderStatus = _.get(filterForm, ['values', 'orderStatus', 'value']) || null
 
             filter.filterBy({
                 [ORDER_FILTER_OPEN]: false,
-                [ORDER_FILTER_KEY.PROVIDER]: provider,
-                [ORDER_FILTER_KEY.STOCK]: stock,
+                [ORDER_FILTER_KEY.CLIENT]: client,
+                [ORDER_FILTER_KEY.ORDERSTATUS]: orderStatus,
+                [ORDER_FILTER_KEY.DOSTDATE]: dostDate && dostDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
@@ -292,8 +294,9 @@ const OrderList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
 
-    const provider = _.toInteger(filter.getParam(ORDER_FILTER_KEY.PROVIDER))
-    const stock = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STOCK))
+    const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
+    const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ORDERSTATUS))
+    const dostDate = filter.getParam(ORDER_FILTER_KEY.DOSTDATE)
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'orderId'))
@@ -381,11 +384,14 @@ const OrderList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            provider: {
-                value: provider
+            client: {
+                value: client
             },
-            stock: {
-                value: stock
+            orderStatus: {
+                value: orderStatus
+            },
+            dostDate: {
+                dostDate: dostDate && moment(dostDate, 'YYYY-MM-DD')
             },
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),

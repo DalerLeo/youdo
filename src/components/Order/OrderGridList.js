@@ -104,7 +104,8 @@ const enhance = compose(
         buttons: {
             display: 'flex',
             justifyContent: 'flex-end'
-        }
+        },
+
     })
 )
 
