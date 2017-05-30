@@ -10,6 +10,8 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, TimeField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
+import CircularProgress from 'material-ui/CircularProgress'
+import MainStyles from '../Styles/MainStyles'
 
 export const SHIFT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -26,7 +28,7 @@ const validate = (data) => {
 }
 
 const enhance = compose(
-    injectSheet({
+    injectSheet(_.merge(MainStyles, {
         buttonSub: {
             textAlign: 'right',
             marginTop: '10px',
@@ -62,7 +64,7 @@ const enhance = compose(
                 top: '20px !important'
             }
         }
-    }),
+    })),
     reduxForm({
         form: 'ShiftCreateForm',
         enableReinitialize: true
@@ -83,34 +85,41 @@ const ShiftCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить категорию' : 'Добавить категорию'}</span>
+                <span>{isUpdate ? 'Редактирование смены' : 'Добавить смену'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit}>
-                    <Field
-                        name="name"
-                        component={TextField}
-                        className={classes.inputFieldShift}
-                        label="Наименование"
-                        fullWidth={true}/>
-                    <div className={classes.timePick}>
-                        <Field
-                            name="beginTime"
-                            component={TimeField}
-                            className={classes.inputFieldTime}
-                            label="Начало"
-                            fullWidth={true}/>
-                        <Field
-                            name="endTime"
-                            component={TimeField}
-                            className={classes.inputFieldTime}
-                            label="Конец"
-                            fullWidth={true}/>
+                    <div className={classes.loader}>
+                        <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.buttonSub}>
+                    <div className={classes.inContent} style={{minHeight: '150px'}}>
+                        <div className={classes.field} style={{paddingTop: '15px'}}>
+                            <Field
+                                name="name"
+                                component={TextField}
+                                className={classes.inputFieldShift}
+                                label="Наименование"
+                                fullWidth={true}/>
+                            <div className={classes.timePick}>
+                                <Field
+                                    name="beginTime"
+                                    component={TimeField}
+                                    className={classes.inputFieldTime}
+                                    label="Начало"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="endTime"
+                                    component={TimeField}
+                                    className={classes.inputFieldTime}
+                                    label="Конец"
+                                    fullWidth={true}/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={classes.bottomButton}>
                         <FlatButton
                             label="Применить"
                             className={classes.actionButton}

@@ -137,7 +137,7 @@ const ShiftGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.SHIFT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить категорию">
+                <Tooltip position="left" text="Добавить смену">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
