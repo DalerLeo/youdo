@@ -249,7 +249,7 @@ const StatStockGridList = enhance((props) => {
     })
     const amountProduct = _.get(statStockData, ['productCount'])
     const amountTypeProduct = _.get(statStockData, ['productTypeCount'])
-    const totalPriceProduct = _.get(statStockData, ['totalPrice'])
+    const totalPriceProduct = numberFormat(_.get(statStockData, ['totalPrice']))
     return (
         <Container>
             <SubMenu url={ROUTES.STATSTOCK_LIST_URL}/>
@@ -273,11 +273,11 @@ const StatStockGridList = enhance((props) => {
                 boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'
             }}>
                 <Col xs={3}>
-                    <div className={classes.typeListStock}>
+                    <div className={classes.typeListStock} style={tab === balanceTab ? {background: '#eceff5'} : {background: '#fff'}}>
                         <a onClick={() => { handleClickTapChange(balanceTab) }}
                            className={tab === balanceTab ? 'active' : ''}>Остаток<br/>товара</a>
                     </div>
-                    <div className={classes.typeListStock}>
+                    <div className={classes.typeListStock} style={tab === transactionTab ? {background: '#eceff5'} : {background: '#fff'}}>
                         <a onClick={() => { handleClickTapChange(transactionTab) }}
                            className={tab === transactionTab ? 'active' : ''}>Движение<br/>товаров</a>
                     </div>

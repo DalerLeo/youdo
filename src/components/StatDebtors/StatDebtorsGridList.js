@@ -304,10 +304,10 @@ const StatDebtorsGridList = enhance((props) => {
                 boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'
             }}>
                 <Col xs={3}>
-                    <div className={classes.typeListStock}>
+                    <div className={classes.typeListStock} style={showByClient === true ? {background: '#eceff5'} : {background: '#fff'}}>
                         <a onClick={() => { setShowByClient(true) }} className={showByClient && 'active'}>Вид<br/>по клиенту</a>
                     </div>
-                    <div className={classes.typeListStock}>
+                    <div className={classes.typeListStock} style={!showByClient === true ? {background: '#eceff5'} : {background: '#fff'}}>
                         <a onClick={() => { setShowByClient(false) }} className={!showByClient && 'active'}>Вид<br/>по заказу</a>
                     </div>
                 </Col>
