@@ -23,7 +23,8 @@ import {
     statStockListFetchAction,
     statStockCSVFetchAction,
     statStockDeleteAction,
-    statStockItemFetchAction
+    statStockItemFetchAction,
+    statStockDataFetchAction
 } from '../../actions/statStock'
 import {
     remainderStockListFetchAction
@@ -51,6 +52,8 @@ const enhance = compose(
         const csvLoading = _.get(state, ['statStock', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'StatStockCreateForm'])
         const tab = _.get(props, ['location', 'query', 'tab']) || '1'
+        const statStockData = _.get(state, ['statStock', 'statStockData', 'data'])
+        const statStockLoding = _.get(state, ['statStock', 'statStockData', 'loading'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -68,7 +71,9 @@ const enhance = compose(
             csvLoading,
             filter,
             tab,
-            createForm
+            createForm,
+            statStockData,
+            statStockLoding
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -85,6 +90,7 @@ const enhance = compose(
         statStockId && dispatch(statStockItemFetchAction(statStockId))
         statStockId && dispatch(remainderStockListFetchAction(filter, statStockId))
         statStockId && dispatch(transactionStockListFetchAction(filter, statStockId))
+        statStockId && dispatch(statStockDataFetchAction(statStockId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -219,6 +225,14 @@ const enhance = compose(
                 dispatch(transactionStockListFetchAction(filter, statStockId))
             }
             hashHistory.push({pathname, query: filter.getParams({'tab': id})})
+        },
+        handleClickStock: props => (id) => {
+            const {filter, dispatch} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.STATSTOCK_ITEM_PATH, id),
+                query: filter.getParams()
+            })
+            dispatch(statStockDataFetchAction())
         }
     })
 )
@@ -239,8 +253,11 @@ const StatStock = enhance((props) => {
         filter,
         layout,
         params,
+        statStockData,
         tab
     } = props
+
+    console.log(statStockData)
 
     const openCreateDialog = toBoolean(_.get(location, ['query', STATSTOCK_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', STATSTOCK_UPDATE_DIALOG_OPEN]))
@@ -329,6 +346,11 @@ const StatStock = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
+
+    const handleClickStock = {
+        clickItem: props.handleClickStock
+    }
+
     return (
         <Layout {...layout}>
             <StatStockGridList
@@ -341,6 +363,8 @@ const StatStock = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 csvDialog={csvDialog}
+                statStockData={statStockData}
+                handleClickStock={handleClickStock}
             />
         </Layout>
     )

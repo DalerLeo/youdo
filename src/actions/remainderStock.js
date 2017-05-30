@@ -56,9 +56,9 @@ export const remainderStockUpdateAction = (id, formValues) => {
 }
 
 export const remainderStockListFetchAction = (filter, id) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+    const params = serializers.listFilterSerializer(filter.getParams(), id)
     const payload = axios()
-        .get((sprintf(API.REMAINDER_STOCK_LIST, id)), {params})
+        .get((API.REMAINDER_STOCK_LIST), {params})
         .then((response) => {
             return _.get(response, 'data')
         })

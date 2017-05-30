@@ -170,7 +170,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.STATSTOCK_CREATE),
         list: createThunkReducer(actionTypes.STATSTOCK_LIST),
         update: createThunkReducer(actionTypes.STATSTOCK_UPDATE),
-        item: createThunkReducer(actionTypes.STATSTOCK_ITEM)
+        item: createThunkReducer(actionTypes.STATSTOCK_ITEM),
+        statStockData: createThunkReducer(actionTypes.STATSTOCK_DATA)
     }),
     remainderStock: combineReducers({
         create: createThunkReducer(actionTypes.REMAINDER_STOCK_CREATE),
