@@ -14,6 +14,7 @@ import {
     OPEN_USER_UPDATE_DIALOG,
     MANUFACTURE_SHOW_BOM_DIALOG_OPEN,
     MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN,
+    MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN,
     OPEN_USER_CONFIRM_DIALOG,
     OPEN_UPDATE_PRODUCT_DIALOG,
     OPEN_DELETE_PRODUCT_DIALOG,
@@ -160,6 +161,16 @@ const enhance = compose(
         handleCloseShowBom: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_SHOW_BOM_DIALOG_OPEN]: false})})
+        },
+
+        handleOpenEditMaterials: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseEditMaterials: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: false})})
         },
 
         handleClickItem: props => (id) => {
@@ -379,6 +390,7 @@ const ManufactureList = enhance((props) => {
     const openUpdateUserDialog = toBoolean(_.get(location, ['query', OPEN_USER_UPDATE_DIALOG]))
     const openShowBom = toBoolean(_.get(location, ['query', MANUFACTURE_SHOW_BOM_DIALOG_OPEN]))
     const openAddProductDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]))
+    const openEditMaterials = toBoolean(_.get(location, ['query', MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]))
     const openProductConfirmDialog = toBoolean(_.get(location, ['query', OPEN_DELETE_PRODUCT_DIALOG]))
     const category = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.CATEGORY))
     const openProductFilterDialog = toBoolean(_.get(location, ['query', PRODUCT_FILTER_OPEN]))
@@ -408,6 +420,13 @@ const ManufactureList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenAddProductDialog,
         handleCloseCreateDialog: props.handleCloseAddProductDialog,
         handleSubmitCreateDialog: props.handleSubmitAddProductDialog
+    }
+    const editMaterials = {
+        open: openEditMaterials,
+        handleOpen: props.handleOpenEditMaterials,
+        handleClose: props.handleCloseEditMaterials,
+        handleLoading: props.handleCloseEditMaterials,
+        handleSubmit: props.handleSubmitEditMaterials
     }
 
     const equipmentData = {
@@ -466,7 +485,6 @@ const ManufactureList = enhance((props) => {
         handleCloseUpdateDialog: props.handleCloseUpdateProductDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateProductDialog
     }
-
     const deleteProductDialog = {
         openConfirmDialog: openProductConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenProductConfirmDialog,
@@ -558,6 +576,7 @@ const ManufactureList = enhance((props) => {
                 detailData={detailData}
                 listData={listData}
                 equipmentData={equipmentData}
+                editMaterials={editMaterials}
                 showBom={showBom}
                 productData={productData}
                 tabData={tabData}
