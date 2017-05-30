@@ -106,8 +106,9 @@ export const statStockItemFetchAction = (id) => {
 }
 
 export const statStockDataFetchAction = (id) => {
+    const params = (id) ? {stock: id} : {}
     const payload = axios()
-        .post(API.STATSTOCK_DATA, {stock: id})
+        .post(API.STATSTOCK_DATA, params)
         .then((response) => {
             return _.get(response, 'data')
         })

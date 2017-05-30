@@ -17,6 +17,7 @@ import MainStyles from '../Styles/MainStyles'
 import InComing from 'material-ui/svg-icons/navigation/arrow-upward'
 import OutComing from 'material-ui/svg-icons/navigation/arrow-downward'
 import numberFormat from '../../helpers/numberFormat'
+import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import StatStockFilterForm from './StatStockFilterForm'
 
 const remainderHeader = [
@@ -157,8 +158,7 @@ const StatStockGridList = enhance((props) => {
         listData,
         detailData,
         classes,
-        statStockData,
-        handleClickStock
+        statStockData
     } = props
 
     const actions = (
@@ -182,7 +182,7 @@ const StatStockGridList = enhance((props) => {
     const remainderStockList = _.map(_.get(listData, 'remainderList'), (item) => {
         const id = _.get(item, 'id')
         const title = _.get(item, 'title')
-        const cost = _.get(item, 'cost') || '0.00'
+        const cost = numberFormat(_.get(item, ['totalPrice']), PRIMARY_CURRENCY_NAME)
         const balance = numberFormat(_.get(item, 'balance'), _.get(item, ['measurement', 'name']))
         return (
             <Row key={id}>
@@ -224,14 +224,14 @@ const StatStockGridList = enhance((props) => {
     const transactionTab = 2
     const tab = _.get(listData, 'tab')
 
-    const list = (tab === balanceTab) ? {
-        header: remainderHeader,
-        list: remainderStockList,
-        loading: _.get(listData, 'remainderLoading')
-    } : {
+    const list = (tab === transactionTab) ? {
         header: transactionHeader,
         list: transactionStockList,
         loading: _.get(listData, 'transactionLoading')
+    } : {
+        header: remainderHeader,
+        list: remainderStockList,
+        loading: _.get(listData, 'remainderLoading')
     }
 
     const stockList = _.map(_.get(listData, 'stockList'), (item) => {

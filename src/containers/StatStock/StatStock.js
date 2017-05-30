@@ -77,9 +77,16 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        return props.transactionList && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+    }, ({dispatch, filter}) => {
+        dispatch(transactionStockListFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return !nextProps.listLoading && _.isNil(nextProps.list)
     }, ({dispatch, filter}) => {
         dispatch(statStockListFetchAction(filter))
+        dispatch(statStockDataFetchAction())
+        dispatch(remainderStockListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -87,7 +94,6 @@ const enhance = compose(
         return statStockId && _.get(props, ['params', 'statStockId']) !== statStockId
     }, ({dispatch, params, filter}) => {
         const statStockId = _.toInteger(_.get(params, 'statStockId'))
-        statStockId && dispatch(statStockItemFetchAction(statStockId))
         statStockId && dispatch(remainderStockListFetchAction(filter, statStockId))
         statStockId && dispatch(transactionStockListFetchAction(filter, statStockId))
         statStockId && dispatch(statStockDataFetchAction(statStockId))
@@ -257,8 +263,6 @@ const StatStock = enhance((props) => {
         tab
     } = props
 
-    console.log(statStockData)
-
     const openCreateDialog = toBoolean(_.get(location, ['query', STATSTOCK_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', STATSTOCK_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', STATSTOCK_DELETE_DIALOG_OPEN]))
@@ -345,7 +349,6 @@ const StatStock = enhance((props) => {
         handleClearFilterDialog: props.handleClearFilterDialog,
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
-
 
     const handleClickStock = {
         clickItem: props.handleClickStock
