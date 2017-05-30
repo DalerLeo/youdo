@@ -72,6 +72,22 @@ export const statDebtorsListFetchAction = (filter) => {
     }
 }
 
+export const statDebtorsSumFetchAction = () => {
+    const payload = axios()
+        .get(API.STATDEBTORS_SUM)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STATDEBTORS_SUM,
+        payload
+    }
+}
+
 export const statDebtorsCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()

@@ -189,7 +189,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.STATDEBTORS_CREATE),
         list: createThunkReducer(actionTypes.STATDEBTORS_LIST),
         update: createThunkReducer(actionTypes.STATDEBTORS_UPDATE),
-        item: createThunkReducer(actionTypes.STATDEBTORS_ITEM)
+        item: createThunkReducer(actionTypes.STATDEBTORS_ITEM),
+        sum: createThunkReducer(actionTypes.STATDEBTORS_SUM)
     }),
     statManufacture: combineReducers({
         create: createThunkReducer(actionTypes.STAT_MANUFACTURE_CREATE),

@@ -23,6 +23,7 @@ import {
     statDebtorsUpdateAction,
     statDebtorsListFetchAction,
     statDebtorsCSVFetchAction,
+    statDebtorsSumFetchAction,
     statDebtorsDeleteAction,
     statDebtorsItemFetchAction
 } from '../../actions/statDebtors'
@@ -46,6 +47,8 @@ const enhance = compose(
         const csvLoading = _.get(state, ['statDebtors', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'StatDebtorsCreateForm'])
         const orderId = _.toInteger(_.get(['location', 'query', 'orderId']))
+        const sumList = _.get(state, ['statDebtors', 'sum', 'data'])
+        const sumLoading = _.get(state, ['statDebtors', 'sum', 'loading'])
 
         const filter = filterHelper(list, pathname, query)
 
@@ -63,7 +66,9 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
-            createForm
+            createForm,
+            sumList,
+            sumLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -71,6 +76,11 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(statDebtorsListFetchAction(filter))
         dispatch(orderListFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return !nextProps.sumList && _.isNil(nextProps.sumLoading)
+    }, ({dispatch}) => {
+        dispatch(statDebtorsSumFetchAction())
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -235,6 +245,8 @@ const StatDebtors = enhance((props) => {
         detail,
         detailLoading,
         createLoading,
+        sumLoading,
+        sumList,
         updateLoading,
         filter,
         layout,
@@ -331,12 +343,18 @@ const StatDebtors = enhance((props) => {
         handleOrderClick: props.handleOrderClick
     }
 
+    const sumData = {
+        data: sumList,
+        loading: sumLoading
+    }
+
     return (
         <Layout {...layout}>
             <StatDebtorsGridList
                 filter={filter}
                 filterDialog={filterDialog}
                 listData={listData}
+                sumData={sumData}
                 detailData={detailData}
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}

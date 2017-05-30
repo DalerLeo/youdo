@@ -17,6 +17,7 @@ import StatDebtorsCreateDialog from './StatDebtorsCreateDialog'
 import MainStyles from '../Styles/MainStyles'
 import {Link} from 'react-router'
 import numberFormat from '../../helpers/numberFormat'
+import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 
 const listHeaderClient = [
     {
@@ -155,14 +156,14 @@ const enhance = compose(
             }
         }
     })),
+    withState('showByClient', 'setShowByClient', true)
 )
-
-withState('showByClient', 'setShowByClient', false)
 
 const StatDebtorsGridList = enhance((props) => {
     const {
         filter,
         createDialog,
+        sumData,
         updateDialog,
         confirmDialog,
         filterDialog,
@@ -214,13 +215,12 @@ const StatDebtorsGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
-
     const statDebtorsList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const name = 'Наименование фирмы клиента или его имя'
-        const order = '2 заказа'
-        const debt = '3 000 000 UZS'
-        const time = '25 дней'
+        const id = _.get(item, ['client', 'id'])
+        const name = _.get(item, ['client', 'name'])
+        const order = numberFormat(_.get(item, ['orders']), 'заказа')
+        const debt = numberFormat(_.get(item, ['totalBalance']), PRIMARY_CURRENCY_NAME)
+        const time = numberFormat(_.get(item, ['expiredDays']), 'дней')
         return (
             <Row key={id}>
                 <Col xs={5}>
@@ -236,7 +236,7 @@ const StatDebtorsGridList = enhance((props) => {
         )
     })
     const statDebtorsListByOrder = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
+        const id = _.get(item, ['client', 'id'])
         const name = 'Наименование фирмы клиента'
         const order = '0254'
         const date = '22 Апр, 2017'
@@ -280,7 +280,7 @@ const StatDebtorsGridList = enhance((props) => {
             }
         </div>
     )
-    const list = (!showByClient) ? {
+    const list = (showByClient) ? {
         header: listHeaderClient,
         list: statDebtorsList,
         loading: _.get(listData, 'listLoading')
@@ -289,6 +289,11 @@ const StatDebtorsGridList = enhance((props) => {
         list: statDebtorsListByOrder,
         loading: _.get(listData, 'listLoading')
     }
+
+    const totalDebtors = numberFormat(_.get(sumData, ['data', 'debtors']))
+    const totalOrders = numberFormat(_.get(sumData, ['data', 'orders']))
+    const totalBalance = numberFormat(_.get(sumData, ['data', 'totalBalance']), PRIMARY_CURRENCY_NAME)
+
     return (
         <Container>
             <SubMenu url={ROUTES.STATDEBTORS_LIST_URL}/>
@@ -300,24 +305,24 @@ const StatDebtorsGridList = enhance((props) => {
             }}>
                 <Col xs={3}>
                     <div className={classes.typeListStock}>
-                        <a onClick={() => { setShowByClient(false) }} className={!showByClient && 'active'}>Вид<br/>по клиенту</a>
+                        <a onClick={() => { setShowByClient(true) }} className={showByClient && 'active'}>Вид<br/>по клиенту</a>
                     </div>
                     <div className={classes.typeListStock}>
-                        <a onClick={() => { setShowByClient(true) }} className={showByClient && 'active'}>Вид<br/>по заказу</a>
+                        <a onClick={() => { setShowByClient(false) }} className={!showByClient && 'active'}>Вид<br/>по заказу</a>
                     </div>
                 </Col>
                 <Col xs={9} style={{textAlign: 'right'}}>
                     <div className={classes.infoBlock}>
                         Всего должников:<br />
-                        <span>100</span>
+                        <span>{totalDebtors}</span>
                     </div>
                     <div className={classes.infoBlock}>
                         Всего заказов:<br />
-                        <span>120</span>
+                        <span>{totalOrders}</span>
                     </div>
                     <div className={classes.infoBlock}>
                         Общий долг:<br />
-                        <span>1 000 000 UZS</span>
+                        <span>{totalBalance}</span>
                     </div>
                 </Col>
             </Row>

@@ -184,9 +184,10 @@ export const TRANSACTION_STOCK_LIST = `/${TRANSACTION_STOCK}/`
 export const TRANSACTION_STOCK_ITEM = `/${TRANSACTION_STOCK}/%d`
 export const TRANSACTION_STOCK_DELETE = `/${TRANSACTION_STOCK}/%d`
 
-export const STATDEBTORS = 'dist/stock'
+export const STATDEBTORS = 'debtors'
 export const STATDEBTORS_CREATE = `/${STATDEBTORS}/`
 export const STATDEBTORS_LIST = `/${STATDEBTORS}/`
+export const STATDEBTORS_SUM = '/debtors_statistics/'
 export const STATDEBTORS_ITEM = `/${STATDEBTORS}/%d/`
 export const STATDEBTORS_DELETE = `/${STATDEBTORS}/%d/`
 
