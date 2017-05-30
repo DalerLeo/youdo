@@ -10,7 +10,7 @@ const errorStyle = {
 const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
     return (
         <div className={classes.wrapper}>
-            <div>
+            <div style={{position: 'relative'}}>
                 <DatePicker
                     errorText={error}
                     errorStyle={errorStyle}

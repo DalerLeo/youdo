@@ -79,8 +79,20 @@ const enhance = compose(
         submit: {
             color: '#fff !important'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     }),
     reduxForm({
@@ -143,10 +155,10 @@ const UsersFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="manufacture" component={ManufactureSearchField} label="Производство" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="manufacture" component={ManufactureSearchField} label="Производство" fullWidth={true}/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="group" component={UsersGroupSearchField} label="Принадлежность к группе" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="group" component={UsersGroupSearchField} label="Принадлежность к группе" fullWidth={true}/>
                     </div>
 
                     <div>
