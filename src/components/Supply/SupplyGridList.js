@@ -165,6 +165,10 @@ const SupplyGridList = enhance((props) => {
         />
     )
 
+    const PENDING = 0
+    const IN_PROGRESS = 1
+    const COMPLETED = 2
+
     const supplyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(_.get(item, 'provider'), 'name')
@@ -173,7 +177,8 @@ const SupplyGridList = enhance((props) => {
         const totalCost = numberFormat(_.get(item, 'totalCost'), _.get(item, ['currency', 'name']))
         const acceptedCost = numberFormat(_.get(item, 'acceptedCost'), _.get(item, ['currency', 'name']))
         const defectedCost = numberFormat(_.get(item, 'defectedCost'), _.get(item, ['currency', 'name']))
-        const status = _.get(item, 'status')
+        const status = _.toNumber(_.get(item, 'status'))
+
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
@@ -186,9 +191,9 @@ const SupplyGridList = enhance((props) => {
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
                 <Col xs={2}>{totalCost}</Col>
-                <Col xs={1}>{status === 'Pending' ? (<span><i className={classes.waiting} /> ожидает</span>)
-                    : ((status === 'In progress') ? (<span><i className={classes.begin} /> начался</span>)
-                        : (status === 'Completed') ? (<span><i className={classes.success} /> принято</span>)
+                <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting} /> ожидает</span>)
+                    : ((status === IN_PROGRESS) ? (<span><i className={classes.begin} /> начался</span>)
+                        : (status === COMPLETED) ? (<span><i className={classes.success} /> принято</span>)
                             : (<span><i className={classes.error} /> отменен</span>))}</Col>
                 <Col xs={1}>{acceptedCost}</Col>
                 <Col xs={1}>{defectedCost}</Col>

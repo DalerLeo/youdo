@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import CloseIcon2 from '../CloseIcon2'
+import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import {
     ClientSearchField,
     DeliveryTypeSearchField,
@@ -270,7 +271,8 @@ const OrderCreateDialog = enhance((props) => {
                                         component={TextField}
                                         className={classes.inputFieldCustom}
                                         label={'Стоимость доставки (' + PRIMARY_CURRENCY_NAME + ')'}
-                                        fullWidth={true}/>
+                                        fullWidth={true}
+                                        normalize={normalizeNumber}/>
                                     {(!stockMin) ? <Field
                                             name="deliveryDate"
                                             component={DateField}
