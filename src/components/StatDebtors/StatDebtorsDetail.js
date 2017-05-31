@@ -10,7 +10,13 @@ import GridList from '../GridList'
 
 const enhance = compose(
     injectSheet({
-
+        loader: {
+            background: '#fff',
+            height: '400px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }
     }),
     withState('openDetails', 'setOpenDetails', false)
 )

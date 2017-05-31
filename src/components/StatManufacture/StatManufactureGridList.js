@@ -138,7 +138,7 @@ const enhance = compose(
             fontWeight: '600',
             display: 'flex',
             alignItems: 'center',
-            marginBottom: '10px',
+            marginBottom: '0',
             '& img': {
                 width: '24px',
                 marginRight: '10px'
@@ -232,9 +232,7 @@ const StatManufactureGridList = enhance((props) => {
                         )}
                         {manufName}
                     </div>
-                    <div className={classes.tabText}>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad corporis et quibusdam quod repellendus tempora.
-                    </div>
+
                 </div>
             </Paper>
         </div>
