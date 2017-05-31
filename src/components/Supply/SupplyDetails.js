@@ -134,7 +134,12 @@ const enhance = compose(
                 width: '100%',
                 borderBottom: '1px solid #efefef',
                 '& .row': {
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    '& div': {
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                    }
                 }
             },
             '& .summary': {
@@ -349,10 +354,10 @@ const SupplyDetails = enhance((props) => {
                 <div className="dataHeader">
                     <Row>
                         <Col xs={5}>Товар</Col>
-                        <Col xs={1}>Количество</Col>
+                        <Col xs={1}>Кол-во</Col>
                         <Col xs={1}>Принято</Col>
                         <Col xs={1}>Брак</Col>
-                        <Col xs={1}>Не поставлено</Col>
+                        <Col xs={1}>Недостача</Col>
                         <Col xs={1}>
                             <div style={{textAlign: 'right'}}>Стоимость</div>
                         </Col>
