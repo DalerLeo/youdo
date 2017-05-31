@@ -12,6 +12,7 @@ import {TextField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 
 export const PRODUCT_PRICE_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -68,17 +69,18 @@ const ProductPriceCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent}>
+                    <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '25px'}}>
                         <div className={classes.loader}>
                             <CircularProgress size={80} thickness={5}/>
                         </div>
                         <div className={classes.field}>
                             <Field
                                 name="price"
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 component={TextField}
                                 label="Стоимость"
                                 fullWidth={true}
+                                normalize={normalizeNumber}
                             />
                         </div>
                     </div>

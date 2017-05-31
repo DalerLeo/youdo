@@ -15,7 +15,7 @@ import {
     TableRowColumn
 } from 'material-ui/Table'
 import DeleteIcon from '../DeleteIcon'
-
+import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import ProductSearchField from './ProductSearchField'
 import TextField from './TextField'
 
@@ -190,6 +190,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                     <TextField
                         label="Сумма"
                         className={classes.inputField}
+                        normalize={normalizeNumber}
                         style={{width: '100% !mportant'}}
                         {..._.get(defaultProps, 'cost')}
                     />
