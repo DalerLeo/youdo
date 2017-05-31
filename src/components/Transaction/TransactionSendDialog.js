@@ -12,6 +12,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CashboxSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
+import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 
 export const TRANSACTION_SEND_DIALOG_OPEN = 'openSendDialog'
 
@@ -110,6 +111,7 @@ const TransactionSendDialog = enhance((props) => {
                                     name="amount"
                                     component={TextField}
                                     label="Сумма"
+                                    normalize={normalizeNumber}
                                     style={{width: '50%'}}
                                     fullWidth={false}/>
                                 <div style={{marginLeft: '20px'}}>

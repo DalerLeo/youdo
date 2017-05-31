@@ -298,7 +298,8 @@ const OrderCreateDialog = enhance((props) => {
                                         component={TextField}
                                         className={classes.inputFieldCustom}
                                         label="Скидка (%)"
-                                        style={{width: '50%'}}/>
+                                        style={{width: '50%'}}
+                                        normalize={normalizeNumber}/>
                                     <Field
                                         name="paymentDate"
                                         component={DateField}

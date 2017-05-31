@@ -62,7 +62,7 @@ const PrimaryCurrencyDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '200px'} : {width: '400px'}}
+            contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>Выбрать основную валюту</span>
@@ -75,12 +75,12 @@ const PrimaryCurrencyDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent}>
+                    <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '25px'}}>
                         <div className={classes.fields}>
                             <Field
                                 name="currency"
                                 component={CurrencySearchField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Валюта"
                                 fullWidth={true}
                             />
