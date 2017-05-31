@@ -43,6 +43,7 @@ const enhance = compose(
         },
         currency: {
             display: 'flex',
+            paddingTop: '25px',
             alignItems: 'center',
             width: '100%'
         }
@@ -73,18 +74,18 @@ const SetCurrencyDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
+                <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent} >
+                    <div className={classes.inContent} style={{minHeight: '100px'}}>
                         <div className={classes.field}>
                             <div className={classes.currency}>
                                 <div>1 {currentCurrency} = </div>
                                 <Field
                                     name="rate"
                                     component={TextField}
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     style={{width: '110px', margin: '0 10px'}}
                                     fullWidth={true}
                                 />
