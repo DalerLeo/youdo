@@ -2,6 +2,7 @@ import ManufactureGridList from './ManufactureGridList'
 import {OPEN_USER_CREATE_DIALOG} from './ManufactureAddStaffDialog'
 import {MANUFACTURE_SHOW_BOM_DIALOG_OPEN} from './ManufactureShowBom'
 import {MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN} from './ManufactureAddProductDialog'
+import {MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN} from './ManufactureEditProductDialog'
 
 const SHIFT_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const USER_SHIFT_DELETE_DIALOG_OPEN = 'openUserStaffDeleteDialog'
@@ -17,6 +18,7 @@ export {
     OPEN_USER_CREATE_DIALOG,
     MANUFACTURE_SHOW_BOM_DIALOG_OPEN,
     MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN,
+    MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN,
     SHIFT_DELETE_DIALOG_OPEN,
     USER_SHIFT_DELETE_DIALOG_OPEN,
     INGREDIENT_DELETE_DIALOG_OPEN,

@@ -7,6 +7,7 @@ import Container from '../Container'
 import ManufactureAddStaffDialog from './ManufactureAddStaffDialog'
 import ManufactureShowBom from './ManufactureShowBom'
 import ManufactureAddProductDialog from './ManufactureAddProductDialog'
+import ManufactureEditProductDialog from './ManufactureEditProductDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -243,6 +244,7 @@ const ManufactureGridList = enhance((props) => {
         showBom,
         classes,
         equipmentData,
+        editMaterials,
         productData,
         tabData,
         productFilterDialog,
@@ -318,6 +320,11 @@ const ManufactureGridList = enhance((props) => {
                 onClose={productUpdate.handleCloseUpdateDialog}
                 onSubmit={productUpdate.handleSubmitUpdateDialog}
             />
+            <ManufactureEditProductDialog
+                open={editMaterials.open}
+                onClose={editMaterials.handleClose}
+                onSubmit={editMaterials.handleSubmit}
+            />
             <Row className={classes.productionMainRow}>
                 <Col xs={3} className={classes.productionLeftSide}>
                     <h2 className={classes.productionH2}>Этапы производства</h2>
@@ -333,6 +340,7 @@ const ManufactureGridList = enhance((props) => {
                 </Col>
                 <ManufactureTab
                     tabData={tabData}
+                    editMaterials={editMaterials}
                     productData={productData}
                     personData={personData}
                     equipmentData={equipmentData}

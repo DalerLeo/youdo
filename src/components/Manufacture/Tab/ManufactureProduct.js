@@ -62,7 +62,7 @@ const enhance = compose(
 )
 
 const ManufactureProduct = enhance((props) => {
-    const {classes, filter, filterDialog, productData} = props
+    const {classes, filter, filterDialog, productData, editMaterials} = props
 
     const productFilterDialog = (
         <ProductFilterForm
@@ -91,7 +91,7 @@ const ManufactureProduct = enhance((props) => {
             id={_.get(detailData, 'id')}
             data={_.get(detailData, 'data')}
             handleOpenConfirmDialog={_.get(productData, ['confirmDialog', 'handleOpenConfirmDialog'])}
-            handleOpenUpdateDialog={_.get(productData, ['updateDialog', 'handleOpenUpdateDialog'])}
+            handleOpenEditMaterials={_.get(editMaterials, ['handleOpen'])}
             loading={_.get(detailData, 'detailLoading')}
         />
     )
@@ -108,7 +108,7 @@ const ManufactureProduct = enhance((props) => {
         )
         return (
             <Row key={id}>
-                <Col xs={5}>
+                <Col xs={4}>
                     <span
                         className={classes.cursor}
                         onTouchTap={ () => {
@@ -118,7 +118,7 @@ const ManufactureProduct = enhance((props) => {
                     </span>
                 </Col>
                 <Col xs={5}>{type}</Col>
-                <Col xs={1}>{brand}</Col>
+                <Col xs={2}>{brand}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}

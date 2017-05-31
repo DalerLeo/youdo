@@ -8,6 +8,28 @@ import CircularProgress from 'material-ui/CircularProgress'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
+import Tooltip from '../ToolTip'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 20,
+        height: 20
+    },
+    addButton: {
+        borderRadius: '50%',
+        background: '#666666',
+        height: 24,
+        width: 24,
+        padding: '2px 0 0 0'
+    },
+    button: {
+        width: 48,
+        height: 48,
+        padding: 0
+    }
+}
 
 const enhance = compose(
     injectSheet({
@@ -16,6 +38,53 @@ const enhance = compose(
         },
         wrapper: {
             width: '100%'
+        },
+        loader: {
+            width: '100%',
+            background: '#fff',
+            height: '200px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        title: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            height: '65px',
+            padding: '0 30px',
+            borderBottom: '1px #efefef solid'
+        },
+        titleLabel: {
+            fontSize: '18px',
+            color: '#333',
+            fontWeight: '700'
+        },
+        materialsList: {
+            padding: '0 30px'
+        },
+        rawMaterials: {
+            '& .dottedList': {
+                padding: '10px 0'
+            },
+            '& .dottedList:last-child:after': {
+                backgroundImage: 'none'
+            }
+        },
+        titleButtons: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            '& svg': {
+                color: '#fff !important'
+            }
+        },
+        listButtons: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            '& button': {
+                height: '20px !important',
+                width: '25px !important'
+            }
         }
     }),
 )
@@ -25,7 +94,7 @@ const ManufactureDetails = enhance((props) => {
         classes,
         loading,
         data,
-        handleOpenUpdateDialog,
+        handleOpenEditMaterials,
         handleOpenConfirmDialog
     } = props
 
@@ -45,51 +114,70 @@ const ManufactureDetails = enhance((props) => {
         const amount = _.get(item, 'amount')
         const measurement = _.get(item, ['ingredient', 'measurement', 'name'])
         return (
-        <li key={itemId} className="dottedList">
-            <Col xs={7}>{ingredient}</Col>
-            <Col xs={2}>{amount} {measurement}</Col>
-            <Col xs={1}>
-                <IconButton>
-                    <ModEditorIcon />
-                </IconButton>
-            </Col>
-            <Col xs={1}>
-                <IconButton>
-                    <DeleteIcon />
-                </IconButton>
-            </Col>
-        </li>
+            <li key={itemId} className="dottedList">
+                <Col xs={7}>{ingredient}</Col>
+                <Col xs={3}>{amount} {measurement}</Col>
+                <Col xs={2}>
+                    <div className={classes.listButtons}>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onClick={() => { handleOpenEditMaterials(id) }}>
+                                <ModEditorIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Удалить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onClick={() => { handleOpenConfirmDialog() }}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                </Col>
+            </li>
         )
     })
 
     return (
         <div key={id} className={classes.wrapper}>
-            Detail Content
-            <button onClick={() => {
-                handleOpenConfirmDialog()
-            }}>Delete
-            </button>
-            <button onClick={() => {
-                handleOpenUpdateDialog(id)
-            }}>Update
-            </button>
-            <ul className={classes.rawMaterials}>
-                <li key={id} className="dottedList">
-                    <Col xs={7}>
-                        <strong>Сырье</strong>
-                    </Col>
-                    <Col xs={2}>
-                        <strong>Обьем</strong>
-                    </Col>
-                </li>
-                {ingredientList}
-            </ul>
+            <div className={classes.title}>
+                <div className={classes.titleLabel}>Product title</div>
+                <div className={classes.titleButtons}>
+                    <Tooltip position="bottom" text="Добавить сырье">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.addButton}
+                            touch={true}>
+                            <ContentAdd />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+            </div>
+
+            <div className={classes.materialsList}>
+                <ul className={classes.rawMaterials}>
+                    <li key={id} className="dottedList">
+                        <Col xs={7}>
+                            <strong>Сырье</strong>
+                        </Col>
+                        <Col xs={3}>
+                            <strong>Обьем</strong>
+                        </Col>
+                    </li>
+                    {ingredientList}
+                </ul>
+            </div>
         </div>
     )
 })
 
 ManufactureDetails.propTypes = {
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
+    handleOpenEditMaterials: PropTypes.func.isRequired,
     handleOpenConfirmDialog: PropTypes.func.isRequired
 }
 
