@@ -249,7 +249,8 @@ const StatStockGridList = enhance((props) => {
     })
     const amountProduct = _.get(statStockData, ['productCount'])
     const amountTypeProduct = _.get(statStockData, ['productTypeCount'])
-    const totalPriceProduct = numberFormat(_.get(statStockData, ['totalPrice'])
+    const totalPriceProduct = numberFormat(_.get(statStockData, ['totalPrice']), PRIMARY_CURRENCY_NAME)
+
     return (
         <Container>
             <SubMenu url={ROUTES.STATSTOCK_LIST_URL}/>
