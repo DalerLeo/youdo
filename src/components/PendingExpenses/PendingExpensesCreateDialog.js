@@ -9,7 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import numberFormat from '../../helpers/numberFormat'
 import toCamelCase from '../../helpers/toCamelCase'
-import {CashboxSearchField} from '../ReduxForm'
+import {CashboxSearchField, ExpensiveCategorySearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -53,7 +53,7 @@ const enhance = compose(
             marginTop: '10px'
         },
         cashbox: {
-            padding: '0 30px 20px',
+            padding: '5px 30px 15px',
             margin: '0 -30px',
             background: '#f1f5f8'
         }
@@ -108,8 +108,14 @@ const PendingExpensesCreateDialog = enhance((props) => {
                             </div>
                             <div className={classes.cashbox}>
                                 <Field
+                                    name="categoryId"
+                                    component={ExpensiveCategorySearchField}
+                                    label="Категория расхода"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
+                                <Field
                                     name="cashbox"
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     component={CashboxSearchField}
                                     label="Касса получатель"
                                     fullWidth={true}

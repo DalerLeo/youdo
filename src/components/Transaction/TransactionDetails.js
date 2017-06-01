@@ -223,7 +223,7 @@ TransactionDetails.propTypes = {
         openConfirmDialog: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
+        handleExpenseConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
     handleOpenUpdateDialog: PropTypes.func.isRequired
 

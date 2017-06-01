@@ -11,6 +11,7 @@ import GridList from '../GridList'
 import Container from '../Container'
 import TransactionFilterForm from './TransactionFilterForm'
 import TransactionCreateDialog from './TransactionCreateDialog'
+import TransactionSendDialog from './TransactionSendDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -79,7 +80,8 @@ const enhance = compose(
             margin: '0',
             boxSizing: 'border-box',
             cursor: 'pointer',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            position: 'relative'
         },
         flex: {
             display: 'flex',
@@ -98,6 +100,11 @@ const enhance = compose(
                 marginLeft: '12px'
             }
         },
+        balance: {
+            textAlign: 'right',
+            position: 'absolute',
+            right: '30px'
+        },
         btnSend: {
             color: '#12aaeb !important'
         },
@@ -115,6 +122,10 @@ const enhance = compose(
                 color: '#999'
             }
         },
+        rightTitle: {
+            extend: 'flex',
+            justifyContent: 'space-between'
+        },
         green: {
             color: '#92ce95 !important'
         },
@@ -127,10 +138,11 @@ const enhance = compose(
 const TransactionGridList = enhance((props) => {
     const {
         filter,
-        createSendDialog,
+        createExpenseDialog,
         createIncomeDialog,
-        updateSendDialog,
+        updateExpenseDialog,
         updateIncomeDialog,
+        createSendDialog,
         filterDialog,
         cashboxData,
         actionsDialog,
@@ -195,7 +207,7 @@ const TransactionGridList = enhance((props) => {
                             primaryText="Изменить"
                             leftIcon={<Edit />}
                             onTouchTap={() => {
-                                updateSendDialog.handleOpenUpdateDialog(id, _.get(item, 'amount'))
+                                updateExpenseDialog.handleOpenUpdateDialog(id, _.get(item, 'amount'))
                             }}
                         />
                         <MenuItem
@@ -239,8 +251,8 @@ const TransactionGridList = enhance((props) => {
                         }
                     </div>
                 </div>
-                <div style={{textAlign: 'right'}}>
-                    <div className={balance >= ZERO_NUM ? classes.green : classes.red}>{balance}</div>
+                <div className={classes.balance}>
+                    <div className={balance >= ZERO_NUM ? classes.green : classes.red}>{numberFormat(balance)}</div>
                     <div>{currency}</div>
                 </div>
             </div>
@@ -257,7 +269,7 @@ const TransactionGridList = enhance((props) => {
         (o) => {
             return _.toInteger(o.id) === _.toInteger(_.get(cashboxData, 'cashboxId'))
         })
-    const cashboxName = _.get(cashboxData, 'cashboxId') === AllCashboxId ? 'Все кассы' : _.get(selectedCashbox, 'name')
+    const cashboxName = _.get(cashboxData, 'cashboxId') === AllCashboxId ? 'Общий объем' : _.get(selectedCashbox, 'name')
     return (
         <Container>
             <SubMenu url={ROUTES.TRANSACTION_LIST_URL}/>
@@ -289,13 +301,16 @@ const TransactionGridList = enhance((props) => {
                     </Paper>
                 </div>
                 <div className={classes.rightSide}>
-                    { _.get(cashboxData, 'cashboxId') !== AllCashboxId && <div className={classes.outerTitle}>
-                        <div>{cashboxName}</div>
-                        <div className={classes.buttons}>
-                            <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
-                            <a onClick={createSendDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
-                        </div>
-                    </div>}
+                    <div className={classes.rightTitle}>
+                        <div className={classes.outerTitle}>{cashboxName}</div>
+                        { _.get(cashboxData, 'cashboxId') !== AllCashboxId && <div className={classes.outerTitle}>
+                            <div className={classes.buttons}>
+                                <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
+                                <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
+                                <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
+                            </div>
+                        </div>}
+                    </div>
 
                     <GridList
                         filter={filter}
@@ -306,12 +321,12 @@ const TransactionGridList = enhance((props) => {
                     />
 
                     <TransactionCreateDialog
-                        isSend={true}
+                        isExpense={true}
                         cashboxData={cashboxData}
-                        open={createSendDialog.open}
-                        loading={createSendDialog.loading}
-                        onClose={createSendDialog.handleCloseDialog}
-                        onSubmit={createSendDialog.handleSubmitDialog}
+                        open={createExpenseDialog.open}
+                        loading={createExpenseDialog.loading}
+                        onClose={createExpenseDialog.handleCloseDialog}
+                        onSubmit={createExpenseDialog.handleSubmitDialog}
                     />
 
                     <TransactionCreateDialog
@@ -323,13 +338,13 @@ const TransactionGridList = enhance((props) => {
                     />
 
                     <TransactionCreateDialog
-                        initialValues={updateSendDialog.initialValues}
+                        initialValues={updateExpenseDialog.initialValues}
                         isUpdate={true}
-                        isSend={true}
-                        open={updateSendDialog.open}
-                        loading={updateSendDialog.loading}
-                        onClose={updateSendDialog.handleCloseUpdateDialog}
-                        onSubmit={updateSendDialog.handleSubmitUpdateDialog}
+                        isExpense={true}
+                        open={updateExpenseDialog.open}
+                        loading={updateExpenseDialog.loading}
+                        onClose={updateExpenseDialog.handleCloseUpdateDialog}
+                        onSubmit={updateExpenseDialog.handleSubmitUpdateDialog}
                     />
 
                     <TransactionCreateDialog
@@ -341,11 +356,19 @@ const TransactionGridList = enhance((props) => {
                         onSubmit={updateIncomeDialog.handleSubmitUpdateDialog}
                     />
 
+                    <TransactionSendDialog
+                        cashboxData={cashboxData}
+                        open={createSendDialog.open}
+                        loading={createSendDialog.loading}
+                        onClose={createSendDialog.handleCloseDialog}
+                        onSubmit={createSendDialog.handleSubmitDialog}
+                    />
+
                     {detailData.data && <ConfirmDialog
                         type="delete"
                         message={_.get(detailData, ['data', 'comment'])}
                         onClose={confirmDialog.handleCloseConfirmDialog}
-                        onSubmit={confirmDialog.handleSendConfirmDialog}
+                        onSubmit={confirmDialog.handleExpenseConfirmDialog}
                         open={confirmDialog.open}
                     />}
                 </div>
@@ -360,7 +383,7 @@ TransactionGridList.propTypes = {
     cashboxData: PropTypes.object,
     cashboxListLoading: PropTypes.bool,
     detailData: PropTypes.object,
-    createSendDialog: PropTypes.shape({
+    createExpenseDialog: PropTypes.shape({
         loading: PropTypes.bool.isRequired,
         open: PropTypes.bool.isRequired,
         handleOpenDialog: PropTypes.func.isRequired,
@@ -374,7 +397,7 @@ TransactionGridList.propTypes = {
         handleCloseDialog: PropTypes.func.isRequired,
         handleSubmitDialog: PropTypes.func.isRequired
     }).isRequired,
-    updateSendDialog: PropTypes.shape({
+    updateExpenseDialog: PropTypes.shape({
         loading: PropTypes.bool.isRequired,
         open: PropTypes.bool.isRequired,
         handleOpenUpdateDialog: PropTypes.func.isRequired,
@@ -388,11 +411,18 @@ TransactionGridList.propTypes = {
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
+    createSendDialog: PropTypes.shape({
+        loading: PropTypes.bool.isRequired,
+        open: PropTypes.bool.isRequired,
+        handleOpenDialog: PropTypes.func.isRequired,
+        handleCloseDialog: PropTypes.func.isRequired,
+        handleSubmitDialog: PropTypes.func.isRequired
+    }).isRequired,
     confirmDialog: PropTypes.shape({
         open: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
+        handleExpenseConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,

@@ -83,6 +83,7 @@ export const TRANSACTION = 'transactions/transaction'
 export const TRANSACTION_CREATE = `/${TRANSACTION}/`
 export const TRANSACTION_LIST = `/${TRANSACTION}/`
 export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
+export const TRANSACTION_SEND = '/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 
 export const SUPPLY = 'dist/supply'
