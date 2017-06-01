@@ -39,8 +39,6 @@ const enhance = compose(
             overflowY: 'auto'
         },
         productionLeftSide: {
-            background: '#fcfcfc',
-            borderRight: '1px solid #efefef',
             padding: '0'
         },
         productionRightSide: {
@@ -56,9 +54,8 @@ const enhance = compose(
             listStyle: 'none',
             margin: '0',
             padding: '0',
-            '& li:last-child': {
-                border: 'none'
-            }
+            minHeight: 'calc(100% - 59px)',
+            borderRight: '1px #efefef solid'
         },
         productionStaffUl: {
             extend: 'productionUl',
@@ -93,6 +90,7 @@ const enhance = compose(
             }
         },
         productionTypeLi: {
+            background: '#f2f5f8',
             margin: '0',
             padding: '20px 30px',
             borderBottom: '1px solid #efefef',
@@ -108,7 +106,7 @@ const enhance = compose(
         },
         productionH2: {
             fontSize: '13px',
-            fontWeight: '800',
+            fontWeight: 'bold',
             margin: '0',
             borderBottom: '1px solid #efefef',
             padding: '20px 30px'

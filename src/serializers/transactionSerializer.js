@@ -3,6 +3,7 @@ import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 const ZERO = 0
+const ONE = 1
 const MINUS_ONE = -1
 
 export const createIncomeSerializer = (data, cashboxId) => {
@@ -43,24 +44,19 @@ export const createSendSerializer = (data, cashboxId) => {
 export const listFilterSerializer = (data, cashbox) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-
-    return (cashbox && cashbox > ZERO) ? {
+    const newCashbox = (cashbox && cashbox > ZERO) ? cashbox : null
+    const payType = _.get(defaultData, 'type')
+    const type = (_.toNumber(payType) === ONE) ? 'out' : 'in'
+    return {
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
-        'type': _.get(defaultData, 'type'),
-        'cashbox': cashbox,
+        'type': type,
+        'cashbox': newCashbox,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
-        'ordering': ordering && orderingSnakeCase(ordering)
-    } : {
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate'),
-        'type': _.get(defaultData, 'type'),
-        'search': _.get(defaultData, 'search'),
-        'page': _.get(defaultData, 'page'),
-        'page_size': _.get(defaultData, 'pageSize'),
-        'ordering': ordering && orderingSnakeCase(ordering)
+        'ordering': ordering && orderingSnakeCase(ordering),
+        'expanse_category': _.get(data, 'categoryExpense')
     }
 }
 

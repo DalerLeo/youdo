@@ -228,7 +228,6 @@ const Layout = enhance((props) => {
         children,
         notificationId,
         openNotifications,
-        clickNotifications,
         setClickNotifications,
         notificationsList,
         notificationsLoading
@@ -305,103 +304,6 @@ const Layout = enhance((props) => {
                             notificationsLoading ? <div></div>
                                 : notificationListExp
                         }
-                        <div className={classes.notif} onClick={() => {
-                            setClickNotifications(true)
-                        }} style={clickNotifications ? {opacity: '0.5'} : {opacity: '1'}}>
-                            <div className="notifIcon money">
-                                <Money/>
-                            </div>
-                            <div className={classes.notifContent}>
-                                <div className={classes.notifTitle}>
-                                    <div>Заказы</div>
-                                    <span>час назад</span>
-                                </div>
-                                <div className="notificationText">
-                                    Оплачено 9 000 000 UZS на 1231 заказ
-                                </div>
-                            </div>
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}>
-                                <Clear color="#dadada"/>
-                            </IconButton>
-                        </div>
-                        <div className={classes.notif}>
-                            <div className="notifIcon store">
-                                <Storehouse/>
-                            </div>
-                            <div className={classes.notifContent}>
-                                <div className={classes.notifTitle}>
-                                    <div>Поставки</div>
-                                    <span>час назад</span>
-                                </div>
-                                <div className="notificationText">
-                                    Начало приемки по поставке 123123
-                                </div>
-                            </div>
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}>
-                                <Clear color="#dadada"/>
-                            </IconButton>
-                        </div>
-                        <div className={classes.notif}>
-                            <div className="notifIcon balance">
-                                <Balance/>
-                            </div>
-                            <div className={classes.notifContent}>
-                                <div className={classes.notifTitle}>
-                                    <div>Бухгалтеру</div>
-                                    <span>час назад</span>
-                                </div>
-                                <div className="notificationText">
-                                    Клиент Закир Ахмедов должен оплатить 3 000 000 UZS за 4412 заказ
-                                </div>
-                            </div>
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}>
-                                <Clear color="#dadada"/>
-                            </IconButton>
-                        </div>
-                        <div className={classes.notif}>
-                            <div className="notifIcon store">
-                                <Storehouse/>
-                            </div>
-                            <div className={classes.notifContent}>
-                                <div className={classes.notifTitle}>
-                                    <div>Поставки</div>
-                                    <span>час назад</span>
-                                </div>
-                                <div className="notificationText">
-                                    Конец приемки по поставке 123123
-                                </div>
-                            </div>
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}>
-                                <Clear color="#dadada"/>
-                            </IconButton>
-                        </div>
-                        <div className={classes.notif}>
-                            <div className="notifIcon balance">
-                                <Balance/>
-                            </div>
-                            <div className={classes.notifContent}>
-                                <div className={classes.notifTitle}>
-                                    <div>Бухгалтеру</div>
-                                    <span>час назад</span>
-                                </div>
-                                <div className="notificationText">
-                                    Поступление ожидаемого расхода на сумму 100 USD по поставке 412
-                                </div>
-                            </div>
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}>
-                                <Clear color="#dadada"/>
-                            </IconButton>
-                        </div>
                     </div>
                 </Paper>
             </div>

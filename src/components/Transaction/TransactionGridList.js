@@ -74,7 +74,7 @@ const enhance = compose(
             marginLeft: '28px'
         },
         list: {
-            borderBottom: '1px solid #d9dde1',
+            borderBottom: '1px solid #efefef',
             display: 'flex',
             padding: '20px 30px',
             margin: '0',
