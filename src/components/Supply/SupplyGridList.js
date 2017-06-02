@@ -253,7 +253,7 @@ const SupplyGridList = enhance((props) => {
             />
 
             {detailData.data && <ConfirmDialog
-                type="delete"
+                type="cancel"
                 message={'Постака № ' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}

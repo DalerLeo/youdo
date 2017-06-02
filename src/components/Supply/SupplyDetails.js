@@ -6,7 +6,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Cancel from 'material-ui/svg-icons/navigation/cancel'
+import Delete from 'material-ui/svg-icons/action/delete'
 import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
@@ -331,7 +331,7 @@ const SupplyDetails = enhance((props) => {
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
-                            <Cancel />
+                            <Delete />
                         </IconButton>
                     </Tooltip>
                 </div>
