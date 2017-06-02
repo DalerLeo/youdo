@@ -9,13 +9,20 @@ export const createSerializer = (data) => {
     }
 }
 
-export const listFilterSerializer = (data) => {
+const ZERO = 0
+export const listFilterSerializer = (data, stock) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-
-    return {
-        'name': _.get(defaultData, 'name'),
+    console.log("click", stock)
+    return (stock !== ZERO) ? {
+        'stock': stock,
+        'page': _.get(defaultData, 'page'),
+        'page_size': _.get(defaultData, 'pageSize'),
+        'ordering': ordering && orderingSnakeCase(ordering)
+    } : {
         'search': _.get(defaultData, 'search'),
+        'page': _.get(defaultData, 'page'),
+        'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
