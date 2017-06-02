@@ -14,8 +14,6 @@ import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 
-export const TRANSACTION_SEND_DIALOG_OPEN = 'openSendDialog'
-
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -85,7 +83,7 @@ const TransactionSendDialog = enhance((props) => {
             contentStyle={loading ? {width: '300px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Перевод транзакции</span>
+                <span>Перевод</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -118,6 +116,15 @@ const TransactionSendDialog = enhance((props) => {
                                    {_.get(cashbox, ['currency', 'name'])}
                                 </div>
                             </div>
+                            <Field
+                                name="comment"
+                                style={{lineHeight: '20px', fontSize: '13px'}}
+                                component={TextField}
+                                label="Комментарий..."
+                                multiLine={true}
+                                rows={1}
+                                rowsMax={3}
+                                fullWidth={true}/>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

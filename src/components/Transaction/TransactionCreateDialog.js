@@ -84,7 +84,7 @@ const enhance = compose(
 )
 
 const TransactionCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData, isSend} = props
+    const {open, loading, handleSubmit, onClose, classes, cashboxData, isExpense} = props
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
@@ -98,7 +98,7 @@ const TransactionCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '300px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Расход</span>
+                <span>{isExpense ? 'Расход' : 'Приход'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -114,7 +114,7 @@ const TransactionCreateDialog = enhance((props) => {
                                 <div className={classes.label}>Касса:</div>
                                 <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
                             </div>
-                            {isSend && <Field
+                            {isExpense && <Field
                                 name="categoryId"
                                 component={ExpensiveCategorySearchField}
                                 label="Категория расхода"
@@ -159,7 +159,7 @@ const TransactionCreateDialog = enhance((props) => {
 })
 
 TransactionCreateDialog.propTyeps = {
-    isSend: PropTypes.bool,
+    isExpense: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     cashboxData: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -167,7 +167,7 @@ TransactionCreateDialog.propTyeps = {
     loading: PropTypes.bool.isRequired
 }
 TransactionCreateDialog.defaultProps = {
-    isSend: false
+    isExpense: false
 }
 
 export default TransactionCreateDialog

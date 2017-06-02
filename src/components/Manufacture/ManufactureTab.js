@@ -12,7 +12,6 @@ import ManufactureEquipment from './Tab/ManufactureEquipment'
 const enhance = compose(
     injectSheet({
         ManufactRightSide: {
-            boxShadow: '-5px 0px 5px #E0E0E0;',
             padding: '0px 25px',
             zIndex: '2'
         },
