@@ -22,6 +22,7 @@ import {
     statDebtorsCreateAction,
     statDebtorsUpdateAction,
     statDebtorsListFetchAction,
+    statDebtorsOrderListFetchAction,
     statDebtorsCSVFetchAction,
     statDebtorsSumFetchAction,
     statDebtorsDeleteAction,
@@ -40,8 +41,8 @@ const enhance = compose(
         const createLoading = _.get(state, ['statDebtors', 'create', 'loading'])
         const updateLoading = _.get(state, ['statDebtors', 'update', 'loading'])
         const list = _.get(state, ['statDebtors', 'list', 'data'])
-        const orderList = _.get(state, ['order', 'list', 'data'])
-        const orderLoading = _.get(state, ['order', 'list', 'loading'])
+        const orderList = _.get(state, ['statDebtors', 'orderList', 'data'])
+        const orderLoading = _.get(state, ['statDebtors', 'orderList', 'loading'])
         const listLoading = _.get(state, ['statDebtors', 'list', 'loading'])
         const csvData = _.get(state, ['statDebtors', 'csv', 'data'])
         const csvLoading = _.get(state, ['statDebtors', 'csv', 'loading'])
@@ -86,10 +87,9 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const statDebtorsId = _.get(nextProps, ['params', 'statDebtorsId'])
         return statDebtorsId && _.get(props, ['params', 'statDebtorsId']) !== statDebtorsId
-    }, ({dispatch, params, filter}) => {
+    }, ({dispatch, params}) => {
         const statDebtorsId = _.toInteger(_.get(params, 'statDebtorsId'))
-        statDebtorsId && dispatch(statDebtorsItemFetchAction(statDebtorsId))
-        dispatch(orderListFetchAction(filter))
+        statDebtorsId && dispatch(statDebtorsOrderListFetchAction(statDebtorsId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),

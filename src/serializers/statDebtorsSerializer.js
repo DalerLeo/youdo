@@ -21,7 +21,11 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-
+export const orderListFilterSerializer = (id) => {
+    return {
+        'client_id': id
+    }
+}
 export const csvFilterSerializer = (data) => {
     const {...defaultData} = listFilterSerializer(data)
 

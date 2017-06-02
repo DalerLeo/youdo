@@ -194,15 +194,19 @@ const StatDebtorsGridList = enhance((props) => {
     const orderList = _.map(_.get(orderData, ['orderList', 'results']), (item) => {
         const id = _.get(item, 'id')
         const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
-        const totalPrice = numberFormat(_.get(item, 'totalPrice'), 'SUM')
+        const status = _.get(item, 'status') || 'N/A'
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), PRIMARY_CURRENCY_NAME)
+        const totalBalance = numberFormat(_.get(item, 'totalBalance'), PRIMARY_CURRENCY_NAME)
         return (
             <div className="dottedListSpec">
                 <Row key={id} style={{padding: '0 30px'}}>
-                    <Col xs={2}><a onClick={ () => { orderData.handleOrderClick(id) }} >{id}</a></Col>
-                    <Col xs={2}> 10 </Col>
+                    <Col xs={2}><a onClick={ () => {
+                        orderData.handleOrderClick(id)
+                    }}>{id}</a></Col>
+                    <Col xs={2}>{status}</Col>
                     <Col xs={2}>{dateDelivery}</Col>
                     <Col xs={3}>{totalPrice}</Col>
-                    <Col xs={3}>100 000 UZS</Col>
+                    <Col xs={3}>{totalBalance}</Col>
                 </Row>
             </div>
         )
@@ -258,16 +262,20 @@ const StatDebtorsGridList = enhance((props) => {
         )
     })
 
+    const statDebtorsItem = _.find(_.get(listData, 'data'), (o) => {
+        return _.get(o, ['client', 'id']) === _.toInteger(_.get(detailData, 'id'))
+    })
+
     const statDebtorsDetail = (
         <div key={_.get(detailData, 'id')} style={{width: '100%'}}>
             <div className={classes.title} style={{width: 'initial'}}>
-                <div className={classes.titleLabel}>sdsdfsdf</div>
+                <div className={classes.titleLabel}>{_.get(statDebtorsItem, ['client', 'name'])}</div>
                 <div className={classes.subTitle}>
                     <div>
-                        Прошло: <span>25 дней</span>
+                        Прошло: <span>{_.get(statDebtorsItem, 'expiredDays')} дней</span>
                     </div>
                     <div>
-                        Сумма долга: <span>5 555 005 UZS</span>
+                        Сумма долга: <span>{_.get(statDebtorsItem, 'totalBalance')} {PRIMARY_CURRENCY_NAME}</span>
                     </div>
                 </div>
             </div>
@@ -304,11 +312,17 @@ const StatDebtorsGridList = enhance((props) => {
                 boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'
             }}>
                 <Col xs={3}>
-                    <div className={classes.typeListStock} style={showByClient === true ? {background: '#eceff5'} : {background: '#fff'}}>
-                        <a onClick={() => { setShowByClient(true) }} className={showByClient && 'active'}>Вид<br/>по клиенту</a>
+                    <div className={classes.typeListStock}
+                         style={showByClient === true ? {background: '#eceff5'} : {background: '#fff'}}>
+                        <a onClick={() => {
+                            setShowByClient(true)
+                        }} className={showByClient && 'active'}>Вид<br/>по клиенту</a>
                     </div>
-                    <div className={classes.typeListStock} style={!showByClient === true ? {background: '#eceff5'} : {background: '#fff'}}>
-                        <a onClick={() => { setShowByClient(false) }} className={!showByClient && 'active'}>Вид<br/>по заказу</a>
+                    <div className={classes.typeListStock}
+                         style={!showByClient === true ? {background: '#eceff5'} : {background: '#fff'}}>
+                        <a onClick={() => {
+                            setShowByClient(false)
+                        }} className={!showByClient && 'active'}>Вид<br/>по заказу</a>
                     </div>
                 </Col>
                 <Col xs={9} style={{textAlign: 'right'}}>
