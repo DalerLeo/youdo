@@ -49,7 +49,8 @@ const enhance = compose(
 )
 
 const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, setFileUploadErrors,
-    fileUploadErrors, input}) => {
+    fileUploadErrors, input, meta: {error}}) => {
+    const inputFile = _.get(input, ['value', 'file'])
     const onDrop = (files) => {
         const formData = new FormData()
         const firstElement = 0
@@ -60,8 +61,8 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
                 setFileUploadLoading(false)
                 setFileUploadErrors(null)
                 input.onChange(response.data.id)
-            }).catch((error) => {
-                const errorData = _.get(error, ['response', 'data'])
+            }).catch((newError) => {
+                const errorData = _.get(newError, ['response', 'data'])
                 setFileUploadErrors(errorData.file[firstElement])
                 setFileUploadLoading(false)
                 input.onChange(null)
@@ -78,7 +79,16 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
             return (<div><b>Ошибка:</b> <i>{fileUploadErrors}</i></div>)
         }
 
+        if (error) {
+            return (<div><b>Ошибка:</b> <i>{error}</i></div>)
+        }
+
         if (acceptedFiles.length === zero) {
+            if (inputFile) {
+                return (
+                    <img src={inputFile} />
+                )
+            }
             return (
                 <p>
                     <ImageImage style={{color: '#b9b9b9', width: '50px', height: '50px', display: 'block', margin: 'auto'}}/>

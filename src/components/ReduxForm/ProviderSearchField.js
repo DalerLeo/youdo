@@ -15,7 +15,7 @@ const getOptions = (search) => {
         })
 }
 
-const setItemAction = (data, loading) => {
+export const setItemAction = (data, loading) => {
     return {
         type: actionTypes.PROVIDER_CONTACTS,
         data: data,
