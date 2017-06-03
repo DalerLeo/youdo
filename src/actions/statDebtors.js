@@ -72,6 +72,23 @@ export const statDebtorsListFetchAction = (filter) => {
     }
 }
 
+export const statDebtorsOrderListFetchAction = (id) => {
+    const params = serializers.orderListFilterSerializer(id)
+    const payload = axios()
+        .get(API.STATDEBTORS_ORDER_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STATDEBTORS_ORDER_LIST,
+        payload
+
+    }
+}
 export const statDebtorsSumFetchAction = () => {
     const payload = axios()
         .get(API.STATDEBTORS_SUM)
