@@ -8,6 +8,7 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
+import {setItemAction} from '../../components/ReduxForm/ProviderSearchField'
 import {
     SUPPLY_CREATE_DIALOG_OPEN,
     SUPPLY_UPDATE_DIALOG_OPEN,
@@ -201,8 +202,9 @@ const enhance = compose(
         },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: true})})
+            dispatch(setItemAction(null, false))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -373,7 +375,7 @@ const SupplyList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
             return {
