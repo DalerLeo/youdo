@@ -22,9 +22,8 @@ export const listFilterSerializer = (data) => {
     }
 }
 export const orderListFilterSerializer = (id) => {
-    return {
-        'client_id': id
-    }
+    if (id === true) return {'dept': true}
+    return {'client': id}
 }
 export const csvFilterSerializer = (data) => {
     const {...defaultData} = listFilterSerializer(data)

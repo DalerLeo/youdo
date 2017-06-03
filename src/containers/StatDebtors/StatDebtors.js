@@ -28,28 +28,30 @@ import {
     statDebtorsDeleteAction,
     statDebtorsItemFetchAction
 } from '../../actions/statDebtors'
-import {orderListFetchAction, orderItemFetchAction} from '../../actions/order'
+import {orderItemFetchAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
+const ONE = 1
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
+        const list = _.get(state, ['statDebtors', 'list', 'data'])
+        const listLoading = _.get(state, ['statDebtors', 'list', 'loading'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['statDebtors', 'item', 'data'])
-        const orderDetail = _.get(state, ['order', 'item', 'data'])
         const detailLoading = _.get(state, ['statDebtors', 'item', 'loading'])
+        const orderList = _.get(state, ['statDebtors', 'orderList', 'data'])
+        const orderDetail = _.get(state, ['order', 'item', 'data'])
+        const orderLoading = _.get(state, ['statDebtors', 'orderList', 'loading'])
         const createLoading = _.get(state, ['statDebtors', 'create', 'loading'])
         const updateLoading = _.get(state, ['statDebtors', 'update', 'loading'])
-        const list = _.get(state, ['statDebtors', 'list', 'data'])
-        const orderList = _.get(state, ['statDebtors', 'orderList', 'data'])
-        const orderLoading = _.get(state, ['statDebtors', 'orderList', 'loading'])
-        const listLoading = _.get(state, ['statDebtors', 'list', 'loading'])
         const csvData = _.get(state, ['statDebtors', 'csv', 'data'])
         const csvLoading = _.get(state, ['statDebtors', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'StatDebtorsCreateForm'])
         const orderId = _.toInteger(_.get(['location', 'query', 'orderId']))
         const sumList = _.get(state, ['statDebtors', 'sum', 'data'])
         const sumLoading = _.get(state, ['statDebtors', 'sum', 'loading'])
+        const tab = _.toInteger(_.get(props, ['location', 'query', 'tab']) || ONE)
 
         const filter = filterHelper(list, pathname, query)
 
@@ -69,14 +71,15 @@ const enhance = compose(
             filter,
             createForm,
             sumList,
+            tab,
             sumLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
-        dispatch(statDebtorsListFetchAction(filter))
-        dispatch(orderListFetchAction(filter))
+        return (props.filter.filterRequest() !== nextProps.filter.filterRequest() || props.tab !== nextProps.tab)
+    }, ({dispatch, filter, tab}) => {
+        if (tab === ONE) dispatch(statDebtorsListFetchAction(filter))
+        else dispatch(statDebtorsOrderListFetchAction(true))
     }),
     withPropsOnChange((props, nextProps) => {
         return !nextProps.sumList && _.isNil(nextProps.sumLoading)
@@ -230,6 +233,13 @@ const enhance = compose(
                 pathname: pathname,
                 query: filter.getParams({[ORDER_DETAIL_OPEN]: false, 'orderId': -1})
             })
+        },
+        handleClickTab: props => (tab) => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({
+                pathname: pathname,
+                query: filter.getParams({'tab': tab})
+            })
         }
     })
 )
@@ -258,6 +268,7 @@ const StatDebtors = enhance((props) => {
     const openConfirmDialog = toBoolean(_.get(location, ['query', STATDEBTORS_DELETE_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', STATDEBTORS_FILTER_OPEN]))
     const orderDetailOpen = toBoolean(_.get(location, ['query', ORDER_DETAIL_OPEN]))
+    const tab = _.toInteger(_.get(location, ['query', 'tab'])) || ONE
 
     const detailId = _.toInteger(_.get(params, 'statDebtorsId'))
 
@@ -348,6 +359,11 @@ const StatDebtors = enhance((props) => {
         loading: sumLoading
     }
 
+    const tabData = {
+        tab: _.toInteger(tab),
+        handleClick: props.handleClickTab
+    }
+
     return (
         <Layout {...layout}>
             <StatDebtorsGridList
@@ -362,6 +378,7 @@ const StatDebtors = enhance((props) => {
                 actionsDialog={actionsDialog}
                 csvDialog={csvDialog}
                 orderData={orderData}
+                tabData={tabData}
             />
         </Layout>
     )
