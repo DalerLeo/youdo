@@ -6,7 +6,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Cancel from 'material-ui/svg-icons/navigation/cancel'
+import Delete from 'material-ui/svg-icons/action/delete'
 import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
@@ -37,6 +37,11 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        expenseLoader: {
+            extend: 'loader',
+            height: 'auto',
+            padding: '20px 0'
         },
         title: {
             display: 'flex',
@@ -331,7 +336,7 @@ const SupplyDetails = enhance((props) => {
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
-                            <Cancel />
+                            <Delete />
                         </IconButton>
                     </Tooltip>
                 </div>
@@ -408,9 +413,9 @@ const SupplyDetails = enhance((props) => {
                                 label="+ добавить доп. расход"/>
                         </div>
                     </div>
-                    {supplyExpenseListLoading && <div className={classes.loader}>
+                    {supplyExpenseListLoading && <div className={classes.expenseLoader}>
                         <div>
-                            <CircularProgress size={100} thickness={6}/>
+                            <CircularProgress size={70} thickness={6}/>
                         </div>
                     </div>}
                     {!supplyExpenseListLoading && _.map(supplyExpenseList, (item) => {

@@ -35,6 +35,10 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
+        },
+        inputHalfWrap: {
+            flexBasis: '49%',
+            width: '49%'
         }
     })),
     reduxForm({
@@ -68,23 +72,32 @@ const ExpenseCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent} style={{minHeight: '250px'}}>
+                    <div className={classes.inContent} style={{minHeight: 'auto', paddingBottom: '20px', paddingTop: '20px'}}>
                         <div className={classes.field}>
                             <Field
                                 name="comment"
                                 component={TextField}
+                                className={classes.inputFieldCustom}
                                 label="Описание раскода"
                                 fullWidth={true}/>
-                            <Field
-                                name="amount"
-                                component={TextField}
-                                label="Сумма"
-                                fullWidth={true}/>
-                            <Field
-                                name="currency"
-                                component={CurrencySearchField}
-                                label="Валюта"
-                                fullWidth={true}/>
+                            <div className={classes.flex} style={{justifyContent: 'space-between'}}>
+                                <div className={classes.inputHalfWrap}>
+                                    <Field
+                                        name="amount"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Сумма"
+                                        fullWidth={true}/>
+                                </div>
+                                <div className={classes.inputHalfWrap}>
+                                    <Field
+                                        name="currency"
+                                        component={CurrencySearchField}
+                                        className={classes.inputFieldCustom}
+                                        label="Валюта"
+                                        fullWidth={true}/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
