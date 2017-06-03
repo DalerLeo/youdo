@@ -14,7 +14,6 @@ export const listFilterSerializer = (data, stock) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const newStock = (stock !== ZERO) ? stock : null
-    console.log(_.get(defaultData, 'pageSize'))
     return {
         'stock': newStock,
         'page': _.get(defaultData, 'page'),
