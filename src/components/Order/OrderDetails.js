@@ -17,6 +17,8 @@ import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import Dot from '../Images/dot.png'
 import Person from '../Images/person.png'
+import numberFormat from '../../helpers/numberFormat'
+import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 
 const enhance = compose(
     injectSheet({
@@ -269,7 +271,7 @@ const OrderDetails = enhance((props) => {
     const discount = _.get(data, 'discountPrice')
     const totalPrice = _.get(data, 'totalPrice')
     const totalBalance = _.get(data, 'totalBalance')
-    const discountPrice = deliveryPrice * (discount / percent)
+    const discountPrice = totalPrice * (discount / percent)
 
     if (loading) {
         return (
@@ -364,7 +366,6 @@ const OrderDetails = enhance((props) => {
                         <div className={classes.subtitle}>Баланс</div>
                         <div className={classes.dataBox}>
                             <ul>
-                                <li>Тип оплаты:</li>
                                 <li>Дата оплаты:</li>
                                 <li>Стоимость доставки:</li>
                                 <li>Скидка({discount}%):</li>
@@ -372,14 +373,13 @@ const OrderDetails = enhance((props) => {
                                 <li>Остаток:</li>
                             </ul>
                             <ul>
-                                <li>Перечисление</li>
                                 <li>22.05.2017</li>
-                                <li>{deliveryPrice}</li>
-                                <li>{discountPrice}</li>
+                                <li>{numberFormat(deliveryPrice)} {PRIMARY_CURRENCY_NAME}</li>
+                                <li>{numberFormat(discountPrice)} {PRIMARY_CURRENCY_NAME}</li>
                                 <li>
-                                    <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>500 000 UZS</a>
+                                    <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>500 000 {PRIMARY_CURRENCY_NAME}</a>
                                 </li>
-                                <li className={totalBalance > zero ? classes.red : classes.green}>{totalBalance}</li>
+                                <li className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {PRIMARY_CURRENCY_NAME}</li>
                             </ul>
                         </div>
                     </div>
@@ -418,8 +418,8 @@ const OrderDetails = enhance((props) => {
                                 <Row className="dottedList">
                                     <Col xs={6}>Товар</Col>
                                     <Col xs={2}>Количество</Col>
-                                    <Col xs={2}>Цена (UZS)</Col>
-                                    <Col xs={2}>Сумма (UZS)</Col>
+                                    <Col xs={2}>Цена {PRIMARY_CURRENCY_NAME}</Col>
+                                    <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
                                 </Row>
 
                                 {_.map(products, (item) => {
@@ -427,21 +427,21 @@ const OrderDetails = enhance((props) => {
                                     const productId = _.get(product, 'id')
                                     const productName = _.get(product, 'name')
                                     const price = _.get(item, 'price')
-                                    const cost = _.get(item, 'cost')
+                                    const productTotal = _.get(item, 'totalPrice')
                                     const amount = _.get(item, 'amount')
                                     const measurement = _.get(product, ['measurement', 'name'])
                                     return (
                                         <Row className="dottedList" key={productId}>
                                             <Col xs={6}>{productName}</Col>
                                             <Col xs={2}>{amount} {measurement}</Col>
-                                            <Col xs={2}>{price}</Col>
-                                            <Col xs={2}>{cost}</Col>
+                                            <Col xs={2}>{numberFormat(price)}</Col>
+                                            <Col xs={2}>{numberFormat(productTotal)}</Col>
                                         </Row>
                                     )
                                 })}
                             </div>
 
-                            <div className={classes.summary}>Итого: {totalPrice} UZS</div>
+                            <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {PRIMARY_CURRENCY_NAME}</div>
                         </div>
                     </div>
                 </div>
