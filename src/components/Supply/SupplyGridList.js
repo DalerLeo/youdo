@@ -168,7 +168,6 @@ const SupplyGridList = enhance((props) => {
     const PENDING = 0
     const IN_PROGRESS = 1
     const COMPLETED = 2
-
     const supplyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(_.get(item, 'provider'), 'name')
@@ -207,6 +206,8 @@ const SupplyGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const expense = _.find(_.get(supplyListData, 'data'), {'id': confirmExpenseDialog.removeId})
+    const expComment = _.get(expense, 'comment')
     return (
         <Container>
             <SubMenu url={ROUTES.SUPPLY_LIST_URL}/>
@@ -260,13 +261,13 @@ const SupplyGridList = enhance((props) => {
                 open={confirmDialog.openConfirmDialog}
             />}
 
-            <ConfirmDialog
+            {confirmExpenseDialog.removeId && <ConfirmDialog
                 type="delete"
-                message={'weqwe' + _.get(detailData, ['data', 'id'])}
+                message={'Дополнительный расход: ' + expComment}
                 onClose={confirmExpenseDialog.handleCloseConfirmExpenseDialog}
                 onSubmit={confirmExpenseDialog.handleSendConfirmExpenseDialog}
                 open={confirmExpenseDialog.openConfirmExpenseDialog}
-            />
+            />}
         </Container>
     )
 })
@@ -329,14 +330,7 @@ SupplyGridList.propTypes = {
     supplyListData: PropTypes.shape({
         data: PropTypes.array,
         supplyExpenseListLoading: PropTypes.bool.isRequired,
-        handleSupplyExpenseOpenDeleteDialog: PropTypes.func.isRequired,
-        handleSupplyExpenseCloseDeleteDialog: PropTypes.func.isRequired,
-        handleSupplyExpenseActionDelete: PropTypes.func.isRequired,
-        openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired,
-        handleSupplyExpenseOpenConfirmDialog: PropTypes.func.isRequired,
-        handleSupplyExpenseCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSupplyExpenseSendConfirmDialog: PropTypes.func.isRequired
-
+        openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired
     })
 }
 

@@ -138,7 +138,7 @@ const ConfirmDialog = enhance((props) => {
 })
 
 ConfirmDialog.propTypes = {
-    type: PropTypes.oneOf(['delete']).isRequired,
+    type: PropTypes.oneOf(['delete', 'cancel']).isRequired,
     message: PropTypes.string.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,

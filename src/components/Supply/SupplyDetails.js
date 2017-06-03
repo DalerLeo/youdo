@@ -38,6 +38,11 @@ const enhance = compose(
             justifyContent: 'center',
             alignItems: 'center'
         },
+        expenseLoader: {
+            extend: 'loader',
+            height: 'auto',
+            padding: '20px 0'
+        },
         title: {
             display: 'flex',
             justifyContent: 'space-between',
@@ -408,9 +413,9 @@ const SupplyDetails = enhance((props) => {
                                 label="+ добавить доп. расход"/>
                         </div>
                     </div>
-                    {supplyExpenseListLoading && <div className={classes.loader}>
+                    {supplyExpenseListLoading && <div className={classes.expenseLoader}>
                         <div>
-                            <CircularProgress size={100} thickness={6}/>
+                            <CircularProgress size={70} thickness={6}/>
                         </div>
                     </div>}
                     {!supplyExpenseListLoading && _.map(supplyExpenseList, (item) => {

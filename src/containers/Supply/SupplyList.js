@@ -64,7 +64,6 @@ const enhance = compose(
             filter,
             filterForm,
             createForm,
-
             supplyExpenseLoading,
             createSupplyExpenseForm,
             supplyExpenseList,
@@ -90,6 +89,7 @@ const enhance = compose(
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openConfirmExpenseDialog', 'setOpenConfirmExpenseDialog', false),
     withState('openSupplyExpenseConfirmDialog', 'setOpenSupplyExpenseConfirmDialog', false),
+    withState('expenseRemoveId', 'setExpenseRemoveId', false),
 
     withHandlers({
         handleActionEdit: props => () => {
@@ -128,29 +128,27 @@ const enhance = compose(
                 })
         },
 
-        handleOpenConfirmExpenseDialog: props => () => {
-            const {setOpenConfirmExpenseDialog} = props
-            setOpenConfirmExpenseDialog(true)
+        handleOpenConfirmExpenseDialog: props => (expId) => {
+            const {setExpenseRemoveId} = props
+            setExpenseRemoveId(expId)
         },
 
         handleCloseConfirmExpenseDialog: props => () => {
-            const {setOpenConfirmExpenseDialog} = props
-            setOpenConfirmExpenseDialog(false)
+            const {setExpenseRemoveId} = props
+            setExpenseRemoveId(false)
         },
         handleSendConfirmExpenseDialog: props => () => {
-            const {dispatch, supplyExpenseList, setOpenConfirmExpenseDialog, filter} = props
-            const expenseResults = _.get(supplyExpenseList, 'results')
-            _.map(expenseResults, (item) => {
-                const id = _.get(item, 'id')
-                dispatch(supplyExpenseDeleteAction(id))
-                    .catch(() => {
-                        return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                    })
-                    .then(() => {
-                        setOpenConfirmExpenseDialog(false)
-                        dispatch(supplyExpenseListFetchAction(filter))
-                    })
-            })
+            const {dispatch, setExpenseRemoveId, expenseRemoveId, detail} = props
+            const id = _.get(detail, 'id')
+            dispatch(supplyExpenseDeleteAction(expenseRemoveId))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Oshibka 404'}))
+                })
+                .then(() => {
+                    setExpenseRemoveId(false)
+                    dispatch(supplyExpenseListFetchAction(id))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
         },
 
         handleOpenFilterDialog: props => () => {
@@ -250,39 +248,6 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleSupplyExpenseOpenConfirmDialog: props => () => {
-            const {setOpenSupplyExpenseConfirmDialog} = props
-            setOpenSupplyExpenseConfirmDialog(true)
-        },
-
-        handleSupplyExpenseCloseConfirmDialog: props => () => {
-            const {setOpenSupplyExpenseConfirmDialog} = props
-            setOpenSupplyExpenseConfirmDialog(false)
-        },
-        handleSupplyExpenseSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenSupplyExpenseConfirmDialog} = props
-            dispatch(supplyExpenseDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful deleted'}))
-                })
-                .then(() => {
-                    setOpenSupplyExpenseConfirmDialog(false)
-                })
-        },
-
-        handleSupplyExpenseOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleSupplyExpenseCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
-
         handleSupplyExpenseOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: true})})
@@ -320,6 +285,7 @@ const SupplyList = enhance((props) => {
         filter,
         layout,
         params,
+        expenseRemoveId,
 
         supplyExpenseLoading,
         supplyExpenseList,
@@ -363,9 +329,11 @@ const SupplyList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
+    const ZERO = 0
 
     const confirmExpenseDialog = {
-        openConfirmExpenseDialog: props.openConfirmExpenseDialog,
+        removeId: expenseRemoveId,
+        openConfirmExpenseDialog: (expenseRemoveId > ZERO),
         handleOpenConfirmExpenseDialog: props.handleOpenConfirmExpenseDialog,
         handleCloseConfirmExpenseDialog: props.handleCloseConfirmExpenseDialog,
         handleSendConfirmExpenseDialog: props.handleSendConfirmExpenseDialog
@@ -447,13 +415,9 @@ const SupplyList = enhance((props) => {
     const supplyListData = {
         data: _.get(supplyExpenseList, 'results'),
         supplyExpenseListLoading,
-        handleSupplyExpenseOpenDeleteDialog: props.handleSupplyExpenseOpenDeleteDialog,
-        handleSupplyExpenseCloseDeleteDialog: props.handleSupplyExpenseCloseDeleteDialog,
         openSupplyExpenseConfirmDialog: props.openSupplyExpenseConfirmDialog,
         handleSupplyExpenseOpenConfirmDialog: props.handleSupplyExpenseOpenConfirmDialog,
-        handleSupplyExpenseCloseConfirmDialog: props.handleSupplyExpenseCloseConfirmDialog,
-        handleSupplyExpenseSendConfirmDialog: props.handleSupplyExpenseSendConfirmDialog,
-        handleSupplyExpenseActionDelete: props.handleSupplyExpenseOpenDeleteDialog
+        handleSupplyExpenseCloseConfirmDialog: props.handleSupplyExpenseCloseConfirmDialog
     }
     const openSupplyExpenseCreateDialog = toBoolean(_.get(location, ['query', SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]))
 
