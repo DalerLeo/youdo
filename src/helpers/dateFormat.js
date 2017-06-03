@@ -1,7 +1,7 @@
-const dateFormat = (amount, suffix) => {
-    const formatter = new Intl.NumberFormat('ru-RU')
-    const ZERO_NUM = 0
-    return ((amount) ? formatter.format(amount) : ZERO_NUM) + ' ' + (suffix || '')
+import moment from 'moment'
+
+const dateFormat = (date, defaultText) => {
+    return (date) ? moment(date).format('DD.MM.YYYY') : defaultText
 }
 
 export default dateFormat
