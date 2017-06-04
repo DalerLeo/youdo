@@ -100,7 +100,7 @@ const enhance = compose(
         },
         begin: {
             extend: 'dot',
-            backgroundColor: '#64b5f6'
+            backgroundColor: '#f0ad4e'
         },
         error: {
             extend: 'dot',
@@ -108,7 +108,7 @@ const enhance = compose(
         },
         waiting: {
             extend: 'dot',
-            backgroundColor: '#f0ad4e'
+            backgroundColor: '#64b5f6'
         }
     })
 )
