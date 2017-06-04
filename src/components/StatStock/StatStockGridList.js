@@ -16,6 +16,7 @@ import {compose, withState} from 'recompose'
 import MainStyles from '../Styles/MainStyles'
 import InComing from 'material-ui/svg-icons/navigation/arrow-upward'
 import OutComing from 'material-ui/svg-icons/navigation/arrow-downward'
+import CircularProgress from 'material-ui/CircularProgress'
 import numberFormat from '../../helpers/numberFormat'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import StatStockFilterForm from './StatStockFilterForm'
@@ -143,6 +144,13 @@ const enhance = compose(
 
                 marginLeft: '-38px'
             }
+        },
+        loader: {
+            background: '#fff',
+            height: '400px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         }
     })),
     withState('showTransaction', 'setShowTransaction', false)
@@ -247,10 +255,9 @@ const StatStockGridList = enhance((props) => {
                 </li>
         )
     })
-    const amountProduct = _.get(statStockData, ['productCount'])
-    const amountTypeProduct = _.get(statStockData, ['productTypeCount'])
-    const totalPriceProduct = numberFormat(_.get(statStockData, ['totalPrice']), PRIMARY_CURRENCY_NAME)
-
+    const amountProduct = _.get(statStockData, ['statStockData', 'productCount'])
+    const amountTypeProduct = _.get(statStockData, ['statStockData', 'productTypeCount'])
+    const totalPriceProduct = numberFormat(_.get(statStockData, ['statStockData', 'totalPrice']), PRIMARY_CURRENCY_NAME)
     return (
         <Container>
             <SubMenu url={ROUTES.STATSTOCK_LIST_URL}/>
@@ -259,7 +266,7 @@ const StatStockGridList = enhance((props) => {
                     <div className={classes.stocksList}>
                         <li className={ !_.get(detailData, 'id') ? 'active' : ''}>
                             <Link to={{
-                                pathname: sprintf(ROUTES.STATSTOCK_LIST_URL),
+                                pathname: sprintf(ROUTES.STATSTOCK_ITEM_PATH, ZERO),
                                 query: filter.getParams()
                             }}>Все склады</Link>
                         </li>
@@ -284,18 +291,25 @@ const StatStockGridList = enhance((props) => {
                     </div>
                 </Col>
                 <Col xs={9} style={{textAlign: 'right'}}>
-                    <div className={classes.infoBlock}>
-                        Товара на складе<br />
-                        <span>{amountProduct}</span>
-                    </div>
-                    <div className={classes.infoBlock}>
-                        Видов продукции:<br />
-                        <span>{amountTypeProduct}</span>
-                    </div>
-                    <div className={classes.infoBlock}>
-                        Товаров на сумму:<br />
-                        <span>{totalPriceProduct}</span>
-                    </div>
+                    {_.get(statStockData, 'statStockDataLoading')
+                        ? <div className={classes.loader}>
+                            <CircularProgress />
+                        </div>
+                        : <div>
+                            <div className={classes.infoBlock}>
+                                Товара на складе<br />
+                                <span>{amountProduct}</span>
+                            </div>
+                            <div className={classes.infoBlock}>
+                                Видов продукции:<br />
+                                <span>{amountTypeProduct}</span>
+                            </div>
+                            <div className={classes.infoBlock}>
+                                Товаров на сумму:<br />
+                                <span>{totalPriceProduct}</span>
+                            </div>
+                        </div>
+                    }
                 </Col>
             </Row>
 

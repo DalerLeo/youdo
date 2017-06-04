@@ -25,7 +25,7 @@ export const supplyCreateAction = (formValues) => {
 
 export const supplyDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.SUPPLY_DELETE, id))
+        .post(API.SUPPLY_DELETE, {pk: id})
         .then((response) => {
             return _.get(response, 'data')
         })

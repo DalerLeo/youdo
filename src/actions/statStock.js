@@ -56,7 +56,7 @@ export const statStockUpdateAction = (id, formValues) => {
 }
 
 export const statStockListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+    const params = serializers.listFilterSerializer()
     const payload = axios()
         .get(API.STATSTOCK_LIST, {params})
         .then((response) => {

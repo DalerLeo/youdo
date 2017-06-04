@@ -33,12 +33,9 @@ const enhance = compose(
             color: 'red'
         },
         imagePlaceholder: {
-            position: 'absolute',
-            bottom: '0',
-            left: '0',
             width: '100%',
-            height: 'calc(100% - 100px)',
-            display: 'block',
+            height: '100%',
+            display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             '& img': {

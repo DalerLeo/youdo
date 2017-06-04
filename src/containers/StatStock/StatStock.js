@@ -33,6 +33,7 @@ import {
     transactionStockListFetchAction
 } from '../../actions/transactionStock'
 import {openSnackbarAction} from '../../actions/snackbar'
+const ONE = 1
 
 const enhance = compose(
     connect((state, props) => {
@@ -51,10 +52,10 @@ const enhance = compose(
         const csvData = _.get(state, ['statStock', 'csv', 'data'])
         const csvLoading = _.get(state, ['statStock', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'StatStockCreateForm'])
-        const tab = _.get(props, ['location', 'query', 'tab']) || '1'
+        const tab = _.toInteger(_.get(props, ['location', 'query', 'tab']) || ONE)
         const statStockData = _.get(state, ['statStock', 'statStockData', 'data'])
-        const statStockLoding = _.get(state, ['statStock', 'statStockData', 'loading'])
-        const filter = filterHelper(list, pathname, query)
+        const statStockDataLoading = _.get(state, ['statStock', 'statStockData', 'loading'])
+        const filter = filterHelper(tab === ONE ? remainderList : transactionList, pathname, query)
 
         return {
             list,
@@ -73,30 +74,31 @@ const enhance = compose(
             tab,
             createForm,
             statStockData,
-            statStockLoding
+            statStockDataLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.transactionList && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
-        dispatch(transactionStockListFetchAction(filter))
+        const statStockId = _.get(nextProps, ['params', 'statStockId'])
+        return (
+            (props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
+            (statStockId && _.get(props, ['params', 'statStockId']) !== statStockId)
+        )
+    }, ({dispatch, filter, params, tab}) => {
+        const statStockId = _.toInteger(_.get(params, 'statStockId'))
+        if (tab === ONE) dispatch(remainderStockListFetchAction(filter, statStockId))
+        else dispatch(transactionStockListFetchAction(filter, statStockId))
     }),
     withPropsOnChange((props, nextProps) => {
         return !nextProps.listLoading && _.isNil(nextProps.list)
-    }, ({dispatch, filter}) => {
-        dispatch(statStockListFetchAction(filter))
-        dispatch(statStockDataFetchAction())
-        dispatch(remainderStockListFetchAction(filter))
+    }, ({dispatch}) => {
+        dispatch(statStockListFetchAction())
     }),
-
     withPropsOnChange((props, nextProps) => {
         const statStockId = _.get(nextProps, ['params', 'statStockId'])
         return statStockId && _.get(props, ['params', 'statStockId']) !== statStockId
-    }, ({dispatch, params, filter}) => {
+    }, ({dispatch, params}) => {
         const statStockId = _.toInteger(_.get(params, 'statStockId'))
-        statStockId && dispatch(remainderStockListFetchAction(filter, statStockId))
-        statStockId && dispatch(transactionStockListFetchAction(filter, statStockId))
-        statStockId && dispatch(statStockDataFetchAction(statStockId))
+        dispatch(statStockDataFetchAction(statStockId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -223,13 +225,7 @@ const enhance = compose(
         },
 
         handleClickTapChange: props => (id) => {
-            const {filter, dispatch, location: {pathname}} = props
-            const statStockId = _.toInteger(_.get(props, ['params', 'statStockId']))
-            if (id === _.toInteger('1')) {
-                dispatch(remainderStockListFetchAction(filter, statStockId))
-            } else {
-                dispatch(transactionStockListFetchAction(filter, statStockId))
-            }
+            const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParams({'tab': id})})
         },
         handleClickStock: props => (id) => {
@@ -260,6 +256,7 @@ const StatStock = enhance((props) => {
         layout,
         params,
         statStockData,
+        statStockDataLoading,
         tab
     } = props
 
@@ -353,6 +350,10 @@ const StatStock = enhance((props) => {
     const handleClickStock = {
         clickItem: props.handleClickStock
     }
+    const statStockDataExp = {
+        statStockData,
+        statStockDataLoading
+    }
 
     return (
         <Layout {...layout}>
@@ -366,7 +367,7 @@ const StatStock = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 csvDialog={csvDialog}
-                statStockData={statStockData}
+                statStockData={statStockDataExp}
                 handleClickStock={handleClickStock}
             />
         </Layout>
