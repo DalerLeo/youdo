@@ -10,7 +10,6 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/DateToDateField'
-import DateField from '../ReduxForm/DateField'
 import {ClientSearchField} from '../ReduxForm'
 import OrderStatusSearchField from '../ReduxForm/OrderStatusSearchField'
 import CloseIcon from '../CloseIcon'
@@ -188,7 +187,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
                         <Field className={classes.inputFieldCustom} name="orderStatus" component={OrderStatusSearchField} label="Статус"/>
                         <Field className={classes.inputDateCustom} name="createDate" component={DateToDateField} label="Период создания"/>
-                        <Field className={classes.inputDateCustom} name="dostDate" component={DateField} label="Дата доставки"/>
+                        <Field className={classes.inputDateCustom} name="dostDate" component={DateToDateField} label="Дата доставки"/>
                     </div>
 
                     <div>

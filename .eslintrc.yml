@@ -19,7 +19,7 @@ rules:
   "babel/no-invalid-this": "error"
 
   # Immutable
-  "immutable/no-let": "error"
+  # "immutable/no-let": "error"
 
   # Possible Errors
   "no-compare-neg-zero": "error"

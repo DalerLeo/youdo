@@ -21,6 +21,7 @@ import {
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import MainStyles from '../Styles/MainStyles'
+import OrderTotalSum from '../ReduxForm/OrderTotalSum'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
@@ -75,7 +76,6 @@ const enhance = compose(
         inContent: {
             display: 'flex',
             color: '#333',
-            borderBottom: '1px #efefef solid',
             minHeight: '450px'
         },
         innerWrap: {
@@ -117,7 +117,7 @@ const enhance = compose(
         },
         commentField: {
             padding: '5px 20px',
-            fonSsize: '16px !important',
+            fontSize: '16px !important',
             textAlign: 'left',
             width: '50%',
             float: 'left'
@@ -194,7 +194,7 @@ const enhance = compose(
         },
         podlojkaScroll: {
             overflowY: 'auto !important',
-            '& div:first-child div:first-child': {
+            '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
             }
         }
@@ -310,18 +310,16 @@ const OrderCreateDialog = enhance((props) => {
                                 </div>
                             </div>
                             <div className={classes.rightOrderPart}>
-                                <div className={classes.productListModal}>
-                                    <Fields
-                                        names={['products', 'product', 'amount', 'cost']}
-                                        component={OrderListProductField}
-                                    />
-                                </div>
+                                <Fields
+                                    names={['products', 'product', 'amount', 'cost']}
+                                    component={OrderListProductField}
+                                />
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <div className={classes.commentField}>
-                            Общая сумма заказа: <b>0</b>
+                            Общая сумма заказа: <OrderTotalSum/>
                         </div>
                         {(stockMin) ? <FlatButton
                                 label="Далее"

@@ -47,7 +47,7 @@ const enhance = compose(
         podlojkaScroll: {
             overflowY: 'auto !important',
             padding: '0 !important',
-            '& div:first-child div:first-child': {
+            '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
             },
             '& > div': {

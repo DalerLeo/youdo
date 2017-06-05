@@ -19,7 +19,6 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
                     onChange={(event, value) => input.onChange(value)}
                     {...defaultProps}
                     okLabel="Ок"
-                    locale="ru-RU"
                     cancelLabel="Отмена"
                 />
                 <div className={classes.icon}>

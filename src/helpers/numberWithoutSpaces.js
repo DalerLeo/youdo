@@ -1,5 +1,10 @@
+import _ from 'lodash'
+const ZERO = 0
 const numberWithoutSpaces = (amount) => {
-    return amount.replace(/[^\d]/g, '')
+    if (amount) {
+        return _.toNumber(amount.replace(/[^\d]/g, ''))
+    }
+    return ZERO
 }
 
 export default numberWithoutSpaces
