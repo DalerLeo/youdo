@@ -24,14 +24,12 @@ const enhance = compose(
             display: 'flex',
             flexDirection: 'column',
             minHeight: '360px',
-            position: 'relative'
+            position: 'relative',
+            height: '100%'
         },
         imagePlaceholder: {
-            position: 'absolute',
-            bottom: '0',
-            left: '0',
             width: '100%',
-            height: 'calc(100% - 100px)',
+            height: '100%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -110,6 +108,21 @@ const enhance = compose(
             '& button': {
                 marginTop: '10px !important'
             }
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -159,16 +172,19 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                 {state.open && <div className={classes.background}>
                     <ProductSearchField
                         label="Наименование товара"
+                        className={classes.inputFieldCustom}
                         {..._.get(defaultProps, 'product')}
                     />
                     <TextField
                         label="Кол-во"
+                        className={classes.inputFieldCustom}
                         {..._.get(defaultProps, 'amount')}
                     />
                     <TextField
                         label="Сумма"
                         disabled={true}
                         value={'10000'}
+                        className={classes.inputFieldCustom}
                         {..._.get(defaultProps, 'cost')}
                     />
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>

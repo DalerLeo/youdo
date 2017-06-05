@@ -194,7 +194,7 @@ const enhance = compose(
         },
         podlojkaScroll: {
             overflowY: 'auto !important',
-            '& div:first-child div:first-child': {
+            '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
             }
         }
@@ -310,12 +310,10 @@ const OrderCreateDialog = enhance((props) => {
                                 </div>
                             </div>
                             <div className={classes.rightOrderPart}>
-                                <div className={classes.productListModal}>
-                                    <Fields
-                                        names={['products', 'product', 'amount', 'cost']}
-                                        component={OrderListProductField}
-                                    />
-                                </div>
+                                <Fields
+                                    names={['products', 'product', 'amount', 'cost']}
+                                    component={OrderListProductField}
+                                />
                             </div>
                         </div>
                     </div>

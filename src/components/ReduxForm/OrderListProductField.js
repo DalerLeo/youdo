@@ -34,12 +34,9 @@ const enhance = compose(
             color: 'red'
         },
         imagePlaceholder: {
-            position: 'absolute',
-            bottom: '0',
-            left: '0',
             width: '100%',
-            height: 'calc(100% - 100px)',
-            display: 'block',
+            height: '100%',
+            display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             '& img': {
@@ -166,7 +163,7 @@ const enhance = compose(
     })
 )
 
-const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, openAddProducts, setOpenAddProducts, ...defaultProps}) => {
+const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProducts, setOpenAddProducts, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const stockMin = true
@@ -250,9 +247,9 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleRemov
                 </Table>
             </div>
                 : <div className={classes.imagePlaceholder}>
-                    <div style={{textAlign: 'center', color: '#adadad', marginTop: '60px'}}>
+                    <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>
+                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => setOpenAddProducts(!openAddProducts)}>Добавить</a> товар?</div>
                     </div>
                 </div>
             }
