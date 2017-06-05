@@ -2,7 +2,7 @@ import _ from 'lodash'
 import sprintf from 'sprintf'
 import injectSheet from 'react-jss'
 import React from 'react'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
@@ -18,7 +18,8 @@ import MainStyles from '../Styles/MainStyles'
 import {Link} from 'react-router'
 import numberFormat from '../../helpers/numberFormat'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
-
+const ONE = 1
+const TWO = 2
 const listHeaderClient = [
     {
         sorting: true,
@@ -156,7 +157,6 @@ const enhance = compose(
             }
         }
     })),
-    withState('showByClient', 'setShowByClient', true)
 )
 
 const StatDebtorsGridList = enhance((props) => {
@@ -168,11 +168,10 @@ const StatDebtorsGridList = enhance((props) => {
         confirmDialog,
         filterDialog,
         listData,
-        setShowByClient,
-        showByClient,
         detailData,
         classes,
-        orderData
+        orderData,
+        tabData
     } = props
 
     const actions = (
@@ -239,21 +238,19 @@ const StatDebtorsGridList = enhance((props) => {
             </Row>
         )
     })
-    const statDebtorsListByOrder = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, ['client', 'id'])
-        const name = 'Наименование фирмы клиента'
-        const order = '0254'
-        const date = '22 Апр, 2017'
-        const orderSum = '3 000 000 UZS'
-        const debt = '2 000 000 UZS'
+    const statDebtorsListByOrder = _.map(_.get(orderData, ['orderList', 'results']), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, ['client', 'name'])
+        const date = _.get(item, 'dateDelivery')
+        const orderSum = _.get(item, 'totalPrice')
+        const debt = _.get(item, 'totalBalance')
         return (
             <Row key={id}>
-                <Col xs={1}>{order}</Col>
-                <Col xs={4}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.STATDEBTORS_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{name}</Link>
+                <Col xs={1}>{id}</Col>
+                <Col xs={4}><a
+                    onClick={ () => {
+                        orderData.handleOrderClick(id)
+                    }}>{name}</a>
                 </Col>
                 <Col xs={2}>{date}</Col>
                 <Col xs={2}>{orderSum}</Col>
@@ -288,7 +285,7 @@ const StatDebtorsGridList = enhance((props) => {
             }
         </div>
     )
-    const list = (showByClient) ? {
+    const list = (_.get(tabData, 'tab') === ONE) ? {
         header: listHeaderClient,
         list: statDebtorsList,
         loading: _.get(listData, 'listLoading')
@@ -301,7 +298,6 @@ const StatDebtorsGridList = enhance((props) => {
     const totalDebtors = numberFormat(_.get(sumData, ['data', 'debtors']))
     const totalOrders = numberFormat(_.get(sumData, ['data', 'orders']))
     const totalBalance = numberFormat(_.get(sumData, ['data', 'totalBalance']), PRIMARY_CURRENCY_NAME)
-
     return (
         <Container>
             <SubMenu url={ROUTES.STATDEBTORS_LIST_URL}/>
@@ -313,16 +309,16 @@ const StatDebtorsGridList = enhance((props) => {
             }}>
                 <Col xs={3}>
                     <div className={classes.typeListStock}
-                         style={showByClient === true ? {background: '#eceff5'} : {background: '#fff'}}>
+                         style={_.get(tabData, 'tab') === ONE ? {background: '#eceff5'} : {background: '#fff'}}>
                         <a onClick={() => {
-                            setShowByClient(true)
-                        }} className={showByClient && 'active'}>Вид<br/>по клиенту</a>
+                            tabData.handleClick(ONE)
+                        }} className={ _.get(tabData, 'tab') === ONE && 'active'}>Вид<br/>по клиенту</a>
                     </div>
                     <div className={classes.typeListStock}
-                         style={!showByClient === true ? {background: '#eceff5'} : {background: '#fff'}}>
+                         style={_.get(tabData, 'tab') === TWO ? {background: '#eceff5'} : {background: '#fff'}}>
                         <a onClick={() => {
-                            setShowByClient(false)
-                        }} className={!showByClient && 'active'}>Вид<br/>по заказу</a>
+                            tabData.handleClick(TWO)
+                        }} className={ _.get(tabData, 'tab') === TWO && 'active'}>Вид<br/>по заказу</a>
                     </div>
                 </Col>
                 <Col xs={9} style={{textAlign: 'right'}}>
@@ -407,6 +403,7 @@ StatDebtorsGridList.propTypes = {
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
+    tabData: PropTypes.object,
     orderData: PropTypes.object
 }
 

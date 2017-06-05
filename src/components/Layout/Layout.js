@@ -316,13 +316,13 @@ const Layout = enhance((props) => {
             </div>
 
             <SnakeBar />
-            <ConfirmDialog
+            {notificationsList && <ConfirmDialog
                 type="delete"
                 message={_.get(_.find(notificationsList, {'id': notificationId}), 'title')}
                 onClose={notificationData.handleCloseConfirmDialog}
                 onSubmit={notificationData.handleSendConfirmDialog}
                 open={notificationData.open}
-            />
+            />}
         </div>
     )
 })

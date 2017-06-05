@@ -90,7 +90,7 @@ export const SUPPLY = 'dist/supply'
 export const SUPPLY_CREATE = `/${SUPPLY}/`
 export const SUPPLY_LIST = `/${SUPPLY}/`
 export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
-export const SUPPLY_DELETE = `/${SUPPLY}/%d/`
+export const SUPPLY_DELETE = `/${SUPPLY}/cancel/`
 
 export const ORDER = 'order'
 export const ORDER_CREATE = `/${ORDER}/`

@@ -19,7 +19,6 @@ import {
     DateField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
-import MainStyles from '../Styles/MainStyles'
 
 export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
@@ -31,7 +30,7 @@ const validate = (data) => {
     })
 }
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
             position: 'absolute',
             width: '100%',
@@ -45,13 +44,32 @@ const enhance = compose(
             justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        podlojkaScroll: {
+            overflowY: 'auto !important',
+            padding: '0 !important',
+            '& > div:first-child > div:first-child': {
+                transform: 'translate(0px, 0px) !important'
+            },
+            '& > div': {
+                height: '100% !important',
+                '& > div': {
+                    height: '100% !important',
+                    padding: '50px 0',
+                    '& > div': {
+                        height: '100%'
+                    }
+                }
+            }
+        },
         popUp: {
+            background: '#fff',
             overflowY: 'hidden !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
+            minHeight: '700px',
             maxHeight: 'inherit !important'
         },
         titleContent: {
@@ -74,19 +92,23 @@ const enhance = compose(
         inContent: {
             display: 'flex',
             color: '#333',
-            borderBottom: '1px #efefef solid',
-            minHeight: '450px'
+            height: '100%',
+            padding: '0 30px'
         },
         innerWrap: {
-            maxHeight: '85vh',
-            overflow: 'auto'
+            height: 'calc(100% - 57px)'
         },
         bodyContent: {
             color: '#333',
-            width: '100%'
+            width: '100%',
+            height: 'calc(100% - 59px)'
         },
         form: {
-            position: 'relative'
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between'
         },
         field: {
             width: '100%'
@@ -146,7 +168,9 @@ const enhance = compose(
         rightOrderPart: {
             flexBasis: '65%',
             maxWidth: '65%',
-            padding: '20px 0 20px 30px'
+            padding: '20px 1px 20px 30px',
+            maxHeight: '694px',
+            overflow: 'auto'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -188,13 +212,7 @@ const enhance = compose(
                 color: 'rgb(229, 115, 115) !important'
             }
         },
-        podlojkaScroll: {
-            overflowY: 'auto !important',
-            '& > div:first-child > div:first-child': {
-                transform: 'translate(0px, 0px) !important'
-            }
-        }
-    })),
+    }),
     reduxForm({
         form: 'SupplyCreateForm',
         enableReinitialize: true
@@ -231,8 +249,8 @@ const SupplyCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.innerWrap} style={{minHeight: '480px'}}>
-                        <div className={classes.inContent} style={{minHeight: '350px', maxHeight: '60vh'}}>
+                    <div className={classes.innerWrap}>
+                        <div className={classes.inContent} style={{minHeight: '350px'}}>
                             <div className={classes.leftOrderPart}>
                                 <div className={classes.subTitleOrder}>Выбор поставщика</div>
                                 <div className={classes.selectContent}>
@@ -269,6 +287,21 @@ const SupplyCreateDialog = enhance((props) => {
                                         label="Валюта оплаты"
                                         fullWidth={true}/>
                                 </div>
+                                <div className={classes.commentFieldSupply}>
+                                    <div>
+                                        <div className={classes.subTitleOrder} style={{marginTop: '15px'}}>Комментарии по заказу</div>
+                                        <Field
+                                            style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
+                                            name="comment"
+                                            component={TextField}
+                                            label="Оставить комментарий..."
+
+                                            multiLine={true}
+                                            rows={4}
+                                            rowsMax={6}
+                                            fullWidth={true}/>
+                                    </div>
+                                </div>
                             </div>
                             <div className={classes.rightOrderPart}>
                                 <Fields
@@ -277,21 +310,6 @@ const SupplyCreateDialog = enhance((props) => {
                                 />
                             </div>
                         </div>
-                        <div className={classes.commentFieldSupply}>
-                            <div style={{padding: '5px 30px'}}>
-                                <div className={classes.subTitleOrder} style={{marginTop: '15px'}}>Комментарии по заказу</div>
-                                <Field
-                                    style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
-                                    name="comment"
-                                    component={TextField}
-                                    label="Оставить комментарий..."
-
-                                    multiLine={true}
-                                    rows={2}
-                                    rowsMax={4}
-                                    fullWidth={true}/>
-                            </div>
-                            </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
