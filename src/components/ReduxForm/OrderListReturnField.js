@@ -1,10 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../Images/groceries.svg'
+import {connect} from 'react-redux'
 import {
     Table,
     TableBody,
@@ -15,7 +17,9 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../DeleteIcon'
 
-import ProductSearchField from './ProductSearchField'
+import OrderProductSearchField from './OrderProductSearchField'
+import ProductCostField from '../ReduxForm/ProductCostField'
+import OrderProductMeasurementField from '../ReduxForm/OrderProductMeasurementField'
 import TextField from './TextField'
 
 const enhance = compose(
@@ -87,27 +91,13 @@ const enhance = compose(
             }
         },
         background: {
-            backgroundColor: '#f1f5f8',
             display: 'flex',
-            padding: '10px',
-            marginTop: '20px',
-            '& > div': {
-                marginTop: '-20px !important',
-                marginRight: '20px',
-                height: '72px !important',
-                '& input': {
-                    height: '75px !important'
-                }
-            },
-            '& > button > div > span': {
-                padding: '0 !important'
-            },
-            '& > div:last-child': {
-                width: '100% !important'
-            },
-            '& button': {
-                marginTop: '10px !important'
-            }
+            padding: '10px 30px',
+            margin: '0 -30px',
+            marginTop: '5px',
+            backgroundColor: '#f1f5f8',
+            position: 'relative',
+            zIndex: '2'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -125,20 +115,26 @@ const enhance = compose(
             }
         }
     }),
+    connect((state) => {
+        const extra = _.get(state, ['product', 'extra', 'data'])
+        return {
+            extra
+        }
+    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
-
     withHandlers({
         handleAdd: props => () => {
+            const ZERO = 0
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
-            const cost = 10000
-
+            const extra = _.get(props, ['extra'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
 
-            if (!_.isEmpty(product) && amount && cost) {
+            if (!_.isEmpty(product) && amount) {
+                const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(amount)
                 onChange(_.union(products, [{product, amount, cost}]))
             }
         },
@@ -154,9 +150,8 @@ const enhance = compose(
     })
 )
 
-const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
+const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, orderData, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
-
     return (
         <div className={classes.wrapper}>
             <div>
@@ -170,24 +165,31 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                     />
                 </div>
                 {state.open && <div className={classes.background}>
-                    <ProductSearchField
-                        label="Наименование товара"
-                        className={classes.inputFieldCustom}
-                        {..._.get(defaultProps, 'product')}
-                    />
-                    <TextField
-                        label="Кол-во"
-                        className={classes.inputFieldCustom}
-                        {..._.get(defaultProps, 'amount')}
-                    />
-                    <TextField
-                        label="Сумма"
-                        disabled={true}
-                        value={'10000'}
-                        className={classes.inputFieldCustom}
-                        {..._.get(defaultProps, 'cost')}
-                    />
-                    <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
+                    <div style={{width: '35%', paddingRight: '20px'}}>
+                        <OrderProductSearchField
+                            label="Наименование товара"
+                            className={classes.inputFieldCustom}
+                            style={{width: '100%'}}
+                            {..._.get(defaultProps, 'product')}
+                        />
+                    </div>
+                    <div style={{width: '20%', paddingRight: '20px'}}>
+                        <TextField
+                            label="Кол-во"
+                            className={classes.inputFieldCustom}
+                            style={{width: '100%'}}
+                            {..._.get(defaultProps, 'amount')}
+                        />
+                    </div>
+                    <div>
+                        <OrderProductMeasurementField/>
+                    </div>
+                    <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px'}}>
+                        <ProductCostField />
+                    </div>
+                    <div style={{width: '20%', textAlign: 'right', paddingTop: '9px'}}>
+                        <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
+                    </div>
                 </div>}
             </div>
             {!_.isEmpty(products) ? <div className={classes.table}>
@@ -239,5 +241,8 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
         </div>
     )
 }
-
+OrderListReturnField.propTyeps = {
+    orderData: PropTypes.object.isRequired
+}
 export default enhance(OrderListReturnField)
+

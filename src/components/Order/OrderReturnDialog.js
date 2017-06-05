@@ -13,6 +13,7 @@ import {
     OrderListReturnField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
+import OrderReturnTotalSum from '../ReduxForm/OrderReturnTotalSum'
 
 export const ORDER_RETURN_DIALOG_OPEN = 'openReturnDialog'
 const validate = (data) => {
@@ -66,8 +67,7 @@ const enhance = compose(
         inContent: {
             display: 'flex',
             color: '#333',
-            padding: '15px 30px',
-            borderBottom: '1px #efefef solid'
+            padding: '15px 30px'
         },
         innerWrap: {
             maxHeight: '50vh',
@@ -121,7 +121,7 @@ const enhance = compose(
             }
         },
         commentField: {
-            fontSize: '24px',
+            fontSize: '16px',
             padding: '20px 30px',
             textAlign: 'right',
             borderTop: '1px #efefef solid'
@@ -157,7 +157,8 @@ const enhance = compose(
 )
 
 const OrderReturnDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, orderData} = props
+
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -184,11 +185,12 @@ const OrderReturnDialog = enhance((props) => {
                                 <Fields
                                     names={['products', 'product', 'amount', 'cost']}
                                     component={OrderListReturnField}
+                                    orderData={orderData}
                                 />
                             </div>
                         </div>
                         <div className={classes.commentField}>
-                            Общая сумма возврата: <b>350000</b>
+                            Общая сумма возврата: <OrderReturnTotalSum/>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
@@ -208,6 +210,7 @@ OrderReturnDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    orderData: PropTypes.object.isRequired
 }
 export default OrderReturnDialog

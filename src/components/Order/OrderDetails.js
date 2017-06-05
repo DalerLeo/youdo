@@ -16,9 +16,11 @@ import File from 'material-ui/svg-icons/editor/insert-drive-file'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import Dot from '../Images/dot.png'
-import Person from '../Images/person.png'
+import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
+import {Tabs, Tab} from 'material-ui/Tabs'
+import * as TAB from '../../constants/orderTab'
 
 const enhance = compose(
     injectSheet({
@@ -58,6 +60,9 @@ const enhance = compose(
         },
         green: {
             color: '#81c784 !important'
+        },
+        yellow: {
+            color: '#f0ad4e !important'
         },
         loader: {
             width: '100%',
@@ -223,6 +228,37 @@ const enhance = compose(
                 verticalAlign: 'top',
                 display: 'inline-block'
             }
+        },
+        colorCat: {
+            marginBottom: '0',
+            '& > div': {
+                width: '40% !important',
+                paddingRight: '60%',
+                background: 'transparent !important'
+            },
+            '& > div:first-child': {
+                borderBottom: '1px #f2f5f8 solid'
+            },
+            '& > div:last-child': {
+                width: '100% !important',
+                padding: '0'
+            },
+            '& > div:nth-child(2) > div': {
+                marginTop: '0px !important',
+                marginBottom: '-1px',
+                backgroundColor: '#12aaeb !important',
+                height: '1px !important'
+            },
+            '& button': {
+                color: '#333 !important',
+                backgroundColor: '#fefefe !important'
+            },
+            '& button > span:first-line': {
+                color: '#a6dff7'
+            },
+            '& button div div': {
+                textTransform: 'initial'
+            }
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -252,8 +288,11 @@ const OrderDetails = enhance((props) => {
         returnDialog,
         shortageDialog,
         confirmDialog,
-        handleOpenUpdateDialog
+        handleOpenUpdateDialog,
+        tabData
     } = props
+    const tab = _.get(tabData, 'tab')
+
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
     const contact = _.get(data, 'contact')
@@ -264,6 +303,12 @@ const OrderDetails = enhance((props) => {
     const client = _.get(data, 'client')
     const clientPerson = _.get(client, 'name')
     const deliveryType = _.get(data, 'deliveryType')
+    const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
+
+    const REQUESTED = 0
+    const READY = 1
+    const DELIVERED = 2
+    const status = _.toInteger(_.get(data, 'status'))
 
     const percent = 100
     const zero = 0
@@ -385,65 +430,83 @@ const OrderDetails = enhance((props) => {
                     </div>
 
                     <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Передача</div>
+                        <div className={classes.subtitle}>Исполнение</div>
                         <div className={classes.dataBox}>
                             <ul>
+                                <li>Текущий статус:</li>
                                 <li>Тип передачи:</li>
-                                <li>Статус передачи:</li>
-                                <li>Исполнитель:</li>
+                                <li>Дата передачи:</li>
                             </ul>
                             <ul>
-                                <li>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</li>
-                                <li className={classes.red}>не доставлен</li>
-                                <li className={classes.personOrder}>
-                                    <div>
-                                        <img src={Person}/>
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод
-                                    </div>
+                                <li>
+                                    {(status === REQUESTED) ? <div className={classes.yellow}>Запрос отправлен</div>
+                                        : (status === READY) ? <div className={classes.green}>Готов</div>
+                                            : (status === DELIVERED) ? <div className={classes.green}>Доставлен</div>
+                                                : <div className={classes.red}>Отменен</div>
+                                    }
                                 </li>
+                                <li>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</li>
+                                <li>{dateDelivery}</li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div className={classes.rightSide}>
-                    <div className={classes.tab}>
-                        <div className={classes.tabNav}>
-                            <a className="active">Список товаров</a>
-                            <a>Возврат</a>
-                        </div>
-                        <div className={classes.tabContent}>
-                            <div className={classes.tabWrapper}>
-                                <Row className="dottedList">
-                                    <Col xs={6}>Товар</Col>
-                                    <Col xs={2}>Количество</Col>
-                                    <Col xs={2}>Цена {PRIMARY_CURRENCY_NAME}</Col>
-                                    <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
-                                </Row>
+                    <Tabs
+                        value={tab}
+                        className={classes.colorCat}
+                        onChange={(value) => tabData.handleTabChange(value)}>
+                        <Tab label="Список товаров" value={TAB.ORDER_TAB_PRODUCT_LIST}>
+                            <div className={classes.tabContent}>
+                                <div className={classes.tabWrapper}>
+                                    <Row className="dottedList">
+                                        <Col xs={6}>Товар</Col>
+                                        <Col xs={2}>Количество</Col>
+                                        <Col xs={2}>Цена {PRIMARY_CURRENCY_NAME}</Col>
+                                        <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
+                                    </Row>
 
-                                {_.map(products, (item) => {
-                                    const product = _.get(item, 'product')
-                                    const productId = _.get(product, 'id')
-                                    const productName = _.get(product, 'name')
-                                    const price = _.get(item, 'price')
-                                    const productTotal = _.get(item, 'totalPrice')
-                                    const amount = _.get(item, 'amount')
-                                    const measurement = _.get(product, ['measurement', 'name'])
-                                    return (
-                                        <Row className="dottedList" key={productId}>
-                                            <Col xs={6}>{productName}</Col>
-                                            <Col xs={2}>{amount} {measurement}</Col>
-                                            <Col xs={2}>{numberFormat(price)}</Col>
-                                            <Col xs={2}>{numberFormat(productTotal)}</Col>
-                                        </Row>
-                                    )
-                                })}
+                                    {_.map(products, (item, index) => {
+                                        const product = _.get(item, 'product')
+                                        const productName = _.get(product, 'name')
+                                        const price = _.get(item, 'price')
+                                        const productTotal = _.get(item, 'totalPrice')
+                                        const amount = _.get(item, 'amount')
+                                        const measurement = _.get(product, ['measurement', 'name'])
+                                        return (
+                                            <Row className="dottedList" key={index}>
+                                                <Col xs={6}>{productName}</Col>
+                                                <Col xs={2}>{amount} {measurement}</Col>
+                                                <Col xs={2}>{numberFormat(price)}</Col>
+                                                <Col xs={2}>{numberFormat(productTotal)}</Col>
+                                            </Row>
+                                        )
+                                    })}
+                                </div>
+                                <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {PRIMARY_CURRENCY_NAME}</div>
                             </div>
-
-                            <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {PRIMARY_CURRENCY_NAME}</div>
-                        </div>
-                    </div>
+                        </Tab>
+                        <Tab label="Возврат" value={TAB.ORDER_TAB_RETURN}>
+                            <div className={classes.tabContent}>
+                                <div className={classes.tabWrapper}>
+                                    <Row className="dottedList">
+                                        <Col xs={2}>Код</Col>
+                                        <Col xs={6} style={{textAlign: 'left'}}>Причина возврата</Col>
+                                        <Col xs={2}>Дата возврата</Col>
+                                        <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
+                                    </Row>
+                                    <Row className="dottedList">
+                                        <Col xs={2}><a className={classes.link}>331</a></Col>
+                                        <Col xs={6} style={{textAlign: 'left'}}>Клиент не доволен</Col>
+                                        <Col xs={2}>20.06.2016</Col>
+                                        <Col xs={2}>2 000 000</Col>
+                                    </Row>
+                                </div>
+                                <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {PRIMARY_CURRENCY_NAME}</div>
+                            </div>
+                        </Tab>
+                        <Tab label="Исполнение" value={TAB.ORDER_TAB_PERFORMANCE}>3</Tab>
+                    </Tabs>
                 </div>
             </div>
             <OrderTransactionsDialog
@@ -456,6 +519,7 @@ const OrderDetails = enhance((props) => {
                 loading={returnDialog.returnLoading}
                 onClose={returnDialog.handleCloseReturnDialog}
                 onSubmit={returnDialog.handleSubmitReturnDialog}
+                orderData={data}
             />
             <OrderShortageDialog
                 open={shortageDialog.openShortageDialog}
@@ -468,6 +532,10 @@ const OrderDetails = enhance((props) => {
 })
 
 OrderDetails.propTypes = {
+    tabData: PropTypes.shape({
+        tab: PropTypes.string.isRequired,
+        handleTabChange: PropTypes.func.isRequired
+    }),
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     returnDialog: PropTypes.shape({

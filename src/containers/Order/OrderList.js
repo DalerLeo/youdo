@@ -7,6 +7,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import * as ORDER_TAB from '../../constants/orderTab'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     ORDER_CREATE_DIALOG_OPEN,
@@ -16,6 +17,7 @@ import {
     ORDER_TRANSACTIONS_DIALOG_OPEN,
     ORDER_RETURN_DIALOG_OPEN,
     ORDER_SHORTAGE_DIALOG_OPEN,
+    TAB,
     OrderGridList
 } from '../../components/Order'
 import {
@@ -84,6 +86,13 @@ const enhance = compose(
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
+        handleTabChange: props => (tab) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname: pathname,
+                query: filter.getParams({[TAB]: tab})
+            })
+        },
         handleActionEdit: props => () => {
             return null
         },
@@ -300,6 +309,7 @@ const OrderList = enhance((props) => {
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'orderId'))
+    const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -419,6 +429,11 @@ const OrderList = enhance((props) => {
         listLoading
     }
 
+    const tabData = {
+        tab,
+        handleTabChange: props.handleTabChange
+    }
+
     const detailData = {
         id: detailId,
         data: detail,
@@ -430,6 +445,7 @@ const OrderList = enhance((props) => {
             <OrderGridList
                 filter={filter}
                 listData={listData}
+                tabData={tabData}
                 detailData={detailData}
                 createDialog={createDialog}
                 transactionsDialog={transactionsDialog}

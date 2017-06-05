@@ -19,6 +19,9 @@ import DeleteIcon from '../DeleteIcon'
 import OrderProductSearchField from './OrderProductSearchField'
 import TextField from './TextField'
 import ProductCostField from '../ReduxForm/ProductCostField'
+import OrderProductMeasurementField from '../ReduxForm/OrderProductMeasurementField'
+import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
+import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({
@@ -135,6 +138,8 @@ const enhance = compose(
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
             const extra = _.get(props, ['extra'])
+            const measure = _.get(extra, ['product', 'measurement'])
+            const measurement = _.get(measure, 'name')
             const ZERO = 0
 
             if (!_.isEmpty(product) && amount) {
@@ -147,7 +152,7 @@ const enhance = compose(
                 const NOT_FOUND = -1
 
                 if (foundIndex === NOT_FOUND) {
-                    onChange(_.union(products, [{product, amount, cost, balance}]))
+                    onChange(_.union(products, [{product, amount, cost, balance, measurement}]))
                 }
             }
         },
@@ -166,7 +171,7 @@ const enhance = compose(
 const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProducts, setOpenAddProducts, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
-    const stockMin = true
+
     return (
         <div className={classes.wrapper}>
             <div>
@@ -184,7 +189,7 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                         <OrderProductSearchField
                             label="Наименование товара"
                             className={classes.inputFieldCustom}
-                            style={{width: '100% !mportant'}}
+                            style={{width: '100%'}}
                             {..._.get(defaultProps, 'product')}
                         />
                     </div>
@@ -192,9 +197,12 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                         <TextField
                             label="Кол-во"
                             className={classes.inputFieldCustom}
-                            style={{width: '100% !mportant'}}
+                            style={{width: '100%'}}
                             {..._.get(defaultProps, 'amount')}
                         />
+                    </div>
+                    <div>
+                        <OrderProductMeasurementField/>
                     </div>
                     <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px'}}>
                         <ProductCostField />
@@ -231,11 +239,11 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                         showRowHover={false}
                         stripedRows={false}>
                         {_.map(products, (item, index) => (
-                            <TableRow key={index} className={classes.tableRow} style={{background: (stockMin) ? '#ffecec' : 'transparent'}}>stockMin
+                            <TableRow key={index} className={classes.tableRow} style={{background: ((_.get(item, 'balance')) < (_.get(item, 'amount'))) ? '#ffecec' : 'transparent'}}>
                                 <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'balance')}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'cost')}</TableRowColumn>
+                                <TableRowColumn>{numberFormat(_.get(item, 'balance'))}</TableRowColumn>
+                                <TableRowColumn>{numberFormat(_.get(item, 'amount'))} {_.get(item, 'measurement')}</TableRowColumn>
+                                <TableRowColumn>{numberFormat(_.get(item, 'cost'))} {PRIMARY_CURRENCY_NAME}</TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>
                                     <IconButton onTouchTap={() => handleRemove(index)}>
                                         <DeleteIcon color="#666666"/>

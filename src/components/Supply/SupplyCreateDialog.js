@@ -211,7 +211,7 @@ const enhance = compose(
             '& div': {
                 color: 'rgb(229, 115, 115) !important'
             }
-        },
+        }
     }),
     reduxForm({
         form: 'SupplyCreateForm',

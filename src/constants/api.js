@@ -94,7 +94,7 @@ export const SUPPLY_DELETE = `/${SUPPLY}/cancel/`
 
 export const ORDER = 'order'
 export const ORDER_CREATE = `/${ORDER}/`
-export const ORDER_RETURN = `/${ORDER}/`
+export const ORDER_RETURN = 'order_return'
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_DELETE = `/${ORDER}/%d/`
