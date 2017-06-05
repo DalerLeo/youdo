@@ -251,7 +251,6 @@ const StatDebtors = enhance((props) => {
         location,
         list,
         orderList,
-        orderLoading,
         orderDetail,
         orderDetailLoading,
         listLoading,
