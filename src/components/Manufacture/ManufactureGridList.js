@@ -243,6 +243,7 @@ const ManufactureGridList = enhance((props) => {
         classes,
         equipmentData,
         editMaterials,
+        createMaterials,
         productData,
         tabData,
         productFilterDialog,
@@ -319,6 +320,11 @@ const ManufactureGridList = enhance((props) => {
                 onSubmit={productUpdate.handleSubmitUpdateDialog}
             />
             <ManufactureEditProductDialog
+                open={createMaterials.open}
+                onClose={createMaterials.handleClose}
+                onSubmit={createMaterials.handleSubmit}
+            />
+            <ManufactureEditProductDialog
                 open={editMaterials.open}
                 onClose={editMaterials.handleClose}
                 onSubmit={editMaterials.handleSubmit}
@@ -329,20 +335,21 @@ const ManufactureGridList = enhance((props) => {
                     <ul className={classes.productionUl}>
                         {
                             _.get(listData, 'listLoading')
-                            ? <div style={{textAlign: 'center'}}>
+                                ? <div style={{textAlign: 'center'}}>
                                 <CircularProgress size={100} thickness={6}/>
                             </div>
-                            : manufactureList
+                                : manufactureList
                         }
                     </ul>
                 </Col>
                 <ManufactureTab
                     tabData={tabData}
                     editMaterials={editMaterials}
+                    createMaterials={createMaterials}
                     productData={productData}
                     personData={personData}
                     equipmentData={equipmentData}
-                    productFilterDialog={productFilterDialog} />
+                    productFilterDialog={productFilterDialog}/>
             </Row>
 
             {_.get(productData, ['detailData', 'id']) !== MINUS_ONE && <ConfirmDialog
@@ -384,6 +391,12 @@ ManufactureGridList.propTypes = {
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired,
+    createMaterials: PropTypes.shape({
+        open: PropTypes.bool.isRequired,
+        handleOpen: PropTypes.func.isRequired,
+        handleClose: PropTypes.func.isRequired,
+        handleSubmit: PropTypes.func.isRequired
+    }),
     updateProductDialog: PropTypes.object
 }
 

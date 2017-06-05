@@ -135,12 +135,21 @@ const enhance = compose(
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
             const cost = _.get(props, ['cost', 'input', 'value'])
-
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
-
             if (!_.isEmpty(product) && amount && cost) {
-                onChange(_.union(products, [{product, amount, cost}]))
+                let has = false
+                _.map(products, (item) => {
+                    if (_.get(item, 'product') === product) {
+                        item.amount = _.toInteger(item.amount) + _.toInteger(amount)
+                        item.cost = _.toInteger(item.cost) + _.toInteger(cost)
+                        has = true
+                    }
+                })
+                if (!has) {
+                    onChange(_.union(products, [{product, amount, cost}]))
+                    has = false
+                }
             }
         },
 
@@ -236,7 +245,9 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>
+                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
+                            товар?
+                        </div>
                     </div>
                 </div>
             }

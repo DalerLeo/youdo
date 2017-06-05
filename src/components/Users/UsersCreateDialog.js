@@ -6,12 +6,12 @@ import injectSheet from 'react-jss'
 import {Row, Col} from 'react-flexbox-grid'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
+import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
+import CloseIcon2 from '../CloseIcon2'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, ImageUploadField, UsersGroupSearchField} from '../ReduxForm'
-import CloseIcon2 from '../CloseIcon2'
-import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -102,7 +102,7 @@ const UsersCreateDialog = enhance((props) => {
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
-                                    name="typeUser"
+                                    name="group"
                                     component={UsersGroupSearchField}
                                     label="Тип Пользователя"
                                     className={classes.inputFieldCustom}
@@ -137,11 +137,12 @@ const UsersCreateDialog = enhance((props) => {
                                 <Field
                                     name="password"
                                     component={TextField}
+                                    type="password"
                                     label="Пароль"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
-                                    name="password"
+                                    type="password"
                                     component={TextField}
                                     label="Подтвердите пароль"
                                     className={classes.inputFieldCustom}

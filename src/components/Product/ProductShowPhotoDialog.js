@@ -5,6 +5,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 
 export const PRODUCT_SHOW_PHOTO_OPEN = 'openShowBigImg'
@@ -21,6 +22,7 @@ const enhance = compose(
             alignItems: 'center',
             zIndex: '999',
             textAlign: 'center',
+            justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         popUp: {
@@ -97,6 +99,15 @@ const ProductShowPhotoDialog = enhance((props) => {
     const {open, loading, onClose, classes, detailData} = props
     const items = _.get(detailData, 'data')
     const image = _.get(items, ['image', 'file'])
+    if (loading) {
+        return (
+            <div>
+                <div className={classes.loader}>
+                    <CircularProgress />
+                </div>
+            </div>
+        )
+    }
     return (
         <Dialog
             modal={true}

@@ -13,6 +13,7 @@ import {
     OPEN_USER_CREATE_DIALOG,
     OPEN_USER_UPDATE_DIALOG,
     MANUFACTURE_SHOW_BOM_DIALOG_OPEN,
+    MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN,
     MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN,
     MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN,
     OPEN_USER_CONFIRM_DIALOG,
@@ -250,6 +251,25 @@ const enhance = compose(
                     dispatch(productListFetchAction(filter, detail.id))
                 })
         },
+        handleOpenCreateMaterials: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: true})})
+        },
+        handleCloseCreateMaterials: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: false})})
+        },
+        handleSubmitCreateMaterials: props => () => {
+            const {dispatch, productAddForm, filter, location: {pathname}, detail} = props
+            return dispatch(manufactureProductCreateAction(_.get(productAddForm, ['values']), detail.id))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: false})})
+                    dispatch(productListFetchAction(filter, detail.id))
+                })
+        },
 
         handleOpenUpdateProductDialog: props => (id) => {
             const {filter, location: {pathname}} = props
@@ -391,6 +411,7 @@ const ManufactureList = enhance((props) => {
     const openShowBom = toBoolean(_.get(location, ['query', MANUFACTURE_SHOW_BOM_DIALOG_OPEN]))
     const openAddProductDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]))
     const openEditMaterials = toBoolean(_.get(location, ['query', MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]))
+    const openCreateMaterials = toBoolean(_.get(location, ['query', MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]))
     const openProductConfirmDialog = toBoolean(_.get(location, ['query', OPEN_DELETE_PRODUCT_DIALOG]))
     const category = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.CATEGORY))
     const openProductFilterDialog = toBoolean(_.get(location, ['query', PRODUCT_FILTER_OPEN]))
@@ -420,6 +441,12 @@ const ManufactureList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenAddProductDialog,
         handleCloseCreateDialog: props.handleCloseAddProductDialog,
         handleSubmitCreateDialog: props.handleSubmitAddProductDialog
+    }
+    const createMaterials = {
+        open: openCreateMaterials,
+        handleOpen: props.handleOpenCreateMaterials,
+        handleClose: props.handleCloseCreateMaterials,
+        handleSubmit: props.handleSubmitCreateMaterials
     }
     const editMaterials = {
         open: openEditMaterials,
@@ -573,6 +600,7 @@ const ManufactureList = enhance((props) => {
     return (
         <Layout {...layout}>
             <ManufactureGridList
+                createMaterials={createMaterials}
                 detailData={detailData}
                 listData={listData}
                 equipmentData={equipmentData}

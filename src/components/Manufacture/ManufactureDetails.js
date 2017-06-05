@@ -95,7 +95,9 @@ const ManufactureDetails = enhance((props) => {
         loading,
         data,
         handleOpenEditMaterials,
-        handleOpenConfirmDialog
+        handleOpenConfirmDialog,
+        productTitle,
+        createMaterials
     } = props
 
     const id = _.get(data, 'id')
@@ -146,13 +148,13 @@ const ManufactureDetails = enhance((props) => {
     return (
         <div key={id} className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>Product title</div>
+                <div className={classes.titleLabel}>{productTitle}</div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Добавить сырье">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
-                            touch={true}>
+                            onTouchTap={() => { createMaterials.handleOpen }}>
                             <ContentAdd />
                         </IconButton>
                     </Tooltip>

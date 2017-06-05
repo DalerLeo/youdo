@@ -70,9 +70,9 @@ const enhance = compose(
         const productId = _.get(nextProps, ['params', 'productId'])
 
         return productId && _.get(props, ['params', 'productId']) !== productId
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, nextProps}) => {
         const productId = _.toInteger(_.get(params, 'productId'))
-        productId && dispatch(productItemFetchAction(productId))
+        productId && !_.get(nextProps, PRODUCT_DELETE_DIALOG_OPEN) && dispatch(productItemFetchAction(productId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -110,12 +110,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(productDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[PRODUCT_DELETE_DIALOG_OPEN]: false})})
                     dispatch(productListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 

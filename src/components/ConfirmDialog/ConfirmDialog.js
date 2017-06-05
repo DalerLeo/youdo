@@ -5,8 +5,9 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
+import CircularProgress from 'material-ui/CircularProgress'
+import CloseIcon2 from '../CloseIcon2'
 
 const enhance = compose(
     injectSheet({
@@ -83,12 +84,25 @@ const enhance = compose(
         },
         confirm: {
             padding: '20px 0'
+        },
+        loader: {
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
+            textAlign: 'center',
+            justifyContent: 'center',
+            display: ({loading}) => loading ? 'flex' : 'none'
         }
     })
 )
 
 const ConfirmDialog = enhance((props) => {
-    const {open, onClose, classes, type, message, onSubmit} = props
+    const {open, onClose, classes, type, message, onSubmit, loading} = props
     const typesList = {
         delete: {
             name: 'Подтверждение удаления', submitName: 'Удалить', text: 'Вы уверены что хотите удалить эти данные?'
@@ -100,7 +114,15 @@ const ConfirmDialog = enhance((props) => {
     const title = _.get(typesList, [type, 'name'])
     const buttonLabel = _.get(typesList, [type, 'submitName'])
     const text = _.get(typesList, [type, 'text'])
-
+    if (loading) {
+        return (
+            <div>
+                <div className={classes.loader}>
+                    <CircularProgress/>
+                </div>
+            </div>
+        )
+    }
     return (
         <Dialog
             modal={true}

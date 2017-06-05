@@ -13,7 +13,6 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
 
 export const MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN = 'editMaterials'
-
 const enhance = compose(
     injectSheet({
         loader: {

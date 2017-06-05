@@ -62,7 +62,7 @@ const enhance = compose(
 )
 
 const ManufactureProduct = enhance((props) => {
-    const {classes, filter, filterDialog, productData, editMaterials} = props
+    const {classes, filter, filterDialog, productData, editMaterials, createMaterials} = props
 
     const productFilterDialog = (
         <ProductFilterForm
@@ -85,8 +85,11 @@ const ManufactureProduct = enhance((props) => {
     )
 
     const detailData = _.get(productData, 'detailData')
+    const productTitle = _.get(_.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), 'name')
     const detail = (
         <ManufactureDetails
+            createMaterials={createMaterials}
+            productTitle={productTitle}
             key={_.get(detailData, 'id')}
             id={_.get(detailData, 'id')}
             data={_.get(detailData, 'data')}
