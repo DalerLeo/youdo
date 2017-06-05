@@ -277,7 +277,8 @@ const StatDebtorsGridList = enhance((props) => {
                 </div>
             </div>
             { _.get(orderData, 'orderLoading')
-                ? <CircularProgress size={100} thickness={6} style={{marginLeft: 'calc(50% - 50px)', padding: '30px 0'}}/>
+                ?
+                <CircularProgress size={100} thickness={6} style={{marginLeft: 'calc(50% - 50px)', padding: '30px 0'}}/>
                 : <div style={{paddingBottom: '20px'}}>
                     <div>{orderListHeader}</div>
                     {orderList}
@@ -322,18 +323,22 @@ const StatDebtorsGridList = enhance((props) => {
                     </div>
                 </Col>
                 <Col xs={9} style={{textAlign: 'right'}}>
-                    <div className={classes.infoBlock}>
-                        Всего должников:<br />
-                        <span>{totalDebtors}</span>
-                    </div>
-                    <div className={classes.infoBlock}>
-                        Всего заказов:<br />
-                        <span>{totalOrders}</span>
-                    </div>
-                    <div className={classes.infoBlock}>
-                        Общий долг:<br />
-                        <span>{totalBalance}</span>
-                    </div>
+                    {_.get(sumData, 'sumLoading')
+                        ? <div>Loading</div>
+                        : <div>
+                            <div className={classes.infoBlock}>
+                                Всего должников:<br />
+                                <span>{totalDebtors}</span>
+                            </div>
+                            <div className={classes.infoBlock}>
+                                Всего заказов:<br />
+                                <span>{totalOrders}</span>
+                            </div>
+                            <div className={classes.infoBlock}>
+                                Общий долг:<br />
+                                <span>{totalBalance}</span>
+                            </div>
+                        </div>}
                 </Col>
             </Row>
 
