@@ -8,6 +8,7 @@ import ToolTip from '../ToolTip'
 import {MenuItems} from './MenuItems'
 import Notification from 'material-ui/svg-icons/social/notifications'
 import Badge from 'material-ui/Badge'
+import Logo from '../Images/logo.png'
 
 const style = {
     iconStyle: {
@@ -43,9 +44,10 @@ const SideBarMenu = (props) => {
 
     return (
         <div className={classes.wrapper}>
-            <div className={classes.logo}>
-            </div>
             <div className={classes.items}>
+                <div className={classes.logo}>
+                    <img src={Logo} />
+                </div>
                 <Badge
                     className={classes.badge}
                     badgeContent={5}
@@ -91,7 +93,10 @@ export default injectSheet({
     },
 
     logo: {
-        padding: '40px 0'
+        padding: '20px 10px 30px',
+        '& img': {
+            width: '100%'
+        }
     },
 
     items: {
