@@ -42,6 +42,7 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statDebtors', 'item', 'loading'])
         const orderList = _.get(state, ['statDebtors', 'orderList', 'data'])
         const orderDetail = _.get(state, ['order', 'item', 'data'])
+        const orderDetailLoading = _.get(state, ['order', 'item', 'loading'])
         const orderLoading = _.get(state, ['statDebtors', 'orderList', 'loading'])
         const createLoading = _.get(state, ['statDebtors', 'create', 'loading'])
         const updateLoading = _.get(state, ['statDebtors', 'update', 'loading'])
@@ -62,6 +63,7 @@ const enhance = compose(
             orderLoading,
             detail,
             orderDetail,
+            orderDetailLoading,
             orderId,
             detailLoading,
             createLoading,
@@ -249,8 +251,8 @@ const StatDebtors = enhance((props) => {
         location,
         list,
         orderList,
-        orderLoading,
         orderDetail,
+        orderDetailLoading,
         listLoading,
         detail,
         detailLoading,
@@ -348,7 +350,7 @@ const StatDebtors = enhance((props) => {
     const orderData = {
         orderList,
         orderDetail,
-        orderLoading,
+        detailLoading: orderDetailLoading,
         orderDetailOpen: orderDetailOpen,
         handleOrderDetailClose: props.handleOrderDetailClose,
         handleOrderClick: props.handleOrderClick

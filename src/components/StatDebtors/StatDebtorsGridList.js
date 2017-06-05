@@ -322,18 +322,24 @@ const StatDebtorsGridList = enhance((props) => {
                     </div>
                 </Col>
                 <Col xs={9} style={{textAlign: 'right'}}>
-                    <div className={classes.infoBlock}>
-                        Всего должников:<br />
-                        <span>{totalDebtors}</span>
-                    </div>
-                    <div className={classes.infoBlock}>
-                        Всего заказов:<br />
-                        <span>{totalOrders}</span>
-                    </div>
-                    <div className={classes.infoBlock}>
-                        Общий долг:<br />
-                        <span>{totalBalance}</span>
-                    </div>
+                    {_.get(sumData, 'sumLoading')
+                        ? <div>
+                            <CircularProgress size={100} thickness={6} style={{marginLeft: 'calc(50% - 50px)', padding: '30px 0'}}/>
+                        </div>
+                        : <div>
+                            <div className={classes.infoBlock}>
+                                Всего должников:<br />
+                                <span>{totalDebtors}</span>
+                            </div>
+                            <div className={classes.infoBlock}>
+                                Всего заказов:<br />
+                                <span>{totalOrders}</span>
+                            </div>
+                            <div className={classes.infoBlock}>
+                                Общий долг:<br />
+                                <span>{totalBalance}</span>
+                            </div>
+                        </div>}
                 </Col>
             </Row>
 
