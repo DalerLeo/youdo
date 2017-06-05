@@ -100,7 +100,7 @@ const enhance = compose(
         },
         begin: {
             extend: 'dot',
-            backgroundColor: '#64b5f6'
+            backgroundColor: '#f0ad4e'
         },
         error: {
             extend: 'dot',
@@ -108,7 +108,7 @@ const enhance = compose(
         },
         waiting: {
             extend: 'dot',
-            backgroundColor: '#f0ad4e'
+            backgroundColor: '#64b5f6'
         }
     })
 )
@@ -168,7 +168,6 @@ const SupplyGridList = enhance((props) => {
     const PENDING = 0
     const IN_PROGRESS = 1
     const COMPLETED = 2
-
     const supplyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(_.get(item, 'provider'), 'name')
@@ -207,6 +206,8 @@ const SupplyGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const expense = _.find(_.get(supplyListData, 'data'), {'id': confirmExpenseDialog.removeId})
+    const expComment = _.get(expense, 'comment')
     return (
         <Container>
             <SubMenu url={ROUTES.SUPPLY_LIST_URL}/>
@@ -253,20 +254,20 @@ const SupplyGridList = enhance((props) => {
             />
 
             {detailData.data && <ConfirmDialog
-                type="delete"
+                type="cancel"
                 message={'Постака № ' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
             />}
 
-            <ConfirmDialog
+            {confirmExpenseDialog.removeId && <ConfirmDialog
                 type="delete"
-                message={'weqwe' + _.get(detailData, ['data', 'id'])}
+                message={'Дополнительный расход: ' + expComment}
                 onClose={confirmExpenseDialog.handleCloseConfirmExpenseDialog}
                 onSubmit={confirmExpenseDialog.handleSendConfirmExpenseDialog}
                 open={confirmExpenseDialog.openConfirmExpenseDialog}
-            />
+            />}
         </Container>
     )
 })
@@ -329,14 +330,7 @@ SupplyGridList.propTypes = {
     supplyListData: PropTypes.shape({
         data: PropTypes.array,
         supplyExpenseListLoading: PropTypes.bool.isRequired,
-        handleSupplyExpenseOpenDeleteDialog: PropTypes.func.isRequired,
-        handleSupplyExpenseCloseDeleteDialog: PropTypes.func.isRequired,
-        handleSupplyExpenseActionDelete: PropTypes.func.isRequired,
-        openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired,
-        handleSupplyExpenseOpenConfirmDialog: PropTypes.func.isRequired,
-        handleSupplyExpenseCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSupplyExpenseSendConfirmDialog: PropTypes.func.isRequired
-
+        openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired
     })
 }
 
