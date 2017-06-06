@@ -158,6 +158,7 @@ const enhance = compose(
 
 const OrderReturnDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, orderData} = props
+    const returnId = _.get(orderData, 'id')
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
@@ -169,7 +170,7 @@ const OrderReturnDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Возврат товаров заказа №1231</span>
+                <span>Возврат товаров заказа №{returnId}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>

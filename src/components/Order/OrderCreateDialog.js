@@ -11,6 +11,7 @@ import FlatButton from 'material-ui/FlatButton'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import CloseIcon2 from '../CloseIcon2'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
+import {connect} from 'react-redux'
 import {
     ClientSearchField,
     DeliveryTypeSearchField,
@@ -197,11 +198,23 @@ const enhance = compose(
             '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
             }
+        },
+        notEnough: {
+            padding: '20px 30px',
+            color: '#ff2626',
+            margin: '0 -30px',
+            background: '#ffecec'
         }
     })),
     reduxForm({
         form: 'OrderCreateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
+        return {
+            products
+        }
     }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
@@ -213,9 +226,16 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const OrderCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes} = props
+    const {open, handleSubmit, onClose, classes, products, shortageDialog} = props
+    let notEnough = false
+    _.map(products, (item) => {
+        const amount = _.get(item, 'amount')
+        const balance = _.get(item, 'balance')
+        if (amount > balance) {
+            notEnough = true
+        }
+    })
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const stockMin = false
     return (
         <Dialog
             modal={true}
@@ -258,7 +278,7 @@ const OrderCreateDialog = enhance((props) => {
                                     />
                                 </div>
 
-                                <div className={classes.condition}>
+                                {(!notEnough) ? <div className={classes.condition}>
                                     <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Условия доставки</div>
                                     <Field
                                         name="deliveryType"
@@ -273,23 +293,15 @@ const OrderCreateDialog = enhance((props) => {
                                         label={'Стоимость доставки (' + PRIMARY_CURRENCY_NAME + ')'}
                                         fullWidth={true}
                                         normalize={normalizeNumber}/>
-                                    {(!stockMin) ? <Field
+                                    <Field
                                             name="deliveryDate"
                                             component={DateField}
                                             className={classes.inputDateCustom}
                                             floatingLabelText="Дата доставки"
                                             container="inline"
                                             fullWidth={true}/>
-                                        : <Field
-                                            name="deliveryDate"
-                                            component={TextField}
-                                            className={classes.inputFieldDis}
-                                            floatingLabelText="Дата доставки"
-                                            defaultDate="Не достаточно товарв на складе"
-                                            disabled={true}
-                                            fullWidth={true}/>
-                                    }
                                 </div>
+                                : <div className={classes.notEnough}>Недостаточно товаров на складе</div>}
 
                                 <div className={classes.condition}>
                                     <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Оплата</div>
@@ -321,18 +333,17 @@ const OrderCreateDialog = enhance((props) => {
                         <div className={classes.commentField}>
                             Общая сумма заказа: <OrderTotalSum/>
                         </div>
-                        {(stockMin) ? <FlatButton
-                                label="Далее"
-                                className={classes.actionButton}
-                                primary={true}
-                                type="submit"
-                            />
-                            : <FlatButton
-                                label="Оформить заказ"
-                                className={classes.actionButton}
-                                primary={true}
-                                type="submit"
-                            />
+                        {(notEnough) ? <FlatButton
+                            label="Далее"
+                            className={classes.actionButton}
+                            primary={true}
+                            onTouchTap={shortageDialog.handleOpenShortageDialog}/>
+
+                        : <FlatButton
+                            label="Оформить заказ"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"/>
                         }
                     </div>
                 </form>
@@ -344,6 +355,12 @@ OrderCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    shortageDialog: PropTypes.shape({
+        shortageLoading: PropTypes.bool.isRequired,
+        openShortageDialog: PropTypes.bool.isRequired,
+        handleOpenShortageDialog: PropTypes.func.isRequired,
+        handleCloseShortageDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 export default OrderCreateDialog
