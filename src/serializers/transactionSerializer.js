@@ -3,7 +3,6 @@ import {orderingSnakeCase} from '../helpers/serializer'
 
 export const listFilterSerializer = (data, cashbox) => {
     const {...defaultData} = data
-    console.log(data)
     const ordering = _.get(data, 'ordering')
     return {
         'created_date_0': _.get(defaultData, 'fromDate'),
