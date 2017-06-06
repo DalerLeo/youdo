@@ -23,7 +23,7 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Tooltip from '../ToolTip'
-
+const ZERO = 0
 const listHeader = [
     {
         sorting: true,
@@ -121,7 +121,7 @@ const UsersGridList = enhance((props) => {
         const firstName = _.get(item, 'firstName')
         const secondName = _.get(item, 'secondName')
         const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
-        const typeUser = _.get(item, 'typeUser') || 'N/A'
+        const groups = _.get(item, ['groups', ZERO, 'name']) || 'N/A'
 
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
@@ -139,7 +139,7 @@ const UsersGridList = enhance((props) => {
                     }}>{firstName} {secondName}</Link>
                 </Col>
                 <Col xs={2}>{username}</Col>
-                <Col xs={2}>{typeUser}</Col>
+                <Col xs={2}>{groups}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
                 <Col xs={2}>12.05.2016</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
@@ -169,6 +169,8 @@ const UsersGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
+    const currentName = _.get(currentDetail, 'firstName') + ' ' + _.get(currentDetail, 'secondName')
     return (
         <Container>
             <SubMenu url={ROUTES.USERS_LIST_URL}/>
@@ -197,6 +199,7 @@ const UsersGridList = enhance((props) => {
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
+                errorData={createDialog.errorData}
             />
 
             <UsersCreateDialog
@@ -206,11 +209,12 @@ const UsersGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+                errorData={updateDialog.errorData}
             />
 
             {detailData.data && <ConfirmDialog
                 type="delete"
-                message={_.get(detailData, ['data', 'name'])}
+                message={currentName}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}

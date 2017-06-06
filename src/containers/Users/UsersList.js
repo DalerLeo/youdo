@@ -189,9 +189,8 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
             const usersId = _.toInteger(_.get(props, ['params', 'usersId']))
-
             return dispatch(usersUpdateAction(usersId, _.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(usersItemFetchAction(usersId))
@@ -200,7 +199,10 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[USERS_UPDATE_DIALOG_OPEN]: false}))
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[USERS_UPDATE_DIALOG_OPEN]: false, 'passErr': false})
+                    })
                     dispatch(usersListFetchAction(filter))
                 })
         }
@@ -229,10 +231,16 @@ const UsersList = enhance((props) => {
     const manufacture = _.toInteger(filter.getParam(USERS_FILTER_KEY.MANUFACTURE))
     const group = _.toInteger(filter.getParam(USERS_FILTER_KEY.GROUP))
     const detailId = _.toInteger(_.get(params, 'usersId'))
+    const showError = toBoolean(_.get(location, ['query', 'passErr']))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
         handleActionDelete: props.handleOpenDeleteDialog
+    }
+
+    const errorData = {
+        errorText: 'Правильно введите',
+        show: showError
     }
 
     const createDialog = {
@@ -240,7 +248,8 @@ const UsersList = enhance((props) => {
         openCreateDialog,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
-        handleSubmitCreateDialog: props.handleSubmitCreateDialog
+        handleSubmitCreateDialog: props.handleSubmitCreateDialog,
+        errorData
     }
 
     const confirmDialog = {
@@ -274,7 +283,8 @@ const UsersList = enhance((props) => {
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
-        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
+        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog,
+        errorData
     }
     const filterDialog = {
         initialValues: {
