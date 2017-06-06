@@ -28,6 +28,14 @@ const validate = (data) => {
     })
 }
 
+const validateForm = values => {
+    const errors = {}
+    if (values.password && values.passwordExp && values.password !== values.passwordExp) {
+        errors.password = 'Правильно введите'
+    }
+    return errors
+}
+
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -59,14 +67,17 @@ const enhance = compose(
     })),
     reduxForm({
         form: 'UsersCreateForm',
+        validate: validateForm,
         enableReinitialize: true
     })
 )
 
 const UsersCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData} = props
 
+    const errorText = _.get(errorData, 'errorText')
+    const show = _.get(errorData, 'show')
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
             modal={true}
@@ -142,6 +153,8 @@ const UsersCreateDialog = enhance((props) => {
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
+                                    name="passwordExp"
+                                    errorText={show ? errorText : ''}
                                     type="password"
                                     component={TextField}
                                     label="Подтвердите пароль"
