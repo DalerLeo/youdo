@@ -65,7 +65,6 @@ export const currencyListFetchAction = (filter) => {
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
-
     return {
         type: actionTypes.CURRENCY_LIST,
         payload
@@ -90,8 +89,9 @@ export const currencyCSVFetchAction = (filter) => {
 }
 
 export const currencyItemFetchAction = (id) => {
+    const params = serializers.historyListSerializer(id)
     const payload = axios()
-        .get(sprintf(API.CURRENCY_ITEM, id))
+        .get(sprintf(API.CURRENCY_ITEM, params))
         .then((response) => {
             return _.get(response, 'data')
         })

@@ -26,15 +26,22 @@ export const setCurrencySerializer = (data, currency) => {
     }
 }
 
+export const historyListSerializer = (id) => {
+    const currency = id
+
+    return {
+        'currency': currency
+    }
+}
+
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
     return {
         'name': _.get(defaultData, 'name'),
-        'search': _.get(defaultData, 'search'),
-        'page': _.get(defaultData, 'page'),
-        'page_size': _.get(defaultData, 'pageSize'),
+        'page': 1,
+        'page_size': 300,
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }

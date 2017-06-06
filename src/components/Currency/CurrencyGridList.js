@@ -1,5 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
+import sprintf from 'sprintf'
+import {Link} from 'react-router'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -23,6 +25,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Tooltip from '../ToolTip'
 import Container from '../Container'
+import CurrencyDetails from '../Currency/CurrencyDetails'
 
 const listHeader = [
     {
@@ -108,6 +111,7 @@ const iconStyle = {
         padding: 0
     }
 }
+const MINUS_ONE = -1
 
 const CurrencyGridList = enhance((props) => {
     const {
@@ -121,6 +125,7 @@ const CurrencyGridList = enhance((props) => {
         listData,
         detailData,
         classes,
+        detailId,
 
         setCurrencyUpdateDialog,
         currencyData
@@ -139,7 +144,12 @@ const CurrencyGridList = enhance((props) => {
     )
 
     const currencyDetail = (
-        <span>a</span>
+        <CurrencyDetails
+            key={_.get(detailData, 'id')}
+            data={_.get(detailData, 'data') || {}}
+            loading={_.get(detailData, 'detailLoading')}
+            actionsDialog={actionsDialog}
+            filter={filter}/>
     )
 
     const currentCurrency = _.get(primaryDialog.primaryCurrency, 'name')
@@ -151,10 +161,17 @@ const CurrencyGridList = enhance((props) => {
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
             <Row key={id}>
-                <Col xs={3}>{name}</Col>
+                <Col xs={3}>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.CURRENCY_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>{name}</Link>
+                </Col>
                 <Col xs={3}>1 {currentCurrency} = {rate} {name}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}><a onClick={() => { setCurrencyUpdateDialog.handleOpenSetCurrencyDialog(id) }} className={classes.link}>Установить курс</a></Col>
+                <Col xs={2}><a onClick={() => {
+                    setCurrencyUpdateDialog.handleOpenSetCurrencyDialog(id)
+                }} className={classes.link}>Установить курс</a></Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={classes.titleButtons}>
                         <Tooltip position="bottom" text="История">
@@ -162,7 +179,9 @@ const CurrencyGridList = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onTouchTap={() => { historyDialog.handleOpenHistoryDialog(id) }}>
+                                onTouchTap={() => {
+                                    historyDialog.handleOpenHistoryDialog(id)
+                                }}>
                                 <Time />
                             </IconButton>
                         </Tooltip>
@@ -171,7 +190,9 @@ const CurrencyGridList = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                onTouchTap={() => {
+                                    updateDialog.handleOpenUpdateDialog(id)
+                                }}>
                                 <Edit />
                             </IconButton>
                         </Tooltip>
@@ -180,7 +201,9 @@ const CurrencyGridList = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                                onTouchTap={() => {
+                                    confirmDialog.handleOpenConfirmDialog(id)
+                                }}>
                                 <Delete />
                             </IconButton>
                         </Tooltip>
@@ -195,6 +218,7 @@ const CurrencyGridList = enhance((props) => {
         list: currencyList,
         loading: _.get(listData, 'listLoading')
     }
+    const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
 
     return (
         <Container>
@@ -212,9 +236,11 @@ const CurrencyGridList = enhance((props) => {
 
             <Paper zDepth={2}>
                 <div className={classes.editContent}>
-                    <div className={classes.semibold}>Основная валюта <i style={{fontWeight: '400', color: '#999'}}>(используется при формировании стоимости продукта / заказа)</i></div>
+                    <div className={classes.semibold}>Основная валюта <i style={{fontWeight: '400', color: '#999'}}>(используется
+                        при формировании стоимости продукта / заказа)</i></div>
                     <div className={classes.information}>
-                        <div style={{marginRight: '10px'}}>Выбранная валюта: <span className={classes.semibold}>{currentCurrency}</span></div>
+                        <div style={{marginRight: '10px'}}>Выбранная валюта: <span
+                            className={classes.semibold}>{currentCurrency}</span></div>
                         <a className={classes.link} onClick={primaryDialog.handlePrimaryOpenDialog}>Изменить</a>
                     </div>
                 </div>
@@ -266,9 +292,9 @@ const CurrencyGridList = enhance((props) => {
                 onClose={historyDialog.handleCloseHistoryDialog}
             />
 
-            {detailData.data && <ConfirmDialog
+            {detailId !== MINUS_ONE && <ConfirmDialog
                 type="delete"
-                message={_.get(detailData, ['data', 'name'])}
+                message={_.get(currentDetail, 'name')}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
