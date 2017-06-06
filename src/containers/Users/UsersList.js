@@ -25,7 +25,7 @@ import {
     usersItemFetchAction
 } from '../../actions/users'
 import {openSnackbarAction} from '../../actions/snackbar'
-
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -261,9 +261,13 @@ const UsersList = enhance((props) => {
                 firstName: _.get(detail, 'firstName'),
                 secondName: _.get(detail, 'secondName'),
                 phoneNumber: _.get(detail, 'phoneNumber'),
+                group: {
+                    value: _.get(detail, ['groups', ZERO, 'id'])
+                },
                 region: _.get(detail, 'region'),
                 password: _.get(detail, 'password'),
-                typeUser: _.get(detail, 'typeUser')
+                typeUser: _.get(detail, 'typeUser'),
+                image: _.get(detail, 'image')
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -272,7 +276,6 @@ const UsersList = enhance((props) => {
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
-
     const filterDialog = {
         initialValues: {
             manufacture: {

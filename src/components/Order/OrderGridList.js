@@ -252,7 +252,6 @@ const OrderGridList = enhance((props) => {
                     </IconButton>
                 </Tooltip>
             </div>
-
         </div>
         )
     })

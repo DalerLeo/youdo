@@ -27,15 +27,21 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
+        name: 'id',
+        title: '№',
+        xs: 1
+    },
+    {
+        sorting: true,
         name: 'username',
         title: 'Пользователь',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
         name: 'login',
         title: 'Логин',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -125,16 +131,17 @@ const UsersGridList = enhance((props) => {
 
         return (
             <Row key={id}>
-                <Col xs={3}>
+                <Col xs={1}>{id}</Col>
+                <Col xs={2}>
                     <Link to={{
                         pathname: sprintf(ROUTES.USERS_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{firstName} {secondName}</Link>
                 </Col>
-                <Col xs={3}>{username}</Col>
+                <Col xs={2}>{username}</Col>
                 <Col xs={2}>{typeUser}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
-                <Col xs={1}>12.05.2016</Col>
+                <Col xs={2}>12.05.2016</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}

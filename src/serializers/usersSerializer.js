@@ -8,7 +8,7 @@ export const createSerializer = (data) => {
     const phoneNumber = _.get(data, 'phoneNumber')
     const image = _.get(data, 'image')
     const password = _.get(data, 'password')
-    const typeUser = _.get(data, ['typeUser', 'value'])
+    const group = _.get(data, ['group', 'value'])
 
     return {
         username,
@@ -17,14 +17,13 @@ export const createSerializer = (data) => {
         'phone_number': phoneNumber,
         image,
         password,
-        'group_id': typeUser
+        'group_id': group
     }
 }
 
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
-    const ordering = _.get(data, 'ordering')
-
+    const ordering = _.get(data, 'ordering') || '-id'
     return {
         'manufacture': _.get(defaultData, 'manufacture'),
         'user_group': _.get(defaultData, 'group'),

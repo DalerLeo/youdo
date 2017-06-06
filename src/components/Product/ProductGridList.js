@@ -177,6 +177,7 @@ const ProductGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
     return (
         <Container>
             <SubMenu url={ROUTES.PRODUCT_LIST_URL}/>
@@ -218,14 +219,14 @@ const ProductGridList = enhance((props) => {
             <ProductShowPhotoDialog
                 initialValues={showBigImg.initialValues}
                 open={showBigImg.openShowBigImg}
-                loading={showBigImg.showBigImgLoading}
+                loading={_.get(showBigImg, 'showBigImgLoading')}
                 onClose={showBigImg.handleCloseShowBigImg}
                 detailData={detailData}
             />
 
-            {detailData.data && <ConfirmDialog
+            {currentDetail && <ConfirmDialog
                 type="delete"
-                message={_.get(detailData, ['data', 'name'])}
+                message={_.get(currentDetail, 'name')}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
