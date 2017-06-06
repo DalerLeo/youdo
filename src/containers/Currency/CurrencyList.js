@@ -50,6 +50,7 @@ const enhance = compose(
         const baseCreateForm = _.get(state, ['form', 'BaseCurrencyCreateForm'])
         const setCurrency = _.get(state, ['form', 'SetCurrencyForm'])
         const detailId = _.get(props, ['location', 'query', 'detailId']) || '-1'
+        const detailFilter = filterHelper(detail, pathname, query)
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -67,7 +68,8 @@ const enhance = compose(
             baseCreateForm,
             createForm,
             setCurrency,
-            detailId
+            detailId,
+            detailFilter
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -277,7 +279,8 @@ const CurrencyList = enhance((props) => {
         filter,
         layout,
         params,
-        detailId
+        detailId,
+        detailFilter
     } = props
 
     const openCreateDialog = toBoolean(_.get(location, ['query', CURRENCY_CREATE_DIALOG_OPEN]))
@@ -407,6 +410,7 @@ const CurrencyList = enhance((props) => {
                 setCurrencyUpdateDialog={setCurrencyUpdateDialog}
                 currencyData={currencyData}
                 detailId={detailId}
+                detailFilter={detailFilter}
             />
         </Layout>
     )

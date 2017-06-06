@@ -126,6 +126,7 @@ const CurrencyGridList = enhance((props) => {
         detailData,
         classes,
         detailId,
+        detailFilter,
 
         setCurrencyUpdateDialog,
         currencyData
@@ -142,6 +143,7 @@ const CurrencyGridList = enhance((props) => {
             </IconButton>
         </div>
     )
+    const currency = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
 
     const currencyDetail = (
         <CurrencyDetails
@@ -149,7 +151,8 @@ const CurrencyGridList = enhance((props) => {
             data={_.get(detailData, 'data') || {}}
             loading={_.get(detailData, 'detailLoading')}
             actionsDialog={actionsDialog}
-            filter={filter}/>
+            filter={detailFilter}
+            currency={_.get(currency, 'name')}/>
     )
 
     const currentCurrency = _.get(primaryDialog.primaryCurrency, 'name')

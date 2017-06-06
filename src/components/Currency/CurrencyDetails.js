@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -88,7 +89,8 @@ const CurrencyDetails = enhance((props) => {
         loading,
         data,
         actionsDialog,
-        filter
+        filter,
+        currency
     } = props
 
     if (loading) {
@@ -118,11 +120,13 @@ const CurrencyDetails = enhance((props) => {
 
     const historyList = _.map(_.get(data, 'results'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const rate = _.get(item, 'id')
         return (
             <li key={id} className="dottedList">
-                <Col xs={7}>{id}</Col>
-                <Col xs={3}>{name}</Col>
+                <Col xs={1}>{id}</Col>
+                <Col xs={3}>1 {currency} = {rate} SUM</Col>
+                <Col xs={3}>{createdDate}</Col>
             </li>
         )
     })
