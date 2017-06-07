@@ -133,6 +133,12 @@ export const BRAND_LIST = `/${BRAND}/`
 export const BRAND_ITEM = `/${BRAND}/%d/`
 export const BRAND_DELETE = `/${BRAND}/%d/`
 
+export const INGREDIENT = 'ingredients'
+export const INGREDIENT_CREATE = `/${INGREDIENT}/`
+export const INGREDIENT_LIST = `/${INGREDIENT}/`
+export const INGREDIENT_ITEM = `/${INGREDIENT}/%d/`
+export const INGREDIENT_DELETE = `/${INGREDIENT}/%d/`
+
 export const PAYMNET_TYPE = 'dist/payment'
 export const PAYMNET_TYPE_CREATE = `/${PAYMNET_TYPE}/add/`
 export const PAYMNET_TYPE_LIST = `/${PAYMNET_TYPE}/`

@@ -154,7 +154,7 @@ const ManufactureDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
-                            onTouchTap={() => { createMaterials.handleOpen }}>
+                            onClick={createMaterials.handleOpen}>
                             <ContentAdd />
                         </IconButton>
                     </Tooltip>

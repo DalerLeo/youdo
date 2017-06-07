@@ -325,6 +325,7 @@ const ManufactureGridList = enhance((props) => {
                 onSubmit={createMaterials.handleSubmit}
             />
             <ManufactureEditProductDialog
+                isUpdate={true}
                 open={editMaterials.open}
                 onClose={editMaterials.handleClose}
                 onSubmit={editMaterials.handleSubmit}

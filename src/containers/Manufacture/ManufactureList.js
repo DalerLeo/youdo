@@ -45,6 +45,12 @@ import {
     manufactureProductUpdateAction,
     manufactureProductDeleteAction
 } from '../../actions/manufactureProduct'
+import {
+    ingredientCreateAction,
+    ingredientUpdateAction,
+    ingredientDeleteAction,
+    ingredientListFetchAction
+} from '../../actions/ingredient'
 import {equipmentListFetchAction} from '../../actions/equipment'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -71,6 +77,7 @@ const enhance = compose(
         const shiftCreateForm = _.get(state, ['form', 'ShiftCreateForm'])
         const staffCreateForm = _.get(state, ['form', 'ManufactureCreateUserForm'])
         const productAddForm = _.get(state, ['form', 'ProviderCreateForm'])
+        const ingredientCreateForm = _.get(state, ['form', 'IngredientCreateForm'])
         const shiftId = _.get(props, ['location', 'query', 'shiftId'])
         const userShiftId = _.get(props, ['location', 'query', 'userShiftId']) || '-1'
         const filter = filterHelper(list, pathname, query)
@@ -116,6 +123,7 @@ const enhance = compose(
             userShiftId,
             filterProduct,
             filterProductForm,
+            ingredientCreateForm,
             personId
         }
     }),
@@ -260,14 +268,15 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: false})})
         },
         handleSubmitCreateMaterials: props => () => {
-            const {dispatch, productAddForm, filter, location: {pathname}, detail} = props
-            return dispatch(manufactureProductCreateAction(_.get(productAddForm, ['values']), detail.id))
+            const {dispatch, ingredientCreateForm, filter, location: {pathname}} = props
+            const productId = _.get(props, ['location', 'query', 'productId'])
+            return dispatch(ingredientCreateAction(_.get(ingredientCreateForm, ['values']), productId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: false})})
-                    dispatch(productListFetchAction(filter, detail.id))
+                    dispatch(ingredientListFetchAction(filter, productId))
                 })
         },
 
