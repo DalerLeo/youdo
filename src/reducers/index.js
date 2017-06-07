@@ -47,6 +47,7 @@ const rootReducer = combineReducers({
     order: combineReducers({
         create: createThunkReducer(actionTypes.ORDER_CREATE),
         list: createThunkReducer(actionTypes.ORDER_LIST),
+        payment: createThunkReducer(actionTypes.ORDER_TRANSACTION),
         item: createThunkReducer(actionTypes.ORDER_ITEM),
         update: createThunkReducer(actionTypes.ORDER_UPDATE),
         csv: createThunkReducer(actionTypes.ORDER_LIST_CSV)

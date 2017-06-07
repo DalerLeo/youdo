@@ -142,6 +142,7 @@ const enhance = compose(
         },
         leftSide: {
             flexBasis: '30%',
+            maxWidth: '30%',
             borderRight: '1px #efefef solid'
         },
         subBlock: {
@@ -153,6 +154,7 @@ const enhance = compose(
         },
         rightSide: {
             flexBasis: '70%',
+            maxWidth: '70%',
             padding: '0 30px 20px'
         },
         subtitle: {
@@ -231,6 +233,7 @@ const enhance = compose(
         },
         colorCat: {
             marginBottom: '0',
+            width: '100%',
             '& > div': {
                 width: '40% !important',
                 paddingRight: '60%',
@@ -289,7 +292,8 @@ const OrderDetails = enhance((props) => {
         shortageDialog,
         confirmDialog,
         handleOpenUpdateDialog,
-        tabData
+        tabData,
+        paymentData
     } = props
     const tab = _.get(tabData, 'tab')
 
@@ -513,6 +517,7 @@ const OrderDetails = enhance((props) => {
                 open={transactionsDialog.openTransactionsDialog}
                 loading={transactionsDialog.transactionsLoading}
                 onClose={transactionsDialog.handleCloseTransactionsDialog}
+                paymentData={paymentData}
             />
             <OrderReturnDialog
                 open={returnDialog.openReturnDialog}
@@ -532,6 +537,7 @@ const OrderDetails = enhance((props) => {
 })
 
 OrderDetails.propTypes = {
+    paymentData: PropTypes.object,
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired
