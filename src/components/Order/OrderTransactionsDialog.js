@@ -10,6 +10,8 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
+import numberFormat from '../../helpers/numberFormat'
+import moment from 'moment'
 
 export const ORDER_TRANSACTIONS_DIALOG_OPEN = 'openTransactionsDialog'
 const enhance = compose(
@@ -30,6 +32,9 @@ const enhance = compose(
         transactions: {
             padding: '10px 0 0',
             '& .row': {
+                '& > div': {
+                    textAlign: 'left !important'
+                },
                 '&:after': {
                     left: '0.5rem',
                     right: '0.5rem'
@@ -41,10 +46,10 @@ const enhance = compose(
                     position: 'static'
                 },
                 '& > div:nth-child(3)': {
-                    textAlign: 'right'
+                    textAlign: 'right !important'
                 },
                 '& > div:nth-child(4)': {
-                    textAlign: 'right'
+                    textAlign: 'right !important'
                 }
             }
         }
@@ -59,7 +64,8 @@ const enhance = compose(
 )
 
 const OrderTransactionsDialog = enhance((props) => {
-    const {open, loading, onClose, classes} = props
+    const {open, loading, onClose, classes, paymentData} = props
+    const orderId = _.get(paymentData, 'id')
     return (
         <Dialog
             modal={true}
@@ -69,7 +75,7 @@ const OrderTransactionsDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Список оплат по заказу №1283</span>
+                <span>Список оплат по заказу №{orderId}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -82,41 +88,26 @@ const OrderTransactionsDialog = enhance((props) => {
                     <div className={classes.field}>
                         <div className={classes.transactions}>
                             <Row className="dottedList">
-                                <Col xs={3}>Код транзакции</Col>
+                                <Col xs={3}>Код оплаты</Col>
                                 <Col xs={3}>Касса</Col>
                                 <Col xs={3}>Дата оплаты</Col>
                                 <Col xs={3}>Сумма оплаты</Col>
                             </Row>
-                            <Row className="dottedList">
-                                <Col xs={3}>3123</Col>
-                                <Col xs={3}>Super Cashbox</Col>
-                                <Col xs={3}>22.01.2016</Col>
-                                <Col xs={3}>150 000 UZS</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={3}>3123</Col>
-                                <Col xs={3}>Super Cashbox</Col>
-                                <Col xs={3}>22.01.2016</Col>
-                                <Col xs={3}>150 000 UZS</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={3}>3123</Col>
-                                <Col xs={3}>Super Cashbox</Col>
-                                <Col xs={3}>22.01.2016</Col>
-                                <Col xs={3}>150 000 UZS</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={3}>3123</Col>
-                                <Col xs={3}>Super Cashbox</Col>
-                                <Col xs={3}>22.01.2016</Col>
-                                <Col xs={3}>150 000 UZS</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={3}>3123</Col>
-                                <Col xs={3}>Super Cashbox</Col>
-                                <Col xs={3}>22.01.2016</Col>
-                                <Col xs={3}>150 000 UZS</Col>
-                            </Row>
+                            {_.map(_.get(paymentData, 'data'), (item) => {
+                                const id = _.get(item, ['transaction', 'id'])
+                                const cashbox = _.get(item, ['transaction', 'cashbox', 'name'])
+                                const payDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+                                const amount = numberFormat(_.get(item, ['transaction', 'amount']))
+
+                                return (
+                                    <Row key={id} className="dottedList">
+                                        <Col xs={3}>{id}</Col>
+                                        <Col xs={3}>{cashbox}</Col>
+                                        <Col xs={3}>{payDate}</Col>
+                                        <Col xs={3}>{amount}</Col>
+                                    </Row>
+                                )
+                            })}
                         </div>
                     </div>
                 </div>
@@ -127,6 +118,7 @@ const OrderTransactionsDialog = enhance((props) => {
 OrderTransactionsDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    paymentData: PropTypes.object
 }
 export default OrderTransactionsDialog

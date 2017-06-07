@@ -77,7 +77,11 @@ const enhance = compose(
             width: '100%'
         },
         form: {
-            position: 'relative'
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px'
         },
         field: {
             width: '100%'
@@ -90,6 +94,7 @@ const enhance = compose(
         },
         inputField: {
             fontSize: '13px !important',
+            marginLeft: '20px',
             '& div': {
                 fontSize: '13px !important'
             }
@@ -142,10 +147,9 @@ const enhance = compose(
             }
         },
         specialModalButton: {
-            marginTop: '15px',
             '& span': {
                 color: '#12aaeb !important',
-                fontWeight: '800'
+                fontWeight: '600 !important'
             }
         }
     }),
@@ -264,25 +268,21 @@ const OrderShortageDialog = enhance((props) => {
                         </ul>
                     </div>
 
-                    <form onSubmit={onSubmit} scrolling="auto" className={classes.form} style={{display: 'flex', padding: '0 30px 20px'}}>
-                        <Col xs={3}>
-                            <Field
-                                name="paymentDate"
-                                component={DateField}
-                                className={classes.inputField}
-                                hintText="Срок запроса"
-                                fullWidth={true}/>
-                        </Col>
-                        <Col xs={9} style={{textAlign: 'right'}}>
-                            <div className={classes.specialModalButton}>
-                                <FlatButton
-                                    label="Передать запрос на подготовку"
-                                    className={classes.actionButton}
-                                    primary={true}
-                                    type="submit"
-                                />
-                            </div>
-                        </Col>
+                    <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
+                        <Field
+                            name="paymentDate"
+                            component={DateField}
+                            className={classes.inputField}
+                            hintText="Срок запроса"
+                            fullWidth={true}/>
+                        <div className={classes.specialModalButton}>
+                            <FlatButton
+                                label="Передать запрос на подготовку"
+                                className={classes.actionButton}
+                                primary={true}
+                                type="submit"
+                            />
+                        </div>
                     </form>
 
                 </div>
