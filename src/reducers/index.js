@@ -59,7 +59,7 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.PRODUCT_ITEM),
         csv: createThunkReducer(actionTypes.PRODUCT_LIST_CSV),
         measurement: createStandardReducer(actionTypes.PRODUCT_MEASUREMENT),
-        extra: createStandardReducer(actionTypes.PRODUCT_EXTRA),
+        extra: createStandardReducer(actionTypes.PRODUCT_EXTRA)
     }),
     ingredient: combineReducers({
         create: createThunkReducer(actionTypes.INGREDIENT_CREATE),

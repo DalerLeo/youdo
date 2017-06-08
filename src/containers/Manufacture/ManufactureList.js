@@ -38,7 +38,6 @@ import {
 import {
     productListFetchAction,
     productItemFetchAction,
-    productDeleteAction
 } from '../../actions/product'
 import {
     manufactureProductCreateAction,
@@ -48,7 +47,6 @@ import {
 import {
     ingredientCreateAction,
     ingredientUpdateAction,
-    ingredientDeleteAction,
     ingredientListFetchAction
 } from '../../actions/ingredient'
 import {equipmentListFetchAction} from '../../actions/equipment'

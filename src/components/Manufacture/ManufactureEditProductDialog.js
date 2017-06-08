@@ -269,7 +269,7 @@ const ManufactureEditProductDialog = enhance((props) => {
                                         />
                                     </Col>
                                     <Col xs={1}>
-                                        <span style={{position: 'relative', top: '22px'}}>{!measurement ? measurementExp :measurement}</span>
+                                        <span style={{position: 'relative', top: '22px'}}>{!measurement ? measurementExp : measurement}</span>
                                     </Col>
                                 </Row>
                             </div>
