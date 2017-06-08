@@ -7,10 +7,8 @@ import GridListNavPagination from '../GridListNavPagination'
 import GridListNavSearch from '../GridListNavSearch'
 
 const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData}) => {
-    const currencyData = _.get(customData, 'listData')
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
-    console.log(currencyData)
     return (
         <div className={classes.wrapper}>
             <div style={{padding: '0 30px'}}>
