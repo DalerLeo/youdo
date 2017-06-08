@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Col} from 'react-flexbox-grid'
+import {Row, Col} from 'react-flexbox-grid'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -73,14 +73,20 @@ const listHeader = [
     {
         sorting: true,
         name: 'id',
-        xs: 3,
+        xs: 4,
         title: '№'
     },
     {
         sorting: true,
         name: 'name',
-        xs: 3,
-        title: 'Name'
+        xs: 4,
+        title: 'Курс'
+    },
+    {
+        sorting: true,
+        name: 'createdDate',
+        xs: 4,
+        title: 'Дата обновления'
     }
 ]
 const CurrencyDetails = enhance((props) => {
@@ -88,9 +94,11 @@ const CurrencyDetails = enhance((props) => {
         classes,
         loading,
         data,
+        listData,
         actionsDialog,
         filter,
-        currency
+        currency,
+        setCurrencyUpdateDialog
     } = props
 
     if (loading) {
@@ -117,17 +125,16 @@ const CurrencyDetails = enhance((props) => {
     const detail = (
         <span>a</span>
     )
-
     const historyList = _.map(_.get(data, 'results'), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const rate = _.get(item, 'id')
         return (
-            <li key={id} className="dottedList">
-                <Col xs={1}>{id}</Col>
-                <Col xs={3}>1 {currency} = {rate} SUM</Col>
-                <Col xs={3}>{createdDate}</Col>
-            </li>
+            <Row key={id}>
+                <Col xs={4}>{id}</Col>
+                <Col xs={4}>1 {currency} = {rate} SUM</Col>
+                <Col xs={4}>{createdDate}</Col>
+            </Row>
         )
     })
     const list = {
@@ -136,18 +143,34 @@ const CurrencyDetails = enhance((props) => {
         loading: loading
     }
 
+    const customData = {
+        dialog: setCurrencyUpdateDialog,
+        listData: listData
+    }
+
     return (
         <GridList
             filter={filter}
             list={list}
+            customData={customData}
             detail={detail}
-            actionsDialog={actions}/>
+            actionsDialog={actions}
+            withoutSearch={true}
+        />
     )
 })
 
 CurrencyDetails.propTypes = {
+    listData: PropTypes.object,
     handleOpenEditMaterials: PropTypes.func.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired
+    handleOpenConfirmDialog: PropTypes.func.isRequired,
+    setCurrencyUpdateDialog: PropTypes.shape({
+        setCurrencyLoading: PropTypes.bool.isRequired,
+        openSetCurrencyDialog: PropTypes.bool.isRequired,
+        handleOpenSetCurrencyDialog: PropTypes.func.isRequired,
+        handleCloseSetCurrencyDialog: PropTypes.func.isRequired,
+        handleSubmitSetCurrencyDialog: PropTypes.func.isRequired
+    })
 }
 
 export default CurrencyDetails

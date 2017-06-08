@@ -149,9 +149,11 @@ const CurrencyGridList = enhance((props) => {
         <CurrencyDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
+            listData={listData}
             loading={_.get(detailData, 'detailLoading')}
             actionsDialog={actionsDialog}
             filter={detailFilter}
+            setCurrencyUpdateDialog={setCurrencyUpdateDialog}
             currency={_.get(currency, 'name')}/>
     )
 

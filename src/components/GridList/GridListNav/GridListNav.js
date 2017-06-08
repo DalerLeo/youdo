@@ -6,16 +6,22 @@ import injectSheet from 'react-jss'
 import GridListNavPagination from '../GridListNavPagination'
 import GridListNavSearch from '../GridListNavSearch'
 
-const GridListNav = ({classes, filter, filterDialog, actions}) => {
+const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData}) => {
+    const currencyData = _.get(customData, 'listData')
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
-
+    console.log(currencyData)
     return (
         <div className={classes.wrapper}>
             <div style={{padding: '0 30px'}}>
                 {(selectIsEmpty && filterIsEmpty) && <Row>
-                    <Col xs={6}>
-                        <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>
+                    <Col xs={6} style={{display: 'flex', alignItems: 'center'}}>
+                        {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>}
+                        {withoutSearch &&
+                        <div className={classes.currencyName}>
+                            <span>SUM</span>
+                            <a className={classes.link}>Установить курс</a>
+                        </div>}
                     </Col>
                     <Col xs={6}>
                         <GridListNavPagination filter={filter}/>
@@ -27,7 +33,7 @@ const GridListNav = ({classes, filter, filterDialog, actions}) => {
                         {filterDialog}
                     </Col>
                     <Col xs={4}>
-                        <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>
+                        {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>}
                     </Col>
                     <Col xs={4}>
                         <GridListNavPagination filter={filter}/>
@@ -49,11 +55,19 @@ const GridListNav = ({classes, filter, filterDialog, actions}) => {
 
 GridListNav.propTypes = {
     filter: PropTypes.object.isRequired,
-    actions: PropTypes.node.isRequired
+    actions: PropTypes.node.isRequired,
+    withoutSearch: PropTypes.bool.isRequired,
+    customData: PropTypes.shape({
+        dialog: PropTypes.node.isRequired,
+        listData: PropTypes.array.isRequired
+    })
 }
 
 export default injectSheet({
     wrapper: {
+        '& .row': {
+            height: '100%'
+        },
         '& > div': {
             marginLeft: '0 !important',
             marginRight: '0 !important',
@@ -64,6 +78,17 @@ export default injectSheet({
             marginBottom: '50px',
             boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px'
         }
+    },
+    currencyName: {
+        fontWeight: '600',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%'
+    },
+    link: {
+        color: '#12aaeb !important',
+        fontWeight: '600 !important'
     },
     action: {
         background: '#ccc !important'
