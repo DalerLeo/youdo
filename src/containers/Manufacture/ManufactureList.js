@@ -37,7 +37,7 @@ import {
 
 import {
     productListFetchAction,
-    productItemFetchAction,
+    productItemFetchAction
 } from '../../actions/product'
 import {
     manufactureProductCreateAction,
