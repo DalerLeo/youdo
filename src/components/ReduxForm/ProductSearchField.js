@@ -33,7 +33,7 @@ const getItem = (id, dispatch) => {
 }
 
 const ProductSearchField = connect()((props) => {
-    const {dispatch} = props
+    const {dispatch, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
@@ -44,7 +44,7 @@ const ProductSearchField = connect()((props) => {
             getOptions={getOptions}
             getItem={test}
             getItemText={SearchField.defaultGetText('name')}
-            {...props}
+            {...defaultProps}
         />
     )
 })

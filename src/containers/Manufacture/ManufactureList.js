@@ -38,7 +38,7 @@ import {
 import {
     productListFetchAction,
     productItemFetchAction,
-    productIngredientFetchAction
+    productDeleteAction
 } from '../../actions/product'
 import {
     manufactureProductCreateAction,
@@ -54,10 +54,12 @@ import {
 import {equipmentListFetchAction} from '../../actions/equipment'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const MINUS_ONE = -1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
+        const selectProduct = _.get(state, ['product', 'item', 'data'])
         const detail = _.get(state, ['manufacture', 'item', 'data'])
         const detailLoading = _.get(state, ['manufacture', 'item', 'loading'])
         const createLoading = _.get(state, ['manufacture', 'create', 'loading'])
@@ -83,10 +85,11 @@ const enhance = compose(
         const filter = filterHelper(list, pathname, query)
 
         const productList = _.get(state, ['product', 'list', 'data'])
-        const productDetail = _.get(state, ['product', 'ingredientList', 'data'])
+        const productDetail = _.get(state, ['ingredient', 'list', 'data'])
         const productDetailLoading = _.get(state, ['product', 'ingredientList', 'loading'])
         const productListLoading = _.get(state, ['product', 'list', 'loading'])
         const productId = _.get(props, ['location', 'query', 'productId']) || '-1'
+        const ingredientId = _.get(props, ['location', 'query', 'ingId'])
         const personId = _.get(props, ['location', 'query', 'personId']) || '-1'
         const filterProduct = filterHelper(productList, pathname, query)
         const equipmentFilter = filterHelper(equipmentList, pathname, query)
@@ -124,7 +127,9 @@ const enhance = compose(
             filterProduct,
             filterProductForm,
             ingredientCreateForm,
-            personId
+            personId,
+            ingredientId,
+            selectProduct
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -172,14 +177,24 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_SHOW_BOM_DIALOG_OPEN]: false})})
         },
 
-        handleOpenEditMaterials: props => () => {
+        handleOpenEditMaterials: props => (id) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: true, 'ingId': id})})
         },
 
         handleCloseEditMaterials: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: false, 'ingId': MINUS_ONE})})
+        },
+
+        handleSubmitEditMaterials: props => () => {
+            const {dispatch, ingredientCreateForm, filter, location: {pathname}, ingredientId, productId} = props
+            return dispatch(ingredientUpdateAction(_.get(ingredientCreateForm, ['values']), _.toNumber(ingredientId), productId))
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: false, 'engId': MINUS_ONE})})
+                    dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(ingredientListFetchAction(productId))
+                })
         },
 
         handleClickItem: props => (id) => {
@@ -237,7 +252,7 @@ const enhance = compose(
             const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({'productId': id})})
             dispatch(productItemFetchAction(id))
-            dispatch(productIngredientFetchAction(id))
+            dispatch(ingredientListFetchAction(id))
         },
 
         handleOpenAddProductDialog: props => () => {
@@ -269,14 +284,12 @@ const enhance = compose(
         },
         handleSubmitCreateMaterials: props => () => {
             const {dispatch, ingredientCreateForm, filter, location: {pathname}} = props
-            const productId = _.get(props, ['location', 'query', 'productId'])
+            const productId = _.toNumber(_.get(props, ['location', 'query', 'productId']))
             return dispatch(ingredientCreateAction(_.get(ingredientCreateForm, ['values']), productId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: false})})
-                    dispatch(ingredientListFetchAction(filter, productId))
+                    dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(ingredientListFetchAction(productId))
                 })
         },
 
@@ -412,7 +425,8 @@ const ManufactureList = enhance((props) => {
         params,
         filterProduct,
         personId,
-        equipmentFilter
+        equipmentFilter,
+        ingredientId
     } = props
 
     const openCreateUser = toBoolean(_.get(location, ['query', OPEN_USER_CREATE_DIALOG]))
@@ -457,11 +471,19 @@ const ManufactureList = enhance((props) => {
         handleClose: props.handleCloseCreateMaterials,
         handleSubmit: props.handleSubmitCreateMaterials
     }
+
+    const selectProduct = _.find(_.get(productDetail, 'ingredient'), {'id': _.toInteger(ingredientId)})
     const editMaterials = {
+        initialValues: {
+            ingredient: {
+                value: _.get(selectProduct, ['ingredient', 'id'])
+            },
+            amount: _.get(selectProduct, 'amount')
+        },
+        measurement: _.get(selectProduct, ['ingredient', 'measurement', 'name']),
         open: openEditMaterials,
         handleOpen: props.handleOpenEditMaterials,
         handleClose: props.handleCloseEditMaterials,
-        handleLoading: props.handleCloseEditMaterials,
         handleSubmit: props.handleSubmitEditMaterials
     }
 
@@ -610,10 +632,10 @@ const ManufactureList = enhance((props) => {
         <Layout {...layout}>
             <ManufactureGridList
                 createMaterials={createMaterials}
+                editMaterials={editMaterials}
                 detailData={detailData}
                 listData={listData}
                 equipmentData={equipmentData}
-                editMaterials={editMaterials}
                 showBom={showBom}
                 productData={productData}
                 tabData={tabData}

@@ -135,7 +135,7 @@ export const BRAND_DELETE = `/${BRAND}/%d/`
 
 export const INGREDIENT = 'ingredients'
 export const INGREDIENT_CREATE = `/${INGREDIENT}/`
-export const INGREDIENT_LIST = `/${INGREDIENT}/`
+export const INGREDIENT_LIST = 'dist/product/%d/ingredient_list/'
 export const INGREDIENT_ITEM = `/${INGREDIENT}/%d/`
 export const INGREDIENT_DELETE = `/${INGREDIENT}/%d/`
 

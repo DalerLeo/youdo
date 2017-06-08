@@ -6,7 +6,6 @@ import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/ingredientSerializer'
 
 export const ingredientCreateAction = (formValues, id) => {
-    console.log(formValues)
     const requestData = serializers.createSerializer(formValues, id)
     const payload = axios()
         .post(API.INGREDIENT_CREATE, requestData)
@@ -38,8 +37,8 @@ export const ingredientDeleteAction = (id) => {
     }
 }
 
-export const ingredientUpdateAction = (formValues, id) => {
-    const requestData = serializers.createSerializer(formValues, id)
+export const ingredientUpdateAction = (formValues, id, productId) => {
+    const requestData = serializers.createSerializer(formValues, productId)
     const payload = axios()
         .put(sprintf(API.INGREDIENT_ITEM, id), requestData)
         .then((response) => {
@@ -55,10 +54,9 @@ export const ingredientUpdateAction = (formValues, id) => {
     }
 }
 
-export const ingredientListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const ingredientListFetchAction = (id) => {
     const payload = axios()
-        .get(API.INGREDIENT_LIST, {params})
+        .get(sprintf(API.INGREDIENT_LIST, id))
         .then((response) => {
             return _.get(response, 'data')
         })

@@ -126,7 +126,7 @@ const ManufactureDetails = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onClick={() => { handleOpenEditMaterials(id) }}>
+                                onClick={() => { handleOpenEditMaterials(itemId) }}>
                                 <ModEditorIcon />
                             </IconButton>
                         </Tooltip>
@@ -135,7 +135,7 @@ const ManufactureDetails = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onClick={() => { handleOpenConfirmDialog() }}>
+                                onClick={() => { handleOpenConfirmDialog(itemId) }}>
                                 <DeleteIcon />
                             </IconButton>
                         </Tooltip>

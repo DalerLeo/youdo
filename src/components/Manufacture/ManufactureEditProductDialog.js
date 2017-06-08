@@ -16,9 +16,9 @@ import {TextField, ProductSearchField} from '../ReduxForm'
 export const MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN = 'editMaterials'
 const enhance = compose(
     connect((state) => {
-        const measurement = _.get(state, ['product', 'measurement', 'data'])
+        const measurementExp = _.get(state, ['product', 'measurement', 'data'])
         return {
-            measurement
+            measurementExp
         }
     }),
     injectSheet({
@@ -225,7 +225,7 @@ const validate = (data) => {
     })
 }
 const ManufactureEditProductDialog = enhance((props) => {
-    const {open, handleSubmit, loading, onClose, classes, isUpdate, measurement} = props
+    const {open, handleSubmit, loading, onClose, classes, isUpdate, measurement, measurementExp} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -269,7 +269,7 @@ const ManufactureEditProductDialog = enhance((props) => {
                                         />
                                     </Col>
                                     <Col xs={1}>
-                                        <span style={{position: 'relative', top: '22px'}}>{measurement}</span>
+                                        <span style={{position: 'relative', top: '22px'}}>{!measurement ? measurementExp :measurement}</span>
                                     </Col>
                                 </Row>
                             </div>

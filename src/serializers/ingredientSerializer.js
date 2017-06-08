@@ -4,7 +4,6 @@ import {orderingSnakeCase} from '../helpers/serializer'
 export const createSerializer = (data, id) => {
     const ingredient = _.get(data, ['ingredient', 'value'])
     const amount = _.get(data, 'amount')
-console.log(data)
     return {
         'product': id,
         'ingredient': ingredient,
