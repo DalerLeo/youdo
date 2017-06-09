@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
+import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
@@ -10,10 +11,16 @@ import {Row, Col} from 'react-flexbox-grid'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, ProductSearchField} from '../ReduxForm'
 
 export const MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN = 'editMaterials'
 const enhance = compose(
+    connect((state) => {
+        const measurementExp = _.get(state, ['product', 'measurement', 'data'])
+        return {
+            measurementExp
+        }
+    }),
     injectSheet({
         loader: {
             position: 'absolute',
@@ -202,7 +209,7 @@ const enhance = compose(
     }),
     withState('openAddMaterials', 'setOpenAddMaterials', false),
     reduxForm({
-        form: 'ProviderCreateForm',
+        form: 'IngredientCreateForm',
         enableReinitialize: true
     })
 )
@@ -218,7 +225,7 @@ const validate = (data) => {
     })
 }
 const ManufactureEditProductDialog = enhance((props) => {
-    const {open, handleSubmit, loading, onClose, classes} = props
+    const {open, handleSubmit, loading, onClose, classes, isUpdate, measurement, measurementExp} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -244,16 +251,16 @@ const ManufactureEditProductDialog = enhance((props) => {
                                     <Col xs={8}>
                                         <Field
                                             label="Наименование товара"
-                                            name="name"
-                                            component={TextField}
+                                            name="ingredient"
+                                            component={ProductSearchField}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}
-                                            disabled={true}
+                                            disabled={isUpdate}
                                         />
                                     </Col>
                                     <Col xs={3}>
                                         <Field
-                                            name="count"
+                                            name="amount"
                                             style={{textAlign: 'right'}}
                                             label="Кол-во"
                                             component={TextField}
@@ -262,7 +269,7 @@ const ManufactureEditProductDialog = enhance((props) => {
                                         />
                                     </Col>
                                     <Col xs={1}>
-                                        <span style={{position: 'relative', top: '22px'}}>Кг</span>
+                                        <span style={{position: 'relative', top: '22px'}}>{!measurement ? measurementExp : measurement}</span>
                                     </Col>
                                 </Row>
                             </div>

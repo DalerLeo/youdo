@@ -3,12 +3,12 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/productSerializer'
+import * as serializers from '../serializers/ingredientSerializer'
 
-export const productCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const ingredientCreateAction = (formValues, id) => {
+    const requestData = serializers.createSerializer(formValues, id)
     const payload = axios()
-        .post(API.PRODUCT_CREATE, requestData)
+        .post(API.INGREDIENT_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,14 +17,30 @@ export const productCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.PRODUCT_CREATE,
+        type: actionTypes.INGREDIENT_CREATE,
         payload
     }
 }
 
-export const productDeleteAction = (id) => {
+export const ingredientDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.PRODUCT_DELETE, id))
+        .delete(sprintf(API.INGREDIENT_DELETE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.INGREDIENT_DELETE,
+        payload
+    }
+}
+
+export const ingredientUpdateAction = (formValues, id, productId) => {
+    const requestData = serializers.createSerializer(formValues, productId)
+    const payload = axios()
+        .put(sprintf(API.INGREDIENT_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,15 +49,14 @@ export const productDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.PRODUCT_DELETE,
+        type: actionTypes.INGREDIENT_UPDATE,
         payload
     }
 }
 
-export const productUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const ingredientListFetchAction = (id) => {
     const payload = axios()
-        .put(sprintf(API.PRODUCT_ITEM, id), requestData)
+        .get(sprintf(API.INGREDIENT_LIST, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,32 +65,15 @@ export const productUpdateAction = (id, formValues) => {
         })
 
     return {
-        type: actionTypes.PRODUCT_UPDATE,
+        type: actionTypes.INGREDIENT_LIST,
         payload
     }
 }
 
-export const productListFetchAction = (filter, manufacture) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), manufacture)
-    const payload = axios()
-        .get(API.PRODUCT_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.PRODUCT_LIST,
-        payload
-    }
-}
-
-export const productCSVFetchAction = (filter) => {
+export const ingredientCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.PRODUCT_LIST, {params})
+        .get(API.INGREDIENT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -84,15 +82,14 @@ export const productCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.PRODUCT_LIST_CSV,
+        type: actionTypes.INGREDIENT_LIST_CSV,
         payload
     }
 }
 
-export const productItemFetchAction = (id) => {
-    const params = {'thumbnail_type': 'large'}
+export const ingredientItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.PRODUCT_ITEM, id), {params})
+        .get(sprintf(API.INGREDIENT_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -101,7 +98,7 @@ export const productItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.PRODUCT_ITEM,
+        type: actionTypes.INGREDIENT_ITEM,
         payload
     }
 }
