@@ -151,6 +151,13 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        statLoader: {
+            background: '#fff',
+            height: '71px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         }
     })),
     withState('showTransaction', 'setShowTransaction', false)
@@ -292,8 +299,8 @@ const StatStockGridList = enhance((props) => {
                 </Col>
                 <Col xs={9} style={{textAlign: 'right'}}>
                     {_.get(statStockData, 'statStockDataLoading')
-                        ? <div className={classes.loader}>
-                            <CircularProgress />
+                        ? <div className={classes.statLoader}>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
                         : <div>
                             <div className={classes.infoBlock}>

@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import {reduxForm} from 'redux-form'
-import {compose, withState, withHandlers} from 'recompose'
+import {compose} from 'recompose'
 import sprintf from 'sprintf'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -15,7 +15,7 @@ import Container from '../Container'
 import ProductPriceFilterForm from './ProductPriceFilterForm'
 import ProductPriceCreateDialog from './ProductPriceCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import Popover from 'material-ui/Popover'
+import ProductPriceDetails from './ProductPriceDetails'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
@@ -72,110 +72,6 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
-        },
-        wrapper: {
-            width: '100%'
-        },
-        title: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            height: '65px',
-            padding: '0 30px',
-            borderBottom: '1px #efefef solid'
-        },
-        titleLabel: {
-            fontSize: '18px',
-            color: '#333',
-            fontWeight: '700'
-        },
-        buttons: {
-            display: 'flex',
-            justifyContent: 'flex-end'
-        },
-        bodyTitle: {
-            fontWeight: '600',
-            marginBottom: '10px'
-        },
-        containerPrice: {
-            display: 'flex'
-        },
-        leftPrSide: {
-            padding: '20px 30px',
-            flexBasis: '30%',
-            borderRight: '1px solid #efefef'
-        },
-        aboutPrice: {
-            padding: '20px 0',
-            '& span': {
-                color: '#999'
-            },
-            '& p': {
-                display: 'inline-block',
-                '& span': {
-                    fontSize: '11px !important'
-                }
-            },
-            '& p:last-child': {
-                fontWeight: '600',
-                paddingLeft: '15px'
-            }
-        },
-        rightPrSide: {
-            padding: '20px 30px',
-            flexBasis: '70%'
-        },
-        rawMaterials: {
-            '& .dottedList': {
-                padding: '10px 0'
-            },
-            '& li:last-child:after': {
-                backgroundImage: 'none'
-            },
-            '& li div:last-child': {
-                textAlign: 'right',
-                paddingRight: '10px'
-            },
-            '& a': {
-                borderBottom: '1px dashed'
-            }
-        },
-        changePrice: {
-            background: '#f1f5f8',
-            margin: '0 -30px 0',
-            padding: '20px 30px'
-        },
-        addPrice: {
-            display: 'flex',
-            alignItems: 'baseline',
-            justifyContent: 'space-between'
-        },
-        popoverMode: {
-            padding: '10px 30px',
-            boxShadow: 'none !important',
-            '& h4': {
-                padding: '10px 0'
-            },
-            '& div p': {
-                display: 'inline-block'
-            },
-            '& div p:first-child': {
-                width: '120px'
-            }
-        }
-    }),
-
-    withState('showAddPrice', 'setShowAddPrice', false),
-    withState('priceDetailsOpen', 'setPriceDetailsOpen', false),
-    withState('anchorEl', 'setAnchorEl', (<div></div>)),
-
-    withHandlers({
-        handleOpenDetails: props => (event) => {
-            props.setAnchorEl(event.currentTarget)
-            props.setPriceDetailsOpen(true)
-        },
-        handleCloseDetails: props => (event) => {
-            props.setPriceDetailsOpen(false)
         }
     }),
 
@@ -203,7 +99,6 @@ const ProductPriceGridList = enhance((props) => {
         filter,
         updateDialog,
         filterDialog,
-        anchorEl,
         actionsDialog,
         confirmDialog,
         handleOpenDetails,
@@ -213,9 +108,18 @@ const ProductPriceGridList = enhance((props) => {
         detailData,
         classes
     } = props
-
-    const detId = _.get(detailData, 'id')
-    const detnName = _.get(detailData, ['data', 'name'])
+    const productPriceDetail = (
+        <ProductPriceDetails
+            key={_.get(detailData, 'id')}
+            data={_.get(detailData, 'data') || {}}
+            confirmDialog={confirmDialog}
+            priceDetailsOpen={priceDetailsOpen}
+            loading={_.get(detailData, 'detailLoading')}
+            updateDialog={updateDialog}
+            handleOpenDetails={handleOpenDetails}
+            handleCloseDetails={handleCloseDetails}
+        />
+    )
 
     const actions = (
         <div>
@@ -235,115 +139,6 @@ const ProductPriceGridList = enhance((props) => {
             filter={filter}
             filterDialog={filterDialog}
         />
-    )
-
-    const productPriceDetail = (
-        <div className={classes.wrapper} key={_.get(detailData, 'id')}>
-            <div className={classes.title}>
-                <div className={classes.titleLabel}>{detnName}</div>
-            </div>
-            <div className={classes.containerPrice}>
-                <div className={classes.leftPrSide}>
-                    <div>Расчет произведен на 1 еденицу продукта</div>
-                    <div className={classes.aboutPrice}>
-                        <p className={classes.priceLabel}>Cебестоимость:</p>
-                        <p className={classes.priceCost}>20 000 UZS <span>(22 Апр, 2017)</span></p>
-                    </div>
-                    <hr className="lineDote"/>
-                    <div className={classes.aboutPrice}>
-                        <p className={classes.priceLabel}>Рыночная цена:</p>
-                        <p className={classes.priceCost}>30 000 UZS <span>(22 Апр, 2017)</span></p>
-                    </div>
-                    <div className={classes.changePrice}>
-                        <a onClick={() => { updateDialog.handleOpenUpdateDialog(detId) }}>Изменить рыночную стоимость</a>
-                    </div>
-                </div>
-                <div className={classes.rightPrSide}>
-                    <ul className={classes.rawMaterials}>
-                        <li className="dottedList">
-                            <Col xs={7}>
-                                <strong>Сырье</strong>
-                            </Col>
-                            <Col xs={2}>
-                                <strong>Обьем</strong>
-                            </Col>
-                            <Col xs={3}>
-                                <strong>Стоимость</strong>
-                            </Col>
-                        </li>
-                        <li className="dottedList">
-                            <Col xs={7}>
-                                Дистилированная вода
-                            </Col>
-                            <Col xs={2}>
-                                100 л
-                            </Col>
-                            <Col xs={3}>
-                                <a onClick={handleOpenDetails}>1 000 000 UZS</a>
-                            </Col>
-                        </li>
-                        <li className="dottedList">
-                            <Col xs={7}>
-                                Дистилированная вода
-                            </Col>
-                            <Col xs={2}>
-                                100 л
-                            </Col>
-                            <Col xs={3}>
-                                <a onClick={handleOpenDetails}>1 000 000 UZS</a>
-                            </Col>
-                        </li>
-                        <li className="dottedList">
-                            <Col xs={7}>
-                                Дистилированная вода
-                            </Col>
-                            <Col xs={2}>
-                                100 л
-                            </Col>
-                            <Col xs={3}>
-                                <a onClick={handleOpenDetails}>1 000 000 UZS</a>
-                            </Col>
-                        </li>
-                        <li className="dottedList">
-                            <Col xs={7}>
-                                Дистилированная вода
-                            </Col>
-                            <Col xs={2}>
-                                100 л
-                            </Col>
-                            <Col xs={3}>
-                                <a onClick={handleOpenDetails}>1 000 000 UZS</a>
-                            </Col>
-                        </li>
-
-                    </ul>
-                </div>
-            </div>
-            <Popover
-                open={priceDetailsOpen}
-                anchorEl={anchorEl}
-                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-                targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                onRequestClose={handleCloseDetails}
-            >
-                <div className={classes.popoverMode}>
-                    <h4>Дистилированая вода</h4>
-                    <div>
-                        <p>Объем:</p>
-                        <p>100 л</p>
-                    </div>
-                    <div>
-                        <p>Стоимость:</p>
-                        <p>500 000 UZS</p>
-                    </div>
-                    <div>
-                        <p>Доп. расход:</p>
-                        <p>100 000 UZS</p>
-                    </div>
-                    <h4><i>Примерная стоимость 1 л = 6 000 UZS</i></h4>
-                </div>
-            </Popover>
-        </div>
     )
 
     const productPriceList = _.map(_.get(listData, 'data'), (item) => {
