@@ -12,7 +12,7 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
     const listData = _.get(customData, ['listData', 'data'])
     const handleUpdateDialog = _.get(customData, ['dialog', 'handleOpenSetCurrencyDialog'])
     const gridDataId = _.get(customData, 'id')
-    const currentCurrency =  _.get(_.find(listData, {'id': gridDataId}), 'name')
+    const currentCurrency = _.get(_.find(listData, {'id': gridDataId}), 'name')
     return (
         <div className={classes.wrapper}>
             <div style={{padding: '0 30px'}}>
