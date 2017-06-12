@@ -47,6 +47,7 @@ const rootReducer = combineReducers({
     order: combineReducers({
         create: createThunkReducer(actionTypes.ORDER_CREATE),
         list: createThunkReducer(actionTypes.ORDER_LIST),
+        payment: createThunkReducer(actionTypes.ORDER_TRANSACTION),
         item: createThunkReducer(actionTypes.ORDER_ITEM),
         update: createThunkReducer(actionTypes.ORDER_UPDATE),
         csv: createThunkReducer(actionTypes.ORDER_LIST_CSV)
@@ -58,8 +59,13 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.PRODUCT_ITEM),
         csv: createThunkReducer(actionTypes.PRODUCT_LIST_CSV),
         measurement: createStandardReducer(actionTypes.PRODUCT_MEASUREMENT),
-        extra: createStandardReducer(actionTypes.PRODUCT_EXTRA),
-        ingredientList: createThunkReducer(actionTypes.PRODUCT_INGREDIENT)
+        extra: createStandardReducer(actionTypes.PRODUCT_EXTRA)
+    }),
+    ingredient: combineReducers({
+        create: createThunkReducer(actionTypes.INGREDIENT_CREATE),
+        list: createThunkReducer(actionTypes.INGREDIENT_LIST),
+        update: createThunkReducer(actionTypes.INGREDIENT_UPDATE),
+        item: createThunkReducer(actionTypes.INGREDIENT_ITEM)
     }),
     productType: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_TYPE_CREATE),

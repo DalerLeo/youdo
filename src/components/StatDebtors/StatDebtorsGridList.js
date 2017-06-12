@@ -265,26 +265,35 @@ const StatDebtorsGridList = enhance((props) => {
 
     const statDebtorsDetail = (
         <div key={_.get(detailData, 'id')} style={{width: '100%'}}>
-            <div className={classes.title} style={{width: 'initial'}}>
-                <div className={classes.titleLabel}>{_.get(statDebtorsItem, ['client', 'name'])}</div>
-                <div className={classes.subTitle}>
-                    <div>
-                        Прошло: <span>{_.get(statDebtorsItem, 'expiredDays')} дней</span>
-                    </div>
-                    <div>
-                        Сумма долга: <span>{_.get(statDebtorsItem, 'totalBalance')} {PRIMARY_CURRENCY_NAME}</span>
-                    </div>
+            {_.get(detailData, 'detailLoading')
+                ? <div style={{textAlign: 'center'}}>
+                    <CircularProgress/>
                 </div>
-            </div>
-            { _.get(orderData, 'orderLoading')
-                ? <CircularProgress size={100} thickness={6} style={{marginLeft: 'calc(50% - 50px)', padding: '30px 0'}}/>
-                : <div style={{paddingBottom: '20px'}}>
-                    <div>{orderListHeader}</div>
-                    {orderList}
-                </div>
-            }
+                : <div>
+                    <div className={classes.title} style={{width: 'initial'}}>
+                        <div className={classes.titleLabel}>{_.get(statDebtorsItem, ['client', 'name'])}</div>
+                        <div className={classes.subTitle}>
+                            <div>
+                                Прошло: <span>{_.get(statDebtorsItem, 'expiredDays')} дней</span>
+                            </div>
+                            <div>
+                                Сумма долга:
+                                <span>{_.get(statDebtorsItem, 'totalBalance')} {PRIMARY_CURRENCY_NAME}</span>
+                            </div>
+                        </div>
+                    </div>
+                    { _.get(orderData, 'orderLoading')
+                        ? <CircularProgress size={100} thickness={6}
+                                            style={{marginLeft: 'calc(50% - 50px)', padding: '30px 0'}}/>
+                        : <div style={{paddingBottom: '20px'}}>
+                            <div>{orderListHeader}</div>
+                            {orderList}
+                        </div>
+                    }
+                </div>}
         </div>
     )
+
     const list = (_.get(tabData, 'tab') === ONE) ? {
         header: listHeaderClient,
         list: statDebtorsList,
@@ -324,7 +333,8 @@ const StatDebtorsGridList = enhance((props) => {
                 <Col xs={9} style={{textAlign: 'right'}}>
                     {_.get(sumData, 'sumLoading')
                         ? <div>
-                            <CircularProgress size={100} thickness={6} style={{marginLeft: 'calc(50% - 50px)', padding: '30px 0'}}/>
+                            <CircularProgress size={100} thickness={6}
+                                              style={{marginLeft: 'calc(50% - 50px)', padding: '30px 0'}}/>
                         </div>
                         : <div>
                             <div className={classes.infoBlock}>

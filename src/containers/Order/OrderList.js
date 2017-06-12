@@ -27,7 +27,8 @@ import {
     orderCSVFetchAction,
     orderDeleteAction,
     orderItemFetchAction,
-    orderReturnAction
+    orderReturnAction,
+    orderTransactionFetchAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -36,6 +37,7 @@ const enhance = compose(
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['order', 'item', 'data'])
+        const payment = _.get(state, ['order', 'payment', 'data'])
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const createLoading = _.get(state, ['order', 'create', 'loading'])
         const transactionsLoading = _.get(state, ['order', 'create', 'loading'])
@@ -54,6 +56,7 @@ const enhance = compose(
             list,
             listLoading,
             detail,
+            payment,
             detailLoading,
             createLoading,
             transactionsLoading,
@@ -71,6 +74,11 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(orderListFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return props.query !== nextProps.query
+    }, ({dispatch, filter}) => {
+        dispatch(orderTransactionFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -185,15 +193,6 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: false})})
         },
 
-        handleOpenTransactionsDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseTransactionsDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: false})})
-        },
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}} = props
 
@@ -205,6 +204,16 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: false})})
                     dispatch(orderListFetchAction(filter))
                 })
+        },
+
+        handleOpenTransactionsDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseTransactionsDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: false})})
         },
 
         handleOpenReturnDialog: props => () => {
@@ -284,6 +293,7 @@ const OrderList = enhance((props) => {
         list,
         listLoading,
         detail,
+        payment,
         detailLoading,
         createLoading,
         transactionsLoading,
@@ -440,6 +450,12 @@ const OrderList = enhance((props) => {
         detailLoading
     }
 
+    const paymentData = {
+        id: detailId,
+        data: payment,
+        transactionsLoading
+    }
+
     return (
         <Layout {...layout}>
             <OrderGridList
@@ -447,6 +463,7 @@ const OrderList = enhance((props) => {
                 listData={listData}
                 tabData={tabData}
                 detailData={detailData}
+                paymentData={paymentData}
                 createDialog={createDialog}
                 transactionsDialog={transactionsDialog}
                 returnDialog={returnDialog}

@@ -91,6 +91,23 @@ export const orderListFetchAction = (filter) => {
     }
 }
 
+export const orderTransactionFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get(API.ORDER_TRANSACTION, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_TRANSACTION,
+        payload
+    }
+}
+
 export const orderCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()

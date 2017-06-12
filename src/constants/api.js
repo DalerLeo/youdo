@@ -96,6 +96,7 @@ export const SUPPLY_DELETE = `/${SUPPLY}/cancel/`
 export const ORDER = 'order'
 export const ORDER_CREATE = `/${ORDER}/`
 export const ORDER_RETURN = 'order_return'
+export const ORDER_TRANSACTION = 'order_payment'
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_DELETE = `/${ORDER}/%d/`
@@ -131,6 +132,12 @@ export const BRAND_CREATE = `/${BRAND}/`
 export const BRAND_LIST = `/${BRAND}/`
 export const BRAND_ITEM = `/${BRAND}/%d/`
 export const BRAND_DELETE = `/${BRAND}/%d/`
+
+export const INGREDIENT = 'ingredients'
+export const INGREDIENT_CREATE = `/${INGREDIENT}/`
+export const INGREDIENT_LIST = 'dist/product/%d/ingredient_list/'
+export const INGREDIENT_ITEM = `/${INGREDIENT}/%d/`
+export const INGREDIENT_DELETE = `/${INGREDIENT}/%d/`
 
 export const PAYMNET_TYPE = 'dist/payment'
 export const PAYMNET_TYPE_CREATE = `/${PAYMNET_TYPE}/add/`

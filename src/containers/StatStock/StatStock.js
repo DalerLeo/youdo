@@ -78,14 +78,16 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        const statStockId = _.get(nextProps, ['params', 'statStockId'])
+        const currentStat = _.toInteger(_.get(props, ['params', 'statStockId']))
+        const statStockId = _.toInteger(_.get(nextProps, ['params', 'statStockId']))
+
         return (
-            (props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
-            (statStockId && _.get(props, ['params', 'statStockId']) !== statStockId)
+            (props.filter.filterRequest() !== nextProps.filter.filterRequest()) || currentStat !== statStockId ||
+            (_.get(props, 'tab') !== _.get(nextProps, 'tab'))
         )
     }, ({dispatch, filter, params, tab}) => {
         const statStockId = _.toInteger(_.get(params, 'statStockId'))
-        if (tab === ONE) dispatch(remainderStockListFetchAction(filter, statStockId))
+        if (_.toInteger(tab) === ONE) dispatch(remainderStockListFetchAction(filter, statStockId))
         else dispatch(transactionStockListFetchAction(filter, statStockId))
     }),
     withPropsOnChange((props, nextProps) => {
