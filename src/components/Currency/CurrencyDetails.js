@@ -94,13 +94,13 @@ const CurrencyDetails = enhance((props) => {
         classes,
         loading,
         data,
+        currentId,
         listData,
         actionsDialog,
         filter,
         currency,
         setCurrencyUpdateDialog
     } = props
-
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -142,8 +142,8 @@ const CurrencyDetails = enhance((props) => {
         list: historyList,
         loading: loading
     }
-
     const customData = {
+        id: currentId,
         dialog: setCurrencyUpdateDialog,
         listData: listData
     }

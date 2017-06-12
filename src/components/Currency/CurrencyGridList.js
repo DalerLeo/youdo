@@ -148,6 +148,7 @@ const CurrencyGridList = enhance((props) => {
     const currencyDetail = (
         <CurrencyDetails
             key={_.get(detailData, 'id')}
+            currentId = {_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             listData={listData}
             loading={_.get(detailData, 'detailLoading')}

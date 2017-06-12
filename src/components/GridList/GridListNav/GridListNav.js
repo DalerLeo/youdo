@@ -9,6 +9,10 @@ import GridListNavSearch from '../GridListNavSearch'
 const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
+    const listData = _.get(customData, ['listData', 'data'])
+    const handleUpdateDialog = _.get(customData, ['dialog', 'handleOpenSetCurrencyDialog'])
+    const gridDataId = _.get(customData, 'id')
+    const currentCurrency =  _.get(_.find(listData, {'id': gridDataId}), 'name')
     return (
         <div className={classes.wrapper}>
             <div style={{padding: '0 30px'}}>
@@ -17,8 +21,10 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
                         {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>}
                         {withoutSearch &&
                         <div className={classes.currencyName}>
-                            <span>SUM</span>
-                            <a className={classes.link}>Установить курс</a>
+                            <span>{currentCurrency}</span>
+                            <a onClick={() => {
+                                handleUpdateDialog(gridDataId)
+                            }} className={classes.link}>Установить курс</a>
                         </div>}
                     </Col>
                     <Col xs={6}>
@@ -58,6 +64,13 @@ GridListNav.propTypes = {
     customData: PropTypes.shape({
         dialog: PropTypes.node.isRequired,
         listData: PropTypes.array.isRequired
+    }),
+    setCurrencyUpdateDialog: PropTypes.shape({
+        setCurrencyLoading: PropTypes.bool.isRequired,
+        openSetCurrencyDialog: PropTypes.bool.isRequired,
+        handleOpenSetCurrencyDialog: PropTypes.func.isRequired,
+        handleCloseSetCurrencyDialog: PropTypes.func.isRequired,
+        handleSubmitSetCurrencyDialog: PropTypes.func.isRequired
     })
 }
 

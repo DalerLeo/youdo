@@ -209,7 +209,6 @@ const enhance = compose(
 
         handleSubmitSetCurrencyDialog: props => () => {
             const {dispatch, setCurrency, filter, location: {pathname}, detail} = props
-
             return dispatch(setCurrencyCreateAction(_.get(setCurrency, ['values']), detail.id))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
