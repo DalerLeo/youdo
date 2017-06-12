@@ -12,7 +12,7 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'relative',
-            paddingBottom: '35px'
+            width: '100%'
         },
         header: {
             height: '100px'
@@ -29,7 +29,7 @@ const enhance = compose(
 )
 
 const GridList = enhance((props) => {
-    const {classes, list, detail, filter, filterDialog, actionsDialog, withoutCheckboxes, withoutRow} = props
+    const {classes, list, customData, detail, filter, filterDialog, actionsDialog, withoutCheckboxes, withoutRow, withoutSearch} = props
     const header = _.get(list, 'header')
     const listItems = _.get(list, 'list')
     const loading = _.get(list, 'loading')
@@ -58,8 +58,10 @@ const GridList = enhance((props) => {
             <div className={classes.header}>
                 <GridListNav
                     filter={filter}
+                    customData={customData}
                     filterDialog={filterDialog}
                     actions={actionsDialog}
+                    withoutSearch={withoutSearch}
                 />
                 <GridListHeader
                     filter={filter}
@@ -77,11 +79,16 @@ const GridList = enhance((props) => {
 GridList.propTypes = {
     filter: PropTypes.object.isRequired,
     withoutCheckboxes: PropTypes.bool,
+    withoutSearch: PropTypes.bool,
     withoutRow: PropTypes.bool,
     list: PropTypes.shape({
         header: PropTypes.array.isRequired,
         list: PropTypes.array.isRequired,
         loading: PropTypes.bool.isRequired
+    }),
+    customData: PropTypes.shape({
+        dialog: PropTypes.node.isRequired,
+        listData: PropTypes.array.isRequired
     }),
     detail: PropTypes.node.isRequired,
     actionsDialog: PropTypes.node.isRequired,
@@ -89,7 +96,8 @@ GridList.propTypes = {
 }
 
 GridList.defaultProps = {
-    withoutCheckboxes: false
+    withoutCheckboxes: false,
+    withoutSearch: false
 }
 
 export default GridList
