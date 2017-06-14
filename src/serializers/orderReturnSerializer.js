@@ -1,41 +1,17 @@
 import _ from 'lodash'
-import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
-import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 export const createSerializer = (data) => {
-    const client = _.get(data, ['client', 'value'])
-    const contact = _.get(data, ['contact'])
-    const paymentType = 1
-    const paymentTerm = 1
-    const paymentDate = moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD')
-    const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
-    const deliveryType = _.get(data, ['deliveryType', 'value'])
-    const deliveryPrice = numberWithoutSpaces(_.get(data, 'deliveryPrice'))
-    const discountPrice = _.get(data, 'discountPrice')
-    const market = 1
-    const totalPrice = 12345
-    const products = _.map(_.get(data, ['products']), (item) => {
+    const returnedProducts = _.map(_.get(data, ['returned_products']), (item) => {
         return {
             amount: item.amount,
             cost: item.cost,
-            product: item.product.value
+            product: item.product.value,
+            name: item.product.text
         }
     })
     return {
-        client,
-        contact,
-        'date_delivery': deliveryDate,
-        'request_dedline': deliveryDate,
-        'delivery_type': deliveryType,
-        'delivery_price': deliveryPrice,
-        'discount_price': discountPrice,
-        'payment_date': paymentDate,
-        'payment_type': paymentType,
-        'payment_term': paymentTerm,
-        'total_price': totalPrice,
-        market,
-        products
+        'returned_products': returnedProducts
     }
 }
 

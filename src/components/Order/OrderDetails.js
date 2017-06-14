@@ -9,6 +9,7 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
 import OrderShortageDialog from './OrderShortage'
+import OrderItemReturnDialog from './OrderItemReturnDialog'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import Time from 'material-ui/svg-icons/device/access-time'
@@ -290,6 +291,7 @@ const OrderDetails = enhance((props) => {
         transactionsDialog,
         returnDialog,
         shortageDialog,
+        itemReturnDialog,
         confirmDialog,
         handleOpenUpdateDialog,
         tabData,
@@ -316,11 +318,11 @@ const OrderDetails = enhance((props) => {
 
     const percent = 100
     const zero = 0
-    const deliveryPrice = _.get(data, 'deliveryPrice')
-    const discount = _.get(data, 'discountPrice')
-    const totalPrice = _.get(data, 'totalPrice')
+    const deliveryPrice = _.toNumber(_.get(data, 'deliveryPrice'))
+    const discountPrice = _.toNumber(_.get(data, 'discountPrice'))
+    const totalPrice = _.toNumber(_.get(data, 'totalPrice'))
     const totalBalance = _.get(data, 'totalBalance')
-    const discountPrice = totalPrice * (discount / percent)
+    const discount = (discountPrice / (discountPrice + totalPrice)) * percent
 
     if (loading) {
         return (
@@ -500,7 +502,7 @@ const OrderDetails = enhance((props) => {
                                         <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
                                     </Row>
                                     <Row className="dottedList">
-                                        <Col xs={2}><a className={classes.link}>331</a></Col>
+                                        <Col xs={2}><a onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(id) }} className={classes.link}>331</a></Col>
                                         <Col xs={6} style={{textAlign: 'left'}}>Клиент не доволен</Col>
                                         <Col xs={2}>20.06.2016</Col>
                                         <Col xs={2}>2 000 000</Col>
@@ -532,6 +534,11 @@ const OrderDetails = enhance((props) => {
                 onClose={shortageDialog.handleCloseShortageDialog}
                 onSubmit={shortageDialog.handleSubmitShortageDialog}
             />
+            <OrderItemReturnDialog
+                open={itemReturnDialog.openOrderItemReturnDialog}
+                loading={itemReturnDialog.returnLoading}
+                onClose={itemReturnDialog.handleCloseItemReturnDialog}
+            />
         </div>
     )
 })
@@ -549,6 +556,12 @@ OrderDetails.propTypes = {
         openReturnDialog: PropTypes.bool.isRequired,
         handleOpenReturnDialog: PropTypes.func.isRequired,
         handleCloseReturnDialog: PropTypes.func.isRequired
+    }).isRequired,
+    itemReturnDialog: PropTypes.shape({
+        returnLoading: PropTypes.bool.isRequired,
+        openOrderItemReturnDialog: PropTypes.bool.isRequired,
+        handleOpenItemReturnDialog: PropTypes.func.isRequired,
+        handleCloseItemReturnDialog: PropTypes.func.isRequired
     }).isRequired,
     handleOpenUpdateDialog: PropTypes.func.isRequired,
     orderListData: PropTypes.object
