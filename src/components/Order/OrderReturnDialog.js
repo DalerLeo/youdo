@@ -13,7 +13,7 @@ import {
     OrderListReturnField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
-import OrderReturnTotalSum from '../ReduxForm/OrderReturnTotalSum'
+import OrderReturnTotalSum from '../ReduxForm/Order/OrderReturnTotalSum'
 
 export const ORDER_RETURN_DIALOG_OPEN = 'openReturnDialog'
 const validate = (data) => {

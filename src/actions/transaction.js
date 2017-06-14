@@ -3,7 +3,7 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/transactionSerializer'
+import * as serializers from '../serializers/Transaction/transactionSerializer'
 
 export const transactionCreateIncomeAction = (formValues, cashboxId) => {
     const requestData = serializers.createIncomeSerializer(formValues, cashboxId)

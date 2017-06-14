@@ -3,7 +3,7 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/manufactureProductSerializer'
+import * as serializers from '../serializers/Manufacture/manufactureProductSerializer'
 
 export const manufactureProductCreateAction = (formValues, manufactureId) => {
     const requestData = serializers.createSerializer(formValues, manufactureId)
