@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import Tooltip from '../ToolTip'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import NotFound from '../Images/not-found.png'
 
 const iconStyle = {
     icon: {
@@ -85,6 +86,19 @@ const enhance = compose(
                 height: '20px !important',
                 width: '25px !important'
             }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '285px',
+            padding: '260px 0 0',
+            textAlign: 'center',
+            fontSize: '15px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
 )
@@ -97,7 +111,8 @@ const ManufactureDetails = enhance((props) => {
         handleOpenEditMaterials,
         handleOpenConfirmDialog,
         productTitle,
-        createMaterials
+        createMaterials,
+        handleDeleteAllIngredient
     } = props
 
     const id = _.get(data, 'id')
@@ -126,7 +141,9 @@ const ManufactureDetails = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onClick={() => { handleOpenEditMaterials(itemId) }}>
+                                onClick={() => {
+                                    handleOpenEditMaterials(itemId)
+                                }}>
                                 <ModEditorIcon />
                             </IconButton>
                         </Tooltip>
@@ -135,7 +152,9 @@ const ManufactureDetails = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onClick={() => { handleOpenConfirmDialog(itemId) }}>
+                                onClick={() => {
+                                    handleOpenConfirmDialog(itemId)
+                                }}>
                                 <DeleteIcon />
                             </IconButton>
                         </Tooltip>
@@ -144,7 +163,6 @@ const ManufactureDetails = enhance((props) => {
             </li>
         )
     })
-
     return (
         <div key={id} className={classes.wrapper}>
             <div className={classes.title}>
@@ -154,25 +172,37 @@ const ManufactureDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
-                            onClick={createMaterials.handleOpen}>
-                            <ContentAdd />
+                            onClick={handleDeleteAllIngredient(id)}>
+                            <DeleteIcon />
                         </IconButton>
+                        <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.addButton}
+                        onClick={createMaterials.handleOpen}>
+                        <ContentAdd />
+                    </IconButton>
                     </Tooltip>
                 </div>
             </div>
 
             <div className={classes.materialsList}>
-                <ul className={classes.rawMaterials}>
-                    <li key={id} className="dottedList">
-                        <Col xs={7}>
-                            <strong>Сырье</strong>
-                        </Col>
-                        <Col xs={3}>
-                            <strong>Обьем</strong>
-                        </Col>
-                    </li>
-                    {ingredientList}
-                </ul>
+                {ingredientList.length > 0
+                ? <div>
+                        <ul className={classes.rawMaterials}>
+                            <li key={id} className="dottedList">
+                                <Col xs={7}>
+                                    <strong>Сырье</strong>
+                                </Col>
+                                <Col xs={3}>
+                                    <strong>Обьем</strong>
+                                </Col>
+                            </li>
+                            {ingredientList}
+                        </ul>
+                    </div>
+                : <div className={classes.emptyQuery}>
+                    <div>По вашему запросу ничего не найдено</div>
+                </div>}
             </div>
         </div>
     )

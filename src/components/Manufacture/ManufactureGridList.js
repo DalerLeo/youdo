@@ -247,7 +247,8 @@ const ManufactureGridList = enhance((props) => {
         productData,
         tabData,
         productFilterDialog,
-        personData
+        personData,
+        deleteMaterials
     } = props
 
     const detailId = _.get(detailData, 'id')
@@ -283,10 +284,11 @@ const ManufactureGridList = enhance((props) => {
     const productConfirm = _.get(productData, 'confirmDialog')
     const productCreate = _.get(productData, 'createDialog')
     const productUpdate = _.get(productData, 'updateDialog')
-
     const userCreate = _.get(personData, 'createDialog')
     const userUpdate = _.get(personData, 'updateDialog')
     const userConfirm = _.get(personData, 'confirmDialog')
+    const productName = _.get(_.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), 'name')
+    console.log(_.get(productData, 'productList'), "id : ", _.toInteger(_.get(productData, ['detailData', 'id'])), _.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), _.get(_.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), 'name'))
     return (
         <Container>
             <SubMenu url={ROUTES.MANUFACTURE_CUSTOM_URL}/>
@@ -349,15 +351,23 @@ const ManufactureGridList = enhance((props) => {
                     tabData={tabData}
                     editMaterials={editMaterials}
                     createMaterials={createMaterials}
+                    deleteMaterials={deleteMaterials}
                     productData={productData}
                     personData={personData}
                     equipmentData={equipmentData}
                     productFilterDialog={productFilterDialog}/>
             </Row>
 
+            {_.get(deleteMaterials, 'open') !== false && <ConfirmDialog
+                type="delete"
+                open={deleteMaterials.open}
+                message={_.get(deleteMaterials, 'name')}
+                onClose={deleteMaterials.handleCloseConfirmDialog}
+                onSubmit={deleteMaterials.handleSendConfirmDialog}
+            />}
             {_.get(productData, ['detailData', 'id']) !== MINUS_ONE && <ConfirmDialog
                 type="delete"
-                message={_.get(productData, ['detailData', 'data', 'name'])}
+                message={productName}
                 onClose={productConfirm.handleCloseConfirmDialog}
                 onSubmit={productConfirm.handleSendConfirmDialog}
                 open={productConfirm.openConfirmDialog}
