@@ -173,7 +173,7 @@ const ManufactureDetails = enhance((props) => {
                         </IconButton>
                     </Tooltip>
                 </div>
-            </div>nvb
+            </div>
             <div className={classes.materialsList}>
                 {ingredientList.length > 0
                     ? <div>
