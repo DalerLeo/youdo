@@ -131,8 +131,8 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return !nextProps.listLoading && _.isNil(nextProps.list)
     }, ({dispatch, filter, params, propTypes}) => {
-        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
-        const productId = _.toInteger(_.get(propTypes, ['location', 'query', 'productId']))
+        // const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        // const productId = _.toInteger(_.get(propTypes, ['location', 'query', 'productId']))
         dispatch(manufactureListFetchAction(filter))
         // Dispatch(ingredientListFetchAction(productId))
     }),

@@ -172,7 +172,7 @@ const ManufactureDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
-                            onClick={handleDeleteAllIngredient(id)}>
+                            onClick={() => { handleDeleteAllIngredient(id) }}>
                             <DeleteIcon />
                         </IconButton>
                         <IconButton
