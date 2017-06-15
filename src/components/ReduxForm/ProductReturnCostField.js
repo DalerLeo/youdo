@@ -9,11 +9,11 @@ import numberFormat from '../../helpers/numberFormat'
 const enhance = compose(
     connect((state) => {
         const ONE = 1
-        const extra = _.get(state, ['order', 'item', 'data'])
+        const values = _.get(state, ['form', 'OrderReturnForm', 'values'])
         const extraLoading = _.get(state, ['product', 'extra', 'loading'])
         const count = _.get(state, ['form', 'OrderReturnForm', 'values', 'amount']) || ONE
         return {
-            extra,
+            values,
             count,
             extraLoading
         }
@@ -21,9 +21,9 @@ const enhance = compose(
 )
 
 const ProductReturnCostField = enhance((props) => {
-    const {extra, extraLoading, count} = props
+    const {values, extraLoading, count} = props
     const ZERO = 0
-    const cost = _.toNumber(_.get(extra, ['products', 'price']) || ZERO) * _.toNumber(count)
+    const cost = _.toNumber(_.get(values, ['product', 'value', 'price']) || ZERO) * _.toNumber(count)
     return (
         <div style={{marginTop: '20px'}}>
             { extraLoading && <div><CircularProgress size={20} thickness={2} /></div> }

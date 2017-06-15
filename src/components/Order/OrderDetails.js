@@ -22,6 +22,7 @@ import numberFormat from '../../helpers/numberFormat'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/orderTab'
+import NotFound from '../Images/not-found.png'
 
 const enhance = compose(
     injectSheet({
@@ -263,6 +264,17 @@ const enhance = compose(
             '& button div div': {
                 textTransform: 'initial'
             }
+        },
+        noReturn: {
+            padding: '100px 0',
+            color: '#999'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '215px',
+            padding: '215px 0 0',
+            textAlign: 'center',
+            color: '#999'
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -295,7 +307,8 @@ const OrderDetails = enhance((props) => {
         confirmDialog,
         handleOpenUpdateDialog,
         tabData,
-        paymentData
+        paymentData,
+        returnData
     } = props
     const tab = _.get(tabData, 'tab')
 
@@ -321,6 +334,7 @@ const OrderDetails = enhance((props) => {
     const deliveryPrice = _.toNumber(_.get(data, 'deliveryPrice'))
     const discountPrice = _.toNumber(_.get(data, 'discountPrice'))
     const totalPrice = _.toNumber(_.get(data, 'totalPrice'))
+    const totalPaid = _.get(data, 'totalPaid')
     const totalBalance = _.get(data, 'totalBalance')
     const discount = (discountPrice / (discountPrice + totalPrice)) * percent
 
@@ -427,9 +441,10 @@ const OrderDetails = enhance((props) => {
                                 <li>22.05.2017</li>
                                 <li>{numberFormat(deliveryPrice)} {PRIMARY_CURRENCY_NAME}</li>
                                 <li>{numberFormat(discountPrice)} {PRIMARY_CURRENCY_NAME}</li>
-                                <li>
-                                    <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>500 000 {PRIMARY_CURRENCY_NAME}</a>
+                                {(totalPaid !== zero) ? <li>
+                                    <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {PRIMARY_CURRENCY_NAME}</a>
                                 </li>
+                                : <li>{totalPaid} {PRIMARY_CURRENCY_NAME}</li>}
                                 <li className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {PRIMARY_CURRENCY_NAME}</li>
                             </ul>
                         </div>
@@ -461,7 +476,7 @@ const OrderDetails = enhance((props) => {
                     <Tabs
                         value={tab}
                         className={classes.colorCat}
-                        onChange={(value) => tabData.handleTabChange(value)}>
+                        onChange={(value) => tabData.handleTabChange(value, id)}>
                         <Tab label="Список товаров" value={TAB.ORDER_TAB_PRODUCT_LIST}>
                             <div className={classes.tabContent}>
                                 <div className={classes.tabWrapper}>
@@ -493,7 +508,7 @@ const OrderDetails = enhance((props) => {
                             </div>
                         </Tab>
                         <Tab label="Возврат" value={TAB.ORDER_TAB_RETURN}>
-                            <div className={classes.tabContent}>
+                            {!_.isEmpty(returnData) ? <div className={classes.tabContent}>
                                 <div className={classes.tabWrapper}>
                                     <Row className="dottedList">
                                         <Col xs={2}>Код</Col>
@@ -501,15 +516,31 @@ const OrderDetails = enhance((props) => {
                                         <Col xs={2}>Дата возврата</Col>
                                         <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
                                     </Row>
-                                    <Row className="dottedList">
-                                        <Col xs={2}><a onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(id) }} className={classes.link}>331</a></Col>
-                                        <Col xs={6} style={{textAlign: 'left'}}>Клиент не доволен</Col>
-                                        <Col xs={2}>20.06.2016</Col>
-                                        <Col xs={2}>2 000 000</Col>
-                                    </Row>
+                                    {_.map(returnData, (item, index) => {
+                                        const returnId = _.get(item, 'id')
+                                        const comment = 'Сюда нужно вывести причину'
+                                        const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+                                        const totalSum = numberFormat(_.get(item, 'totalPrice'))
+                                        return (
+                                            <Row className="dottedList" key={index}>
+                                                <Col xs={2}><a
+                                                    onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(returnId) }}
+                                                    className={classes.link}>
+                                                    {returnId}
+                                                    </a>
+                                                </Col>
+                                                <Col style={{textAlign: 'left'}} xs={6}>{comment}</Col>
+                                                <Col xs={2}>{dateReturn}</Col>
+                                                <Col xs={2}>{totalSum}</Col>
+                                            </Row>
+                                        )
+                                    })}
                                 </div>
                                 <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {PRIMARY_CURRENCY_NAME}</div>
                             </div>
+                            : <div className={classes.emptyQuery}>
+                                    <div>В данном заказе нет возвратов</div>
+                                </div>}
                         </Tab>
                         <Tab label="Исполнение" value={TAB.ORDER_TAB_PERFORMANCE}>3</Tab>
                     </Tabs>
@@ -550,6 +581,7 @@ OrderDetails.propTypes = {
         handleTabChange: PropTypes.func.isRequired
     }),
     data: PropTypes.object.isRequired,
+    returnData: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     returnDialog: PropTypes.shape({
         returnLoading: PropTypes.bool.isRequired,

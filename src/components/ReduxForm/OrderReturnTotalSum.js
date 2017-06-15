@@ -26,7 +26,10 @@ const OrderReturnTotalSum = enhance((props) => {
     const {products} = props
     let totalCost = ZERO
     _.map(products, (item) => {
-        totalCost += _.toNumber(_.get(item, 'cost'))
+        const itemCost = _.toNumber(_.get(item, ['product', 'value', 'price']))
+        const itemAmount = _.toNumber(_.get(item, 'amount'))
+        const cost = itemAmount * itemCost
+        totalCost += cost
     })
     const orderTotal = totalCost
     return (

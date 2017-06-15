@@ -53,6 +53,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'OrderFilterForm'])
         const createForm = _.get(state, ['form', 'OrderCreateForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
+        const returnData = _.get(state, ['order', 'return', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -71,7 +72,8 @@ const enhance = compose(
             filter,
             filterForm,
             createForm,
-            returnForm
+            returnForm,
+            returnData
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -80,14 +82,19 @@ const enhance = compose(
         dispatch(orderListFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.query !== nextProps.query
+        const prevTransaction = _.get(props, ['location', 'query', 'openTransactionsDialog'])
+        const nextTransaction = _.get(nextProps, ['location', 'query', 'openTransactionsDialog'])
+        return prevTransaction !== nextTransaction && nextTransaction === 'true'
     }, ({dispatch, filter}) => {
         dispatch(orderTransactionFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
-        dispatch(orderItemReturnFetchAction(filter))
+        const prevTab = _.get(props, ['location', 'query', 'tab'])
+        const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
+        return props.params.orderId !== nextProps.params.orderId && nextTab === 'return'
+    }, ({dispatch, params}) => {
+        const orderId = _.toInteger(_.get(params, 'orderId'))
+        dispatch(orderItemReturnFetchAction(orderId))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -245,14 +252,14 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
         },
         handleSubmitReturnDialog: props => () => {
-            const {dispatch, returnForm, filter, location: {pathname}} = props
-            return dispatch(orderReturnAction(_.get(returnForm, ['values'])))
+            const {dispatch, returnForm, detail, filter, location: {pathname}} = props
+            return dispatch(orderReturnAction(_.get(returnForm, ['values']), detail))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
-                    dispatch(orderListFetchAction(filter))
+                    dispatch(orderItemReturnFetchAction(filter))
                 })
         },
 
@@ -312,6 +319,7 @@ const OrderList = enhance((props) => {
         list,
         listLoading,
         detail,
+        returnData,
         payment,
         detailLoading,
         createLoading,
@@ -474,6 +482,7 @@ const OrderList = enhance((props) => {
     const detailData = {
         id: detailId,
         data: detail,
+        return: returnData,
         detailLoading
     }
 

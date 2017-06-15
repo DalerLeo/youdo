@@ -154,6 +154,7 @@ const enhance = compose(
 
 const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, orderData, ...defaultProps}) => {
     const products = _.get(defaultProps, ['returned_products', 'input', 'value']) || []
+    console.log(products)
     return (
         <div className={classes.wrapper}>
             <div>
@@ -221,8 +222,10 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         {_.map(products, (item, index) => (
                             <TableRow key={index} className={classes.tableRow}>
                                 <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'amount')} {_.get(item, ['measurement', 'name'])}</TableRowColumn>
-                                <TableRowColumn>{numberFormat(_.get(item, 'cost'), PRIMARY_CURRENCY_NAME)}</TableRowColumn>
+                                <TableRowColumn>{_.get(item, 'amount')} {_.get(item, ['product', 'value', 'product', 'measurement', 'name'])}</TableRowColumn>
+                                <TableRowColumn>{
+                                    numberFormat((_.get(item, ['product', 'value', 'price']) * (_.get(item, 'amount'))), PRIMARY_CURRENCY_NAME)
+                                }</TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>
                                     <IconButton onTouchTap={() => handleRemove(index)}>
                                         <DeleteIcon color="#666666"/>

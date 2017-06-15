@@ -124,6 +124,14 @@ const enhance = compose(
             textAlign: 'right',
             borderTop: '1px #efefef solid'
         },
+        returnComment: {
+            fontSize: '13px !important',
+            margin: '-20px 0 20px',
+            position: 'relative',
+            '& label': {
+                left: '0'
+            }
+        },
         bottomButton: {
             bottom: '0',
             left: '0',
@@ -197,9 +205,12 @@ const OrderReturnDialog = enhance((props) => {
                             <Field
                                 name="comment"
                                 component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="Описание раскода"
-                                fullWidth={true}/>
+                                className={classes.returnComment}
+                                label="Комментарий к возврату"
+                                fullWidth={true}
+                                multiLine={true}
+                                rows={2}
+                                rowsMax={3}/>
                             <div>Общая сумма возврата: <OrderReturnTotalSum/></div>
                         </div>
                     </div>

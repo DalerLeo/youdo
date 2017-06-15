@@ -15,24 +15,18 @@ const enhance = compose(
 )
 
 const ReturnProductsSearchField = enhance((props) => {
-    const Items = _.get(props, 'products')
-    let productItems = []
-    _.map(Items, (item) => {
-        const prodId = _.get(item, ['product', 'id'])
-        const prodName = _.get(item, ['product', 'name'])
-        productItems.push({id: prodId, name: prodName})
-    })
+    const productItems = _.get(props, 'products')
 
     return (
         <SearchField
-            getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('name')}
+            getValue={(value) => { return value }}
+            getText={(value) => { return _.get(value, ['product', 'name']) }}
             getOptions={() => { return Promise.resolve(productItems) }}
-            getItem={(id) => {
+            getItem={(value) => {
                 return Promise.resolve(
-                    _.find(productItems, (o) => { return o.id === _.toInteger(id) }))
+                    _.find(productItems, (o) => { return _.toInteger(_.get(o, ['product', 'id'])) === _.toInteger(_.get(value, ['product', 'id'])) }))
             }}
-            getItemText={SearchField.defaultGetText('name')}
+            getItemText={(value) => { return _.get(value, ['product', 'name']) }}
             {...props}
         />
     )

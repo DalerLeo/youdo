@@ -164,6 +164,7 @@ const OrderGridList = enhance((props) => {
         <OrderDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
+            returnData={_.get(detailData, 'return')}
             deleteDialog={deleteDialog}
             transactionsDialog={transactionsDialog}
             tabData={tabData}
