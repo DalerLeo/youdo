@@ -111,7 +111,8 @@ const ManufactureDetails = enhance((props) => {
         handleOpenEditMaterials,
         handleOpenConfirmDialog,
         productTitle,
-        createMaterials
+        createMaterials,
+        handleDeleteAllIngredient
     } = props
 
     const id = _.get(data, 'id')
@@ -140,7 +141,9 @@ const ManufactureDetails = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onClick={() => { handleOpenEditMaterials(itemId) }}>
+                                onClick={() => {
+                                    handleOpenEditMaterials(itemId)
+                                }}>
                                 <ModEditorIcon />
                             </IconButton>
                         </Tooltip>
@@ -149,7 +152,9 @@ const ManufactureDetails = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onClick={() => { handleOpenConfirmDialog(itemId) }}>
+                                onClick={() => {
+                                    handleOpenConfirmDialog(itemId)
+                                }}>
                                 <DeleteIcon />
                             </IconButton>
                         </Tooltip>
@@ -168,13 +173,36 @@ const ManufactureDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
-                            onClick={createMaterials.handleOpen}>
-                            <ContentAdd />
+                            onClick={() => { handleDeleteAllIngredient(id) }}>
+                            <DeleteIcon />
                         </IconButton>
+                        <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.addButton}
+                        onClick={createMaterials.handleOpen}>
+                        <ContentAdd />
+                    </IconButton>
                     </Tooltip>
                 </div>
             </div>
             <div className={classes.materialsList}>
+                {ingredientList.length > 0
+                ? <div>
+                        <ul className={classes.rawMaterials}>
+                            <li key={id} className="dottedList">
+                                <Col xs={7}>
+                                    <strong>Сырье</strong>
+                                </Col>
+                                <Col xs={3}>
+                                    <strong>Обьем</strong>
+                                </Col>
+                            </li>
+                            {ingredientList}
+                        </ul>
+                    </div>
+                : <div className={classes.emptyQuery}>
+                    <div>По вашему запросу ничего не найдено</div>
+                </div>}
                 {ingredientList.length > 0
                     ? <div>
                         <ul className={classes.rawMaterials}>

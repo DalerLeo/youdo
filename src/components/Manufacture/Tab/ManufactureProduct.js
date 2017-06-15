@@ -62,7 +62,7 @@ const enhance = compose(
 )
 
 const ManufactureProduct = enhance((props) => {
-    const {classes, filter, filterDialog, productData, editMaterials, createMaterials} = props
+    const {classes, filter, filterDialog, productData, editMaterials, createMaterials, deleteMaterials} = props
 
     const productFilterDialog = (
         <ProductFilterForm
@@ -93,7 +93,8 @@ const ManufactureProduct = enhance((props) => {
             key={_.get(detailData, 'id')}
             id={_.get(detailData, 'id')}
             data={_.get(detailData, 'data')}
-            handleOpenConfirmDialog={_.get(productData, ['confirmDialog', 'handleOpenConfirmDialog'])}
+            handleDeleteAllIngredient={_.get(productData, ['confirmDialog', 'handleOpenConfirmDialog'])}
+            handleOpenConfirmDialog={_.get(deleteMaterials, ['handleOpenConfirmDialog'])}
             handleOpenEditMaterials={_.get(editMaterials, ['handleOpen'])}
             loading={_.get(detailData, 'detailLoading')}
         />
@@ -123,19 +124,7 @@ const ManufactureProduct = enhance((props) => {
                 <Col xs={5}>{type}</Col>
                 <Col xs={2}>{brand}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                        />
-                    </IconMenu>
+                    <Edit />
                 </Col>
             </Row>
         )
