@@ -7,7 +7,6 @@ import * as serializers from '../serializers/manufactureProductSerializer'
 
 export const manufactureProductCreateAction = (formValues, manufactureId) => {
     const requestData = serializers.createSerializer(formValues, manufactureId)
-
     const payload = axios()
         .post(API.MANUFACTURE_PRODUCT_CREATE, requestData)
         .then((response) => {
@@ -90,9 +89,10 @@ export const manufactureProductCSVFetchAction = (filter) => {
     }
 }
 
-export const manufactureProductItemFetchAction = (id) => {
+export const productChangeManufacture = (id, formValues) => {
+    const requestData = serializers.changeManufacture(formValues)
     const payload = axios()
-        .get(sprintf(API.MANUFACTURE_PRODUCT_ITEM, id))
+        .post(sprintf(API.MANUFACTURE_PRODUCT_CHANGE, id, requestData))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -101,7 +101,7 @@ export const manufactureProductItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.MANUFACTURE_PRODUCT_ITEM,
+        type: actionTypes.MANUFACTURE_PRODUCT_CHANGE,
         payload
     }
 }

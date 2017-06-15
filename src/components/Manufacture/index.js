@@ -13,6 +13,7 @@ const OPEN_USER_UPDATE_DIALOG = 'openUserUpdateDialog'
 const MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN = 'createMaterials'
 const OPEN_DELETE_MATERIALS_DIALOG = 'openDeleteIngredient'
 const OPEN_USER_CONFIRM_DIALOG = 'openUserDeleteDialog'
+const MANUFACTURE_CHANGE = 'openChangeManufacture'
 const TAB = 'tab'
 
 export {
@@ -29,6 +30,7 @@ export {
     OPEN_USER_CONFIRM_DIALOG,
     OPEN_USER_UPDATE_DIALOG,
     OPEN_DELETE_MATERIALS_DIALOG,
+    MANUFACTURE_CHANGE,
     TAB,
     ManufactureGridList
 }

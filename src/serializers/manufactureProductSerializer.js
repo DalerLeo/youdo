@@ -42,3 +42,10 @@ export const csvFilterSerializer = (data) => {
         format: 'csv'
     }
 }
+export const changeManufacture = (data) => {
+    const manufacture = _.get(data, 'manufacture')
+
+    return {
+        'manufacture': manufacture
+    }
+}

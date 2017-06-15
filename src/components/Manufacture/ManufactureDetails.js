@@ -8,8 +8,9 @@ import CircularProgress from 'material-ui/CircularProgress'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import Tooltip from '../ToolTip'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import Map from 'material-ui/svg-icons/maps/map'
+import Tooltip from '../ToolTip'
 import NotFound from '../Images/not-found.png'
 
 const iconStyle = {
@@ -112,7 +113,8 @@ const ManufactureDetails = enhance((props) => {
         handleOpenConfirmDialog,
         productTitle,
         createMaterials,
-        handleDeleteAllIngredient
+        handleDeleteAllIngredient,
+        handleOpenChangeManufacture
     } = props
 
     const id = _.get(data, 'id')
@@ -173,6 +175,12 @@ const ManufactureDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
+                            onClick={handleOpenChangeManufacture}>
+                            <Map />
+                        </IconButton>
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.addButton}
                             onClick={() => { handleDeleteAllIngredient(id) }}>
                             <DeleteIcon />
                         </IconButton>
@@ -203,23 +211,6 @@ const ManufactureDetails = enhance((props) => {
                 : <div className={classes.emptyQuery}>
                     <div>По вашему запросу ничего не найдено</div>
                 </div>}
-                {ingredientList.length > 0
-                    ? <div>
-                        <ul className={classes.rawMaterials}>
-                            <li key={id} className="dottedList">
-                                <Col xs={7}>
-                                    <strong>Сырье</strong>
-                                </Col>
-                                <Col xs={3}>
-                                    <strong>Обьем</strong>
-                                </Col>
-                            </li>
-                            {ingredientList}
-                        </ul>
-                    </div>
-                    : <div className={classes.emptyQuery}>
-                        <div>По вашему запросу ничего не найдено</div>
-                    </div>}
             </div>
         </div>
     )
@@ -227,7 +218,8 @@ const ManufactureDetails = enhance((props) => {
 
 ManufactureDetails.propTypes = {
     handleOpenEditMaterials: PropTypes.func.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired
+    handleOpenConfirmDialog: PropTypes.func.isRequired,
+    handleOpenChangeManufacture: PropTypes.func.isRequired
 }
 
 export default ManufactureDetails

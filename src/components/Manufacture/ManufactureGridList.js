@@ -2,16 +2,17 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import Container from '../Container'
-import ManufactureAddStaffDialog from './ManufactureAddStaffDialog'
-import ManufactureShowBom from './ManufactureShowBom'
-import ManufactureAddProductDialog from './ManufactureAddProductDialog'
-import ManufactureEditProductDialog from './ManufactureEditProductDialog'
-import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
+import ManufactureAddStaffDialog from './ManufactureAddStaffDialog'
+import ManufactureShowBom from './ManufactureShowBom'
+import ManufactureChangeDialog from './ManufactureChangeDialog'
+import ManufactureAddProductDialog from './ManufactureAddProductDialog'
+import ManufactureEditProductDialog from './ManufactureEditProductDialog'
+import * as ROUTES from '../../constants/routes'
+import Container from '../Container'
+import SubMenu from '../SubMenu'
 import ManufactureTab from './ManufactureTab'
 import ConfirmDialog from '../ConfirmDialog'
 import Glue from '../Images/glue.png'
@@ -288,7 +289,6 @@ const ManufactureGridList = enhance((props) => {
     const userUpdate = _.get(personData, 'updateDialog')
     const userConfirm = _.get(personData, 'confirmDialog')
     const productName = _.get(_.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), 'name')
-    console.log(_.get(productData, 'productList'), "id : ", _.toInteger(_.get(productData, ['detailData', 'id'])), _.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), _.get(_.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), 'name'))
     return (
         <Container>
             <SubMenu url={ROUTES.MANUFACTURE_CUSTOM_URL}/>
@@ -334,6 +334,12 @@ const ManufactureGridList = enhance((props) => {
                 onClose={editMaterials.handleClose}
                 onSubmit={editMaterials.handleSubmit}
             />
+            <ManufactureChangeDialog
+                open={_.get(productData, ['changeManufacture', 'open'])}
+                onClose={_.get(productData, ['changeManufacture', 'handleCloseChangeManufacture'])}
+                onSubmit={_.get(productData, ['changeManufacture', 'handleSubmitChangeManufacture'])}
+            />
+
             <Row className={classes.productionMainRow}>
                 <Col xs={3} className={classes.productionLeftSide}>
                     <h2 className={classes.productionH2}>Этапы производства</h2>

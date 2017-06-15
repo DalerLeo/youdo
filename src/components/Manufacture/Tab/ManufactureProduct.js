@@ -9,10 +9,6 @@ import ProductFilterForm from '../../Product/ProductFilterForm'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import Edit from 'material-ui/svg-icons/image/edit'
 import FloatButton from 'material-ui/FlatButton'
 import ManufactureDetails from '../ManufactureDetails'
 
@@ -22,25 +18,19 @@ const listHeader = [
         sorting: true,
         name: 'name',
         title: 'Наименование',
-        xs: 4
+        xs: 5
     },
     {
         sorting: true,
         name: 'description',
         title: 'Описание',
-        xs: 5
+        xs: 4
     },
     {
         sorting: true,
         name: 'bom',
         title: 'BoM',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'action',
-        title: '',
-        xs: 1
+        xs: 3
     }
 ]
 const enhance = compose(
@@ -96,23 +86,18 @@ const ManufactureProduct = enhance((props) => {
             handleDeleteAllIngredient={_.get(productData, ['confirmDialog', 'handleOpenConfirmDialog'])}
             handleOpenConfirmDialog={_.get(deleteMaterials, ['handleOpenConfirmDialog'])}
             handleOpenEditMaterials={_.get(editMaterials, ['handleOpen'])}
+            handleOpenChangeManufacture={_.get(productData, ['changeManufacture', 'handleOpenChangeManufacture'])}
             loading={_.get(detailData, 'detailLoading')}
         />
     )
-
     const productList = _.map(_.get(productData, 'productList'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const type = _.get(item, ['type', 'name']) || 'N/A'
         const brand = _.get(item, ['brand', 'name']) || 'N/A'
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
         return (
             <Row key={id}>
-                <Col xs={4}>
+                <Col xs={5}>
                     <span
                         className={classes.cursor}
                         onTouchTap={ () => {
@@ -121,11 +106,8 @@ const ManufactureProduct = enhance((props) => {
                         {name}
                     </span>
                 </Col>
-                <Col xs={5}>{type}</Col>
-                <Col xs={2}>{brand}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <Edit />
-                </Col>
+                <Col xs={4}>{type}</Col>
+                <Col xs={3}>{brand}</Col>
             </Row>
         )
     })
