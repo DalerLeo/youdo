@@ -24,7 +24,7 @@ input:-webkit-autofill {
 }
 ::-webkit-scrollbar {
     width: 4px;
-    height: 7px;
+    height: 4px;
 }
 
 html {

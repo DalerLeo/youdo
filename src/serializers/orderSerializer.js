@@ -42,7 +42,6 @@ export const createSerializer = (data) => {
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-
     return {
         'id': _.get(defaultData, 'id'),
         'client': _.get(defaultData, 'client'),
@@ -50,7 +49,7 @@ export const listFilterSerializer = (data) => {
         'dateDelivery': _.get(defaultData, 'dateDelivery'),
         'totalCost': _.get(defaultData, 'totalCost'),
         'totalBalance': _.get(defaultData, 'totalBalance'),
-        'status': _.get(defaultData, 'status'),
+        'orderStatus': _.get(defaultData, 'orderStatus'),
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'search': _.get(defaultData, 'search'),
