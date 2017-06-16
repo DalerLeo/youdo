@@ -13,6 +13,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import numberformat from '../../helpers/numberFormat'
+import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -67,6 +68,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const client = _.get(detailData, ['data', 'client'])
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']))
     const clientName = _.get(client, 'name')
+    console.log(detailData)
 
     return (
         <Dialog
@@ -114,6 +116,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     label="Сумма"
                                     fullWidth={true}
                                 />
+                                <CashboxCurrencyField/>
                                 <Field
                                     name="now"
                                     style={{marginTop: '10px'}}
