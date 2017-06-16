@@ -4,6 +4,7 @@ import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/orderSerializer'
+import * as returnSerializers from '../serializers/orderReturnSerializer'
 
 export const orderCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
@@ -23,9 +24,8 @@ export const orderCreateAction = (formValues) => {
     }
 }
 
-export const orderReturnAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-
+export const orderReturnAction = (formValues, detail) => {
+    const requestData = returnSerializers.createSerializer(formValues, detail)
     const payload = axios()
         .post(API.ORDER_RETURN, requestData)
         .then((response) => {
@@ -91,10 +91,9 @@ export const orderListFetchAction = (filter) => {
     }
 }
 
-export const orderTransactionFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const orderTransactionFetchAction = (orderId) => {
     const payload = axios()
-        .get(API.ORDER_TRANSACTION, {params})
+        .get(API.ORDER_TRANSACTION, {params: {'order': orderId}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -104,6 +103,22 @@ export const orderTransactionFetchAction = (filter) => {
 
     return {
         type: actionTypes.ORDER_TRANSACTION,
+        payload
+    }
+}
+
+export const orderItemReturnFetchAction = (orderId) => {
+    const payload = axios()
+        .get(API.ORDER_RETURN, {params: {'order': orderId}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_RETURN,
         payload
     }
 }

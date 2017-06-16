@@ -22,7 +22,7 @@ import {
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import MainStyles from '../Styles/MainStyles'
-import OrderTotalSum from '../ReduxForm/OrderTotalSum'
+import OrderTotalSum from '../ReduxForm/Order/OrderTotalSum'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
