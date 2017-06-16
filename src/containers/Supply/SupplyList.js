@@ -8,7 +8,7 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
-import {setItemAction} from '../../components/ReduxForm/ProviderSearchField'
+import {setItemAction} from '../../components/ReduxForm/Provider/ProviderSearchField'
 import {
     SUPPLY_CREATE_DIALOG_OPEN,
     SUPPLY_UPDATE_DIALOG_OPEN,

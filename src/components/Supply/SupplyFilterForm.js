@@ -12,7 +12,7 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import {ProviderSearchField, StockSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
-import DateToDateField from '../ReduxForm/DateToDateField'
+import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 
 export const SUPPLY_FILTER_OPEN = 'openFilterDialog'
 
