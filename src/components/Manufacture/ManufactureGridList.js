@@ -280,7 +280,7 @@ const ManufactureGridList = enhance((props) => {
             </li>
         )
     })
-    const MINUS_ONE = -1
+    const ZERO = 0
 
     const productConfirm = _.get(productData, 'confirmDialog')
     const productCreate = _.get(productData, 'createDialog')
@@ -371,7 +371,7 @@ const ManufactureGridList = enhance((props) => {
                 onClose={deleteMaterials.handleCloseConfirmDialog}
                 onSubmit={deleteMaterials.handleSendConfirmDialog}
             />}
-            {_.get(productData, ['detailData', 'id']) !== MINUS_ONE && <ConfirmDialog
+            {_.get(productData, ['detailData', 'id']) > ZERO && <ConfirmDialog
                 type="delete"
                 message={productName}
                 onClose={productConfirm.handleCloseConfirmDialog}
