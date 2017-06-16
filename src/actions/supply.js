@@ -22,6 +22,21 @@ export const supplyCreateAction = (formValues) => {
         payload
     }
 }
+export const supplyDefectAction = (supplyId, productId) => {
+    const payload = axios()
+        .get(sprintf(API.SUPPLY_DEFECT, supplyId, productId))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SUPPLY_DEFECT,
+        payload
+    }
+}
 
 export const supplyDeleteAction = (id) => {
     const payload = axios()

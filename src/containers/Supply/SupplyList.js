@@ -15,6 +15,7 @@ import {
     SUPPLY_FILTER_KEY,
     SUPPLY_FILTER_OPEN,
     SUPPLY_EXPENSE_CREATE_DIALOG_OPEN,
+    SUPPLY_DEFECT_DIALOG_OPEN,
     SupplyGridList
 } from '../../components/Supply'
 import {
@@ -23,7 +24,8 @@ import {
     supplyListFetchAction,
     supplyCSVFetchAction,
     supplyDeleteAction,
-    supplyItemFetchAction
+    supplyItemFetchAction,
+    supplyDefectAction
 } from '../../actions/supply'
 import {
     supplyExpenseCreateAction,
@@ -32,6 +34,8 @@ import {
 } from '../../actions/supplyExpense'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const MINUS_ONE = -1
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -41,6 +45,7 @@ const enhance = compose(
         const createLoading = _.get(state, ['supply', 'create', 'loading'])
         const updateLoading = _.get(state, ['supply', 'update', 'loading'])
         const list = _.get(state, ['supply', 'list', 'data'])
+        const defectData = _.get(state, ['supply', 'defect', 'data'])
         const listLoading = _.get(state, ['supply', 'list', 'loading'])
         const csvData = _.get(state, ['supply', 'csv', 'data'])
         const csvLoading = _.get(state, ['supply', 'csv', 'loading'])
@@ -57,6 +62,7 @@ const enhance = compose(
             list,
             listLoading,
             detail,
+            defectData,
             detailLoading,
             createLoading,
             updateLoading,
@@ -75,6 +81,18 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(supplyListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevDefect = _.toInteger(_.get(props, ['location', 'query', 'openDefectDialog']))
+        const nextDefect = _.toInteger(_.get(nextProps, ['location', 'query', 'openDefectDialog']))
+        return prevDefect !== nextDefect && nextDefect > ZERO
+    }, ({dispatch, params, location}) => {
+        const supplyId = _.toInteger(_.get(params, 'supplyId'))
+        const productId = _.toInteger(_.get(location, ['query', 'openDefectDialog']))
+        if (productId > ZERO) {
+            dispatch(supplyDefectAction(supplyId, productId))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -221,6 +239,16 @@ const enhance = compose(
                 })
         },
 
+        handleOpenDefectDialog: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_DEFECT_DIALOG_OPEN]: id})})
+        },
+
+        handleCloseDefectDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_DEFECT_DIALOG_OPEN]: MINUS_ONE})})
+        },
+
         handleOpenUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_UPDATE_DIALOG_OPEN]: true})})
@@ -281,6 +309,7 @@ const SupplyList = enhance((props) => {
         list,
         listLoading,
         detail,
+        defectData,
         detailLoading,
         createLoading,
         updateLoading,
@@ -296,6 +325,7 @@ const SupplyList = enhance((props) => {
 
     const openFilterDialog = toBoolean(_.get(location, ['query', SUPPLY_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', SUPPLY_CREATE_DIALOG_OPEN]))
+    const openDefectDialog = _.toInteger(_.get(location, ['query', 'openDefectDialog']) || MINUS_ONE) > MINUS_ONE
     const openUpdateDialog = toBoolean(_.get(location, ['query', SUPPLY_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const provider = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
@@ -319,6 +349,12 @@ const SupplyList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
+    const defectDialog = {
+        openDefectDialog,
+        handleOpenDefectDialog: props.handleOpenDefectDialog,
+        handleCloseDefectDialog: props.handleCloseDefectDialog
+    }
+
     const deleteDialog = {
         openDeleteDialog,
         handleOpenDeleteDialog: props.handleOpenDeleteDialog,
@@ -331,7 +367,6 @@ const SupplyList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
-    const ZERO = 0
 
     const confirmExpenseDialog = {
         removeId: expenseRemoveId,
@@ -405,10 +440,10 @@ const SupplyList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
-
     const detailData = {
         id: detailId,
         data: detail,
+        defect: defectData,
         detailLoading
     }
 
@@ -438,6 +473,7 @@ const SupplyList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}
+                defectDialog={defectDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 confirmExpenseDialog={confirmExpenseDialog}
