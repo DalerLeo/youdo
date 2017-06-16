@@ -64,7 +64,8 @@ const ManufactureTab = enhance((props) => {
                     createMaterials={createMaterials}
                     deleteMaterials={deleteMaterials}/>}
                 {TAB.MANUFACTURE_TAB_PERSON === tab && <ManufacturePerson
-                    personData={personData}/>}
+                    personData={personData}
+                    />}
                 {TAB.MANUFACTURE_TAB_EQUIPMENT === tab && <ManufactureEquipment
                     equipmentData={equipmentData}/>}
             </div>
