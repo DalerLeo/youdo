@@ -43,7 +43,7 @@ const enhance = compose(
 )
 
 const ManufactureTab = enhance((props) => {
-    const {classes, tabData, productFilterDialog, productData, personData, equipmentData, editMaterials, createMaterials} = props
+    const {classes, tabData, productFilterDialog, productData, personData, equipmentData, editMaterials, createMaterials, deleteMaterials} = props
     const tab = _.get(tabData, 'tab')
     return (
         <Col className={classes.ManufactRightSide} xs={9} md={9}>
@@ -61,9 +61,11 @@ const ManufactureTab = enhance((props) => {
                     editMaterials={editMaterials}
                     filter={tabData.filter}
                     filterDialog={productFilterDialog}
-                    createMaterials={createMaterials}/>}
+                    createMaterials={createMaterials}
+                    deleteMaterials={deleteMaterials}/>}
                 {TAB.MANUFACTURE_TAB_PERSON === tab && <ManufacturePerson
-                    personData={personData}/>}
+                    personData={personData}
+                    />}
                 {TAB.MANUFACTURE_TAB_EQUIPMENT === tab && <ManufactureEquipment
                     equipmentData={equipmentData}/>}
             </div>

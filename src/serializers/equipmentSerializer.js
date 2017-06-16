@@ -19,7 +19,6 @@ export const listFilterSerializer = (data, manufacture) => {
 
     return {
         'manufacture': manufacture,
-        'name': _.get(defaultData, 'name'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

@@ -225,3 +225,4 @@ export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_ITEM = `/${MANUFACTURE_PRODUCT}/%d/`
 export const MANUFACTURE_PRODUCT_DELETE = '/delete_ingredient/%d/'
+export const MANUFACTURE_PRODUCT_CHANGE = '/dist/product/%d/change_manufacture/'
