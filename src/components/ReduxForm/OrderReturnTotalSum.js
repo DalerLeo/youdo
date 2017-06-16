@@ -4,7 +4,6 @@ import {compose} from 'recompose'
 import {connect} from 'react-redux'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import numberFormat from '../../helpers/numberFormat'
-import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 
 const ZERO = 0
 
@@ -13,28 +12,26 @@ const enhance = compose(
         const ONE = 1
         const extra = _.get(state, ['product', 'extra', 'data'])
         const extraLoading = _.get(state, ['product', 'extra', 'loading'])
-        const count = _.get(state, ['form', 'OrderCreateForm', 'values', 'amount']) || ONE
-        const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
-        const deliveryPrice = _.get(state, ['form', 'OrderCreateForm', 'values', 'deliveryPrice'])
-        const discountPercent = _.get(state, ['form', 'OrderCreateForm', 'values', 'discountPrice']) || ZERO
+        const count = _.get(state, ['form', 'OrderReturnForm', 'values', 'amount']) || ONE
+        const products = _.get(state, ['form', 'OrderReturnForm', 'values', 'returned_products'])
         return {
             extra,
             count,
             products,
-            deliveryPrice,
-            discountPercent,
             extraLoading
         }
     })
 )
 const OrderReturnTotalSum = enhance((props) => {
-    const {products, deliveryPrice, discountPercent} = props
-    const HUNDRED = 100
+    const {products} = props
     let totalCost = ZERO
     _.map(products, (item) => {
-        totalCost += _.toNumber(_.get(item, 'cost'))
+        const itemCost = _.toNumber(_.get(item, ['product', 'value', 'price']))
+        const itemAmount = _.toNumber(_.get(item, 'amount'))
+        const cost = itemAmount * itemCost
+        totalCost += cost
     })
-    const orderTotal = (totalCost + numberWithoutSpaces(deliveryPrice)) * ((HUNDRED - _.toNumber(discountPercent)) / HUNDRED)
+    const orderTotal = totalCost
     return (
         <b>{numberFormat(orderTotal, PRIMARY_CURRENCY_NAME)}</b>
     )

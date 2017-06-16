@@ -8,8 +8,7 @@ const Items = [
     {id: 2, name: 'Доставлен'},
     {id: 3, name: 'Отменен'}
 ]
-
-const getOptions = (search) => {
+const getOptions = () => {
     return Promise.resolve(Items)
 }
 

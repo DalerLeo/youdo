@@ -9,6 +9,7 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
 import OrderShortageDialog from './OrderShortage'
+import OrderItemReturnDialog from './OrderItemReturnDialog'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import Time from 'material-ui/svg-icons/device/access-time'
@@ -21,6 +22,7 @@ import numberFormat from '../../helpers/numberFormat'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/orderTab'
+import NotFound from '../Images/not-found.png'
 
 const enhance = compose(
     injectSheet({
@@ -163,15 +165,15 @@ const enhance = compose(
             marginBottom: '10px'
         },
         dataBox: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            '& ul:last-child': {
-                fontWeight: '600',
-                marginLeft: '30px',
-                textAlign: 'right'
-            },
             '& li': {
-                lineHeight: '25px'
+                display: 'flex',
+                justifyContent: 'space-between',
+                lineHeight: '25px',
+                width: '100%',
+                '& span:last-child': {
+                    fontWeight: '600',
+                    textAlign: 'right'
+                }
             }
         },
         tabNav: {
@@ -262,6 +264,17 @@ const enhance = compose(
             '& button div div': {
                 textTransform: 'initial'
             }
+        },
+        noReturn: {
+            padding: '100px 0',
+            color: '#999'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '215px',
+            padding: '215px 0 0',
+            textAlign: 'center',
+            color: '#999'
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -290,10 +303,12 @@ const OrderDetails = enhance((props) => {
         transactionsDialog,
         returnDialog,
         shortageDialog,
+        itemReturnDialog,
         confirmDialog,
         handleOpenUpdateDialog,
         tabData,
-        paymentData
+        paymentData,
+        returnData
     } = props
     const tab = _.get(tabData, 'tab')
 
@@ -316,11 +331,12 @@ const OrderDetails = enhance((props) => {
 
     const percent = 100
     const zero = 0
-    const deliveryPrice = _.get(data, 'deliveryPrice')
-    const discount = _.get(data, 'discountPrice')
-    const totalPrice = _.get(data, 'totalPrice')
+    const deliveryPrice = _.toNumber(_.get(data, 'deliveryPrice'))
+    const discountPrice = _.toNumber(_.get(data, 'discountPrice'))
+    const totalPrice = _.toNumber(_.get(data, 'totalPrice'))
+    const totalPaid = _.get(data, 'totalPaid')
     const totalBalance = _.get(data, 'totalBalance')
-    const discountPrice = totalPrice * (discount / percent)
+    const discount = (discountPrice / (discountPrice + totalPrice)) * percent
 
     if (loading) {
         return (
@@ -415,20 +431,29 @@ const OrderDetails = enhance((props) => {
                         <div className={classes.subtitle}>Баланс</div>
                         <div className={classes.dataBox}>
                             <ul>
-                                <li>Дата оплаты:</li>
-                                <li>Стоимость доставки:</li>
-                                <li>Скидка({discount}%):</li>
-                                <li>Оплачено:</li>
-                                <li>Остаток:</li>
-                            </ul>
-                            <ul>
-                                <li>22.05.2017</li>
-                                <li>{numberFormat(deliveryPrice)} {PRIMARY_CURRENCY_NAME}</li>
-                                <li>{numberFormat(discountPrice)} {PRIMARY_CURRENCY_NAME}</li>
                                 <li>
-                                    <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>500 000 {PRIMARY_CURRENCY_NAME}</a>
+                                    <span>Дата оплаты:</span>
+                                    <span>22.05.2017</span>
                                 </li>
-                                <li className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {PRIMARY_CURRENCY_NAME}</li>
+                                <li>
+                                    <span>Стоимость доставки:</span>
+                                    <span>{numberFormat(deliveryPrice)} {PRIMARY_CURRENCY_NAME}</span>
+                                </li>
+                                <li>
+                                    <span>Скидка({discount}%):</span>
+                                    <span>{numberFormat(discountPrice)} {PRIMARY_CURRENCY_NAME}</span>
+                                </li>
+                                <li>
+                                    <span>Оплачено:</span>
+                                    {(totalPaid !== zero) ? <span>
+                                        <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {PRIMARY_CURRENCY_NAME}</a>
+                                    </span>
+                                        : <span>{totalPaid} {PRIMARY_CURRENCY_NAME}</span>}
+                                </li>
+                                <li>
+                                    <span>Остаток:</span>
+                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {PRIMARY_CURRENCY_NAME}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -437,20 +462,22 @@ const OrderDetails = enhance((props) => {
                         <div className={classes.subtitle}>Исполнение</div>
                         <div className={classes.dataBox}>
                             <ul>
-                                <li>Текущий статус:</li>
-                                <li>Тип передачи:</li>
-                                <li>Дата передачи:</li>
-                            </ul>
-                            <ul>
                                 <li>
-                                    {(status === REQUESTED) ? <div className={classes.yellow}>Запрос отправлен</div>
-                                        : (status === READY) ? <div className={classes.green}>Готов</div>
-                                            : (status === DELIVERED) ? <div className={classes.green}>Доставлен</div>
-                                                : <div className={classes.red}>Отменен</div>
+                                    <span>Текущий статус:</span>
+                                    {(status === REQUESTED) ? <span className={classes.yellow}>Запрос отправлен</span>
+                                        : (status === READY) ? <span className={classes.green}>Готов</span>
+                                            : (status === DELIVERED) ? <span className={classes.green}>Доставлен</span>
+                                                : <span className={classes.red}>Отменен</span>
                                     }
                                 </li>
-                                <li>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</li>
-                                <li>{dateDelivery}</li>
+                                <li>
+                                    <span>Тип передачи:</span>
+                                    <span>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</span>
+                                </li>
+                                <li>
+                                    <span>Дата передачи:</span>
+                                    <span>{dateDelivery}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -459,7 +486,7 @@ const OrderDetails = enhance((props) => {
                     <Tabs
                         value={tab}
                         className={classes.colorCat}
-                        onChange={(value) => tabData.handleTabChange(value)}>
+                        onChange={(value) => tabData.handleTabChange(value, id)}>
                         <Tab label="Список товаров" value={TAB.ORDER_TAB_PRODUCT_LIST}>
                             <div className={classes.tabContent}>
                                 <div className={classes.tabWrapper}>
@@ -491,7 +518,7 @@ const OrderDetails = enhance((props) => {
                             </div>
                         </Tab>
                         <Tab label="Возврат" value={TAB.ORDER_TAB_RETURN}>
-                            <div className={classes.tabContent}>
+                            {!_.isEmpty(returnData) ? <div className={classes.tabContent}>
                                 <div className={classes.tabWrapper}>
                                     <Row className="dottedList">
                                         <Col xs={2}>Код</Col>
@@ -499,15 +526,30 @@ const OrderDetails = enhance((props) => {
                                         <Col xs={2}>Дата возврата</Col>
                                         <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
                                     </Row>
-                                    <Row className="dottedList">
-                                        <Col xs={2}><a className={classes.link}>331</a></Col>
-                                        <Col xs={6} style={{textAlign: 'left'}}>Клиент не доволен</Col>
-                                        <Col xs={2}>20.06.2016</Col>
-                                        <Col xs={2}>2 000 000</Col>
-                                    </Row>
+                                    {_.map(returnData, (item, index) => {
+                                        const returnId = _.get(item, 'id')
+                                        const comment = 'Сюда нужно вывести причину'
+                                        const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+                                        const totalSum = numberFormat(_.get(item, 'totalPrice'))
+                                        return (
+                                            <Row className="dottedList" key={index}>
+                                                <Col xs={2}><a
+                                                    onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(returnId) }}
+                                                    className={classes.link}>
+                                                    {returnId}
+                                                    </a>
+                                                </Col>
+                                                <Col style={{textAlign: 'left'}} xs={6}>{comment}</Col>
+                                                <Col xs={2}>{dateReturn}</Col>
+                                                <Col xs={2}>{totalSum}</Col>
+                                            </Row>
+                                        )
+                                    })}
                                 </div>
-                                <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {PRIMARY_CURRENCY_NAME}</div>
                             </div>
+                            : <div className={classes.emptyQuery}>
+                                    <div>В данном заказе нет возвратов</div>
+                                </div>}
                         </Tab>
                         <Tab label="Исполнение" value={TAB.ORDER_TAB_PERFORMANCE}>3</Tab>
                     </Tabs>
@@ -532,6 +574,11 @@ const OrderDetails = enhance((props) => {
                 onClose={shortageDialog.handleCloseShortageDialog}
                 onSubmit={shortageDialog.handleSubmitShortageDialog}
             />
+            <OrderItemReturnDialog
+                open={itemReturnDialog.openOrderItemReturnDialog}
+                loading={itemReturnDialog.returnLoading}
+                onClose={itemReturnDialog.handleCloseItemReturnDialog}
+            />
         </div>
     )
 })
@@ -543,12 +590,19 @@ OrderDetails.propTypes = {
         handleTabChange: PropTypes.func.isRequired
     }),
     data: PropTypes.object.isRequired,
+    returnData: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     returnDialog: PropTypes.shape({
         returnLoading: PropTypes.bool.isRequired,
         openReturnDialog: PropTypes.bool.isRequired,
         handleOpenReturnDialog: PropTypes.func.isRequired,
         handleCloseReturnDialog: PropTypes.func.isRequired
+    }).isRequired,
+    itemReturnDialog: PropTypes.shape({
+        returnLoading: PropTypes.bool.isRequired,
+        openOrderItemReturnDialog: PropTypes.bool.isRequired,
+        handleOpenItemReturnDialog: PropTypes.func.isRequired,
+        handleCloseItemReturnDialog: PropTypes.func.isRequired
     }).isRequired,
     handleOpenUpdateDialog: PropTypes.func.isRequired,
     orderListData: PropTypes.object
