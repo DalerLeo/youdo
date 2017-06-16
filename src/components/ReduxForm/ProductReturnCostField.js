@@ -3,6 +3,8 @@ import React from 'react'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
+import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
+import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
     connect((state) => {
@@ -18,15 +20,16 @@ const enhance = compose(
     })
 )
 
-const OrderProductMeasurementField = enhance((props) => {
-    const {values, extraLoading} = props
-    const measurement = _.get(values, ['product', 'value', 'product', 'measurement', 'name'])
+const ProductReturnCostField = enhance((props) => {
+    const {values, extraLoading, count} = props
+    const ZERO = 0
+    const cost = _.toNumber(_.get(values, ['product', 'value', 'price']) || ZERO) * _.toNumber(count)
     return (
         <div style={{marginTop: '20px'}}>
             { extraLoading && <div><CircularProgress size={20} thickness={2} /></div> }
-            {!extraLoading && <div>{measurement}</div>}
+            {!extraLoading && <div>{numberFormat(cost, PRIMARY_CURRENCY_NAME)}</div>}
         </div>
     )
 })
 
-export default OrderProductMeasurementField
+export default ProductReturnCostField

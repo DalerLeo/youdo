@@ -5,41 +5,28 @@ import SearchField from '../Basic/SearchField'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 
-const Items = [
-    {id: 0, name: 'Продукт 1'},
-    {id: 1, name: 'Продукт 2'},
-    {id: 2, name: 'Продукт 3'},
-    {id: 3, name: 'Продукт 4'}
-]
-
 const enhance = compose(
     connect((state) => {
-        const measurement = _.get(state, ['product', 'measurement', 'data'])
-        const measurementLoading = _.get(state, ['product', 'measurement', 'loading'])
+        const products = _.get(state, ['order', 'item', 'data', 'products'])
         return {
-            measurement,
-            measurementLoading
+            products
         }
     })
 )
 
-const getOptions = (search) => {
-    return Promise.resolve(Items)
-}
-
-const getItem = (id) => {
-    return Promise.resolve(
-        _.find(Items, (o) => { return o.id === _.toInteger(id) }))
-}
-
 const ReturnProductsSearchField = enhance((props) => {
+    const productItems = _.get(props, 'products')
+
     return (
         <SearchField
-            getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
-            getItem={getItem}
-            getItemText={SearchField.defaultGetText('name')}
+            getValue={(value) => { return value }}
+            getText={(value) => { return _.get(value, ['product', 'name']) }}
+            getOptions={() => { return Promise.resolve(productItems) }}
+            getItem={(value) => {
+                return Promise.resolve(
+                    _.find(productItems, (o) => { return _.toInteger(_.get(o, ['product', 'id'])) === _.toInteger(_.get(value, ['product', 'id'])) }))
+            }}
+            getItemText={(value) => { return _.get(value, ['product', 'name']) }}
             {...props}
         />
     )

@@ -3,15 +3,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {Fields, reduxForm, SubmissionError} from 'redux-form'
+import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
-import {
-    OrderListReturnField
-} from '../ReduxForm'
+import {TextField, OrderListReturnField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import OrderReturnTotalSum from '../ReduxForm/Order/OrderReturnTotalSum'
 
@@ -45,7 +43,8 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            height: '100%'
+            height: '100%',
+            minHeight: '641px'
         },
         titleContent: {
             background: '#fff',
@@ -70,7 +69,6 @@ const enhance = compose(
             padding: '15px 30px'
         },
         innerWrap: {
-            maxHeight: '50vh',
             overflow: 'auto'
         },
         bodyContent: {
@@ -126,6 +124,14 @@ const enhance = compose(
             textAlign: 'right',
             borderTop: '1px #efefef solid'
         },
+        returnComment: {
+            fontSize: '13px !important',
+            margin: '-20px 0 20px',
+            position: 'relative',
+            '& label': {
+                left: '0'
+            }
+        },
         bottomButton: {
             bottom: '0',
             left: '0',
@@ -145,10 +151,14 @@ const enhance = compose(
         actionButton: {
             fontSize: '13px !important',
             margin: '0 !important'
+        },
+        podlojkaScroll: {
+            overflowY: 'auto !important',
+            padding: '0 !important'
         }
     }),
     reduxForm({
-        form: 'OrderCreateForm',
+        form: 'OrderReturnForm',
         enableReinitialize: true
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -165,6 +175,7 @@ const OrderReturnDialog = enhance((props) => {
         <Dialog
             modal={true}
             contentStyle={loading ? {width: '300px'} : {width: '800px'}}
+            className={classes.podlojkaScroll}
             open={open}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
@@ -184,14 +195,23 @@ const OrderReturnDialog = enhance((props) => {
                         <div className={classes.inContent}>
                             <div className={classes.field}>
                                 <Fields
-                                    names={['products', 'product', 'amount', 'cost']}
+                                    names={['returned_products', 'product', 'amount', 'cost']}
                                     component={OrderListReturnField}
                                     orderData={orderData}
                                 />
                             </div>
                         </div>
                         <div className={classes.commentField}>
-                            Общая сумма возврата: <OrderReturnTotalSum/>
+                            <Field
+                                name="comment"
+                                component={TextField}
+                                className={classes.returnComment}
+                                label="Комментарий к возврату"
+                                fullWidth={true}
+                                multiLine={true}
+                                rows={2}
+                                rowsMax={3}/>
+                            <div>Общая сумма возврата: <OrderReturnTotalSum/></div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
