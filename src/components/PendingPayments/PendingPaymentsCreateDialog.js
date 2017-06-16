@@ -68,7 +68,6 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const client = _.get(detailData, ['data', 'client'])
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']))
     const clientName = _.get(client, 'name')
-    console.log(detailData)
 
     return (
         <Dialog
@@ -109,14 +108,16 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     label="Касса получатель"
                                     fullWidth={true}
                                 />
-                                <Field
-                                    name="amount"
-                                    className={classes.inputField}
-                                    component={TextField}
-                                    label="Сумма"
-                                    fullWidth={true}
-                                />
-                                <CashboxCurrencyField/>
+                                <div className={classes.flex}>
+                                    <Field
+                                        name="amount"
+                                        className={classes.inputField}
+                                        component={TextField}
+                                        label="Сумма"
+                                        fullWidth={true}
+                                    />
+                                    <CashboxCurrencyField/>
+                                </div>
                                 <Field
                                     name="now"
                                     style={{marginTop: '10px'}}

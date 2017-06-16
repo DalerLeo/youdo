@@ -3,8 +3,6 @@ import React from 'react'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
-import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
     connect((state) => {
@@ -21,13 +19,11 @@ const enhance = compose(
 )
 
 const CashboxCurrencyField = enhance((props) => {
-    const {extra, extraLoading, count} = props
-    const ZERO = 0
-    const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(count)
+    const {extra, extraLoading} = props
     return (
-        <div style={{marginTop: '20px'}}>
+        <div style={{margin: '6px 0 0 10px'}}>
             { extraLoading && <div><CircularProgress size={20} thickness={2} /></div> }
-            {!extraLoading && <div>{numberFormat(cost, PRIMARY_CURRENCY_NAME)}</div>}
+            {!extraLoading && <div>UZS</div>}
         </div>
     )
 })
