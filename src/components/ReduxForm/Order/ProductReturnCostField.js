@@ -3,8 +3,8 @@ import React from 'react'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
-import numberFormat from '../../helpers/numberFormat'
+import {PRIMARY_CURRENCY_NAME} from '../../../constants/primaryCurrency'
+import numberFormat from '../../../helpers/numberFormat'
 
 const enhance = compose(
     connect((state) => {

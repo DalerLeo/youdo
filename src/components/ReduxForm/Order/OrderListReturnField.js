@@ -20,6 +20,8 @@ import {
 import DeleteIcon from '../../DeleteIcon/index'
 
 import OrderProductMeasurementField from './OrderProductMeasurementField'
+import ReturnProductsSearchField from './ReturnProductsSearchField'
+import ProductReturnCostField from './ProductReturnCostField'
 import TextField from '../Basic/TextField'
 
 const enhance = compose(
