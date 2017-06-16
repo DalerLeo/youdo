@@ -85,11 +85,11 @@ const enhance = compose(
         const prevTransaction = _.get(props, ['location', 'query', 'openTransactionsDialog'])
         const nextTransaction = _.get(nextProps, ['location', 'query', 'openTransactionsDialog'])
         return prevTransaction !== nextTransaction && nextTransaction === 'true'
-    }, ({dispatch, filter}) => {
-        dispatch(orderTransactionFetchAction(filter))
+    }, ({dispatch, params}) => {
+        const orderId = _.toInteger(_.get(params, 'orderId'))
+        dispatch(orderTransactionFetchAction(orderId))
     }),
     withPropsOnChange((props, nextProps) => {
-        const prevTab = _.get(props, ['location', 'query', 'tab'])
         const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
         return props.params.orderId !== nextProps.params.orderId && nextTab === 'return'
     }, ({dispatch, params}) => {

@@ -91,10 +91,9 @@ export const orderListFetchAction = (filter) => {
     }
 }
 
-export const orderTransactionFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const orderTransactionFetchAction = (orderId) => {
     const payload = axios()
-        .get(API.ORDER_TRANSACTION, {params})
+        .get(API.ORDER_TRANSACTION, {params: {'order': orderId}})
         .then((response) => {
             return _.get(response, 'data')
         })

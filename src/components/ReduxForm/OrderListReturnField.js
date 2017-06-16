@@ -154,7 +154,6 @@ const enhance = compose(
 
 const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, orderData, ...defaultProps}) => {
     const products = _.get(defaultProps, ['returned_products', 'input', 'value']) || []
-    console.log(products)
     return (
         <div className={classes.wrapper}>
             <div>

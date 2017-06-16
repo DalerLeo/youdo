@@ -165,15 +165,15 @@ const enhance = compose(
             marginBottom: '10px'
         },
         dataBox: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            '& ul:last-child': {
-                fontWeight: '600',
-                marginLeft: '30px',
-                textAlign: 'right'
-            },
             '& li': {
-                lineHeight: '25px'
+                display: 'flex',
+                justifyContent: 'space-between',
+                lineHeight: '25px',
+                width: '100%',
+                '& span:last-child': {
+                    fontWeight: '600',
+                    textAlign: 'right'
+                }
             }
         },
         tabNav: {
@@ -431,21 +431,29 @@ const OrderDetails = enhance((props) => {
                         <div className={classes.subtitle}>Баланс</div>
                         <div className={classes.dataBox}>
                             <ul>
-                                <li>Дата оплаты:</li>
-                                <li>Стоимость доставки:</li>
-                                <li>Скидка({discount}%):</li>
-                                <li>Оплачено:</li>
-                                <li>Остаток:</li>
-                            </ul>
-                            <ul>
-                                <li>22.05.2017</li>
-                                <li>{numberFormat(deliveryPrice)} {PRIMARY_CURRENCY_NAME}</li>
-                                <li>{numberFormat(discountPrice)} {PRIMARY_CURRENCY_NAME}</li>
-                                {(totalPaid !== zero) ? <li>
-                                    <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {PRIMARY_CURRENCY_NAME}</a>
+                                <li>
+                                    <span>Дата оплаты:</span>
+                                    <span>22.05.2017</span>
                                 </li>
-                                : <li>{totalPaid} {PRIMARY_CURRENCY_NAME}</li>}
-                                <li className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {PRIMARY_CURRENCY_NAME}</li>
+                                <li>
+                                    <span>Стоимость доставки:</span>
+                                    <span>{numberFormat(deliveryPrice)} {PRIMARY_CURRENCY_NAME}</span>
+                                </li>
+                                <li>
+                                    <span>Скидка({discount}%):</span>
+                                    <span>{numberFormat(discountPrice)} {PRIMARY_CURRENCY_NAME}</span>
+                                </li>
+                                <li>
+                                    <span>Оплачено:</span>
+                                    {(totalPaid !== zero) ? <span>
+                                        <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {PRIMARY_CURRENCY_NAME}</a>
+                                    </span>
+                                        : <span>{totalPaid} {PRIMARY_CURRENCY_NAME}</span>}
+                                </li>
+                                <li>
+                                    <span>Остаток:</span>
+                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {PRIMARY_CURRENCY_NAME}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -454,20 +462,22 @@ const OrderDetails = enhance((props) => {
                         <div className={classes.subtitle}>Исполнение</div>
                         <div className={classes.dataBox}>
                             <ul>
-                                <li>Текущий статус:</li>
-                                <li>Тип передачи:</li>
-                                <li>Дата передачи:</li>
-                            </ul>
-                            <ul>
                                 <li>
-                                    {(status === REQUESTED) ? <div className={classes.yellow}>Запрос отправлен</div>
-                                        : (status === READY) ? <div className={classes.green}>Готов</div>
-                                            : (status === DELIVERED) ? <div className={classes.green}>Доставлен</div>
-                                                : <div className={classes.red}>Отменен</div>
+                                    <span>Текущий статус:</span>
+                                    {(status === REQUESTED) ? <span className={classes.yellow}>Запрос отправлен</span>
+                                        : (status === READY) ? <span className={classes.green}>Готов</span>
+                                            : (status === DELIVERED) ? <span className={classes.green}>Доставлен</span>
+                                                : <span className={classes.red}>Отменен</span>
                                     }
                                 </li>
-                                <li>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</li>
-                                <li>{dateDelivery}</li>
+                                <li>
+                                    <span>Тип передачи:</span>
+                                    <span>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</span>
+                                </li>
+                                <li>
+                                    <span>Дата передачи:</span>
+                                    <span>{dateDelivery}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -536,7 +546,6 @@ const OrderDetails = enhance((props) => {
                                         )
                                     })}
                                 </div>
-                                <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {PRIMARY_CURRENCY_NAME}</div>
                             </div>
                             : <div className={classes.emptyQuery}>
                                     <div>В данном заказе нет возвратов</div>
