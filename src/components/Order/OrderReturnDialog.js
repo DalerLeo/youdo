@@ -11,7 +11,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
 import {TextField, OrderListReturnField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
-import OrderReturnTotalSum from '../ReduxForm/OrderReturnTotalSum'
+import OrderReturnTotalSum from '../ReduxForm/Order/OrderReturnTotalSum'
 
 export const ORDER_RETURN_DIALOG_OPEN = 'openReturnDialog'
 const validate = (data) => {

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import SearchField from './SearchField'
+import SearchField from './Basic/SearchField'
 
 const Items = [
     {id: 1, name: 'банковский счет'},

@@ -16,8 +16,8 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../DeleteIcon'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
-import ProductSearchField from './ProductSearchField'
-import TextField from './TextField'
+import ProductSearchField from './Product/ProductSearchField'
+import TextField from './Basic/TextField'
 
 const enhance = compose(
     injectSheet({
