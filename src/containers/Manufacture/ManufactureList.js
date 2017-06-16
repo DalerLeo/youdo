@@ -147,9 +147,7 @@ const enhance = compose(
                 const productId = _.toInteger(_.get(location, ['query', 'productId']))
                 dispatch(productItemFetchAction(productId))
                 dispatch(ingredientListFetchAction(productId))
-
             }
-
         } else if (nextTab === 'person') {
             dispatch(userShiftListFetchAction(filterUser, manufactureId))
         } else if (nextTab === 'equipment') {
