@@ -7,8 +7,8 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
-import numberFormat from '../../helpers/numberFormat'
+import {PRIMARY_CURRENCY_NAME} from '../../../constants/primaryCurrency'
+import numberFormat from '../../../helpers/numberFormat'
 import {
     Table,
     TableBody,
@@ -19,17 +19,8 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../../DeleteIcon/index'
 
-<<<<<<< HEAD:src/components/ReduxForm/Order/OrderListReturnField.js
-import OrderProductSearchField from './OrderProductSearchField'
-import ProductCostField from '../Product/ProductCostField'
 import OrderProductMeasurementField from './OrderProductMeasurementField'
 import TextField from '../Basic/TextField'
-=======
-import ReturnProductsSearchField from './ReturnProductsSearchField'
-import ProductReturnCostField from '../ReduxForm/ProductReturnCostField'
-import OrderProductMeasurementField from '../ReduxForm/OrderProductMeasurementField'
-import TextField from './TextField'
->>>>>>> e42f16298f68fb48bb7f411d0980b494cef6d174:src/components/ReduxForm/OrderListReturnField.js
 
 const enhance = compose(
     injectSheet({
