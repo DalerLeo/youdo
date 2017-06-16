@@ -92,7 +92,7 @@ export const manufactureProductCSVFetchAction = (filter) => {
 export const productChangeManufacture = (id, formValues) => {
     const requestData = serializers.changeManufacture(formValues)
     const payload = axios()
-        .post(sprintf(API.MANUFACTURE_PRODUCT_CHANGE, id, requestData))
+        .post(sprintf(API.MANUFACTURE_PRODUCT_CHANGE, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })

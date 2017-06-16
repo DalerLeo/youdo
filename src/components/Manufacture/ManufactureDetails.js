@@ -13,6 +13,7 @@ import Map from 'material-ui/svg-icons/maps/map'
 import Tooltip from '../ToolTip'
 import NotFound from '../Images/not-found.png'
 
+const ZERO = 0
 const iconStyle = {
     icon: {
         color: '#666',
@@ -194,7 +195,7 @@ const ManufactureDetails = enhance((props) => {
                 </div>
             </div>
             <div className={classes.materialsList}>
-                {ingredientList.length > 0
+                {ingredientList.length > ZERO
                 ? <div>
                         <ul className={classes.rawMaterials}>
                             <li key={id} className="dottedList">
