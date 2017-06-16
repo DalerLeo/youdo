@@ -6,24 +6,21 @@ import CircularProgress from 'material-ui/CircularProgress'
 
 const enhance = compose(
     connect((state) => {
-        const ONE = 1
-        const extra = _.get(state, ['product', 'extra', 'data'])
+        const currency = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'cashbox', 'value', 'currency', 'name'])
         const extraLoading = _.get(state, ['product', 'extra', 'loading'])
-        const count = _.get(state, ['form', 'OrderCreateForm', 'values', 'amount']) || ONE
         return {
-            extra,
-            count,
+            currency,
             extraLoading
         }
     })
 )
 
 const CashboxCurrencyField = enhance((props) => {
-    const {extra, extraLoading} = props
+    const {currency, extraLoading} = props
     return (
         <div style={{margin: '6px 0 0 10px'}}>
             { extraLoading && <div><CircularProgress size={20} thickness={2} /></div> }
-            {!extraLoading && <div>UZS</div>}
+            {!extraLoading && <div>{currency}</div>}
         </div>
     )
 })

@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxSearchField, CheckBox} from '../ReduxForm'
+import {TextField, CashboxCustomField, CheckBox} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -104,7 +104,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 <Field
                                     name="cashbox"
                                     className={classes.inputField}
-                                    component={CashboxSearchField}
+                                    component={CashboxCustomField}
                                     label="Касса получатель"
                                     fullWidth={true}
                                 />
@@ -118,11 +118,12 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     />
                                     <CashboxCurrencyField/>
                                 </div>
+                                <dib>Использовать</dib>
                                 <Field
                                     name="now"
                                     style={{marginTop: '10px'}}
                                     component={CheckBox}
-                                    label="Использовать текущий курс"
+                                    label="Текущий курс"
                                 />
                             </div>
                         </div>

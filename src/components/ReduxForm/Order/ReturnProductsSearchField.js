@@ -26,7 +26,7 @@ const ReturnProductsSearchField = enhance((props) => {
                 return Promise.resolve(
                     _.find(productItems, (o) => { return _.toInteger(_.get(o, ['product', 'id'])) === _.toInteger(_.get(value, ['product', 'id'])) }))
             }}
-            getItemText={(value) => { return _.get(value, ['product', 'name']) }}
+                getItemText={(value) => { return _.get(value, ['product', 'name']) }}
             {...props}
         />
     )
