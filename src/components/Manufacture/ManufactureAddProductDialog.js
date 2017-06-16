@@ -1,15 +1,14 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import {Field, reduxForm, Fields, SubmissionError} from 'redux-form'
+import {Field, reduxForm, Fields} from 'redux-form'
 import {ManufactureListMaterialField, ProductSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
-import toCamelCase from '../../helpers/toCamelCase'
+import validate from '../../helpers/validate'
 
 export const MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN = 'addProduct'
 
@@ -207,6 +206,10 @@ const enhance = compose(
             '& div div:first-child': {
                 height: '50px !important'
             }
+        },
+        error: {
+            textAlign: 'center',
+            color: 'red'
         }
     }),
     withState('openAddMaterials', 'setOpenAddMaterials', false),
@@ -215,19 +218,9 @@ const enhance = compose(
         enableReinitialize: true
     })
 )
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
 
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 const ManufactureAddProductDialog = enhance((props) => {
-    const {open, handleSubmit, loading, onClose, classes} = props
+    const {open, handleSubmit, loading, onClose, classes, error} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -245,6 +238,7 @@ const ManufactureAddProductDialog = enhance((props) => {
                         <CloseIcon2 color="#666666"/>
                     </IconButton>
                 </div>
+                {error && <div className={classes.error}>Ошибка: {error}</div>}
                 <div className={classes.bodyContent}>
                     <div className={classes.inContent}>
                         <div style={{width: '100%', paddingTop: '10px'}}>

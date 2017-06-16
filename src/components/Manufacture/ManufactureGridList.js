@@ -2,16 +2,17 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import Container from '../Container'
-import ManufactureAddStaffDialog from './ManufactureAddStaffDialog'
-import ManufactureShowBom from './ManufactureShowBom'
-import ManufactureAddProductDialog from './ManufactureAddProductDialog'
-import ManufactureEditProductDialog from './ManufactureEditProductDialog'
-import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
+import ManufactureAddStaffDialog from './ManufactureAddStaffDialog'
+import ManufactureShowBom from './ManufactureShowBom'
+import ManufactureChangeDialog from './ManufactureChangeDialog'
+import ManufactureAddProductDialog from './ManufactureAddProductDialog'
+import ManufactureEditProductDialog from './ManufactureEditProductDialog'
+import * as ROUTES from '../../constants/routes'
+import Container from '../Container'
+import SubMenu from '../SubMenu'
 import ManufactureTab from './ManufactureTab'
 import ConfirmDialog from '../ConfirmDialog'
 import Glue from '../Images/glue.png'
@@ -247,7 +248,8 @@ const ManufactureGridList = enhance((props) => {
         productData,
         tabData,
         productFilterDialog,
-        personData
+        personData,
+        deleteMaterials
     } = props
 
     const detailId = _.get(detailData, 'id')
@@ -283,10 +285,10 @@ const ManufactureGridList = enhance((props) => {
     const productConfirm = _.get(productData, 'confirmDialog')
     const productCreate = _.get(productData, 'createDialog')
     const productUpdate = _.get(productData, 'updateDialog')
-
     const userCreate = _.get(personData, 'createDialog')
     const userUpdate = _.get(personData, 'updateDialog')
     const userConfirm = _.get(personData, 'confirmDialog')
+    const productName = _.get(_.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), 'name')
     return (
         <Container>
             <SubMenu url={ROUTES.MANUFACTURE_CUSTOM_URL}/>
@@ -332,6 +334,12 @@ const ManufactureGridList = enhance((props) => {
                 onClose={editMaterials.handleClose}
                 onSubmit={editMaterials.handleSubmit}
             />
+            <ManufactureChangeDialog
+                open={_.get(productData, ['changeManufacture', 'open'])}
+                onClose={_.get(productData, ['changeManufacture', 'handleCloseChangeManufacture'])}
+                onSubmit={_.get(productData, ['changeManufacture', 'handleSubmitChangeManufacture'])}
+            />
+
             <Row className={classes.productionMainRow}>
                 <Col xs={3} className={classes.productionLeftSide}>
                     <h2 className={classes.productionH2}>Этапы производства</h2>
@@ -349,15 +357,23 @@ const ManufactureGridList = enhance((props) => {
                     tabData={tabData}
                     editMaterials={editMaterials}
                     createMaterials={createMaterials}
+                    deleteMaterials={deleteMaterials}
                     productData={productData}
                     personData={personData}
                     equipmentData={equipmentData}
                     productFilterDialog={productFilterDialog}/>
             </Row>
 
+            {_.get(deleteMaterials, 'open') !== false && <ConfirmDialog
+                type="delete"
+                open={deleteMaterials.open}
+                message={_.get(deleteMaterials, 'name')}
+                onClose={deleteMaterials.handleCloseConfirmDialog}
+                onSubmit={deleteMaterials.handleSendConfirmDialog}
+            />}
             {_.get(productData, ['detailData', 'id']) !== MINUS_ONE && <ConfirmDialog
                 type="delete"
-                message={_.get(productData, ['detailData', 'data', 'name'])}
+                message={productName}
                 onClose={productConfirm.handleCloseConfirmDialog}
                 onSubmit={productConfirm.handleSendConfirmDialog}
                 open={productConfirm.openConfirmDialog}
