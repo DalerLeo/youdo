@@ -7,6 +7,8 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../Images/groceries.svg'
 import {connect} from 'react-redux'
+import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
+import numberFormat from '../../helpers/numberFormat'
 import {
     Table,
     TableBody,
@@ -17,8 +19,8 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../DeleteIcon'
 
-import OrderProductSearchField from './OrderProductSearchField'
-import ProductCostField from '../ReduxForm/ProductCostField'
+import ReturnProductsSearchField from './ReturnProductsSearchField'
+import ProductReturnCostField from '../ReduxForm/ProductReturnCostField'
 import OrderProductMeasurementField from '../ReduxForm/OrderProductMeasurementField'
 import TextField from './TextField'
 
@@ -130,8 +132,8 @@ const enhance = compose(
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
             const extra = _.get(props, ['extra'])
-            const onChange = _.get(props, ['products', 'input', 'onChange'])
-            const products = _.get(props, ['products', 'input', 'value'])
+            const onChange = _.get(props, ['returned_products', 'input', 'onChange'])
+            const products = _.get(props, ['returned_products', 'input', 'value'])
 
             if (!_.isEmpty(product) && amount) {
                 const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(amount)
@@ -140,9 +142,9 @@ const enhance = compose(
         },
 
         handleRemove: props => (listIndex) => {
-            const onChange = _.get(props, ['products', 'input', 'onChange'])
+            const onChange = _.get(props, ['returned_products', 'input', 'onChange'])
             const products = _(props)
-                .get(['products', 'input', 'value'])
+                .get(['returned_products', 'input', 'value'])
                 .filter((item, index) => index !== listIndex)
 
             onChange(products)
@@ -151,7 +153,7 @@ const enhance = compose(
 )
 
 const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, orderData, ...defaultProps}) => {
-    const products = _.get(defaultProps, ['products', 'input', 'value']) || []
+    const products = _.get(defaultProps, ['returned_products', 'input', 'value']) || []
     return (
         <div className={classes.wrapper}>
             <div>
@@ -166,7 +168,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                 </div>
                 {state.open && <div className={classes.background}>
                     <div style={{width: '35%', paddingRight: '20px'}}>
-                        <OrderProductSearchField
+                        <ReturnProductsSearchField
                             label="Наименование товара"
                             className={classes.inputFieldCustom}
                             style={{width: '100%'}}
@@ -185,7 +187,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         <OrderProductMeasurementField/>
                     </div>
                     <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px'}}>
-                        <ProductCostField />
+                        <ProductReturnCostField />
                     </div>
                     <div style={{width: '20%', textAlign: 'right', paddingTop: '9px'}}>
                         <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
@@ -219,8 +221,10 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         {_.map(products, (item, index) => (
                             <TableRow key={index} className={classes.tableRow}>
                                 <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'cost')}</TableRowColumn>
+                                <TableRowColumn>{_.get(item, 'amount')} {_.get(item, ['product', 'value', 'product', 'measurement', 'name'])}</TableRowColumn>
+                                <TableRowColumn>{
+                                    numberFormat((_.get(item, ['product', 'value', 'price']) * (_.get(item, 'amount'))), PRIMARY_CURRENCY_NAME)
+                                }</TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>
                                     <IconButton onTouchTap={() => handleRemove(index)}>
                                         <DeleteIcon color="#666666"/>

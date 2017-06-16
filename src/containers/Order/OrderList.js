@@ -15,6 +15,7 @@ import {
     ORDER_FILTER_KEY,
     ORDER_FILTER_OPEN,
     ORDER_TRANSACTIONS_DIALOG_OPEN,
+    ORDER_ITEM_RETURN_DIALOG_OPEN,
     ORDER_RETURN_DIALOG_OPEN,
     ORDER_SHORTAGE_DIALOG_OPEN,
     TAB,
@@ -28,7 +29,8 @@ import {
     orderDeleteAction,
     orderItemFetchAction,
     orderReturnAction,
-    orderTransactionFetchAction
+    orderTransactionFetchAction,
+    orderItemReturnFetchAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -50,6 +52,8 @@ const enhance = compose(
         const csvLoading = _.get(state, ['order', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'OrderFilterForm'])
         const createForm = _.get(state, ['form', 'OrderCreateForm'])
+        const returnForm = _.get(state, ['form', 'OrderReturnForm'])
+        const returnData = _.get(state, ['order', 'return', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -67,7 +71,9 @@ const enhance = compose(
             csvLoading,
             filter,
             filterForm,
-            createForm
+            createForm,
+            returnForm,
+            returnData
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -76,9 +82,19 @@ const enhance = compose(
         dispatch(orderListFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.query !== nextProps.query
-    }, ({dispatch, filter}) => {
-        dispatch(orderTransactionFetchAction(filter))
+        const prevTransaction = _.get(props, ['location', 'query', 'openTransactionsDialog'])
+        const nextTransaction = _.get(nextProps, ['location', 'query', 'openTransactionsDialog'])
+        return prevTransaction !== nextTransaction && nextTransaction === 'true'
+    }, ({dispatch, params}) => {
+        const orderId = _.toInteger(_.get(params, 'orderId'))
+        dispatch(orderTransactionFetchAction(orderId))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
+        return props.params.orderId !== nextProps.params.orderId && nextTab === 'return'
+    }, ({dispatch, params}) => {
+        const orderId = _.toInteger(_.get(params, 'orderId'))
+        dispatch(orderItemReturnFetchAction(orderId))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -216,6 +232,16 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: false})})
         },
 
+        handleOpenItemReturnDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseItemReturnDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: false})})
+        },
+
         handleOpenReturnDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: true})})
@@ -226,14 +252,14 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
         },
         handleSubmitReturnDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}} = props
-            return dispatch(orderReturnAction(_.get(createForm, ['values'])))
+            const {dispatch, returnForm, detail, filter, location: {pathname}} = props
+            return dispatch(orderReturnAction(_.get(returnForm, ['values']), detail))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
-                    dispatch(orderListFetchAction(filter))
+                    dispatch(orderItemReturnFetchAction(filter))
                 })
         },
 
@@ -293,6 +319,7 @@ const OrderList = enhance((props) => {
         list,
         listLoading,
         detail,
+        returnData,
         payment,
         detailLoading,
         createLoading,
@@ -308,6 +335,7 @@ const OrderList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
     const openTransactionsDialog = toBoolean(_.get(location, ['query', ORDER_TRANSACTIONS_DIALOG_OPEN]))
+    const openOrderItemReturnDialog = toBoolean(_.get(location, ['query', ORDER_ITEM_RETURN_DIALOG_OPEN]))
     const openReturnDialog = toBoolean(_.get(location, ['query', ORDER_RETURN_DIALOG_OPEN]))
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
@@ -339,6 +367,13 @@ const OrderList = enhance((props) => {
         openTransactionsDialog,
         handleOpenTransactionsDialog: props.handleOpenTransactionsDialog,
         handleCloseTransactionsDialog: props.handleCloseTransactionsDialog
+    }
+
+    const itemReturnDialog = {
+        returnLoading,
+        openOrderItemReturnDialog,
+        handleOpenItemReturnDialog: props.handleOpenItemReturnDialog,
+        handleCloseItemReturnDialog: props.handleCloseItemReturnDialog
     }
 
     const returnDialog = {
@@ -447,6 +482,7 @@ const OrderList = enhance((props) => {
     const detailData = {
         id: detailId,
         data: detail,
+        return: returnData,
         detailLoading
     }
 
@@ -466,6 +502,7 @@ const OrderList = enhance((props) => {
                 paymentData={paymentData}
                 createDialog={createDialog}
                 transactionsDialog={transactionsDialog}
+                itemReturnDialog={itemReturnDialog}
                 returnDialog={returnDialog}
                 shortageDialog={shortageDialog}
                 deleteDialog={deleteDialog}
