@@ -43,6 +43,7 @@ const muiTheme = getMuiTheme({
     }
 })
 
+
 ReactDOM.render(
     <Provider store={store}>
         <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
