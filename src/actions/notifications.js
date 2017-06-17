@@ -53,7 +53,6 @@ export const notificationItemFetchAction = (id) => {
 }
 
 export const notificationGetNotViewed = () => {
-    console.log('Kirdi111 ')
     const payload = axios()
         .get(API.NOTIFICATIONS_GET_NOT_VIEWED)
         .then((response) => {
