@@ -13,15 +13,17 @@ import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import ExportExel from '../Images/excel.png'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import {BrandSearchField, ProductTypeSearchField} from '../../components/ReduxForm'
 
 export const STATSTOCK_FILTER_OPEN = 'openFilterDialog'
 
 export const STATSTOCK_FILTER_KEY = {
-    CATEGORY: 'category',
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    TYPE: 'type',
+    BRAND: 'brand',
+    FROM_DATE: 'brand',
+    TO_DATE: 'date'
 }
-
+const TWO = 2
 const enhance = compose(
     injectSheet({
         wrapper: {
@@ -103,7 +105,7 @@ const enhance = compose(
 )
 
 const StatStockFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, isBalance} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -145,10 +147,15 @@ const StatStockFilterForm = enhance((props) => {
                     </IconButton>
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
-                    <div>
+                    {isBalance === TWO && <div>
                         <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                    </div>}
+                    <div>
+                        <Field className={classes.inputField} name="brand" component={BrandSearchField} label="Бренд" fullWidth={true}/>
                     </div>
-
+                    <div>
+                        <Field className={classes.inputField} name="type" component={ProductTypeSearchField} label="Тип продукта" fullWidth={true}/>
+                    </div>
                     <div>
                         <RaisedButton
                             type="submit"
@@ -172,6 +179,9 @@ StatStockFilterForm.propTypes = {
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
     })
+}
+StatStockFilterForm.defaultDate = {
+    isBalance: false
 }
 
 export default StatStockFilterForm

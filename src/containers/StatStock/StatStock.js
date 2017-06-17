@@ -56,7 +56,7 @@ const enhance = compose(
         const statStockData = _.get(state, ['statStock', 'statStockData', 'data'])
         const statStockDataLoading = _.get(state, ['statStock', 'statStockData', 'loading'])
         const filter = filterHelper(tab === ONE ? remainderList : transactionList, pathname, query)
-
+        const filterForm = _.get(state, ['form', 'StatStockFilterForm'])
         return {
             list,
             remainderList,
@@ -71,6 +71,7 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
+            filterForm,
             tab,
             createForm,
             statStockData,
@@ -92,8 +93,8 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         return !nextProps.listLoading && _.isNil(nextProps.list)
-    }, ({dispatch}) => {
-        dispatch(statStockListFetchAction())
+    }, ({dispatch, filter}) => {
+        dispatch(statStockListFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
         const statStockId = _.get(nextProps, ['params', 'statStockId'])
@@ -177,7 +178,7 @@ const enhance = compose(
             })
         },
 
-        handleOpenFilterDialog: props => () => {
+        handleOpenFilterDialog: props => (id) => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STATSTOCK_FILTER_OPEN]: true})})
         },
@@ -194,14 +195,26 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
+            const tab = _.get(props, ['location', 'query', 'tab'])
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-
-            filter.filterBy({
-                [STATSTOCK_FILTER_OPEN]: false,
-                [STATSTOCK_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [STATSTOCK_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
-            })
+            const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            if (tab === ONE) {
+                filter.filterBy({
+                    [STATSTOCK_FILTER_OPEN]: false,
+                    [STATSTOCK_FILTER_KEY.TYPE]: type,
+                    [STATSTOCK_FILTER_KEY.BRAND]: brand
+                })
+            } else {
+                filter.filterBy({
+                    [STATSTOCK_FILTER_OPEN]: false,
+                    [STATSTOCK_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                    [STATSTOCK_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                    [STATSTOCK_FILTER_KEY.TYPE]: type,
+                    [STATSTOCK_FILTER_KEY.BRAND]: brand
+                })
+            }
         },
 
         handleCloseUpdateDialog: props => () => {
@@ -237,6 +250,9 @@ const enhance = compose(
                 query: filter.getParams()
             })
             dispatch(statStockDataFetchAction())
+        },
+        handleClickStatStock: props => (id) => {
+            hashHistory.push({pathname: sprintf(ROUTER.STATSTOCK_ITEM_PATH, id), query: {}})
         }
     })
 )
@@ -266,7 +282,8 @@ const StatStock = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', STATSTOCK_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', STATSTOCK_DELETE_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', STATSTOCK_FILTER_OPEN]))
-
+    const brand = _.toInteger(filter.getParam(STATSTOCK_FILTER_KEY.BRAND))
+    const type = _.toInteger(filter.getParam(STATSTOCK_FILTER_KEY.TYPE))
     const detailId = _.toInteger(_.get(params, 'statStockId'))
 
     const fromDate = filter.getParam(STATSTOCK_FILTER_KEY.FROM_DATE)
@@ -324,6 +341,7 @@ const StatStock = enhance((props) => {
         transactionLoading,
         listLoading,
         handleClickTapChange: props.handleClickTapChange,
+        handleClickStatStock: props.handleClickStatStock,
         tab: _.toInteger(tab)
 
     }
@@ -339,6 +357,12 @@ const StatStock = enhance((props) => {
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            },
+            brand: {
+                value: brand
+            },
+            type: {
+                value: type
             }
         },
         filterLoading: false,
