@@ -441,9 +441,8 @@ const enhance = compose(
         },
 
         handleClickItem: props => (id) => {
-            const {filter} = props
             const tab = _.get(props, ['location', 'query', 'tab'])
-            hashHistory.push({pathname: sprintf(ROUTER.MANUFACTURE_ITEM_PATH, id), query: filter.getParams({'tab': tab})})
+            hashHistory.push({pathname: sprintf(ROUTER.MANUFACTURE_ITEM_PATH, id), query: {'tab': tab}})
         },
         handleTabChange: props => (tab) => {
             const {location: {pathname}, filter} = props
