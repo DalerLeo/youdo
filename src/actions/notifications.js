@@ -51,3 +51,19 @@ export const notificationItemFetchAction = (id) => {
         payload
     }
 }
+
+export const notificationGetNotViewed = () => {
+    const payload = axios()
+        .get(API.NOTIFICATIONS_GET_NOT_VIEWED)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.NOTIFICATIONS_TIME_INTERVAL,
+        payload
+    }
+}

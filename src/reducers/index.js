@@ -165,7 +165,8 @@ const rootReducer = combineReducers({
     }),
     notifications: combineReducers({
         list: createThunkReducer(actionTypes.NOTIFICATIONS_LIST),
-        item: createThunkReducer(actionTypes.NOTIFICATIONS_ITEM)
+        item: createThunkReducer(actionTypes.NOTIFICATIONS_ITEM),
+        timeInterval: createThunkReducer((actionTypes.NOTIFICATIONS_TIME_INTERVAL))
     }),
     pendingExpenses: combineReducers({
         create: createThunkReducer(actionTypes.PENDING_EXPENSES_CREATE),

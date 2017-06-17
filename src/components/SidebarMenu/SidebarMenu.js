@@ -1,6 +1,8 @@
 import React from 'react'
 import {Link} from 'react-router'
 import _ from 'lodash'
+import {connect} from 'react-redux'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
@@ -24,8 +26,15 @@ const style = {
 
 const touch = true
 
-const SideBarMenu = (props) => {
-    const {classes, handleSignOut, handleOpenNotificationBar} = props
+const enhance = compose(
+    connect((state, props) => {
+        const count = _.get(state, ['notifications', 'timeInterval', 'data'])
+        return count
+    })
+)
+
+const SideBarMenu = enhance((props) => {
+    const {classes, handleSignOut, handleOpenNotificationBar, count} = props
     const items = _.map(MenuItems, (item, index) => {
         return (
             <Link to={item.url} key={index}>
@@ -46,11 +55,11 @@ const SideBarMenu = (props) => {
         <div className={classes.wrapper}>
             <div className={classes.items}>
                 <div className={classes.logo}>
-                    <img src={Logo} />
+                    <img src={Logo}/>
                 </div>
-                <Badge
+                {count ? <Badge
                     className={classes.badge}
-                    badgeContent={5}
+                    badgeContent={count}
                     badgeStyle={{top: 8, right: 10}}>
                     <ToolTip position="right" text="Уведомления">
                         <IconButton
@@ -58,13 +67,28 @@ const SideBarMenu = (props) => {
                             style={style.style}
                             className="ass23"
                             touch={touch}
-                            onTouchTap={() => { handleOpenNotificationBar(true) }}
+                            onTouchTap={() => {
+                                handleOpenNotificationBar(true)
+                            }}
                             disableTouchRipple={true}>
                             <Notification />
                         </IconButton>
                     </ToolTip>
                 </Badge>
-
+                    : <ToolTip position="right" text="Уведомления">
+                        <IconButton
+                            iconStyle={style.iconStyle}
+                            style={style.style}
+                            className="ass23"
+                            touch={touch}
+                            onTouchTap={() => {
+                                handleOpenNotificationBar(true)
+                            }}
+                            disableTouchRipple={true}>
+                            <Notification />
+                        </IconButton>
+                    </ToolTip>
+                }
                 {items}
 
                 <div className={classes.logout}>
@@ -82,7 +106,7 @@ const SideBarMenu = (props) => {
             </div>
         </div>
     )
-}
+})
 
 export default injectSheet({
     wrapper: {
@@ -130,7 +154,6 @@ export default injectSheet({
             fontSize: '11px !important',
             backgroundColor: '#009688 !important',
             color: '#fff !important',
-            display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
         }
