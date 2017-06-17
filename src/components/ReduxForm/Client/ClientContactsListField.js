@@ -64,7 +64,8 @@ const enhance = compose(
     })
 )
 
-const ClientContactsListField = ({classes, fields}) => {
+const ClientContactsListField = (props) => {
+    const {classes, fields} = props
     const ONE = 1
     const handleTouchTap = (index) => {
         const LAST_INDEX = index + ONE
@@ -97,7 +98,6 @@ const ClientContactsListField = ({classes, fields}) => {
                                 className={classes.inputField}
                                 fullWidth={true}
                             />
-
                             <div className={classes.flex}>
                                 <Field
                                     label="Email"

@@ -19,7 +19,7 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../../DeleteIcon/index'
 
-import OrderProductMeasurementField from './OrderProductMeasurementField'
+import OrderReturnMeasurementField from './OrderReturnMeasurementField'
 import ReturnProductsSearchField from './ReturnProductsSearchField'
 import ProductReturnCostField from './ProductReturnCostField'
 import TextField from '../Basic/TextField'
@@ -184,7 +184,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         />
                     </div>
                     <div>
-                        <OrderProductMeasurementField/>
+                        <OrderReturnMeasurementField/>
                     </div>
                     <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px'}}>
                         <ProductReturnCostField />
