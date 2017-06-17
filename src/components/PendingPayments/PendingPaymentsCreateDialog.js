@@ -8,11 +8,12 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxSearchField, CheckBox} from '../ReduxForm'
+import {TextField, CashboxCustomField, CheckBox} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import numberformat from '../../helpers/numberFormat'
+import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -103,22 +104,26 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 <Field
                                     name="cashbox"
                                     className={classes.inputField}
-                                    component={CashboxSearchField}
+                                    component={CashboxCustomField}
                                     label="Касса получатель"
                                     fullWidth={true}
                                 />
-                                <Field
-                                    name="amount"
-                                    className={classes.inputField}
-                                    component={TextField}
-                                    label="Сумма"
-                                    fullWidth={true}
-                                />
+                                <div className={classes.flex}>
+                                    <Field
+                                        name="amount"
+                                        className={classes.inputField}
+                                        component={TextField}
+                                        label="Сумма"
+                                        fullWidth={true}
+                                    />
+                                    <CashboxCurrencyField/>
+                                </div>
+                                <dib>Использовать</dib>
                                 <Field
                                     name="now"
                                     style={{marginTop: '10px'}}
                                     component={CheckBox}
-                                    label="Использовать текущий курс"
+                                    label="Текущий курс"
                                 />
                             </div>
                         </div>

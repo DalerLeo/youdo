@@ -41,6 +41,7 @@ export const SUPPLY_ITEM = 'SUPPLY_ITEM'
 export const SUPPLY_UPDATE = 'SUPPLY_UPDATE'
 export const SUPPLY_CREATE = 'SUPPLY_CREATE'
 export const SUPPLY_DELETE = 'SUPPLY_DELETE'
+export const SUPPLY_DEFECT = 'SUPPLY_DEFECT'
 
 export const ORDER_LIST = 'ORDER_LIST'
 export const ORDER_LIST_CSV = 'ORDER_LIST_CSV'
