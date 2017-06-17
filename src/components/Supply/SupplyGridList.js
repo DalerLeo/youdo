@@ -248,6 +248,7 @@ const SupplyGridList = enhance((props) => {
             />
 
             <SupplyCreateDialog
+                isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}

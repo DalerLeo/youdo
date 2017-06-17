@@ -25,28 +25,28 @@ const setMeasurementAction = (data, loading) => {
 
 const getItem = (id, dispatch) => {
     dispatch(setMeasurementAction(null, true))
-    return axios().get(sprintf(PATH.PRODUCT_ITEM, id))
+    return axios().get(sprintf(PATH.PRODUCT_ITEM, _.get(id, 'id')))
         .then(({data}) => {
             dispatch(setMeasurementAction(_.get(data, ['measurement', 'name']), false))
             return Promise.resolve(toCamelCase(data))
         })
 }
 
-const ProductSearchField = connect()((props) => {
+const ProductCustomSearchField = connect()((props) => {
     const {dispatch, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
     return (
         <SearchField
-            getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('name')}
+            getValue={(value) => { return value }}
+            getText={(value) => { return _.get(value, ['name']) }}
             getOptions={getOptions}
             getItem={test}
-            getItemText={SearchField.defaultGetText('name')}
+            getItemText={(value) => { return _.get(value, ['name']) }}
             {...defaultProps}
         />
     )
 })
 
-export default ProductSearchField
+export default ProductCustomSearchField

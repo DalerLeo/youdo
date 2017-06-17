@@ -369,12 +369,12 @@ const SupplyDetails = enhance((props) => {
             <div className={classes.data}>
                 <div className="dataHeader">
                     <Row>
-                        <Col xs={5}>Товар</Col>
+                        <Col xs={4}>Товар</Col>
                         <Col xs={1}>Кол-во</Col>
                         <Col xs={1}>Принято</Col>
                         <Col xs={1}>Брак</Col>
                         <Col xs={1}>Недостача</Col>
-                        <Col xs={1}>
+                        <Col xs={2}>
                             <div style={{textAlign: 'right'}}>Стоимость</div>
                         </Col>
                         <Col xs={2}>
@@ -398,7 +398,7 @@ const SupplyDetails = enhance((props) => {
                         const notAccepted = amount - (postedAmount + defectAmount)
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
-                                <Col xs={5}>{productName}</Col>
+                                <Col xs={4}>{productName}</Col>
                                 <Col xs={1}>{numberFormat(amount, measurement)}</Col>
                                 <Col xs={1}>{numberFormat(postedAmount, measurement)}</Col>
                                 <Col xs={1}>
@@ -407,7 +407,7 @@ const SupplyDetails = enhance((props) => {
                                     : <span>{numberFormat(defectAmount, measurement)}</span>}
                                     </Col>
                                 <Col xs={1}>{notAccepted}</Col>
-                                <Col xs={1}>
+                                <Col xs={2}>
                                     <div style={{textAlign: 'right'}}>{numberFormat(itemPrice, currency)}</div>
                                 </Col>
                                 <Col xs={2}>

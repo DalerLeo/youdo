@@ -17,8 +17,7 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../../DeleteIcon/index'
 import normalizeNumber from '../normalizers/normalizeNumber'
-import ProductSearchField from '../Product/ProductSearchField'
-import SupplyProductMeasurementField from './SupplyProductMeasurementField'
+import ProductCustomSearchField from '../Supply/ProductCustomSearchField'
 import TextField from '../Basic/TextField'
 
 const enhance = compose(
@@ -190,7 +189,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                     />
                 </div>
                 {state.open && <div className={classes.background}>
-                    <ProductSearchField
+                    <ProductCustomSearchField
                         label="Наименование товара"
                         className={classes.inputField}
                         {..._.get(defaultProps, 'product')}
@@ -235,11 +234,9 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                         stripedRows={false}>
                         {_.map(products, (item, index) => (
                             <TableRow key={index} className={classes.tableRow}>
-                                <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
+                                <TableRowColumn>{_.get(item, ['product', 'value', 'name'])}</TableRowColumn>
                                 <TableRowColumn>
-                                    {_.get(item, 'amount')}
-                                    <SupplyProductMeasurementField/>
-                                </TableRowColumn>
+                                    {_.get(item, 'amount')} {_.get(item, ['product', 'value', 'measurement', 'name'])}</TableRowColumn>
                                 <TableRowColumn>{numberFormat(_.get(item, 'cost'), currency)}</TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>
                                     <IconButton onTouchTap={() => handleRemove(index)}>

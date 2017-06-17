@@ -375,7 +375,20 @@ const SupplyList = enhance((props) => {
         handleCloseConfirmExpenseDialog: props.handleCloseConfirmExpenseDialog,
         handleSendConfirmExpenseDialog: props.handleSendConfirmExpenseDialog
     }
+    const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
+        return {
+            amount: _.get(item, 'amount'),
+            cost: _.get(item, 'cost'),
+            product: {
+                value: {
+                    id: _.get(item, ['product', 'id']),
+                    name: _.get(item, ['product', 'name']),
+                    measurement: _.get(item, ['product', 'measurement'])
+                }
+            }
 
+        }
+    })
     const updateDialog = {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
@@ -391,9 +404,9 @@ const SupplyList = enhance((props) => {
                 currency: {
                     value: _.get(detail, ['currency', 'id'])
                 },
-                deliveryData: {
-                    value: _.get(detail, 'deliveryData')
-                }
+                date_delivery: moment(_.get(detail, ['dateDelivery'])).toDate(),
+                products: forUpdateProducts,
+                comment: _.get(detail, 'comment')
             }
         })(),
         updateLoading: detailLoading || updateLoading,

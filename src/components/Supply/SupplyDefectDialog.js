@@ -33,6 +33,14 @@ const enhance = compose(
                 marginLeft: 'auto',
                 width: '50px'
             }
+        },
+        bigImage: {
+            background: '#eee',
+            position: 'absolute',
+            top: '-59px',
+            left: '0',
+            width: '100%',
+            height: '100%'
         }
     })),
     withReducer('state', 'dispatch', (state, action) => {
@@ -82,7 +90,7 @@ const SupplyDefectDialog = enhance((props) => {
                     <CircularProgress size={80} thickness={5}/>
                 </div>
                 <div className={classes.innerWrap}>
-                    <div className={classes.inContent} style={{minHeight: '350px'}}>
+                    <div className={classes.inContent} style={{minHeight: '350px', position: 'relative'}}>
                         <div className={classes.defect}>
                             <Row className="dottedList">
                                 <Col xs={2}>Баркод</Col>
@@ -91,6 +99,9 @@ const SupplyDefectDialog = enhance((props) => {
                                 <Col xs={2}></Col>
                             </Row>
                             {defectItems}
+                        </div>
+                        <div className={classes.bigImage}>
+
                         </div>
                     </div>
                 </div>
