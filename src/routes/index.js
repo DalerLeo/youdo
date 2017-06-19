@@ -30,6 +30,7 @@ import {StatCashbox} from '../containers/StatCashbox'
 import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
 import {ShiftList} from '../containers/Shift'
+import {Zones} from '../containers/Zones'
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -329,7 +330,15 @@ export default {
                 component: userIsAuth(StatCashbox)
             }]
         },
-
+        // ZONES
+        {
+            path: ROUTES.ZONES_LIST_URL,
+            component: userIsAuth(Zones),
+            childRoutes: [{
+                path: ROUTES.ZONES_LIST_URL,
+                component: userIsAuth(Zones)
+            }]
+        },
         {
             path: '*',
             component: NotFound
