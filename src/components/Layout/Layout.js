@@ -15,11 +15,14 @@ import Money from 'material-ui/svg-icons/editor/attach-money'
 import Clear from 'material-ui/svg-icons/action/delete'
 import Storehouse from 'material-ui/svg-icons/action/home'
 import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
+import CircularProgress from 'material-ui/CircularProgress'
 import {
     notificationListFetchAction,
-    notificationDeleteAction
+    notificationDeleteAction,
+    notificationGetNotViewed
 } from '../../actions/notifications'
 import {openSnackbarAction} from '../../actions/snackbar'
+import NotFound from '../Images/not-found.png'
 
 const iconStyle = {
     icon: {
@@ -36,6 +39,7 @@ const iconStyle = {
 const moneyIcon = '#64b5f6'
 const balanceIcon = '#4db6ac'
 const storeIcon = '#f06292'
+const ZERO = 0
 
 const enhance = compose(
     connect((state, props) => {
@@ -82,7 +86,11 @@ const enhance = compose(
         handleOpenNotificationBar: props => (status) => {
             const {setOpenNotifications, dispatch} = props
             setOpenNotifications(status)
-            dispatch(notificationListFetchAction())
+            if (status) {
+                dispatch(notificationListFetchAction())
+            } else {
+                dispatch(notificationGetNotViewed())
+            }
         }
 
     }),
@@ -218,6 +226,18 @@ const enhance = compose(
                 fontWeight: 'normal',
                 color: '#999'
             }
+        },
+        loading: {
+            textAlign: 'center !important',
+            top: '40% !important',
+            position: 'relative !important'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '215px',
+            padding: '215px 0 0',
+            textAlign: 'center',
+            color: '#999'
         }
     })
 )
@@ -253,7 +273,7 @@ const Layout = enhance((props) => {
                     ? <div className="notifIcon money"><Money/></div>
                     : (_.get(item, ['template', 'name']) === 'supply'
                         ? <div className="notifIcon store"><Storehouse/></div>
-                        : <div></div>)
+                        : <div className="notifIcon store"><Storehouse/></div>)
             )
 
         return (
@@ -301,8 +321,13 @@ const Layout = enhance((props) => {
                     </div>
                     <div className={classes.notifBody}>
                         {
-                            notificationsLoading ? <div></div>
-                                : notificationListExp
+                            notificationsLoading ? <div className={classes.loading}>
+                                <CircularProgress size={100} thickness={6}/>
+                            </div>
+                                : (notificationListExp.length > ZERO ? notificationListExp
+                                : <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>)
                         }
                     </div>
                 </Paper>

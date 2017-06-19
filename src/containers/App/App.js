@@ -4,8 +4,12 @@ import {setTokenAction, signOutAction} from '../../actions/signIn'
 import DocumentTitle from 'react-document-title'
 import {hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
+import {
+    notificationGetNotViewed
+} from '../../actions/notifications'
 import * as ROUTES from '../../constants/routes'
 
+const time = 10000
 @compose(
     connect(),
     withHandlers({
@@ -25,6 +29,9 @@ class App extends React.Component {
 
         const {dispatch} = props
         dispatch(setTokenAction())
+        setInterval(() => {
+            dispatch(notificationGetNotViewed())
+        }, time)
     }
 
     render () {
