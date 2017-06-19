@@ -16,7 +16,7 @@ const enhance = compose(
             position: 'relative',
             width: '100%',
             height: '60px',
-            marginTop: '-25px',
+            marginTop: '-28px',
             display: 'flex',
             alignItems: 'center'
         },

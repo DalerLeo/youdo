@@ -277,7 +277,7 @@ const enhance = compose(
             color: '#999'
         }
     }),
-    withState('openDetails', 'setOpenDetails', false)
+        withState('openDetails', 'setOpenDetails', false)
 )
 
 const iconStyle = {

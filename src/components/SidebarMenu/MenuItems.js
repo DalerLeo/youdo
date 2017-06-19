@@ -6,6 +6,7 @@ import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-w
 import Map from 'material-ui/svg-icons/maps/map'
 import Settings from 'material-ui/svg-icons/action/settings'
 import Statistics from 'material-ui/svg-icons/action/trending-up'
+import Zone from 'material-ui/svg-icons/maps/place'
 
 export const MenuItems = [
     {
@@ -55,6 +56,14 @@ export const MenuItems = [
         url: ROUTES.MANUFACTURE_CUSTOM_URL,
         childs: [
             {name: 'Производство', url: ROUTES.MANUFACTURE_CUSTOM_URL}
+        ]
+    },
+    {
+        name: 'Зоны',
+        icon: (<Zone />),
+        url: ROUTES.ZONES_LIST_URL,
+        childs: [
+            {name: 'Зоны', url: ROUTES.ZONES_LIST_URL}
         ]
     },
     {
