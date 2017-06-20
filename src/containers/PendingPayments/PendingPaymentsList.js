@@ -171,6 +171,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[PENDING_PAYMENTS_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(pendingPaymentsListFetchAction(filter))
                 })
         }
     })
@@ -215,27 +216,7 @@ const PendingPaymentsList = enhance((props) => {
     }
 
     const updateDialog = {
-        initialValues: (() => {
-            if (!detail) {
-                return {}
-            }
-
-            return {
-                name: _.get(detail, 'name'),
-                category: {
-                    value: _.get(detail, 'category')
-                },
-                address: _.get(detail, 'address'),
-                guide: _.get(detail, 'guide'),
-                phone: _.get(detail, 'phone'),
-                contactName: _.get(detail, 'contactName'),
-                official: _.get(detail, 'official'),
-                latLng: {
-                    lat: _.get(detail, 'lat'),
-                    lng: _.get(detail, 'lon')
-                }
-            }
-        })(),
+        initialValues: {},
         updateLoading: detailLoading || updateLoading,
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
