@@ -185,6 +185,7 @@ const StatStockGridList = enhance((props) => {
     const handleClickTapChange = _.get(listData, 'handleClickTapChange')
     const statStockFilterDialog = (
         <StatStockFilterForm
+            isBalance={_.get(listData, 'tab')}
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
@@ -249,16 +250,15 @@ const StatStockGridList = enhance((props) => {
         loading: _.get(listData, 'remainderLoading')
     }
 
+    const handleClick = _.get(listData, 'handleClickStatStock')
+
     const stockList = _.map(_.get(listData, 'stockList'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         return (
                 <li key={id}
                     className={_.get(detailData, 'id') === id ? 'active' : ''}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.STATSTOCK_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{name}</Link>
+                    <span onClick={() => { handleClick(id) }}>{name}</span>
                 </li>
         )
     })
