@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Row, Col} from 'react-flexbox-grid'
+import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -12,6 +12,7 @@ import ManufactureAddProductDialog from './ManufactureAddProductDialog'
 import ManufactureEditProductDialog from './ManufactureEditProductDialog'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
+import Paper from 'material-ui/Paper'
 import SubMenu from '../SubMenu'
 import ManufactureTab from './ManufactureTab'
 import ConfirmDialog from '../ConfirmDialog'
@@ -36,11 +37,12 @@ const enhance = compose(
         },
         productionMainRow: {
             margin: '0 -28px',
-            height: 'calc(100vh - 60px)',
-            overflowY: 'auto'
+            height: 'calc(100vh - 60px)'
         },
         productionLeftSide: {
-            padding: '0'
+            padding: '0',
+            flexBasis: '25%',
+            maxWidth: '25%'
         },
         productionRightSide: {
             background: '#fff',
@@ -93,12 +95,13 @@ const enhance = compose(
         productionTypeLi: {
             background: '#f2f5f8',
             margin: '0',
-            padding: '20px 30px',
+            padding: '15px 30px',
             borderBottom: '1px solid #efefef',
             display: 'flex',
             position: 'relative',
             alignItems: 'center',
             cursor: 'pointer',
+            transition: 'all 0.3s ease',
             '& img': {
                 width: '24px',
                 height: '24px',
@@ -109,7 +112,6 @@ const enhance = compose(
             fontSize: '13px',
             fontWeight: 'bold',
             margin: '0',
-            borderBottom: '1px solid #efefef',
             padding: '20px 30px'
         },
         productionRightH2: {
@@ -263,7 +265,7 @@ const ManufactureGridList = enhance((props) => {
         const name = _.get(item, 'name')
         return (
             <li key={id} className={classes.productionTypeLi}
-                onTouchTap={() => {
+                onClick={() => {
                     listData.handleClickItem(id)
                 }}
                 style={ detailId === id ? {backgroundColor: 'white'} : {}}>
@@ -341,18 +343,21 @@ const ManufactureGridList = enhance((props) => {
             />
 
             <Row className={classes.productionMainRow}>
-                <Col xs={3} className={classes.productionLeftSide}>
+                <div className={classes.productionLeftSide}>
                     <h2 className={classes.productionH2}>Этапы производства</h2>
-                    <ul className={classes.productionUl}>
-                        {
-                            _.get(listData, 'listLoading')
-                                ? <div style={{textAlign: 'center'}}>
-                                <CircularProgress size={100} thickness={6}/>
-                            </div>
-                                : manufactureList
-                        }
-                    </ul>
-                </Col>
+                    <Paper zDepth={2} style={{height: 'calc(100% - 59px)'}}>
+                        <ul className={classes.productionUl}>
+                            {
+                                _.get(listData, 'listLoading')
+                                    ? <div style={{textAlign: 'center'}}>
+                                    <CircularProgress size={100} thickness={6}/>
+                                </div>
+                                    : manufactureList
+                            }
+                        </ul>
+                    </Paper>
+                </div>
+
                 <ManufactureTab
                     tabData={tabData}
                     editMaterials={editMaterials}

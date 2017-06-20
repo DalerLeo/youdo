@@ -39,12 +39,15 @@ const enhance = compose(
             height: '390px',
             boxSizing: 'border-box',
             overflowY: 'scroll'
+        },
+        equipmentContent: {
+            marginTop: '56px'
         }
     })
 )
 
 const ManufactureEquipment = enhance((props) => {
-    const {equipmentData} = props
+    const {equipmentData, classes} = props
 
     const filter = _.get(equipmentData, 'filter')
     const detail = (
@@ -83,7 +86,7 @@ const ManufactureEquipment = enhance((props) => {
         </div>
     )
     return (
-        <Row>
+        <Row className={classes.equipmentContent}>
             <Col xs={12}>
                 <GridList
                     filter={filter}
