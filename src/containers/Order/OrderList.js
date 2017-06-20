@@ -31,7 +31,8 @@ import {
     orderItemFetchAction,
     orderReturnAction,
     orderTransactionFetchAction,
-    orderItemReturnFetchAction
+    orderItemReturnFetchAction,
+    getDocumentAction
 } from '../../actions/order'
 import {
     clientCreateAction,
@@ -99,8 +100,9 @@ const enhance = compose(
         dispatch(orderTransactionFetchAction(orderId))
     }),
     withPropsOnChange((props, nextProps) => {
+        const prevTab = _.get(props, ['location', 'query', 'tab'])
         const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
-        return props.params.orderId !== nextProps.params.orderId && nextTab === 'return'
+        return prevTab !== nextTab && nextTab === 'return'
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         dispatch(orderItemReturnFetchAction(orderId))
@@ -341,6 +343,11 @@ const enhance = compose(
                     dispatch(clientListFetchAction(filter))
                     hashHistory.push(filter.createURL({[CLIENT_CREATE_DIALOG_OPEN]: false}))
                 })
+        },
+
+        handleGetDocument: props => (id) => {
+            const {dispatch} = props
+            return dispatch(getDocumentAction(id))
         }
     }),
 )
@@ -430,6 +437,10 @@ const OrderList = enhance((props) => {
         openDeleteDialog,
         handleOpenDeleteDialog: props.handleOpenDeleteDialog,
         handleCloseDeleteDialog: props.handleCloseDeleteDialog
+    }
+
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
     }
 
     const confirmDialog = {
@@ -562,6 +573,7 @@ const OrderList = enhance((props) => {
                 detailData={detailData}
                 paymentData={paymentData}
                 createDialog={createDialog}
+                getDocument={getDocument}
                 createClientDialog={createClientDialog}
                 transactionsDialog={transactionsDialog}
                 itemReturnDialog={itemReturnDialog}

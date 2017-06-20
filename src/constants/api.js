@@ -102,6 +102,7 @@ export const ORDER_TRANSACTION = 'order_payment'
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_DELETE = `/${ORDER}/%d/`
+export const GET_DOCUMENT = 'order_document/%d/'
 
 export const SUPPLY_EXPENSE = 'supply_expanse'
 export const SUPPLY_EXPENSE_CREATE = `/${SUPPLY_EXPENSE}/`

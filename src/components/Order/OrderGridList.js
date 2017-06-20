@@ -116,6 +116,7 @@ const OrderGridList = enhance((props) => {
         updateDialog,
         filterDialog,
         actionsDialog,
+        getDocument,
         transactionsDialog,
         returnDialog,
         shortageDialog,
@@ -129,7 +130,6 @@ const OrderGridList = enhance((props) => {
         classes,
         createClientDialog
     } = props
-
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
@@ -170,6 +170,7 @@ const OrderGridList = enhance((props) => {
             deleteDialog={deleteDialog}
             transactionsDialog={transactionsDialog}
             tabData={tabData}
+            getDocument={getDocument}
             paymentData={paymentData}
             returnDialog={returnDialog}
             itemReturnDialog={itemReturnDialog}
@@ -326,7 +327,7 @@ const OrderGridList = enhance((props) => {
             />
 
             {detailData.data && <ConfirmDialog
-                type="delete"
+                type="cancel"
                 message={'Заказ № ' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
@@ -412,7 +413,10 @@ OrderGridList.propTypes = {
         handleOpenCreateClientDialog: PropTypes.func.isRequired,
         handleCloseCreateClientDialog: PropTypes.func.isRequired,
         handleSubmitCreateClientDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    getDocument: PropTypes.shape({
+        handleGetDocument: PropTypes.func.isRequired
+    })
 }
 
 export default OrderGridList
