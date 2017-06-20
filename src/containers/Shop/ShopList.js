@@ -5,7 +5,7 @@ import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as SHOP from '../../constants/shop'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
@@ -23,7 +23,8 @@ import {
     shopUpdateAction,
     shopCSVFetchAction,
     shopDeleteAction,
-    shopItemFetchAction
+    shopItemFetchAction,
+    shopListFetchAction
 } from '../../actions/shop'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -56,6 +57,19 @@ const enhance = compose(
             filterForm,
             createForm
         }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+    }, ({dispatch, filter}) => {
+        dispatch(shopListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const shopId = _.get(nextProps, ['params', 'shopId'])
+        return shopId && _.get(props, ['params', 'shopId']) !== shopId
+    }, ({dispatch, params}) => {
+        const shopId = _.toInteger(_.get(params, 'shopId'))
+        dispatch(shopItemFetchAction(shopId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -303,7 +317,6 @@ const ShopList = enhance((props) => {
         tab,
         handleTabChange: props.handleTabChange
     }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
