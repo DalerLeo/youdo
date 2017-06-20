@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Col} from 'react-flexbox-grid'
+import Paper from 'material-ui/Paper'
 import * as TAB from '../../constants/manufactureTab'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import ManufactureProduct from './Tab/ManufactureProduct'
@@ -16,27 +17,38 @@ const enhance = compose(
             zIndex: '2'
         },
         colorCat: {
-            borderBottom: '2px solid #e8e8e8',
             marginBottom: '0',
+            width: '100%',
             '& > div': {
-                width: '60% !important'
+                width: '40% !important',
+                paddingRight: '60%',
+                background: '#fff !important'
+            },
+            '& > div:first-child': {
+                borderBottom: '1px #transparent solid'
+            },
+            '& > div:last-child': {
+                width: '100% !important',
+                padding: '0'
             },
             '& > div:nth-child(2) > div': {
                 marginTop: '0px !important',
-                marginBottom: '-2px',
-                backgroundColor: '#a6dff7 !important'
+                marginBottom: '-1px',
+                backgroundColor: '#12aaeb !important',
+                height: '1px !important'
             },
             '& button': {
-                color: 'black !important',
+                color: '#333 !important',
                 backgroundColor: '#fefefe !important',
-                height: '30px'
+                '& > div > div': {
+                    height: '57px !important'
+                }
             },
             '& button > span:first-line': {
                 color: '#a6dff7'
             },
             '& button div div': {
-                height: '30px !important',
-                justifyContent: 'flex-start !important'
+                textTransform: 'initial'
             }
         }
     })
@@ -48,14 +60,16 @@ const ManufactureTab = enhance((props) => {
     return (
         <Col className={classes.ManufactRightSide} xs={9} md={9}>
             <div>
-                <Tabs
-                    className={classes.colorCat}
-                    value={tab}
-                    onChange={(value) => tabData.handleTabChange(value)}>
-                    <Tab label="Продукция" value={TAB.MANUFACTURE_TAB_PRODUCT}/>
-                    <Tab label="Персонал" value={TAB.MANUFACTURE_TAB_PERSON} />
-                    <Tab label="Оборудование" value={TAB.MANUFACTURE_TAB_EQUIPMENT} />
-                </Tabs>
+                <Paper zDepth={1}>
+                    <Tabs
+                        className={classes.colorCat}
+                        value={tab}
+                        onChange={(value) => tabData.handleTabChange(value)}>
+                        <Tab label="Продукция" value={TAB.MANUFACTURE_TAB_PRODUCT}/>
+                        <Tab label="Персонал" value={TAB.MANUFACTURE_TAB_PERSON} />
+                        <Tab label="Оборудование" value={TAB.MANUFACTURE_TAB_EQUIPMENT} />
+                    </Tabs>
+                </Paper>
                 {TAB.MANUFACTURE_TAB_PRODUCT === tab && <ManufactureProduct
                     productData={productData}
                     editMaterials={editMaterials}
