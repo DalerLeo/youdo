@@ -50,13 +50,13 @@ export const CLIENT_LIST = `/${CLIENT}/`
 export const CLIENT_ITEM = `/${CLIENT}/%d/`
 
 export const CURRENCY = 'currency/currencies'
-// /api/v1/currencies/currency_rate/?currency={currency}
 export const CURRENCY_CREATE = `/${CURRENCY}/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
-export const CURRENCY_ITEM = 'currencies/currency_rate/'
 export const CURRENCY_DELETE = `/${CURRENCY}/%d/`
+export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
 export const CURRENCY_PRIMARY = 'currency_primary'
 export const CURRENCY_PRIMARY_CREATE = `/${CURRENCY_PRIMARY}/`
+export const CURRENCY_RATE = 'currencies/currency_rate/'
 export const SET_CURRENCY = 'currencies/currency_rate'
 export const SET_CURRENCY_CREATE = `/${SET_CURRENCY}/`
 
@@ -91,6 +91,7 @@ export const SUPPLY = 'dist/supply'
 export const SUPPLY_CREATE = `/${SUPPLY}/`
 export const SUPPLY_LIST = `/${SUPPLY}/`
 export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
+export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
 export const SUPPLY_DELETE = `/${SUPPLY}/cancel/`
 
 export const ORDER = 'order'
@@ -101,6 +102,7 @@ export const ORDER_TRANSACTION = 'order_payment'
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_DELETE = `/${ORDER}/%d/`
+export const GET_DOCUMENT = 'order_document/%d/'
 
 export const SUPPLY_EXPENSE = 'supply_expanse'
 export const SUPPLY_EXPENSE_CREATE = `/${SUPPLY_EXPENSE}/`

@@ -105,7 +105,7 @@ const enhance = compose(
             zIndex: '6'
         },
         content: {
-            background: '#fefefe',
+            background: '#f2f5f8',
             width: 'calc(100% - 140px)',
             padding: '28px',
             overflow: 'auto'

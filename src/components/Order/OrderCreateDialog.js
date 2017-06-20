@@ -226,7 +226,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const OrderCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, products, shortageDialog} = props
+    const {open, handleSubmit, onClose, classes, products, shortageDialog, isUpdate, createClientDialog} = props
     let notEnough = false
     _.map(products, (item) => {
         const amount = _.get(item, 'amount')
@@ -246,7 +246,7 @@ const OrderCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Добавление заказа</span>
+                <span>{isUpdate ? 'Изменение заказа' : 'Добавление заказа'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -262,8 +262,7 @@ const OrderCreateDialog = enhance((props) => {
 
                                 <div className={classes.subTitleOrder}>
                                     <span>Выбор клиента</span>
-                                    <a style={{color: '#12aaeb'}}
-                                    >+ добавить</a>
+                                    {!isUpdate && <a style={{color: '#12aaeb'}} onClick={createClientDialog.handleOpenCreateClientDialog}>+ добавить</a>}
                                 </div>
                                 <div>
                                     <Field
@@ -361,6 +360,16 @@ OrderCreateDialog.propTyeps = {
         openShortageDialog: PropTypes.bool.isRequired,
         handleOpenShortageDialog: PropTypes.func.isRequired,
         handleCloseShortageDialog: PropTypes.func.isRequired
+    }).isRequired,
+    createClientDialog: PropTypes.shape({
+        createClientLoading: PropTypes.bool.isRequired,
+        openCreateClientDialog: PropTypes.bool.isRequired,
+        handleOpenCreateClientDialog: PropTypes.func.isRequired,
+        handleCloseCreateClientDialog: PropTypes.func.isRequired,
+        handleSubmitCreateClientDialog: PropTypes.func.isRequired
     }).isRequired
+}
+OrderCreateDialog.defaultProps = {
+    isUpdate: false
 }
 export default OrderCreateDialog

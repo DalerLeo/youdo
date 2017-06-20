@@ -277,7 +277,7 @@ const enhance = compose(
             color: '#999'
         }
     }),
-    withState('openDetails', 'setOpenDetails', false)
+        withState('openDetails', 'setOpenDetails', false)
 )
 
 const iconStyle = {
@@ -308,6 +308,7 @@ const OrderDetails = enhance((props) => {
         handleOpenUpdateDialog,
         tabData,
         paymentData,
+        getDocument,
         returnData
     } = props
     const tab = _.get(tabData, 'tab')
@@ -400,7 +401,8 @@ const OrderDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            touch={true}>
+                            touch={true}
+                            onTouchTap={() => { getDocument.handleGetDocument(id) }}>
                             <File />
                         </IconButton>
                     </Tooltip>
@@ -413,7 +415,7 @@ const OrderDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Удалить">
+                    <Tooltip position="bottom" text="Отменить">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -605,7 +607,10 @@ OrderDetails.propTypes = {
         handleCloseItemReturnDialog: PropTypes.func.isRequired
     }).isRequired,
     handleOpenUpdateDialog: PropTypes.func.isRequired,
-    orderListData: PropTypes.object
+    orderListData: PropTypes.object,
+    getDocument: PropTypes.shape({
+        handleGetDocument: PropTypes.func.isRequired
+    })
 }
 
 export default OrderDetails

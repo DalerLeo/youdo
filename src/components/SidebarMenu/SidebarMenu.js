@@ -128,7 +128,7 @@ export default injectSheet({
         width: '100%',
         '& button': {
             width: '100% !important',
-            height: '70px !important',
+            height: '60px !important',
             opacity: '0.5',
             '&:hover': {
                 opacity: '1'

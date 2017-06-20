@@ -13,6 +13,7 @@ import Container from '../Container'
 import SupplyFilterForm from './SupplyFilterForm'
 import SupplyDetails from './SupplyDetails'
 import SupplyCreateDialog from './SupplyCreateDialog'
+import SupplyDefectDialog from './SupplyDefectDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -117,6 +118,7 @@ const SupplyGridList = enhance((props) => {
     const {
         filter,
         createDialog,
+        defectDialog,
         updateDialog,
         filterDialog,
         actionsDialog,
@@ -155,6 +157,7 @@ const SupplyGridList = enhance((props) => {
         <SupplyDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
+            defectDialog={defectDialog}
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
             confirmExpenseDialog={confirmExpenseDialog}
@@ -238,7 +241,14 @@ const SupplyGridList = enhance((props) => {
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
+            <SupplyDefectDialog
+                open={defectDialog.openDefectDialog}
+                onClose={defectDialog.handleCloseDefectDialog}
+                defectData={_.get(detailData, 'defect')}
+            />
+
             <SupplyCreateDialog
+                isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -282,6 +292,11 @@ SupplyGridList.propTypes = {
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    defectDialog: PropTypes.shape({
+        openDefectDialog: PropTypes.bool.isRequired,
+        handleOpenDefectDialog: PropTypes.func.isRequired,
+        handleCloseDefectDialog: PropTypes.func.isRequired
     }).isRequired,
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,

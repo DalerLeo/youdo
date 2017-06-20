@@ -14,6 +14,7 @@ import OrderDetails from './OrderDetails'
 import OrderCreateDialog from './OrderCreateDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
+import ClientCreateDialog from '../Client/ClientCreateDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -115,6 +116,7 @@ const OrderGridList = enhance((props) => {
         updateDialog,
         filterDialog,
         actionsDialog,
+        getDocument,
         transactionsDialog,
         returnDialog,
         shortageDialog,
@@ -125,9 +127,9 @@ const OrderGridList = enhance((props) => {
         detailData,
         paymentData,
         tabData,
-        classes
+        classes,
+        createClientDialog
     } = props
-
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
@@ -168,6 +170,7 @@ const OrderGridList = enhance((props) => {
             deleteDialog={deleteDialog}
             transactionsDialog={transactionsDialog}
             tabData={tabData}
+            getDocument={getDocument}
             paymentData={paymentData}
             returnDialog={returnDialog}
             itemReturnDialog={itemReturnDialog}
@@ -294,12 +297,14 @@ const OrderGridList = enhance((props) => {
             <OrderCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
+                createClientDialog={createClientDialog}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 shortageDialog={shortageDialog}
             />
 
             <OrderCreateDialog
+                isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -313,8 +318,16 @@ const OrderGridList = enhance((props) => {
                 onClose={deleteDialog.handleCloseDeleteDialog}
             />
 
+            <ClientCreateDialog
+                open={createClientDialog.openCreateClientDialog}
+                initialValues={createClientDialog.initialValues}
+                loading={createClientDialog.createClientLoading}
+                onClose={createClientDialog.handleCloseCreateClientDialog}
+                onSubmit={createClientDialog.handleSubmitCreateClientDialog}
+            />
+
             {detailData.data && <ConfirmDialog
-                type="delete"
+                type="cancel"
                 message={'Заказ № ' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
@@ -393,7 +406,17 @@ OrderGridList.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    createClientDialog: PropTypes.shape({
+        createClientLoading: PropTypes.bool.isRequired,
+        openCreateClientDialog: PropTypes.bool.isRequired,
+        handleOpenCreateClientDialog: PropTypes.func.isRequired,
+        handleCloseCreateClientDialog: PropTypes.func.isRequired,
+        handleSubmitCreateClientDialog: PropTypes.func.isRequired
+    }).isRequired,
+    getDocument: PropTypes.shape({
+        handleGetDocument: PropTypes.func.isRequired
+    })
 }
 
 export default OrderGridList

@@ -21,6 +21,7 @@ import {
     TAB,
     OrderGridList
 } from '../../components/Order'
+const CLIENT_CREATE_DIALOG_OPEN = 'openClientCreate'
 import {
     orderCreateAction,
     orderUpdateAction,
@@ -30,8 +31,13 @@ import {
     orderItemFetchAction,
     orderReturnAction,
     orderTransactionFetchAction,
-    orderItemReturnFetchAction
+    orderItemReturnFetchAction,
+    getDocumentAction
 } from '../../actions/order'
+import {
+    clientCreateAction,
+    clientListFetchAction
+} from '../../actions/client'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -42,6 +48,7 @@ const enhance = compose(
         const payment = _.get(state, ['order', 'payment', 'data'])
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const createLoading = _.get(state, ['order', 'create', 'loading'])
+        const createClientLoading = _.get(state, ['client', 'create', 'loading'])
         const transactionsLoading = _.get(state, ['order', 'create', 'loading'])
         const returnLoading = _.get(state, ['order', 'create', 'loading'])
         const shortageLoading = _.get(state, ['order', 'create', 'loading'])
@@ -52,6 +59,7 @@ const enhance = compose(
         const csvLoading = _.get(state, ['order', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'OrderFilterForm'])
         const createForm = _.get(state, ['form', 'OrderCreateForm'])
+        const clientCreateForm = _.get(state, ['form', 'ClientCreateForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
         const returnData = _.get(state, ['order', 'return', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
@@ -63,6 +71,7 @@ const enhance = compose(
             payment,
             detailLoading,
             createLoading,
+            createClientLoading,
             transactionsLoading,
             returnLoading,
             shortageLoading,
@@ -72,6 +81,7 @@ const enhance = compose(
             filter,
             filterForm,
             createForm,
+            clientCreateForm,
             returnForm,
             returnData
         }
@@ -90,8 +100,9 @@ const enhance = compose(
         dispatch(orderTransactionFetchAction(orderId))
     }),
     withPropsOnChange((props, nextProps) => {
+        const prevTab = _.get(props, ['location', 'query', 'tab'])
         const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
-        return props.params.orderId !== nextProps.params.orderId && nextTab === 'return'
+        return prevTab !== nextTab && nextTab === 'return'
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         dispatch(orderItemReturnFetchAction(orderId))
@@ -309,6 +320,34 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: false})})
                     dispatch(orderListFetchAction(filter))
                 })
+        },
+
+        handleOpenCreateClientDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseCreateClientDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitCreateClientDialog: props => () => {
+            const {dispatch, clientCreateForm, filter} = props
+
+            return dispatch(clientCreateAction(_.get(clientCreateForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    dispatch(clientListFetchAction(filter))
+                    hashHistory.push(filter.createURL({[CLIENT_CREATE_DIALOG_OPEN]: false}))
+                })
+        },
+
+        handleGetDocument: props => (id) => {
+            const {dispatch} = props
+            return dispatch(getDocumentAction(id))
         }
     }),
 )
@@ -323,6 +362,7 @@ const OrderList = enhance((props) => {
         payment,
         detailLoading,
         createLoading,
+        createClientLoading,
         transactionsLoading,
         returnLoading,
         shortageLoading,
@@ -348,6 +388,8 @@ const OrderList = enhance((props) => {
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
+
+    const openCreateClientDialog = toBoolean(_.get(location, ['query', CLIENT_CREATE_DIALOG_OPEN]))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -397,37 +439,67 @@ const OrderList = enhance((props) => {
         handleCloseDeleteDialog: props.handleCloseDeleteDialog
     }
 
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
+    }
+
     const confirmDialog = {
         openConfirmDialog: props.openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
+
+    const createClientDialog = {
+        initialValues: (() => {
+            return {
+                contacts: [{}]
+            }
+        })(),
+        createClientLoading,
+        openCreateClientDialog,
+        handleOpenCreateClientDialog: props.handleOpenCreateClientDialog,
+        handleCloseCreateClientDialog: props.handleCloseCreateClientDialog,
+        handleSubmitCreateClientDialog: props.handleSubmitCreateClientDialog
+    }
+
+    // Const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
+    //     Return {
+    //         Amount: _.get(item, 'amount'),
+    //         Cost: _.get(item, 'price'),
+    //         Measurement: _.get(item, ['product', 'measurement', 'name']),
+    //         Product: {
+    //             Value: {
+    //                 Id: _.get(item, ['product', 'id']),
+    //                 Text: _.get(item, ['product', 'name'])
+    //             }
+    //         }
+    //
+    //     }
+    // })
+
     const updateDialog = {
         initialValues: (() => {
             if (!detail) {
                 return {}
             }
-
+            // Const HUND = 100
+            // Const discountPrice = _.toNumber(_.get(detail, 'discountPrice'))
+            // Const totalPrice = _.toNumber(_.get(detail, 'totalPrice'))
+            // Const discount = (discountPrice / (discountPrice + totalPrice)) * HUND
             return {
-                client: {
-                    value: _.get(detail, ['client', 'id'])
-                },
-                currency: {
-                    value: _.get(detail, ['currency', 'id'])
-                },
-                deliveryType: {
-                    value: _.get(detail, ['deliveryType', 'id'])
-                },
-                deliveryData: {
-                    value: _.get(detail, 'deliveryData')
-                },
-                deliveryPrice: _.get(detail, 'detailPrice'),
-                discountPrice: _.get(detail, 'discountType'),
-                paymentData: {
-                    value: _.get(detail, 'paymentData')
-                }
-
+                // Client: {
+                //     Value: _.get(detail, ['client', 'id'])
+                // },
+                // Contact: {
+                //     Value: _.get(detail, ['contact', 'id'])
+                // },
+                // DeliveryType: _.get(detail, ['deliveryType', 'id']),
+                // DeliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
+                // DeliveryPrice: _.get(detail, 'deliveryPrice'),
+                // DiscountPrice: discount,
+                // PaymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
+                // Products: forUpdateProducts
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -501,6 +573,8 @@ const OrderList = enhance((props) => {
                 detailData={detailData}
                 paymentData={paymentData}
                 createDialog={createDialog}
+                getDocument={getDocument}
+                createClientDialog={createClientDialog}
                 transactionsDialog={transactionsDialog}
                 itemReturnDialog={itemReturnDialog}
                 returnDialog={returnDialog}

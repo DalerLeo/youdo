@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -10,8 +10,10 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CurrencySearchField} from '../ReduxForm'
+import {TextField, CurrencySearchField, CheckBox} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
+import ProductSearchField from '../ReduxForm/Product/ProductSearchField'
+import {connect} from 'react-redux'
 
 export const SUPPLY_EXPENSE_CREATE_DIALOG_OPEN = 'openSupplyExpenseCreateDialog'
 const validate = (data) => {
@@ -45,13 +47,16 @@ const enhance = compose(
         form: 'SupplyExpenseCreateForm',
         enableReinitialize: true
     }),
-    withReducer('state', 'dispatch', (state, action) => {
-        return {...state, ...action}
-    }, {open: false}),
+    connect((state) => {
+        const isChecked = _.get(state, ['form', 'SupplyExpenseCreateForm', 'values', 'linkToProduct'])
+        return {
+            isChecked
+        }
+    }),
 )
 
 const ExpenseCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, loading} = props
+    const {open, handleSubmit, onClose, classes, loading, isChecked} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -98,6 +103,19 @@ const ExpenseCreateDialog = enhance((props) => {
                                         fullWidth={true}/>
                                 </div>
                             </div>
+                            <Field
+                                name="linkToProduct"
+                                style={{margin: '20px 0 10px'}}
+                                component={CheckBox}
+                                label="Привязать к товару"
+                            />
+                            {isChecked && <Field
+                                name="product"
+                                label="Наименование товара"
+                                component={ProductSearchField}
+                                className={classes.inputFieldCustom}
+                                fullWidth={true}
+                            />}
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

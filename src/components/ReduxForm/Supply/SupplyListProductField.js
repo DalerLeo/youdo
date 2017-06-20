@@ -4,8 +4,9 @@ import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import Groceries from '../Images/groceries.svg'
-
+import Groceries from '../../Images/groceries.svg'
+import {connect} from 'react-redux'
+import numberFormat from '../../../helpers/numberFormat'
 import {
     Table,
     TableBody,
@@ -14,10 +15,10 @@ import {
     TableRow,
     TableRowColumn
 } from 'material-ui/Table'
-import DeleteIcon from '../DeleteIcon'
-import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
-import ProductSearchField from './Product/ProductSearchField'
-import TextField from './Basic/TextField'
+import DeleteIcon from '../../DeleteIcon/index'
+import normalizeNumber from '../normalizers/normalizeNumber'
+import ProductCustomSearchField from '../Supply/ProductCustomSearchField'
+import TextField from '../Basic/TextField'
 
 const enhance = compose(
     injectSheet({
@@ -126,6 +127,12 @@ const enhance = compose(
             }
         }
     }),
+    connect((state) => {
+        const currency = _.get(state, ['form', 'SupplyCreateForm', 'values', 'currency', 'text'])
+        return {
+            currency
+        }
+    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
@@ -135,8 +142,10 @@ const enhance = compose(
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
             const cost = _.get(props, ['cost', 'input', 'value'])
+            const currency = _.get(props, ['currency'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
+
             if (!_.isEmpty(product) && amount && cost) {
                 let has = false
                 _.map(products, (item) => {
@@ -147,7 +156,7 @@ const enhance = compose(
                     }
                 })
                 if (!has) {
-                    onChange(_.union(products, [{product, amount, cost}]))
+                    onChange(_.union(products, [{product, amount, cost, currency}]))
                     has = false
                 }
             }
@@ -164,10 +173,9 @@ const enhance = compose(
     })
 )
 
-const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
+const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemove, currency, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
-
     return (
         <div className={classes.wrapper}>
             <div>
@@ -181,23 +189,20 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                     />
                 </div>
                 {state.open && <div className={classes.background}>
-                    <ProductSearchField
+                    <ProductCustomSearchField
                         label="Наименование товара"
                         className={classes.inputField}
-                        style={{width: '100% !mportant'}}
                         {..._.get(defaultProps, 'product')}
                     />
                     <TextField
                         label="Кол-во"
                         className={classes.inputField}
-                        style={{width: '100% !mportant'}}
                         {..._.get(defaultProps, 'amount')}
                     />
                     <TextField
                         label="Сумма"
                         className={classes.inputField}
                         normalize={normalizeNumber}
-                        style={{width: '100% !mportant'}}
                         {..._.get(defaultProps, 'cost')}
                     />
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
@@ -229,9 +234,10 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                         stripedRows={false}>
                         {_.map(products, (item, index) => (
                             <TableRow key={index} className={classes.tableRow}>
-                                <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'amount')}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'cost')}</TableRowColumn>
+                                <TableRowColumn>{_.get(item, ['product', 'value', 'name'])}</TableRowColumn>
+                                <TableRowColumn>
+                                    {_.get(item, 'amount')} {_.get(item, ['product', 'value', 'measurement', 'name'])}</TableRowColumn>
+                                <TableRowColumn>{numberFormat(_.get(item, 'cost'), currency)}</TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>
                                     <IconButton onTouchTap={() => handleRemove(index)}>
                                         <DeleteIcon color="#666666"/>

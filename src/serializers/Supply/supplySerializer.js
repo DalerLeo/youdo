@@ -12,7 +12,7 @@ export const createSerializer = (data) => {
         return {
             amount: item.amount,
             cost: item.cost,
-            product: item.product.value
+            product: item.product.value.id
         }
     })
 
@@ -30,7 +30,6 @@ export const createSerializer = (data) => {
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-
     return {
         'provider': _.get(defaultData, 'provider'),
         'stock': _.get(defaultData, 'stock'),

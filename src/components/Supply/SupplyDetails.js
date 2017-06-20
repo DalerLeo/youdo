@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -14,7 +15,8 @@ import CloseIcon from '../CloseIcon'
 import numberFormat from '../../helpers/numberFormat'
 import Tooltip from '../ToolTip'
 import moment from 'moment'
-const colorBlue = '#12aaeb !important'
+
+const colorBlue = '#12aaeb'
 const enhance = compose(
     injectSheet({
         dottedList: {
@@ -29,6 +31,14 @@ const enhance = compose(
             '& a': {
                 color: colorBlue
             }
+        },
+        link: {
+            borderBottom: '1px dashed',
+            fontWeight: '600'
+        },
+        defect: {
+            extend: 'link',
+            color: '#e57373 !important'
         },
         loader: {
             width: '100%',
@@ -258,6 +268,7 @@ const SupplyDetails = enhance((props) => {
         openDetails,
         handleSupplyExpenseOpenCreateDialog,
         supplyListData,
+        defectDialog,
         updateDialog,
         confirmDialog,
         confirmExpenseDialog
@@ -358,14 +369,14 @@ const SupplyDetails = enhance((props) => {
             <div className={classes.data}>
                 <div className="dataHeader">
                     <Row>
-                        <Col xs={5}>Товар</Col>
+                        <Col xs={4}>Товар</Col>
                         <Col xs={1}>Кол-во</Col>
                         <Col xs={1}>Принято</Col>
                         <Col xs={1}>Брак</Col>
                         <Col xs={1}>Недостача</Col>
-                        <Col xs={1}>
+                        <Col xs={2}>
                             <div style={{textAlign: 'right'}}>Стоимость</div>
-                        </Col>
+                        </Col>g
                         <Col xs={2}>
                             <div style={{textAlign: 'right'}}>Итог</div>
                         </Col>
@@ -373,7 +384,9 @@ const SupplyDetails = enhance((props) => {
                 </div>
                 <div>
                     {_.map(products, (item) => {
+                        const ZERO = 0
                         const product = _.get(item, 'product')
+                        const defId = _.get(item, 'id')
                         const productId = _.get(product, 'id')
                         const productName = _.get(product, 'name')
                         const cost = _.toInteger(_.get(item, 'cost'))
@@ -385,12 +398,16 @@ const SupplyDetails = enhance((props) => {
                         const notAccepted = amount - (postedAmount + defectAmount)
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
-                                <Col xs={5}>{productName}</Col>
+                                <Col xs={4}>{productName}</Col>
                                 <Col xs={1}>{numberFormat(amount, measurement)}</Col>
                                 <Col xs={1}>{numberFormat(postedAmount, measurement)}</Col>
-                                <Col xs={1}>{numberFormat(defectAmount, measurement)}</Col>
-                                <Col xs={1}>{notAccepted}</Col>
                                 <Col xs={1}>
+                                    {(defectAmount > ZERO) ? <a onClick={ () => { defectDialog.handleOpenDefectDialog(defId) } }
+                                                                className={classes.defect}>{numberFormat(defectAmount, measurement)}</a>
+                                    : <span>{numberFormat(defectAmount, measurement)}</span>}
+                                    </Col>
+                                <Col xs={1}>{notAccepted}</Col>
+                                <Col xs={2}>
                                     <div style={{textAlign: 'right'}}>{numberFormat(itemPrice, currency)}</div>
                                 </Col>
                                 <Col xs={2}>
@@ -454,5 +471,13 @@ const SupplyDetails = enhance((props) => {
         </div>
     )
 })
+
+SupplyDetails.propTypes = {
+    defectDialog: PropTypes.shape({
+        openDefectDialog: PropTypes.bool.isRequired,
+        handleOpenDefectDialog: PropTypes.func.isRequired,
+        handleCloseDefectDialog: PropTypes.func.isRequired
+    }).isRequired
+}
 
 export default SupplyDetails
