@@ -259,10 +259,6 @@ const StatStockGridList = enhance((props) => {
                 <li key={id}
                     className={_.get(detailData, 'id') === id ? 'active' : ''}>
                     <span onClick={() => { handleClick(id) }}>{name}</span>
-                    {/*<Link to={{*/}
-                        {/*pathname: sprintf(ROUTES.STATSTOCK_ITEM_PATH, id),*/}
-                        {/*query: filter.getParams()*/}
-                    {/*}}>{name}</Link>*/}
                 </li>
         )
     })

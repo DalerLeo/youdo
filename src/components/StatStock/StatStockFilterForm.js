@@ -20,8 +20,8 @@ export const STATSTOCK_FILTER_OPEN = 'openFilterDialog'
 export const STATSTOCK_FILTER_KEY = {
     TYPE: 'type',
     BRAND: 'brand',
-    FROM_DATE: 'brand',
-    TO_DATE: 'date'
+    FROM_DATE: 'from_date',
+    TO_DATE: 'to_date'
 }
 const TWO = 2
 const enhance = compose(

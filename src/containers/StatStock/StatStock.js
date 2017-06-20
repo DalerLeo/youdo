@@ -34,7 +34,6 @@ import {
 } from '../../actions/transactionStock'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ONE = 1
-
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -190,12 +189,13 @@ const enhance = compose(
 
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {}})
+            const tab = _.get(props, ['location', 'query', 'tab'])
+            hashHistory.push({pathname, query: {'tab': tab}})
         },
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const tab = _.get(props, ['location', 'query', 'tab'])
+            const tab = _.toInteger(_.get(props, ['location', 'query', 'tab']))
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
@@ -211,8 +211,8 @@ const enhance = compose(
                     [STATSTOCK_FILTER_OPEN]: false,
                     [STATSTOCK_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                     [STATSTOCK_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
-                    [STATSTOCK_FILTER_KEY.TYPE]: type,
-                    [STATSTOCK_FILTER_KEY.BRAND]: brand
+                    [STATSTOCK_FILTER_KEY.BRAND]: brand,
+                    [STATSTOCK_FILTER_KEY.TYPE]: type
                 })
             }
         },
@@ -353,18 +353,20 @@ const StatStock = enhance((props) => {
     }
 
     const filterDialog = {
-        initialValues: {
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
-            },
-            brand: {
-                value: brand
-            },
-            type: {
-                value: type
+        initialValues: (() => {
+            return {
+                date: {
+                    fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
+                    toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+                },
+                brand: {
+                    value: brand
+                },
+                type: {
+                    value: type
+                }
             }
-        },
+        })(),
         filterLoading: false,
         openFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,
