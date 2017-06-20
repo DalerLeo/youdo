@@ -41,6 +41,10 @@ import {
     productItemFetchAction
 } from '../../actions/product'
 import {
+    shipmentListFetchAction,
+    shipmentItemFetchAction
+} from '../../actions/shipment'
+import {
     manufactureProductCreateAction,
     manufactureProductDeleteAction,
     productChangeManufacture
@@ -90,6 +94,12 @@ const enhance = compose(
         const equipmentListLoading = _.get(state, ['equipment', 'list', 'loading'])
         const filterEquipment = filterHelper(equipmentList, pathname, query)
 
+        const shipmentList = _.get(state, ['shipment', 'list', 'data'])
+        const shipmentListLoading = _.get(state, ['shipment', 'list', 'loading'])
+        const shipmentDetail = _.get(state, ['shipment', 'item', 'data'])
+        const shipmentDetailLoading = _.get(state, ['shipment', 'item', 'loading'])
+        const filterShipment = filterHelper(shipmentList, pathname, query)
+
         return {
             list,
             listLoading,
@@ -120,8 +130,13 @@ const enhance = compose(
 
             equipmentList,
             equipmentListLoading,
-            filterEquipment
+            filterEquipment,
 
+            shipmentList,
+            shipmentListLoading,
+            shipmentDetail,
+            shipmentDetailLoading,
+            filterShipment
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -135,10 +150,11 @@ const enhance = compose(
         const tab = _.get(props, ['location', 'query', 'tab'])
         return (manufactureId && _.get(props, ['params', 'manufactureId']) !== manufactureId) ||
             ((tab !== _.get(nextProps, ['location', 'query', 'tab'])) ||
-            (props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest()) ||
             (_.get(props, ['location', 'query', 'productId']) !== _.get(nextProps, ['location', 'query', 'productId'])) ||
-            (props.filterUser.filterRequest() !== nextProps.filterUser.filterRequest()))
-    }, ({dispatch, location, params, filterProduct, filterUser, filterEquipment}) => {
+            (props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest()) ||
+            (props.filterUser.filterRequest() !== nextProps.filterUser.filterRequest()) ||
+            (props.filterShipment.filterRequest() !== nextProps.filterShipment.filterRequest()))
+    }, ({dispatch, location, params, filterProduct, filterUser, filterEquipment, filterShipment}) => {
         const nextTab = _.get(location, ['query', 'tab']) || 'product'
         const manufactureId = _.get(params, 'manufactureId')
         if (nextTab === 'product') {
@@ -152,6 +168,12 @@ const enhance = compose(
             dispatch(userShiftListFetchAction(filterUser, manufactureId))
         } else if (nextTab === 'equipment') {
             dispatch(equipmentListFetchAction(filterEquipment, manufactureId))
+        } else if (nextTab === 'shipment') {
+            if (_.get(location, ['query', 'shipmentId'])) {
+                const shipmentId = _.toInteger(_.get(location, ['query', 'shipmentId']))
+                dispatch(shipmentItemFetchAction(shipmentId))
+            }
+            dispatch(shipmentListFetchAction(filterShipment, manufactureId))
         }
     }),
 
@@ -412,6 +434,97 @@ const enhance = compose(
                 })
         }
     }),
+    // Shipment withHeader
+    withHandlers({
+        handleOpenShipmentFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_FILTER_OPEN]: true})})
+        },
+        handleCloseShipmentFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_FILTER_OPEN]: false})})
+        },
+        handleClearShipmentFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
+        },
+        handleSubmitShipmentFilterDialog: props => () => {
+            const {filterProduct, filterProductForm} = props
+            const type = _.get(filterProductForm, ['values', 'type', 'value']) || null
+            const measurement = _.get(filterProductForm, ['values', 'measurement', 'value']) || null
+            const brand = _.get(filterProductForm, ['values', 'brand', 'value']) || null
+
+            filterProduct.filterBy({
+                [PRODUCT_FILTER_OPEN]: false,
+                [PRODUCT_FILTER_KEY.TYPE]: type,
+                [PRODUCT_FILTER_KEY.MEASUREMENT]: measurement,
+                [PRODUCT_FILTER_KEY.BRAND]: brand
+            })
+        },
+
+        handleOpenAddShipmentDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: true})})
+        },
+        handleCloseAddShipmentDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: false})})
+        },
+        handleSubmitAddShipmentDialog: props => () => {
+            const {dispatch, productAddForm, filterProduct, location: {pathname}, params} = props
+            const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+
+            return dispatch(manufactureProductCreateAction(_.get(productAddForm, ['values']), manufactureId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({
+                        pathname,
+                        query: filterProduct.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: false})
+                    })
+                    return dispatch(productListFetchAction(filterProduct, manufactureId))
+                })
+        },
+
+        handleOpenShipmentConfirmDialog: props => (id) => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: true, 'productId': id})})
+        },
+        handleCloseShipmentConfirmDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: false, 'productId': MINUS_ONE})
+            })
+        },
+        handleSendShipmentConfirmDialog: props => () => {
+            const {dispatch, filterProduct, location: {pathname}, params} = props
+            const productId = _.get(props, ['location', 'query', 'productId'])
+            const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+            dispatch(manufactureProductDeleteAction(_.toInteger(productId)))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                })
+                .then(() => {
+                    hashHistory.push({
+                        pathname,
+                        query: filterProduct.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: false, 'productId': MINUS_ONE})
+                    })
+                    dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(productListFetchAction(filterProduct, manufactureId))
+                })
+        },
+
+        handleShipmentClick: props => (id) => {
+            const {filterShipment, location: {pathname}, dispatch} = props
+            hashHistory.push({
+                pathname,
+                query: filterShipment.getParams({'shipmentId': id})
+            })
+            dispatch(shipmentItemFetchAction(id))
+        }
+    }),
     // List withHandlers
     withHandlers({
         handleActionEdit: props => () => {
@@ -479,7 +592,13 @@ const ManufactureList = enhance((props) => {
 
         userShiftList,
         userShiftLoading,
-        filterUser
+        filterUser,
+
+        shipmentList,
+        shipmentListLoading,
+        shipmentDetail,
+        shipmentDetailLoading,
+        filterShipment
     } = props
 
     const openShowBom = toBoolean(_.get(location, ['query', MANUFACTURE_SHOW_BOM_DIALOG_OPEN]))
@@ -562,6 +681,18 @@ const ManufactureList = enhance((props) => {
         filter: filterEquipment,
         listLoading: equipmentListLoading,
         equipmentList: _.get(equipmentList, 'results')
+    }
+
+    const shipmentDetailData = {
+        data: shipmentDetail,
+        loading: shipmentDetailLoading
+    }
+    const shipmentData = {
+        filter: filterShipment,
+        listLoading: shipmentListLoading,
+        shipmentList: _.get(shipmentList, 'results'),
+        detailData: shipmentDetailData,
+        handleShipmentClick: props.handleShipmentClick
     }
 
     const listData = {
@@ -727,6 +858,7 @@ const ManufactureList = enhance((props) => {
                 tabData={tabData}
                 productFilterDialog={productFilterDialog}
                 personData={personData}
+                shipmentData={shipmentData}
             />
         </Layout>
     )

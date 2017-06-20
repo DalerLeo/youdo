@@ -251,6 +251,7 @@ const ManufactureGridList = enhance((props) => {
         tabData,
         productFilterDialog,
         personData,
+        shipmentData,
         deleteMaterials
     } = props
 
@@ -366,6 +367,7 @@ const ManufactureGridList = enhance((props) => {
                     productData={productData}
                     personData={personData}
                     equipmentData={equipmentData}
+                    shipmentData={shipmentData}
                     productFilterDialog={productFilterDialog}/>
             </Row>
 
