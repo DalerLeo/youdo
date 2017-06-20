@@ -90,8 +90,7 @@ const enhance = compose(
         },
         manufactures: {
             margin: '0 -28px',
-            padding: '20px 28px 0',
-            borderBottom: '1px #e0e0e0 solid'
+            padding: '0 28px'
         },
         tabWrapper: {
             display: 'flex',
@@ -132,21 +131,28 @@ const enhance = compose(
                 color: '#333'
             }
         },
+        stats: {
+            margin: '0 -28px',
+            padding: '0 28px',
+            background: '#fff',
+            minHeight: 'calc(100% - 148px)'
+        },
         statTitle: {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             fontWeight: 'bold',
-            padding: '50px 0 20px',
-            borderBottom: '1px #e0e0e0 solid',
+            padding: '25px 28px',
+            margin: '0 -28px',
             '& a': {
                 fontWeight: '600'
             }
         },
         diagram: {
-            padding: '20px 0',
-            margin: '0',
-            borderBottom: '1px #e0e0e0 solid',
+            padding: '20px 28px',
+            margin: '0 -28px',
+            borderBottom: '1px #f0f0f0 solid',
+            borderTop: '1px #f0f0f0 solid',
             '& > div': {
                 margin: '-20px 0',
                 padding: '20px 0',
@@ -159,11 +165,11 @@ const enhance = compose(
             }
         },
         balanceInfo: {
-
+            borderLeft: '1px #f0f0f0 solid'
         },
         balance: {
             padding: '15px 0',
-            borderBottom: '1px #e0e0e0 solid',
+            borderBottom: '1px #f0f0f0 solid',
             '&:last-child': {
                 border: 'none'
             },
@@ -412,7 +418,7 @@ const StatCashboxGridList = enhance((props) => {
                     <div><a>6 мая 2017 г. - 12 мая 2017 г. <KeyboardArrowDown color="#12aaeb" style={{width: '13px', height: '13px'}}/></a></div>
                 </div>
                 <Row className={classes.diagram}>
-                    <Col xs={9} style={{borderRight: '1px solid #efefef'}}>
+                    <Col xs={9}>
                         <ReactHighcharts config ={config} />
                     </Col>
                     <Col xs={3} className={classes.balanceInfo}>
