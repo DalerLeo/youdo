@@ -173,7 +173,8 @@ const StatStockGridList = enhance((props) => {
         listData,
         detailData,
         classes,
-        statStockData
+        statStockData,
+        getDocument
     } = props
 
     const actions = (
@@ -185,6 +186,7 @@ const StatStockGridList = enhance((props) => {
     const handleClickTapChange = _.get(listData, 'handleClickTapChange')
     const statStockFilterDialog = (
         <StatStockFilterForm
+            getDocument={getDocument}
             isBalance={_.get(listData, 'tab')}
             initialValues={filterDialog.initialValues}
             filter={filter}

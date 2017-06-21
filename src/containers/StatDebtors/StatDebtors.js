@@ -26,7 +26,8 @@ import {
     statDebtorsCSVFetchAction,
     statDebtorsSumFetchAction,
     statDebtorsDeleteAction,
-    statDebtorsItemFetchAction
+    statDebtorsItemFetchAction,
+    getDocumentAction
 } from '../../actions/statDebtors'
 import {orderItemFetchAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -55,6 +56,7 @@ const enhance = compose(
         const tab = _.toInteger(_.get(props, ['location', 'query', 'tab']) || ONE)
 
         const filter = filterHelper(list, pathname, query)
+        const filterForm = _.get(state, ['form', 'StatDebtorsFilterForm'])
 
         return {
             list,
@@ -71,6 +73,7 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
+            filterForm,
             createForm,
             sumList,
             tab,
@@ -242,6 +245,10 @@ const enhance = compose(
                 pathname: pathname,
                 query: filter.getParams({'tab': tab})
             })
+        },
+        handleGetDocument: props => () => {
+            const {dispatch, filter} = props
+            return dispatch(getDocumentAction(filter))
         }
     })
 )
@@ -366,6 +373,10 @@ const StatDebtors = enhance((props) => {
         handleClick: props.handleClickTab
     }
 
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
+    }
+
     return (
         <Layout {...layout}>
             <StatDebtorsGridList
@@ -381,6 +392,7 @@ const StatDebtors = enhance((props) => {
                 csvDialog={csvDialog}
                 orderData={orderData}
                 tabData={tabData}
+                getDocument={getDocument}
             />
         </Layout>
     )

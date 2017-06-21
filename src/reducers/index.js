@@ -186,7 +186,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STATSTOCK_LIST),
         update: createThunkReducer(actionTypes.STATSTOCK_UPDATE),
         item: createThunkReducer(actionTypes.STATSTOCK_ITEM),
-        statStockData: createThunkReducer(actionTypes.STATSTOCK_DATA)
+        statStockData: createThunkReducer(actionTypes.STATSTOCK_DATA),
+        document: createThunkReducer(actionTypes.STATSTOCK_GET_DOCUMENT)
     }),
     remainderStock: combineReducers({
         create: createThunkReducer(actionTypes.REMAINDER_STOCK_CREATE),
@@ -206,7 +207,8 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.STATDEBTORS_UPDATE),
         item: createThunkReducer(actionTypes.STATDEBTORS_ITEM),
         sum: createThunkReducer(actionTypes.STATDEBTORS_SUM),
-        orderList: createThunkReducer(actionTypes.STATDEBTORS_ORDER_LIST)
+        orderList: createThunkReducer(actionTypes.STATDEBTORS_ORDER_LIST),
+        document: createThunkReducer(actionTypes.STATDEBTORS_GET_DOCUMENT)
     }),
     statManufacture: combineReducers({
         create: createThunkReducer(actionTypes.STAT_MANUFACTURE_CREATE),
