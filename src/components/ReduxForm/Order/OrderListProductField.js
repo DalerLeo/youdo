@@ -138,13 +138,11 @@ const enhance = compose(
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
             const extra = _.get(props, ['extra'])
-            const measure = _.get(extra, ['product', 'measurement'])
-            const measurement = _.get(measure, 'name')
+            const measurement = _.get(extra, ['product', 'measurement', 'name'])
             const ZERO = 0
 
             if (!_.isEmpty(product) && amount) {
                 const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(amount)
-                const balance = _.toNumber(_.get(extra, 'balance'))
                 const foundIndex = _.findIndex(products,
                     (item) => {
                         return _.get(item, ['product', 'value']) === _.get(product, ['value'])
@@ -152,7 +150,7 @@ const enhance = compose(
                 const NOT_FOUND = -1
 
                 if (foundIndex === NOT_FOUND) {
-                    onChange(_.union(products, [{product, amount, cost, balance, measurement}]))
+                    onChange(_.union(products, [{product, amount, cost, measurement, extra}]))
                 }
             }
         },
@@ -171,7 +169,26 @@ const enhance = compose(
 const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProducts, setOpenAddProducts, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
-
+    const tableProducts = _.map(products, (item, index) => {
+        const cost = _.get(item, 'cost')
+        const balance = _.toNumber(_.get(item, ['extra', 'balance']))
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const measurement = _.get(item, 'measurement')
+        return (
+            <TableRow key={index} className={classes.tableRow}
+                      style={{background: (balance < amount) ? '#ffecec' : 'transparent'}}>
+                <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
+                <TableRowColumn>{numberFormat(balance)}</TableRowColumn>
+                <TableRowColumn>{numberFormat(amount)} {measurement}</TableRowColumn>
+                <TableRowColumn>{numberFormat(cost)} {PRIMARY_CURRENCY_NAME}</TableRowColumn>
+                <TableRowColumn style={{textAlign: 'right'}}>
+                    <IconButton onTouchTap={() => handleRemove(index)}>
+                        <DeleteIcon color="#666666"/>
+                    </IconButton>
+                </TableRowColumn>
+            </TableRow>
+        )
+    })
     return (
         <div className={classes.wrapper}>
             <div>
@@ -238,19 +255,7 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                         deselectOnClickaway={false}
                         showRowHover={false}
                         stripedRows={false}>
-                        {_.map(products, (item, index) => (
-                            <TableRow key={index} className={classes.tableRow} style={{background: ((_.get(item, 'balance')) < (_.get(item, 'amount'))) ? '#ffecec' : 'transparent'}}>
-                                <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
-                                <TableRowColumn>{numberFormat(_.get(item, 'balance'))}</TableRowColumn>
-                                <TableRowColumn>{numberFormat(_.get(item, 'amount'))} {_.get(item, 'measurement')}</TableRowColumn>
-                                <TableRowColumn>{numberFormat(_.get(item, 'cost'))} {PRIMARY_CURRENCY_NAME}</TableRowColumn>
-                                <TableRowColumn style={{textAlign: 'right'}}>
-                                    <IconButton onTouchTap={() => handleRemove(index)}>
-                                        <DeleteIcon color="#666666"/>
-                                    </IconButton>
-                                </TableRowColumn>
-                            </TableRow>
-                        ))}
+                        {tableProducts}
                     </TableBody>
                 </Table>
             </div>

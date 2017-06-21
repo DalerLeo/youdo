@@ -35,8 +35,7 @@ import {
     getDocumentAction
 } from '../../actions/order'
 import {
-    clientCreateAction,
-    clientListFetchAction
+    clientCreateAction
 } from '../../actions/client'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -336,11 +335,21 @@ const enhance = compose(
             const {dispatch, clientCreateForm, filter} = props
 
             return dispatch(clientCreateAction(_.get(clientCreateForm, ['values'])))
-                .then(() => {
+                .then((data) => {
+                    const value = _.get(data, ['value', 'id'])
+                    dispatch({
+                        type: '@@redux-form/CHANGE',
+                        payload: {text: '', value: value},
+                        meta: {
+                            field: 'client',
+                            touch: false,
+                            form: 'OrderCreateForm',
+                            persistentSubmitErrors: false
+                        }
+                    })
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    dispatch(clientListFetchAction(filter))
                     hashHistory.push(filter.createURL({[CLIENT_CREATE_DIALOG_OPEN]: false}))
                 })
         },
@@ -462,44 +471,41 @@ const OrderList = enhance((props) => {
         handleCloseCreateClientDialog: props.handleCloseCreateClientDialog,
         handleSubmitCreateClientDialog: props.handleSubmitCreateClientDialog
     }
+    const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
+        return {
+            amount: _.get(item, 'amount'),
+            cost: _.get(item, 'price'),
+            measurement: _.get(item, ['product', 'measurement', 'name']),
+            product: {
+                value: _.get(item, ['product', 'id']),
+                text: _.get(item, ['product', 'name'])
+            }
 
-    // Const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
-    //     Return {
-    //         Amount: _.get(item, 'amount'),
-    //         Cost: _.get(item, 'price'),
-    //         Measurement: _.get(item, ['product', 'measurement', 'name']),
-    //         Product: {
-    //             Value: {
-    //                 Id: _.get(item, ['product', 'id']),
-    //                 Text: _.get(item, ['product', 'name'])
-    //             }
-    //         }
-    //
-    //     }
-    // })
+        }
+    })
 
     const updateDialog = {
         initialValues: (() => {
             if (!detail) {
                 return {}
             }
-            // Const HUND = 100
-            // Const discountPrice = _.toNumber(_.get(detail, 'discountPrice'))
-            // Const totalPrice = _.toNumber(_.get(detail, 'totalPrice'))
-            // Const discount = (discountPrice / (discountPrice + totalPrice)) * HUND
+            const HUND = 100
+            const discountPrice = _.toNumber(_.get(detail, 'discountPrice'))
+            const totalPrice = _.toNumber(_.get(detail, 'totalPrice'))
+            const discount = (discountPrice / (discountPrice + totalPrice)) * HUND
             return {
-                // Client: {
-                //     Value: _.get(detail, ['client', 'id'])
-                // },
-                // Contact: {
-                //     Value: _.get(detail, ['contact', 'id'])
-                // },
-                // DeliveryType: _.get(detail, ['deliveryType', 'id']),
-                // DeliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
-                // DeliveryPrice: _.get(detail, 'deliveryPrice'),
-                // DiscountPrice: discount,
-                // PaymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
-                // Products: forUpdateProducts
+                client: {
+                    value: _.get(detail, ['client', 'id'])
+                },
+                contact: {
+                    value: _.get(detail, ['contact', 'id'])
+                },
+                deliveryType: _.get(detail, ['deliveryType', 'id']),
+                deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
+                deliveryPrice: _.get(detail, 'deliveryPrice'),
+                discountPrice: discount,
+                paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
+                products: forUpdateProducts
             }
         })(),
         updateLoading: detailLoading || updateLoading,

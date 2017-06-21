@@ -230,7 +230,7 @@ const OrderCreateDialog = enhance((props) => {
     let notEnough = false
     _.map(products, (item) => {
         const amount = _.get(item, 'amount')
-        const balance = _.get(item, 'balance')
+        const balance = _.get(item, ['extra', 'balance'])
         if (amount > balance) {
             notEnough = true
         }

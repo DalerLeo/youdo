@@ -12,7 +12,6 @@ import OrderShortageDialog from './OrderShortage'
 import OrderItemReturnDialog from './OrderItemReturnDialog'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
-import Time from 'material-ui/svg-icons/device/access-time'
 import File from 'material-ui/svg-icons/editor/insert-drive-file'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
@@ -379,15 +378,6 @@ const OrderDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Временно">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={shortageDialog.handleOpenShortageDialog}>
-                            <Time />
-                        </IconButton>
-                    </Tooltip>
                     <Tooltip position="bottom" text="Добавить возврат">
                         <IconButton
                             iconStyle={iconStyle.icon}
@@ -592,7 +582,7 @@ OrderDetails.propTypes = {
         handleTabChange: PropTypes.func.isRequired
     }),
     data: PropTypes.object.isRequired,
-    returnData: PropTypes.object.isRequired,
+    returnData: PropTypes.array,
     loading: PropTypes.bool.isRequired,
     returnDialog: PropTypes.shape({
         returnLoading: PropTypes.bool.isRequired,
