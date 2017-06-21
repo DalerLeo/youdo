@@ -1,15 +1,24 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import {Col} from 'react-flexbox-grid'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, LocationField, CategorySearchField} from '../ReduxForm'
+import {
+    TextField,
+    LocationField,
+    CategorySearchField,
+    ClientSearchField,
+    VisitFrequencySearchField
+} from '../ReduxForm'
+import ShopContactsListField from '../ReduxForm/Shop/ShopContactsListField'
+import IconButton from 'material-ui/IconButton'
+import CloseIcon2 from '../CloseIcon2'
+import Dot from '../Images/dot.png'
 
 export const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -27,17 +36,6 @@ const validate = (data) => {
 
 const enhance = compose(
     injectSheet({
-        dialog: {
-            '& div:last-child': {
-                textAlign: 'left !important',
-                '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
-                    color: '#12aaeb !important'
-                }
-            }
-        },
-
         loader: {
             position: 'absolute',
             width: '100%',
@@ -48,46 +46,146 @@ const enhance = compose(
             alignItems: 'center',
             zIndex: '999',
             textAlign: 'center',
+            justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-
-        fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
+        popUp: {
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%',
+            maxHeight: 'inherit !important'
         },
-
-        body: {
-            maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
-            overflow: 'hidden !important'
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important'
+            }
         },
-
-        title: {
-            width: '220px',
-            margin: '0 auto',
-            padding: '10px 0',
-            textAlign: 'center',
-            background: '#12aaeb',
-            color: '#fff',
+        inContent: {
+            display: 'flex',
+            color: '#333',
+            minHeight: '450px'
+        },
+        leftSide: {
+            flexBasis: '40%',
+            maxWidth: '40%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+        },
+        rightSide: {
+            flexBasis: '60%',
+            maxWidth: '60%'
+        },
+        bodyContent: {
+            color: '#333',
+            width: '100%'
+        },
+        form: {
             position: 'relative'
         },
-
-        form: {
-            display: 'flex'
+        fields: {
+            width: '100%',
+            padding: '20px 30px',
+            boxSizing: 'border-box',
+            maxHeight: '622px',
+            overflowY: 'auto'
         },
-
-        map: {
-            height: '600px',
-            paddingRight: '0'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
+        },
+        podlojkaScroll: {
+            padding: '0 !important',
+            overflowY: 'auto !important',
+            '& > div > div': {
+                width: 'auto !important',
+                maxWidth: '900px !important'
+            }
+        },
+        flex: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+        },
+        divider: {
+            paddingBottom: '20px',
+            marginBottom: '20px',
+            position: 'relative',
+            '&:after': {
+                content: '""',
+                backgroundImage: 'url(' + Dot + ')',
+                position: 'absolute',
+                bottom: '0',
+                height: '2px',
+                left: '0',
+                right: '0'
+            }
+        },
+        inputHalfWrap: {
+            flexBasis: '50%',
+            width: '50%'
+        },
+        add: {
+            marginTop: '5px',
+            marginBottom: '-5px',
+            textAlign: 'right'
         }
     }),
     reduxForm({
         form: 'ShopCreateForm',
         enableReinitialize: true
-    })
+    }),
+    withState('openClient', 'setOpenClient', false)
 )
-
+const isUpdate = false
 const ShopCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, openClient, setOpenClient} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -95,94 +193,110 @@ const ShopCreateDialog = enhance((props) => {
             modal={true}
             open={open}
             onRequestClose={onClose}
-            className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {}}
-            bodyClassName={classes.body}>
-            <form onSubmit={onSubmit} className={classes.form}>
-                <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </div>
-                <div className={classes.fields}>
-                    <Col xs={5}>
-                        <div>
-                            <h4 className={classes.title}>Add Shop</h4>
-                        </div>
-                        <div>
-                            <div>
-                                <Field
-                                    name="name"
-                                    component={TextField}
-                                    label="Name"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="category"
-                                    component={CategorySearchField}
-                                    label="Category"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="address"
-                                    component={TextField}
-                                    label="Address"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="guide"
-                                    component={TextField}
-                                    label="Guide"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="phone"
-                                    component={TextField}
-                                    label="Phone"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="contactName"
-                                    component={TextField}
-                                    label="Contact name"
-                                    fullWidth={true}
-                                />
-
-                                <Field
-                                    name="official"
-                                    component={TextField}
-                                    label="Official"
-                                    fullWidth={true}
-                                />
+            className={classes.podlojkaScroll}
+            contentStyle={loading ? {width: '500px'} : {width: '100%'}}
+            bodyClassName={classes.popUp}>
+            <div className={classes.bodyContent}>
+                <form onSubmit={onSubmit} className={classes.form}>
+                    <div className={classes.loader}>
+                        <CircularProgress size={80} thickness={5}/>
+                    </div>
+                    <div className={classes.inContent}>
+                        <div className={classes.leftSide}>
+                            <div className={classes.titleContent}>
+                                <span>{isUpdate ? 'Изменение магазина' : 'Добавление магазина'}</span>
+                                <IconButton onTouchTap={onClose}>
+                                    <CloseIcon2 color="#666666"/>
+                                </IconButton>
                             </div>
+                            <div className={classes.fields}>
+                                <div className={classes.divider}>
+                                    <Field
+                                        name="client"
+                                        component={ClientSearchField}
+                                        className={classes.inputFieldCustom}
+                                        label="Клиент"
+                                        fullWidth={true}/>
+                                    {openClient && <div>
+                                        <Field
+                                            name="clientPhone"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            label="Телефон"
+                                            fullWidth={true}/>
+                                        <Field
+                                            name="clientContactName"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            label="Контактное лицо"
+                                            fullWidth={true}/>
+                                    </div>}
+                                    <div className={classes.add}>
+                                        {!openClient && <a onClick={() => { setOpenClient(true) }}>+ добавить клиента</a>}
+                                    </div>
+                                </div>
+                                <div className={classes.divider}>
+                                    <Field
+                                        name="name"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Наименование"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="category"
+                                        component={CategorySearchField}
+                                        className={classes.inputFieldCustom}
+                                        label="Тип заведения"
+                                        fullWidth={true}/>
+                                    <div className={classes.flex} style={{alignItems: 'baseline'}}>
+                                        <div className={classes.inputHalfWrap}>Частота посещений:</div>
+                                        <div className={classes.inputHalfWrap}>
+                                            <Field
+                                                name="frequency"
+                                                component={VisitFrequencySearchField}
+                                                className={classes.inputFieldCustom}
+                                                hintText="Выберите"
+                                                fullWidth={true}/>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div>
+                                <div className={classes.divider}>
+                                    <Field
+                                        name="address"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Адрес"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="guide"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Ориентир"
+                                        fullWidth={true}/>
+                                </div>
+                                <FieldArray
+                                    name="contacts"
+                                    component={ShopContactsListField}/>
+                            </div>
+                            <div className={classes.bottomButton}>
                                 <FlatButton
-                                    label="Cancel"
+                                    label="Сохранить"
+                                    className={classes.actionButton}
                                     primary={true}
-                                    onTouchTap={onClose}
-                                />
-
-                                <FlatButton
-                                    label="Apply"
-                                    primary={true}
-                                    type="submit"
-                                />
+                                    type="submit"/>
                             </div>
                         </div>
-                    </Col>
-                    <Col xs={7} className={classes.map}>
-                        <Field
-                            name="latLng"
-                            component={LocationField}
-                            fullWidth={true}
-                        />
-                    </Col>
-                </div>
-            </form>
+                        <div className={classes.rightSide}>
+                            <Field
+                                name="latLng"
+                                component={LocationField}
+                                fullWidth={true}
+                            />
+                        </div>
+                    </div>
+                </form>
+            </div>
         </Dialog>
     )
 })

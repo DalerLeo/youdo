@@ -5,101 +5,74 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import ShopDetailsTab from './ShopDetailsTab'
-import {Col} from 'react-flexbox-grid'
+import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
+import Photo from 'material-ui/svg-icons/image/add-a-photo'
 import Delete from 'material-ui/svg-icons/action/delete'
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
+            textAlign: 'center',
+            justifyContent: 'center',
+            display: ({loading}) => loading ? 'flex' : 'none'
+        },
         wrapper: {
             width: '100%',
-            display: 'flex'
-        },
-        loader: {
-            width: '100%',
-            background: '#fff',
-            height: '400px',
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        },
-        leftSide: {
-            boxSizing: 'border-box',
-            background: '#fbfbfc',
-            padding: '20px 35px'
+            alignSelf: 'baseline',
+            color: '#333 !important',
+            flexWrap: 'wrap',
+            padding: '0 30px'
         },
         title: {
-            paddingBottom: '20px',
-            padding: '20px 0',
             display: 'flex',
-            position: 'relative',
-            borderBottom: 'dashed 1px',
-            marginTop: '-25px'
+            justifyContent: 'space-between',
+            borderBottom: '1px #efefef solid',
+            alignItems: 'center',
+            width: '100%',
+            height: '65px',
+            margin: '0 -30px',
+            padding: '0 30px'
         },
         titleLabel: {
-            color: '#333333',
-            fontWeight: 'bold',
-            fontSize: '18px'
+            fontSize: '18px',
+            color: '#333',
+            fontWeight: 'bold'
         },
         titleButtons: {
-            position: 'absolute',
-            right: '0',
-            marginTop: '-20px',
-            marginRight: '-25px'
-        },
-        top: {
-            borderBottom: 'dashed 1px',
-            paddingTop: '20px'
-        },
-        miniTitle: {
-            fontWeight: 'bold',
-            marginBottom: '20px',
-            color: '#333333'
-        },
-        item: {
             display: 'flex',
-            marginBottom: '20px'
-        },
-        typeLabel: {
-            width: '40%',
-            color: '#5d6474'
-        },
-        typeValue: {
-            width: '80%',
-            color: '#1d1d1d'
-        },
-        bottom: {
-            paddingTop: '20px'
+            justifyContent: 'flex-end'
         }
     })
 )
 
 const iconStyle = {
     icon: {
-        width: 30,
-        height: 30
+        color: '#666',
+        width: 20,
+        height: 20
     },
     button: {
-        width: 66,
-        height: 66,
+        width: 48,
+        height: 48,
         padding: 0
     }
 }
 
-const tooltipPosition = 'bottom-center'
-
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data, tabData, confirmDialog, handleOpenUpdateDialog} = props
-    const name = _.get(data, 'name') || 'N/A'
-    const type = _.get(data, 'categoryName') || 'N/A'
-    const address = _.get(data, 'address') || 'N/A'
-    const guide = _.get(data, 'guide') || 'N/A'
-    const phone = _.get(data, 'phone') || 'N/A'
-    const contactName = _.get(data, 'contactName') || 'N/A'
-    const agentName = _.get(data, 'agentName') || 'N/A'
-    const agentPhone = _.get(data, 'agentPhone') || 'N/A'
-    const agentEmail = _.get(data, 'agentEmail') || 'N/A'
+    const {classes, loading, data, tabData, confirmDialog, updateDialog} = props
+    const id = _.get(data, 'id')
+    const name = _.get(data, 'name')
 
     if (loading) {
         return (
@@ -113,108 +86,41 @@ const ShopDetails = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <Col className={classes.leftSide} xs={6} md={4}>
-                <div className={classes.title}>
-                    <div className={classes.titleLabel}>{name}</div>
-                    <div className={classes.titleButtons}>
+            <div className={classes.title}>
+                <div className={classes.titleLabel}>{name}</div>
+                <div className={classes.titleButtons}>
+                    <Tooltip position="bottom" text="Изменить">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
-                            tooltipPosition={tooltipPosition}
-                            onTouchTap={handleOpenUpdateDialog}
-                            tooltip="Edit">
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                             <Edit />
                         </IconButton>
-
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Добавить фото">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
+                            <Photo />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Удалить">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
-                            onTouchTap={confirmDialog.handleOpenConfirmDialog}
-                            tooltipPosition={tooltipPosition}
-                            tooltip="Delete">
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                             <Delete />
                         </IconButton>
-                    </div>
+                    </Tooltip>
                 </div>
-                <div className={classes.top}>
-                    <div className={classes.miniTitle}>Детали</div>
-                    <div>
-                        <div className={classes.item}>
-                            <div className={classes.typeLabel}>
-                                Тип заведения
-                            </div>
-                            <div className={classes.typeValue}>
-                                {type}
-                            </div>
-                        </div>
-                        <div className={classes.item}>
-                            <div className={classes.typeLabel}>
-                                Адрес
-                            </div>
-                            <div className={classes.typeValue}>
-                                {address}
-                            </div>
-                        </div>
-                        <div className={classes.item}>
-                            <div className={classes.typeLabel}>
-                                Ориентир
-                            </div>
-                            <div className={classes.typeValue}>
-                                {guide}
-                            </div>
-                        </div>
-                        <div className={classes.item}>
-                            <div className={classes.typeLabel}>
-                                Телефон
-                            </div>
-                            <div className={classes.typeValue}>
-                                {phone}
-                            </div>
-                        </div>
-                        <div className={classes.item}>
-                            <div className={classes.typeLabel}>
-                                Контактное лицо
-                            </div>
-                            <div className={classes.typeValue}>
-                                {contactName}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className={classes.bottom}>
-                    <div className={classes.miniTitle}>Агент</div>
-                    <div>
-                        <div className={classes.item}>
-                            <div className={classes.typeLabel}>
-                                Фамилия и имя
-                            </div>
-                            <div className={classes.typeValue}>
-                                {agentName}
-                            </div>
-                        </div>
-                        <div className={classes.item}>
-                            <div className={classes.typeLabel}>
-                                Телефон
-                            </div>
-                            <div className={classes.typeValue}>
-                                {agentPhone}
-                            </div>
-                        </div>
-                        <div className={classes.item}>
-                            <div className={classes.typeLabel}>
-                                Email
-                            </div>
-                            <div className={classes.typeValue}>
-                                {agentEmail}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Col>
-
-            <ShopDetailsTab tabData={tabData} data={data} />
+            </div>
+            <ShopDetailsTab
+                tabData={tabData}
+                data={data}
+            />
         </div>
     )
 })
@@ -232,7 +138,13 @@ ShopDetails.propTypes = {
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired
     }),
-    handleOpenUpdateDialog: PropTypes.func.isRequired
+    updateDialog: PropTypes.shape({
+        updateLoading: PropTypes.bool.isRequired,
+        openUpdateDialog: PropTypes.bool.isRequired,
+        handleOpenUpdateDialog: PropTypes.func.isRequired,
+        handleCloseUpdateDialog: PropTypes.func.isRequired,
+        handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired
 
 }
 
