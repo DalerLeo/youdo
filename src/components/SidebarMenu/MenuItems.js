@@ -25,6 +25,7 @@ export const MenuItems = [
         icon: (<AttachMoney />),
         url: ROUTES.ORDER_LIST_URL,
         childs: [
+            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL},
             {name: 'Заказы', url: ROUTES.ORDER_LIST_URL},
             {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL},
             {name: 'Ценообразование', url: ROUTES.PRODUCT_PRICE_LIST_URL}

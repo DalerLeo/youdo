@@ -33,6 +33,7 @@ import TransactionTypeSearchField from './TransactionTypeSearchField'
 import ProductMeasurementField from './Product/ProductMeasurementField'
 import ShiftSearchField from './ShiftSearchField'
 import CashboxCustomField from './PendingPayments/CashboxCustomField'
+import VisitFrequencySearchField from './Shop/VisitFrequencySearchField'
 
 export {
     ShiftSearchField,
@@ -69,5 +70,6 @@ export {
     PaymentTypeSearchField,
     StockTypeSearchField,
     CashboxSearchField,
-    CashboxCustomField
+    CashboxCustomField,
+    VisitFrequencySearchField
 }
