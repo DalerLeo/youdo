@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/shipmentSerializer'
 
-export const shipmentListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const shipmentListFetchAction = (filter, manufacture) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), manufacture)
     const payload = axios()
         .get(API.SHIPMENT_LIST, {params})
         .then((response) => {

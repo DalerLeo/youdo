@@ -152,8 +152,7 @@ const enhance = compose(
             ((tab !== _.get(nextProps, ['location', 'query', 'tab'])) ||
             (_.get(props, ['location', 'query', 'productId']) !== _.get(nextProps, ['location', 'query', 'productId'])) ||
             (props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest()) ||
-            (props.filterUser.filterRequest() !== nextProps.filterUser.filterRequest()) ||
-            (props.filterShipment.filterRequest() !== nextProps.filterShipment.filterRequest()))
+            (props.filterUser.filterRequest() !== nextProps.filterUser.filterRequest()))
     }, ({dispatch, location, params, filterProduct, filterUser, filterEquipment, filterShipment}) => {
         const nextTab = _.get(location, ['query', 'tab']) || 'product'
         const manufactureId = _.get(params, 'manufactureId')
@@ -558,10 +557,10 @@ const enhance = compose(
             hashHistory.push({pathname: sprintf(ROUTER.MANUFACTURE_ITEM_PATH, id), query: {'tab': tab}})
         },
         handleTabChange: props => (tab) => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}} = props
             hashHistory.push({
                 pathname: pathname,
-                query: filter.getParams({[TAB]: tab})
+                query: {[TAB]: tab}
             })
         },
         handleItemClick: props => (id) => {
@@ -623,6 +622,7 @@ const ManufactureList = enhance((props) => {
 
     const personId = _.get(props, ['location', 'query', 'personId']) || MINUS_ONE
     const ingredientId = _.get(props, ['location', 'query', 'ingId']) || MINUS_ONE
+    const shipmentId = _.toNumber(_.get(props, ['location', 'query', 'shipmentId']) || MINUS_ONE)
 
     const detailId = _.toInteger(_.get(params, 'manufactureId'))
 
@@ -684,6 +684,7 @@ const ManufactureList = enhance((props) => {
     }
 
     const shipmentDetailData = {
+        id: shipmentId,
         data: shipmentDetail,
         loading: shipmentDetailLoading
     }

@@ -1,38 +1,39 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
-import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Col} from 'react-flexbox-grid'
-import CircularProgress from 'material-ui/CircularProgress'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import Map from 'material-ui/svg-icons/maps/map'
-import Tooltip from '../../ToolTip'
+import {Row, Col} from 'react-flexbox-grid'
+import GridList from '../../GridList'
 import NotFound from '../../Images/not-found.png'
+import numberFormat from '../../../helpers/numberFormat'
 
-const ZERO = 0
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 20,
-        height: 20
+const listHeader = [
+    {
+        sorting: true,
+        name: 'barcode',
+        title: 'Штрих-код',
+        xs: 3
     },
-    addButton: {
-        borderRadius: '50%',
-        background: '#666666',
-        height: 24,
-        width: 24,
-        padding: '2px 0 0 0'
+    {
+        sorting: true,
+        name: 'productName',
+        title: 'Наименование товара',
+        xs: 3
     },
-    button: {
-        width: 48,
-        height: 48,
-        padding: 0
+    {
+        sorting: true,
+        name: 'amount',
+        title: 'Количество',
+        xs: 3
+    },
+    {
+        sorting: true,
+        name: 'date',
+        title: 'Время',
+        xs: 3
     }
-}
+]
 
 const enhance = compose(
     injectSheet({
@@ -104,123 +105,52 @@ const enhance = compose(
         }
     }),
 )
+const actions = (<div></div>)
 
 const ManufactureShipmentDetail = enhance((props) => {
     const {
-        classes,
-        loading,
-        data,
-        handleOpenEditMaterials,
-        handleOpenConfirmDialog,
-        productTitle,
-        createMaterials,
-        handleDeleteAllIngredient,
-        handleOpenChangeManufacture
+        filter,
+        detailData
     } = props
 
-    const id = _.get(data, 'id')
-    if (loading) {
+    const loading = _.get(detailData, 'loading')
+    const detailList = _.map(_.get(detailData, ['data', 'results']), (item) => {
+        const id = _.get(item, 'id')
+        const barcode = _.get(item, 'barcode')
+        const amount = numberFormat(_.get(item, 'amount'))
+        const productName = _.get(item, ['product', 'name'])
+        const measurement = _.get(item, ['product', 'measurement', 'name'])
+        const createdDate = moment(_.get(item, 'createDate')).format('DD.MM.YYYY HH.mm')
+
         return (
-            <div className={classes.loader}>
-                <div>
-                    <CircularProgress size={100} thickness={6}/>
-                </div>
-            </div>
-        )
-    }
-    const ingredientList = _.map(_.get(data, 'ingredient'), (item) => {
-        const itemId = _.get(item, 'id')
-        const ingredient = _.get(item, ['ingredient', 'name'])
-        const amount = _.get(item, 'amount')
-        const measurement = _.get(item, ['ingredient', 'measurement', 'name'])
-        return (
-            <li key={itemId} className="dottedList">
-                <Col xs={7}>{ingredient}</Col>
+            <Row key={id}>
+                <Col xs={3}>{barcode}</Col>
+                <Col xs={3}>{productName}</Col>
                 <Col xs={3}>{amount} {measurement}</Col>
-                <Col xs={2}>
-                    <div className={classes.listButtons}>
-                        <Tooltip position="bottom" text="Изменить">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}
-                                onClick={() => {
-                                    handleOpenEditMaterials(itemId)
-                                }}>
-                                <ModEditorIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}
-                                onClick={() => {
-                                    handleOpenConfirmDialog(itemId)
-                                }}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </div>
-                </Col>
-            </li>
+                <Col xs={2}>{createdDate}</Col>
+            </Row>
         )
     })
 
+    const detailDialog = <span></span>
+
+    const list = {
+        header: listHeader,
+        list: detailList,
+        loading: loading
+    }
+
     return (
-        <div key={id} className={classes.wrapper}>
-            <div className={classes.title}>
-                <div className={classes.titleLabel}>{productTitle}</div>
-                <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Добавить сырье">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.addButton}
-                            onClick={handleOpenChangeManufacture}>
-                            <Map />
-                        </IconButton>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.addButton}
-                            onClick={() => { handleDeleteAllIngredient(id) }}>
-                            <DeleteIcon />
-                        </IconButton>
-                        <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.addButton}
-                        onClick={createMaterials.handleOpen}>
-                        <ContentAdd />
-                    </IconButton>
-                    </Tooltip>
-                </div>
-            </div>
-            <div className={classes.materialsList}>
-                {ingredientList.length > ZERO
-                ? <div>
-                        <ul className={classes.rawMaterials}>
-                            <li key={id} className="dottedList">
-                                <Col xs={7}>
-                                    <strong>Сырье</strong>
-                                </Col>
-                                <Col xs={3}>
-                                    <strong>Обьем</strong>
-                                </Col>
-                            </li>
-                            {ingredientList}
-                        </ul>
-                    </div>
-                : <div className={classes.emptyQuery}>
-                    <div>По вашему запросу ничего не найдено</div>
-                </div>}
-            </div>
-        </div>
+        <GridList
+            filter={filter}
+            list={list}
+            detail={detailDialog}
+            actionsDialog={actions}
+        />
     )
 })
 
 ManufactureShipmentDetail.propTypes = {
-    handleOpenEditMaterials: PropTypes.func.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleOpenChangeManufacture: PropTypes.func.isRequired
 }
 
 export default ManufactureShipmentDetail

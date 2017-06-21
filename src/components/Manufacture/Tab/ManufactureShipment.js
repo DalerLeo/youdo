@@ -66,7 +66,9 @@ const ManufactureShipment = enhance((props) => {
     const filter = _.get(shipmentData, 'filter')
     const detail = (
         <ManufactureShipmentDetail
-            // detailData={_.get(shipmentData, 'detailData')}
+            key={_.get(shipmentData, ['detailData', 'id'])}
+            detailData={_.get(shipmentData, 'detailData')}
+            filter={_.get(shipmentData, 'filter')}
         />
     )
     const handleClick = _.get(shipmentData, 'handleShipmentClick')
