@@ -76,7 +76,6 @@ const ClientContactsListField = (props) => {
 
         return fields.remove(index)
     }
-
     return (
         <div>
             {fields.map((contact, index) => {

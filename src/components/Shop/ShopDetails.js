@@ -5,7 +5,6 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import ShopDetailsTab from './ShopDetailsTab'
-import {Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
@@ -71,7 +70,9 @@ const iconStyle = {
 }
 
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data, tabData, confirmDialog, handleOpenUpdateDialog} = props
+    const {classes, loading, data, tabData, confirmDialog, updateDialog} = props
+    const id = _.get(data, 'id')
+    const name = _.get(data, 'name')
 
     if (loading) {
         return (
@@ -86,17 +87,18 @@ const ShopDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>OOO Jrem Vkusn</div>
+                <div className={classes.titleLabel}>{name}</div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            touch={true}>
+                            touch={true}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                             <Edit />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Добавить изображение">
+                    <Tooltip position="bottom" text="Добавить фото">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -108,13 +110,17 @@ const ShopDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            touch={true}>
+                            touch={true}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                             <Delete />
                         </IconButton>
                     </Tooltip>
                 </div>
             </div>
-            <ShopDetailsTab tabData={tabData} data={data} />
+            <ShopDetailsTab
+                tabData={tabData}
+                data={data}
+            />
         </div>
     )
 })
@@ -132,7 +138,13 @@ ShopDetails.propTypes = {
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired
     }),
-    handleOpenUpdateDialog: PropTypes.func.isRequired
+    updateDialog: PropTypes.shape({
+        updateLoading: PropTypes.bool.isRequired,
+        openUpdateDialog: PropTypes.bool.isRequired,
+        handleOpenUpdateDialog: PropTypes.func.isRequired,
+        handleCloseUpdateDialog: PropTypes.func.isRequired,
+        handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired
 
 }
 

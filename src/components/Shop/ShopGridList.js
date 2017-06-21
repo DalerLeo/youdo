@@ -86,7 +86,6 @@ const ShopGridList = enhance((props) => {
         tabData,
         classes
     } = props
-
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
@@ -115,7 +114,7 @@ const ShopGridList = enhance((props) => {
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             tabData={tabData}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
+            updateDialog={updateDialog}
         />
     )
 

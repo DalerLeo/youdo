@@ -54,6 +54,8 @@ const enhance = compose(
         }
     })
 )
+const number = 15.21
+const chislo = 63.78
 const dynamics = {
     chart: {
         type: 'area',
@@ -125,7 +127,7 @@ const dynamics = {
             symbol: 'circle'
         },
         name: 'Сумма',
-        data: [322, 102, 132, 394, 983, 354, 453, 133, 321, 223, 233, 654],
+        data: [number * chislo, chislo, number, chislo, number, chislo, number, chislo, number * number, number * chislo, chislo, number],
         color: '#70b5df'
 
     }]

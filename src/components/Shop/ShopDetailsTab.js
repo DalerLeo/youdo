@@ -67,9 +67,9 @@ const ShopDetailsTab = enhance((props) => {
                 <Tab label="Статистика" value={SHOP.SHOP_TAB_STATISTICS} />
                 <Tab label="Карта" value={SHOP.SHOP_TAB_MAP} />
             </Tabs>
-            {SHOP.SHOP_TAB_CONTACT === tab && <ShopDetailsContact />}
-            {SHOP.SHOP_TAB_ACTIVITY === tab && <ShopDetailsActivity />}
-            {SHOP.SHOP_TAB_STATISTICS === tab && <ShopDetailsStatistics />}
+            {SHOP.SHOP_TAB_CONTACT === tab && <ShopDetailsContact data={data} />}
+            {SHOP.SHOP_TAB_ACTIVITY === tab && <ShopDetailsActivity data={data} />}
+            {SHOP.SHOP_TAB_STATISTICS === tab && <ShopDetailsStatistics data={data} />}
             {SHOP.SHOP_TAB_MAP === tab &&
             <div style={{width: '100%', height: '385px'}}>
                 <ShopDetailsMap

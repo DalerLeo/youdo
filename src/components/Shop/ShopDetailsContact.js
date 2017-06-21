@@ -1,4 +1,6 @@
 import React from 'react'
+import _ from 'lodash'
+import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 
@@ -29,7 +31,12 @@ const enhance = compose(
         image: {
             height: '165px',
             width: '165px',
-            position: 'relative'
+            position: 'relative',
+            '& img': {
+                width: '100%',
+                height: '100%',
+                display: 'block'
+            }
         },
         noImage: {
             background: '#efefef',
@@ -66,7 +73,14 @@ const enhance = compose(
 )
 
 const ShopDetailsContact = enhance((props) => {
-    const {classes} = props
+    const {classes, data} = props
+    const shopType = _.get(data, 'marketTypeName')
+    const address = _.get(data, 'address')
+    const guide = _.get(data, 'guide')
+    const contactName = _.get(data, 'contactName')
+    const phone = _.get(data, 'phone')
+    const image = _.get(data, 'image')
+
     return (
         <div className={classes.content}>
             <div className={classes.info}>
@@ -81,34 +95,37 @@ const ShopDetailsContact = enhance((props) => {
                     </ul>
                     <ul className={classes.details}>
                         <li>Жасур Эргашевич</li>
-                        <li>Суппер маркет</li>
+                        <li>{shopType}</li>
                         <li>Наименование зоны (Z-0001)</li>
-                        <li>Ziyo said kochasi 66-uy</li>
-                        <li>Напротив кинотеатра Казахстан</li>
+                        <li>{address}</li>
+                        <li>{guide}</li>
                     </ul>
                 </div>
                 <div className={classes.infoBlock}>
                     <div className={classes.infoTitle}>Контакты</div>
                     <ul className={classes.details}>
-                        <li>Жасур Эргашевич</li>
-                        <li>Бабарос Баборов</li>
+                        <li>{contactName}</li>
                     </ul>
                     <ul className={classes.details}>
-                        <li>+998 98 989 9898</li>
-                        <li>+998 98 989 9898</li>
+                        <li>{phone}</li>
                     </ul>
                 </div>
             </div>
             <div className={classes.image}>
-                <div className={classes.noImage}>
+                {!image ? <div className={classes.noImage}>
                     <div>
                         <span>Фото <br/> отсутствует</span>
                         <a>добавить фото</a>
                     </div>
                 </div>
+                : <img src={image} alt=""/>}
             </div>
         </div>
     )
 })
+
+ShopDetailsContact.propTypes = {
+    data: PropTypes.object.isRequired
+}
 
 export default ShopDetailsContact
