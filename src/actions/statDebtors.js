@@ -4,6 +4,7 @@ import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/statDebtorsSerializer'
+import fileDownload from 'react-file-download'
 
 export const statDebtorsCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
@@ -134,6 +135,24 @@ export const statDebtorsItemFetchAction = (id) => {
 
     return {
         type: actionTypes.STATDEBTORS_ITEM,
+        payload
+    }
+}
+
+export const getDocumentAction = (filter) => {
+    const params = serializers.csvFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get(sprintf(API.STATDEBTORS_GET_DOCUMENT), {params})
+        .then((response) => {
+            fileDownload(response.data, 'договор.xls')
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STATDEBTORS_GET_DOCUMENT,
         payload
     }
 }

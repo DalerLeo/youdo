@@ -17,7 +17,6 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 export const STATDEBTORS_FILTER_OPEN = 'openFilterDialog'
 
 export const STATDEBTORS_FILTER_KEY = {
-    CATEGORY: 'category',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
@@ -103,7 +102,7 @@ const enhance = compose(
 )
 
 const StatDebtorsFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, getDocument} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -125,7 +124,11 @@ const StatDebtorsFilterForm = enhance((props) => {
 
         return (
             <div>
-                <div style={{position: 'absolute', top: '15px', right: '260px'}}><a><img src={ExportExel} style={{width: '24px'}} /></a></div>
+                <div
+                    style={{position: 'absolute', top: '15px', right: '260px'}}
+                     onTouchTap={getDocument.handleGetDocument}>
+                    <a><img src={ExportExel} style={{width: '24px'}} /></a>
+                </div>
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
@@ -171,6 +174,9 @@ StatDebtorsFilterForm.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
+    }),
+    getDocument: PropTypes.shape({
+        handleGetDocument: PropTypes.func.isRequired
     })
 }
 

@@ -183,6 +183,7 @@ export const STATSTOCK_LIST = `/${STATSTOCK}/`
 export const STATSTOCK_ITEM = `/${STATSTOCK}/%d/`
 export const STATSTOCK_DELETE = `/${STATSTOCK}/%d/`
 export const STATSTOCK_DATA = '/dist/stock_stat/'
+export const STATSTOCK_GET_DOCUMENT = 'dist/stock/export_balances/'
 
 export const REMAINDER_STOCK = 'dist/stock'
 export const REMAINDER_STOCK_CREATE = `/${REMAINDER_STOCK}/all_balances/`
@@ -203,6 +204,7 @@ export const STATDEBTORS_ORDER_LIST = 'order/'
 export const STATDEBTORS_SUM = '/debtors_statistics/'
 export const STATDEBTORS_ITEM = `/${STATDEBTORS}/%d/`
 export const STATDEBTORS_DELETE = `/${STATDEBTORS}/%d/`
+export const STATDEBTORS_GET_DOCUMENT = 'debtors_statistics/'
 
 export const PENDING_PAYMENTS = 'order'
 export const PENDING_PAYMENTS_CREATE = '/order_payment/'
@@ -227,3 +229,7 @@ export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_ITEM = `/${MANUFACTURE_PRODUCT}/%d/`
 export const MANUFACTURE_PRODUCT_DELETE = '/delete_ingredient/%d/'
 export const MANUFACTURE_PRODUCT_CHANGE = '/dist/product/%d/change_manufacture/'
+
+export const SHIPMENT = 'shipment_statistics'
+export const SHIPMENT_LIST = `/${SHIPMENT}/`
+export const SHIPMENT_ITEM = 'shipment_details/%d/'

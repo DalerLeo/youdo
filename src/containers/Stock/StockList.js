@@ -215,7 +215,6 @@ const StockList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
-
     const updateDialog = {
         initialValues: (() => {
             if (!detail) {
@@ -227,7 +226,7 @@ const StockList = enhance((props) => {
                     value: _.get(detail, ['manager', 'id'])
                 },
                 stockType: {
-                    value: _.get(detail, ['stockType', 'id'])
+                    value: _.toInteger(_.get(detail, 'stockType'))
                 }
             }
         })(),

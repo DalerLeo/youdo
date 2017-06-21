@@ -178,7 +178,6 @@ const StockGridList = enhance((props) => {
             />
 
             <StockCreateDialog
-                initialValues={{}}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}

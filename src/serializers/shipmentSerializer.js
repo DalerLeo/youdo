@@ -9,28 +9,25 @@ export const createSerializer = (data) => {
     }
 }
 
-export const listFilterSerializer = (data) => {
+export const listFilterSerializer = (data, manufacture) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
     return {
+        'manufacture': manufacture,
         'name': _.get(defaultData, 'name'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-export const orderListFilterSerializer = (id) => {
-    if (id === true) return {'dept': true}
-    return {'client': id}
-}
+
 export const csvFilterSerializer = (data) => {
     const {...defaultData} = listFilterSerializer(data)
 
     return {
-        ...defaultData
+        ...defaultData,
+        format: 'csv'
     }
 }

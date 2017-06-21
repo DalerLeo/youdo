@@ -171,7 +171,8 @@ const StatDebtorsGridList = enhance((props) => {
         detailData,
         classes,
         orderData,
-        tabData
+        tabData,
+        getDocument
     } = props
 
     const actions = (
@@ -213,6 +214,7 @@ const StatDebtorsGridList = enhance((props) => {
 
     const statDebtorsFilterDialog = (
         <StatDebtorsFilterForm
+            getDocument={getDocument}
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}

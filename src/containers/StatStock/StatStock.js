@@ -24,7 +24,8 @@ import {
     statStockCSVFetchAction,
     statStockDeleteAction,
     statStockItemFetchAction,
-    statStockDataFetchAction
+    statStockDataFetchAction,
+    getDocumentAction
 } from '../../actions/statStock'
 import {
     remainderStockListFetchAction
@@ -253,6 +254,11 @@ const enhance = compose(
         },
         handleClickStatStock: props => (id) => {
             hashHistory.push({pathname: sprintf(ROUTER.STATSTOCK_ITEM_PATH, id), query: {}})
+        },
+
+        handleGetDocument: props => () => {
+            const {dispatch, filter} = props
+            return dispatch(getDocumentAction(filter))
         }
     })
 )
@@ -383,6 +389,10 @@ const StatStock = enhance((props) => {
         statStockDataLoading
     }
 
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
+    }
+
     return (
         <Layout {...layout}>
             <StatStockGridList
@@ -397,6 +407,7 @@ const StatStock = enhance((props) => {
                 csvDialog={csvDialog}
                 statStockData={statStockDataExp}
                 handleClickStock={handleClickStock}
+                getDocument={getDocument}
             />
         </Layout>
     )
