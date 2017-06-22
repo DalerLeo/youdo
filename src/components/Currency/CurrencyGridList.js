@@ -151,6 +151,7 @@ const CurrencyGridList = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             actionsDialog={actionsDialog}
             filter={detailFilter}
+            primaryDialog={primaryDialog}
             setCurrencyUpdateDialog={setCurrencyUpdateDialog}
             currency={_.get(currency, 'name')}/>
     )
@@ -233,7 +234,6 @@ const CurrencyGridList = enhance((props) => {
                     <div className={classes.information}>
                         <div style={{marginRight: '10px'}}>Выбранная валюта: <span
                             className={classes.semibold}>{currentCurrency}</span></div>
-                        <a className={classes.link} onClick={primaryDialog.handlePrimaryOpenDialog}>Изменить</a>
                     </div>
                 </div>
             </Paper>
@@ -256,6 +256,7 @@ const CurrencyGridList = enhance((props) => {
             <SetCurrencyDialog
                 initialValues={setCurrencyUpdateDialog.initialValues}
                 open={setCurrencyUpdateDialog.openSetCurrencyDialog}
+                currentId = {_.get(detailData, 'id')}
                 loading={setCurrencyUpdateDialog.setCurrencyLoading}
                 onClose={setCurrencyUpdateDialog.handleCloseSetCurrencyDialog}
                 onSubmit={setCurrencyUpdateDialog.handleSubmitSetCurrencyDialog}

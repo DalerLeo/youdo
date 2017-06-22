@@ -89,9 +89,8 @@ export const currencyCSVFetchAction = (filter) => {
 }
 
 export const currencyItemFetchAction = (id) => {
-    const params = serializers.historyListSerializer(id)
     const payload = axios()
-        .get(sprintf(API.CURRENCY_RATE, params))
+        .get(API.CURRENCY_RATE, {params: {'currency': id}})
         .then((response) => {
             return _.get(response, 'data')
         })
