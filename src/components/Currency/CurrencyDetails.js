@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import GridList from '../../components/GridList'
+import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({
@@ -97,6 +98,7 @@ const CurrencyDetails = enhance((props) => {
         currentId,
         listData,
         actionsDialog,
+        primaryDialog,
         filter,
         currency,
         setCurrencyUpdateDialog
@@ -126,13 +128,14 @@ const CurrencyDetails = enhance((props) => {
         <span>a</span>
     )
     const historyList = _.map(_.get(data, 'results'), (item) => {
+        const currentCurrency = _.get(primaryDialog.primaryCurrency, 'name')
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const rate = _.get(item, 'id')
+        const rate = numberFormat(_.get(item, 'rate'))
         return (
             <Row key={id}>
                 <Col xs={4}>{id}</Col>
-                <Col xs={4}>1 {currency} = {rate} SUM</Col>
+                <Col xs={4}>1 {currency} = {rate} {currentCurrency}</Col>
                 <Col xs={4}>{createdDate}</Col>
             </Row>
         )
@@ -170,7 +173,14 @@ CurrencyDetails.propTypes = {
         handleOpenSetCurrencyDialog: PropTypes.func.isRequired,
         handleCloseSetCurrencyDialog: PropTypes.func.isRequired,
         handleSubmitSetCurrencyDialog: PropTypes.func.isRequired
-    })
+    }),
+    primaryDialog: PropTypes.shape({
+        primaryCurrency: PropTypes.object,
+        primaryCurrencyLoading: PropTypes.bool.isRequired,
+        openPrimaryDialog: PropTypes.bool.isRequired,
+        handlePrimaryOpenDialog: PropTypes.func.isRequired,
+        handleSubmitPrimaryDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default CurrencyDetails

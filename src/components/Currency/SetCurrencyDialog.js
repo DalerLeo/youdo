@@ -55,8 +55,8 @@ const enhance = compose(
 )
 
 const SetCurrencyDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, currencyData, currentCurrency} = props
-    const currency = _.find(_.get(currencyData, 'data'), {'id': _.get(currencyData, ['detail', 'id'])})
+    const {open, loading, handleSubmit, onClose, classes, currencyData, currentCurrency, currentId} = props
+    const currency = _.get(_.find((_.get(currencyData, 'data')), {'id': currentId}), 'name')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -89,7 +89,7 @@ const SetCurrencyDialog = enhance((props) => {
                                     style={{width: '110px', margin: '0 10px'}}
                                     fullWidth={true}
                                 />
-                                <div>{_.get(currency, 'name')}</div>
+                                <div>{currency}</div>
                             </div>
                         </div>
                     </div>

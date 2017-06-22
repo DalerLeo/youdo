@@ -66,13 +66,20 @@ const CurrencyCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
-                    <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
+                    <div className={classes.inContent} style={{minHeight: '120px', paddingTop: '15px'}}>
                         <div className={classes.field}>
                             <Field
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
                                 label="Наименование"
+                                fullWidth={true}
+                            />
+                            <Field
+                                name="rate"
+                                component={TextField}
+                                className={classes.inputFieldCustom}
+                                label="Курс"
                                 fullWidth={true}
                             />
                         </div>
