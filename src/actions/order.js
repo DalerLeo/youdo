@@ -42,6 +42,22 @@ export const orderReturnAction = (formValues, detail) => {
     }
 }
 
+export const orderReturnListAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.ORDER_RETURN_LIST, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_RETURN_LIST,
+        payload
+    }
+}
+
 export const orderDeleteAction = (id) => {
     const payload = axios()
         .delete(sprintf(API.ORDER_DELETE, id))

@@ -30,6 +30,7 @@ import {
     orderDeleteAction,
     orderItemFetchAction,
     orderReturnAction,
+    orderReturnListAction,
     orderTransactionFetchAction,
     orderItemReturnFetchAction,
     getDocumentAction
@@ -39,12 +40,15 @@ import {
 } from '../../actions/client'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const MINUS_ONE = -1
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['order', 'item', 'data'])
         const payment = _.get(state, ['order', 'payment', 'data'])
+        const orderReturnList = _.get(state, ['order', 'returnList', 'data'])
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const createLoading = _.get(state, ['order', 'create', 'loading'])
         const createClientLoading = _.get(state, ['client', 'create', 'loading'])
@@ -82,7 +86,8 @@ const enhance = compose(
             createForm,
             clientCreateForm,
             returnForm,
-            returnData
+            returnData,
+            orderReturnList
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -114,6 +119,17 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         orderId && dispatch(orderItemFetchAction(orderId))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevReturn = _.toInteger(_.get(props, ['location', 'query', 'openOrderItemReturnDialog']))
+        const nextReturn = _.toInteger(_.get(nextProps, ['location', 'query', 'openOrderItemReturnDialog']))
+        return prevReturn !== nextReturn && nextReturn > ZERO
+    }, ({dispatch, location}) => {
+        const returnItemId = _.toInteger(_.get(location, ['query', 'openOrderItemReturnDialog']))
+        if (returnItemId > ZERO) {
+            dispatch(orderReturnListAction(returnItemId))
+        }
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -242,14 +258,14 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: false})})
         },
 
-        handleOpenItemReturnDialog: props => () => {
+        handleOpenItemReturnDialog: props => (id) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: id})})
         },
 
         handleCloseItemReturnDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: MINUS_ONE})})
         },
 
         handleOpenReturnDialog: props => () => {
@@ -270,6 +286,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
                     dispatch(orderItemReturnFetchAction(filter))
+                    dispatch(orderItemFetchAction(filter))
                 })
         },
 
@@ -368,6 +385,7 @@ const OrderList = enhance((props) => {
         listLoading,
         detail,
         returnData,
+        orderReturnList,
         payment,
         detailLoading,
         createLoading,
@@ -384,7 +402,7 @@ const OrderList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
     const openTransactionsDialog = toBoolean(_.get(location, ['query', ORDER_TRANSACTIONS_DIALOG_OPEN]))
-    const openOrderItemReturnDialog = toBoolean(_.get(location, ['query', ORDER_ITEM_RETURN_DIALOG_OPEN]))
+    const openOrderItemReturnDialog = _.toInteger(_.get(location, ['query', 'openOrderItemReturnDialog']) || MINUS_ONE) > MINUS_ONE
     const openReturnDialog = toBoolean(_.get(location, ['query', ORDER_RETURN_DIALOG_OPEN]))
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
@@ -577,6 +595,7 @@ const OrderList = enhance((props) => {
                 listData={listData}
                 tabData={tabData}
                 detailData={detailData}
+                returnListData={orderReturnList}
                 paymentData={paymentData}
                 createDialog={createDialog}
                 getDocument={getDocument}

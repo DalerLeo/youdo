@@ -229,8 +229,8 @@ const OrderCreateDialog = enhance((props) => {
     const {open, handleSubmit, onClose, classes, products, shortageDialog, isUpdate, createClientDialog} = props
     let notEnough = false
     _.map(products, (item) => {
-        const amount = _.get(item, 'amount')
-        const balance = _.get(item, ['extra', 'balance'])
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const balance = _.toNumber(_.get(item, ['extra', 'balance']))
         if (amount > balance) {
             notEnough = true
         }

@@ -125,6 +125,7 @@ const OrderGridList = enhance((props) => {
         deleteDialog,
         listData,
         detailData,
+        returnListData,
         paymentData,
         tabData,
         classes,
@@ -172,6 +173,7 @@ const OrderGridList = enhance((props) => {
             tabData={tabData}
             getDocument={getDocument}
             paymentData={paymentData}
+            returnListData={returnListData}
             returnDialog={returnDialog}
             itemReturnDialog={itemReturnDialog}
             shortageDialog={shortageDialog}
@@ -341,6 +343,7 @@ OrderGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     paymentData: PropTypes.object,
+    returnListData: PropTypes.object,
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired

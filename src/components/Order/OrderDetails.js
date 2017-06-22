@@ -37,7 +37,7 @@ const enhance = compose(
         dropdown: {
             position: 'relative',
             paddingRight: '18px',
-            zIndex: '10',
+            zIndex: '4',
             '&:after': {
                 top: '10px',
                 right: '0',
@@ -98,7 +98,7 @@ const enhance = compose(
                 padding: '64px 28px 20px',
                 top: '-21px',
                 left: '50%',
-                zIndex: '9',
+                zIndex: '3',
                 minWidth: '300px',
                 transform: 'translate(-50%, 0)',
                 '& .detailsWrap': {
@@ -301,6 +301,7 @@ const OrderDetails = enhance((props) => {
         openDetails,
         transactionsDialog,
         returnDialog,
+        returnListData,
         shortageDialog,
         itemReturnDialog,
         confirmDialog,
@@ -499,7 +500,7 @@ const OrderDetails = enhance((props) => {
                                         return (
                                             <Row className="dottedList" key={index}>
                                                 <Col xs={6}>{productName}</Col>
-                                                <Col xs={2}>{amount} {measurement}</Col>
+                                                <Col xs={2}>{numberFormat(amount)} {measurement}</Col>
                                                 <Col xs={2}>{numberFormat(price)}</Col>
                                                 <Col xs={2}>{numberFormat(productTotal)}</Col>
                                             </Row>
@@ -520,7 +521,7 @@ const OrderDetails = enhance((props) => {
                                     </Row>
                                     {_.map(returnData, (item, index) => {
                                         const returnId = _.get(item, 'id')
-                                        const comment = 'Сюда нужно вывести причину'
+                                        const comment = _.get(item, 'comment')
                                         const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
                                         const totalSum = numberFormat(_.get(item, 'totalPrice'))
                                         return (
@@ -567,6 +568,8 @@ const OrderDetails = enhance((props) => {
                 onSubmit={shortageDialog.handleSubmitShortageDialog}
             />
             <OrderItemReturnDialog
+                returnListData={returnListData}
+                proudctsList={_.get(data, 'products')}
                 open={itemReturnDialog.openOrderItemReturnDialog}
                 loading={itemReturnDialog.returnLoading}
                 onClose={itemReturnDialog.handleCloseItemReturnDialog}
@@ -577,6 +580,7 @@ const OrderDetails = enhance((props) => {
 
 OrderDetails.propTypes = {
     paymentData: PropTypes.object,
+    returnListData: PropTypes.object,
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired

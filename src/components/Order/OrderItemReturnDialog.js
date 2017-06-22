@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm} from 'redux-form'
+import moment from 'moment'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
@@ -73,7 +74,18 @@ const enhance = compose(
 )
 
 const OrderItemReturnDialog = enhance((props) => {
-    const {open, loading, onClose, classes} = props
+    const {open, loading, onClose, classes, returnListData, proudctsList} = props
+    console.log(proudctsList)
+    console.log(_.get(returnListData, 'returnedProducts'))
+    const id = _.get(returnListData, 'id')
+    const date = moment(_.get(returnListData, 'createdDate')).format('DD.MM.YYYY')
+    const comment = _.get(returnListData, 'comment')
+    const productName = _.get(_.find(_.get(proudctsList), {'id': _.get(returnListData, ['returnedProducts', 'orderProduct'])}), 'name')
+    console.log(productName)
+    const productList = _.map(_.get(returnListData, 'returnedProducts'), (item) => {
+        const amount = _.get(item, 'amount')
+        const productId = _.get(item, 'id')
+    })
     return (
         <Dialog
             modal={true}
@@ -83,7 +95,7 @@ const OrderItemReturnDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Возврат №312</span>
+                <span>Возврат №{id}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -98,13 +110,13 @@ const OrderItemReturnDialog = enhance((props) => {
                             <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                 <div>
                                     <span>Причина возврата</span>
-                                    <span>Клиент не доволен результатом</span>
+                                    <span>{comment}</span>
                                 </div>
                                 <div>Экспедитор: <span style={{fontWeight: '600'}}>Егор Вячеславович</span></div>
                             </div>
                             <div style={{marginTop: '20px'}}>
                                 <span>Дата возврата</span>
-                                <span>22.05.2015</span>
+                                <span>{date}</span>
                             </div>
                         </div>
                         <div className={classes.returnedItems}>
@@ -124,6 +136,8 @@ const OrderItemReturnDialog = enhance((props) => {
 OrderItemReturnDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    returnListData: PropTypes.object,
+    proudctsList: PropTypes.array
 }
 export default OrderItemReturnDialog
