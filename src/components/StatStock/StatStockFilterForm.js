@@ -105,7 +105,7 @@ const enhance = compose(
 )
 
 const StatStockFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, isBalance} = props
+    const {classes, filterDialog, getCount, isBalance, getDocument} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -127,7 +127,11 @@ const StatStockFilterForm = enhance((props) => {
 
         return (
             <div>
-                <div style={{position: 'absolute', top: '15px', right: '260px'}}><a><img src={ExportExel} style={{width: '24px'}} /></a></div>
+                <div
+                    style={{position: 'absolute', top: '15px', right: '260px'}}
+                    onTouchTap = {getDocument.handleGetDocument}>
+                    <a><img src={ExportExel} style={{width: '24px'}} /></a>
+                </div>
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>

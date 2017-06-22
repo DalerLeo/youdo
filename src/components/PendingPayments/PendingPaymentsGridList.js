@@ -160,7 +160,6 @@ const PendingPaymentsGridList = enhance((props) => {
                 actionsDialog={actions}
                 filterDialog={pendingPaymentsFilterDialog}
             />
-
             <PendingPaymentsCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}

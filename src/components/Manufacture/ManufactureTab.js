@@ -10,6 +10,7 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import ManufactureProduct from './Tab/ManufactureProduct'
 import ManufacturePerson from './Tab/ManufacturePerson'
 import ManufactureEquipment from './Tab/ManufactureEquipment'
+import ManufactureShipment from './Tab/ManufactureShipment'
 const enhance = compose(
     injectSheet({
         ManufactRightSide: {
@@ -55,7 +56,17 @@ const enhance = compose(
 )
 
 const ManufactureTab = enhance((props) => {
-    const {classes, tabData, productFilterDialog, productData, personData, equipmentData, editMaterials, createMaterials, deleteMaterials} = props
+    const {classes,
+        tabData,
+        productFilterDialog,
+        productData,
+        personData,
+        equipmentData,
+        editMaterials,
+        createMaterials,
+        deleteMaterials,
+        shipmentData
+    } = props
     const tab = _.get(tabData, 'tab')
     return (
         <Col className={classes.ManufactRightSide} xs={9} md={9}>
@@ -68,6 +79,7 @@ const ManufactureTab = enhance((props) => {
                         <Tab label="Продукция" value={TAB.MANUFACTURE_TAB_PRODUCT}/>
                         <Tab label="Персонал" value={TAB.MANUFACTURE_TAB_PERSON} />
                         <Tab label="Оборудование" value={TAB.MANUFACTURE_TAB_EQUIPMENT} />
+                        <Tab label="Партия товара" value={TAB.MANUFACTURE_TAB_SHIPMENT} />
                     </Tabs>
                 </Paper>
                 {TAB.MANUFACTURE_TAB_PRODUCT === tab && <ManufactureProduct
@@ -82,6 +94,8 @@ const ManufactureTab = enhance((props) => {
                     />}
                 {TAB.MANUFACTURE_TAB_EQUIPMENT === tab && <ManufactureEquipment
                     equipmentData={equipmentData}/>}
+                {TAB.MANUFACTURE_TAB_SHIPMENT === tab && <ManufactureShipment
+                    shipmentData={shipmentData}/>}
             </div>
         </Col>
     )
@@ -93,7 +107,8 @@ ManufactureTab.propTypes = {
     }),
     productData: PropTypes.object.isRequired,
     personData: PropTypes.object.isRequired,
-    equipmentData: PropTypes.object.isRequired
+    equipmentData: PropTypes.object.isRequired,
+    shipmentData: PropTypes.object.isRequired
 }
 
 export default ManufactureTab

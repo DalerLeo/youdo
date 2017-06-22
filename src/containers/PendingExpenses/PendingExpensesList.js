@@ -165,7 +165,6 @@ const enhance = compose(
 
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter, detail} = props
-
             return dispatch(pendingExpensesCreateAction(_.get(createForm, ['values']), detail.id))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
@@ -197,6 +196,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[PENDING_EXPENSES_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(pendingExpensesListFetchAction(filter))
                 })
         }
     })
