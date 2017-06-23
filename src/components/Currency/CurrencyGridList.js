@@ -14,7 +14,7 @@ import {compose} from 'recompose'
 import Paper from 'material-ui/Paper'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Edit from 'material-ui/svg-icons/image/edit'
+import CircularProgress from 'material-ui/CircularProgress'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
 import SetCurrencyDialog from './SetCurrencyDialog'
 import PrimaryCurrencyDialog from './PrimaryCurrencyDialog'
@@ -23,7 +23,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Tooltip from '../ToolTip'
 import Container from '../Container'
-import CurrencyDetails from '../Currency/CurrencyDetails'
+import numberFormat from '../../helpers/numberFormat'
 
 const listHeader = [
     {
@@ -94,21 +94,22 @@ const enhance = compose(
             color: '#12aaeb !important',
             borderBottom: '1px dashed #12aaeb',
             fontWeight: '600'
+        },
+        wrap: {
+            display: 'flex',
+            margin: '0 -28px',
+            padding: '0 28px 0 0',
+            minHeight: 'calc(100% - 41px)'
+        },
+        leftSide: {
+            flexBasis: '25%'
+        },
+        rightSide: {
+            flexBasis: '75%',
+            marginLeft: '28px'
         }
     })
 )
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 20,
-        height: 20
-    },
-    button: {
-        width: 48,
-        height: 48,
-        padding: 0
-    }
-}
 const MINUS_ONE = -1
 
 const CurrencyGridList = enhance((props) => {
@@ -140,79 +141,51 @@ const CurrencyGridList = enhance((props) => {
             </IconButton>
         </div>
     )
-    const currency = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
-
-    const currencyDetail = (
-        <CurrencyDetails
-            key={_.get(detailData, 'id')}
-            currentId = {_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            listData={listData}
-            loading={_.get(detailData, 'detailLoading')}
-            actionsDialog={actionsDialog}
-            filter={detailFilter}
-            primaryDialog={primaryDialog}
-            setCurrencyUpdateDialog={setCurrencyUpdateDialog}
-            currency={_.get(currency, 'name')}/>
-    )
-
-    const currentCurrency = _.get(primaryDialog.primaryCurrency, 'name')
-
     const currencyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const rate = _.get(item, 'rate') || 'N/A'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
             <Row key={id}>
-                <Col xs={3}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.CURRENCY_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{name}</Link>
-                </Col>
-                <Col xs={3}>1 {currentCurrency} = {rate} {name}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}><a onClick={() => {
-                    setCurrencyUpdateDialog.handleOpenSetCurrencyDialog(id)
-                }} className={classes.link}>Установить курс</a></Col>
-                <Col xs={2} style={{textAlign: 'right'}}>
-                    <div className={classes.titleButtons}>
-                        <Tooltip position="bottom" text="Изменить">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}
-                                onTouchTap={() => {
-                                    updateDialog.handleOpenUpdateDialog(id)
-                                }}>
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}
-                                onTouchTap={() => {
-                                    confirmDialog.handleOpenConfirmDialog(id)
-                                }}>
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                    </div>
-                </Col>
+                <Link to={{
+                    pathname: sprintf(ROUTES.CURRENCY_ITEM_PATH, id),
+                    query: filter.getParams()
+                }}>{name}</Link>
+            </Row>
+        )
+    })
+    const currency = _.find(_.get(listData, 'data'), (o) => {
+        return o.id === _.toInteger(_.get(detailData, 'id'))
+    })
+    const currentCurrency = _.get(primaryDialog.primaryCurrency, 'name')
+    console.log(_.get(listData, 'data'), _.toInteger(_.get(detailData, 'id')), currency)
+
+    const historyList = _.map(_.get(detailData, ['data', 'results']), (item) => {
+        const currentCurrencyExp = _.get(primaryDialog.primaryCurrency, 'name')
+        const id = _.get(item, 'id')
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const rate = numberFormat(_.get(item, 'rate')) || 'N/A'
+        return (
+            <Row key={id}>
+                <Col xs={4}>{id}</Col>
+                <Col xs={4}>1 UZS = {rate} {currentCurrencyExp}</Col>
+                <Col xs={4}>{createdDate}</Col>
             </Row>
         )
     })
 
     const list = {
         header: listHeader,
-        list: currencyList,
-        loading: _.get(listData, 'listLoading')
+        list: historyList,
+        loading: _.get(detailData, 'detailLoading')
     }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
-
+    const customData = {
+        id: _.get(detailData, 'id'),
+        dialog: setCurrencyUpdateDialog,
+        listData: listData
+    }
+    const log = customData
+    const detail = <div>a</div>
     return (
         <Container>
             <SubMenu url={ROUTES.CURRENCY_LIST_URL}/>
@@ -226,67 +199,74 @@ const CurrencyGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
-
-            <Paper zDepth={2}>
-                <div className={classes.editContent}>
-                    <div className={classes.semibold}>Основная валюта <i style={{fontWeight: '400', color: '#999'}}>(используется
-                        при формировании стоимости продукта / заказа)</i></div>
-                    <div className={classes.information}>
-                        <div style={{marginRight: '10px'}}>Выбранная валюта: <span
-                            className={classes.semibold}>{currentCurrency}</span></div>
+            <div className={classes.wrap}>
+                <div className={classes.leftSide}>
+                    <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
+                        <div>Валюты</div>
                     </div>
+                    <Paper zDepth={2} style={{height: '100%'}}>
+                        <div className={classes.listWrapper}>
+                            {_.get(listData, 'listLoading')
+                                ? <div style={{textAlign: 'center'}}>
+                                    <CircularProgress size={100} thickness={6}/>
+                                </div>
+                                : currencyList
+                            }
+                        </div>
+                    </Paper>
                 </div>
-            </Paper>
+                <div className={classes.rightSide}>
+                    <PrimaryCurrencyDialog
+                        open={primaryDialog.openPrimaryDialog}
+                        onClose={primaryDialog.handlePrimaryCloseDialog}
+                        initialValues={primaryDialog.initialValues}
+                        loading={primaryDialog.primaryCurrencyLoading}
+                        onSubmit={primaryDialog.handleSubmitPrimaryDialog}
+                    />
+                    <div className={classes.outerTitle}>История</div>
+                    <GridList
+                        filter={detailFilter}
+                        list={list}
+                        detail={detail}
+                        actionsDialog={actions}
+                    />
 
-            <PrimaryCurrencyDialog
-                open={primaryDialog.openPrimaryDialog}
-                onClose={primaryDialog.handlePrimaryCloseDialog}
-                initialValues={primaryDialog.initialValues}
-                loading={primaryDialog.primaryCurrencyLoading}
-                onSubmit={primaryDialog.handleSubmitPrimaryDialog}
-            />
+                    <SetCurrencyDialog
+                        initialValues={setCurrencyUpdateDialog.initialValues}
+                        open={setCurrencyUpdateDialog.openSetCurrencyDialog}
+                        currentId={_.get(detailData, 'id')}
+                        loading={setCurrencyUpdateDialog.setCurrencyLoading}
+                        onClose={setCurrencyUpdateDialog.handleCloseSetCurrencyDialog}
+                        onSubmit={setCurrencyUpdateDialog.handleSubmitSetCurrencyDialog}
+                        currencyData={currencyData}
+                        currentCurrency={currentCurrency}
+                    />
 
-            <GridList
-                filter={filter}
-                list={list}
-                detail={currencyDetail}
-                actionsDialog={actions}
-            />
+                    <CurrencyCreateDialog
+                        open={createDialog.openCreateDialog}
+                        loading={createDialog.createLoading}
+                        onClose={createDialog.handleCloseCreateDialog}
+                        onSubmit={createDialog.handleSubmitCreateDialog}
+                    />
 
-            <SetCurrencyDialog
-                initialValues={setCurrencyUpdateDialog.initialValues}
-                open={setCurrencyUpdateDialog.openSetCurrencyDialog}
-                currentId = {_.get(detailData, 'id')}
-                loading={setCurrencyUpdateDialog.setCurrencyLoading}
-                onClose={setCurrencyUpdateDialog.handleCloseSetCurrencyDialog}
-                onSubmit={setCurrencyUpdateDialog.handleSubmitSetCurrencyDialog}
-                currencyData={currencyData}
-                currentCurrency={currentCurrency}
-            />
+                    <CurrencyCreateDialog
+                        isUpdate={true}
+                        initialValues={updateDialog.initialValues}
+                        open={updateDialog.openUpdateDialog}
+                        loading={updateDialog.updateLoading}
+                        onClose={updateDialog.handleCloseUpdateDialog}
+                        onSubmit={updateDialog.handleSubmitUpdateDialog}
+                    />
 
-            <CurrencyCreateDialog
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
-            <CurrencyCreateDialog
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                open={updateDialog.openUpdateDialog}
-                loading={updateDialog.updateLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
-
-            {detailId !== MINUS_ONE && <ConfirmDialog
-                type="delete"
-                message={_.get(currentDetail, 'name')}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
+                    {detailId !== MINUS_ONE && <ConfirmDialog
+                        type="delete"
+                        message={_.get(currentDetail, 'name')}
+                        onClose={confirmDialog.handleCloseConfirmDialog}
+                        onSubmit={confirmDialog.handleSendConfirmDialog}
+                        open={confirmDialog.openConfirmDialog}
+                    />}
+                </div>
+            </div>
         </Container>
     )
 })
