@@ -81,15 +81,15 @@ const enhance = compose(
             minHeight: '450px'
         },
         leftSide: {
-            flexBasis: '40%',
-            maxWidth: '40%',
+            flexBasis: '50%',
+            maxWidth: '50%',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between'
         },
         rightSide: {
-            flexBasis: '60%',
-            maxWidth: '60%'
+            flexBasis: '50%',
+            maxWidth: '50%'
         },
         bodyContent: {
             color: '#333',
@@ -201,14 +201,14 @@ const ShopCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
+                    <div className={classes.titleContent}>
+                        <span>{isUpdate ? 'Изменение магазина' : 'Добавление магазина'}</span>
+                        <IconButton onTouchTap={onClose}>
+                            <CloseIcon2 color="#666666"/>
+                        </IconButton>
+                    </div>
                     <div className={classes.inContent}>
                         <div className={classes.leftSide}>
-                            <div className={classes.titleContent}>
-                                <span>{isUpdate ? 'Изменение магазина' : 'Добавление магазина'}</span>
-                                <IconButton onTouchTap={onClose}>
-                                    <CloseIcon2 color="#666666"/>
-                                </IconButton>
-                            </div>
                             <div className={classes.fields}>
                                 <div className={classes.divider}>
                                     <Field
@@ -279,21 +279,22 @@ const ShopCreateDialog = enhance((props) => {
                                     name="contacts"
                                     component={ShopContactsListField}/>
                             </div>
-                            <div className={classes.bottomButton}>
-                                <FlatButton
-                                    label="Сохранить"
-                                    className={classes.actionButton}
-                                    primary={true}
-                                    type="submit"/>
-                            </div>
                         </div>
                         <div className={classes.rightSide}>
-                            <Field
-                                name="latLng"
-                                component={LocationField}
-                                fullWidth={true}
-                            />
+                            {/*<Field*/}
+                                {/*name="latLng"*/}
+                                {/*component={LocationField}*/}
+                                {/*fullWidth={true}*/}
+                            {/*/>*/}
+                            asdasdasd
                         </div>
+                    </div>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"/>
                     </div>
                 </form>
             </div>
