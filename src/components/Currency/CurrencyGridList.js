@@ -153,11 +153,7 @@ const CurrencyGridList = enhance((props) => {
             </Row>
         )
     })
-    const currency = _.find(_.get(listData, 'data'), (o) => {
-        return o.id === _.toInteger(_.get(detailData, 'id'))
-    })
     const currentCurrency = _.get(primaryDialog.primaryCurrency, 'name')
-    console.log(_.get(listData, 'data'), _.toInteger(_.get(detailData, 'id')), currency)
 
     const historyList = _.map(_.get(detailData, ['data', 'results']), (item) => {
         const currentCurrencyExp = _.get(primaryDialog.primaryCurrency, 'name')
@@ -179,12 +175,6 @@ const CurrencyGridList = enhance((props) => {
         loading: _.get(detailData, 'detailLoading')
     }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
-    const customData = {
-        id: _.get(detailData, 'id'),
-        dialog: setCurrencyUpdateDialog,
-        listData: listData
-    }
-    const log = customData
     const detail = <div>a</div>
     return (
         <Container>
