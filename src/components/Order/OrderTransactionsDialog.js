@@ -12,6 +12,7 @@ import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import numberFormat from '../../helpers/numberFormat'
 import moment from 'moment'
+import noPayment from '../Images/noPayment.png'
 
 export const ORDER_TRANSACTIONS_DIALOG_OPEN = 'openTransactionsDialog'
 const enhance = compose(
@@ -52,6 +53,22 @@ const enhance = compose(
                     textAlign: 'right !important'
                 }
             }
+        },
+        noPayment: {
+            background: 'url(' + noPayment + ') no-repeat center 70px',
+            backgroundSize: '270px',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxSizing: 'border-box',
+            paddingTop: '25px',
+            '& > div': {
+                marginTop: '140px',
+                fontSize: '15px',
+                width: '50%',
+                textAlign: 'center'
+            }
         }
     })),
     reduxForm({
@@ -66,6 +83,7 @@ const enhance = compose(
 const OrderTransactionsDialog = enhance((props) => {
     const {open, loading, onClose, classes, paymentData} = props
     const orderId = _.get(paymentData, 'id')
+    const data = _.get(paymentData, 'data')
     return (
         <Dialog
             modal={true}
@@ -86,7 +104,7 @@ const OrderTransactionsDialog = enhance((props) => {
                 </div>
                 <div className={classes.inContent}>
                     <div className={classes.field}>
-                        <div className={classes.transactions}>
+                        {data ? <div className={classes.transactions}>
                             <Row className="dottedList">
                                 <Col xs={3}>Код оплаты</Col>
                                 <Col xs={3}>Касса</Col>
@@ -109,6 +127,9 @@ const OrderTransactionsDialog = enhance((props) => {
                                 )
                             })}
                         </div>
+                        : <div className={classes.noPayment}>
+                                <div>По данному заказу еще не произведено оплат</div>
+                            </div>}
                     </div>
                 </div>
             </div>

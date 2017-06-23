@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
@@ -11,7 +12,7 @@ import CloseIcon2 from '../CloseIcon2'
 import {DateField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import {Col} from 'react-flexbox-grid'
-import Person from '../Images/person.png'
+import numberFormat from '../../helpers/numberFormat'
 
 export const ORDER_SHORTAGE_DIALOG_OPEN = 'openShortageDialog'
 const validate = (data) => {
@@ -120,17 +121,6 @@ const enhance = compose(
                 '& div:last-child': {
                     paddingRight: '0'
                 },
-                '& div div:first-child': {
-                    width: '30px',
-                    height: '30px',
-                    display: 'inline-block',
-                    overflow: 'hidden',
-                    marginRight: '10px',
-                    borderRadius: '50%',
-                    '& img': {
-                        width: '30px'
-                    }
-                },
                 '& div div:last-child': {
                     display: 'inline-block'
                 }
@@ -159,11 +149,28 @@ const enhance = compose(
     }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {open: false}),
+    }, {open: false})
 )
-
+const ZERO = 0
 const OrderShortageDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, products} = props
+    const productsList = _.map(products, (item, index) => {
+        const name = _.get(item, ['product', 'text'])
+        const shortage = _.get(item, 'amount') - _.get(item, ['extra', 'balance'])
+        const firstname = _.get(item, ['extra', 'supply_manager', 'first_name'])
+        const lastname = _.get(item, ['extra', 'supply_manager', 'second_name'])
+
+        if (shortage > ZERO) {
+            return (
+                <li key={index} className="dottedList">
+                    <Col xs={6}>{name}</Col>
+                    <Col xs={3}>{numberFormat(shortage)}</Col>
+                    <Col xs={3}>{firstname} {lastname}</Col>
+                </li>
+            )
+        }
+        return (null)
+    })
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -197,80 +204,13 @@ const OrderShortageDialog = enhance((props) => {
                                     <strong>Исполнитель</strong>
                                 </Col>
                             </li>
-                            <li className="dottedList">
-                                <Col xs={6}>
-                                    Прозрачный скотч со льдом
-                                </Col>
-                                <Col xs={3}>
-                                    100
-                                </Col>
-                                <Col xs={3}>
-                                    <div>
-                                        <img src={Person}/>
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод<br />
-                                        <span>Должность</span>
-                                    </div>
-                                </Col>
-                            </li>
-                            <li className="dottedList">
-                                <Col xs={6}>
-                                    Прозрачный скотч со льдом
-                                </Col>
-                                <Col xs={3}>
-                                    100
-                                </Col>
-                                <Col xs={3}>
-                                    <div>
-                                        <img src={Person}/>
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод<br />
-                                        <span>Должность</span>
-                                    </div>
-                                </Col>
-                            </li>
-                            <li className="dottedList">
-                                <Col xs={6}>
-                                    Прозрачный скотч со льдом
-                                </Col>
-                                <Col xs={3}>
-                                    100
-                                </Col>
-                                <Col xs={3}>
-                                    <div>
-                                        <img src={Person}/>
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод<br />
-                                        <span>Должность</span>
-                                    </div>
-                                </Col>
-                            </li>
-                            <li className="dottedList">
-                                <Col xs={6}>
-                                    Прозрачный скотч со льдом
-                                </Col>
-                                <Col xs={3}>
-                                    100
-                                </Col>
-                                <Col xs={3}>
-                                    <div>
-                                        <img src={Person}/>
-                                    </div>
-                                    <div>
-                                        Атамбаев Бекзод<br />
-                                        <span>Должность</span>
-                                    </div>
-                                </Col>
-                            </li>
+                            {productsList}
                         </ul>
                     </div>
 
                     <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                         <Field
-                            name="paymentDate"
+                            name="request_dedline"
                             component={DateField}
                             className={classes.inputField}
                             hintText="Срок запроса"
@@ -290,4 +230,8 @@ const OrderShortageDialog = enhance((props) => {
         </Dialog>
     )
 })
+
+OrderShortageDialog.propTyeps = {
+    products: PropTypes.array
+}
 export default OrderShortageDialog

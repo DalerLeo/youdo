@@ -13,6 +13,7 @@ export const createSerializer = (data) => {
     const deliveryType = _.get(data, ['deliveryType', 'value'])
     const deliveryPrice = numberWithoutSpaces(_.get(data, 'deliveryPrice'))
     const discountPrice = _.get(data, 'discountPrice')
+    const requersDeadline = moment(_.get(data, ['request_dedline'])).format('YYYY-MM-DD')
     const market = 1
     const totalPrice = 12345
     const products = _.map(_.get(data, ['products']), (item) => {
@@ -26,7 +27,7 @@ export const createSerializer = (data) => {
         client,
         contact,
         'date_delivery': deliveryDate,
-        'request_dedline': deliveryDate,
+        'request_dedline': requersDeadline,
         'delivery_type': deliveryType,
         'delivery_price': deliveryPrice,
         'discount_price': discountPrice,
