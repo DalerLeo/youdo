@@ -12,6 +12,7 @@ import Container from '../Container'
 import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
 import OrderCreateDialog from './OrderCreateDialog'
+import OrderShortageDialog from './OrderShortage'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import ClientCreateDialog from '../Client/ClientCreateDialog'
@@ -120,6 +121,7 @@ const OrderGridList = enhance((props) => {
         transactionsDialog,
         returnDialog,
         shortageDialog,
+        products,
         confirmDialog,
         itemReturnDialog,
         deleteDialog,
@@ -129,7 +131,8 @@ const OrderGridList = enhance((props) => {
         paymentData,
         tabData,
         classes,
-        createClientDialog
+        createClientDialog,
+        returnDataLoading
     } = props
     const actions = (
         <div>
@@ -176,9 +179,9 @@ const OrderGridList = enhance((props) => {
             returnListData={returnListData}
             returnDialog={returnDialog}
             itemReturnDialog={itemReturnDialog}
-            shortageDialog={shortageDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
+            returnDataLoading={returnDataLoading}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
         />
     )
@@ -303,6 +306,15 @@ const OrderGridList = enhance((props) => {
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 shortageDialog={shortageDialog}
+                products={products}
+            />
+
+            <OrderShortageDialog
+                products={products}
+                open={shortageDialog.openShortageDialog}
+                loading={shortageDialog.shortageLoading}
+                onClose={shortageDialog.handleCloseShortageDialog}
+                onSubmit={shortageDialog.handleSubmitShortageDialog}
             />
 
             <OrderCreateDialog
@@ -344,6 +356,7 @@ OrderGridList.propTypes = {
     listData: PropTypes.object,
     paymentData: PropTypes.object,
     returnListData: PropTypes.object,
+    products: PropTypes.array,
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired
@@ -385,7 +398,7 @@ OrderGridList.propTypes = {
         handleCloseTransactionsDialog: PropTypes.func.isRequired
     }).isRequired,
     itemReturnDialog: PropTypes.shape({
-        returnLoading: PropTypes.bool.isRequired,
+        returnDialogLoading: PropTypes.bool.isRequired,
         openOrderItemReturnDialog: PropTypes.bool.isRequired,
         handleOpenItemReturnDialog: PropTypes.func.isRequired,
         handleCloseItemReturnDialog: PropTypes.func.isRequired
@@ -419,7 +432,8 @@ OrderGridList.propTypes = {
     }).isRequired,
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired
-    })
+    }),
+    returnDataLoading: PropTypes.bool
 }
 
 export default OrderGridList

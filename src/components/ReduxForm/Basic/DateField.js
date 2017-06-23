@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 import injectSheet from 'react-jss'
 import DatePicker from 'material-ui/DatePicker'
 import DateRange from 'material-ui/svg-icons/action/date-range'
@@ -8,6 +9,10 @@ const errorStyle = {
 }
 
 const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
+    _.unset(defaultProps, 'sheet')
+    if (!_.isObject(input.value)) {
+        _.unset(input, 'value')
+    }
     return (
         <div className={classes.wrapper}>
             <div style={{position: 'relative'}}>

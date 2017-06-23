@@ -11,6 +11,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
+import numberFormat from '../../helpers/numberFormat'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 
 export const ORDER_ITEM_RETURN_DIALOG_OPEN = 'openOrderItemReturnDialog'
@@ -27,7 +28,7 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             justifyContent: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            display: ({loading}) => !loading ? 'flex' : 'none'
         },
         returnInfo: {
             padding: '25px 0',
@@ -74,17 +75,22 @@ const enhance = compose(
 )
 
 const OrderItemReturnDialog = enhance((props) => {
-    const {open, loading, onClose, classes, returnListData, proudctsList} = props
-    console.log(proudctsList)
-    console.log(_.get(returnListData, 'returnedProducts'))
+    const {open, loading, onClose, classes, returnListData} = props
     const id = _.get(returnListData, 'id')
     const date = moment(_.get(returnListData, 'createdDate')).format('DD.MM.YYYY')
     const comment = _.get(returnListData, 'comment')
-    const productName = _.get(_.find(_.get(proudctsList), {'id': _.get(returnListData, ['returnedProducts', 'orderProduct'])}), 'name')
-    console.log(productName)
+    const totalPrice = numberFormat(_.get(returnListData, 'totalPrice'))
     const productList = _.map(_.get(returnListData, 'returnedProducts'), (item) => {
         const amount = _.get(item, 'amount')
-        const productId = _.get(item, 'id')
+        const returnId = _.get(item, 'id')
+        return (
+            <Row key={returnId} className="dottedList">
+                <Col xs={3}>Товар</Col>
+                <Col xs={3}>{amount}</Col>
+                <Col xs={3}>Цена</Col>
+                <Col xs={3}>{totalPrice}</Col>
+            </Row>
+        )
     })
     return (
         <Dialog
@@ -104,7 +110,7 @@ const OrderItemReturnDialog = enhance((props) => {
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.inContent}>
+                <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.field}>
                         <div className={classes.returnInfo}>
                             <div className={classes.flex} style={{justifyContent: 'space-between'}}>
@@ -126,6 +132,7 @@ const OrderItemReturnDialog = enhance((props) => {
                                 <Col xs={3}>Цена ({PRIMARY_CURRENCY_NAME})</Col>
                                 <Col xs={3}>Сумма ({PRIMARY_CURRENCY_NAME})</Col>
                             </Row>
+                            {productList}
                         </div>
                     </div>
                 </div>
@@ -137,7 +144,6 @@ OrderItemReturnDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    returnListData: PropTypes.object,
-    proudctsList: PropTypes.array
+    returnListData: PropTypes.object
 }
 export default OrderItemReturnDialog

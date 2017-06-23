@@ -53,7 +53,9 @@ const enhance = compose(
         const createLoading = _.get(state, ['order', 'create', 'loading'])
         const createClientLoading = _.get(state, ['client', 'create', 'loading'])
         const transactionsLoading = _.get(state, ['order', 'create', 'loading'])
-        const returnLoading = _.get(state, ['order', 'create', 'loading'])
+        const returnLoading = _.get(state, ['order', 'return', 'loading'])
+        const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
+        const returnDialogLoading = _.get(state, ['order', 'returnList', 'loading'])
         const shortageLoading = _.get(state, ['order', 'create', 'loading'])
         const updateLoading = _.get(state, ['order', 'update', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
@@ -65,6 +67,7 @@ const enhance = compose(
         const clientCreateForm = _.get(state, ['form', 'ClientCreateForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
         const returnData = _.get(state, ['order', 'return', 'data', 'results'])
+        const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -87,7 +90,10 @@ const enhance = compose(
             clientCreateForm,
             returnForm,
             returnData,
-            orderReturnList
+            orderReturnList,
+            returnDataLoading,
+            returnDialogLoading,
+            products
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -101,7 +107,9 @@ const enhance = compose(
         return prevTransaction !== nextTransaction && nextTransaction === 'true'
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        dispatch(orderTransactionFetchAction(orderId))
+        if (orderId > ZERO) {
+            dispatch(orderTransactionFetchAction(orderId))
+        }
     }),
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['location', 'query', 'tab'])
@@ -109,7 +117,9 @@ const enhance = compose(
         return prevTab !== nextTab && nextTab === 'return'
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        dispatch(orderItemReturnFetchAction(orderId))
+        if (orderId > ZERO) {
+            dispatch(orderItemReturnFetchAction(orderId))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -301,12 +311,12 @@ const enhance = compose(
         },
         handleSubmitShortageDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}} = props
-            return dispatch(orderReturnAction(_.get(createForm, ['values'])))
+            return dispatch(orderCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно отправлено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ORDER_SHORTAGE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[ORDER_SHORTAGE_DIALOG_OPEN]: false, [ORDER_CREATE_DIALOG_OPEN]: false})})
                     dispatch(orderListFetchAction(filter))
                 })
         },
@@ -394,8 +404,11 @@ const OrderList = enhance((props) => {
         returnLoading,
         shortageLoading,
         updateLoading,
+        returnDataLoading,
+        returnDialogLoading,
         filter,
         layout,
+        products,
         params
     } = props
 
@@ -439,7 +452,7 @@ const OrderList = enhance((props) => {
     }
 
     const itemReturnDialog = {
-        returnLoading,
+        returnDialogLoading,
         openOrderItemReturnDialog,
         handleOpenItemReturnDialog: props.handleOpenItemReturnDialog,
         handleCloseItemReturnDialog: props.handleCloseItemReturnDialog
@@ -606,10 +619,12 @@ const OrderList = enhance((props) => {
                 shortageDialog={shortageDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
+                returnDataLoading={returnDataLoading}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
+                products={products}
             />
         </Layout>
     )

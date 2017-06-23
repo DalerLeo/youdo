@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
@@ -11,7 +11,6 @@ import FlatButton from 'material-ui/FlatButton'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import CloseIcon2 from '../CloseIcon2'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
-import {connect} from 'react-redux'
 import {
     ClientSearchField,
     DeliveryTypeSearchField,
@@ -209,16 +208,7 @@ const enhance = compose(
     reduxForm({
         form: 'OrderCreateForm',
         enableReinitialize: true
-    }),
-    connect((state) => {
-        const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
-        return {
-            products
-        }
-    }),
-    withReducer('state', 'dispatch', (state, action) => {
-        return {...state, ...action}
-    }, {open: false}),
+    })
 )
 
 const customContentStyle = {
@@ -226,7 +216,17 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const OrderCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, products, shortageDialog, isUpdate, createClientDialog} = props
+    const {
+        open,
+        handleSubmit,
+        onClose,
+        classes,
+        shortageDialog,
+        isUpdate,
+        createClientDialog,
+        products
+    } = props
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     let notEnough = false
     _.map(products, (item) => {
         const amount = _.toNumber(_.get(item, 'amount'))
@@ -235,7 +235,6 @@ const OrderCreateDialog = enhance((props) => {
             notEnough = true
         }
     })
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
             modal={true}
@@ -291,7 +290,7 @@ const OrderCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         label={'Стоимость доставки (' + PRIMARY_CURRENCY_NAME + ')'}
                                         fullWidth={true}
-                                        normalize={normalizeNumber}/>
+                                        />
                                     <Field
                                             name="deliveryDate"
                                             component={DateField}
@@ -351,6 +350,7 @@ const OrderCreateDialog = enhance((props) => {
     )
 })
 OrderCreateDialog.propTyeps = {
+    products: PropTypes.array,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
