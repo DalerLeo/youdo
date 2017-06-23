@@ -4,12 +4,14 @@ import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm} from 'redux-form'
+import moment from 'moment'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
+import numberFormat from '../../helpers/numberFormat'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 
 export const ORDER_ITEM_RETURN_DIALOG_OPEN = 'openOrderItemReturnDialog'
@@ -26,7 +28,7 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             justifyContent: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            display: ({loading}) => !loading ? 'flex' : 'none'
         },
         returnInfo: {
             padding: '25px 0',
@@ -73,7 +75,23 @@ const enhance = compose(
 )
 
 const OrderItemReturnDialog = enhance((props) => {
-    const {open, loading, onClose, classes} = props
+    const {open, loading, onClose, classes, returnListData} = props
+    const id = _.get(returnListData, 'id')
+    const date = moment(_.get(returnListData, 'createdDate')).format('DD.MM.YYYY')
+    const comment = _.get(returnListData, 'comment')
+    const totalPrice = numberFormat(_.get(returnListData, 'totalPrice'))
+    const productList = _.map(_.get(returnListData, 'returnedProducts'), (item) => {
+        const amount = _.get(item, 'amount')
+        const returnId = _.get(item, 'id')
+        return (
+            <Row key={returnId} className="dottedList">
+                <Col xs={3}>Товар</Col>
+                <Col xs={3}>{amount}</Col>
+                <Col xs={3}>Цена</Col>
+                <Col xs={3}>{totalPrice}</Col>
+            </Row>
+        )
+    })
     return (
         <Dialog
             modal={true}
@@ -83,7 +101,7 @@ const OrderItemReturnDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Возврат №312</span>
+                <span>Возврат №{id}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -92,19 +110,19 @@ const OrderItemReturnDialog = enhance((props) => {
                 <div className={classes.loader}>
                     <CircularProgress size={80} thickness={5}/>
                 </div>
-                <div className={classes.inContent}>
+                <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.field}>
                         <div className={classes.returnInfo}>
                             <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                 <div>
                                     <span>Причина возврата</span>
-                                    <span>Клиент не доволен результатом</span>
+                                    <span>{comment}</span>
                                 </div>
                                 <div>Экспедитор: <span style={{fontWeight: '600'}}>Егор Вячеславович</span></div>
                             </div>
                             <div style={{marginTop: '20px'}}>
                                 <span>Дата возврата</span>
-                                <span>22.05.2015</span>
+                                <span>{date}</span>
                             </div>
                         </div>
                         <div className={classes.returnedItems}>
@@ -114,6 +132,7 @@ const OrderItemReturnDialog = enhance((props) => {
                                 <Col xs={3}>Цена ({PRIMARY_CURRENCY_NAME})</Col>
                                 <Col xs={3}>Сумма ({PRIMARY_CURRENCY_NAME})</Col>
                             </Row>
+                            {productList}
                         </div>
                     </div>
                 </div>
@@ -124,6 +143,7 @@ const OrderItemReturnDialog = enhance((props) => {
 OrderItemReturnDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    returnListData: PropTypes.object
 }
 export default OrderItemReturnDialog
