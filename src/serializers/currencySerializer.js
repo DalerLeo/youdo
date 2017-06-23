@@ -19,6 +19,16 @@ export const createPrimarySerializer = (data) => {
     }
 }
 
+export const itemSerializer = (data, id) => {
+    const {...defaultData} = data
+    const ordering = _.get(data, 'ordering')
+    return {
+        'currency': id,
+        'page': _.get(defaultData, 'page'),
+        'page_size': _.get(defaultData, 'pageSize'),
+        'ordering': ordering && orderingSnakeCase(ordering)
+    }
+}
 export const setCurrencySerializer = (data, currency) => {
     const rate = _.get(data, 'rate')
 
