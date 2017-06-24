@@ -29,26 +29,20 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 3,
-        title: 'Аббревиатура'
+        xs: 4,
+        title: '№'
     },
     {
         sorting: true,
         name: 'name',
-        xs: 3,
+        xs: 4,
         title: 'Курс'
     },
     {
         sorting: true,
-        xs: 2,
+        xs: 4,
         name: 'created_date',
         title: 'Дата обновления'
-    },
-    {
-        sorting: false,
-        xs: 4,
-        name: 'actions',
-        title: ''
     }
 ]
 
@@ -144,17 +138,33 @@ const CurrencyGridList = enhance((props) => {
     const currencyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const rate = numberFormat(_.get(item, 'rate'))
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const isActive = _.get(detailData, 'id') === id
         return (
-            <Row key={id}>
-                <Link to={{
-                    pathname: sprintf(ROUTES.CURRENCY_ITEM_PATH, id),
-                    query: filter.getParams()
-                }}>{name}</Link>
-            </Row>
+            <Link to={{
+                pathname: sprintf(ROUTES.CURRENCY_ITEM_PATH, id),
+                query: filter.getParams()
+            }}>
+                <div key={id} className={classes.list}
+                     style={isActive ? {backgroundColor: '#ffffff', display: 'relative'} : {backgroundColor: '#f2f5f8', display: 'relative'}}>
+                    <div xs={6}>
+                        <div className={classes.title}>
+                            {name}
+                        </div>
+                    </div>
+                    <div xs={6} className={classes.balance}>
+                        <div>{rate}</div>
+                        <div>{createdDate}</div>
+                    </div>
+                </div>
+            </Link>
         )
     })
     const currentCurrency = _.get(primaryDialog.primaryCurrency, 'name')
-
+    const currency = _.get(_.find(_.get(listData, 'data'), (o) => {
+        return o.id === _.toInteger(_.get(detailData, 'id'))
+    }), 'name')
     const historyList = _.map(_.get(detailData, ['data', 'results']), (item) => {
         const currentCurrencyExp = _.get(primaryDialog.primaryCurrency, 'name')
         const id = _.get(item, 'id')
@@ -163,7 +173,7 @@ const CurrencyGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={4}>{id}</Col>
-                <Col xs={4}>1 UZS = {rate} {currentCurrencyExp}</Col>
+                <Col xs={4}>1 {currency} = {rate} {currentCurrencyExp}</Col>
                 <Col xs={4}>{createdDate}</Col>
             </Row>
         )
@@ -189,6 +199,17 @@ const CurrencyGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
+            <Paper zDepth={2}>
+                <div className={classes.editContent}>
+                    <div className={classes.semibold}>Основная валюта <i style={{fontWeight: '400', color: '#999'}}>(используется
+                        при формировании стоимости продукта / заказа)</i></div>
+                    <div className={classes.information}>
+                        <div style={{marginRight: '10px'}}>Выбранная валюта: <span
+                            className={classes.semibold}>{currentCurrency}</span></div>
+                        <a className={classes.link} onClick={primaryDialog.handlePrimaryOpenDialog}>Изменить</a>
+                    </div>
+                </div>
+            </Paper>
             <div className={classes.wrap}>
                 <div className={classes.leftSide}>
                     <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
