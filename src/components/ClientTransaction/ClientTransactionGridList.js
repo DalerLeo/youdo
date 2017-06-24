@@ -3,7 +3,6 @@ import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import {Link} from 'react-router'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
@@ -18,13 +17,9 @@ import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Paper from 'material-ui/Paper'
-import sprintf from 'sprintf'
 import CircularProgress from 'material-ui/CircularProgress'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Edit from 'material-ui/svg-icons/image/edit'
 import numberFormat from '../../helpers/numberFormat'
+import GridListNavSearch from '../GridList/GridListNavSearch'
 
 const listHeader = [
     {
@@ -43,13 +38,13 @@ const listHeader = [
         sorting: true,
         name: 'date',
         title: 'Дата',
-        xs: 2
+        xs: 3
     },
     {
         sorting: true,
         name: 'amount',
         title: 'Сумма',
-        xs: 2
+        xs: 3
     }
 ]
 
@@ -138,6 +133,7 @@ const enhance = compose(
 const ClientTransactionGridList = enhance((props) => {
     const {
         filter,
+        filterClient,
         createExpenseDialog,
         createIncomeDialog,
         updateExpenseDialog,
@@ -182,43 +178,16 @@ const ClientTransactionGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
         const type = _.get(item, 'amount') || 'N/A'
-        const cashbox = _.get(item, 'cashbox') || 'N/A'
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const currentCurrency = _.get(_.find(_.get(clientData, 'data'), {'id': cashbox}), ['currency', 'name'])
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
+        const currency = _.get(item, ['currency', 'name']) || 'N/A'
 
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={5}>{comment}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col className={type >= zero ? classes.green : classes.red} xs={2}>{amount} {currentCurrency}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => {
-                                updateExpenseDialog.handleOpenUpdateDialog(id, _.get(item, 'amount'))
-                            }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => {
-                                confirmDialog.handleOpenConfirmDialog(id)
-                            }}
-                        />
-                    </IconMenu>
-                </Col>
+                <Col xs={3}>{createdDate}</Col>
+                <Col className={type >= zero ? classes.green : classes.red} xs={3}>{amount} {currency}</Col>
             </Row>
         )
     })
@@ -228,7 +197,7 @@ const ClientTransactionGridList = enhance((props) => {
         const isActive = _.get(detailData, 'id') === id
         return (
             <div key={id} className={classes.list}
-                 onTouchTap={() => { clientData.handleClickCashbox(id) }}
+                 onTouchTap={() => { clientData.handleClickClient(id) }}
                  style={isActive ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                 <div>
                     <div className={classes.title}>{name}</div>
@@ -242,12 +211,12 @@ const ClientTransactionGridList = enhance((props) => {
         list: clientTransactionList,
         loading: _.get(listData, 'listLoading')
     }
-    const AllCashboxId = 0
-    const selectedCashbox = _.find(_.get(clientData, 'data'),
+    const AllClientId = 0
+    const selectedClient = _.find(_.get(clientData, 'data'),
         (o) => {
             return _.toInteger(o.id) === _.toInteger(_.get(clientData, 'cashboxId'))
         })
-    const cashboxName = _.get(clientData, 'cashboxId') === AllCashboxId ? 'Общий объем' : _.get(selectedCashbox, 'name')
+    const cashboxName = _.get(clientData, 'cashboxId') === AllClientId ? 'Общий объем' : _.get(selectedClient, 'name')
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_TRANSACTION_LIST_URL}/>
@@ -259,11 +228,15 @@ const ClientTransactionGridList = enhance((props) => {
                     </div>
                     <Paper zDepth={2} style={{height: '100%'}}>
                         <div className={classes.listWrapper}>
+                            <div>
+                                <GridListNavSearch filter={filterClient} filterIsEmpty={false}/>
+                                <input type="text"/>
+                            </div>
                             <div className={classes.list}
                                  onClick={() => {
-                                     clientData.handleClickCashbox(AllCashboxId)
+                                     clientData.handleClickClient(AllClientId)
                                  } }
-                                 style={_.get(clientData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
+                                 style={_.get(clientData, 'clientId') === AllClientId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                                 <div className={classes.title}>
                                     Общий объем
                                     <span>во всех классах</span>
@@ -281,7 +254,7 @@ const ClientTransactionGridList = enhance((props) => {
                 <div className={classes.rightSide}>
                     <div className={classes.rightTitle}>
                         <div className={classes.outerTitle}>{cashboxName}</div>
-                        { _.get(clientData, 'cashboxId') !== AllCashboxId && <div className={classes.outerTitle}>
+                        { _.get(clientData, 'cashboxId') !== AllClientId && <div className={classes.outerTitle}>
                             <div className={classes.buttons}>
                                 <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
                                 <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>-

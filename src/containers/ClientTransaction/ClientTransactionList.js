@@ -36,6 +36,7 @@ import {
 } from '../../actions/client'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -72,15 +73,23 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return !nextProps.clientListLoading && _.isNil(nextProps.clientList)
-    }, ({dispatch, filterClient,}) => {
+        return (!nextProps.clientListLoading && _.isNil(nextProps.clientList)) ||
+            (props.filterClient.filterRequest() !== nextProps.filterClient.filterRequest())
+    }, ({dispatch, filterClient}) => {
         dispatch(clientListFetchAction(filterClient))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter, clientId}) => {
-        dispatch(clientTransactionListFetchAction(filter, clientId))
+        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
+            (_.get(props, ['params', 'clientTransactionId']) !== _.get(nextProps, ['params', 'clientTransactionId']))
+    }, ({dispatch, filter, params}) => {
+        const clientId = _.toInteger(_.get(params, 'clientTransactionId'))
+
+        if (clientId === ZERO) {
+            dispatch(clientTransactionListFetchAction(filter))
+        } else {
+            dispatch(clientTransactionListFetchAction(filter, clientId))
+        }
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -254,10 +263,8 @@ const enhance = compose(
                 })
         },
 
-        handleClickCashbox: props => (id) => {
-            const {filter, dispatch} = props
-            hashHistory.push({pathname: sprintf(ROUTER.CLIENT_TRANSACTION_ITEM_PATH, _.toInteger(id)), query: filter.getParams()})
-            dispatch(clientTransactionListFetchAction(filter, _.toInteger(id)))
+        handleClickClient: props => (id) => {
+            hashHistory.push({pathname: sprintf(ROUTER.CLIENT_TRANSACTION_ITEM_PATH, _.toInteger(id)), query: {}})
         },
 
         handleOpenUpdateDialog: props => (id, amount) => {
@@ -332,7 +339,6 @@ const ClientTransactionList = enhance((props) => {
         location,
         list,
         clientList,
-        clientId,
         clientListLoading,
         listLoading,
         detail,
@@ -340,6 +346,7 @@ const ClientTransactionList = enhance((props) => {
         createLoading,
         updateLoading,
         filter,
+        filterClient,
         layout,
         params
     } = props
@@ -468,8 +475,8 @@ const ClientTransactionList = enhance((props) => {
 
     const clientData = {
         data: _.get(clientList, 'results'),
-        handleClickCashbox: props.handleClickCashbox,
-        clientId: _.toInteger(clientId),
+        handleClickClient: props.handleClickClient,
+        clientId: _.toInteger(detailId),
         listLoading
 
     }
@@ -483,6 +490,7 @@ const ClientTransactionList = enhance((props) => {
     return (
         <Layout {...layout}>
             <ClientTransactionGridList
+                filterClient={filterClient}
                 filter={filter}
                 listData={listData}
                 clientListLoading={clientListLoading}
