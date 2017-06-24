@@ -230,7 +230,6 @@ const ClientTransactionGridList = enhance((props) => {
                         <div className={classes.listWrapper}>
                             <div>
                                 <GridListNavSearch filter={filterClient} filterIsEmpty={false}/>
-                                <input type="text"/>
                             </div>
                             <div className={classes.list}
                                  onClick={() => {
