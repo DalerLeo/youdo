@@ -115,6 +115,7 @@ const ShopGridList = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             tabData={tabData}
             updateDialog={updateDialog}
+            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
         />
     )
 

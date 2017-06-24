@@ -118,6 +118,7 @@ const ProductPriceGridList = enhance((props) => {
             updateDialog={updateDialog}
             handleOpenDetails={handleOpenDetails}
             handleCloseDetails={handleCloseDetails}
+            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
         />
     )
 

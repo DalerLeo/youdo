@@ -64,7 +64,8 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '600'
+            fontWeight: '600',
+            cursor: 'pointer'
         },
         titleButtons: {
             display: 'flex',
@@ -271,7 +272,8 @@ const SupplyDetails = enhance((props) => {
         defectDialog,
         updateDialog,
         confirmDialog,
-        confirmExpenseDialog
+        confirmExpenseDialog,
+        handleCloseDetail
     } = props
     const id = _.get(data, 'id')
     const provider = _.get(data, ['provider', 'name'])
@@ -305,7 +307,8 @@ const SupplyDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>Поставка №{id}</div>
+                <div className={classes.titleLabel}
+                    onTouchTap={handleCloseDetail}>Поставка №{id}</div>
                 <div className={classes.titleSupplier}>
                     <a className={classes.dropdown} onMouseEnter={() => {
                         setOpenDetails(true)

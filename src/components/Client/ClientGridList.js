@@ -156,6 +156,7 @@ const ClientGridList = enhance((props) => {
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             updateDialog={updateDialog}
+            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
         />
     )
     const actions = (

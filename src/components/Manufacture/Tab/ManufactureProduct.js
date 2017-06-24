@@ -52,7 +52,7 @@ const enhance = compose(
 )
 
 const ManufactureProduct = enhance((props) => {
-    const {classes, filter, filterDialog, productData, editMaterials, createMaterials, deleteMaterials} = props
+    const {classes, filter, filterDialog, productData, editMaterials, createMaterials, deleteMaterials, handleCloseDetail} = props
 
     const productFilterDialog = (
         <ProductFilterForm
@@ -88,6 +88,7 @@ const ManufactureProduct = enhance((props) => {
             handleOpenEditMaterials={_.get(editMaterials, ['handleOpen'])}
             handleOpenChangeManufacture={_.get(productData, ['changeManufacture', 'handleOpenChangeManufacture'])}
             loading={_.get(detailData, 'detailLoading')}
+            handleCloseDetail={handleCloseDetail}
         />
     )
     const productList = _.map(_.get(productData, 'productList'), (item) => {

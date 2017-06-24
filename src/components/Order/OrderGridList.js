@@ -183,6 +183,7 @@ const OrderGridList = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             returnDataLoading={returnDataLoading}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
+            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
         />
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {

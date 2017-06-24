@@ -165,6 +165,7 @@ const SupplyGridList = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             handleSupplyExpenseOpenCreateDialog={supplyExpenseCreateDialog.handleSupplyExpenseOpenCreateDialog}
             supplyListData={supplyListData}
+            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
         />
     )
 
