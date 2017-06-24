@@ -87,6 +87,13 @@ export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
 export const TRANSACTION_SEND = '/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 
+export const CLIENT_TRANSACTION = 'client/client_transaction'
+export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
+export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
+export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
+export const CLIENT_TRANSACTION_SEND = '/transfer/'
+export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/`
+
 export const SUPPLY = 'dist/supply'
 export const SUPPLY_CREATE = `/${SUPPLY}/`
 export const SUPPLY_LIST = `/${SUPPLY}/`

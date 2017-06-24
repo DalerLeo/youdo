@@ -137,6 +137,7 @@ const filter = (data, pathname, query = {}) => {
             openSendDialog: null,
             openDefectDialog: null,
             tab: null,
+            openCreateIncomeDialog: null,
             shipmentId: null,
             openShowBigImg: null,
             openIncomeDialog: null,

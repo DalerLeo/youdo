@@ -25,6 +25,11 @@ export const TRANSACTION_LIST_URL = `/${TRANSACTION}`
 export const TRANSACTION_ITEM_URL = `${TRANSACTION_LIST_URL}/:transactionId`
 export const TRANSACTION_ITEM_PATH = `/${TRANSACTION}/%d`
 
+export const CLIENT_TRANSACTION = 'clientTransaction'
+export const CLIENT_TRANSACTION_LIST_URL = `/${CLIENT_TRANSACTION}`
+export const CLIENT_TRANSACTION_ITEM_URL = `${CLIENT_TRANSACTION_LIST_URL}/:clientTransactionId`
+export const CLIENT_TRANSACTION_ITEM_PATH = `/${CLIENT_TRANSACTION}/%d`
+
 export const SUPPLY = 'supply'
 export const SUPPLY_LIST_URL = `/${SUPPLY}`
 export const SUPPLY_ITEM_URL = `${SUPPLY_LIST_URL}/:supplyId`
