@@ -349,7 +349,7 @@ const OrderDetails = enhance((props) => {
             </div>
         )
     }
-    const primaryCurrency = getConfig("PRIMARY_CURRENCY")
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>

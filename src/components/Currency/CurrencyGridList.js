@@ -1,7 +1,5 @@
 import _ from 'lodash'
 import moment from 'moment'
-import sprintf from 'sprintf'
-import {Link} from 'react-router'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -108,7 +106,6 @@ const MINUS_ONE = -1
 
 const CurrencyGridList = enhance((props) => {
     const {
-        filter,
         createDialog,
         updateDialog,
         primaryDialog,
