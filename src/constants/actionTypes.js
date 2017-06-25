@@ -10,6 +10,8 @@ export const SHOP_UPDATE = 'SHOP_UPDATE'
 export const SHOP_CREATE = 'SHOP_CREATE'
 export const SHOP_DELETE = 'SHOP_DELETE'
 
+export const CONFIG = 'CONFIG'
+
 export const USERS_LIST = 'USERS_LIST'
 export const USERS_LIST_CSV = 'USERS_LIST_CSV'
 export const USERS_ITEM = 'USERS_ITEM'

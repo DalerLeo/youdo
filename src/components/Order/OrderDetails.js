@@ -17,10 +17,10 @@ import Tooltip from '../ToolTip'
 import Dot from '../Images/dot.png'
 import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/orderTab'
 import NotFound from '../Images/not-found.png'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet({
@@ -349,7 +349,7 @@ const OrderDetails = enhance((props) => {
             </div>
         )
     }
-
+    const primaryCurrency = getConfig("PRIMARY_CURRENCY")
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
@@ -432,22 +432,22 @@ const OrderDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>Стоимость доставки:</span>
-                                    <span>{numberFormat(deliveryPrice)} {PRIMARY_CURRENCY_NAME}</span>
+                                    <span>{numberFormat(deliveryPrice)} {primaryCurrency}</span>
                                 </li>
                                 <li>
                                     <span>Скидка({discount}%):</span>
-                                    <span>{numberFormat(discountPrice)} {PRIMARY_CURRENCY_NAME}</span>
+                                    <span>{numberFormat(discountPrice)} {primaryCurrency}</span>
                                 </li>
                                 <li>
                                     <span>Оплачено:</span>
                                     {(totalPaid !== zero) ? <span>
-                                        <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {PRIMARY_CURRENCY_NAME}</a>
+                                        <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {primaryCurrency}</a>
                                     </span>
-                                        : <span>{totalPaid} {PRIMARY_CURRENCY_NAME}</span>}
+                                        : <span>{totalPaid} {primaryCurrency}</span>}
                                 </li>
                                 <li>
                                     <span>Остаток:</span>
-                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {PRIMARY_CURRENCY_NAME}</span>
+                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {primaryCurrency}</span>
                                 </li>
                             </ul>
                         </div>
@@ -488,8 +488,8 @@ const OrderDetails = enhance((props) => {
                                     <Row className="dottedList">
                                         <Col xs={6}>Товар</Col>
                                         <Col xs={2}>Количество</Col>
-                                        <Col xs={2}>Цена {PRIMARY_CURRENCY_NAME}</Col>
-                                        <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
+                                        <Col xs={2}>Цена {primaryCurrency}</Col>
+                                        <Col xs={2}>Сумма {primaryCurrency}</Col>
                                     </Row>
 
                                     {_.map(products, (item, index) => {
@@ -509,7 +509,7 @@ const OrderDetails = enhance((props) => {
                                         )
                                     })}
                                 </div>
-                                <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {PRIMARY_CURRENCY_NAME}</div>
+                                <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {primaryCurrency}</div>
                             </div>
                         </Tab>
                         <Tab label="Возврат" value={TAB.ORDER_TAB_RETURN}>
@@ -519,7 +519,7 @@ const OrderDetails = enhance((props) => {
                                                 <Col xs={2}>Код</Col>
                                                 <Col xs={6} style={{textAlign: 'left'}}>Причина возврата</Col>
                                                 <Col xs={2}>Дата возврата</Col>
-                                                <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
+                                                <Col xs={2}>Сумма {primaryCurrency}</Col>
                                             </Row>
                                             {_.map(returnData, (item, index) => {
                                                 const returnId = _.get(item, 'id')

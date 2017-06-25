@@ -7,7 +7,7 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
-import {PRIMARY_CURRENCY_NAME} from '../../../constants/primaryCurrency'
+import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 import {
     Table,
@@ -223,7 +223,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                                 <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, 'amount')} {_.get(item, ['product', 'value', 'product', 'measurement', 'name'])}</TableRowColumn>
                                 <TableRowColumn>{
-                                    numberFormat((_.get(item, ['product', 'value', 'price']) * (_.get(item, 'amount'))), PRIMARY_CURRENCY_NAME)
+                                    numberFormat((_.get(item, ['product', 'value', 'price']) * (_.get(item, 'amount'))), getConfig('PRIMARY_CURRENCY'))
                                 }</TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>
                                     <IconButton onTouchTap={() => handleRemove(index)}>

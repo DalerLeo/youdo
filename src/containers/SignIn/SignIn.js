@@ -6,6 +6,7 @@ import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import {signInAction} from '../../actions/signIn'
 import SignInForm from '../../components/SignInForm'
+import {getConfig} from '../../actions/primeryCurrency'
 import * as ROUTES from '../../constants/routes'
 
 const enhance = compose(
@@ -20,7 +21,8 @@ const enhance = compose(
     connect(state => {
         return {
             formValues: _.get(state, ['form', 'SignInForm', 'values']),
-            loading: _.get(state, ['signIn', 'loading'])
+            loading: _.get(state, ['signIn', 'loading']),
+            config: _.get(state, ['config', 'primaryCurrency', 'data'])
         }
     })
 )
@@ -32,6 +34,7 @@ const SignIn = enhance((props) => {
         return dispatch(signInAction(formValues))
             .then(() => {
                 const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
+                dispatch(getConfig())
                 hashHistory.push(redirectUrl)
             })
     }
