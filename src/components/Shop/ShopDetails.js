@@ -47,7 +47,8 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            cursor: 'pointer'
         },
         titleButtons: {
             display: 'flex',
@@ -70,7 +71,7 @@ const iconStyle = {
 }
 
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data, tabData, confirmDialog, updateDialog} = props
+    const {classes, loading, data, tabData, confirmDialog, updateDialog, handleCloseDetail} = props
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
 
@@ -87,7 +88,8 @@ const ShopDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{name}</div>
+                <div className={classes.titleLabel}
+                onTouchTap={handleCloseDetail}>{name}</div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton

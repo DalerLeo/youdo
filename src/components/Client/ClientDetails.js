@@ -81,7 +81,8 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700'
+            fontWeight: '700',
+            cursor: 'pointer'
         },
         titleButtons: {
             display: 'flex',
@@ -113,7 +114,8 @@ const ClientDetails = enhance((props) => {
         loading,
         data,
         updateDialog,
-        confirmDialog
+        confirmDialog,
+        handleCloseDetail
     } = props
     const detId = _.get(data, 'id')
     const contacts = _.get(data, 'contacts')
@@ -134,7 +136,8 @@ const ClientDetails = enhance((props) => {
     return (
         <div className={classes.wrapper} key={detId}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{providerName}</div>
+                <div className={classes.titleLabel}
+                    onTouchTap={handleCloseDetail}>{providerName}</div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton

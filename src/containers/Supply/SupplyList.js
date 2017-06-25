@@ -3,8 +3,9 @@ import _ from 'lodash'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
-import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import Layout from '../../components/Layout'
+import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
@@ -274,6 +275,10 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[SUPPLY_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(supplyListFetchAction(filter))
                 })
+        },
+        handleCloseDetail: props => () => {
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.SUPPLY_LIST_URL, query: filter.getParam()})
         }
     }),
 
@@ -457,7 +462,8 @@ const SupplyList = enhance((props) => {
         id: detailId,
         data: detail,
         defect: defectData,
-        detailLoading
+        detailLoading,
+        handleCloseDetail: props.handleCloseDetail
     }
 
     // Supply Expense

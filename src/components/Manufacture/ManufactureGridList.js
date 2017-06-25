@@ -368,7 +368,8 @@ const ManufactureGridList = enhance((props) => {
                     personData={personData}
                     equipmentData={equipmentData}
                     shipmentData={shipmentData}
-                    productFilterDialog={productFilterDialog}/>
+                    productFilterDialog={productFilterDialog}
+                    handleCloseDetail={_.get(detailData, 'handleCloseDetail')}/>
             </Row>
 
             {_.get(deleteMaterials, 'open') !== false && <ConfirmDialog

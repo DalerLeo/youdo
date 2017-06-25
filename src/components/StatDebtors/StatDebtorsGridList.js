@@ -131,7 +131,8 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700'
+            fontWeight: '700',
+            cursor: 'pointer'
         },
         bodyTitle: {
             fontWeight: '600',
@@ -273,7 +274,8 @@ const StatDebtorsGridList = enhance((props) => {
                 </div>
                 : <div>
                     <div className={classes.title} style={{width: 'initial'}}>
-                        <div className={classes.titleLabel}>{_.get(statDebtorsItem, ['client', 'name'])}</div>
+                        <div className={classes.titleLabel}
+                            onTouchTap={detailData.handleCloseDetail}>{_.get(statDebtorsItem, ['client', 'name'])}</div>
                         <div className={classes.subTitle}>
                             <div>
                                 Прошло: <span>{_.get(statDebtorsItem, 'expiredDays')} дней</span>

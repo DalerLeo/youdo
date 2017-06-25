@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import * as ORDER_TAB from '../../constants/orderTab'
@@ -384,6 +385,11 @@ const enhance = compose(
         handleGetDocument: props => (id) => {
             const {dispatch} = props
             return dispatch(getDocumentAction(id))
+        },
+
+        handleCloseDetail: props => () => {
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.ORDER_LIST_URL, query: filter.getParam()})
         }
     }),
 )
@@ -592,7 +598,8 @@ const OrderList = enhance((props) => {
         id: detailId,
         data: detail,
         return: returnData,
-        detailLoading
+        detailLoading,
+        handleCloseDetail: props.handleCloseDetail
     }
 
     const paymentData = {
