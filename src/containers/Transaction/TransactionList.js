@@ -73,13 +73,16 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
-    }, ({dispatch, filter, cashboxId}) => {
+    }, ({dispatch}) => {
         dispatch(cashboxListFetchAction())
     }),
 
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter, cashboxId}) => {
+        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
+            (_.get(props, ['location', 'query', 'cashboxId']) !== _.get(nextProps, ['location', 'query', 'cashboxId']))
+    }, ({dispatch, filter, location}) => {
+        const cashboxId = _.get(location, ['query', 'cashboxId'])
+        console.log(cashboxId)
         dispatch(transactionListFetchAction(filter, cashboxId))
     }),
 
@@ -229,14 +232,8 @@ const enhance = compose(
         },
 
         handleClickCashbox: props => (id) => {
-            const {location: {pathname}, filter, dispatch} = props
-            hashHistory.push({pathname, query: filter.getParams({'cashboxId': id})})
-            const zero = 0
-            if (id === zero) {
-                dispatch(transactionListFetchAction(filter))
-            } else {
-                dispatch(transactionListFetchAction(filter, id))
-            }
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {'cashboxId': id}})
         },
 
         handleOpenUpdateDialog: props => (id, amount) => {

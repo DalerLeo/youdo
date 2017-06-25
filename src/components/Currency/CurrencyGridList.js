@@ -142,23 +142,16 @@ const CurrencyGridList = enhance((props) => {
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const isActive = _.get(detailData, 'id') === id
         return (
-            <Link to={{
-                pathname: sprintf(ROUTES.CURRENCY_ITEM_PATH, id),
-                query: filter.getParams()
-            }}>
-                <div key={id} className={classes.list}
-                     style={isActive ? {backgroundColor: '#ffffff', display: 'relative'} : {backgroundColor: '#f2f5f8', display: 'relative'}}>
-                    <div xs={6}>
-                        <div className={classes.title}>
-                            {name}
-                        </div>
-                    </div>
-                    <div xs={6} className={classes.balance}>
-                        <div>{rate}</div>
-                        <div>{createdDate}</div>
-                    </div>
+            <div key={id} className={classes.list}
+                 style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
+                 : {backgroundColor: '#f2f5f8', display: 'relative'}}
+                 onTouchTap={() => { listData.handleCurrencyClick(id) }}>
+                <div xs={6} className={classes.title}>{name}</div>
+                <div xs={6} className={classes.balance}>
+                    <div>{rate}</div>
+                    <div>{createdDate}</div>
                 </div>
-            </Link>
+            </div>
         )
     })
     const currentCurrency = _.get(primaryDialog.primaryCurrency, 'name')

@@ -84,12 +84,7 @@ const enhance = compose(
             (_.get(props, ['params', 'clientTransactionId']) !== _.get(nextProps, ['params', 'clientTransactionId']))
     }, ({dispatch, filter, params}) => {
         const clientId = _.toInteger(_.get(params, 'clientTransactionId'))
-
-        if (clientId === ZERO) {
-            dispatch(clientTransactionListFetchAction(filter))
-        } else {
-            dispatch(clientTransactionListFetchAction(filter, clientId))
-        }
+        dispatch(clientTransactionListFetchAction(filter, clientId === ZERO ? null : clientId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),

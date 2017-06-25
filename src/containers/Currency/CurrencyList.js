@@ -248,6 +248,12 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[CURRENCY_UPDATE_DIALOG_OPEN]: false}))
                 })
+        },
+
+        handleCurrencyClick: props => (id) => {
+            const {filter} = props
+            console.log("qqqqqqqqqqqqqqqqqqqqqqqqq", id)
+            hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id), query: filter.getParams()})
         }
     })
 )
@@ -361,7 +367,8 @@ const CurrencyList = enhance((props) => {
 
     const listData = {
         data: _.get(list, 'results'),
-        listLoading
+        listLoading,
+        handleCurrencyClick: props.handleCurrencyClick
     }
 
     const detailData = {
