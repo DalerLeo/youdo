@@ -12,7 +12,7 @@ import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import numberFormat from '../../helpers/numberFormat'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
+import getConfig from '../../helpers/getConfig'
 
 export const ORDER_ITEM_RETURN_DIALOG_OPEN = 'openOrderItemReturnDialog'
 const enhance = compose(
@@ -129,8 +129,8 @@ const OrderItemReturnDialog = enhance((props) => {
                             <Row className="dottedList">
                                 <Col xs={3}>Товар</Col>
                                 <Col xs={3}>Количество</Col>
-                                <Col xs={3}>Цена ({PRIMARY_CURRENCY_NAME})</Col>
-                                <Col xs={3}>Сумма ({PRIMARY_CURRENCY_NAME})</Col>
+                                <Col xs={3}>Цена ({getConfig('PRIMARY_CURRENCY')})</Col>
+                                <Col xs={3}>Сумма ({getConfig('PRIMARY_CURRENCY')})</Col>
                             </Row>
                             {productList}
                         </div>

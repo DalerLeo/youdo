@@ -9,6 +9,9 @@ import snackbarReducer from './snackbarReducer'
 
 const rootReducer = combineReducers({
     signIn: createThunkReducer(actionTypes.SIGN_IN),
+    config: combineReducers({
+        primaryCurrency: createThunkReducer(actionTypes.CONFIG)
+    }),
     shop: combineReducers({
         create: createThunkReducer(actionTypes.SHOP_CREATE),
         list: createThunkReducer(actionTypes.SHOP_LIST),

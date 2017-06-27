@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
-import {PRIMARY_CURRENCY_NAME} from '../../../constants/primaryCurrency'
+import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 
 const ZERO = 0
@@ -31,7 +31,7 @@ const OrderReturnTotalSum = enhance((props) => {
         totalCost += (itemAmount * itemCost)
     })
     return (
-        <b>{numberFormat(totalCost, PRIMARY_CURRENCY_NAME)}</b>
+        <b>{numberFormat(totalCost, getConfig('PRIMARY_CURRENCY'))}</b>
     )
 })
 
