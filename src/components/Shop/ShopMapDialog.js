@@ -108,7 +108,6 @@ const enhance = compose(
 const ShopMapDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
     return (
         <Dialog
             modal={true}
@@ -153,6 +152,9 @@ ShopMapDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired
+}
+ShopMapDialog.defaultProps = {
+    isUpdate: false
 }
 
 export default ShopMapDialog

@@ -1,27 +1,39 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
-export const createSerializer = (data) => {
-    const name = _.get(data, ['name'])
-    const category = _.get(data, ['category', 'value'])
-    const address = _.get(data, ['address'])
-    const guide = _.get(data, ['guide'])
-    const phone = _.get(data, ['phone'])
-    const lat = _.get(data, ['latLng', 'lat'])
-    const lng = _.get(data, ['latLng', 'lng'])
-    const official = _.get(data, ['official'])
+const ONE = 1
+export const createSerializer = (data, location, image) => {
+    const name = _.get(data, 'name')
+    const client = _.get(data, ['client', 'value'])
+    const marketType = _.get(data, ['marketType', 'value'])
+    const address = _.get(data, 'address')
+    const guide = _.get(data, 'guide')
+    const frequency = _.get(data, ['frequency', 'value'])
+    const phone = _.get(data, 'phone')
+    const status = _.get(data, ['status', 'value'])
+    const lat = _.get(location, 'lat')
+    const lon = _.get(location, 'lng')
     const contactName = _.get(data, ['contactName'])
+    let isActive = false
+    if (status === ONE) {
+        isActive = true
+    }
 
     return {
         name,
-        category,
+        client,
+        'market_type': marketType,
         address,
         guide,
+        'visit_frequency': frequency,
         phone,
-        lat,
-        lon: lng,
-        official,
-        'contact_name': contactName
+        'contact_name': contactName,
+        'location': {
+            'type': 'point',
+            'coordinates': [lat, lon]
+        },
+        'is_active': isActive,
+        'images': [image]
     }
 }
 

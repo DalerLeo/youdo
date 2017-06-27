@@ -18,6 +18,8 @@ import {
     SHOP_FILTER_OPEN,
     SHOP_MAP_DIALOG_OPEN,
     SHOP_UPDATE_MAP_DIALOG_OPEN,
+    ADD_PHOTO_DIALOG_OPEN,
+    SHOP_SLIDESHOW_DIALOG_OPEN,
     ShopGridList
 } from '../../components/Shop'
 import {
@@ -47,6 +49,7 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'ShopCreateForm'])
         const mapForm = _.get(state, ['form', 'ShopMapForm'])
         const mapLocation = _.get(state, ['form', 'ShopMapForm', 'values', 'latLng'])
+        const image = _.get(state, ['form', 'ShopAddPhotoForm', 'values', 'image'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -62,7 +65,8 @@ const enhance = compose(
             filterForm,
             createForm,
             mapForm,
-            mapLocation
+            mapLocation,
+            image
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -179,14 +183,46 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, mapLocation, filter} = props
 
-            return dispatch(shopCreateAction(_.get(createForm, ['values'])))
+            return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
+                })
+        },
+
+        handleOpenSlideShowDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_SLIDESHOW_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseSlideShowDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_SLIDESHOW_DIALOG_OPEN]: false})})
+        },
+
+        handleOpenAddPhotoDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseAddPhotoDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitAddPhotoDialog: props => () => {
+            const {dispatch, createForm, mapLocation, image, filter} = props
+
+            return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation, image))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: false})})
                 })
         },
 
@@ -285,6 +321,8 @@ const ShopList = enhance((props) => {
     const openUpdateMapDialog = toBoolean(_.get(location, ['query', SHOP_UPDATE_MAP_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', SHOP_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
+    const openAddPhotoDialog = toBoolean(_.get(location, ['query', ADD_PHOTO_DIALOG_OPEN]))
+    const openSlideShowDialog = toBoolean(_.get(location, ['query', SHOP_SLIDESHOW_DIALOG_OPEN]))
     const category = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CATEGORY))
     const fromDate = filter.getParam(SHOP_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(SHOP_FILTER_KEY.TO_DATE)
@@ -302,6 +340,19 @@ const ShopList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+
+    const addPhotoDialog = {
+        openAddPhotoDialog,
+        handleOpenAddPhotoDialog: props.handleOpenAddPhotoDialog,
+        handleCloseAddPhotoDialog: props.handleCloseAddPhotoDialog,
+        handleSubmitAddPhotoDialog: props.handleSubmitAddPhotoDialog
+    }
+
+    const slideShowDialog = {
+        openSlideShowDialog,
+        handleOpenSlideShowDialog: props.handleOpenSlideShowDialog,
+        handleCloseSlideShowDialog: props.handleCloseSlideShowDialog
     }
 
     const mapDialog = {
@@ -323,26 +374,41 @@ const ShopList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
-
     const updateDialog = {
         initialValues: (() => {
+            const NOT_ACTIVE = 2
             if (!detail) {
                 return {}
+            }
+            const status = _.get(detail, 'status')
+            let isActive = 1
+            if (status === false) {
+                isActive = NOT_ACTIVE
             }
 
             return {
                 name: _.get(detail, 'name'),
-                category: {
-                    value: _.get(detail, 'category')
-                },
                 address: _.get(detail, 'address'),
+                client: {
+                    value: _.get(detail, ['client', 'id']),
+                    text: _.get(detail, ['client', 'name'])
+                },
+                contactName: _.get(detail, 'contactName'),
+                frequency: {
+                    value: _.toNumber(_.get(detail, 'visitFrequency'))
+                },
                 guide: _.get(detail, 'guide'),
                 phone: _.get(detail, 'phone'),
-                contactName: _.get(detail, 'contactName'),
-                official: _.get(detail, 'official'),
                 latLng: {
                     lat: _.get(detail, 'lat'),
                     lng: _.get(detail, 'lon')
+                },
+                marketType: {
+                    value: _.get(detail, ['marketType', 'id']),
+                    text: _.get(detail, ['marketType', 'name'])
+                },
+                status: {
+                    value: isActive
                 }
             }
         })(),
@@ -355,14 +421,13 @@ const ShopList = enhance((props) => {
 
     const updateMapDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!mapLocation) {
                 return {}
             }
-
             return {
                 latLng: {
-                    lat: _.get(detail, 'lat'),
-                    lng: _.get(detail, 'lon')
+                    lat: _.get(mapLocation, 'lat'),
+                    lng: _.get(mapLocation, 'lng')
                 }
             }
         })(),
@@ -423,6 +488,8 @@ const ShopList = enhance((props) => {
                 tabData={tabData}
                 createDialog={createDialog}
                 mapDialog={mapDialog}
+                addPhotoDialog={addPhotoDialog}
+                slideShowDialog={slideShowDialog}
                 updateMapDialog={updateMapDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}

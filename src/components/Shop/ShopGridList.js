@@ -15,6 +15,8 @@ import ShopFilterForm from './ShopFilterForm'
 import ShopDetails from './ShopDetails'
 import ShopCreateDialog from './ShopCreateDialog'
 import MapDialog from './ShopMapDialog'
+import AddPhotoDialog from './AddPhotoDialog'
+import SlideShowDialog from './SlideShowDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -80,7 +82,9 @@ const ShopGridList = enhance((props) => {
         mapDialog,
         updateDialog,
         updateMapDialog,
+        addPhotoDialog,
         filterDialog,
+        slideShowDialog,
         actionsDialog,
         confirmDialog,
         deleteDialog,
@@ -119,6 +123,8 @@ const ShopGridList = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             tabData={tabData}
             updateDialog={updateDialog}
+            addPhotoDialog={addPhotoDialog}
+            slideShowDialog={slideShowDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
         />
     )
@@ -193,12 +199,23 @@ const ShopGridList = enhance((props) => {
                 onSubmit={mapDialog.handleSubmitMapDialog}
             />
 
+            <AddPhotoDialog
+                open={addPhotoDialog.openAddPhotoDialog}
+                onClose={addPhotoDialog.handleCloseAddPhotoDialog}
+                onSubmit={addPhotoDialog.handleSubmitAddPhotoDialog}
+            />
+
+            <SlideShowDialog
+                open={slideShowDialog.openSlideShowDialog}
+                onClose={slideShowDialog.handleCloseSlideShowDialog}
+            />
+
             <MapDialog
                 isUpdate={true}
-                initialValues={mapDialog.initialValues}
-                open={mapDialog.openMapDialog}
-                onClose={mapDialog.handleCloseMapDialog}
-                onSubmit={mapDialog.handleSubmitMapDialog}
+                initialValues={updateMapDialog.initialValues}
+                open={updateMapDialog.openUpdateMapDialog}
+                onClose={updateMapDialog.handleCloseMapUpdateDialog}
+                onSubmit={updateMapDialog.handleSubmitMapUpdateDialog}
             />
 
             <ShopCreateDialog
@@ -247,6 +264,17 @@ ShopGridList.propTypes = {
         handleOpenMapDialog: PropTypes.func.isRequired,
         handleCloseMapDialog: PropTypes.func.isRequired,
         handleSubmitMapDialog: PropTypes.func.isRequired
+    }).isRequired,
+    addPhotoDialog: PropTypes.shape({
+        openAddPhotoDialog: PropTypes.bool.isRequired,
+        handleOpenAddPhotoDialog: PropTypes.func.isRequired,
+        handleCloseAddPhotoDialog: PropTypes.func.isRequired,
+        handleSubmitAddPhotoDialog: PropTypes.func.isRequired
+    }).isRequired,
+    slideShowDialog: PropTypes.shape({
+        openSlideShowDialog: PropTypes.bool.isRequired,
+        handleOpenSlideShowDialog: PropTypes.func.isRequired,
+        handleCloseSlideShowDialog: PropTypes.func.isRequired
     }).isRequired,
     updateMapDialog: PropTypes.shape({
         openUpdateMapDialog: PropTypes.bool.isRequired,

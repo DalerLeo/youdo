@@ -9,6 +9,7 @@ import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
+import Add from 'material-ui/svg-icons/content/add'
 
 const enhance = compose(
     injectSheet({
@@ -51,21 +52,39 @@ const enhance = compose(
         },
         titleButtons: {
             display: 'flex',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            height: '100%'
+        },
+        frequency: {
+            textAlign: 'right',
+            lineHeight: '1',
+            '& span': {
+                display: 'block'
+            }
+        },
+        status: {
+            alignSelf: 'baseline',
+            margin: '0 30px',
+            color: '#fff',
+            fontWeight: '600',
+            padding: '20px 17px',
+            lineHeight: '1',
+            textAlign: 'center'
         },
         content: {
             padding: '20px 0',
             display: 'flex',
-            justifyContent: 'space-between',
-            width: '100%'
+            width: '100%',
+            '& > div': {
+                marginRight: '7%',
+                '&:last-child': {
+                    margin: '0'
+                }
+            }
         },
         info: {
             display: 'flex'
-        },
-        infoBlock: {
-            '&:first-child': {
-                marginRight: '40px'
-            }
         },
         infoTitle: {
             fontWeight: 'bold'
@@ -74,17 +93,45 @@ const enhance = compose(
             display: 'inline-block',
             lineHeight: '25px',
             marginRight: '30px',
-            marginTop: '10px'
+            marginTop: '10px',
+            '&:last-child': {
+                marginRight: '0'
+            }
         },
         image: {
+            width: '230px',
             height: '165px',
-            width: '165px',
+            marginRight: 'calc(7% + 36px) !important',
             position: 'relative',
-            '& img': {
-                width: '100%',
-                height: '100%',
-                display: 'block'
+            '& img:first-child': {
+                width: '230px',
+                height: '165px',
+                display: 'block',
+                marginRight: '7px',
+                marginBottom: '0'
             }
+        },
+        imageWrapper: {
+            height: '100%',
+            marginRight: '36px',
+            display: 'flex',
+            flexDirection: 'column',
+            flexWrap: 'wrap',
+            '& img': {
+                cursor: 'pointer',
+                width: '36px',
+                height: '36px',
+                marginBottom: '7px'
+            }
+        },
+        addImg: {
+            background: '#999',
+            cursor: 'pointer',
+            width: '36px',
+            height: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
         },
         noImage: {
             background: '#efefef',
@@ -134,8 +181,13 @@ const iconStyle = {
 }
 
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data, tabData, confirmDialog, updateDialog} = props
-    console.log(data)
+    const {addPhotoDialog, slideShowDialog} = props
+    const ZERO = 0
+    const EVERY_DAY = '1'
+    const ONCE_IN_A_WEEK = '2'
+    const TWICE_IN_A_WEEK = '3'
+    const IN_A_DAY = '4'
+    const {classes, loading, data, confirmDialog, updateDialog} = props
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'name'])
@@ -144,7 +196,9 @@ const ShopDetails = enhance((props) => {
     const guide = _.get(data, 'guide')
     const contactName = _.get(data, 'contactName')
     const phone = _.get(data, 'phone')
-    const image = _.get(data, 'image')
+    const images = _.get(data, 'images')
+    const freq = _.get(data, 'visitFrequency')
+    const isActive = _.get(data, 'isActive')
 
     if (loading) {
         return (
@@ -161,6 +215,19 @@ const ShopDetails = enhance((props) => {
             <div className={classes.title}>
                 <div className={classes.titleLabel}>{name}</div>
                 <div className={classes.titleButtons}>
+                    <div className={classes.frequency}>
+                        <span>Частота посещений:</span>
+                        <b>{ freq === EVERY_DAY ? 'Каждый день' : (
+                            freq === ONCE_IN_A_WEEK ? 'Раз в неделю' : (
+                                freq === TWICE_IN_A_WEEK ? '2 раза в неделю' : (
+                                    freq === IN_A_DAY ? 'Через день' : ''
+                                )
+                            )
+                        )}</b>
+                    </div>
+                    {isActive ? <div className={classes.status} style={{background: '#81c784'}}>Магазин <br/> активен</div>
+                        : <div className={classes.status} style={{background: '#ff717e'}}>Магазин <br/> неактивен</div>
+                    }
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
                             iconStyle={iconStyle.icon}
@@ -182,48 +249,61 @@ const ShopDetails = enhance((props) => {
                 </div>
             </div>
             <div className={classes.content}>
-                <div className={classes.info}>
-                    <div className={classes.infoBlock}>
-                        <div className={classes.infoTitle}>Детали</div>
-                        <ul className={classes.details}>
-                            <li>Клиент</li>
-                            <li>Тип заведения</li>
-                            <li>Зона</li>
-                            <li>Адрес</li>
-                            <li>Ориентир</li>
-                        </ul>
-                        <ul className={classes.details}>
-                            <li>{client}</li>
-                            <li>{shopType}</li>
-                            <li>Наименование зоны (Z-0001)</li>
-                            <li>{address}</li>
-                            <li>{guide}</li>
-                        </ul>
-                    </div>
-                    <div className={classes.infoBlock}>
-                        <div className={classes.infoTitle}>Контакты</div>
-                        <ul className={classes.details}>
-                            <li>{contactName}</li>
-                        </ul>
-                        <ul className={classes.details}>
-                            <li>{phone}</li>
-                        </ul>
-                    </div>
-                </div>
                 <div className={classes.image}>
-                    {!image ? <div className={classes.noImage}>
+                    {(images.length === ZERO) ? <div className={classes.noImage}>
                         <div>
                             <span>Фото <br/> отсутствует</span>
                             <a>добавить фото</a>
                         </div>
                     </div>
-                        : <img src={image} alt=""/>}
+                        : <div className={classes.imageWrapper}> {
+                            _.map(images, (item) => {
+                                const src = _.get(item, 'image')
+                                const imgId = _.get(item, 'id')
+                                return (
+                                    <img key={imgId} src={src} alt="" onClick={slideShowDialog.handleOpenSlideShowDialog}/>
+                                )
+                            })
+                        }
+                            <img src="" alt=""/>
+                            <img src="" alt=""/>
+                            <img src="" alt=""/>
+                            <div onClick={addPhotoDialog.handleOpenAddPhotoDialog} className={classes.addImg}>
+                                <Add color="#fff"/>
+                            </div>
+                        </div>}
+                </div>
+                <div className={classes.infoBlock}>
+                    <div className={classes.infoTitle}>Детали</div>
+                    <ul className={classes.details}>
+                        <li>Клиент</li>
+                        <li>Тип заведения</li>
+                        <li>Зона</li>
+                        <li>Адрес</li>
+                        <li>Ориентир</li>
+                    </ul>
+                    <ul className={classes.details}>
+                        <li>{client}</li>
+                        <li>{shopType}</li>
+                        <li>Наименование зоны (Z-0001)</li>
+                        <li>{address}</li>
+                        <li>{guide}</li>
+                    </ul>
+                </div>
+                <div className={classes.infoBlock}>
+                    <div className={classes.infoTitle}>Контакты</div>
+                    <ul className={classes.details}>
+                        <li>{contactName}</li>
+                    </ul>
+                    <ul className={classes.details}>
+                        <li>{phone}</li>
+                    </ul>
                 </div>
             </div>
-            {/*<ShopDetailsTab*/}
-                {/*tabData={tabData}*/}
-                {/*data={data}*/}
-            {/*/>*/}
+            {/* <ShopDetailsTab */}
+                {/* TabData={tabData} */}
+                {/* Data={data} */}
+            {/* /> */}
         </div>
     )
 })
@@ -247,6 +327,17 @@ ShopDetails.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    addPhotoDialog: PropTypes.shape({
+        openAddPhotoDialog: PropTypes.bool.isRequired,
+        handleOpenAddPhotoDialog: PropTypes.func.isRequired,
+        handleCloseAddPhotoDialog: PropTypes.func.isRequired,
+        handleSubmitAddPhotoDialog: PropTypes.func.isRequired
+    }).isRequired,
+    slideShowDialog: PropTypes.shape({
+        openSlideShowDialog: PropTypes.bool.isRequired,
+        handleOpenSlideShowDialog: PropTypes.func.isRequired,
+        handleCloseSlideShowDialog: PropTypes.func.isRequired
     }).isRequired
 
 }

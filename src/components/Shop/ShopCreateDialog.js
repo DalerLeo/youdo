@@ -10,12 +10,11 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {
     TextField,
-    CategorySearchField,
+    MarketTypeSearchField,
     ClientSearchField,
     VisitFrequencySearchField,
     ShopStatusSearchField
 } from '../ReduxForm'
-import ShopContactsListField from '../ReduxForm/Shop/ShopContactsListField'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import Place from '../AddPlace'
@@ -256,20 +255,19 @@ const ShopCreateDialog = enhance((props) => {
                     <div className={classes.inContent}>
                         <div className={classes.leftSide}>
                             <div className={classes.divider}>
-                                <Field
+                                {!openClient ? <Field
                                     name="client"
                                     component={ClientSearchField}
                                     className={classes.inputFieldCustom}
                                     label="Клиент"
                                     fullWidth={true}/>
-                                {openClient && <div>
-                                    <Field
-                                        name="newClientName"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Контактное лицо"
-                                        fullWidth={true}/>
-                                </div>}
+                                : <Field
+                                    name="newClientName"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Имя клиента"
+                                    fullWidth={true}/>
+                                }
                                 <div className={classes.add}>
                                     {!openClient && <a onClick={() => { setOpenClient(true) }}>+ добавить клиента</a>}
                                 </div>
@@ -282,8 +280,8 @@ const ShopCreateDialog = enhance((props) => {
                                     label="Наименование"
                                     fullWidth={true}/>
                                 <Field
-                                    name="category"
-                                    component={CategorySearchField}
+                                    name="marketType"
+                                    component={MarketTypeSearchField}
                                     className={classes.inputFieldCustom}
                                     label="Тип заведения"
                                     fullWidth={true}/>
