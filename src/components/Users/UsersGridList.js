@@ -1,8 +1,6 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -131,13 +129,8 @@ const UsersGridList = enhance((props) => {
 
         return (
             <Row key={id}>
-                <Col xs={1}>{id}</Col>
-                <Col xs={2}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.USERS_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{firstName} {secondName}</Link>
-                </Col>
+                <Col xs={1}>{id} sdfssdf</Col>
+                <Col xs={2}>{firstName} {secondName}</Col>
                 <Col xs={2}>{username}</Col>
                 <Col xs={2}>{groups}</Col>
                 <Col xs={2}>{phoneNumber}</Col>

@@ -35,6 +35,13 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.TRANSACTION_UPDATE),
         csv: createThunkReducer(actionTypes.TRANSACTION_LIST_CSV)
     }),
+    clientTransaction: combineReducers({
+        create: createThunkReducer(actionTypes.CLIENT_TRANSACTION_CREATE),
+        item: createThunkReducer(actionTypes.CLIENT_TRANSACTION_ITEM),
+        update: createThunkReducer(actionTypes.CLIENT_TRANSACTION_UPDATE),
+        list: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST),
+        csv: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST_CSV)
+    }),
     supply: combineReducers({
         create: createThunkReducer(actionTypes.SUPPLY_CREATE),
         list: createThunkReducer(actionTypes.SUPPLY_LIST),
@@ -57,6 +64,7 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.ORDER_ITEM),
         document: createThunkReducer(actionTypes.GET_DOCUMENT),
         return: createThunkReducer(actionTypes.ORDER_RETURN),
+        returnList: createThunkReducer(actionTypes.ORDER_RETURN_LIST),
         update: createThunkReducer(actionTypes.ORDER_UPDATE),
         csv: createThunkReducer(actionTypes.ORDER_LIST_CSV)
     }),
@@ -227,6 +235,12 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.PENDING_PAYMENTS_LIST),
         update: createThunkReducer(actionTypes.PENDING_PAYMENTS_UPDATE),
         item: createThunkReducer(actionTypes.PENDING_PAYMENTS_ITEM)
+    }),
+    marketType: combineReducers({
+        create: createThunkReducer(actionTypes.MARKET_TYPE_CREATE),
+        list: createThunkReducer(actionTypes.MARKET_TYPE_LIST),
+        update: createThunkReducer(actionTypes.MARKET_TYPE_UPDATE),
+        item: createThunkReducer(actionTypes.MARKET_TYPE_ITEM)
     }),
     snackbar: snackbarReducer(),
     form: formReducer,

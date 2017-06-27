@@ -170,6 +170,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[PROVIDER_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(providerListFetchAction(filter))
                 })
+        },
+
+        handleCloseDetail: props => () => {
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.PROVIDER_LIST_URL, query: filter.getParam()})
         }
     })
 )
@@ -263,7 +268,8 @@ const ProviderList = enhance((props) => {
     const detailData = {
         id: detailId,
         data: detail,
-        detailLoading
+        detailLoading,
+        handleCloseDetail: props.handleCloseDetail
     }
 
     return (

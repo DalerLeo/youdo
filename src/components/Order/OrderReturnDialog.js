@@ -174,7 +174,7 @@ const OrderReturnDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '300px'} : {width: '800px'}}
+            contentStyle={loading ? {width: '500px'} : {width: '800px'}}
             className={classes.podlojkaScroll}
             open={open}
             onRequestClose={onClose}

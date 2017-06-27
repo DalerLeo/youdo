@@ -249,6 +249,11 @@ const enhance = compose(
         handleGetDocument: props => () => {
             const {dispatch, filter} = props
             return dispatch(getDocumentAction(filter))
+        },
+
+        handleCloseDetail: props => () => {
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.STATDEBTORS_LIST_URL, query: filter.getParam()})
         }
     })
 )
@@ -336,7 +341,8 @@ const StatDebtors = enhance((props) => {
     const detailData = {
         id: detailId,
         data: detail,
-        detailLoading
+        detailLoading,
+        handleCloseDetail: props.handleCloseDetail
     }
 
     const filterDialog = {

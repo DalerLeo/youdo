@@ -90,7 +90,8 @@ const ProviderGridList = enhance((props) => {
             data={_.get(detailData, 'data') || {}}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
-            confirmDialog={confirmDialog}/>
+            confirmDialog={confirmDialog}
+            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}/>
     )
 
     const providerList = _.map(_.get(listData, 'data'), (item) => {

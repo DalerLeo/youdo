@@ -61,7 +61,8 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700'
+            fontWeight: '700',
+            cursor: 'pointer'
         },
         materialsList: {
             padding: '0 30px'
@@ -115,7 +116,8 @@ const ManufactureDetails = enhance((props) => {
         productTitle,
         createMaterials,
         handleDeleteAllIngredient,
-        handleOpenChangeManufacture
+        handleOpenChangeManufacture,
+        handleCloseDetail
     } = props
 
     const id = _.get(data, 'id')
@@ -170,7 +172,8 @@ const ManufactureDetails = enhance((props) => {
     return (
         <div key={id} className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{productTitle}</div>
+                <div className={classes.titleLabel}
+                    onTouchTap={handleCloseDetail}>{productTitle}</div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Добавить сырье">
                         <IconButton

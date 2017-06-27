@@ -5,7 +5,6 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import ShopDetailsTab from './ShopDetailsTab'
-import ShopDetailsContact from './ShopDetailsContact'
 import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
@@ -47,7 +46,8 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            cursor: 'pointer'
         },
         titleButtons: {
             display: 'flex',

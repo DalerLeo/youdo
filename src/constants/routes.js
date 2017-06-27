@@ -25,6 +25,11 @@ export const TRANSACTION_LIST_URL = `/${TRANSACTION}`
 export const TRANSACTION_ITEM_URL = `${TRANSACTION_LIST_URL}/:transactionId`
 export const TRANSACTION_ITEM_PATH = `/${TRANSACTION}/%d`
 
+export const CLIENT_TRANSACTION = 'clientTransaction'
+export const CLIENT_TRANSACTION_LIST_URL = `/${CLIENT_TRANSACTION}`
+export const CLIENT_TRANSACTION_ITEM_URL = `${CLIENT_TRANSACTION_LIST_URL}/:clientTransactionId`
+export const CLIENT_TRANSACTION_ITEM_PATH = `/${CLIENT_TRANSACTION}/%d`
+
 export const SUPPLY = 'supply'
 export const SUPPLY_LIST_URL = `/${SUPPLY}`
 export const SUPPLY_ITEM_URL = `${SUPPLY_LIST_URL}/:supplyId`
@@ -143,4 +148,9 @@ export const PENDING_PAYMENTS_ITEM_PATH = `${PENDING_PAYMENTS}/%d`
 
 export const ZONES = 'zones'
 export const ZONES_LIST_URL = `/${ZONES}`
+
+export const MARKET_TYPE = 'marketType'
+export const MARKET_TYPE_LIST_URL = `/${MARKET_TYPE}`
+export const MARKET_TYPE_ITEM_URL = `${MARKET_TYPE_LIST_URL}/:marketTypeId`
+export const MARKET_TYPE_ITEM_PATH = `/${MARKET_TYPE}/%d`
 

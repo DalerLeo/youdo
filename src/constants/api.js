@@ -87,6 +87,13 @@ export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
 export const TRANSACTION_SEND = '/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 
+export const CLIENT_TRANSACTION = 'client/client_transaction'
+export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
+export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
+export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
+export const CLIENT_TRANSACTION_SEND = '/transfer/'
+export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/`
+
 export const SUPPLY = 'dist/supply'
 export const SUPPLY_CREATE = `/${SUPPLY}/`
 export const SUPPLY_LIST = `/${SUPPLY}/`
@@ -233,3 +240,9 @@ export const MANUFACTURE_PRODUCT_CHANGE = '/dist/product/%d/change_manufacture/'
 export const SHIPMENT = 'shipment_statistics'
 export const SHIPMENT_LIST = `/${SHIPMENT}/`
 export const SHIPMENT_ITEM = 'shipment_details/%d/'
+
+export const MARKET_TYPE = 'dist/market_type'
+export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
+export const MARKET_TYPE_LIST = `/${MARKET_TYPE}/`
+export const MARKET_TYPE_ITEM = `/${MARKET_TYPE}/%d/`
+export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`

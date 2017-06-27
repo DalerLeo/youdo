@@ -8,11 +8,9 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
-import OrderShortageDialog from './OrderShortage'
 import OrderItemReturnDialog from './OrderItemReturnDialog'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
-import Time from 'material-ui/svg-icons/device/access-time'
 import File from 'material-ui/svg-icons/editor/insert-drive-file'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
@@ -38,7 +36,7 @@ const enhance = compose(
         dropdown: {
             position: 'relative',
             paddingRight: '18px',
-            zIndex: '10',
+            zIndex: '4',
             '&:after': {
                 top: '10px',
                 right: '0',
@@ -86,7 +84,8 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '600'
+            fontWeight: '600',
+            cursor: 'pointer'
         },
         titleSupplier: {
             fontSize: '18px',
@@ -99,7 +98,7 @@ const enhance = compose(
                 padding: '64px 28px 20px',
                 top: '-21px',
                 left: '50%',
-                zIndex: '9',
+                zIndex: '3',
                 minWidth: '300px',
                 transform: 'translate(-50%, 0)',
                 '& .detailsWrap': {
@@ -302,14 +301,16 @@ const OrderDetails = enhance((props) => {
         openDetails,
         transactionsDialog,
         returnDialog,
-        shortageDialog,
+        returnListData,
+        returnDataLoading,
         itemReturnDialog,
         confirmDialog,
         handleOpenUpdateDialog,
         tabData,
         paymentData,
         getDocument,
-        returnData
+        returnData,
+        handleCloseDetail
     } = props
     const tab = _.get(tabData, 'tab')
 
@@ -352,7 +353,8 @@ const OrderDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>Заказ №{id}</div>
+                <div className={classes.titleLabel}
+                     onTouchTap={handleCloseDetail}>Заказ №{id}</div>
                 <div className={classes.titleSupplier}>
                     <a className={classes.dropdown} onMouseEnter={() => {
                         setOpenDetails(true)
@@ -379,15 +381,6 @@ const OrderDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Временно">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={shortageDialog.handleOpenShortageDialog}>
-                            <Time />
-                        </IconButton>
-                    </Tooltip>
                     <Tooltip position="bottom" text="Добавить возврат">
                         <IconButton
                             iconStyle={iconStyle.icon}
@@ -509,7 +502,7 @@ const OrderDetails = enhance((props) => {
                                         return (
                                             <Row className="dottedList" key={index}>
                                                 <Col xs={6}>{productName}</Col>
-                                                <Col xs={2}>{amount} {measurement}</Col>
+                                                <Col xs={2}>{numberFormat(amount)} {measurement}</Col>
                                                 <Col xs={2}>{numberFormat(price)}</Col>
                                                 <Col xs={2}>{numberFormat(productTotal)}</Col>
                                             </Row>
@@ -521,33 +514,39 @@ const OrderDetails = enhance((props) => {
                         </Tab>
                         <Tab label="Возврат" value={TAB.ORDER_TAB_RETURN}>
                             {!_.isEmpty(returnData) ? <div className={classes.tabContent}>
-                                <div className={classes.tabWrapper}>
-                                    <Row className="dottedList">
-                                        <Col xs={2}>Код</Col>
-                                        <Col xs={6} style={{textAlign: 'left'}}>Причина возврата</Col>
-                                        <Col xs={2}>Дата возврата</Col>
-                                        <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
-                                    </Row>
-                                    {_.map(returnData, (item, index) => {
-                                        const returnId = _.get(item, 'id')
-                                        const comment = 'Сюда нужно вывести причину'
-                                        const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-                                        const totalSum = numberFormat(_.get(item, 'totalPrice'))
-                                        return (
-                                            <Row className="dottedList" key={index}>
-                                                <Col xs={2}><a
-                                                    onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(returnId) }}
-                                                    className={classes.link}>
-                                                    {returnId}
-                                                    </a>
-                                                </Col>
-                                                <Col style={{textAlign: 'left'}} xs={6}>{comment}</Col>
-                                                <Col xs={2}>{dateReturn}</Col>
-                                                <Col xs={2}>{totalSum}</Col>
+                                    {!returnDataLoading ? <div className={classes.tabWrapper}>
+                                            <Row className="dottedList">
+                                                <Col xs={2}>Код</Col>
+                                                <Col xs={6} style={{textAlign: 'left'}}>Причина возврата</Col>
+                                                <Col xs={2}>Дата возврата</Col>
+                                                <Col xs={2}>Сумма {PRIMARY_CURRENCY_NAME}</Col>
                                             </Row>
-                                        )
-                                    })}
-                                </div>
+                                            {_.map(returnData, (item, index) => {
+                                                const returnId = _.get(item, 'id')
+                                                const comment = _.get(item, 'comment')
+                                                const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+                                                const totalSum = numberFormat(_.get(item, 'totalPrice'))
+                                                return (
+                                                    <Row className="dottedList" key={index}>
+                                                        <Col xs={2}><a
+                                                            onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(returnId) }}
+                                                            className={classes.link}>
+                                                            {returnId}
+                                                        </a>
+                                                        </Col>
+                                                        <Col style={{textAlign: 'left'}} xs={6}>{comment}</Col>
+                                                        <Col xs={2}>{dateReturn}</Col>
+                                                        <Col xs={2}>{totalSum}</Col>
+                                                    </Row>
+                                                )
+                                            })}
+                                        </div>
+                                        : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
+                                            <div>
+                                                <CircularProgress size={70} thickness={4}/>
+                                            </div>
+                                        </div>
+                                    }
                             </div>
                             : <div className={classes.emptyQuery}>
                                     <div>В данном заказе нет возвратов</div>
@@ -570,15 +569,10 @@ const OrderDetails = enhance((props) => {
                 onSubmit={returnDialog.handleSubmitReturnDialog}
                 orderData={data}
             />
-            <OrderShortageDialog
-                open={shortageDialog.openShortageDialog}
-                loading={shortageDialog.shortageLoading}
-                onClose={shortageDialog.handleCloseShortageDialog}
-                onSubmit={shortageDialog.handleSubmitShortageDialog}
-            />
             <OrderItemReturnDialog
+                returnListData={returnListData}
                 open={itemReturnDialog.openOrderItemReturnDialog}
-                loading={itemReturnDialog.returnLoading}
+                loading={itemReturnDialog.returnDialogLoading}
                 onClose={itemReturnDialog.handleCloseItemReturnDialog}
             />
         </div>
@@ -587,12 +581,13 @@ const OrderDetails = enhance((props) => {
 
 OrderDetails.propTypes = {
     paymentData: PropTypes.object,
+    returnListData: PropTypes.object,
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired
     }),
     data: PropTypes.object.isRequired,
-    returnData: PropTypes.object.isRequired,
+    returnData: PropTypes.array,
     loading: PropTypes.bool.isRequired,
     returnDialog: PropTypes.shape({
         returnLoading: PropTypes.bool.isRequired,
@@ -601,7 +596,7 @@ OrderDetails.propTypes = {
         handleCloseReturnDialog: PropTypes.func.isRequired
     }).isRequired,
     itemReturnDialog: PropTypes.shape({
-        returnLoading: PropTypes.bool.isRequired,
+        returnDialogLoading: PropTypes.bool.isRequired,
         openOrderItemReturnDialog: PropTypes.bool.isRequired,
         handleOpenItemReturnDialog: PropTypes.func.isRequired,
         handleCloseItemReturnDialog: PropTypes.func.isRequired
@@ -610,7 +605,8 @@ OrderDetails.propTypes = {
     orderListData: PropTypes.object,
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired
-    })
+    }),
+    returnDataLoading: PropTypes.bool
 }
 
 export default OrderDetails

@@ -85,10 +85,11 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const currencyId = _.get(nextProps, ['params', 'currencyId'])
-        return currencyId && _.get(props, ['params', 'currencyId']) !== currencyId
-    }, ({dispatch, params}) => {
+        return (currencyId && _.get(props, ['params', 'currencyId']) !== currencyId) ||
+            props.detailFilter.filterRequest() !== nextProps.detailFilter.filterRequest()
+    }, ({dispatch, params, detailFilter}) => {
         const currencyId = _.toInteger(_.get(params, 'currencyId'))
-        currencyId && dispatch(currencyItemFetchAction(currencyId))
+        currencyId && dispatch(currencyItemFetchAction(detailFilter, currencyId))
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),

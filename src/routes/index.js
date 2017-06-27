@@ -7,6 +7,7 @@ import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
 import {CashboxList} from '../containers/Cashbox'
 import {TransactionList} from '../containers/Transaction'
+import {ClientTransactionList} from '../containers/ClientTransaction'
 import {SupplyList} from '../containers/Supply'
 import {OrderList} from '../containers/Order'
 import {ProductList} from '../containers/Product'
@@ -31,6 +32,8 @@ import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
 import {ShiftList} from '../containers/Shift'
 import {Zones} from '../containers/Zones'
+import {MarketTypeList} from '../containers/MarketType'
+
 import NotFound from '../containers/NotFound'
 
 export default {
@@ -96,6 +99,17 @@ export default {
                 {
                     path: ROUTES.TRANSACTION_ITEM_URL,
                     component: userIsAuth(TransactionList)
+                }
+            ]
+        },
+        // Client Transactoin
+        {
+            path: ROUTES.CLIENT_TRANSACTION_LIST_URL,
+            component: userIsAuth(ClientTransactionList),
+            childRoutes: [
+                {
+                    path: ROUTES.CLIENT_TRANSACTION_ITEM_URL,
+                    component: userIsAuth(ClientTransactionList)
                 }
             ]
         },
@@ -338,6 +352,17 @@ export default {
                 path: ROUTES.ZONES_LIST_URL,
                 component: userIsAuth(Zones)
             }]
+        },
+        // Market_type
+        {
+            path: ROUTES.MARKET_TYPE_LIST_URL,
+            component: userIsAuth(MarketTypeList),
+            childRoutes: [
+                {
+                    path: ROUTES.MARKET_TYPE_ITEM_URL,
+                    component: userIsAuth(MarketTypeList)
+                }
+            ]
         },
         {
             path: '*',

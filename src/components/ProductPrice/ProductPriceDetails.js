@@ -32,7 +32,8 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700'
+            fontWeight: '700',
+            cursor: 'pointer'
         },
         buttons: {
             display: 'flex',
@@ -133,7 +134,8 @@ const ProductPriceDetails = enhance((props) => {
         anchorEl,
         handleOpenDetails,
         handleCloseDetails,
-        priceDetailsOpen
+        priceDetailsOpen,
+        handleCloseDetail
     } = props
     const detId = _.get(data, 'id')
     const detnName = _.get(data, 'name')
@@ -150,7 +152,8 @@ const ProductPriceDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{detnName}</div>
+                <div className={classes.titleLabel}
+                onTouchTap={handleCloseDetail}>{detnName}</div>
             </div>
             <div className={classes.containerPrice}>
                 <div className={classes.leftPrSide}>

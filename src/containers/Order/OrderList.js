@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import * as ORDER_TAB from '../../constants/orderTab'
@@ -30,27 +31,32 @@ import {
     orderDeleteAction,
     orderItemFetchAction,
     orderReturnAction,
+    orderReturnListAction,
     orderTransactionFetchAction,
     orderItemReturnFetchAction,
     getDocumentAction
 } from '../../actions/order'
 import {
-    clientCreateAction,
-    clientListFetchAction
+    clientCreateAction
 } from '../../actions/client'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const MINUS_ONE = -1
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['order', 'item', 'data'])
         const payment = _.get(state, ['order', 'payment', 'data'])
+        const orderReturnList = _.get(state, ['order', 'returnList', 'data'])
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const createLoading = _.get(state, ['order', 'create', 'loading'])
         const createClientLoading = _.get(state, ['client', 'create', 'loading'])
         const transactionsLoading = _.get(state, ['order', 'create', 'loading'])
-        const returnLoading = _.get(state, ['order', 'create', 'loading'])
+        const returnLoading = _.get(state, ['order', 'return', 'loading'])
+        const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
+        const returnDialogLoading = _.get(state, ['order', 'returnList', 'loading'])
         const shortageLoading = _.get(state, ['order', 'create', 'loading'])
         const updateLoading = _.get(state, ['order', 'update', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
@@ -62,6 +68,7 @@ const enhance = compose(
         const clientCreateForm = _.get(state, ['form', 'ClientCreateForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
         const returnData = _.get(state, ['order', 'return', 'data', 'results'])
+        const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -83,7 +90,11 @@ const enhance = compose(
             createForm,
             clientCreateForm,
             returnForm,
-            returnData
+            returnData,
+            orderReturnList,
+            returnDataLoading,
+            returnDialogLoading,
+            products
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -97,7 +108,9 @@ const enhance = compose(
         return prevTransaction !== nextTransaction && nextTransaction === 'true'
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        dispatch(orderTransactionFetchAction(orderId))
+        if (orderId > ZERO) {
+            dispatch(orderTransactionFetchAction(orderId))
+        }
     }),
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['location', 'query', 'tab'])
@@ -105,7 +118,9 @@ const enhance = compose(
         return prevTab !== nextTab && nextTab === 'return'
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        dispatch(orderItemReturnFetchAction(orderId))
+        if (orderId > ZERO) {
+            dispatch(orderItemReturnFetchAction(orderId))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -115,6 +130,17 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         orderId && dispatch(orderItemFetchAction(orderId))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevReturn = _.toInteger(_.get(props, ['location', 'query', 'openOrderItemReturnDialog']))
+        const nextReturn = _.toInteger(_.get(nextProps, ['location', 'query', 'openOrderItemReturnDialog']))
+        return prevReturn !== nextReturn && nextReturn > ZERO
+    }, ({dispatch, location}) => {
+        const returnItemId = _.toInteger(_.get(location, ['query', 'openOrderItemReturnDialog']))
+        if (returnItemId > ZERO) {
+            dispatch(orderReturnListAction(returnItemId))
+        }
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -243,14 +269,14 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: false})})
         },
 
-        handleOpenItemReturnDialog: props => () => {
+        handleOpenItemReturnDialog: props => (id) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: id})})
         },
 
         handleCloseItemReturnDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: MINUS_ONE})})
         },
 
         handleOpenReturnDialog: props => () => {
@@ -271,6 +297,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
                     dispatch(orderItemReturnFetchAction(filter))
+                    dispatch(orderItemFetchAction(filter))
                 })
         },
 
@@ -285,12 +312,12 @@ const enhance = compose(
         },
         handleSubmitShortageDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}} = props
-            return dispatch(orderReturnAction(_.get(createForm, ['values'])))
+            return dispatch(orderCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно отправлено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ORDER_SHORTAGE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[ORDER_SHORTAGE_DIALOG_OPEN]: false, [ORDER_CREATE_DIALOG_OPEN]: false})})
                     dispatch(orderListFetchAction(filter))
                 })
         },
@@ -336,11 +363,21 @@ const enhance = compose(
             const {dispatch, clientCreateForm, filter} = props
 
             return dispatch(clientCreateAction(_.get(clientCreateForm, ['values'])))
-                .then(() => {
+                .then((data) => {
+                    const value = _.get(data, ['value', 'id'])
+                    dispatch({
+                        type: '@@redux-form/CHANGE',
+                        payload: {text: '', value: value},
+                        meta: {
+                            field: 'client',
+                            touch: false,
+                            form: 'OrderCreateForm',
+                            persistentSubmitErrors: false
+                        }
+                    })
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    dispatch(clientListFetchAction(filter))
                     hashHistory.push(filter.createURL({[CLIENT_CREATE_DIALOG_OPEN]: false}))
                 })
         },
@@ -348,6 +385,11 @@ const enhance = compose(
         handleGetDocument: props => (id) => {
             const {dispatch} = props
             return dispatch(getDocumentAction(id))
+        },
+
+        handleCloseDetail: props => () => {
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.ORDER_LIST_URL, query: filter.getParam()})
         }
     }),
 )
@@ -359,6 +401,7 @@ const OrderList = enhance((props) => {
         listLoading,
         detail,
         returnData,
+        orderReturnList,
         payment,
         detailLoading,
         createLoading,
@@ -367,15 +410,18 @@ const OrderList = enhance((props) => {
         returnLoading,
         shortageLoading,
         updateLoading,
+        returnDataLoading,
+        returnDialogLoading,
         filter,
         layout,
+        products,
         params
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
     const openTransactionsDialog = toBoolean(_.get(location, ['query', ORDER_TRANSACTIONS_DIALOG_OPEN]))
-    const openOrderItemReturnDialog = toBoolean(_.get(location, ['query', ORDER_ITEM_RETURN_DIALOG_OPEN]))
+    const openOrderItemReturnDialog = _.toInteger(_.get(location, ['query', 'openOrderItemReturnDialog']) || MINUS_ONE) > MINUS_ONE
     const openReturnDialog = toBoolean(_.get(location, ['query', ORDER_RETURN_DIALOG_OPEN]))
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
@@ -412,7 +458,7 @@ const OrderList = enhance((props) => {
     }
 
     const itemReturnDialog = {
-        returnLoading,
+        returnDialogLoading,
         openOrderItemReturnDialog,
         handleOpenItemReturnDialog: props.handleOpenItemReturnDialog,
         handleCloseItemReturnDialog: props.handleCloseItemReturnDialog
@@ -462,44 +508,41 @@ const OrderList = enhance((props) => {
         handleCloseCreateClientDialog: props.handleCloseCreateClientDialog,
         handleSubmitCreateClientDialog: props.handleSubmitCreateClientDialog
     }
+    const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
+        return {
+            amount: _.get(item, 'amount'),
+            cost: _.get(item, 'price'),
+            measurement: _.get(item, ['product', 'measurement', 'name']),
+            product: {
+                value: _.get(item, ['product', 'id']),
+                text: _.get(item, ['product', 'name'])
+            }
 
-    // Const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
-    //     Return {
-    //         Amount: _.get(item, 'amount'),
-    //         Cost: _.get(item, 'price'),
-    //         Measurement: _.get(item, ['product', 'measurement', 'name']),
-    //         Product: {
-    //             Value: {
-    //                 Id: _.get(item, ['product', 'id']),
-    //                 Text: _.get(item, ['product', 'name'])
-    //             }
-    //         }
-    //
-    //     }
-    // })
+        }
+    })
 
     const updateDialog = {
         initialValues: (() => {
             if (!detail) {
                 return {}
             }
-            // Const HUND = 100
-            // Const discountPrice = _.toNumber(_.get(detail, 'discountPrice'))
-            // Const totalPrice = _.toNumber(_.get(detail, 'totalPrice'))
-            // Const discount = (discountPrice / (discountPrice + totalPrice)) * HUND
+            const HUND = 100
+            const discountPrice = _.toNumber(_.get(detail, 'discountPrice'))
+            const totalPrice = _.toNumber(_.get(detail, 'totalPrice'))
+            const discount = (discountPrice / (discountPrice + totalPrice)) * HUND
             return {
-                // Client: {
-                //     Value: _.get(detail, ['client', 'id'])
-                // },
-                // Contact: {
-                //     Value: _.get(detail, ['contact', 'id'])
-                // },
-                // DeliveryType: _.get(detail, ['deliveryType', 'id']),
-                // DeliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
-                // DeliveryPrice: _.get(detail, 'deliveryPrice'),
-                // DiscountPrice: discount,
-                // PaymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
-                // Products: forUpdateProducts
+                client: {
+                    value: _.get(detail, ['client', 'id'])
+                },
+                contact: {
+                    value: _.get(detail, ['contact', 'id'])
+                },
+                deliveryType: _.get(detail, ['deliveryType', 'id']),
+                deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
+                deliveryPrice: _.get(detail, 'deliveryPrice'),
+                discountPrice: discount,
+                paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
+                products: forUpdateProducts
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -555,7 +598,8 @@ const OrderList = enhance((props) => {
         id: detailId,
         data: detail,
         return: returnData,
-        detailLoading
+        detailLoading,
+        handleCloseDetail: props.handleCloseDetail
     }
 
     const paymentData = {
@@ -571,6 +615,7 @@ const OrderList = enhance((props) => {
                 listData={listData}
                 tabData={tabData}
                 detailData={detailData}
+                returnListData={orderReturnList}
                 paymentData={paymentData}
                 createDialog={createDialog}
                 getDocument={getDocument}
@@ -581,10 +626,12 @@ const OrderList = enhance((props) => {
                 shortageDialog={shortageDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
+                returnDataLoading={returnDataLoading}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
+                products={products}
             />
         </Layout>
     )

@@ -65,7 +65,8 @@ const ManufactureTab = enhance((props) => {
         editMaterials,
         createMaterials,
         deleteMaterials,
-        shipmentData
+        shipmentData,
+        handleCloseDetail
     } = props
     const tab = _.get(tabData, 'tab')
     return (
@@ -88,7 +89,8 @@ const ManufactureTab = enhance((props) => {
                     filter={tabData.filter}
                     filterDialog={productFilterDialog}
                     createMaterials={createMaterials}
-                    deleteMaterials={deleteMaterials}/>}
+                    deleteMaterials={deleteMaterials}
+                    handleCloseDetail={handleCloseDetail}/>}
                 {TAB.MANUFACTURE_TAB_PERSON === tab && <ManufacturePerson
                     personData={personData}
                     />}
