@@ -16,6 +16,8 @@ import {
     SHOP_UPDATE_DIALOG_OPEN,
     SHOP_FILTER_KEY,
     SHOP_FILTER_OPEN,
+    SHOP_MAP_DIALOG_OPEN,
+    SHOP_UPDATE_MAP_DIALOG_OPEN,
     ShopGridList
 } from '../../components/Shop'
 import {
@@ -28,6 +30,7 @@ import {
 } from '../../actions/shop'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -42,6 +45,8 @@ const enhance = compose(
         const csvLoading = _.get(state, ['shop', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'ShopFilterForm'])
         const createForm = _.get(state, ['form', 'ShopCreateForm'])
+        const mapForm = _.get(state, ['form', 'ShopMapForm'])
+        const mapLocation = _.get(state, ['form', 'ShopMapForm', 'values', 'latLng'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -55,7 +60,9 @@ const enhance = compose(
             csvLoading,
             filter,
             filterForm,
-            createForm
+            createForm,
+            mapForm,
+            mapLocation
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -65,11 +72,14 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const shopId = _.get(nextProps, ['params', 'shopId'])
-        return shopId && _.get(props, ['params', 'shopId']) !== shopId
+        const prevId = _.get(props, ['params', 'shopId'])
+        const nextId = _.get(nextProps, ['params', 'shopId'])
+        return prevId !== nextId
     }, ({dispatch, params}) => {
         const shopId = _.toInteger(_.get(params, 'shopId'))
-        dispatch(shopItemFetchAction(shopId))
+        if (shopId > ZERO) {
+            dispatch(shopItemFetchAction(shopId))
+        }
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -180,6 +190,47 @@ const enhance = compose(
                 })
         },
 
+        handleOpenMapDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_MAP_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseMapDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_MAP_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitMapDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_MAP_DIALOG_OPEN]: false})})
+        },
+
+        handleOpenMapUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_MAP_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseMapUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitMapUpdateDialog: props => () => {
+            const {dispatch, mapForm, filter} = props
+            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+
+            return dispatch(shopUpdateAction(shopId, _.get(mapForm, ['values'])))
+                .then(() => {
+                    return dispatch(shopItemFetchAction(shopId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false}))
+                })
+        },
+
         handleOpenUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_DIALOG_OPEN]: true})})
@@ -219,11 +270,14 @@ const ShopList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+        mapLocation
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', SHOP_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', SHOP_CREATE_DIALOG_OPEN]))
+    const openMapDialog = toBoolean(_.get(location, ['query', SHOP_MAP_DIALOG_OPEN]))
+    const openUpdateMapDialog = toBoolean(_.get(location, ['query', SHOP_UPDATE_MAP_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', SHOP_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const category = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CATEGORY))
@@ -243,6 +297,13 @@ const ShopList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+
+    const mapDialog = {
+        openMapDialog,
+        handleOpenMapDialog: props.handleOpenMapDialog,
+        handleCloseMapDialog: props.handleCloseMapDialog,
+        handleSubmitMapDialog: props.handleSubmitMapDialog
     }
 
     const deleteDialog = {
@@ -285,6 +346,25 @@ const ShopList = enhance((props) => {
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
+    }
+
+    const updateMapDialog = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            }
+
+            return {
+                latLng: {
+                    lat: _.get(detail, 'lat'),
+                    lng: _.get(detail, 'lon')
+                }
+            }
+        })(),
+        openUpdateMapDialog,
+        handleOpenMapUpdateDialog: props.handleOpenMapUpdateDialog,
+        handleCloseMapUpdateDialog: props.handleCloseMapUpdateDialog,
+        handleSubmitMapUpdateDialog: props.handleSubmitMapUpdateDialog
     }
 
     const filterDialog = {
@@ -336,12 +416,15 @@ const ShopList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
+                mapDialog={mapDialog}
+                updateMapDialog={updateMapDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
+                mapLocation={mapLocation}
             />
         </Layout>
     )

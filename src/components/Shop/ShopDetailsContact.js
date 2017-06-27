@@ -9,7 +9,8 @@ const enhance = compose(
         content: {
             padding: '20px 0',
             display: 'flex',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            width: '100%'
         },
         info: {
             display: 'flex'
@@ -74,6 +75,7 @@ const enhance = compose(
 
 const ShopDetailsContact = enhance((props) => {
     const {classes, data} = props
+    console.log(data)
     const shopType = _.get(data, 'marketTypeName')
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')

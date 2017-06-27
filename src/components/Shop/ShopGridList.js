@@ -14,6 +14,7 @@ import Container from '../Container'
 import ShopFilterForm from './ShopFilterForm'
 import ShopDetails from './ShopDetails'
 import ShopCreateDialog from './ShopCreateDialog'
+import MapDialog from './ShopMapDialog'
 import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -76,7 +77,9 @@ const ShopGridList = enhance((props) => {
     const {
         filter,
         createDialog,
+        mapDialog,
         updateDialog,
+        updateMapDialog,
         filterDialog,
         actionsDialog,
         confirmDialog,
@@ -84,6 +87,7 @@ const ShopGridList = enhance((props) => {
         listData,
         detailData,
         tabData,
+        mapLocation,
         classes
     } = props
     const actions = (
@@ -164,7 +168,6 @@ const ShopGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
-
             <GridList
                 filter={filter}
                 list={list}
@@ -174,13 +177,33 @@ const ShopGridList = enhance((props) => {
             />
 
             <ShopCreateDialog
+                mapDialog={mapDialog}
+                updateMapDialog={updateMapDialog}
+                mapLocation={mapLocation}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
+            <MapDialog
+                open={mapDialog.openMapDialog}
+                onClose={mapDialog.handleCloseMapDialog}
+                onSubmit={mapDialog.handleSubmitMapDialog}
+            />
+
+            <MapDialog
+                isUpdate={true}
+                initialValues={mapDialog.initialValues}
+                open={mapDialog.openMapDialog}
+                onClose={mapDialog.handleCloseMapDialog}
+                onSubmit={mapDialog.handleSubmitMapDialog}
+            />
+
             <ShopCreateDialog
+                isUpdate={true}
+                mapDialog={mapDialog}
+                updateMapDialog={updateMapDialog}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -210,12 +233,25 @@ ShopGridList.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
     tabData: PropTypes.object.isRequired,
+    mapLocation: PropTypes.object,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    mapDialog: PropTypes.shape({
+        openMapDialog: PropTypes.bool.isRequired,
+        handleOpenMapDialog: PropTypes.func.isRequired,
+        handleCloseMapDialog: PropTypes.func.isRequired,
+        handleSubmitMapDialog: PropTypes.func.isRequired
+    }).isRequired,
+    updateMapDialog: PropTypes.shape({
+        openUpdateMapDialog: PropTypes.bool.isRequired,
+        handleOpenMapUpdateDialog: PropTypes.func.isRequired,
+        handleCloseMapUpdateDialog: PropTypes.func.isRequired,
+        handleSubmitMapUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,

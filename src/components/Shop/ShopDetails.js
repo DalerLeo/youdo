@@ -5,10 +5,10 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import ShopDetailsTab from './ShopDetailsTab'
+import ShopDetailsContact from './ShopDetailsContact'
 import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Photo from 'material-ui/svg-icons/image/add-a-photo'
 import Delete from 'material-ui/svg-icons/action/delete'
 
 const enhance = compose(
@@ -52,6 +52,70 @@ const enhance = compose(
         titleButtons: {
             display: 'flex',
             justifyContent: 'flex-end'
+        },
+        content: {
+            padding: '20px 0',
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%'
+        },
+        info: {
+            display: 'flex'
+        },
+        infoBlock: {
+            '&:first-child': {
+                marginRight: '40px'
+            }
+        },
+        infoTitle: {
+            fontWeight: 'bold'
+        },
+        details: {
+            display: 'inline-block',
+            lineHeight: '25px',
+            marginRight: '30px',
+            marginTop: '10px'
+        },
+        image: {
+            height: '165px',
+            width: '165px',
+            position: 'relative',
+            '& img': {
+                width: '100%',
+                height: '100%',
+                display: 'block'
+            }
+        },
+        noImage: {
+            background: '#efefef',
+            border: '1px #ccc dashed',
+            color: '#999',
+            fontSize: '11px !important',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            '& span': {
+                fontSize: '11px !important',
+                display: 'block',
+                position: 'relative',
+                marginBottom: '20px',
+                '&:after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: '40px',
+                    left: '50%',
+                    background: '#999',
+                    width: '64px',
+                    height: '1px',
+                    marginLeft: '-32px'
+                }
+            }
         }
     })
 )
@@ -71,8 +135,16 @@ const iconStyle = {
 
 const ShopDetails = enhance((props) => {
     const {classes, loading, data, tabData, confirmDialog, updateDialog} = props
+    console.log(data)
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
+    const client = _.get(data, ['client', 'name'])
+    const shopType = _.get(data, ['marketType', 'name'])
+    const address = _.get(data, 'address')
+    const guide = _.get(data, 'guide')
+    const contactName = _.get(data, 'contactName')
+    const phone = _.get(data, 'phone')
+    const image = _.get(data, 'image')
 
     if (loading) {
         return (
@@ -98,14 +170,6 @@ const ShopDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Добавить фото">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}>
-                            <Photo />
-                        </IconButton>
-                    </Tooltip>
                     <Tooltip position="bottom" text="Удалить">
                         <IconButton
                             iconStyle={iconStyle.icon}
@@ -117,10 +181,49 @@ const ShopDetails = enhance((props) => {
                     </Tooltip>
                 </div>
             </div>
-            <ShopDetailsTab
-                tabData={tabData}
-                data={data}
-            />
+            <div className={classes.content}>
+                <div className={classes.info}>
+                    <div className={classes.infoBlock}>
+                        <div className={classes.infoTitle}>Детали</div>
+                        <ul className={classes.details}>
+                            <li>Клиент</li>
+                            <li>Тип заведения</li>
+                            <li>Зона</li>
+                            <li>Адрес</li>
+                            <li>Ориентир</li>
+                        </ul>
+                        <ul className={classes.details}>
+                            <li>{client}</li>
+                            <li>{shopType}</li>
+                            <li>Наименование зоны (Z-0001)</li>
+                            <li>{address}</li>
+                            <li>{guide}</li>
+                        </ul>
+                    </div>
+                    <div className={classes.infoBlock}>
+                        <div className={classes.infoTitle}>Контакты</div>
+                        <ul className={classes.details}>
+                            <li>{contactName}</li>
+                        </ul>
+                        <ul className={classes.details}>
+                            <li>{phone}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div className={classes.image}>
+                    {!image ? <div className={classes.noImage}>
+                        <div>
+                            <span>Фото <br/> отсутствует</span>
+                            <a>добавить фото</a>
+                        </div>
+                    </div>
+                        : <img src={image} alt=""/>}
+                </div>
+            </div>
+            {/*<ShopDetailsTab*/}
+                {/*tabData={tabData}*/}
+                {/*data={data}*/}
+            {/*/>*/}
         </div>
     )
 })

@@ -34,6 +34,7 @@ import ProductMeasurementField from './Product/ProductMeasurementField'
 import ShiftSearchField from './ShiftSearchField'
 import CashboxCustomField from './PendingPayments/CashboxCustomField'
 import VisitFrequencySearchField from './Shop/VisitFrequencySearchField'
+import ShopStatusSearchField from './Shop/ShopStatusSearchField'
 
 export {
     ShiftSearchField,
@@ -71,5 +72,6 @@ export {
     StockTypeSearchField,
     CashboxSearchField,
     CashboxCustomField,
-    VisitFrequencySearchField
+    VisitFrequencySearchField,
+    ShopStatusSearchField
 }
