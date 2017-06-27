@@ -82,7 +82,6 @@ const enhance = compose(
             (_.get(props, ['location', 'query', 'cashboxId']) !== _.get(nextProps, ['location', 'query', 'cashboxId']))
     }, ({dispatch, filter, location}) => {
         const cashboxId = _.get(location, ['query', 'cashboxId'])
-        console.log(cashboxId)
         dispatch(transactionListFetchAction(filter, cashboxId))
     }),
 

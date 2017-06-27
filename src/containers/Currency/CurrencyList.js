@@ -252,7 +252,6 @@ const enhance = compose(
 
         handleCurrencyClick: props => (id) => {
             const {filter} = props
-            console.log("qqqqqqqqqqqqqqqqqqqqqqqqq", id)
             hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id), query: filter.getParams()})
         }
     })

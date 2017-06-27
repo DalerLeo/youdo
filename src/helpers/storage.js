@@ -12,7 +12,6 @@ export const setToken = (token, local = false) => {
     const storage = getStorage(local)
 
     storage.setItem(TOKEN_KEY, token)
-    storage.setItem(Co, token)
 }
 
 export const removeToken = () => {
