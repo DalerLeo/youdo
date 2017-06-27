@@ -233,3 +233,9 @@ export const MANUFACTURE_PRODUCT_CHANGE = '/dist/product/%d/change_manufacture/'
 export const SHIPMENT = 'shipment_statistics'
 export const SHIPMENT_LIST = `/${SHIPMENT}/`
 export const SHIPMENT_ITEM = 'shipment_details/%d/'
+
+export const MARKET_TYPE = 'dist/market_type'
+export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
+export const MARKET_TYPE_LIST = `/${MARKET_TYPE}/`
+export const MARKET_TYPE_ITEM = `/${MARKET_TYPE}/%d/`
+export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`

@@ -228,6 +228,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.PENDING_PAYMENTS_UPDATE),
         item: createThunkReducer(actionTypes.PENDING_PAYMENTS_ITEM)
     }),
+    marketType: combineReducers({
+        create: createThunkReducer(actionTypes.MARKET_TYPE_CREATE),
+        list: createThunkReducer(actionTypes.MARKET_TYPE_LIST),
+        update: createThunkReducer(actionTypes.MARKET_TYPE_UPDATE),
+        item: createThunkReducer(actionTypes.MARKET_TYPE_ITEM)
+    }),
     snackbar: snackbarReducer(),
     form: formReducer,
     toastr: toastrReducer,
