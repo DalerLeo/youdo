@@ -246,3 +246,11 @@ export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_LIST = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_ITEM = `/${MARKET_TYPE}/%d/`
 export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`
+
+export const PRICE = 'dist/product'
+export const PRICE_CREATE = `/${PRODUCT}/`
+export const PRICE_LIST = `/${PRODUCT}/`
+export const PRICE_ITEM = `/${PRODUCT}/%d/`
+export const PRICE_DELETE = `/${PRODUCT}/%d/`
+export const PRICE_EXTRA = 'products_extra_list/'
+export const PRICE_INGREDIENT = 'dist/product/%d/ingredient_list/'
