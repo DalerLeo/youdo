@@ -25,6 +25,7 @@ import CloseIcon2 from '../CloseIcon2'
 import Person from '../Images/person.png'
 import Timeline from 'material-ui/svg-icons/action/timeline'
 import Touch from 'material-ui/svg-icons/action/touch-app'
+import ZoneMap from './ZoneMap'
 
 const enhance = compose(
     injectSheet({
@@ -586,6 +587,7 @@ const ZonesWrapper = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
+            <ZoneMap />
 
             <div className={classes.zonesWrapper}>
                 <a onClick={() => { setZoneInfo(true) }}>CLick MEeeee</a>
