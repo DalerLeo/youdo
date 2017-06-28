@@ -16,11 +16,9 @@ import MainStyles from '../Styles/MainStyles'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
 
     throw new SubmissionError({
         ...errors,
-        latLng,
         _error: nonFieldErrors
     })
 }

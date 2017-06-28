@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
-import ShopDetailsTab from './ShopDetailsTab'
 import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
@@ -103,12 +102,25 @@ const enhance = compose(
             height: '165px',
             marginRight: 'calc(7% + 36px) !important',
             position: 'relative',
-            '& img:first-child': {
+            '& span:first-child': {
                 width: '230px',
                 height: '165px',
                 display: 'block',
                 marginRight: '7px',
                 marginBottom: '0'
+            },
+            '& span:nth-child(4)': {
+                position: 'relative',
+                zIndex: '1'
+            },
+            '& span:nth-child(4):after': {
+                background: 'rgba(0,0,0,0.35)',
+                content: '""',
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0'
             }
         },
         imageWrapper: {
@@ -117,11 +129,28 @@ const enhance = compose(
             display: 'flex',
             flexDirection: 'column',
             flexWrap: 'wrap',
-            '& img': {
+            '& span': {
                 cursor: 'pointer',
                 width: '36px',
                 height: '36px',
-                marginBottom: '7px'
+                marginBottom: '7px',
+                position: 'relative',
+                '& strong': {
+                    color: '#fff',
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    top: '0',
+                    left: '0',
+                    right: '0',
+                    bottom: '0',
+                    zIndex: '99'
+                }
+            },
+            '& img': {
+                width: '100%',
+                height: '100%'
             }
         },
         addImg: {
@@ -181,24 +210,33 @@ const iconStyle = {
 }
 
 const ShopDetails = enhance((props) => {
-    const {addPhotoDialog, slideShowDialog} = props
+    const {classes, loading, data, confirmDialog, updateDialog, addPhotoDialog, slideShowDialog} = props
     const ZERO = 0
+    const MAX_IMAGE_COUNT = 4
     const EVERY_DAY = '1'
     const ONCE_IN_A_WEEK = '2'
     const TWICE_IN_A_WEEK = '3'
     const IN_A_DAY = '4'
-    const {classes, loading, data, confirmDialog, updateDialog} = props
+
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'name'])
     const shopType = _.get(data, ['marketType', 'name'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
+    const zone = _.get(data, 'border')
     const contactName = _.get(data, 'contactName')
     const phone = _.get(data, 'phone')
     const images = _.get(data, 'images')
     const freq = _.get(data, 'visitFrequency')
     const isActive = _.get(data, 'isActive')
+
+    let slicedImages = []
+    if (images.length > MAX_IMAGE_COUNT) {
+        slicedImages = _.slice(images, ZERO, MAX_IMAGE_COUNT)
+    }
+    const lastImage = _.last(slicedImages)
+    const moreImages = images.length - slicedImages.length
 
     if (loading) {
         return (
@@ -257,17 +295,19 @@ const ShopDetails = enhance((props) => {
                         </div>
                     </div>
                         : <div className={classes.imageWrapper}> {
-                            _.map(images, (item) => {
+                            _.map(slicedImages, (item) => {
                                 const src = _.get(item, 'image')
                                 const imgId = _.get(item, 'id')
+                                const isLastImage = (imgId === lastImage.id)
+
                                 return (
-                                    <img key={imgId} src={src} alt="" onClick={slideShowDialog.handleOpenSlideShowDialog}/>
+                                    <span key={imgId} onClick={slideShowDialog.handleOpenSlideShowDialog}>
+                                        {isLastImage && <strong>+{moreImages}</strong>}
+                                        <img src={src} alt=""/>
+                                    </span>
                                 )
                             })
                         }
-                            <img src="" alt=""/>
-                            <img src="" alt=""/>
-                            <img src="" alt=""/>
                             <div onClick={addPhotoDialog.handleOpenAddPhotoDialog} className={classes.addImg}>
                                 <Add color="#fff"/>
                             </div>
@@ -285,7 +325,7 @@ const ShopDetails = enhance((props) => {
                     <ul className={classes.details}>
                         <li>{client}</li>
                         <li>{shopType}</li>
-                        <li>Наименование зоны (Z-0001)</li>
+                        <li>{!zone ? <b>Не определена</b> : {zone}}</li>
                         <li>{address}</li>
                         <li>{guide}</li>
                     </ul>
@@ -300,10 +340,6 @@ const ShopDetails = enhance((props) => {
                     </ul>
                 </div>
             </div>
-            {/* <ShopDetailsTab */}
-                {/* TabData={tabData} */}
-                {/* Data={data} */}
-            {/* /> */}
         </div>
     )
 })

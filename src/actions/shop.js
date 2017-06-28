@@ -6,7 +6,6 @@ import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/shopSerializer'
 
 export const shopCreateAction = (formValues, location, image) => {
-    console.log(image)
     const requestData = serializers.createSerializer(formValues, location, image)
     const payload = axios()
         .post(API.SHOP_CREATE, requestData)

@@ -183,14 +183,14 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, mapLocation, filter} = props
+            const {location: {pathname}, dispatch, createForm, mapLocation, filter} = props
 
             return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
                 })
         },
 
@@ -215,14 +215,14 @@ const enhance = compose(
         },
 
         handleSubmitAddPhotoDialog: props => () => {
-            const {dispatch, createForm, mapLocation, image, filter} = props
+            const {location: {pathname}, dispatch, createForm, mapLocation, image, filter} = props
 
             return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation, image))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: false})})
                 })
         },
 
