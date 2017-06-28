@@ -15,6 +15,8 @@ import {
     PRICE_DELETE_DIALOG_OPEN,
     PRICE_FILTER_KEY,
     PRICE_FILTER_OPEN,
+    PRICE_SUPPLY_DIALOG_OPEN,
+    PRICE_SET_FORM_OPEN,
     PriceGridList
 } from '../../components/Price'
 import {
@@ -23,8 +25,11 @@ import {
     priceListFetchAction,
     priceCSVFetchAction,
     priceDeleteAction,
-    priceItemFetchAction
+    priceItemFetchAction,
+    getPriceItemsAction
 } from '../../actions/price'
+
+import {marketTypeGetAllAction} from '../../actions/marketType'
 
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -44,6 +49,10 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'PriceFilterForm'])
         const createForm = _.get(state, ['form', 'PriceCreateForm'])
         const filter = filterHelper(list, pathname, query)
+        const marketTypeList = _.get(state, ['marketType', 'list', 'data'])
+        const marketTypeLoading = _.get(state, ['marketType', 'list', 'loading'])
+        const priceListItemsList = _.get(state, ['price', 'price', 'data'])
+        const priceListItemsLoading = _.get(state, ['price', 'price', 'loading'])
 
         return {
             list,
@@ -56,8 +65,12 @@ const enhance = compose(
             csvData,
             csvLoading,
             filter,
+            marketTypeList,
+            marketTypeLoading,
             filterForm,
-            createForm
+            createForm,
+            priceListItemsList,
+            priceListItemsLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -68,11 +81,12 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const priceId = _.get(nextProps, ['params', 'priceId'])
-
         return priceId && _.get(props, ['params', 'priceId']) !== priceId
     }, ({dispatch, params, nextProps}) => {
         const priceId = _.toInteger(_.get(params, 'priceId'))
-        priceId && !_.get(nextProps, PRICE_DELETE_DIALOG_OPEN) && dispatch(priceItemFetchAction(priceId))
+        dispatch(priceItemFetchAction(priceId))
+        dispatch(getPriceItemsAction(priceId))
+        dispatch(marketTypeGetAllAction())
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -161,16 +175,25 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
-        handleOpenCreateDialog: props => () => {
+        handleOpenSupplyDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRICE_CREATE_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[PRICE_SUPPLY_DIALOG_OPEN]: true})})
         },
 
-        handleCloseCreateDialog: props => () => {
+        handleCloseSupplyDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRICE_CREATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[PRICE_SUPPLY_DIALOG_OPEN]: false})})
         },
 
+        handleOpenPriceSetForm: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: true})})
+        },
+
+        handleClosePriceSetForm: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
+        },
         handleOpenShowBigImg: props => (id) => {
             const {filter} = props
             hashHistory.push({
@@ -225,6 +248,10 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[PRICE_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(priceListFetchAction(filter))
                 })
+        },
+        handleCloseDetail: props => () => {
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.PRICE_LIST_URL, query: filter.getParam()})
         }
     })
 )
@@ -238,6 +265,10 @@ const PriceList = enhance((props) => {
         detailLoading,
         createLoading,
         showBigImgLoading,
+        marketTypeLoading,
+        marketTypeList,
+        priceListItemsList,
+        priceListItemsLoading,
         updateLoading,
         filter,
         layout,
@@ -248,6 +279,8 @@ const PriceList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', PRICE_CREATE_DIALOG_OPEN]))
     const openShowBigImg = toBoolean(_.get(location, ['query', PRICE_SHOW_PHOTO_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PRICE_UPDATE_DIALOG_OPEN]))
+    const openPriceSupplyDialog = toBoolean(_.get(location, ['query', PRICE_SUPPLY_DIALOG_OPEN]))
+    const openPriceSetForm = toBoolean(_.get(location, ['query', PRICE_SET_FORM_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', PRICE_DELETE_DIALOG_OPEN]))
     const category = _.toInteger(filter.getParam(PRICE_FILTER_KEY.CATEGORY))
     const detailId = _.toInteger(_.get(params, 'priceId'))
@@ -256,6 +289,19 @@ const PriceList = enhance((props) => {
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
         handleActionDelete: props.handleOpenDeleteDialog
+    }
+
+    const priceSupplyDialog = {
+        openPriceSupplyDialog,
+        handleOpenSupplyDialog: props.handleOpenSupplyDialog,
+        handleCloseSupplyDialog: props.handleCloseSupplyDialog
+    }
+
+    const priceSetForm = {
+        openPriceSetForm,
+        handleOpenPriceSetForm: props.handleOpenPriceSetForm,
+        handleClosePriceSetForm: props.handleClosePriceSetForm,
+        handleSubmitPriceSetForm: props.handleSubmitCreateDialog
     }
 
     const createDialog = {
@@ -348,8 +394,13 @@ const PriceList = enhance((props) => {
 
     const detailData = {
         id: detailId,
+        marketTypeLoading: marketTypeLoading,
+        marketTypeList: marketTypeList,
+        priceListItemsList,
+        priceListItemsLoading,
         data: detail,
-        detailLoading
+        detailLoading,
+        handleCloseDetail: props.handleCloseDetail
     }
 
     return (
@@ -359,6 +410,8 @@ const PriceList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 tabData={tabData}
+                priceSupplyDialog={priceSupplyDialog}
+                priceSetForm={priceSetForm}
                 createDialog={createDialog}
                 showBigImg={showBigImg}
                 confirmDialog={confirmDialog}

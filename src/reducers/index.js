@@ -244,7 +244,8 @@ const rootReducer = combineReducers({
     }),
     price: combineReducers({
         list: createThunkReducer(actionTypes.PRICE_LIST),
-        item: createThunkReducer(actionTypes.PRICE_ITEM)
+        item: createThunkReducer(actionTypes.PRICE_ITEM),
+        price: createThunkReducer(actionTypes.PRICE_LIST_ITEM_LIST)
     }),
     snackbar: snackbarReducer(),
     form: formReducer,

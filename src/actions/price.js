@@ -105,3 +105,21 @@ export const priceItemFetchAction = (id) => {
         payload
     }
 }
+export const getPriceItemsAction = (id) => {
+    const params = {
+        'product': id
+    }
+    const payload = axios()
+        .get(API.PRICE_LIST_ITEM_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PRICE_LIST_ITEM_LIST,
+        payload
+    }
+}

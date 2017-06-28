@@ -13,6 +13,7 @@ import GridList from '../GridList'
 import Container from '../Container'
 import PriceFilterForm from './PriceFilterForm'
 import ConfirmDialog from '../ConfirmDialog'
+import PriceSupplyDialog from './PriceSupplyDialog'
 import SubMenu from '../SubMenu'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
@@ -83,8 +84,10 @@ const PriceGridList = enhance((props) => {
         filterDialog,
         actionsDialog,
         confirmDialog,
+        priceSupplyDialog,
+        priceSetForm,
         listData,
-        detailData,
+        detailData
     } = props
 
     const actions = (
@@ -109,7 +112,11 @@ const PriceGridList = enhance((props) => {
 
     const priceDetail = (
         <PriceDetails
-            key={_.get(detailData, 'id')}>
+            key={_.get(detailData, 'id')}
+            detailData={detailData}
+            priceSupplyDialog={priceSupplyDialog}
+            priceSetForm = {priceSetForm}
+            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}>
         </PriceDetails>
     )
 
@@ -167,6 +174,10 @@ const PriceGridList = enhance((props) => {
                 actionsDialog={actions}
                 filterDialog={priceFilterDialog}
             />
+            <PriceSupplyDialog
+                open={priceSupplyDialog.openPriceSupplyDialog}
+                onClose={priceSupplyDialog.handleCloseSupplyDialog}
+            />
             {currentDetail && <ConfirmDialog
                 type="delete"
                 message={_.get(currentDetail, 'name')}
@@ -200,6 +211,17 @@ PriceGridList.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired,
+    priceSupplyDialog: PropTypes.shape({
+        openPriceSupplyDialog: PropTypes.bool.isRequired,
+        handleOpenSupplyDialog: PropTypes.func.isRequired,
+        handleCloseSupplyDialog: PropTypes.func.isRequired
+    }).isRequired,
+    priceSetForm: PropTypes.shape({
+        openPriceSetForm: PropTypes.bool.isRequired,
+        handleOpenPriceSetForm: PropTypes.func.isRequired,
+        handleClosePriceSetForm: PropTypes.func.isRequired,
+        handleSubmitPriceSetForm: PropTypes.func.isRequired
     }).isRequired
 }
 
