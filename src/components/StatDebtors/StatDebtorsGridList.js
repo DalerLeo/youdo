@@ -17,7 +17,7 @@ import StatDebtorsCreateDialog from './StatDebtorsCreateDialog'
 import MainStyles from '../Styles/MainStyles'
 import {Link} from 'react-router'
 import numberFormat from '../../helpers/numberFormat'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
+import getConfig from '../../helpers/getConfig'
 const ONE = 1
 const TWO = 2
 const listHeaderClient = [
@@ -196,8 +196,8 @@ const StatDebtorsGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
         const status = _.get(item, 'status') || 'N/A'
-        const totalPrice = numberFormat(_.get(item, 'totalPrice'), PRIMARY_CURRENCY_NAME)
-        const totalBalance = numberFormat(_.get(item, 'totalBalance'), PRIMARY_CURRENCY_NAME)
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), getConfig('PRIMARY_CURRENCY'))
+        const totalBalance = numberFormat(_.get(item, 'totalBalance'), getConfig('PRIMARY_CURRENCY'))
         return (
             <div className="dottedListSpec">
                 <Row key={id} style={{padding: '0 30px'}}>
@@ -225,7 +225,7 @@ const StatDebtorsGridList = enhance((props) => {
         const id = _.get(item, ['client', 'id'])
         const name = _.get(item, ['client', 'name'])
         const order = numberFormat(_.get(item, ['orders']), 'заказа')
-        const debt = numberFormat(_.get(item, ['totalBalance']), PRIMARY_CURRENCY_NAME)
+        const debt = numberFormat(_.get(item, ['totalBalance']), getConfig('PRIMARY_CURRENCY'))
         const time = numberFormat(_.get(item, ['expiredDays']), 'дней')
         return (
             <Row key={id}>
@@ -282,7 +282,7 @@ const StatDebtorsGridList = enhance((props) => {
                             </div>
                             <div>
                                 Сумма долга:
-                                <span>{_.get(statDebtorsItem, 'totalBalance')} {PRIMARY_CURRENCY_NAME}</span>
+                                <span>{_.get(statDebtorsItem, 'totalBalance')} {getConfig('PRIMARY_CURRENCY')}</span>
                             </div>
                         </div>
                     </div>
@@ -310,7 +310,7 @@ const StatDebtorsGridList = enhance((props) => {
 
     const totalDebtors = numberFormat(_.get(sumData, ['data', 'debtors']))
     const totalOrders = numberFormat(_.get(sumData, ['data', 'orders']))
-    const totalBalance = numberFormat(_.get(sumData, ['data', 'totalBalance']), PRIMARY_CURRENCY_NAME)
+    const totalBalance = numberFormat(_.get(sumData, ['data', 'totalBalance']), getConfig('PRIMARY_CURRENCY'))
     return (
         <Container>
             <SubMenu url={ROUTES.STATDEBTORS_LIST_URL}/>

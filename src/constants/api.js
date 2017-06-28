@@ -6,6 +6,7 @@ export const API_URL = `http://${API_HOST}/${API_ROOT}/${API_VERSION}`
 export const USER = 'user'
 export const SIGN_IN = `/${USER}/auth/`
 export const SIGN_OUT = `/${USER}/unauth/`
+export const CONFIG = 'config/'
 
 export const CATEGORY = 'dist/category'
 export const CATEGORY_CREATE = `/${CATEGORY}/`

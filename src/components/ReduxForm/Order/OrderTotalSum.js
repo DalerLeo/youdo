@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
-import {PRIMARY_CURRENCY_NAME} from '../../../constants/primaryCurrency'
+import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
 
@@ -36,7 +36,7 @@ const OrderTotalSum = enhance((props) => {
     })
     const orderTotal = (totalCost + numberWithoutSpaces(deliveryPrice)) * ((HUNDRED - _.toNumber(discountPercent)) / HUNDRED)
     return (
-        <b>{numberFormat(orderTotal, PRIMARY_CURRENCY_NAME)}</b>
+        <b>{numberFormat(orderTotal, getConfig('PRIMARY_CURRENCY'))}</b>
     )
 })
 

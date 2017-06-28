@@ -18,8 +18,8 @@ import InComing from 'material-ui/svg-icons/navigation/arrow-upward'
 import OutComing from 'material-ui/svg-icons/navigation/arrow-downward'
 import CircularProgress from 'material-ui/CircularProgress'
 import numberFormat from '../../helpers/numberFormat'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import StatStockFilterForm from './StatStockFilterForm'
+import getConfig from '../../helpers/getConfig'
 
 const remainderHeader = [
     {
@@ -200,7 +200,7 @@ const StatStockGridList = enhance((props) => {
     const remainderStockList = _.map(_.get(listData, 'remainderList'), (item) => {
         const id = _.get(item, 'id')
         const title = _.get(item, 'title')
-        const cost = numberFormat(_.get(item, ['totalPrice']), PRIMARY_CURRENCY_NAME)
+        const cost = numberFormat(_.get(item, ['totalPrice']), getConfig('PRIMARY_CURRENCY'))
         const balance = numberFormat(_.get(item, 'balance'), _.get(item, ['measurement', 'name']))
         return (
             <Row key={id}>
@@ -266,7 +266,8 @@ const StatStockGridList = enhance((props) => {
     })
     const amountProduct = _.get(statStockData, ['statStockData', 'productCount'])
     const amountTypeProduct = _.get(statStockData, ['statStockData', 'productTypeCount'])
-    const totalPriceProduct = numberFormat(_.get(statStockData, ['statStockData', 'totalPrice']), PRIMARY_CURRENCY_NAME)
+    const totalPriceProduct = numberFormat(_.get(statStockData, ['statStockData', 'totalPrice']), getConfig('PRIMARY_CURRENCY'))
+
     return (
         <Container>
             <SubMenu url={ROUTES.STATSTOCK_LIST_URL}/>
