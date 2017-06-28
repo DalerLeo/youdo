@@ -24,6 +24,7 @@ import {
 } from '../../components/Shop'
 import {
     shopCreateAction,
+    imageCreateAction,
     shopUpdateAction,
     shopCSVFetchAction,
     shopDeleteAction,
@@ -48,6 +49,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'ShopFilterForm'])
         const createForm = _.get(state, ['form', 'ShopCreateForm'])
         const mapForm = _.get(state, ['form', 'ShopMapForm'])
+        const addPhotoForm = _.get(state, ['form', 'ShopAddPhotoForm', 'values'])
         const mapLocation = _.get(state, ['form', 'ShopMapForm', 'values', 'latLng'])
         const image = _.get(state, ['form', 'ShopAddPhotoForm', 'values', 'image'])
         const filter = filterHelper(list, pathname, query)
@@ -66,6 +68,7 @@ const enhance = compose(
             createForm,
             mapForm,
             mapLocation,
+            addPhotoForm,
             image
         }
     }),
@@ -191,6 +194,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(shopListFetchAction(filter))
                 })
         },
 
@@ -215,14 +219,17 @@ const enhance = compose(
         },
 
         handleSubmitAddPhotoDialog: props => () => {
-            const {location: {pathname}, dispatch, createForm, mapLocation, image, filter} = props
+            const {location: {pathname}, dispatch, addPhotoForm, detail, filter} = props
+            const shopId = _.get(detail, 'id')
+            const imageId = _.get(addPhotoForm, 'image')
 
-            return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation, image))
+            return dispatch(imageCreateAction(imageId, shopId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: 'Фотография добавлена'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: false})})
+                    dispatch(shopItemFetchAction(filter))
                 })
         },
 
@@ -400,8 +407,8 @@ const ShopList = enhance((props) => {
                 guide: _.get(detail, 'guide'),
                 phone: _.get(detail, 'phone'),
                 latLng: {
-                    lat: _.get(detail, 'lat'),
-                    lng: _.get(detail, 'lon')
+                    lat: _.get(mapLocation, 'lat'),
+                    lng: _.get(mapLocation, 'lng')
                 },
                 marketType: {
                     value: _.get(detail, ['marketType', 'id']),

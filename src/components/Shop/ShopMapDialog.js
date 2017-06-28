@@ -94,6 +94,7 @@ const enhance = compose(
         podlojkaScroll: {
             padding: '0 !important',
             overflowY: 'auto !important',
+            zIndex: '2000 !important',
             '& > div > div': {
                 width: 'auto !important',
                 maxWidth: '1000px !important'

@@ -113,7 +113,6 @@ const ShopGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
-
     const shopDetail = (
         <ShopDetails
             key={_.get(detailData, 'id')}
@@ -221,6 +220,7 @@ const ShopGridList = enhance((props) => {
             <ShopCreateDialog
                 isUpdate={true}
                 mapDialog={mapDialog}
+                mapLocation={mapLocation}
                 updateMapDialog={updateMapDialog}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}

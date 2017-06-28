@@ -180,7 +180,9 @@ const enhance = compose(
                 fontSize: '11px !important',
                 display: 'block',
                 position: 'relative',
-                marginBottom: '20px',
+                height: 'auto !important',
+                width: 'auto !important',
+                margin: '0 0 20px !important',
                 '&:after': {
                     content: '""',
                     position: 'absolute',
@@ -227,11 +229,11 @@ const ShopDetails = enhance((props) => {
     const zone = _.get(data, 'border')
     const contactName = _.get(data, 'contactName')
     const phone = _.get(data, 'phone')
-    const images = _.get(data, 'images')
+    const images = _.get(data, 'images') || {}
     const freq = _.get(data, 'visitFrequency')
     const isActive = _.get(data, 'isActive')
 
-    let slicedImages = []
+    let slicedImages = images
     if (images.length > MAX_IMAGE_COUNT) {
         slicedImages = _.slice(images, ZERO, MAX_IMAGE_COUNT)
     }
@@ -291,7 +293,7 @@ const ShopDetails = enhance((props) => {
                     {(images.length === ZERO) ? <div className={classes.noImage}>
                         <div>
                             <span>Фото <br/> отсутствует</span>
-                            <a>добавить фото</a>
+                            <a onClick={addPhotoDialog.handleOpenAddPhotoDialog}>добавить фото</a>
                         </div>
                     </div>
                         : <div className={classes.imageWrapper}> {
@@ -302,7 +304,7 @@ const ShopDetails = enhance((props) => {
 
                                 return (
                                     <span key={imgId} onClick={slideShowDialog.handleOpenSlideShowDialog}>
-                                        {isLastImage && <strong>+{moreImages}</strong>}
+                                        {isLastImage && moreImages !== ZERO && <strong>{moreImages}+</strong>}
                                         <img src={src} alt=""/>
                                     </span>
                                 )
@@ -325,7 +327,7 @@ const ShopDetails = enhance((props) => {
                     <ul className={classes.details}>
                         <li>{client}</li>
                         <li>{shopType}</li>
-                        <li>{!zone ? <b>Не определена</b> : {zone}}</li>
+                        <li>{!zone ? <span className="redFont">Не определена</span> : {zone}}</li>
                         <li>{address}</li>
                         <li>{guide}</li>
                     </ul>

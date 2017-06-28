@@ -65,6 +65,7 @@ export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
+export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/image/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
 export const USERS = 'user/crud'
