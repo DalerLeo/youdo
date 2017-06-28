@@ -248,3 +248,9 @@ export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_LIST = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_ITEM = `/${MARKET_TYPE}/%d/`
 export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`
+
+export const ZONE = 'dist/border'
+export const ZONE_CREATE = `/${ZONE}/`
+export const ZONE_LIST = `/${ZONE}/`
+export const ZONE_ITEM = `/${ZONE}/%d/`
+export const ZONE_DELETE = `/${ZONE}/%d/`
