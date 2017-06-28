@@ -28,7 +28,8 @@ export const MenuItems = [
             {name: 'Магазины', url: ROUTES.SHOP_LIST_URL},
             {name: 'Заказы', url: ROUTES.ORDER_LIST_URL},
             {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL},
-            {name: 'Ценообразование', url: ROUTES.PRODUCT_PRICE_LIST_URL}
+            {name: 'Ценообразование', url: ROUTES.PRODUCT_PRICE_LIST_URL},
+            {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL}
         ]
     },
     {

@@ -3,12 +3,12 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/marketTypeSerializer'
+import * as serializers from '../serializers/priceSerializer'
 
-export const marketTypeCreateAction = (formValues) => {
+export const priceCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .post(API.MARKET_TYPE_CREATE, requestData)
+        .post(API.PRICE_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,30 +17,31 @@ export const marketTypeCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.MARKET_TYPE_CREATE,
+        type: actionTypes.PRICE_CREATE,
         payload
     }
 }
 
-export const marketTypeDeleteAction = (id) => {
+export const priceDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.MARKET_TYPE_DELETE, id))
+        .delete(sprintf(API.PRICE_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
+
     return {
-        type: actionTypes.MARKET_TYPE_DELETE,
+        type: actionTypes.PRICE_DELETE,
         payload
     }
 }
 
-export const marketTypeUpdateAction = (id, formValues) => {
+export const priceUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.MARKET_TYPE_ITEM, id), requestData)
+        .put(sprintf(API.PRICE_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -49,15 +50,15 @@ export const marketTypeUpdateAction = (id, formValues) => {
         })
 
     return {
-        type: actionTypes.MARKET_TYPE_UPDATE,
+        type: actionTypes.PRICE_UPDATE,
         payload
     }
 }
 
-export const marketTypeListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const priceListFetchAction = (filter, manufacture) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), manufacture)
     const payload = axios()
-        .get(API.MARKET_TYPE_LIST, {params})
+        .get(API.PRICE_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -66,35 +67,15 @@ export const marketTypeListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.MARKET_TYPE_LIST,
+        type: actionTypes.PRICE_LIST,
         payload
     }
 }
 
-export const marketTypeGetAllAction = () => {
-    const params = {
-        'page': 1,
-        'page_size': 100
-    }
-    const payload = axios()
-        .get(API.MARKET_TYPE_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.MARKET_TYPE_LIST,
-        payload
-    }
-}
-
-export const marketTypeCSVFetchAction = (filter) => {
+export const priceCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.MARKET_TYPE_LIST, {params})
+        .get(API.PRICE_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -103,14 +84,15 @@ export const marketTypeCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.MARKET_TYPE_LIST_CSV,
+        type: actionTypes.PRICE_LIST_CSV,
         payload
     }
 }
 
-export const marketTypeItemFetchAction = (id) => {
+export const priceItemFetchAction = (id) => {
+    const params = {'thumbnail_type': 'large'}
     const payload = axios()
-        .get(sprintf(API.MARKET_TYPE_ITEM, id))
+        .get(sprintf(API.PRICE_ITEM, id), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -119,7 +101,25 @@ export const marketTypeItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.MARKET_TYPE_ITEM,
+        type: actionTypes.PRICE_ITEM,
+        payload
+    }
+}
+export const getPriceItemsAction = (id) => {
+    const params = {
+        'product': id
+    }
+    const payload = axios()
+        .get(API.PRICE_LIST_ITEM_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PRICE_LIST_ITEM_LIST,
         payload
     }
 }
