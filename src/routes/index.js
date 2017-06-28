@@ -33,6 +33,7 @@ import {EquipmentList} from '../containers/Equipment'
 import {ShiftList} from '../containers/Shift'
 import {Zones} from '../containers/Zones'
 import {MarketTypeList} from '../containers/MarketType'
+import {PricesList} from '../containers/Prices'
 
 import NotFound from '../containers/NotFound'
 
@@ -121,6 +122,17 @@ export default {
                 {
                     path: ROUTES.SUPPLY_ITEM_URL,
                     component: userIsAuth(SupplyList)
+                }
+            ]
+        },
+        // Prices
+        {
+            path: ROUTES.PRICES_LIST_URL,
+            component: userIsAuth(PricesList),
+            childRoutes: [
+                {
+                    path: ROUTES.PRICES_ITEM_URL,
+                    component: userIsAuth(PricesList)
                 }
             ]
         },

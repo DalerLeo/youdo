@@ -102,6 +102,12 @@ export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
 export const SUPPLY_DELETE = `/${SUPPLY}/cancel/`
 
+export const PRICES = 'dist/marketing_event'
+export const PRICES_CREATE = `/${PRICES}/`
+export const PRICES_LIST = `/${PRICES}/`
+export const PRICES_ITEM = `/${PRICES}/%d/`
+export const PRICES_DELETE = `/${PRICES}/%d/`
+
 export const ORDER = 'order'
 export const ORDER_CREATE = `/${ORDER}/`
 export const ORDER_RETURN = 'order_return/'

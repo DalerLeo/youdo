@@ -53,6 +53,13 @@ const rootReducer = combineReducers({
         defect: createThunkReducer(actionTypes.SUPPLY_DEFECT),
         csv: createThunkReducer(actionTypes.SUPPLY_LIST_CSV)
     }),
+    prices: combineReducers({
+        create: createThunkReducer(actionTypes.PRICES_CREATE),
+        list: createThunkReducer(actionTypes.PRICES_LIST),
+        item: createThunkReducer(actionTypes.PRICES_ITEM),
+        update: createThunkReducer(actionTypes.PRICES_UPDATE),
+        csv: createThunkReducer(actionTypes.PRICES_LIST_CSV)
+    }),
     supplyExpense: combineReducers({
         create: createThunkReducer(actionTypes.SUPPLY_EXPENSE_CREATE),
         list: createThunkReducer(actionTypes.SUPPLY_EXPENSE_LIST),

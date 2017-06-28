@@ -55,6 +55,13 @@ export const SUPPLY_CREATE = 'SUPPLY_CREATE'
 export const SUPPLY_DELETE = 'SUPPLY_DELETE'
 export const SUPPLY_DEFECT = 'SUPPLY_DEFECT'
 
+export const PRICES_LIST = 'PRICES_LIST'
+export const PRICES_LIST_CSV = 'PRICES_LIST_CSV'
+export const PRICES_ITEM = 'PRICES_ITEM'
+export const PRICES_UPDATE = 'PRICES_UPDATE'
+export const PRICES_CREATE = 'PRICES_CREATE'
+export const PRICES_DELETE = 'PRICES_DELETE'
+
 export const ORDER_LIST = 'ORDER_LIST'
 export const ORDER_LIST_CSV = 'ORDER_LIST_CSV'
 export const ORDER_ITEM = 'ORDER_ITEM'
