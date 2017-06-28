@@ -1,12 +1,10 @@
 import React from 'react'
 import IconButton from 'material-ui/IconButton'
-import Paper from 'material-ui/Paper'
+import PropTypes from 'prop-types'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
-import {Field, reduxForm} from 'redux-form'
+import {reduxForm} from 'redux-form'
 import TextFieldSearch from 'material-ui/TextField'
-import FlatButton from 'material-ui/FlatButton'
-import {TextField} from '../ReduxForm'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
@@ -23,8 +21,8 @@ import Tooltip from '../ToolTip'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import CloseIcon2 from '../CloseIcon2'
 import Person from '../Images/person.png'
-import Timeline from 'material-ui/svg-icons/action/timeline'
-import Touch from 'material-ui/svg-icons/action/touch-app'
+import ZoneMap from './ZoneMap'
+import AddZonePopup from './AddZonePopup'
 
 const enhance = compose(
     injectSheet({
@@ -57,7 +55,14 @@ const enhance = compose(
             overflowX: 'hidden',
             margin: '0 -28px',
             minHeight: 'calc(100% - 4px)',
-            boxShadow: 'rgba(0, 0, 0, 0.09) 0px -2px 5px, rgba(0, 0, 0, 0.05) 0px -2px 6px'
+            boxShadow: 'rgba(0, 0, 0, 0.09) 0px -2px 5px, rgba(0, 0, 0, 0.05) 0px -2px 6px',
+            '& > div:first-child': {
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0'
+            }
         },
         zonesInfo: {
             background: '#fff',
@@ -354,9 +359,11 @@ const ZonesWrapper = enhance((props) => {
         classes,
         expandInfo,
         setExpandInfo,
+        addZone,
         zoneInfo,
         setZoneInfo
     } = props
+    const isOpenPopup = addZone.openAddZone
 
     const iconButton = (
         <IconButton
@@ -364,49 +371,6 @@ const ZonesWrapper = enhance((props) => {
             style={iconStyle.button}>
             <MoreVertIcon/>
         </IconButton>
-    )
-
-    const addZone = (
-        <div>
-            <Paper zDepth={1} className={classes.addZoneWrapper}>
-                <form action="">
-                    <Field
-                        name="zoneName"
-                        component={TextField}
-                        className={classes.inputFieldCustom}
-                        label="Наименование зоны"
-                        fullWidth={true}/>
-                    <div className={classes.buttons}>
-                        <IconButton>
-                            <Timeline color="#666"/>
-                        </IconButton>
-
-                        <IconButton>
-                            <Touch color="#666"/>
-                        </IconButton>
-
-                        <IconButton>
-                            <DeleteIcon color="#666"/>
-                        </IconButton>
-                    </div>
-                    <FlatButton
-                        label="Сохранить"
-                        className={classes.actionButton}
-                        primary={true}
-                        type="submit"
-                    />
-                </form>
-            </Paper>
-
-            <div className={classes.addZoneClose}>
-                <Tooltip position="left" text="Закрыть">
-                    <FloatingActionButton
-                        mini={true}>
-                        <CloseIcon2/>
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
-        </div>
     )
 
     const zoneInfoToggle = (
@@ -581,19 +545,33 @@ const ZonesWrapper = enhance((props) => {
                 <Tooltip position="left" text="Добавить зону">
                     <FloatingActionButton
                         mini={true}
-                        className={classes.addButton}>
+                        className={classes.addButton}
+                        onTouchTap={addZone.handleOpenAddZone}>
                         <ContentAdd />
                     </FloatingActionButton>
                 </Tooltip>
             </div>
 
             <div className={classes.zonesWrapper}>
+                <ZoneMap />
+                {isOpenPopup && <AddZonePopup
+                    onClose={addZone.handleCloseAddZone}
+                    onSubmit={addZone.handleSubmitAddZone}
+                />}
                 <a onClick={() => { setZoneInfo(true) }}>CLick MEeeee</a>
-                {addZone}
                 {zoneInfoToggle}
             </div>
         </Container>
     )
 })
+
+ZonesWrapper.PropTypes = {
+    addZone: PropTypes.shape({
+        openAddZone: PropTypes.bool.isRequired,
+        handleOpenAddZone: PropTypes.func.isRequired,
+        handleCloseAddZone: PropTypes.func.isRequired,
+        handleSubmitAddZone: PropTypes.func.isRequired
+    }).isRequired
+}
 
 export default ZonesWrapper

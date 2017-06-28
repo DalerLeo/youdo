@@ -3,10 +3,11 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/shopSerializer'
+import * as serializers from '../serializers/Shop/shopSerializer'
+import * as imageSerializers from '../serializers/Shop/shopImageSerializer'
 
-export const shopCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const shopCreateAction = (formValues, location, image) => {
+    const requestData = serializers.createSerializer(formValues, location, image)
     const payload = axios()
         .post(API.SHOP_CREATE, requestData)
         .then((response) => {
@@ -18,6 +19,23 @@ export const shopCreateAction = (formValues) => {
 
     return {
         type: actionTypes.SHOP_CREATE,
+        payload
+    }
+}
+
+export const imageCreateAction = (image, id) => {
+    const requestData = imageSerializers.createSerializer(image, id)
+    const payload = axios()
+        .post(sprintf(API.SHOP_ITEM_ADD_IMAGE, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHOP_ITEM_ADD_IMAGE,
         payload
     }
 }

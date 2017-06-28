@@ -6,6 +6,7 @@ export const API_URL = `http://${API_HOST}/${API_ROOT}/${API_VERSION}`
 export const USER = 'user'
 export const SIGN_IN = `/${USER}/auth/`
 export const SIGN_OUT = `/${USER}/unauth/`
+export const CONFIG = 'config/'
 
 export const CATEGORY = 'dist/category'
 export const CATEGORY_CREATE = `/${CATEGORY}/`
@@ -64,6 +65,7 @@ export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
+export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/image/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
 export const USERS = 'user/crud'
@@ -252,8 +254,12 @@ export const PRICE_CREATE = `/${PRODUCT}/`
 export const PRICE_LIST = `/${PRODUCT}/`
 export const PRICE_ITEM = `/${PRODUCT}/%d/`
 export const PRICE_DELETE = `/${PRODUCT}/%d/`
-export const PRICE_EXTRA = 'products_extra_list/'
-export const PRICE_INGREDIENT = 'dist/product/%d/ingredient_list/'
 
 export const PRICE_LIST_ITEM = 'dist/price_list_item'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
+
+export const ZONE = 'dist/border'
+export const ZONE_CREATE = `/${ZONE}/`
+export const ZONE_LIST = `/${ZONE}/`
+export const ZONE_ITEM = `/${ZONE}/%d/`
+export const ZONE_DELETE = `/${ZONE}/%d/`

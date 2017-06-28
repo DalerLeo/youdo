@@ -16,10 +16,15 @@ import {
     SHOP_UPDATE_DIALOG_OPEN,
     SHOP_FILTER_KEY,
     SHOP_FILTER_OPEN,
+    SHOP_MAP_DIALOG_OPEN,
+    SHOP_UPDATE_MAP_DIALOG_OPEN,
+    ADD_PHOTO_DIALOG_OPEN,
+    SHOP_SLIDESHOW_DIALOG_OPEN,
     ShopGridList
 } from '../../components/Shop'
 import {
     shopCreateAction,
+    imageCreateAction,
     shopUpdateAction,
     shopCSVFetchAction,
     shopDeleteAction,
@@ -28,6 +33,7 @@ import {
 } from '../../actions/shop'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -42,6 +48,10 @@ const enhance = compose(
         const csvLoading = _.get(state, ['shop', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'ShopFilterForm'])
         const createForm = _.get(state, ['form', 'ShopCreateForm'])
+        const mapForm = _.get(state, ['form', 'ShopMapForm'])
+        const addPhotoForm = _.get(state, ['form', 'ShopAddPhotoForm', 'values'])
+        const mapLocation = _.get(state, ['form', 'ShopMapForm', 'values', 'latLng'])
+        const image = _.get(state, ['form', 'ShopAddPhotoForm', 'values', 'image'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -55,7 +65,11 @@ const enhance = compose(
             csvLoading,
             filter,
             filterForm,
-            createForm
+            createForm,
+            mapForm,
+            mapLocation,
+            addPhotoForm,
+            image
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -65,11 +79,14 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const shopId = _.get(nextProps, ['params', 'shopId'])
-        return shopId && _.get(props, ['params', 'shopId']) !== shopId
+        const prevId = _.get(props, ['params', 'shopId'])
+        const nextId = _.get(nextProps, ['params', 'shopId'])
+        return prevId !== nextId
     }, ({dispatch, params}) => {
         const shopId = _.toInteger(_.get(params, 'shopId'))
-        dispatch(shopItemFetchAction(shopId))
+        if (shopId > ZERO) {
+            dispatch(shopItemFetchAction(shopId))
+        }
     }),
 
     withState('openCSVDialog', 'setOpenCSVDialog', false),
@@ -169,14 +186,91 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {location: {pathname}, dispatch, createForm, mapLocation, filter} = props
 
-            return dispatch(shopCreateAction(_.get(createForm, ['values'])))
+            return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(shopListFetchAction(filter))
+                })
+        },
+
+        handleOpenSlideShowDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_SLIDESHOW_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseSlideShowDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_SLIDESHOW_DIALOG_OPEN]: false})})
+        },
+
+        handleOpenAddPhotoDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseAddPhotoDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitAddPhotoDialog: props => () => {
+            const {location: {pathname}, dispatch, addPhotoForm, detail, filter} = props
+            const shopId = _.get(detail, 'id')
+            const imageId = _.get(addPhotoForm, 'image')
+
+            return dispatch(imageCreateAction(imageId, shopId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Фотография добавлена'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: false})})
+                    dispatch(shopItemFetchAction(filter))
+                })
+        },
+
+        handleOpenMapDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_MAP_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseMapDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_MAP_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitMapDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_MAP_DIALOG_OPEN]: false})})
+        },
+
+        handleOpenMapUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_MAP_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseMapUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitMapUpdateDialog: props => () => {
+            const {dispatch, mapForm, filter} = props
+            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+
+            return dispatch(shopUpdateAction(shopId, _.get(mapForm, ['values'])))
+                .then(() => {
+                    return dispatch(shopItemFetchAction(shopId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false}))
                 })
         },
 
@@ -224,13 +318,18 @@ const ShopList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+        mapLocation
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', SHOP_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', SHOP_CREATE_DIALOG_OPEN]))
+    const openMapDialog = toBoolean(_.get(location, ['query', SHOP_MAP_DIALOG_OPEN]))
+    const openUpdateMapDialog = toBoolean(_.get(location, ['query', SHOP_UPDATE_MAP_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', SHOP_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
+    const openAddPhotoDialog = toBoolean(_.get(location, ['query', ADD_PHOTO_DIALOG_OPEN]))
+    const openSlideShowDialog = toBoolean(_.get(location, ['query', SHOP_SLIDESHOW_DIALOG_OPEN]))
     const category = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CATEGORY))
     const fromDate = filter.getParam(SHOP_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(SHOP_FILTER_KEY.TO_DATE)
@@ -250,6 +349,26 @@ const ShopList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
+    const addPhotoDialog = {
+        openAddPhotoDialog,
+        handleOpenAddPhotoDialog: props.handleOpenAddPhotoDialog,
+        handleCloseAddPhotoDialog: props.handleCloseAddPhotoDialog,
+        handleSubmitAddPhotoDialog: props.handleSubmitAddPhotoDialog
+    }
+
+    const slideShowDialog = {
+        openSlideShowDialog,
+        handleOpenSlideShowDialog: props.handleOpenSlideShowDialog,
+        handleCloseSlideShowDialog: props.handleCloseSlideShowDialog
+    }
+
+    const mapDialog = {
+        openMapDialog,
+        handleOpenMapDialog: props.handleOpenMapDialog,
+        handleCloseMapDialog: props.handleCloseMapDialog,
+        handleSubmitMapDialog: props.handleSubmitMapDialog
+    }
+
     const deleteDialog = {
         openDeleteDialog,
         handleOpenDeleteDialog: props.handleOpenDeleteDialog,
@@ -262,26 +381,41 @@ const ShopList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
-
     const updateDialog = {
         initialValues: (() => {
+            const NOT_ACTIVE = 2
             if (!detail) {
                 return {}
+            }
+            const status = _.get(detail, 'status')
+            let isActive = 1
+            if (status === false) {
+                isActive = NOT_ACTIVE
             }
 
             return {
                 name: _.get(detail, 'name'),
-                category: {
-                    value: _.get(detail, 'category')
-                },
                 address: _.get(detail, 'address'),
+                client: {
+                    value: _.get(detail, ['client', 'id']),
+                    text: _.get(detail, ['client', 'name'])
+                },
+                contactName: _.get(detail, 'contactName'),
+                frequency: {
+                    value: _.toNumber(_.get(detail, 'visitFrequency'))
+                },
                 guide: _.get(detail, 'guide'),
                 phone: _.get(detail, 'phone'),
-                contactName: _.get(detail, 'contactName'),
-                official: _.get(detail, 'official'),
                 latLng: {
-                    lat: _.get(detail, 'lat'),
-                    lng: _.get(detail, 'lon')
+                    lat: _.get(mapLocation, 'lat'),
+                    lng: _.get(mapLocation, 'lng')
+                },
+                marketType: {
+                    value: _.get(detail, ['marketType', 'id']),
+                    text: _.get(detail, ['marketType', 'name'])
+                },
+                status: {
+                    value: isActive
                 }
             }
         })(),
@@ -290,6 +424,24 @@ const ShopList = enhance((props) => {
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
+    }
+
+    const updateMapDialog = {
+        initialValues: (() => {
+            if (!mapLocation) {
+                return {}
+            }
+            return {
+                latLng: {
+                    lat: _.get(mapLocation, 'lat'),
+                    lng: _.get(mapLocation, 'lng')
+                }
+            }
+        })(),
+        openUpdateMapDialog,
+        handleOpenMapUpdateDialog: props.handleOpenMapUpdateDialog,
+        handleCloseMapUpdateDialog: props.handleCloseMapUpdateDialog,
+        handleSubmitMapUpdateDialog: props.handleSubmitMapUpdateDialog
     }
 
     const filterDialog = {
@@ -342,12 +494,17 @@ const ShopList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
+                mapDialog={mapDialog}
+                addPhotoDialog={addPhotoDialog}
+                slideShowDialog={slideShowDialog}
+                updateMapDialog={updateMapDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
+                mapLocation={mapLocation}
             />
         </Layout>
     )
