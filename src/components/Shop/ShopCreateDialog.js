@@ -6,18 +6,18 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {
     TextField,
-    LocationField,
-    CategorySearchField,
+    MarketTypeSearchField,
     ClientSearchField,
-    VisitFrequencySearchField
+    VisitFrequencySearchField,
+    ShopStatusSearchField
 } from '../ReduxForm'
-import ShopContactsListField from '../ReduxForm/Shop/ShopContactsListField'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
+import Place from '../AddPlace'
 import Dot from '../Images/dot.png'
 
 export const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -80,16 +80,21 @@ const enhance = compose(
             color: '#333',
             minHeight: '450px'
         },
+        padding: {
+            padding: '20px 30px'
+        },
         leftSide: {
-            flexBasis: '40%',
-            maxWidth: '40%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between'
+            flexBasis: '50%',
+            maxWidth: '50%',
+            borderRight: '1px solid #efefef',
+            extend: 'padding'
         },
         rightSide: {
-            flexBasis: '60%',
-            maxWidth: '60%'
+            flexBasis: '50%',
+            maxWidth: '50%',
+            extend: 'padding',
+            maxHeight: '442px',
+            overflowY: 'auto'
         },
         bodyContent: {
             color: '#333',
@@ -145,13 +150,14 @@ const enhance = compose(
             overflowY: 'auto !important',
             '& > div > div': {
                 width: 'auto !important',
-                maxWidth: '900px !important'
+                maxWidth: '820px !important'
             }
         },
         flex: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            width: '100%'
         },
         divider: {
             paddingBottom: '20px',
@@ -175,6 +181,32 @@ const enhance = compose(
             marginTop: '5px',
             marginBottom: '-5px',
             textAlign: 'right'
+        },
+        addPlace: {
+            extend: 'add',
+            textAlign: 'left',
+            display: 'flex',
+            alignItems: 'center',
+            '& a': {
+                display: 'flex',
+                alignItems: 'center',
+                '& svg': {
+                    marginRight: '5px',
+                    width: '16px !important'
+                }
+            },
+            '& div': {
+                display: 'flex',
+                alignItems: 'center',
+                '& span': {
+                    marginRight: '5px',
+                    fontSize: '12px !important'
+                },
+                '& svg': {
+                    marginRight: '5px',
+                    width: '16px !important'
+                }
+            }
         }
     }),
     reduxForm({
@@ -183,10 +215,23 @@ const enhance = compose(
     }),
     withState('openClient', 'setOpenClient', false)
 )
-const isUpdate = false
 const ShopCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, openClient, setOpenClient} = props
+    const {
+        open,
+        loading,
+        handleSubmit,
+        onClose,
+        classes,
+        isUpdate,
+        openClient,
+        setOpenClient,
+        mapDialog,
+        updateMapDialog,
+        mapLocation
+    } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const lat = _.get(mapLocation, 'lat')
+    const lng = _.get(mapLocation, 'lng')
 
     return (
         <Dialog
@@ -201,99 +246,113 @@ const ShopCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={80} thickness={5}/>
                     </div>
+                    <div className={classes.titleContent}>
+                        <span>{isUpdate ? 'Изменение магазина' : 'Добавление магазина'}</span>
+                        <IconButton onTouchTap={onClose}>
+                            <CloseIcon2 color="#666666"/>
+                        </IconButton>
+                    </div>
                     <div className={classes.inContent}>
                         <div className={classes.leftSide}>
-                            <div className={classes.titleContent}>
-                                <span>{isUpdate ? 'Изменение магазина' : 'Добавление магазина'}</span>
-                                <IconButton onTouchTap={onClose}>
-                                    <CloseIcon2 color="#666666"/>
-                                </IconButton>
+                            <div className={classes.divider}>
+                                {!openClient ? <Field
+                                    name="client"
+                                    component={ClientSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Клиент"
+                                    fullWidth={true}/>
+                                : <Field
+                                    name="newClientName"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Имя клиента"
+                                    fullWidth={true}/>
+                                }
+                                <div className={classes.add}>
+                                    {!openClient && <a onClick={() => { setOpenClient(true) }}>+ добавить клиента</a>}
+                                </div>
                             </div>
-                            <div className={classes.fields}>
-                                <div className={classes.divider}>
-                                    <Field
-                                        name="client"
-                                        component={ClientSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Клиент"
-                                        fullWidth={true}/>
-                                    {openClient && <div>
-                                        <Field
-                                            name="clientPhone"
-                                            component={TextField}
-                                            className={classes.inputFieldCustom}
-                                            label="Телефон"
-                                            fullWidth={true}/>
-                                        <Field
-                                            name="clientContactName"
-                                            component={TextField}
-                                            className={classes.inputFieldCustom}
-                                            label="Контактное лицо"
-                                            fullWidth={true}/>
-                                    </div>}
-                                    <div className={classes.add}>
-                                        {!openClient && <a onClick={() => { setOpenClient(true) }}>+ добавить клиента</a>}
-                                    </div>
-                                </div>
-                                <div className={classes.divider}>
-                                    <Field
-                                        name="name"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Наименование"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="category"
-                                        component={CategorySearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Тип заведения"
-                                        fullWidth={true}/>
-                                    <div className={classes.flex} style={{alignItems: 'baseline'}}>
-                                        <div className={classes.inputHalfWrap}>Частота посещений:</div>
-                                        <div className={classes.inputHalfWrap}>
-                                            <Field
-                                                name="frequency"
-                                                component={VisitFrequencySearchField}
-                                                className={classes.inputFieldCustom}
-                                                hintText="Выберите"
-                                                fullWidth={true}/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className={classes.divider}>
-                                    <Field
-                                        name="address"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Адрес"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="guide"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Ориентир"
-                                        fullWidth={true}/>
-                                </div>
-                                <FieldArray
-                                    name="contacts"
-                                    component={ShopContactsListField}/>
+                            <div className={classes.divider}>
+                                <Field
+                                    name="name"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Наименование"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="marketType"
+                                    component={MarketTypeSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Тип заведения"
+                                    fullWidth={true}/>
                             </div>
-                            <div className={classes.bottomButton}>
-                                <FlatButton
-                                    label="Сохранить"
-                                    className={classes.actionButton}
-                                    primary={true}
-                                    type="submit"/>
+                            <div className={classes.flex} style={{alignItems: 'baseline'}}>
+                                <div className={classes.inputHalfWrap}>Частота посещений:</div>
+                                <div className={classes.inputHalfWrap}>
+                                    <Field
+                                        name="frequency"
+                                        component={VisitFrequencySearchField}
+                                        className={classes.inputFieldCustom}
+                                        hintText="Ежедневно"
+                                        fullWidth={true}/>
+                                </div>
+                            </div>
+                            <div className={classes.flex} style={{alignItems: 'baseline'}}>
+                                <div className={classes.inputHalfWrap}>Статус объекта:</div>
+                                <div className={classes.inputHalfWrap}>
+                                    <Field
+                                        name="status"
+                                        component={ShopStatusSearchField}
+                                        className={classes.inputFieldCustom}
+                                        hintText="Активен"
+                                        fullWidth={true}/>
+                                </div>
                             </div>
                         </div>
                         <div className={classes.rightSide}>
+                            <div className={classes.divider}>
+                                <Field
+                                    name="address"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Адрес"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="guide"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Ориентир"
+                                    fullWidth={true}/>
+                                <div className={classes.addPlace}>
+                                    {!mapLocation ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/> отметить местоположение на карте</a>
+                                    : <div className={classes.flex}>
+                                            <div>
+                                                <Place color="#999"/> <span>{lat}</span> <span>{lng}</span>
+                                            </div>
+                                            <a onClick={updateMapDialog.handleOpenMapUpdateDialog}>Изменить</a>
+                                        </div>}
+                                </div>
+                            </div>
                             <Field
-                                name="latLng"
-                                component={LocationField}
-                                fullWidth={true}
-                            />
+                                name="phone"
+                                component={TextField}
+                                className={classes.inputFieldCustom}
+                                label="Телефон"
+                                fullWidth={true}/>
+                            <Field
+                                name="contactName"
+                                component={TextField}
+                                className={classes.inputFieldCustom}
+                                label="Контактное лицо"
+                                fullWidth={true}/>
                         </div>
+                    </div>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"/>
                     </div>
                 </form>
             </div>
@@ -305,7 +364,22 @@ ShopCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    mapLocation: PropTypes.object,
+    mapDialog: PropTypes.shape({
+        openMapDialog: PropTypes.bool.isRequired,
+        handleOpenMapDialog: PropTypes.func.isRequired,
+        handleCloseMapDialog: PropTypes.func.isRequired,
+        handleSubmitMapDialog: PropTypes.func.isRequired
+    }).isRequired,
+    updateMapDialog: PropTypes.shape({
+        openUpdateMapDialog: PropTypes.bool.isRequired,
+        handleOpenMapUpdateDialog: PropTypes.func.isRequired,
+        handleCloseMapUpdateDialog: PropTypes.func.isRequired,
+        handleSubmitMapUpdateDialog: PropTypes.func.isRequired
+    }).isRequired
 }
-
+ShopCreateDialog.defaultProps = {
+    isUpdate: false
+}
 export default ShopCreateDialog
