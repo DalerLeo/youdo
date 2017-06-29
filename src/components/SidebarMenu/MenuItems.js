@@ -66,7 +66,8 @@ export const MenuItems = [
         icon: (<Zone />),
         url: ROUTES.ZONES_LIST_URL,
         childs: [
-            {name: 'Зоны', url: ROUTES.ZONES_LIST_URL}
+            {name: 'Зоны', url: ROUTES.ZONES_LIST_URL},
+            {name: 'Отслеживание', url: ROUTES.TRACKING_LIST_URL}
         ]
     },
     {
