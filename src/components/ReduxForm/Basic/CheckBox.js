@@ -13,12 +13,12 @@ const enhance = compose(
     injectSheet({
         checkBox: {
             '& svg:first-child': {
-                fill: '#cecece !important',
-                color: '#cecece !important'
+                fill: '#666666 !important',
+                color: '#666666 !important'
             },
             '& svg:last-child': {
-                fill: '#12aaeb !important',
-                color: '#12aaeb !important'
+                fill: '#666666 !important',
+                color: '#666666 !important'
             },
             '& span': {
                 top: '-10px !important',
@@ -34,7 +34,7 @@ const Checkbox = ({classes, input, meta, label, ...defaultProps}) => (
         className={classes.checkBox}
         style={checkboxStyle}
         iconStyle={{width: '20px', height: '20px'}}
-        labelStyle={{lineHeight: '20px', left: '-5px'}}
+        labelStyle={{lineHeight: '20px', left: '-10px'}}
         checked={Boolean(input.value)}
         onCheck={input.onChange}
         {...defaultProps}
