@@ -65,6 +65,7 @@ export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
+export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/image/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
 export const USERS = 'user/crud'
@@ -253,3 +254,18 @@ export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_LIST = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_ITEM = `/${MARKET_TYPE}/%d/`
 export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`
+
+export const PRICE = 'dist/product'
+export const PRICE_CREATE = `/${PRODUCT}/`
+export const PRICE_LIST = `/${PRODUCT}/`
+export const PRICE_ITEM = `/${PRODUCT}/%d/`
+export const PRICE_DELETE = `/${PRODUCT}/%d/`
+
+export const PRICE_LIST_ITEM = 'dist/price_list_item'
+export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
+
+export const ZONE = 'dist/border'
+export const ZONE_CREATE = `/${ZONE}/`
+export const ZONE_LIST = `/${ZONE}/`
+export const ZONE_ITEM = `/${ZONE}/%d/`
+export const ZONE_DELETE = `/${ZONE}/%d/`

@@ -335,6 +335,7 @@ const PricesDetails = enhance((props) => {
                 </div>
                 <div>
                     {_.map(products, (item) => {
+                        const index = _.get(item, 'id')
                         const product = _.get(item, 'product')
                         const productId = _.get(product, 'id')
                         const productName = _.get(product, 'name')
@@ -343,8 +344,9 @@ const PricesDetails = enhance((props) => {
                         const priceCost = 900
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
-                                <Col xs={1}>{productName}</Col>
-                                <Col xs={4}>{numberFormat(amount)}</Col>
+                                <Col xs={1}>{index}</Col>
+                                <Col xs={4}>{productName}</Col>
+                                <Col xs={2}>{numberFormat(amount)}</Col>
                                 <Col xs={2}>{numberFormat(realCost)}</Col>
                                 <Col xs={2}>{numberFormat(priceCost)}</Col>
                                 <Col xs={1}>

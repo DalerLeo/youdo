@@ -71,6 +71,26 @@ export const marketTypeListFetchAction = (filter) => {
     }
 }
 
+export const marketTypeGetAllAction = () => {
+    const params = {
+        'page': 1,
+        'page_size': 100
+    }
+    const payload = axios()
+        .get(API.MARKET_TYPE_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.MARKET_TYPE_LIST,
+        payload
+    }
+}
+
 export const marketTypeCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()

@@ -3,46 +3,12 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/pricesSerializer'
+import * as serializers from '../serializers/zoneSerializer'
 
-export const pricesCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-
-    const payload = axios()
-        .post(API.PRICES_CREATE, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.PRICES_CREATE,
-        payload
-    }
-}
-
-export const pricesDeleteAction = (id) => {
-    const payload = axios()
-        .delete(sprintf(API.PRICES_DELETE, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.PRICES_DELETE,
-        payload
-    }
-}
-
-export const pricesUpdateAction = (id, formValues) => {
+export const zoneCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.PRICES_ITEM, id), requestData)
+        .post(API.ZONE_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -51,15 +17,48 @@ export const pricesUpdateAction = (id, formValues) => {
         })
 
     return {
-        type: actionTypes.PRICES_UPDATE,
+        type: actionTypes.ZONE_CREATE,
         payload
     }
 }
 
-export const pricesListFetchAction = (filter) => {
+export const zoneDeleteAction = (id) => {
+    const payload = axios()
+        .delete(sprintf(API.ZONE_DELETE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ZONE_DELETE,
+        payload
+    }
+}
+
+export const zoneUpdateAction = (id, formValues) => {
+    const requestData = serializers.createSerializer(formValues)
+    const payload = axios()
+        .put(sprintf(API.ZONE_ITEM, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ZONE_UPDATE,
+        payload
+    }
+}
+
+export const zoneListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.PRICES_LIST, {params})
+        .get(API.ZONE_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -68,15 +67,14 @@ export const pricesListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.PRICES_LIST,
+        type: actionTypes.ZONE_LIST,
         payload
     }
 }
 
-export const pricesCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
+export const zoneItemFetchAction = (id) => {
     const payload = axios()
-        .get(API.PRICES_LIST, {params})
+        .get(sprintf(API.ZONE_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -85,23 +83,7 @@ export const pricesCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.PRICES_LIST_CSV,
+        type: actionTypes.ZONE_ITEM,
         payload
     }
 }
-
-export const pricesItemFetchAction = (id) => {
-    const payload = axios()
-        .get(sprintf(API.PRICES_ITEM, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-    return {
-        type: actionTypes.PRICES_ITEM,
-        payload
-    }
-}
-

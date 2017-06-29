@@ -29,6 +29,7 @@ import {
 
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -66,12 +67,14 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const pricesId = _.get(nextProps, ['params', 'pricesId'])
-        return pricesId && _.get(props, ['params', 'pricesId']) !== pricesId
+        const oldPricesId = _.get(props, ['params', 'pricesId'])
+        const newPricesId = _.get(nextProps, ['params', 'pricesId'])
+        return oldPricesId !== newPricesId
     }, ({dispatch, params}) => {
         const pricesId = _.toInteger(_.get(params, 'pricesId'))
-        console.log(pricesId)
-        // pricesId && dispatch(pricesItemFetchAction(pricesId))
+        if (pricesId > ZERO) {
+            dispatch(pricesItemFetchAction(pricesId))
+        }
     }),
 
     withHandlers({
@@ -213,10 +216,7 @@ const enhance = compose(
         },
 
         handleClickDetail: props => (id) => {
-            const {dispatch} = props
             hashHistory.push({pathname: sprintf(ROUTER.PRICES_ITEM_PATH, id), query: {}})
-            console.log(id)
-            // return dispatch(pricesItemFetchAction(id))
         }
     })
 )
@@ -227,7 +227,6 @@ const PricesList = enhance((props) => {
         list,
         listLoading,
         detail,
-        defectData,
         detailLoading,
         createLoading,
         updateLoading,
@@ -295,7 +294,7 @@ const PricesList = enhance((props) => {
                 },
                 beginDate: moment(_.get(detail, ['begin_date'])).toDate(),
                 tillDate: moment(_.get(detail, ['till_date'])).toDate(),
-                products: forUpdateProducts,
+                products: forUpdateProducts
             }
         })(),
         updateLoading: detailLoading || updateLoading,

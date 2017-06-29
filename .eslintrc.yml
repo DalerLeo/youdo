@@ -204,4 +204,5 @@ parserOptions:
     jsx: true
 globals:
   localStorage: true
+  google: true
   sessionStorage: true
