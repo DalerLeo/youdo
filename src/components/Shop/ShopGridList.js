@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -28,34 +27,34 @@ import Tooltip from '../ToolTip'
 
 const listHeader = [
     {
+        xs: 3,
         sorting: true,
         name: 'name',
-        title: 'Name'
+        title: 'Название'
     },
     {
+        xs: 3,
         sorting: true,
-        name: 'phone',
-        title: 'Phone'
+        name: 'client',
+        title: 'Клиент'
     },
     {
+        xs: 2,
         sorting: true,
-        name: 'address',
-        title: 'Address'
+        name: 'marketType',
+        title: 'Тип'
     },
     {
+        xs: 2,
         sorting: true,
-        name: 'guide',
-        title: 'Guide'
+        name: 'border',
+        title: 'Зона'
     },
     {
+        xs: 2,
         sorting: true,
-        name: 'contactName',
-        title: 'Contact name'
-    },
-    {
-        sorting: true,
-        name: 'createdDate',
-        title: 'Created date'
+        name: 'isActive',
+        title: 'Статус'
     }
 ]
 
@@ -131,25 +130,26 @@ const ShopGridList = enhance((props) => {
     const shopList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const phone = _.get(item, 'phone') || 'N/A'
-        const address = _.get(item, 'address') || 'N/A'
-        const guide = _.get(item, 'guide') || 'N/A'
-        const contactName = _.get(item, 'contactName') || 'N/A'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const client = _.get(item, ['client', 'name'])
+        const marketType = _.get(item, ['marketType', 'name'])
+        const zone = _.get(item, 'border') || 'Не определена'
+        const isActive = _.get(item, 'isActive')
 
         return (
             <Row key={id}>
-                <Col xs={2}>
+                <Col xs={3}>
                     <Link to={{
                         pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
                         query: filter.getParams()
                     }}>{name}</Link>
                 </Col>
-                <Col xs={2}>{phone}</Col>
-                <Col xs={2}>{address}</Col>
-                <Col xs={2}>{guide}</Col>
-                <Col xs={2}>{contactName}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={3}>{client}</Col>
+                <Col xs={2}>{marketType}</Col>
+                <Col xs={2}>{zone}</Col>
+                <Col xs={2}>
+                    {isActive ? <span className="greenFont">Активен</span>
+                    : <span className="redFont">Не активен</span>}
+                </Col>
             </Row>
         )
     })
