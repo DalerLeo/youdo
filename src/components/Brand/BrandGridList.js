@@ -140,7 +140,6 @@ const BrandGridList = enhance((props) => {
         list: brandList,
         loading: _.get(listData, 'listLoading')
     }
-
     return (
         <Container>
             <SubMenu url={ROUTES.BRAND_LIST_URL}/>
@@ -154,7 +153,6 @@ const BrandGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
-
             <GridList
                 filter={filter}
                 list={list}

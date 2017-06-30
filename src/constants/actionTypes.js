@@ -9,6 +9,9 @@ export const SHOP_ITEM = 'SHOP_ITEM'
 export const SHOP_UPDATE = 'SHOP_UPDATE'
 export const SHOP_CREATE = 'SHOP_CREATE'
 export const SHOP_DELETE = 'SHOP_DELETE'
+export const SHOP_ITEM_ADD_IMAGE = 'SHOP_ITEM_ADD_IMAGE'
+
+export const CONFIG = 'CONFIG'
 
 export const USERS_LIST = 'USERS_LIST'
 export const USERS_LIST_CSV = 'USERS_LIST_CSV'
@@ -269,4 +272,15 @@ export const MARKET_TYPE_DELETE = 'MARKET_TYPE_DELETE'
 export const PRICE_LIST = 'PRICE_LIST'
 export const PRICE_CREATE = 'PRICE_CREATE'
 export const PRICE_ITEM = 'PRICE_ITEM'
+<<<<<<< HEAD
+=======
+export const PRICE_DELETE = 'PRICE_DELETE'
+export const PRICE_LIST_CSV = 'PRICE_LIST_CSV'
+
+>>>>>>> e6eeb5fa1f7d92481b0fa7262a9a9de416518e0b
 export const PRICE_LIST_ITEM_LIST = 'PRICE_LIST_ITEM_LIST'
+export const ZONE_LIST = 'ZONE_LIST'
+export const ZONE_ITEM = 'ZONE_ITEM'
+export const ZONE_UPDATE = 'ZONE_UPDATE'
+export const ZONE_CREATE = 'ZONE_CREATE'
+export const ZONE_DELETE = 'ZONE_DELETE'

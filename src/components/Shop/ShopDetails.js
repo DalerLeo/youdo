@@ -4,12 +4,11 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
-import ShopDetailsTab from './ShopDetailsTab'
 import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Photo from 'material-ui/svg-icons/image/add-a-photo'
 import Delete from 'material-ui/svg-icons/action/delete'
+import Add from 'material-ui/svg-icons/content/add'
 
 const enhance = compose(
     injectSheet({
@@ -52,7 +51,149 @@ const enhance = compose(
         },
         titleButtons: {
             display: 'flex',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            height: '100%'
+        },
+        frequency: {
+            textAlign: 'right',
+            lineHeight: '1',
+            '& span': {
+                display: 'block'
+            }
+        },
+        status: {
+            alignSelf: 'baseline',
+            margin: '0 30px',
+            color: '#fff',
+            fontWeight: '600',
+            padding: '20px 17px',
+            lineHeight: '1',
+            textAlign: 'center'
+        },
+        content: {
+            padding: '20px 0',
+            display: 'flex',
+            width: '100%',
+            '& > div': {
+                marginRight: '7%',
+                '&:last-child': {
+                    margin: '0'
+                }
+            }
+        },
+        info: {
+            display: 'flex'
+        },
+        infoTitle: {
+            fontWeight: 'bold'
+        },
+        details: {
+            display: 'inline-block',
+            lineHeight: '25px',
+            marginRight: '30px',
+            marginTop: '10px',
+            '&:last-child': {
+                marginRight: '0'
+            }
+        },
+        image: {
+            width: '230px',
+            height: '165px',
+            marginRight: 'calc(7% + 36px) !important',
+            position: 'relative',
+            '& span:first-child': {
+                width: '230px',
+                height: '165px',
+                display: 'block',
+                marginRight: '7px',
+                marginBottom: '0'
+            },
+            '& span:nth-child(4)': {
+                position: 'relative',
+                zIndex: '1'
+            },
+            '& span:nth-child(4):after': {
+                background: 'rgba(0,0,0,0.35)',
+                content: '""',
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0'
+            }
+        },
+        imageWrapper: {
+            height: '100%',
+            marginRight: '36px',
+            display: 'flex',
+            flexDirection: 'column',
+            flexWrap: 'wrap',
+            '& span': {
+                cursor: 'pointer',
+                width: '36px',
+                height: '36px',
+                marginBottom: '7px',
+                position: 'relative',
+                '& strong': {
+                    color: '#fff',
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    top: '0',
+                    left: '0',
+                    right: '0',
+                    bottom: '0',
+                    zIndex: '99'
+                }
+            },
+            '& img': {
+                width: '100%',
+                height: '100%'
+            }
+        },
+        addImg: {
+            background: '#999',
+            cursor: 'pointer',
+            width: '36px',
+            height: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        noImage: {
+            background: '#efefef',
+            border: '1px #ccc dashed',
+            color: '#999',
+            fontSize: '11px !important',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            '& span': {
+                fontSize: '11px !important',
+                display: 'block',
+                position: 'relative',
+                height: 'auto !important',
+                width: 'auto !important',
+                margin: '0 0 20px !important',
+                '&:after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: '40px',
+                    left: '50%',
+                    background: '#999',
+                    width: '64px',
+                    height: '1px',
+                    marginLeft: '-32px'
+                }
+            }
         }
     })
 )
@@ -71,9 +212,33 @@ const iconStyle = {
 }
 
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data, tabData, confirmDialog, updateDialog, handleCloseDetail} = props
+    const {classes, loading, data, confirmDialog, updateDialog, addPhotoDialog, slideShowDialog} = props
+    const ZERO = 0
+    const MAX_IMAGE_COUNT = 4
+    const EVERY_DAY = '1'
+    const ONCE_IN_A_WEEK = '2'
+    const TWICE_IN_A_WEEK = '3'
+    const IN_A_DAY = '4'
+
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
+    const client = _.get(data, ['client', 'name'])
+    const shopType = _.get(data, ['marketType', 'name'])
+    const address = _.get(data, 'address')
+    const guide = _.get(data, 'guide')
+    const zone = _.get(data, 'border')
+    const contactName = _.get(data, 'contactName')
+    const phone = _.get(data, 'phone')
+    const images = _.get(data, 'images') || {}
+    const freq = _.get(data, 'visitFrequency')
+    const isActive = _.get(data, 'isActive')
+
+    let slicedImages = images
+    if (images.length > MAX_IMAGE_COUNT) {
+        slicedImages = _.slice(images, ZERO, MAX_IMAGE_COUNT)
+    }
+    const lastImage = _.last(slicedImages)
+    const moreImages = images.length - slicedImages.length
 
     if (loading) {
         return (
@@ -88,9 +253,21 @@ const ShopDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}
-                onTouchTap={handleCloseDetail}>{name}</div>
+                <div className={classes.titleLabel}>{name}</div>
                 <div className={classes.titleButtons}>
+                    <div className={classes.frequency}>
+                        <span>Частота посещений:</span>
+                        <b>{ freq === EVERY_DAY ? 'Каждый день' : (
+                            freq === ONCE_IN_A_WEEK ? 'Раз в неделю' : (
+                                freq === TWICE_IN_A_WEEK ? '2 раза в неделю' : (
+                                    freq === IN_A_DAY ? 'Через день' : ''
+                                )
+                            )
+                        )}</b>
+                    </div>
+                    {isActive ? <div className={classes.status} style={{background: '#81c784'}}>Магазин <br/> активен</div>
+                        : <div className={classes.status} style={{background: '#ff717e'}}>Магазин <br/> неактивен</div>
+                    }
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
                             iconStyle={iconStyle.icon}
@@ -98,14 +275,6 @@ const ShopDetails = enhance((props) => {
                             touch={true}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                             <Edit />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text="Добавить фото">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}>
-                            <Photo />
                         </IconButton>
                     </Tooltip>
                     <Tooltip position="bottom" text="Удалить">
@@ -119,10 +288,60 @@ const ShopDetails = enhance((props) => {
                     </Tooltip>
                 </div>
             </div>
-            <ShopDetailsTab
-                tabData={tabData}
-                data={data}
-            />
+            <div className={classes.content}>
+                <div className={classes.image}>
+                    {(images.length === ZERO) ? <div className={classes.noImage}>
+                        <div>
+                            <span>Фото <br/> отсутствует</span>
+                            <a onClick={addPhotoDialog.handleOpenAddPhotoDialog}>добавить фото</a>
+                        </div>
+                    </div>
+                        : <div className={classes.imageWrapper}> {
+                            _.map(slicedImages, (item) => {
+                                const src = _.get(item, 'image')
+                                const imgId = _.get(item, 'id')
+                                const isLastImage = (imgId === lastImage.id)
+
+                                return (
+                                    <span key={imgId} onClick={slideShowDialog.handleOpenSlideShowDialog}>
+                                        {isLastImage && moreImages !== ZERO && <strong>{moreImages}+</strong>}
+                                        <img src={src} alt=""/>
+                                    </span>
+                                )
+                            })
+                        }
+                            <div onClick={addPhotoDialog.handleOpenAddPhotoDialog} className={classes.addImg}>
+                                <Add color="#fff"/>
+                            </div>
+                        </div>}
+                </div>
+                <div className={classes.infoBlock}>
+                    <div className={classes.infoTitle}>Детали</div>
+                    <ul className={classes.details}>
+                        <li>Клиент</li>
+                        <li>Тип заведения</li>
+                        <li>Зона</li>
+                        <li>Адрес</li>
+                        <li>Ориентир</li>
+                    </ul>
+                    <ul className={classes.details}>
+                        <li>{client}</li>
+                        <li>{shopType}</li>
+                        <li>{!zone ? <span className="redFont">Не определена</span> : {zone}}</li>
+                        <li>{address}</li>
+                        <li>{guide}</li>
+                    </ul>
+                </div>
+                <div className={classes.infoBlock}>
+                    <div className={classes.infoTitle}>Контакты</div>
+                    <ul className={classes.details}>
+                        <li>{contactName}</li>
+                    </ul>
+                    <ul className={classes.details}>
+                        <li>{phone}</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     )
 })
@@ -146,6 +365,17 @@ ShopDetails.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    addPhotoDialog: PropTypes.shape({
+        openAddPhotoDialog: PropTypes.bool.isRequired,
+        handleOpenAddPhotoDialog: PropTypes.func.isRequired,
+        handleCloseAddPhotoDialog: PropTypes.func.isRequired,
+        handleSubmitAddPhotoDialog: PropTypes.func.isRequired
+    }).isRequired,
+    slideShowDialog: PropTypes.shape({
+        openSlideShowDialog: PropTypes.bool.isRequired,
+        handleOpenSlideShowDialog: PropTypes.func.isRequired,
+        handleCloseSlideShowDialog: PropTypes.func.isRequired
     }).isRequired
 
 }

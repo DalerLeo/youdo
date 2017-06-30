@@ -18,7 +18,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
+import getConfig from '../../helpers/getConfig'
 
 const listHeader = [
     {
@@ -121,8 +121,8 @@ const PendingPaymentsGridList = enhance((props) => {
         const client = _.get(item, 'client')
         const clientName = _.get(client, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const totalPrice = numberFormat(_.get(item, 'totalPrice'), PRIMARY_CURRENCY_NAME)
-        const totalBalance = numberFormat(_.get(item, 'totalBalance'), PRIMARY_CURRENCY_NAME)
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), getConfig('PRIMARY_CURRENCY'))
+        const totalBalance = numberFormat(_.get(item, 'totalBalance'), getConfig('PRIMARY_CURRENCY'))
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>

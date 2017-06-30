@@ -20,7 +20,7 @@ import OrderProductSearchField from './OrderProductSearchField'
 import TextField from '../Basic/TextField'
 import ProductCostField from '../Product/ProductCostField'
 import OrderProductMeasurementField from './OrderProductMeasurementField'
-import {PRIMARY_CURRENCY_NAME} from '../../../constants/primaryCurrency'
+import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 
 const enhance = compose(
@@ -180,7 +180,7 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                 <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
                 <TableRowColumn>{numberFormat(balance)}</TableRowColumn>
                 <TableRowColumn>{numberFormat(amount)} {measurement}</TableRowColumn>
-                <TableRowColumn>{numberFormat(cost)} {PRIMARY_CURRENCY_NAME}</TableRowColumn>
+                <TableRowColumn>{numberFormat(cost)} {getConfig('PRIMARY_CURRENCY')}</TableRowColumn>
                 <TableRowColumn style={{textAlign: 'right'}}>
                     <IconButton onTouchTap={() => handleRemove(index)}>
                         <DeleteIcon color="#666666"/>

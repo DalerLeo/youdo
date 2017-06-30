@@ -3,10 +3,8 @@ import React from 'react'
 import SearchField from '../Basic/SearchField'
 
 const Items = [
-    {id: 1, name: 'Ежедневно'},
-    {id: 2, name: 'Раз в неделю'},
-    {id: 3, name: '2 раза в неделю'},
-    {id: 4, name: 'Через день'}
+    {id: 1, name: 'Активен'},
+    {id: 2, name: 'Неактивен'}
 ]
 
 const getOptions = (search) => {
@@ -18,7 +16,7 @@ const getItem = (id) => {
         _.find(Items, (o) => { return o.id === _.toInteger(id) }))
 }
 
-const VisitFrequencySearchField = (props) => {
+const ShopStatusSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -31,4 +29,4 @@ const VisitFrequencySearchField = (props) => {
     )
 }
 
-export default VisitFrequencySearchField
+export default ShopStatusSearchField

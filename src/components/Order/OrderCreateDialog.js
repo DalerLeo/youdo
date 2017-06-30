@@ -8,7 +8,6 @@ import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
 import CloseIcon2 from '../CloseIcon2'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import {
@@ -22,6 +21,7 @@ import {
 import toCamelCase from '../../helpers/toCamelCase'
 import MainStyles from '../Styles/MainStyles'
 import OrderTotalSum from '../ReduxForm/Order/OrderTotalSum'
+import getConfig from '../../helpers/getConfig'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
@@ -235,6 +235,8 @@ const OrderCreateDialog = enhance((props) => {
             notEnough = true
         }
     })
+
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     return (
         <Dialog
             modal={true}
@@ -288,7 +290,7 @@ const OrderCreateDialog = enhance((props) => {
                                         name="deliveryPrice"
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        label={'Стоимость доставки (' + PRIMARY_CURRENCY_NAME + ')'}
+                                        label={'Стоимость доставки (' + primaryCurrency + ')'}
                                         fullWidth={true}
                                         />
                                     <Field

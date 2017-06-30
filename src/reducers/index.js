@@ -9,11 +9,15 @@ import snackbarReducer from './snackbarReducer'
 
 const rootReducer = combineReducers({
     signIn: createThunkReducer(actionTypes.SIGN_IN),
+    config: combineReducers({
+        primaryCurrency: createThunkReducer(actionTypes.CONFIG)
+    }),
     shop: combineReducers({
         create: createThunkReducer(actionTypes.SHOP_CREATE),
         list: createThunkReducer(actionTypes.SHOP_LIST),
         item: createThunkReducer(actionTypes.SHOP_ITEM),
         update: createThunkReducer(actionTypes.SHOP_UPDATE),
+        image: createThunkReducer(actionTypes.SHOP_ITEM_ADD_IMAGE),
         csv: createThunkReducer(actionTypes.SHOP_LIST_CSV)
     }),
     cashbox: combineReducers({
@@ -246,6 +250,12 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.PRICE_LIST),
         item: createThunkReducer(actionTypes.PRICE_ITEM),
         price: createThunkReducer(actionTypes.PRICE_LIST_ITEM_LIST)
+    }),
+    zone: combineReducers({
+        create: createThunkReducer(actionTypes.ZONE_CREATE),
+        list: createThunkReducer(actionTypes.ZONE_LIST),
+        update: createThunkReducer(actionTypes.ZONE_UPDATE),
+        item: createThunkReducer(actionTypes.ZONE_ITEM)
     }),
     snackbar: snackbarReducer(),
     form: formReducer,
