@@ -1,20 +1,12 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
-export const createSerializer = (data) => {
-    const name = _.get(data, ['name'])
-    const brand = _.get(data, ['brand', 'value'])
-    const type = _.get(data, ['type', 'value'])
-    const measurement = _.get(data, ['measurement', 'value'])
-    const image = _.get(data, 'image')
-    const imageId = (_.get(image, ['id'])) ? _.get(image, ['id']) : image
+export const createSerializer = (data, productId) => {
+    const prices = _.get(data, 'prices')
 
     return {
-        name,
-        brand,
-        type,
-        measurement,
-        image: imageId
+        'product': productId,
+        'prices': prices
     }
 }
 
