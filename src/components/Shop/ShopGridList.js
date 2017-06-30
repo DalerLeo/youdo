@@ -91,6 +91,7 @@ const ShopGridList = enhance((props) => {
         detailData,
         tabData,
         mapLocation,
+        navigationButtons,
         classes
     } = props
     const actions = (
@@ -205,8 +206,13 @@ const ShopGridList = enhance((props) => {
             />
 
             <SlideShowDialog
+                images={_.get(detailData, ['data', 'images'])}
+                loading={slideShowDialog.galleryLoading}
                 open={slideShowDialog.openSlideShowDialog}
+                image={slideShowDialog.gallery}
                 onClose={slideShowDialog.handleCloseSlideShowDialog}
+                prevBtn={navigationButtons.handlePrevImage}
+                nextBtn={navigationButtons.handleNextImage}
             />
 
             <MapDialog
@@ -273,6 +279,8 @@ ShopGridList.propTypes = {
     }).isRequired,
     slideShowDialog: PropTypes.shape({
         openSlideShowDialog: PropTypes.bool.isRequired,
+        gallery: PropTypes.object.isRequired,
+        galleryLoading: PropTypes.bool.isRequired,
         handleOpenSlideShowDialog: PropTypes.func.isRequired,
         handleCloseSlideShowDialog: PropTypes.func.isRequired
     }).isRequired,
@@ -311,7 +319,11 @@ ShopGridList.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    navigationButtons: PropTypes.shape({
+        handlePrevImage: PropTypes.func.isRequired,
+        handleNextImage: PropTypes.func.isRequired
+    })
 }
 
 export default ShopGridList

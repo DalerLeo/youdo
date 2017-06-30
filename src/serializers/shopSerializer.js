@@ -1,8 +1,8 @@
 import _ from 'lodash'
-import {orderingSnakeCase} from '../../helpers/serializer'
+import {orderingSnakeCase} from '../helpers/serializer'
 
 const ONE = 1
-export const createSerializer = (data, location, image) => {
+export const createSerializer = (data, location) => {
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'value'])
     const marketType = _.get(data, ['marketType', 'value'])
@@ -11,8 +11,8 @@ export const createSerializer = (data, location, image) => {
     const frequency = _.get(data, ['frequency', 'value'])
     const phone = _.get(data, 'phone')
     const status = _.get(data, ['status', 'value'])
-    const lat = _.get(location, 'lat')
-    const lon = _.get(location, 'lng')
+    const lat = _.get(location, 'lat') || ONE
+    const lon = _.get(location, 'lng') || ONE
     const contactName = _.get(data, ['contactName'])
     let isActive = false
     if (status === ONE) {
@@ -33,18 +33,26 @@ export const createSerializer = (data, location, image) => {
             'coordinates': [lat, lon]
         },
         'is_active': isActive,
-        'images': [image]
+        'images': []
+    }
+}
+
+export const imageSerializer = (image) => {
+    return {
+        'image': image,
+        'is_primary': false
     }
 }
 
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-
     return {
-        'category': _.get(defaultData, 'category'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate'),
+        'name': _.get(defaultData, 'name'),
+        'client': _.get(defaultData, 'client'),
+        'marketType': _.get(defaultData, 'marketType'),
+        'border': _.get(defaultData, 'border'),
+        'isActive': _.get(defaultData, 'isActive'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

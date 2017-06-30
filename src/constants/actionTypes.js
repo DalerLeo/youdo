@@ -10,6 +10,7 @@ export const SHOP_UPDATE = 'SHOP_UPDATE'
 export const SHOP_CREATE = 'SHOP_CREATE'
 export const SHOP_DELETE = 'SHOP_DELETE'
 export const SHOP_ITEM_ADD_IMAGE = 'SHOP_ITEM_ADD_IMAGE'
+export const SHOP_ITEM_SHOW_IMAGE = 'SHOP_ITEM_SHOW_IMAGE'
 
 export const CONFIG = 'CONFIG'
 
