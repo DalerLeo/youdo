@@ -152,14 +152,13 @@ const PriceFilterForm = enhance((props) => {
                     <div>
                         <Field className={classes.inputField} name="brand" component={BrandSearchField} label="Бренд"/>
                     </div>
-                    <div>
-                        <RaisedButton
-                            type="submit"
-                            primary={true}
-                            buttonStyle={{color: '#fff'}}>
-                            Применить
-                        </RaisedButton>
-                    </div>
+                    <RaisedButton
+                        type="submit"
+                        primary={true}
+                        buttonStyle={{color: '#fff'}}
+                        label="Применить"
+                        style={{marginTop: '15px'}}>
+                    </RaisedButton>
                 </form>
             </Paper>
         </div>

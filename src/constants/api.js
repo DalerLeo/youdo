@@ -139,6 +139,7 @@ export const PRODUCT_TYPE = 'dist/product_type'
 export const PRODUCT_TYPE_CREATE = `/${PRODUCT_TYPE}/`
 export const PRODUCT_TYPE_LIST = `/${PRODUCT_TYPE}/`
 export const PRODUCT_TYPE_ITEM = `/${PRODUCT_TYPE}/%d/`
+export const PRODUCT_TYPE_DELETE = `/${PRODUCT_TYPE}/%d/`
 
 export const BRAND = 'dist/brand'
 export const BRAND_CREATE = `/${BRAND}/`

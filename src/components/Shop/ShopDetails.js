@@ -374,7 +374,7 @@ ShopDetails.propTypes = {
     }).isRequired,
     slideShowDialog: PropTypes.shape({
         openSlideShowDialog: PropTypes.bool.isRequired,
-        gallery: PropTypes.object.isRequired,
+        gallery: PropTypes.object,
         galleryLoading: PropTypes.bool.isRequired,
         handleOpenSlideShowDialog: PropTypes.func.isRequired,
         handleCloseSlideShowDialog: PropTypes.func.isRequired

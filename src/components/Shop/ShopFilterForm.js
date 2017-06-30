@@ -9,17 +9,16 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {CategorySearchField} from '../ReduxForm'
+import MarketTypeField from '../ReduxForm/Shop/MarketTypeSearchField'
+import {ClientSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const SHOP_FILTER_OPEN = 'openFilterDialog'
 
 export const SHOP_FILTER_KEY = {
-    CATEGORY: 'category',
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    CLIENT: 'client',
+    MARKET_TYPE: 'marketType'
 }
 
 const enhance = compose(
@@ -81,8 +80,20 @@ const enhance = compose(
         submit: {
             color: '#fff !important'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     }),
     reduxForm({
@@ -144,22 +155,26 @@ const ShopFilterForm = enhance((props) => {
                     </IconButton>
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
-                    <div>
-                        <Field className={classes.inputField} name="category" component={CategorySearchField} label="Категория"/>
-                    </div>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="client"
+                        component={ClientSearchField}
+                        label="Клиент"/>
 
-                    <div>
-                        <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
-                    </div>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="marketType"
+                        component={MarketTypeField}
+                        label="Тип магазина"
+                        fullWidth={true}/>
 
-                    <div>
-                        <RaisedButton
-                            type="submit"
-                            primary={true}
-                            buttonStyle={{color: '#fff'}}>
-                            Применить
-                        </RaisedButton>
-                    </div>
+                    <RaisedButton
+                        type="submit"
+                        primary={true}
+                        buttonStyle={{color: '#fff'}}
+                        label="Применить"
+                        style={{marginTop: '15px'}}>
+                    </RaisedButton>
                 </form>
             </Paper>
         </div>

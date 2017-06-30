@@ -161,14 +161,13 @@ const UsersFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="group" component={UsersGroupSearchField} label="Принадлежность к группе" fullWidth={true}/>
                     </div>
 
-                    <div>
-                        <RaisedButton
-                            type="submit"
-                            primary={true}
-                            buttonStyle={{color: '#fff'}}>
-                            Применить
-                        </RaisedButton>
-                    </div>
+                    <RaisedButton
+                        type="submit"
+                        primary={true}
+                        buttonStyle={{color: '#fff'}}
+                        label="Применить"
+                        style={{marginTop: '15px'}}>
+                    </RaisedButton>
                 </form>
             </Paper>
         </div>

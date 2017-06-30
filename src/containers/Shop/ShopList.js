@@ -1,6 +1,5 @@
 import React from 'react'
 import _ from 'lodash'
-import moment from 'moment'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
@@ -172,15 +171,13 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const category = _.get(filterForm, ['values', 'category', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client', 'value']) || null
+            const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
 
             filter.filterBy({
                 [SHOP_FILTER_OPEN]: false,
-                [SHOP_FILTER_KEY.CATEGORY]: category,
-                [SHOP_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [SHOP_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [SHOP_FILTER_KEY.CLIENT]: client,
+                [SHOP_FILTER_KEY.MARKET_TYPE]: marketType
             })
         },
         handleOpenDeleteDialog: props => () => {
@@ -374,9 +371,8 @@ const ShopList = enhance((props) => {
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const openAddPhotoDialog = toBoolean(_.get(location, ['query', ADD_PHOTO_DIALOG_OPEN]))
     const openSlideShowDialog = _.toInteger(_.get(location, ['query', SHOP_SLIDESHOW_DIALOG_OPEN]) || MINUS_ONE) > MINUS_ONE
-    const category = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CATEGORY))
-    const fromDate = filter.getParam(SHOP_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(SHOP_FILTER_KEY.TO_DATE)
+    const client = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CLIENT))
+    const marketType = filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE)
     const detailId = _.toInteger(_.get(params, 'shopId'))
     const tab = _.get(params, 'tab') || SHOP.DEFAULT_TAB
 
@@ -498,11 +494,10 @@ const ShopList = enhance((props) => {
     const filterDialog = {
         initialValues: {
             category: {
-                value: category
+                value: client
             },
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            marketType: {
+                value: marketType
             }
         },
         filterLoading: false,
