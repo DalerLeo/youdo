@@ -36,7 +36,9 @@ import ShiftSearchField from './ShiftSearchField'
 import CashboxCustomField from './PendingPayments/CashboxCustomField'
 import VisitFrequencySearchField from './Shop/VisitFrequencySearchField'
 import ShopStatusSearchField from './Shop/ShopStatusSearchField'
+import DealTypeSearchField from './DealTypeSearchField'
 import MarketTypeSearchField from './Shop/MarketTypeSearchField'
+import MarketSearchField from './MarketSearchField'
 
 export {
     ShiftSearchField,
@@ -77,5 +79,7 @@ export {
     VisitFrequencySearchField,
     PricesListProductField,
     ShopStatusSearchField,
-    MarketTypeSearchField
+    MarketTypeSearchField,
+    MarketSearchField,
+    DealTypeSearchField
 }

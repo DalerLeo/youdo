@@ -284,7 +284,6 @@ export const PRICE_DELETE = 'PRICE_DELETE'
 export const PRICE_LIST_CSV = 'PRICE_LIST_CSV'
 
 export const PRICE_LIST_ITEM_LIST = 'PRICE_LIST_ITEM_LIST'
-export const PRICE_LIST_ITEM_LIST = 'PRICE_LIST_ITEM_LIST'
 
 export const ZONE_LIST = 'ZONE_LIST'
 export const ZONE_ITEM = 'ZONE_ITEM'

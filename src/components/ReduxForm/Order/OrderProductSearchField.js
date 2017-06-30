@@ -7,8 +7,8 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
-const getOptions = (search) => {
-    return axios().get(`${PATH.PRODUCT_LIST}?search=${search || ''}`)
+const getOptions = (search, ikkinchi) => {
+    return axios().get(`${PATH.PRODUCT_LIST}?ikkinchi=${ikkinchi || ''}&search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -37,11 +37,12 @@ const OrderProductSearchField = connect()((props) => {
     const test = (id) => {
         return getItem(id, dispatch)
     }
+    const testBek = '2'
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={(search) => { return getOptions(search, testBek) }}
             getItem={test}
             getItemText={SearchField.defaultGetText('name')}
             {...props}

@@ -20,6 +20,7 @@ import OrderProductSearchField from './OrderProductSearchField'
 import TextField from '../Basic/TextField'
 import ProductCostField from '../Product/ProductCostField'
 import OrderProductMeasurementField from './OrderProductMeasurementField'
+import {ProductTypeSearchField} from '../../ReduxForm'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 
@@ -202,6 +203,14 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                     />
                 </div>
                 {openAddProducts && <div className={classes.background}>
+                    <div style={{width: '35%', paddingRight: '20px'}}>
+                        <ProductTypeSearchField
+                            label="Отфильтровать по типу"
+                            className={classes.inputFieldCustom}
+                            style={{width: '100%'}}
+                            {..._.get(defaultProps, 'product')}
+                        />
+                    </div>
                     <div style={{width: '35%', paddingRight: '20px'}}>
                         <OrderProductSearchField
                             label="Наименование товара"
