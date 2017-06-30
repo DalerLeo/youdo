@@ -71,23 +71,6 @@ export const cashboxListFetchAction = () => {
     }
 }
 
-export const cashboxCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.CASHBOX_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CASHBOX_LIST_CSV,
-        payload
-    }
-}
-
 export const cashboxItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.CASHBOX_ITEM, id))

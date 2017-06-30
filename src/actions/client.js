@@ -72,23 +72,6 @@ export const clientListFetchAction = (filter) => {
     }
 }
 
-export const clientCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.CLIENT_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CLIENT_LIST_CSV,
-        payload
-    }
-}
-
 export const clientItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.CLIENT_ITEM, id))

@@ -71,23 +71,6 @@ export const brandListFetchAction = (filter) => {
     }
 }
 
-export const brandCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.BRAND_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.BRAND_LIST_CSV,
-        payload
-    }
-}
-
 export const brandItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.BRAND_ITEM, id))

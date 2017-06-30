@@ -89,23 +89,6 @@ export const shopListFetchAction = (filter) => {
     }
 }
 
-export const shopCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.SHOP_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SHOP_LIST_CSV,
-        payload
-    }
-}
-
 export const shopItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.SHOP_ITEM, id))

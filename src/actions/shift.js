@@ -72,23 +72,6 @@ export const shiftListFetchAction = (filter, manufactureId) => {
     }
 }
 
-export const shiftCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.SHIFT_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SHIFT_LIST_CSV,
-        payload
-    }
-}
-
 export const shiftItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.SHIFT_ITEM, id))
@@ -101,23 +84,6 @@ export const shiftItemFetchAction = (id) => {
 
     return {
         type: actionTypes.SHIFT_ITEM,
-        payload
-    }
-}
-
-export const addProductAction = (formValues) => {
-    const requestData = serializers.addProductSerializer(formValues)
-    const payload = axios()
-        .post(API.SHIFT_CREATE, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SHIFT_CREATE,
         payload
     }
 }

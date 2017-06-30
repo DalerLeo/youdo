@@ -39,10 +39,9 @@ export const clientTransactionCreateExpenseAction = (formValues, clientId) => {
     }
 }
 
-export const clientTransactionCreateSendAction = (formValues, clientId) => {
-    const requestData = serializers.createSendSerializer(formValues, clientId)
+export const clientTransactionCreateSendAction = () => {
     const payload = axios()
-        .post(API.CLIENT_TRANSACTION_SEND, requestData)
+        .post(API.CLIENT_TRANSACTION_SEND)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -102,23 +101,6 @@ export const clientTransactionListFetchAction = (filter, clientId) => {
 
     return {
         type: actionTypes.CLIENT_TRANSACTION_LIST,
-        payload
-    }
-}
-
-export const clientTransactionCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.CLIENT_TRANSACTION_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CLIENT_TRANSACTION_LIST_CSV,
         payload
     }
 }

@@ -153,11 +153,6 @@ export const INGREDIENT_LIST = 'dist/product/%d/ingredient_list/'
 export const INGREDIENT_ITEM = `/${INGREDIENT}/%d/`
 export const INGREDIENT_DELETE = `/${INGREDIENT}/%d/`
 
-export const PAYMNET_TYPE = 'dist/payment'
-export const PAYMNET_TYPE_CREATE = `/${PAYMNET_TYPE}/add/`
-export const PAYMNET_TYPE_LIST = `/${PAYMNET_TYPE}/`
-export const PAYMNET_TYPE_ITEM = `/${PAYMNET_TYPE}/%d/`
-
 export const FILE_UPLOAD = '/file/file/'
 
 export const MANUFACTURE = 'dist/manufacturing'
@@ -237,7 +232,6 @@ export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
 export const MANUFACTURE_PRODUCT = 'create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
-export const MANUFACTURE_PRODUCT_ITEM = `/${MANUFACTURE_PRODUCT}/%d/`
 export const MANUFACTURE_PRODUCT_DELETE = '/delete_ingredient/%d/'
 export const MANUFACTURE_PRODUCT_CHANGE = '/dist/product/%d/change_manufacture/'
 

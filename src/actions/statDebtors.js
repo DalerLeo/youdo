@@ -106,23 +106,6 @@ export const statDebtorsSumFetchAction = () => {
     }
 }
 
-export const statDebtorsCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.STATDEBTORS_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STATDEBTORS_LIST_CSV,
-        payload
-    }
-}
-
 export const statDebtorsItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.STATDEBTORS_ITEM, id))

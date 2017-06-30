@@ -72,23 +72,6 @@ export const statManufactureListFetchAction = (filter) => {
     }
 }
 
-export const statManufactureCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.STAT_MANUFACTURE_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STAT_MANUFACTURE_LIST_CSV,
-        payload
-    }
-}
-
 export const statManufactureItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.STAT_MANUFACTURE_ITEM, id))
