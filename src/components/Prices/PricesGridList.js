@@ -149,15 +149,7 @@ const PricesGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={5}
-                     onTouchTap = {() => { listData.handleClickDetail(id) }}>
-                    {name}
-                    {/*<Link to={{*/}
-                        {/*pathname: sprintf(ROUTES.PRICES_ITEM_PATH, id),*/}
-                        {/*query: filter.getParams()*/}
-                    {/*}}>*/}
-                        {/*</Link>*/}
-                </Col>
+                <Col xs={5} onTouchTap = {() => { listData.handleClickDetail(id) }}>{name}</Col>
                 <Col xs={2}>{beginDate}</Col>
                 <Col xs={2}>{tillDate}</Col>
                 <Col xs={2}>{discount}</Col>
