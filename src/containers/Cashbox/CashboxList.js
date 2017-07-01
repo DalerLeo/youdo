@@ -18,7 +18,6 @@ import {
     cashboxCreateAction,
     cashboxUpdateAction,
     cashboxListFetchAction,
-    cashboxCSVFetchAction,
     cashboxDeleteAction,
     cashboxItemFetchAction
 } from '../../actions/cashbox'
@@ -29,7 +28,7 @@ const enhance = compose(
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['cashbox', 'item', 'data'])
-        const detailLoading = _.get(state, ['cashbox', 'item', 'loading'])
+        const itemLoading = _.get(state, ['cashbox', 'item', 'loading'])
         const createLoading = _.get(state, ['cashbox', 'create', 'loading'])
         const updateLoading = _.get(state, ['cashbox', 'update', 'loading'])
         const list = _.get(state, ['cashbox', 'list', 'data'])
@@ -43,7 +42,7 @@ const enhance = compose(
             list,
             listLoading,
             detail,
-            detailLoading,
+            itemLoading,
             createLoading,
             updateLoading,
             csvData,
@@ -73,18 +72,6 @@ const enhance = compose(
             return null
         },
 
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(cashboxCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
         handleOpenConfirmDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
@@ -107,11 +94,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[CASHBOX_DELETE_DIALOG_OPEN]: false})})
                     dispatch(cashboxListFetchAction(filter))
                 })
-        },
-
-        handleClearFilterDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {}})
         },
 
         handleOpenDeleteDialog: props => () => {
@@ -188,7 +170,7 @@ const CashboxList = enhance((props) => {
         list,
         listLoading,
         detail,
-        detailLoading,
+        itemLoading,
         createLoading,
         updateLoading,
         filter,
@@ -215,6 +197,7 @@ const CashboxList = enhance((props) => {
     }
 
     const confirmDialog = {
+        confirmLoading: itemLoading,
         openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
@@ -240,19 +223,11 @@ const CashboxList = enhance((props) => {
                 }
             }
         })(),
-        updateLoading: detailLoading || updateLoading,
+        updateLoading: itemLoading || updateLoading,
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
-    }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
     const listData = {
@@ -263,7 +238,7 @@ const CashboxList = enhance((props) => {
     const detailData = {
         id: detailId,
         data: detail,
-        detailLoading
+        itemLoading
     }
 
     return (
@@ -276,7 +251,6 @@ const CashboxList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )
