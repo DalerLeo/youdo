@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import {compose, withHandlers, withReducer, withState} from 'recompose'
+import {Field} from 'redux-form'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
@@ -203,28 +204,31 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                     />
                 </div>
                 {openAddProducts && <div className={classes.background}>
-                    <div style={{width: '35%', paddingRight: '20px'}}>
-                        <ProductTypeSearchField
+                    <div xs={3} style={{paddingRight: '20px'}}>
+                        <Field
                             label="Отфильтровать по типу"
+                            name="type"
+                            component={ProductTypeSearchField}
                             className={classes.inputFieldCustom}
-                            style={{width: '100%'}}
-                            {..._.get(defaultProps, 'product')}
+                            fullWidth={true}
                         />
                     </div>
-                    <div style={{width: '35%', paddingRight: '20px'}}>
-                        <OrderProductSearchField
+                    <div xs={3} style={{paddingRight: '20px'}}>
+                        <Field
                             label="Наименование товара"
+                            name="type"
+                            component={OrderProductSearchField}
                             className={classes.inputFieldCustom}
-                            style={{width: '100%'}}
-                            {..._.get(defaultProps, 'product')}
+                            fullWidth={true}
                         />
                     </div>
-                    <div style={{width: '20%', paddingRight: '20px'}}>
-                        <TextField
+                    <div xs={3} style={{paddingRight: '20px'}}>
+                        <Field
                             label="Кол-во"
+                            name="type"
+                            component={TextField}
                             className={classes.inputFieldCustom}
-                            style={{width: '100%'}}
-                            {..._.get(defaultProps, 'amount')}
+                            fullWidth={true}
                         />
                     </div>
                     <div>
