@@ -212,7 +212,7 @@ const iconStyle = {
 }
 
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data, confirmDialog, updateDialog, addPhotoDialog, slideShowDialog} = props
+    const {classes, loading, data, confirmDialog, updateDialog, addPhotoDialog, slideShowDialog, handleCloseDetail} = props
     const ZERO = 0
     const MAX_IMAGE_COUNT = 4
     const EVERY_DAY = '1'
@@ -253,7 +253,7 @@ const ShopDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{name}</div>
+                <div className={classes.titleLabel} onClick={handleCloseDetail}>{name}</div>
                 <div className={classes.titleButtons}>
                     <div className={classes.frequency}>
                         <span>Частота посещений:</span>
@@ -297,13 +297,13 @@ const ShopDetails = enhance((props) => {
                         </div>
                     </div>
                         : <div className={classes.imageWrapper}> {
-                            _.map(slicedImages, (item) => {
+                            _.map(slicedImages, (item, index) => {
                                 const src = _.get(item, 'image')
                                 const imgId = _.get(item, 'id')
                                 const isLastImage = (imgId === lastImage.id)
 
                                 return (
-                                    <span key={imgId} onClick={slideShowDialog.handleOpenSlideShowDialog}>
+                                    <span key={index} onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}>
                                         {isLastImage && moreImages !== ZERO && <strong>{moreImages}+</strong>}
                                         <img src={src} alt=""/>
                                     </span>
@@ -374,6 +374,8 @@ ShopDetails.propTypes = {
     }).isRequired,
     slideShowDialog: PropTypes.shape({
         openSlideShowDialog: PropTypes.bool.isRequired,
+        gallery: PropTypes.object.isRequired,
+        galleryLoading: PropTypes.bool.isRequired,
         handleOpenSlideShowDialog: PropTypes.func.isRequired,
         handleCloseSlideShowDialog: PropTypes.func.isRequired
     }).isRequired

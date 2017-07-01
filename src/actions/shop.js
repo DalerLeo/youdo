@@ -3,11 +3,10 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/Shop/shopSerializer'
-import * as imageSerializers from '../serializers/Shop/shopImageSerializer'
+import * as serializers from '../serializers/shopSerializer'
 
-export const shopCreateAction = (formValues, location, image) => {
-    const requestData = serializers.createSerializer(formValues, location, image)
+export const shopCreateAction = (formValues, location) => {
+    const requestData = serializers.createSerializer(formValues, location)
     const payload = axios()
         .post(API.SHOP_CREATE, requestData)
         .then((response) => {
@@ -24,7 +23,7 @@ export const shopCreateAction = (formValues, location, image) => {
 }
 
 export const imageCreateAction = (image, id) => {
-    const requestData = imageSerializers.createSerializer(image, id)
+    const requestData = serializers.imageSerializer(image, id)
     const payload = axios()
         .post(sprintf(API.SHOP_ITEM_ADD_IMAGE, id), requestData)
         .then((response) => {
@@ -119,6 +118,22 @@ export const shopItemFetchAction = (id) => {
 
     return {
         type: actionTypes.SHOP_ITEM,
+        payload
+    }
+}
+
+export const slideShowFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.SHOP_ITEM_SHOW_IMAGE, id), {params: {'thumbnail_type': 'large'}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHOP_ITEM_SHOW_IMAGE,
         payload
     }
 }

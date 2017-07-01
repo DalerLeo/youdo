@@ -16,6 +16,7 @@ const enhance = compose(
             width: '100%',
             '& .imageDropZone': {
                 border: '2px #ccc dashed',
+                cursor: 'pointer',
                 width: '200px',
                 height: '200px',
                 display: 'flex',
@@ -26,22 +27,16 @@ const enhance = compose(
                 '& img': {
                     width: '100%',
                     display: 'block'
+                },
+                '& p': {
+                    textAlign: 'center'
                 }
             }
         },
         error: {
-            position: 'absolute',
-            zIndex: '99',
-            left: 0,
             textAlign: 'center',
-            background: '#fff',
-            border: '1px solid',
-            fontSize: '14px',
-            bottom: '2px',
-            marginLeft: '40px',
-            marginRight: '40px',
-            right: '0',
-            color: 'red'
+            fontWeight: '600',
+            color: '#f44336'
         }
     }),
     withState('fileUploadLoading', 'setFileUploadLoading', false),
@@ -72,15 +67,15 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
     const dropZoneView = ({acceptedFiles, rejectedFiles}) => {
         const zero = 0
         if (fileUploadLoading) {
-            return (<CircularProgress size={80} thickness={5}/>)
+            return (<CircularProgress size={35} thickness={4}/>)
         }
 
         if (fileUploadErrors !== null) {
-            return (<div><b>Ошибка:</b> <i>{fileUploadErrors}</i></div>)
+            return (<div className={classes.error}>Ошибка: {fileUploadErrors}</div>)
         }
 
         if (error) {
-            return (<div><b>Ошибка:</b> <i>{error}</i></div>)
+            return (<div className={classes.error}>Ошибка: {error}</div>)
         }
 
         if (acceptedFiles.length === zero) {
@@ -92,7 +87,7 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
             return (
                 <p>
                     <ImageImage style={{color: '#b9b9b9', width: '50px', height: '50px', display: 'block', margin: 'auto'}}/>
-                    Загрузите фото
+                    Кликните на эту область или перетащите изображение
                 </p>)
         }
         const url = acceptedFiles[zero].preview
