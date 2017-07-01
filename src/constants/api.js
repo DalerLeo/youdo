@@ -264,10 +264,4 @@ export const PRICE_LIST_ITEM = 'dist/price_list_item'
 
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 
-export const ZONE = 'dist/border'
-export const ZONE_CREATE = `/${ZONE}/`
-export const ZONE_LIST = `/${ZONE}/`
-export const ZONE_ITEM = `/${ZONE}/%d/`
-export const ZONE_DELETE = `/${ZONE}/%d/`
-
 export const TRACKING = 'dist/border'
