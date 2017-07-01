@@ -15,13 +15,13 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
 import SetCurrencyDialog from './SetCurrencyDialog'
-import PrimaryCurrencyDialog from './PrimaryCurrencyDialog'
 import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Tooltip from '../ToolTip'
 import Container from '../Container'
 import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 
 const listHeader = [
     {
@@ -108,7 +108,6 @@ const CurrencyGridList = enhance((props) => {
     const {
         createDialog,
         updateDialog,
-        primaryDialog,
         actionsDialog,
         confirmDialog,
         listData,
@@ -116,7 +115,6 @@ const CurrencyGridList = enhance((props) => {
         classes,
         detailId,
         detailFilter,
-
         setCurrencyUpdateDialog,
         currencyData
     } = props
@@ -151,19 +149,18 @@ const CurrencyGridList = enhance((props) => {
             </div>
         )
     })
-    const currentCurrency = _.get(primaryDialog.primaryCurrency, 'name')
     const currency = _.get(_.find(_.get(listData, 'data'), (o) => {
         return o.id === _.toInteger(_.get(detailData, 'id'))
     }), 'name')
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const historyList = _.map(_.get(detailData, ['data', 'results']), (item) => {
-        const currentCurrencyExp = _.get(primaryDialog.primaryCurrency, 'name')
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const rate = numberFormat(_.get(item, 'rate')) || 'N/A'
         return (
             <Row key={id}>
                 <Col xs={4}>{id}</Col>
-                <Col xs={4}>1 {currency} = {rate} {currentCurrencyExp}</Col>
+                <Col xs={4}>1 {currency} = {rate} {currentCurrency}</Col>
                 <Col xs={4}>{createdDate}</Col>
             </Row>
         )
@@ -191,13 +188,8 @@ const CurrencyGridList = enhance((props) => {
             </div>
             <Paper zDepth={2}>
                 <div className={classes.editContent}>
-                    <div className={classes.semibold}>Основная валюта <i style={{fontWeight: '400', color: '#999'}}>(используется
+                    <div className={classes.semibold}>Основная валюта: <b>{currentCurrency}</b><i style={{fontWeight: '400', color: '#999'}}>(используется
                         при формировании стоимости продукта / заказа)</i></div>
-                    <div className={classes.information}>
-                        <div style={{marginRight: '10px'}}>Выбранная валюта: <span
-                            className={classes.semibold}>{currentCurrency}</span></div>
-                        <a className={classes.link} onClick={primaryDialog.handlePrimaryOpenDialog}>Изменить</a>
-                    </div>
                 </div>
             </Paper>
             <div className={classes.wrap}>
@@ -217,13 +209,6 @@ const CurrencyGridList = enhance((props) => {
                     </Paper>
                 </div>
                 <div className={classes.rightSide}>
-                    <PrimaryCurrencyDialog
-                        open={primaryDialog.openPrimaryDialog}
-                        onClose={primaryDialog.handlePrimaryCloseDialog}
-                        initialValues={primaryDialog.initialValues}
-                        loading={primaryDialog.primaryCurrencyLoading}
-                        onSubmit={primaryDialog.handleSubmitPrimaryDialog}
-                    />
                     <div className={classes.outerTitle}>История</div>
                     <GridList
                         filter={detailFilter}
@@ -302,13 +287,6 @@ CurrencyGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    primaryDialog: PropTypes.shape({
-        primaryCurrency: PropTypes.object,
-        primaryCurrencyLoading: PropTypes.bool.isRequired,
-        openPrimaryDialog: PropTypes.bool.isRequired,
-        handlePrimaryOpenDialog: PropTypes.func.isRequired,
-        handleSubmitPrimaryDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
