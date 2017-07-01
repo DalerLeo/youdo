@@ -9,6 +9,7 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import {Row, Col} from 'react-flexbox-grid'
 import Dot from '../Images/dot.png'
 import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 import Tooltip from '../ToolTip'
 import moment from 'moment'
 
@@ -136,7 +137,8 @@ const enhance = compose(
             display: 'flex'
         },
         dateInfo: {
-            textAlign: 'right'
+            textAlign: 'right',
+            display: 'flex'
         },
         data: {
             width: '100%',
@@ -264,7 +266,6 @@ const PricesDetails = enhance((props) => {
         confirmDialog,
         handleCloseDetail
     } = props
-
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const products = _.get(data, 'products')
@@ -281,12 +282,12 @@ const PricesDetails = enhance((props) => {
             </div>
         )
     }
-
+    const currency = getConfig('PRIMARY_CURRENCY')
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                     onTouchTap={() => { handleCloseDetail() }}>№{id} {name}</div>
+                     onTouchTap={() => { handleCloseDetail() }}>№ {id} {name}</div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
@@ -311,31 +312,25 @@ const PricesDetails = enhance((props) => {
 
             <div className={classes.details}>
                 <div className={classes.storeInfo}>
-                    <div className={classes.store}>Дата начала: <span
-                        style={{color: '#999', fontWeight: 'bold'}}>{beginDate}</span></div>
-                    <div className={classes.pricesDate} style={{marginLeft: '45px'}}>Дата завершения: <span
-                        style={{color: '#e57373', fontWeight: 'bold'}}>{tillDate}</span></div>
+                    <div className={classes.store}>Размер <b>акции - {discount} %</b></div>
                 </div>
                 <div className={classes.dateInfo}>
-                    <div>Начало приемки: <span style={{fontWeight: '600'}}>{discount}</span></div>
-                    <div>Конец приемки: <span style={{fontWeight: '600'}}>{tillDate}</span></div>
+                    <div>Начало акции: <span style={{fontWeight: '600', marginRight: '30px'}}>{beginDate}</span></div>
+                    <div>Завершение акции: <span style={{fontWeight: '600'}}>{tillDate}</span></div>
                 </div>
             </div>
 
             <div className={classes.data}>
                 <div className="dataHeader">
                     <Row>
-                        <Col xs={1}>№</Col>
-                        <Col xs={4}>Товар</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Реальная стоимость</Col>
-                        <Col xs={2}>Стоимость по акции</Col>
-                        <Col xs={1}>Действие</Col>
+                        <Col xs={3}>Товар</Col>
+                        <Col xs={3}>Кол-во</Col>
+                        <Col xs={3}>Реальная стоимость</Col>
+                        <Col xs={3}>Стоимость по акции</Col>
                     </Row>
                 </div>
                 <div>
                     {_.map(products, (item) => {
-                        const index = _.get(item, 'id')
                         const product = _.get(item, 'product')
                         const productId = _.get(product, 'id')
                         const productName = _.get(product, 'name')
@@ -344,22 +339,10 @@ const PricesDetails = enhance((props) => {
                         const priceCost = 900
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
-                                <Col xs={1}>{index}</Col>
-                                <Col xs={4}>{productName}</Col>
-                                <Col xs={2}>{numberFormat(amount)}</Col>
-                                <Col xs={2}>{numberFormat(realCost)}</Col>
-                                <Col xs={2}>{numberFormat(priceCost)}</Col>
-                                <Col xs={1}>
-                                    <IconButton
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        touch={true}
-                                        onTouchTap={() => {
-                                            confirmDialog.handleOpenConfirmDialog(id)
-                                        }}>
-                                        <Delete />
-                                    </IconButton>
-                                </Col>
+                                <Col xs={3}>{productName}</Col>
+                                <Col xs={3}>{numberFormat(amount)}</Col>
+                                <Col xs={3}>{numberFormat(realCost)} {currency}</Col>
+                                <Col xs={3}>{numberFormat(priceCost)} {currency}</Col>
                             </Row>
                         )
                     })}

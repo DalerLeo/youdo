@@ -286,7 +286,7 @@ const PricesCreateDialog = enhance((props) => {
                             </div>
                             <div className={classes.rightOrderPart}>
                                 <Fields
-                                    names={['products', 'productType', 'product', 'amount']}
+                                    names={['products', 'product', 'amount']}
                                     component={PricesListProductField}
                                 />
                             </div>

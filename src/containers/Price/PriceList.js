@@ -82,7 +82,7 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const priceId = _.get(nextProps, ['params', 'priceId'])
         return priceId && _.get(props, ['params', 'priceId']) !== priceId
-    }, ({dispatch, params, nextProps}) => {
+    }, ({dispatch, params}) => {
         const priceId = _.toInteger(_.get(params, 'priceId'))
         dispatch(priceItemFetchAction(priceId))
         dispatch(getPriceItemsAction(priceId))

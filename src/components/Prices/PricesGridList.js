@@ -1,9 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
-import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -204,7 +202,7 @@ const PricesGridList = enhance((props) => {
 
             {detailData.id && <ConfirmDialog
                 type="delete"
-                message={'Постака № ' + _.get(detailData, ['data', 'name'])}
+                message={_.get(detailData, ['data', 'name'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
