@@ -379,7 +379,7 @@ const SupplyDetails = enhance((props) => {
                         <Col xs={1}>Недостача</Col>
                         <Col xs={2}>
                             <div style={{textAlign: 'right'}}>Стоимость</div>
-                        </Col>g
+                        </Col>
                         <Col xs={2}>
                             <div style={{textAlign: 'right'}}>Итог</div>
                         </Col>
