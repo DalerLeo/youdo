@@ -10,10 +10,8 @@ import StatDebtorsFilterForm from './StatDebtorsFilterForm'
 import GridList from '../GridList'
 import Container from '../Container'
 import StatDebtorsOrderDetails from './StatDebtorsOrderDetails'
-import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import * as ROUTES from '../../constants/routes'
-import StatDebtorsCreateDialog from './StatDebtorsCreateDialog'
 import MainStyles from '../Styles/MainStyles'
 import {Link} from 'react-router'
 import numberFormat from '../../helpers/numberFormat'
@@ -94,8 +92,8 @@ const enhance = compose(
             alignItems: 'center',
             '& span': {
                 color: '#333',
-                fontWeight: '700',
-                fontSize: '24px !important'
+                fontWeight: '600',
+                fontSize: '20px !important'
             },
             '&:first-child': {
                 border: 'none'
@@ -163,10 +161,7 @@ const enhance = compose(
 const StatDebtorsGridList = enhance((props) => {
     const {
         filter,
-        createDialog,
         sumData,
-        updateDialog,
-        confirmDialog,
         filterDialog,
         listData,
         detailData,
@@ -275,7 +270,7 @@ const StatDebtorsGridList = enhance((props) => {
                 : <div>
                     <div className={classes.title} style={{width: 'initial'}}>
                         <div className={classes.titleLabel}
-                            onTouchTap={detailData.handleCloseDetail}>{_.get(statDebtorsItem, ['client', 'name'])}</div>
+                            onClick={detailData.handleCloseDetail}>{_.get(statDebtorsItem, ['client', 'name'])}</div>
                         <div className={classes.subTitle}>
                             <div>
                                 Прошло: <span>{_.get(statDebtorsItem, 'expiredDays')} дней</span>
@@ -364,21 +359,6 @@ const StatDebtorsGridList = enhance((props) => {
                 detail={statDebtorsDetail}
                 actionsDialog={actions}
             />
-            <StatDebtorsCreateDialog
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                open={updateDialog.openUpdateDialog}
-                loading={updateDialog.updateLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
-
-            <StatDebtorsCreateDialog
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
 
             <StatDebtorsOrderDetails
                 open={_.get(orderData, 'orderDetailOpen')}
@@ -387,14 +367,6 @@ const StatDebtorsGridList = enhance((props) => {
                 handleOrderClick={orderData.handleOrderClick}
                 close={orderData.handleOrderDetailClose}
             />
-
-            {detailData.data && <ConfirmDialog
-                type="delete"
-                message="adfdasf"
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
         </Container>
     )
 })
@@ -403,26 +375,6 @@ StatDebtorsGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    updateDialog: PropTypes.shape({
-        updateLoading: PropTypes.bool.isRequired,
-        openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenUpdateDialog: PropTypes.func.isRequired,
-        handleCloseUpdateDialog: PropTypes.func.isRequired,
-        handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
     tabData: PropTypes.object,
     orderData: PropTypes.object
 }
