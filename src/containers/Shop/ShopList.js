@@ -1,11 +1,9 @@
 import React from 'react'
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
-import * as SHOP from '../../constants/shop'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -25,7 +23,6 @@ import {
     shopCreateAction,
     imageCreateAction,
     shopUpdateAction,
-    shopCSVFetchAction,
     shopDeleteAction,
     shopItemFetchAction,
     shopListFetchAction,
@@ -46,8 +43,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['shop', 'update', 'loading'])
         const list = _.get(state, ['shop', 'list', 'data'])
         const listLoading = _.get(state, ['shop', 'list', 'loading'])
-        const csvData = _.get(state, ['shop', 'csv', 'data'])
-        const csvLoading = _.get(state, ['shop', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'ShopFilterForm'])
         const createForm = _.get(state, ['form', 'ShopCreateForm'])
         const mapForm = _.get(state, ['form', 'ShopMapForm'])
@@ -65,8 +60,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
             createForm,
@@ -108,26 +101,9 @@ const enhance = compose(
         }
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(shopCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
         handleOpenConfirmDialog: props => () => {
             const {setOpenConfirmDialog} = props
             setOpenConfirmDialog(true)
@@ -140,12 +116,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, setOpenConfirmDialog} = props
             dispatch(shopDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     setOpenConfirmDialog(false)
                     dispatch(shopListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -157,11 +134,6 @@ const enhance = compose(
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_FILTER_OPEN]: false})})
-        },
-
-        handleTabChange: props => (tab) => {
-            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
-            hashHistory.push({pathname: sprintf(ROUTER.SHOP_ITEM_TAB_PATH, shopId, tab)})
         },
 
         handleClearFilterDialog: props => () => {
@@ -179,18 +151,6 @@ const enhance = compose(
                 [SHOP_FILTER_KEY.CLIENT]: client,
                 [SHOP_FILTER_KEY.MARKET_TYPE]: marketType
             })
-        },
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
         handleOpenCreateDialog: props => () => {
@@ -374,12 +334,6 @@ const ShopList = enhance((props) => {
     const client = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CLIENT))
     const marketType = filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE)
     const detailId = _.toInteger(_.get(params, 'shopId'))
-    const tab = _.get(params, 'tab') || SHOP.DEFAULT_TAB
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
 
     const createDialog = {
         createLoading,
@@ -508,18 +462,6 @@ const ShopList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
-    const tabData = {
-        tab,
-        handleTabChange: props.handleTabChange
-    }
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -538,7 +480,6 @@ const ShopList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                tabData={tabData}
                 createDialog={createDialog}
                 mapDialog={mapDialog}
                 addPhotoDialog={addPhotoDialog}
@@ -547,9 +488,7 @@ const ShopList = enhance((props) => {
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
                 mapLocation={mapLocation}
                 navigationButtons={navigationButtons}
             />
