@@ -272,12 +272,10 @@ export const MARKET_TYPE_DELETE = 'MARKET_TYPE_DELETE'
 export const PRICE_LIST = 'PRICE_LIST'
 export const PRICE_CREATE = 'PRICE_CREATE'
 export const PRICE_ITEM = 'PRICE_ITEM'
-<<<<<<< HEAD
-=======
+
 export const PRICE_DELETE = 'PRICE_DELETE'
 export const PRICE_LIST_CSV = 'PRICE_LIST_CSV'
 
->>>>>>> e6eeb5fa1f7d92481b0fa7262a9a9de416518e0b
 export const PRICE_LIST_ITEM_LIST = 'PRICE_LIST_ITEM_LIST'
 export const ZONE_LIST = 'ZONE_LIST'
 export const ZONE_ITEM = 'ZONE_ITEM'

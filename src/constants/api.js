@@ -249,30 +249,18 @@ export const MARKET_TYPE_LIST = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_ITEM = `/${MARKET_TYPE}/%d/`
 export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`
 
-export const PRICE = 'dist/product'
-<<<<<<< HEAD
-export const PRICE_CREATE = `/${PRICE}/`
-export const PRICE_LIST = `/${PRICE}/`
-export const PRICE_ITEM = `/${PRICE}/%d/`
-export const PRICE_DELETE = `/${PRICE}/%d/`
-export const PRICE_EXTRA = 'products_extra_list/'
-export const PRICE_INGREDIENT = 'dist/product/%d/ingredient_list/'
-
-export const PRICE_LIST_ITEM = 'dist/price_list_item'
-export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
-export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
-=======
-export const PRICE_CREATE = `/${PRODUCT}/`
-export const PRICE_LIST = `/${PRODUCT}/`
-export const PRICE_ITEM = `/${PRODUCT}/%d/`
-export const PRICE_DELETE = `/${PRODUCT}/%d/`
-
-export const PRICE_LIST_ITEM = 'dist/price_list_item'
-export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
-
 export const ZONE = 'dist/border'
 export const ZONE_CREATE = `/${ZONE}/`
 export const ZONE_LIST = `/${ZONE}/`
 export const ZONE_ITEM = `/${ZONE}/%d/`
 export const ZONE_DELETE = `/${ZONE}/%d/`
->>>>>>> e6eeb5fa1f7d92481b0fa7262a9a9de416518e0b
+
+export const PRICE = 'dist/product'
+export const PRICE_CREATE = `/${PRODUCT}/`
+export const PRICE_LIST = `/${PRODUCT}/`
+export const PRICE_ITEM = `/${PRODUCT}/%d/`
+export const PRICE_DELETE = `/${PRODUCT}/%d/`
+export const PRICE_LIST_ITEM = 'dist/price_list_item'
+
+export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
+
