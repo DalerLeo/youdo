@@ -62,8 +62,6 @@ const enhance = compose(
         brandId && dispatch(brandItemFetchAction(brandId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
-
     withHandlers({
         handleActionEdit: props => () => {
             return null

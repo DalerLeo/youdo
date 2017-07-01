@@ -33,8 +33,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['cashbox', 'update', 'loading'])
         const list = _.get(state, ['cashbox', 'list', 'data'])
         const listLoading = _.get(state, ['cashbox', 'list', 'loading'])
-        const csvData = _.get(state, ['cashbox', 'csv', 'data'])
-        const csvLoading = _.get(state, ['cashbox', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'CashboxCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -45,8 +43,6 @@ const enhance = compose(
             itemLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             createForm
         }
@@ -64,8 +60,6 @@ const enhance = compose(
         const cashboxId = _.toInteger(_.get(params, 'cashboxId'))
         cashboxId && dispatch(cashboxItemFetchAction(cashboxId))
     }),
-
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
@@ -87,12 +81,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(cashboxDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CASHBOX_DELETE_DIALOG_OPEN]: false})})
                     dispatch(cashboxListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
