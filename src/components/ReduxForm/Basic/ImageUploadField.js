@@ -87,7 +87,7 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
             return (
                 <p>
                     <ImageImage style={{color: '#b9b9b9', width: '50px', height: '50px', display: 'block', margin: 'auto'}}/>
-                    Кликните на эту область или перетащите изображение
+                    Добавьте фото
                 </p>)
         }
         const url = acceptedFiles[zero].preview
