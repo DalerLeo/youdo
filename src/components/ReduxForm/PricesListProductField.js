@@ -139,25 +139,22 @@ const enhance = compose(
 
     withHandlers({
         handleAdd: props => () => {
-            const productType = _.get(props, ['productType', 'input', 'value'])
-            console.log(productType)
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
             const currency = _.get(props, ['currency'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
 
-            if (!_.isEmpty(product) && !_.isEmpty(productType) && amount) {
-                console.log('sdfkdsfmsdfmk')
+            if (!_.isEmpty(product) && amount) {
                 let has = false
                 _.map(products, (item) => {
-                    if (_.get(item, 'product') === product && _.get(item, 'productType') === productType) {
+                    if (_.get(item, 'product') === product) {
                         item.amount = _.toInteger(item.amount) + _.toInteger(amount)
                         has = true
                     }
                 })
                 if (!has) {
-                    onChange(_.union(products, [{productType, product, amount, currency}]))
+                    onChange(_.union(products, [{product, amount, currency}]))
                     has = false
                 }
             }

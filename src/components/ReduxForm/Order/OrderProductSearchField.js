@@ -47,7 +47,7 @@ const OrderProductSearchField = enhance((props) => {
     const test = (id) => {
         return getItem(id, dispatch)
     }
-    const type = _.get(state, ['form', 'OrderCreateForm', 'value', 'type', 'value'])
+    const type = _.get(state, ['form', 'OrderCreateForm', 'values', 'type', 'value'])
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}

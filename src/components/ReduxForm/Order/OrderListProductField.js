@@ -204,7 +204,7 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                     />
                 </div>
                 {openAddProducts && <div className={classes.background}>
-                    <div xs={3} style={{paddingRight: '20px'}}>
+                    <div xs={12} style={{paddingRight: '20px'}}>
                         <Field
                             label="Отфильтровать по типу"
                             name="type"
@@ -213,19 +213,19 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                             fullWidth={true}
                         />
                     </div>
-                    <div xs={3} style={{paddingRight: '20px'}}>
+                    <div xs={4} style={{paddingRight: '20px'}}>
                         <Field
                             label="Наименование товара"
-                            name="type"
+                            name="product"
                             component={OrderProductSearchField}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                         />
                     </div>
-                    <div xs={3} style={{paddingRight: '20px'}}>
+                    <div xs={2} style={{paddingRight: '20px'}}>
                         <Field
                             label="Кол-во"
-                            name="type"
+                            name="amount"
                             component={TextField}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
@@ -234,10 +234,10 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                     <div>
                         <OrderProductMeasurementField/>
                     </div>
-                    <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px'}}>
+                    <div className="summa" style={{width: '10%', textAlign: 'right', paddingRight: '20px'}}>
                         <ProductCostField />
                     </div>
-                    <div style={{width: '20%', textAlign: 'right', paddingTop: '9px'}}>
+                    <div style={{width: '15%', textAlign: 'right', paddingTop: '9px'}}>
                         <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
                     </div>
                 </div>}
