@@ -18,7 +18,6 @@ import {
     expensiveCategoryCreateAction,
     expensiveCategoryUpdateAction,
     expensiveCategoryListFetchAction,
-    expensiveCategoryCSVFetchAction,
     expensiveCategoryDeleteAction,
     expensiveCategoryItemFetchAction
 } from '../../actions/expensiveCategory'
@@ -34,8 +33,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['expensiveCategory', 'update', 'loading'])
         const list = _.get(state, ['expensiveCategory', 'list', 'data'])
         const listLoading = _.get(state, ['expensiveCategory', 'list', 'loading'])
-        const csvData = _.get(state, ['expensiveCategory', 'csv', 'data'])
-        const csvLoading = _.get(state, ['expensiveCategory', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'ExpensiveCategoryCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -46,8 +43,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             createForm
         }
@@ -73,18 +68,6 @@ const enhance = compose(
             return null
         },
 
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(expensiveCategoryCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
         handleOpenConfirmDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
@@ -100,12 +83,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(expensiveCategoryDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[EXPENSIVE_CATEGORY_DELETE_DIALOG_OPEN]: false})})
                     dispatch(expensiveCategoryListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -210,6 +194,7 @@ const ExpensiveCategoryList = enhance((props) => {
     }
 
     const confirmDialog = {
+        confirmLoading: detailLoading,
         openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
@@ -230,14 +215,6 @@ const ExpensiveCategoryList = enhance((props) => {
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
-    }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
     const listData = {
@@ -261,7 +238,6 @@ const ExpensiveCategoryList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )
