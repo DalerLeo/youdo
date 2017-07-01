@@ -91,7 +91,7 @@ GridList.propTypes = {
         listData: PropTypes.array.isRequired
     }),
     detail: PropTypes.node.isRequired,
-    actionsDialog: PropTypes.node.isRequired,
+    actionsDialog: PropTypes.node,
     filterDialog: PropTypes.node
 }
 

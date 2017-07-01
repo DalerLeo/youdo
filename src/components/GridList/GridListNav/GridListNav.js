@@ -59,7 +59,7 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
 
 GridListNav.propTypes = {
     filter: PropTypes.object.isRequired,
-    actions: PropTypes.node.isRequired,
+    actions: PropTypes.node,
     withoutSearch: PropTypes.bool.isRequired,
     customData: PropTypes.shape({
         dialog: PropTypes.node.isRequired,

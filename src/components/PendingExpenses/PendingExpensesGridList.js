@@ -78,22 +78,9 @@ const PendingExpensesGridList = enhance((props) => {
         filter,
         updateDialog,
         filterDialog,
-        actionsDialog,
         listData,
         detailData
     } = props
-
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
 
     const pendingExpensesFilterDialog = (
         <PendingExpensesFilterForm
@@ -147,7 +134,6 @@ const PendingExpensesGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={pendingExpensesDetail}
-                actionsDialog={actions}
                 filterDialog={pendingExpensesFilterDialog}
             />
 
