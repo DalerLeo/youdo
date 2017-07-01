@@ -11,8 +11,6 @@ import GridList from '../GridList'
 import Container from '../Container'
 import PendingExpensesFilterForm from './PendingExpensesFilterForm'
 import PendingExpensesCreateDialog from './PendingExpensesCreateDialog'
-import DeleteDialog from '../DeleteDialog'
-import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -78,12 +76,9 @@ const iconStyle = {
 const PendingExpensesGridList = enhance((props) => {
     const {
         filter,
-        createDialog,
         updateDialog,
         filterDialog,
         actionsDialog,
-        confirmDialog,
-        deleteDialog,
         listData,
         detailData
     } = props
@@ -157,13 +152,6 @@ const PendingExpensesGridList = enhance((props) => {
             />
 
             <PendingExpensesCreateDialog
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
-            <PendingExpensesCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 detailData={detailData}
@@ -171,20 +159,6 @@ const PendingExpensesGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
-
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
-            />
-
-            {detailData.data && <ConfirmDialog
-                type="delete"
-                message={_.get(detailData, ['data', 'name'])}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
         </Container>
     )
 })
@@ -193,34 +167,12 @@ PendingExpensesGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
-    }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
         openUpdateDialog: PropTypes.bool.isRequired,
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,
