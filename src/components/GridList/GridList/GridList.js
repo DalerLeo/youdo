@@ -91,13 +91,14 @@ GridList.propTypes = {
         listData: PropTypes.array.isRequired
     }),
     detail: PropTypes.node.isRequired,
-    actionsDialog: PropTypes.node.isRequired,
+    actionsDialog: PropTypes.node,
     filterDialog: PropTypes.node
 }
 
 GridList.defaultProps = {
     withoutCheckboxes: false,
-    withoutSearch: false
+    withoutSearch: false,
+    actionsDialog: (<div>no</div>)
 }
 
 export default GridList

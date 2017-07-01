@@ -32,6 +32,7 @@ import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
 import {ShiftList} from '../containers/Shift'
 import {Zones} from '../containers/Zones'
+import {Tracking} from '../containers/Tracking'
 import {MarketTypeList} from '../containers/MarketType'
 import {PricesList} from '../containers/Prices'
 import {PriceList} from '../containers/Price'
@@ -365,7 +366,16 @@ export default {
                 component: userIsAuth(Zones)
             }]
         },
-        // Market_type
+        // TRACKING
+        {
+            path: ROUTES.TRACKING_LIST_URL,
+            component: userIsAuth(Tracking),
+            childRoutes: [{
+                path: ROUTES.TRACKING_LIST_URL,
+                component: userIsAuth(Tracking)
+            }]
+        },
+        // MARKET TYPE
         {
             path: ROUTES.MARKET_TYPE_LIST_URL,
             component: userIsAuth(MarketTypeList),

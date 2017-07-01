@@ -8,7 +8,7 @@ import injectSheet from 'react-jss'
 import PropTypes from 'prop-types'
 import DatePickerDialog from 'material-ui/DatePicker/DatePickerDialog'
 import MUITextField from 'material-ui/TextField'
-import DateRange from 'material-ui/svg-icons/action/date-range'
+import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 const DELAY = 300
 
@@ -86,7 +86,7 @@ class DateToDateField extends React.Component {
                         firstDayOfWeek={0}
                     />
                     <div className={classes.icon}>
-                        <DateRange />
+                        <KeyboardArrowDown />
                     </div>
                     <MUITextField
                         errorText={error}

@@ -6,13 +6,11 @@ import {Link} from 'react-router'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import PriceFilterForm from './PriceFilterForm'
-import ConfirmDialog from '../ConfirmDialog'
 import PriceSupplyDialog from './PriceSupplyDialog'
 import SubMenu from '../SubMenu'
 import IconMenu from 'material-ui/IconMenu'
@@ -21,7 +19,6 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import PriceDetails from './PriceDetails'
-
 const listHeader = [
     {
         sorting: true,
@@ -35,7 +32,6 @@ const listHeader = [
         title: 'Себестоимость',
         xs: 2
     },
-
     {
         sorting: true,
         name: 'price',
@@ -49,7 +45,6 @@ const listHeader = [
         xs: 2
     }
 ]
-
 const enhance = compose(
     injectSheet({
         addButton: {
@@ -77,31 +72,16 @@ const enhance = compose(
         }
     })
 )
-
 const PriceGridList = enhance((props) => {
     const {
         filter,
         filterDialog,
-        actionsDialog,
         confirmDialog,
         priceSupplyDialog,
         priceSetForm,
         listData,
         detailData
     } = props
-
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
-
     const priceFilterDialog = (
         <PriceFilterForm
             initialValues={filterDialog.initialValues}
@@ -109,17 +89,16 @@ const PriceGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
-
     const priceDetail = (
         <PriceDetails
             key={_.get(detailData, 'id')}
             detailData={detailData}
             priceSupplyDialog={priceSupplyDialog}
             priceSetForm = {priceSetForm}
-            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}>
+            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+            mergedList={detailData.mergedList()}>
         </PriceDetails>
     )
-
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -136,7 +115,7 @@ const PriceGridList = enhance((props) => {
                 <Col xs={5} style={{display: 'flex', alignItems: 'center'}}>
                     <Link to={{
                         pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id),
-                        query: filter.getParams()
+                        query: ''
                     }}>{name}</Link>
                 </Col>
                 <Col xs={2}>{type}</Col>
@@ -162,8 +141,6 @@ const PriceGridList = enhance((props) => {
         list: priceList,
         loading: _.get(listData, 'listLoading')
     }
-
-    const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
     return (
         <Container>
             <SubMenu url={ROUTES.PRICE_LIST_URL}/>
@@ -171,39 +148,19 @@ const PriceGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={priceDetail}
-                actionsDialog={actions}
                 filterDialog={priceFilterDialog}
             />
             <PriceSupplyDialog
                 open={priceSupplyDialog.openPriceSupplyDialog}
                 onClose={priceSupplyDialog.handleCloseSupplyDialog}
             />
-            {currentDetail && <ConfirmDialog
-                type="delete"
-                message={_.get(currentDetail, 'name')}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
         </Container>
     )
 })
-
 PriceGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,
         filterLoading: PropTypes.bool,
@@ -224,5 +181,4 @@ PriceGridList.propTypes = {
         handleSubmitPriceSetForm: PropTypes.func.isRequired
     }).isRequired
 }
-
 export default PriceGridList

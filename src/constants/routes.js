@@ -154,6 +154,9 @@ export const PENDING_PAYMENTS_ITEM_PATH = `${PENDING_PAYMENTS}/%d`
 export const ZONES = 'zones'
 export const ZONES_LIST_URL = `/${ZONES}`
 
+export const TRACKING = 'tracking'
+export const TRACKING_LIST_URL = `/${TRACKING}`
+
 export const MARKET_TYPE = 'marketType'
 export const MARKET_TYPE_LIST_URL = `/${MARKET_TYPE}`
 export const MARKET_TYPE_ITEM_URL = `${MARKET_TYPE_LIST_URL}/:marketTypeId`
