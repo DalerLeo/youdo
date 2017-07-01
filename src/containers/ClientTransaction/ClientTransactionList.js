@@ -5,7 +5,7 @@ import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -23,13 +23,9 @@ import {
 import {
     clientTransactionCreateExpenseAction,
     clientTransactionCreateIncomeAction,
-    clientTransactionUpdateExpenseAction,
-    clientTransactionUpdateIncomeAction,
     clientTransactionCreateSendAction,
     clientTransactionListFetchAction,
-    clientTransactionCSVFetchAction,
-    clientTransactionDeleteAction,
-    clientTransactionItemFetchAction
+    clientTransactionDeleteAction
 } from '../../actions/clientTransaction'
 import {
     clientListFetchAction
@@ -49,8 +45,6 @@ const enhance = compose(
         const clientList = _.get(state, ['client', 'list', 'data'])
         const clientListLoading = _.get(state, ['client', 'list', 'loading'])
         const listLoading = _.get(state, ['clientTransaction', 'list', 'loading'])
-        const csvData = _.get(state, ['clientTransaction', 'csv', 'data'])
-        const csvLoading = _.get(state, ['clientTransaction', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'ClientTransactionFilterForm'])
         const createForm = _.get(state, ['form', 'ClientTransactionCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -64,8 +58,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterClient,
             filterForm,
@@ -87,8 +79,6 @@ const enhance = compose(
         dispatch(clientTransactionListFetchAction(filter, clientId === ZERO ? null : clientId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
-
     withHandlers({
         handleActionEdit: props => () => {
             return null
@@ -96,18 +86,6 @@ const enhance = compose(
 
         handleOpenDeleteDialog: props => () => {
             return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(clientTransactionCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
         },
 
         handleOpenConfirmDialog: props => (id) => {
@@ -260,71 +238,6 @@ const enhance = compose(
 
         handleClickClient: props => (id) => {
             hashHistory.push({pathname: sprintf(ROUTER.CLIENT_TRANSACTION_ITEM_PATH, _.toInteger(id)), query: {}})
-        },
-
-        handleOpenUpdateDialog: props => (id, amount) => {
-            const {filter, dispatch} = props
-            const zero = 0
-            if (_.toNumber(amount) < zero) {
-                hashHistory.push({
-                    pathname: sprintf(ROUTER.CLIENT_TRANSACTION_ITEM_PATH, id),
-                    query: filter.getParams({[CLIENT_TRANSACTION_UPDATE_EXPENSE_DIALOG_OPEN]: true})
-                })
-            } else {
-                hashHistory.push({
-                    pathname: sprintf(ROUTER.CLIENT_TRANSACTION_ITEM_PATH, id),
-                    query: filter.getParams({[CLIENT_TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]: true})
-                })
-            }
-            dispatch(clientTransactionItemFetchAction(id))
-        },
-
-        handleCloseUpdateExpenseDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({[CLIENT_TRANSACTION_UPDATE_EXPENSE_DIALOG_OPEN]: false})
-            })
-        },
-
-        handleSubmitUpdateExpenseDialog: props => () => {
-            const {dispatch, createForm, filter, clientId} = props
-            const clientTransactionId = _.toInteger(_.get(props, ['params', 'clientTransactionId']))
-            return dispatch(clientTransactionUpdateExpenseAction(clientTransactionId, _.get(createForm, ['values']), clientId))
-                .then(() => {
-                    return dispatch(clientTransactionItemFetchAction(clientTransactionId))
-                })
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[CLIENT_TRANSACTION_UPDATE_EXPENSE_DIALOG_OPEN]: false}))
-                    dispatch(clientTransactionListFetchAction(filter, clientId))
-                })
-        },
-
-        handleCloseUpdateIncomeDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({[CLIENT_TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]: false})
-            })
-        },
-
-        handleSubmitUpdateIncomeDialog: props => () => {
-            const {dispatch, createForm, filter, clientId} = props
-            const clientTransactionId = _.toInteger(_.get(props, ['params', 'clientTransactionId']))
-            return dispatch(clientTransactionUpdateIncomeAction(clientTransactionId, _.get(createForm, ['values']), clientId))
-                .then(() => {
-                    return dispatch(clientTransactionItemFetchAction(clientTransactionId))
-                })
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[CLIENT_TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]: false}))
-                    dispatch(clientTransactionListFetchAction(filter, clientId))
-                })
         }
     })
 )
@@ -455,14 +368,6 @@ const ClientTransactionList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -499,7 +404,6 @@ const ClientTransactionList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

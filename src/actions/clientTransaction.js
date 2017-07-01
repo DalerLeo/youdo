@@ -71,23 +71,6 @@ export const clientTransactionDeleteAction = (id) => {
     }
 }
 
-export const clientTransactionUpdateExpenseAction = (id, formValues, clientId) => {
-    const requestData = serializers.createExpenseSerializer(formValues, clientId)
-    const payload = axios()
-        .put(sprintf(API.CLIENT_TRANSACTION_ITEM, id), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CLIENT_TRANSACTION_UPDATE,
-        payload
-    }
-}
-
 export const clientTransactionListFetchAction = (filter, clientId) => {
     const params = serializers.listFilterSerializer(filter.getParams(), clientId)
     const payload = axios()
@@ -105,18 +88,3 @@ export const clientTransactionListFetchAction = (filter, clientId) => {
     }
 }
 
-export const clientTransactionItemFetchAction = (id) => {
-    const payload = axios()
-        .get(sprintf(API.CLIENT_TRANSACTION_ITEM, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CLIENT_TRANSACTION_ITEM,
-        payload
-    }
-}
