@@ -17,7 +17,6 @@ import {
     providerCreateAction,
     providerUpdateAction,
     providerListFetchAction,
-    providerCSVFetchAction,
     providerDeleteAction,
     providerItemFetchAction
 } from '../../actions/provider'
@@ -33,8 +32,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['provider', 'update', 'loading'])
         const list = _.get(state, ['provider', 'list', 'data'])
         const listLoading = _.get(state, ['provider', 'list', 'loading'])
-        const csvData = _.get(state, ['provider', 'csv', 'data'])
-        const csvLoading = _.get(state, ['provider', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'ProviderCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -45,8 +42,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             createForm
         }
@@ -65,24 +60,11 @@ const enhance = compose(
         providerId && dispatch(providerItemFetchAction(providerId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
             return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(providerCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
         },
 
         handleOpenConfirmDialog: props => () => {
@@ -97,12 +79,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog, filter} = props
             dispatch(providerDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     setOpenConfirmDialog(false)
                     dispatch(providerListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -196,7 +179,6 @@ const ProviderList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', PROVIDER_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PROVIDER_UPDATE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'providerId'))
-    const tab = _.get(params, 'tab')
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -247,19 +229,6 @@ const ProviderList = enhance((props) => {
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
 
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
-    const tabData = {
-        tab,
-        handleTabChange: props.handleTabChange
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -278,12 +247,10 @@ const ProviderList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                tabData={tabData}
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )
