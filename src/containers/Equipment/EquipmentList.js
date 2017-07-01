@@ -4,7 +4,7 @@ import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -60,8 +60,6 @@ const enhance = compose(
         const equipmentId = _.toInteger(_.get(params, 'equipmentId'))
         equipmentId && dispatch(equipmentItemFetchAction(equipmentId))
     }),
-
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {

@@ -4,7 +4,7 @@ import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as MANUFACTURE_TAB from '../../constants/manufactureTab'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
@@ -170,7 +170,6 @@ const enhance = compose(
         }
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
     // Product withHandlers
     withHandlers({
         handleOpenProductFilterDialog: props => () => {

@@ -61,8 +61,6 @@ const enhance = compose(
         expensiveCategoryId && dispatch(expensiveCategoryItemFetchAction(expensiveCategoryId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
-
     withHandlers({
         handleActionEdit: props => () => {
             return null
