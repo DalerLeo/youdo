@@ -4,15 +4,15 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
-import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, BrandSearchField, MeasurementSearchField, ImageUploadField} from '../ReduxForm'
+import {TextField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
-
+import {Row, Col} from 'react-flexbox-grid'
 export const PRICE_SET_FORM_OPEN = 'openSetForm'
+import Tooltip from '../ToolTip'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -38,6 +38,91 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
+        },
+        bodyTitle: {
+            display: 'flex',
+            fontWeight: '700',
+            marginBottom: '25px',
+            fontSize: '14px',
+            justifyContent: 'space-between',
+            height: '25px',
+            alignItems: 'center !important'
+        },
+        rightSide: {
+            position: 'relative',
+            flexBasis: '100%',
+            maxWidth: '100%'
+        },
+        rightSideTitleDate: {
+            fontWeight: '600',
+            fontSize: '12px!important',
+            color: '#a5a1a0'
+        },
+        tableContent: {
+            '& .row:first-child': {
+                fontWeight: '600'
+            },
+            '& .row': {
+                padding: '10px 0 !important',
+                '& > div': {
+                    textAlign: 'right'
+                },
+                '& > div:first-child': {
+                    textAlign: 'left'
+                }
+            },
+            overflowY: 'hidden',
+            overflowX: 'hidden'
+        },
+        actionButton: {
+            display: 'flex',
+            alignItems: 'center',
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '0',
+            zIndex: '999',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        priceRow: {
+            display: 'flex',
+            alignItems: 'center',
+            height: '40px'
+        },
+        dottedList: {
+            extend: 'priceRow',
+            '&:after': {
+                content: '',
+                backgroundImage: 'url(../components/Images/dot.png)',
+                position: 'absolute',
+                bottom: '0',
+                height: '2px',
+                left: '0',
+                right: '0'
+            }
         }
     })),
     reduxForm({
@@ -47,66 +132,84 @@ const enhance = compose(
 )
 
 const PriceSetForm = enhance((props) => {
-    const {handleSubmit, onClose, classes, isUpdate} = props
+    const {
+        handleSubmit,
+        classes,
+        mergedList,
+        onClose
+    } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
+    const iconStyle = {
+        icon: {
+            color: '#666',
+            width: 20,
+            height: 20
+        },
+        button: {
+            width: 48,
+            height: 48,
+            padding: 0
+        }
+    }
     return (
-     <div>
-            <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить продукт' : 'Добавить продукт'}</span>
-                <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
-                </IconButton>
-            </div>
-            <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '250px'}}>
-                        <div className={classes.loader}>
-                            <CircularProgress size={80} thickness={5}/>
-                        </div>
-                        <div className={classes.field} style={{marginTop: '10px'}}>
-                            <Field
-                                name="name"
-                                className={classes.inputFieldCustom}
-                                component={TextField}
-                                label="Наименование"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="brand"
-                                className={classes.inputFieldCustom}
-                                component={BrandSearchField}
-                                label="Бренд"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="measurement"
-                                className={classes.inputFieldCustom}
-                                component={MeasurementSearchField}
-                                label="Мера"
-                                fullWidth={true}
-                            />
-                        </div>
-                        <div className={classes.field} style={{maxWidth: '224px'}}>
-                            <Field
-                                name="image"
-                                className={classes.imageUpload}
-                                component={ImageUploadField}
-                                label="Изображения"
-                                fullWidth={true}
-                            />
-                        </div>
+        <div>
+            <form onSubmit={onSubmit} className={classes.form}>
+                <div className={classes.bodyTitle}>
+                    <div>Цены на товар
+                        <span className={classes.rightSideTitleDate}> (23 апр, 2017)</span>
                     </div>
-                    <div className={classes.bottomButton}>
+
+                    <div className={classes.actionButton}>
                         <FlatButton
                             label="Сохранить"
-                            className={classes.actionButton}
                             primary={true}
                             type="submit"
+                            onTouchTap={onSubmit}
                         />
+
+                        <Tooltip position="bottom" text="Закрыть">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onTouchTap={onClose}>
+                                <CloseIcon2 color="#666666"/>
+                            </IconButton>
+                        </Tooltip>
                     </div>
-                </form>
-            </div>
+                </div>
+                <div className={classes.tableContent}>
+                    <Row className={classes.priceRow}>
+                        <Col xs={6}>Тип обьекта</Col>
+                        <Col style={{textAlign: 'left'}} xs={3}>Нал</Col>
+                        <Col style={{textAlign: 'left'}} xs={3}>Безнал</Col>
+                    </Row>
+                    {_.map(mergedList, (item, index) => {
+                        const marketName = _.get(item, 'marketTypeName')
+                        return (
+                            <Row className={classes.dottedList} key={index}>
+                                <Col xs={6}> {marketName}</Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>
+                                    <Field
+                                        name={'prices[' + index + '][cash_price]'}
+                                        className={classes.inputFieldCustom}
+                                        component={TextField}
+                                        fullWidth={true}
+                                    />
+                                </Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>
+                                    <Field
+                                        name={'prices[' + index + '][transfer_price]'}
+                                        className={classes.inputFieldCustom}
+                                        component={TextField}
+                                        fullWidth={true}
+                                    />
+                                </Col>
+                            </Row>
+                        )
+                    })}
+                </div>
+            </form>
         </div>
     )
 })
