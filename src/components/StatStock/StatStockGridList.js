@@ -8,8 +8,6 @@ import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import StatStockCreateDialog from './StatStockCreateDialog'
-import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
@@ -166,9 +164,6 @@ const enhance = compose(
 const StatStockGridList = enhance((props) => {
     const {
         filter,
-        createDialog,
-        updateDialog,
-        confirmDialog,
         filterDialog,
         listData,
         detailData,
@@ -176,12 +171,6 @@ const StatStockGridList = enhance((props) => {
         statStockData,
         getDocument
     } = props
-
-    const actions = (
-        <div>
-
-        </div>
-    )
 
     const handleClickTapChange = _.get(listData, 'handleClickTapChange')
     const statStockFilterDialog = (
@@ -328,31 +317,7 @@ const StatStockGridList = enhance((props) => {
                 filterDialog={statStockFilterDialog}
                 list={list}
                 detail={statStockDetail}
-                actionsDialog={actions}
             />
-            <StatStockCreateDialog
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                open={updateDialog.openUpdateDialog}
-                loading={updateDialog.updateLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
-
-            <StatStockCreateDialog
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
-            {detailData.data && <ConfirmDialog
-                type="delete"
-                message="adfdasf"
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
         </Container>
     )
 })
@@ -361,26 +326,6 @@ StatStockGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    updateDialog: PropTypes.shape({
-        updateLoading: PropTypes.bool.isRequired,
-        openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenUpdateDialog: PropTypes.func.isRequired,
-        handleCloseUpdateDialog: PropTypes.func.isRequired,
-        handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
     statStockData: PropTypes.object.isRequired,
     handleClickStock: PropTypes.object.isRequired
 }
