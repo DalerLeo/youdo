@@ -9,7 +9,7 @@ import {reduxForm} from 'redux-form'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
-import {Row, Col} from 'react-flexbox-grid'
+import {Row} from 'react-flexbox-grid'
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -36,7 +36,7 @@ const enhance = compose(
             '& .row': {
                 lineHeight: '35px',
                 padding: '0 10px',
-                '& > div:first-child':{
+                '& > div:first-child': {
                     flexBasis: '25%',
                     maxWidth: '25%'
                 },
