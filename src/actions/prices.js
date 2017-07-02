@@ -3,121 +3,106 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/shopSerializer'
-export const shopCreateAction = (formValues, location) => {
-    const requestData = serializers.createSerializer(formValues, location)
+import * as serializers from '../serializers/pricesSerializer'
+
+export const pricesCreateAction = (formValues) => {
+    const requestData = serializers.createSerializer(formValues)
+
     const payload = axios()
-        .post(API.SHOP_CREATE, requestData)
+        .post(API.PRICES_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
+
     return {
-        type: actionTypes.SHOP_CREATE,
+        type: actionTypes.PRICES_CREATE,
         payload
     }
 }
-export const imageCreateAction = (image, id) => {
-    const requestData = serializers.imageSerializer(image, id)
+
+export const pricesDeleteAction = (id) => {
     const payload = axios()
-        .post(sprintf(API.SHOP_ITEM_ADD_IMAGE, id), requestData)
+        .delete(sprintf(API.PRICES_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
+
     return {
-        type: actionTypes.SHOP_ITEM_ADD_IMAGE,
+        type: actionTypes.PRICES_DELETE,
         payload
     }
 }
-export const shopDeleteAction = (id) => {
-    const payload = axios()
-        .delete(sprintf(API.SHOP_DELETE, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-    return {
-        type: actionTypes.SHOP_DELETE,
-        payload
-    }
-}
-export const shopUpdateAction = (id, formValues) => {
+
+export const pricesUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.SHOP_ITEM, id), requestData)
+        .put(sprintf(API.PRICES_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
+
     return {
-        type: actionTypes.SHOP_UPDATE,
+        type: actionTypes.PRICES_UPDATE,
         payload
     }
 }
-export const shopListFetchAction = (filter) => {
+
+export const pricesListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.SHOP_LIST, {params})
+        .get(API.PRICES_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
+
     return {
-        type: actionTypes.SHOP_LIST,
+        type: actionTypes.PRICES_LIST,
         payload
     }
 }
-export const shopCSVFetchAction = (filter) => {
+
+export const pricesCSVFetchAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.SHOP_LIST, {params})
+        .get(API.PRICES_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
+
     return {
-        type: actionTypes.SHOP_LIST_CSV,
+        type: actionTypes.PRICES_LIST_CSV,
         payload
     }
 }
-export const shopItemFetchAction = (id) => {
+
+export const pricesItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.SHOP_ITEM, id))
+        .get(sprintf(API.PRICES_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
+
     return {
-        type: actionTypes.SHOP_ITEM,
-        payload
+        type: actionTypes.PRICES_ITEM,
+        payload: payload
     }
 }
-export const slideShowFetchAction = (id) => {
-    const payload = axios()
-        .get(sprintf(API.SHOP_ITEM_SHOW_IMAGE, id), {params: {'thumbnail_type': 'large'}})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-    return {
-        type: actionTypes.SHOP_ITEM_SHOW_IMAGE,
-        payload
-    }
-}
+

@@ -13,12 +13,10 @@ import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
 export const PRICE_SET_FORM_OPEN = 'openSetForm'
 import Tooltip from '../ToolTip'
-
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
     const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
     throw new SubmissionError({
         ...errors,
         latLng,
@@ -91,7 +89,6 @@ const enhance = compose(
                 verticalAlign: 'inherit !important'
             }
         },
-
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
@@ -130,7 +127,6 @@ const enhance = compose(
         enableReinitialize: true
     })
 )
-
 const PriceSetForm = enhance((props) => {
     const {
         handleSubmit,
@@ -158,7 +154,6 @@ const PriceSetForm = enhance((props) => {
                     <div>Цены на товар
                         <span className={classes.rightSideTitleDate}> (23 апр, 2017)</span>
                     </div>
-
                     <div className={classes.actionButton}>
                         <FlatButton
                             label="Сохранить"
@@ -166,7 +161,6 @@ const PriceSetForm = enhance((props) => {
                             type="submit"
                             onTouchTap={onSubmit}
                         />
-
                         <Tooltip position="bottom" text="Закрыть">
                             <IconButton
                                 iconStyle={iconStyle.icon}
@@ -213,11 +207,9 @@ const PriceSetForm = enhance((props) => {
         </div>
     )
 })
-
 PriceSetForm.propTyeps = {
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
-
 export default PriceSetForm

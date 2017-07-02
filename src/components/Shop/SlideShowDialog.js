@@ -9,7 +9,6 @@ import IconButton from 'material-ui/IconButton'
 import Star from 'material-ui/svg-icons/toggle/star'
 import ArrowLeft from 'material-ui/svg-icons/navigation/chevron-left'
 import ArrowRight from 'material-ui/svg-icons/navigation/chevron-right'
-
 const enhance = compose(
     injectSheet({
         loader: {
@@ -80,7 +79,6 @@ const enhance = compose(
         }
     })
 )
-
 const iconStyle = {
     icon: {
         color: '#f0f0f0',
@@ -93,7 +91,6 @@ const iconStyle = {
         padding: 0
     }
 }
-
 const SlideShowDialog = enhance((props) => {
     const {open, onClose, classes, image, images, prevBtn, nextBtn} = props
     const imgURL = _.get(image, 'file')
@@ -140,7 +137,6 @@ const SlideShowDialog = enhance((props) => {
         </Dialog>
     )
 })
-
 SlideShowDialog.propTyeps = {
     images: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -150,5 +146,4 @@ SlideShowDialog.propTyeps = {
     prevBtn: PropTypes.func.isRequired,
     nextBtn: PropTypes.func.isRequired
 }
-
 export default SlideShowDialog

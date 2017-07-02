@@ -65,7 +65,7 @@ export const SHOP = 'dist/market'
 export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
-export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/images/`
+export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/image/`
 export const SHOP_ITEM_SHOW_IMAGE = 'file/file/%d/'
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
@@ -103,6 +103,12 @@ export const SUPPLY_LIST = `/${SUPPLY}/`
 export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
 export const SUPPLY_DELETE = `/${SUPPLY}/cancel/`
+
+export const PRICES = 'dist/marketing_event'
+export const PRICES_CREATE = `/${PRICES}/`
+export const PRICES_LIST = `/${PRICES}/`
+export const PRICES_ITEM = `/${PRICES}/%d/`
+export const PRICES_DELETE = `/${PRICES}/%d/`
 
 export const ORDER = 'order'
 export const ORDER_CREATE = `/${ORDER}/`
@@ -261,8 +267,8 @@ export const PRICE_CREATE = `/${PRODUCT}/`
 export const PRICE_LIST = `/${PRODUCT}/`
 export const PRICE_ITEM = `/${PRODUCT}/%d/`
 export const PRICE_DELETE = `/${PRODUCT}/%d/`
-export const PRICE_LIST_ITEM = 'dist/price_list_item'
 
+export const PRICE_LIST_ITEM = 'dist/price_list_item'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 
 export const TRACKING = 'dist/border'

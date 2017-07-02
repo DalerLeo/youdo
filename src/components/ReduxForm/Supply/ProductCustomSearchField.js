@@ -1,6 +1,7 @@
 import sprintf from 'sprintf'
 import _ from 'lodash'
 import React from 'react'
+import {compose} from 'recompose'
 import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
@@ -8,8 +9,8 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
-const getOptions = (search) => {
-    return axios().get(`${PATH.PRODUCT_LIST}?search=${search || ''}`)
+const getOptions = (search, type) => {
+    return axios().get(`${PATH.PRODUCT_LIST}?type=${type || ''}&search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -32,18 +33,35 @@ const getItem = (id, dispatch) => {
         })
 }
 
-const ProductCustomSearchField = connect()((props) => {
-    const {dispatch, ...defaultProps} = props
+const enhance = compose(
+    connect((state, props) => {
+        const dispatch = _.get(props, 'dispatch')
+        return {
+            state,
+            dispatch
+        }
+    })
+)
+
+const ProductCustomSearchField = enhance((props) => {
+    const {dispatch, state, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
+    const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'type', 'value'])
     return (
         <SearchField
-            getValue={(value) => { return value }}
-            getText={(value) => { return _.get(value, ['name']) }}
-            getOptions={getOptions}
+            getValue={(value) => {
+                return value
+            }}
+            getText={(value) => {
+                return _.get(value, ['name'])
+            }}
+            getOptions={ (search) => { return getOptions(search, type) }}
             getItem={test}
-            getItemText={(value) => { return _.get(value, ['name']) }}
+            getItemText={(value) => {
+                return _.get(value, ['name'])
+            }}
             {...defaultProps}
         />
     )

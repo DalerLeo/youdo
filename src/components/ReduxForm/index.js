@@ -17,6 +17,7 @@ import DateField from './Basic/DateField'
 import TimeField from './Basic/TimeField'
 import ProductSearchField from './Product/ProductSearchField'
 import SupplyListProductField from './Supply/SupplyListProductField'
+import PricesListProductField from './PricesListProductField'
 import OrderListReturnField from './Order/OrderListReturnField'
 import OrderListProductField from './Order/OrderListProductField'
 import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
@@ -74,6 +75,7 @@ export {
     CashboxSearchField,
     CashboxCustomField,
     VisitFrequencySearchField,
+    PricesListProductField,
     ShopStatusSearchField,
     MarketTypeSearchField
 }

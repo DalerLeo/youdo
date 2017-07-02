@@ -8,7 +8,6 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import numberFormat from '../../helpers/numberFormat'
-
 import {
     PRICE_FILTER_KEY,
     PRICE_FILTER_OPEN,
@@ -22,13 +21,9 @@ import {
     priceItemFetchAction,
     getPriceItemsAction
 } from '../../actions/price'
-
 import {marketTypeGetAllAction} from '../../actions/marketType'
-
 import {openSnackbarAction} from '../../actions/snackbar'
-
 const ZERO = 0
-
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -63,7 +58,6 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(priceListFetchAction(filter))
     }),
-
     withPropsOnChange((props, nextProps) => {
         const priceId = _.get(nextProps, ['params', 'priceId']) || ZERO
         return priceId > ZERO && _.get(props, ['params', 'priceId']) !== priceId
@@ -75,29 +69,24 @@ const enhance = compose(
             dispatch(marketTypeGetAllAction())
         }
     }),
-
     withHandlers({
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_FILTER_OPEN]: true})})
         },
-
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_FILTER_OPEN]: false})})
         },
-
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
             hashHistory.push({pathname, query: {}})
         },
-
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
             const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
-
             filter.filterBy({
                 [PRICE_FILTER_OPEN]: false,
                 [PRICE_FILTER_KEY.TYPE]: type,
@@ -105,28 +94,23 @@ const enhance = compose(
                 [PRICE_FILTER_KEY.BRAND]: brand
             })
         },
-
         handleOpenSupplyDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SUPPLY_DIALOG_OPEN]: true})})
         },
-
         handleCloseSupplyDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SUPPLY_DIALOG_OPEN]: false})})
         },
-
         handleOpenPriceSetForm: props => () => {
             const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: true})})
             return dispatch(marketTypeGetAllAction())
         },
-
         handleClosePriceSetForm: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
         },
-
         handleSubmitPriceSetForm: props => () => {
             const {dispatch, createForm, filter, detail, params: {priceId}, location: {pathname}} = props
             const detailId = _.get(detail, 'id')
@@ -143,7 +127,6 @@ const enhance = compose(
         }
     })
 )
-
 const PriceList = enhance((props) => {
     const {
         location,
@@ -159,12 +142,10 @@ const PriceList = enhance((props) => {
         layout,
         params
     } = props
-
     const openFilterDialog = toBoolean(_.get(location, ['query', PRICE_FILTER_OPEN]))
     const openPriceSupplyDialog = toBoolean(_.get(location, ['query', PRICE_SUPPLY_DIALOG_OPEN]))
     const openPriceSetForm = toBoolean(_.get(location, ['query', PRICE_SET_FORM_OPEN]))
     const detailId = _.toInteger(_.get(params, 'priceId'))
-
     const priceSupplyDialog = {
         openPriceSupplyDialog,
         handleOpenSupplyDialog: props.handleOpenSupplyDialog,
@@ -180,7 +161,6 @@ const PriceList = enhance((props) => {
         handleClearFilterDialog: props.handleClearFilterDialog,
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -218,7 +198,6 @@ const PriceList = enhance((props) => {
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
-
     const priceSetForm = {
         initialValues: (() => {
             const priceList = _.map(detailData.mergedList(), (item) => {
@@ -235,7 +214,6 @@ const PriceList = enhance((props) => {
         handleClosePriceSetForm: props.handleClosePriceSetForm,
         handleSubmitPriceSetForm: props.handleSubmitPriceSetForm
     }
-
     return (
         <Layout {...layout}>
             <PriceGridList
@@ -249,5 +227,4 @@ const PriceList = enhance((props) => {
         </Layout>
     )
 })
-
 export default PriceList

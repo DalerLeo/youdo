@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-
 import {reduxForm} from 'redux-form'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
@@ -78,10 +77,8 @@ const enhance = compose(
         enableReinitialize: true
     })
 )
-
 const PriceSupplyDialog = enhance((props) => {
     const {open, loading, onClose, classes} = props
-
     return (
         <Dialog
             modal={true}
@@ -93,7 +90,7 @@ const PriceSupplyDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <div>
-                Поставка <span style={{fontSize: '14px'}}> &#8470;</span>
+                    Поставка <span style={{fontSize: '14px'}}> &#8470;</span>
                 </div>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
@@ -116,19 +113,18 @@ const PriceSupplyDialog = enhance((props) => {
                 </div>
                 <div className={classes.downBlock}>
                     <div className={classes.subTitle}>Расчет себестоимости за еденицу товара:</div>
-                        <Row>
-                            <div>Стоимость товара</div>
-                            <div>20 000</div>
-                        </Row>
-                        <Row>
-                            <div>Стоимость товара</div>
-                            <div>20 000</div>
-                        </Row>
-                        <Row>
-                            <div>Стоимость товара</div>
-                            <div>20 000</div>
-                        </Row>
-
+                    <Row>
+                        <div>Стоимость товара</div>
+                        <div>20 000</div>
+                    </Row>
+                    <Row>
+                        <div>Стоимость товара</div>
+                        <div>20 000</div>
+                    </Row>
+                    <Row>
+                        <div>Стоимость товара</div>
+                        <div>20 000</div>
+                    </Row>
                     <Row>
                         <div>Себестоимость товара</div>
                         <div>29 000</div>
@@ -138,12 +134,10 @@ const PriceSupplyDialog = enhance((props) => {
         </Dialog>
     )
 })
-
 PriceSupplyDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
-
 export default PriceSupplyDialog

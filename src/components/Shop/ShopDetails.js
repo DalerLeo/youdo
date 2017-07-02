@@ -9,7 +9,6 @@ import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Add from 'material-ui/svg-icons/content/add'
-
 const enhance = compose(
     injectSheet({
         loader: {
@@ -197,7 +196,6 @@ const enhance = compose(
         }
     })
 )
-
 const iconStyle = {
     icon: {
         color: '#666',
@@ -210,7 +208,6 @@ const iconStyle = {
         padding: 0
     }
 }
-
 const ShopDetails = enhance((props) => {
     const {classes, loading, data, confirmDialog, updateDialog, addPhotoDialog, slideShowDialog, handleCloseDetail} = props
     const ZERO = 0
@@ -219,7 +216,6 @@ const ShopDetails = enhance((props) => {
     const ONCE_IN_A_WEEK = '2'
     const TWICE_IN_A_WEEK = '3'
     const IN_A_DAY = '4'
-
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'name'])
@@ -232,14 +228,12 @@ const ShopDetails = enhance((props) => {
     const images = _.get(data, 'images') || {}
     const freq = _.get(data, 'visitFrequency')
     const isActive = _.get(data, 'isActive')
-
     let slicedImages = images
     if (images.length > MAX_IMAGE_COUNT) {
         slicedImages = _.slice(images, ZERO, MAX_IMAGE_COUNT)
     }
     const lastImage = _.last(slicedImages)
     const moreImages = images.length - slicedImages.length
-
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -249,7 +243,6 @@ const ShopDetails = enhance((props) => {
             </div>
         )
     }
-
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
@@ -301,7 +294,6 @@ const ShopDetails = enhance((props) => {
                                 const src = _.get(item, 'image')
                                 const imgId = _.get(item, 'id')
                                 const isLastImage = (imgId === lastImage.id)
-
                                 return (
                                     <span key={index} onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}>
                                         {isLastImage && moreImages !== ZERO && <strong>{moreImages}+</strong>}
@@ -345,7 +337,6 @@ const ShopDetails = enhance((props) => {
         </div>
     )
 })
-
 ShopDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -379,8 +370,5 @@ ShopDetails.propTypes = {
         handleOpenSlideShowDialog: PropTypes.func.isRequired,
         handleCloseSlideShowDialog: PropTypes.func.isRequired
     }).isRequired
-
 }
-
 export default ShopDetails
-

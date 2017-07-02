@@ -57,6 +57,13 @@ export const SUPPLY_CREATE = 'SUPPLY_CREATE'
 export const SUPPLY_DELETE = 'SUPPLY_DELETE'
 export const SUPPLY_DEFECT = 'SUPPLY_DEFECT'
 
+export const PRICES_LIST = 'PRICES_LIST'
+export const PRICES_LIST_CSV = 'PRICES_LIST_CSV'
+export const PRICES_ITEM = 'PRICES_ITEM'
+export const PRICES_UPDATE = 'PRICES_UPDATE'
+export const PRICES_CREATE = 'PRICES_CREATE'
+export const PRICES_DELETE = 'PRICES_DELETE'
+
 export const ORDER_LIST = 'ORDER_LIST'
 export const ORDER_LIST_CSV = 'ORDER_LIST_CSV'
 export const ORDER_ITEM = 'ORDER_ITEM'
@@ -271,11 +278,12 @@ export const MARKET_TYPE_CREATE = 'MARKET_TYPE_CREATE'
 export const MARKET_TYPE_DELETE = 'MARKET_TYPE_DELETE'
 
 export const PRICE_LIST = 'PRICE_LIST'
+export const PRICE_UPDATE = 'PRICE_UPDATE'
 export const PRICE_CREATE = 'PRICE_CREATE'
 export const PRICE_ITEM = 'PRICE_ITEM'
-
 export const PRICE_DELETE = 'PRICE_DELETE'
 export const PRICE_LIST_CSV = 'PRICE_LIST_CSV'
+
 export const PRICE_LIST_ITEM_LIST = 'PRICE_LIST_ITEM_LIST'
 
 export const ZONE_LIST = 'ZONE_LIST'

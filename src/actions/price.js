@@ -4,7 +4,6 @@ import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/priceSerializer'
-
 export const priceCreateAction = (formValues, productId) => {
     const requestData = serializers.createSerializer(formValues, productId)
     const payload = axios()
@@ -15,13 +14,11 @@ export const priceCreateAction = (formValues, productId) => {
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
-
     return {
         type: actionTypes.PRICE_CREATE,
         payload
     }
 }
-
 export const priceListFetchAction = (filter, manufacture) => {
     const params = serializers.listFilterSerializer(filter.getParams(), manufacture)
     const payload = axios()
@@ -32,13 +29,11 @@ export const priceListFetchAction = (filter, manufacture) => {
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
-
     return {
         type: actionTypes.PRICE_LIST,
         payload
     }
 }
-
 export const priceItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.PRICE_ITEM, id))
@@ -48,7 +43,6 @@ export const priceItemFetchAction = (id) => {
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
-
     return {
         type: actionTypes.PRICE_ITEM,
         payload
@@ -66,7 +60,6 @@ export const getPriceItemsAction = (id) => {
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
-
     return {
         type: actionTypes.PRICE_LIST_ITEM_LIST,
         payload

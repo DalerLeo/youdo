@@ -19,7 +19,6 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import PriceDetails from './PriceDetails'
-
 const listHeader = [
     {
         sorting: true,
@@ -33,7 +32,6 @@ const listHeader = [
         title: 'Себестоимость',
         xs: 2
     },
-
     {
         sorting: true,
         name: 'price',
@@ -47,7 +45,6 @@ const listHeader = [
         xs: 2
     }
 ]
-
 const enhance = compose(
     injectSheet({
         addButton: {
@@ -75,7 +72,6 @@ const enhance = compose(
         }
     })
 )
-
 const PriceGridList = enhance((props) => {
     const {
         filter,
@@ -103,7 +99,6 @@ const PriceGridList = enhance((props) => {
             mergedList={detailData.mergedList()}>
         </PriceDetails>
     )
-
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -115,7 +110,6 @@ const PriceGridList = enhance((props) => {
                 <MoreVertIcon />
             </IconButton>
         )
-
         return (
             <Row key={id}>
                 <Col xs={5} style={{display: 'flex', alignItems: 'center'}}>
@@ -147,7 +141,6 @@ const PriceGridList = enhance((props) => {
         list: priceList,
         loading: _.get(listData, 'listLoading')
     }
-
     return (
         <Container>
             <SubMenu url={ROUTES.PRICE_LIST_URL}/>
@@ -164,7 +157,6 @@ const PriceGridList = enhance((props) => {
         </Container>
     )
 })
-
 PriceGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
@@ -189,5 +181,4 @@ PriceGridList.propTypes = {
         handleSubmitPriceSetForm: PropTypes.func.isRequired
     }).isRequired
 }
-
 export default PriceGridList

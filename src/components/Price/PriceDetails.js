@@ -11,7 +11,6 @@ import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import PriceSetForm from './PriceSetForm'
 import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
-
 const enhance = compose(
     injectSheet({
         loader: {
@@ -62,7 +61,6 @@ const enhance = compose(
             display: 'flex',
             width: '100%'
         },
-
         subBlock: {
             padding: '20px 30px',
             '&:last-child': {
@@ -74,7 +72,6 @@ const enhance = compose(
             flexBasis: '45%',
             maxWidth: '45%',
             borderRight: '1px #efefef solid'
-
         },
         rightSide: {
             position: 'relative',
@@ -110,7 +107,6 @@ const enhance = compose(
             overflowX: 'hidden',
             margin: '0 -0.5rem'
         },
-
         average: {
             fontWeight: '600',
             marginTop: '20px',
@@ -123,7 +119,6 @@ const enhance = compose(
         }
     })
 )
-
 const PriceDetails = enhance((props) => {
     const {
         classes,
@@ -132,13 +127,11 @@ const PriceDetails = enhance((props) => {
         detailData,
         handleCloseDetail,
         mergedList
-
     } = props
     const loading = _.get(detailData, 'detailLoading')
     const marketTypeIsLoading = _.get(detailData, 'marketTypeLoading')
     const priceListItemsIsLoading = _.get(detailData, 'priceListItemsLoading')
     const priceList = _.get(detailData, 'priceListItemsList')
-
     const name = _.get(detailData, ['data', 'name'])
     const iconStyle = {
         icon: {
@@ -180,88 +173,85 @@ const PriceDetails = enhance((props) => {
                 </div>
             </div>
             <div className={classes.content}>
-                    <div className={classes.leftSide}>
-                        <div className={classes.bodyTitle}>Поставки</div>
-                        <div className={classes.tableContent}>
-                            <Row>
-                                <Col xs={2} style={{fontSize: '15px'}}>&#8470;</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>Дата</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>Количество</Col>
-                                <Col xs={4}>Себестоимость</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={2}>
-                                    <a onClick={priceSupplyDialog.handleOpenSupplyDialog} className={classes.link}>
+                <div className={classes.leftSide}>
+                    <div className={classes.bodyTitle}>Поставки</div>
+                    <div className={classes.tableContent}>
+                        <Row>
+                            <Col xs={2} style={{fontSize: '15px'}}>&#8470;</Col>
+                            <Col style={{textAlign: 'left'}} xs={3}>Дата</Col>
+                            <Col style={{textAlign: 'left'}} xs={3}>Количество</Col>
+                            <Col xs={4}>Себестоимость</Col>
+                        </Row>
+                        <Row className="dottedList">
+                            <Col xs={2}>
+                                <a onClick={priceSupplyDialog.handleOpenSupplyDialog} className={classes.link}>
                                     P-1121
-                                    </a>
-                                </Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>23 апр, 2017</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>200 кг</Col>
-                                <Col xs={4}>90 000 UZS</Col>
-                            </Row>
-                            <div className={classes.average}> Усредненная себестоимость:
-                                <span className={classes.averagePrice}>100 000 UZS</span>
-                            </div>
+                                </a>
+                            </Col>
+                            <Col style={{textAlign: 'left'}} xs={3}>23 апр, 2017</Col>
+                            <Col style={{textAlign: 'left'}} xs={3}>200 кг</Col>
+                            <Col xs={4}>90 000 UZS</Col>
+                        </Row>
+                        <div className={classes.average}> Усредненная себестоимость:
+                            <span className={classes.averagePrice}>100 000 UZS</span>
                         </div>
                     </div>
-                    <div className={classes.rightSide}>
-                        {(marketTypeIsLoading || priceListItemsIsLoading) && <div className={classes.loader}>
-                                                <CircularProgress size={60} thickness={5} />
-                                        </div>}
-                        {priceSetForm.openPriceSetForm && <PriceSetForm
-                            initialValues={priceSetForm.initialValues}
-                            onClose={priceSetForm.handleClosePriceSetForm}
-                            onSubmit={priceSetForm.handleSubmitPriceSetForm}
-                            priceList={priceList}
-                            mergedList={mergedList}
-                        />
-                        }
-                        {(!marketTypeIsLoading && !priceListItemsIsLoading && !priceSetForm.openPriceSetForm) && <div>
-                            <div className={classes.bodyTitle}>
-                                <div>Цены на товар
-                                    <span className={classes.rightSideTitleDate}> (23 апр, 2017)</span>
-                                </div>
-                                <div className={classes.titleButtons}>
-                                    <Tooltip position="bottom" text="Изменить">
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            touch={true}
-                                            onTouchTap={priceSetForm.handleOpenPriceSetForm}
-                                            >
-                                            <Edit />
-                                        </IconButton>
-                                    </Tooltip>
-                                </div>
+                </div>
+                <div className={classes.rightSide}>
+                    {(marketTypeIsLoading || priceListItemsIsLoading) && <div className={classes.loader}>
+                        <CircularProgress size={60} thickness={5} />
+                    </div>}
+                    {priceSetForm.openPriceSetForm && <PriceSetForm
+                        initialValues={priceSetForm.initialValues}
+                        onClose={priceSetForm.handleClosePriceSetForm}
+                        onSubmit={priceSetForm.handleSubmitPriceSetForm}
+                        priceList={priceList}
+                        mergedList={mergedList}
+                    />
+                    }
+                    {(!marketTypeIsLoading && !priceListItemsIsLoading && !priceSetForm.openPriceSetForm) && <div>
+                        <div className={classes.bodyTitle}>
+                            <div>Цены на товар
+                                <span className={classes.rightSideTitleDate}> (23 апр, 2017)</span>
                             </div>
-                            <div className={classes.tableContent}>
-                                <Row className="dottedList">
-                                    <Col xs={6}>Тип обьекта</Col>
-                                    <Col style={{textAlign: 'left'}} xs={3}>Нал</Col>
-                                    <Col style={{textAlign: 'left'}} xs={3}>Безнал</Col>
-                                </Row>
-                                {_.map(mergedList, (item) => {
-                                    const id = _.get(item, 'marketTypeId')
-                                    const marketName = _.get(item, 'marketTypeName')
-                                    const cashPrice = _.get(item, 'cash_price') + ' ' + PRIMARY_CURRENCY_NAME
-                                    const transferPrice = _.get(item, 'transfer_price') + ' ' + PRIMARY_CURRENCY_NAME
-
-                                    return (
-                                        <Row className="dottedList" key={id}>
-                                            <Col xs={6}> {marketName}</Col>
-                                            <Col style={{textAlign: 'left'}} xs={3}>{cashPrice}</Col>
-                                            <Col style={{textAlign: 'left'}} xs={3}>{transferPrice}</Col>
-                                        </Row>
-                                    )
-                                })}
+                            <div className={classes.titleButtons}>
+                                <Tooltip position="bottom" text="Изменить">
+                                    <IconButton
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        touch={true}
+                                        onTouchTap={priceSetForm.handleOpenPriceSetForm}
+                                    >
+                                        <Edit />
+                                    </IconButton>
+                                </Tooltip>
                             </div>
-                        </div> }
-                    </div>
+                        </div>
+                        <div className={classes.tableContent}>
+                            <Row className="dottedList">
+                                <Col xs={6}>Тип обьекта</Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>Нал</Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>Безнал</Col>
+                            </Row>
+                            {_.map(mergedList, (item) => {
+                                const id = _.get(item, 'marketTypeId')
+                                const marketName = _.get(item, 'marketTypeName')
+                                const cashPrice = _.get(item, 'cash_price') + ' ' + PRIMARY_CURRENCY_NAME
+                                const transferPrice = _.get(item, 'transfer_price') + ' ' + PRIMARY_CURRENCY_NAME
+                                return (
+                                    <Row className="dottedList" key={id}>
+                                        <Col xs={6}> {marketName}</Col>
+                                        <Col style={{textAlign: 'left'}} xs={3}>{cashPrice}</Col>
+                                        <Col style={{textAlign: 'left'}} xs={3}>{transferPrice}</Col>
+                                    </Row>
+                                )
+                            })}
+                        </div>
+                    </div> }
+                </div>
             </div>
-
         </div>)
 })
-
 PriceDetails.PropTypes = {
     mergedList: PropTypes.func.isRequired,
     priceSupplyDialog: PropTypes.shape({
@@ -276,5 +266,4 @@ PriceDetails.PropTypes = {
         handleSubmitPriceSetForm: PropTypes.func.isRequired
     })
 }
-
 export default PriceDetails
