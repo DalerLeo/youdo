@@ -6,11 +6,11 @@ before_script:
   # Information
   - "whoami"
   - "echo \"Current location:\" `pwd`"
-  - "nvm --version"
-  - "nvm install 6 &> /dev/null"
-  - "nvm use 6"
+#  - "nvm --version"
+#  - "nvm install 6 &> /dev/null"
+#  - "nvm use 6"
   - "node --version"
-  - "npm install -g yarn > /dev/null"
+#  - "npm install -g yarn > /dev/null"
   - "yarn --version"
 
 stages:
