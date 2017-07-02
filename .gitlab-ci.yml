@@ -21,22 +21,22 @@ stages:
 build:
   stage: build
   script:
-#    - "export SOURCE_DIR=`pwd`"
-#    - "export API_HOST=api.gapbor.com"
-#    - "yarn install"
-#    - "yarn build"
-#    - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
-#    - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
-#    - "cp -R ${SOURCE_DIR}/dist/* ~/basic_ui_${CI_BUILD_REF_NAME}"
+    - "export SOURCE_DIR=`pwd`"
+    - "export API_HOST=api.gapbor.com"
+    - "yarn install"
+    - "yarn build"
+    - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
+    - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
+    - "cp -R ${SOURCE_DIR}/dist/* ~/basic_ui_${CI_BUILD_REF_NAME}"
   tags:
     - staging
 
 test:
   stage: test
   script:
-#    - "export SOURCE_DIR=`pwd`"
-#    - "yarn install"
-#    - "yarn lint"
+    - "export SOURCE_DIR=`pwd`"
+    - "yarn install"
+    - "yarn lint"
 #    - "export DISPLAY=':99.0'"
 #    - "Xvfb :99 -screen 0 1024x768x24 +extension RANDR > /dev/null 2>&1 &"
 #    - "yarn test:server"
@@ -47,8 +47,8 @@ test:
 deploy:
   stage: deploy
   script:
-#    - "rm -rf ${PROJECT_DIR}/*"
-#    - "cp -R ~/fennec_ui_${CI_BUILD_REF_NAME}/* ${PROJECT_DIR}/"
+    - "rm -rf ${PROJECT_DIR}/*"
+    - "cp -R ~/basic_ui_${CI_BUILD_REF_NAME}/* ${PROJECT_DIR}/"
   only:
     - master
   tags:
