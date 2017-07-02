@@ -202,7 +202,7 @@ const PricesGridList = enhance((props) => {
 
             {detailData.id && <ConfirmDialog
                 type="delete"
-                message={'Постака № ' + _.get(detailData, ['data', 'name'])}
+                message={_.get(detailData, ['data', 'name'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}

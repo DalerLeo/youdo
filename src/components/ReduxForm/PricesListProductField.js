@@ -6,6 +6,7 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../Images/groceries.svg'
 import {connect} from 'react-redux'
+import {Field} from 'redux-form'
 import {
     Table,
     TableBody,
@@ -187,23 +188,25 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                     />
                 </div>
                 {state.open && <div className={classes.background}>
-                    <ProductTypeSearchField
-                        xs={5}
+                    <Field
                         label="Отфильтровать по типу товара"
-                        className={classes.inputField}
-                        {..._.get(defaultProps, 'productType')}
-                    />
-                    <ProductCustomSearchField
-                        xs={5}
+                        name="type"
+                        component={ProductTypeSearchField}
+                        className={classes.inputFieldCustom}
+                        xs={3}/>
+                    <Field
                         label="Наименование товара"
-                        className={classes.inputField}
-                        {..._.get(defaultProps, 'product')}
+                        name="product"
+                        component={ProductCustomSearchField}
+                        className={classes.inputFieldCustom}
+                        xs={3}
                     />
-                    <TextField
-                        xs={2}
+                    <Field
                         label="Кол-во"
-                        className={classes.inputField}
-                        {..._.get(defaultProps, 'amount')}
+                        name="amount"
+                        component={TextField}
+                        className={classes.inputFieldCustom}
+                        xs={3}
                     />
                     <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
                 </div>}
@@ -223,7 +226,6 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                             <TableHeaderColumn
                                 className={classes.tableTitle}>Наименование</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
                             <TableHeaderColumn></TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
@@ -234,7 +236,6 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                         stripedRows={false}>
                         {_.map(products, (item, index) => (
                             <TableRow key={index} className={classes.tableRow}>
-                                <TableRowColumn>{_.get(item, ['productType', 'text'])}</TableRowColumn>
                                 <TableRowColumn>{_.get(item, ['product', 'value', 'name'])}</TableRowColumn>
                                 <TableRowColumn>
                                     {_.get(item, 'amount')} {_.get(item, ['product', 'value', 'measurement', 'name'])}</TableRowColumn>

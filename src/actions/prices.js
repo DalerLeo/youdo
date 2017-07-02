@@ -99,9 +99,10 @@ export const pricesItemFetchAction = (id) => {
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
+
     return {
         type: actionTypes.PRICES_ITEM,
-        payload
+        payload: payload
     }
 }
 

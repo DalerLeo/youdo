@@ -29,7 +29,6 @@ import {
 
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -67,14 +66,11 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const oldPricesId = _.get(props, ['params', 'pricesId'])
-        const newPricesId = _.get(nextProps, ['params', 'pricesId'])
-        return oldPricesId !== newPricesId
+        const pricesId = _.get(nextProps, ['params', 'pricesId'])
+        return pricesId && _.get(props, ['params', 'pricesId']) !== pricesId
     }, ({dispatch, params}) => {
         const pricesId = _.toInteger(_.get(params, 'pricesId'))
-        if (pricesId > ZERO) {
-            dispatch(pricesItemFetchAction(pricesId))
-        }
+        pricesId && dispatch(pricesItemFetchAction(pricesId))
     }),
 
     withHandlers({
@@ -266,18 +262,16 @@ const PricesList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
-
     const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
         return {
-            amount: _.get(item, 'amount'),
             product: {
                 value: {
                     id: _.get(item, ['product', 'id']),
                     name: _.get(item, ['product', 'name']),
                     measurement: _.get(item, ['product', 'measurement'])
                 }
-            }
-
+            },
+            amount: _.get(item, 'amount')
         }
     })
     const updateDialog = {
@@ -286,18 +280,14 @@ const PricesList = enhance((props) => {
                 return {}
             }
             return {
-                name: {
-                    value: _.get(detail, 'name')
-                },
-                discount: {
-                    value: _.get(detail, 'discount')
-                },
-                beginDate: moment(_.get(detail, ['begin_date'])).toDate(),
-                tillDate: moment(_.get(detail, ['till_date'])).toDate(),
+                name: _.get(detail, 'name'),
+                discount: _.get(detail, 'discount'),
+                beginDate: moment(_.get(detail, ['beginDate'])).toDate(),
+                tillDate: moment(_.get(detail, ['tillDate'])).toDate(),
                 products: forUpdateProducts
             }
         })(),
-        updateLoading: detailLoading || updateLoading,
+        updateLoading: updateLoading,
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,

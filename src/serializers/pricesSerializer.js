@@ -9,7 +9,6 @@ export const createSerializer = (data) => {
     const discount = _.get(data, ['discount'])
     const products = _.map(_.get(data, ['products']), (item) => {
         return {
-            category: item.productType.value.id,
             product: item.product.value.id,
             amount: item.amount
         }

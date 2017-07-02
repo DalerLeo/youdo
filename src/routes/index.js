@@ -397,17 +397,6 @@ export default {
                 }
             ]
         },
-        // PRICE
-        {
-            path: ROUTES.PRICE_LIST_URL,
-            component: userIsAuth(PriceList),
-            childRoutes: [
-                {
-                    path: ROUTES.PRICE_ITEM_URL,
-                    component: userIsAuth(PriceList)
-                }
-            ]
-        },
         {
             path: '*',
             component: NotFound
