@@ -270,5 +270,4 @@ export const PRICE_DELETE = `/${PRODUCT}/%d/`
 
 export const PRICE_LIST_ITEM = 'dist/price_list_item'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
-
 export const TRACKING = 'dist/border'

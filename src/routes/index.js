@@ -137,6 +137,17 @@ export default {
                 }
             ]
         },
+        // PRICE
+        {
+            path: ROUTES.PRICE_LIST_URL,
+            component: userIsAuth(PriceList),
+            childRoutes: [
+                {
+                    path: ROUTES.PRICE_ITEM_URL,
+                    component: userIsAuth(PriceList)
+                }
+            ]
+        },
         // Order
         {
             path: ROUTES.ORDER_LIST_URL,
@@ -388,12 +399,12 @@ export default {
         },
         // Price
         {
-            path: ROUTES.PRICE_LIST_URL,
-            component: userIsAuth(PriceList),
+            path: ROUTES.PRICES_LIST_URL,
+            component: userIsAuth(PricesList),
             childRoutes: [
                 {
-                    path: ROUTES.PRICE_ITEM_URL,
-                    component: userIsAuth(PriceList)
+                    path: ROUTES.PRICES_ITEM_URL,
+                    component: userIsAuth(PricesList)
                 }
             ]
         },
