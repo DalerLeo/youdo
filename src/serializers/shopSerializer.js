@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {orderingSnakeCase} from '../../helpers/serializer'
+import {orderingSnakeCase} from '../helpers/serializer'
 
 const ONE = 1
 export const createSerializer = (data, location, image) => {
@@ -34,6 +34,13 @@ export const createSerializer = (data, location, image) => {
         },
         'is_active': isActive,
         'images': [image]
+    }
+}
+
+export const imageSerializer = (image) => {
+    return {
+        'image': image,
+        'is_primary': false
     }
 }
 
