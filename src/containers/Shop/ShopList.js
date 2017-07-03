@@ -140,7 +140,6 @@ const enhance = compose(
             const {location: {pathname}} = props
             hashHistory.push({pathname, query: {}})
         },
-
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
@@ -152,7 +151,6 @@ const enhance = compose(
                 [SHOP_FILTER_KEY.MARKET_TYPE]: marketType
             })
         },
-
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: true})})

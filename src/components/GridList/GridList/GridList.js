@@ -97,7 +97,8 @@ GridList.propTypes = {
 
 GridList.defaultProps = {
     withoutCheckboxes: false,
-    withoutSearch: false
+    withoutSearch: false,
+    actionsDialog: (<div>no</div>)
 }
 
 export default GridList

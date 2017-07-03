@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import {compose} from 'recompose'
 import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
@@ -7,8 +8,8 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
-const getOptions = (search) => {
-    return axios().get(`${PATH.PRODUCT_LIST}?search=${search || ''}`)
+const getOptions = (search, ikkinchi) => {
+    return axios().get(`${PATH.PRODUCT_LIST}?ikkinchi=${ikkinchi || ''}&search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -31,17 +32,27 @@ const getItem = (id, dispatch) => {
             return Promise.resolve(toCamelCase(_.get(data, [FIRST_ITEM, 'product'])))
         })
 }
+const enhance = compose(
+    connect((state, props) => {
+        const dispatch = _.get(props, 'dispatch')
 
-const OrderProductSearchField = connect()((props) => {
-    const {dispatch} = props
+        return {
+            dispatch,
+            state
+        }
+    })
+)
+const OrderProductSearchField = enhance((props) => {
+    const {dispatch, state} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
+    const type = _.get(state, ['form', 'OrderCreateForm', 'values', 'type', 'value'])
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={(search) => { return getOptions(search, type) }}
             getItem={test}
             getItemText={SearchField.defaultGetText('name')}
             {...props}

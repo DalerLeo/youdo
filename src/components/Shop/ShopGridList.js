@@ -21,7 +21,6 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-
 const listHeader = [
     {
         xs: 3,
@@ -54,7 +53,6 @@ const listHeader = [
         title: 'Статус'
     }
 ]
-
 const enhance = compose(
     injectSheet({
         addButton: {
@@ -70,7 +68,6 @@ const enhance = compose(
         }
     })
 )
-
 const ShopGridList = enhance((props) => {
     const {
         filter,
@@ -110,7 +107,6 @@ const ShopGridList = enhance((props) => {
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
         />
     )
-
     const shopList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -118,7 +114,6 @@ const ShopGridList = enhance((props) => {
         const marketType = _.get(item, ['marketType', 'name'])
         const zone = _.get(item, 'border') || 'Не определена'
         const isActive = _.get(item, 'isActive')
-
         return (
             <Row key={id}>
                 <Col xs={3}>
@@ -132,22 +127,19 @@ const ShopGridList = enhance((props) => {
                 <Col xs={2}>{zone}</Col>
                 <Col xs={2}>
                     {isActive ? <span className="greenFont">Активен</span>
-                    : <span className="redFont">Не активен</span>}
+                        : <span className="redFont">Не активен</span>}
                 </Col>
             </Row>
         )
     })
-
     const list = {
         header: listHeader,
         list: shopList,
         loading: _.get(listData, 'listLoading')
     }
-
     return (
         <Container>
             <SubMenu url={ROUTES.SHOP_LIST_URL}/>
-
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить магазин">
                     <FloatingActionButton
@@ -164,7 +156,6 @@ const ShopGridList = enhance((props) => {
                 detail={shopDetail}
                 filterDialog={shopFilterDialog}
             />
-
             <ShopCreateDialog
                 mapDialog={mapDialog}
                 updateMapDialog={updateMapDialog}
@@ -174,19 +165,16 @@ const ShopGridList = enhance((props) => {
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
-
             <MapDialog
                 open={mapDialog.openMapDialog}
                 onClose={mapDialog.handleCloseMapDialog}
                 onSubmit={mapDialog.handleSubmitMapDialog}
             />
-
             <AddPhotoDialog
                 open={addPhotoDialog.openAddPhotoDialog}
                 onClose={addPhotoDialog.handleCloseAddPhotoDialog}
                 onSubmit={addPhotoDialog.handleSubmitAddPhotoDialog}
             />
-
             <SlideShowDialog
                 images={_.get(detailData, ['data', 'images'])}
                 loading={slideShowDialog.galleryLoading}
@@ -196,7 +184,6 @@ const ShopGridList = enhance((props) => {
                 prevBtn={navigationButtons.handlePrevImage}
                 nextBtn={navigationButtons.handleNextImage}
             />
-
             <MapDialog
                 isUpdate={true}
                 initialValues={updateMapDialog.initialValues}
@@ -204,7 +191,6 @@ const ShopGridList = enhance((props) => {
                 onClose={updateMapDialog.handleCloseMapUpdateDialog}
                 onSubmit={updateMapDialog.handleSubmitMapUpdateDialog}
             />
-
             <ShopCreateDialog
                 isUpdate={true}
                 mapDialog={mapDialog}
@@ -216,13 +202,11 @@ const ShopGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
-
             <DeleteDialog
                 filter={filter}
                 open={deleteDialog.openDeleteDialog}
                 onClose={deleteDialog.handleCloseDeleteDialog}
             />
-
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -233,7 +217,6 @@ const ShopGridList = enhance((props) => {
         </Container>
     )
 })
-
 ShopGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
@@ -302,5 +285,4 @@ ShopGridList.propTypes = {
         handleNextImage: PropTypes.func.isRequired
     })
 }
-
 export default ShopGridList

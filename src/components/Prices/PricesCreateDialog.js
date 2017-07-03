@@ -9,23 +9,15 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
-import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import {
-    ClientSearchField,
-    DeliveryTypeSearchField,
-    OrderListProductField,
-    ClientContactsField,
+    ProviderContactsField,
+    PricesListProductField,
     TextField,
-    DateField,
-    MarketSearchField,
-    DealTypeSearchField
+    DateField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
-import MainStyles from '../Styles/MainStyles'
-import OrderTotalSum from '../ReduxForm/Order/OrderTotalSum'
-import getConfig from '../../helpers/getConfig'
 
-export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const PRICES_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -35,7 +27,7 @@ const validate = (data) => {
     })
 }
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
             position: 'absolute',
             width: '100%',
@@ -49,13 +41,32 @@ const enhance = compose(
             justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        podlojkaScroll: {
+            overflowY: 'auto !important',
+            padding: '0 !important',
+            '& > div:first-child > div:first-child': {
+                transform: 'translate(0px, 0px) !important'
+            },
+            '& > div': {
+                height: '100% !important',
+                '& > div': {
+                    height: '100% !important',
+                    padding: '50px 0',
+                    '& > div': {
+                        height: '100%'
+                    }
+                }
+            }
+        },
         popUp: {
+            background: '#fff',
             overflowY: 'hidden !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
+            minHeight: '700px',
             maxHeight: 'inherit !important'
         },
         titleContent: {
@@ -78,18 +89,23 @@ const enhance = compose(
         inContent: {
             display: 'flex',
             color: '#333',
-            minHeight: '450px'
+            height: '100%',
+            padding: '0 30px'
         },
         innerWrap: {
-            maxHeight: '100vh',
-            overflow: 'auto'
+            height: 'calc(100% - 57px)'
         },
         bodyContent: {
             color: '#333',
-            width: '100%'
+            width: '100%',
+            height: 'calc(100% - 59px)'
         },
         form: {
-            position: 'relative'
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between'
         },
         field: {
             width: '100%'
@@ -117,12 +133,9 @@ const enhance = compose(
                 marginBottom: '-20px'
             }
         },
-        commentField: {
-            padding: '5px 20px',
-            fontSize: '16px !important',
+        commentFieldPrices: {
             textAlign: 'left',
-            width: '50%',
-            float: 'left'
+            width: '100%'
         },
         bottomButton: {
             bottom: '0',
@@ -152,7 +165,9 @@ const enhance = compose(
         rightOrderPart: {
             flexBasis: '65%',
             maxWidth: '65%',
-            padding: '20px 0 20px 30px'
+            padding: '20px 1px 20px 30px',
+            maxHeight: '694px',
+            overflow: 'auto'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -193,22 +208,10 @@ const enhance = compose(
             '& div': {
                 color: 'rgb(229, 115, 115) !important'
             }
-        },
-        podlojkaScroll: {
-            overflowY: 'auto !important',
-            '& > div:first-child > div:first-child': {
-                transform: 'translate(0px, 0px) !important'
-            }
-        },
-        notEnough: {
-            padding: '20px 30px',
-            color: '#ff2626',
-            margin: '0 -30px',
-            background: '#ffecec'
         }
-    })),
+    }),
     reduxForm({
-        form: 'OrderCreateForm',
+        form: 'PricesCreateForm',
         enableReinitialize: true
     })
 )
@@ -217,39 +220,21 @@ const customContentStyle = {
     width: '1000px',
     maxWidth: 'none'
 }
-const OrderCreateDialog = enhance((props) => {
-    const {
-        open,
-        handleSubmit,
-        onClose,
-        classes,
-        shortageDialog,
-        isUpdate,
-        createClientDialog,
-        products
-    } = props
+const PricesCreateDialog = enhance((props) => {
+    const {openDialog, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    let notEnough = false
-    _.map(products, (item) => {
-        const amount = _.toNumber(_.get(item, 'amount'))
-        const balance = _.toNumber(_.get(item, ['extra', 'balance']))
-        if (amount > balance) {
-            notEnough = true
-        }
-    })
 
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     return (
         <Dialog
             modal={true}
             className={classes.podlojkaScroll}
             contentStyle={customContentStyle}
-            open={open}
+            open={openDialog}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение заказа' : 'Добавление заказа'}</span>
+                <span>{isUpdate ? 'Изменение поставки' : 'Добавление поставки'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -260,132 +245,74 @@ const OrderCreateDialog = enhance((props) => {
                         <CircularProgress size={80} thickness={5}/>
                     </div>
                     <div className={classes.innerWrap}>
-                        <div style={{minHeight: '470px', maxHeight: '75vh'}} className={classes.inContent}>
+                        <div className={classes.inContent} style={{minHeight: '350px'}}>
                             <div className={classes.leftOrderPart}>
-
-                                <div className={classes.subTitleOrder}>
-                                    <span>Выбор клиента</span>
-                                    {!isUpdate && <a style={{color: '#12aaeb'}} onClick={createClientDialog.handleOpenCreateClientDialog}>+ добавить</a>}
-                                </div>
-                                <div>
+                                <div className={classes.subTitleOrder}>Выбор поставщика</div>
+                                <div className={classes.selectContent}>
                                     <Field
-                                        name="client"
-                                        component={ClientSearchField}
+                                        name="name"
+                                        component={TextField}
                                         className={classes.inputFieldCustom}
-                                        label="Клиент"
+                                        label="Наименование"
                                         fullWidth={true}/>
                                     <Field
                                         name="contact"
-                                        component={ClientContactsField}
+                                        component={ProviderContactsField}
                                     />
-                                    <Field
-                                        name="market"
-                                        component={MarketSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Название магазина"
-                                        fullWidth={true}/>
                                 </div>
-
-                                {(!notEnough) ? <div className={classes.condition}>
-                                    <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Условия доставки</div>
-                                    <Field
-                                        name="deliveryType"
-                                        component={DeliveryTypeSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Тип доставки"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="dealType"
-                                        component={DealTypeSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Тип сделки"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="deliveryPrice"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label={'Стоимость доставки (' + primaryCurrency + ')'}
-                                        fullWidth={true}
-                                        />
-                                    <Field
-                                            name="deliveryDate"
-                                            component={DateField}
-                                            className={classes.inputDateCustom}
-                                            floatingLabelText="Дата доставки"
-                                            container="inline"
-                                            fullWidth={true}/>
-                                </div>
-                                : <div className={classes.notEnough}>Недостаточно товаров на складе</div>}
-
                                 <div className={classes.condition}>
-                                    <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Оплата</div>
+                                    <div className={classes.subTitleOrder}>Условия акции </div>
                                     <Field
-                                        name="discountPrice"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Скидка (%)"
-                                        style={{width: '50%'}}
-                                        normalize={normalizeNumber}/>
-                                    <Field
-                                        name="paymentDate"
+                                        name="beginDate"
                                         component={DateField}
                                         className={classes.inputDateCustom}
-                                        floatingLabelText="Дата оплаты"
+                                        floatingLabelText="Дата начала акции"
                                         container="inline"
                                         fullWidth={true}/>
+                                    <Field
+                                        name="tillDate"
+                                        component={DateField}
+                                        className={classes.inputDateCustom}
+                                        floatingLabelText="Дата завершения акции"
+                                        container="inline"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="discount"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Размер акции"
+                                        /> %
                                 </div>
                             </div>
                             <div className={classes.rightOrderPart}>
                                 <Fields
-                                    names={['products', 'product', 'amount', 'cost']}
-                                    component={OrderListProductField}
+                                    names={['products', 'product', 'amount']}
+                                    component={PricesListProductField}
                                 />
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                        <div className={classes.commentField}>
-                            Общая сумма заказа: <OrderTotalSum/>
-                        </div>
-                        {(notEnough) ? <FlatButton
-                            label="Далее"
-                            className={classes.actionButton}
-                            primary={true}
-                            onTouchTap={shortageDialog.handleOpenShortageDialog}/>
-
-                        : <FlatButton
+                        <FlatButton
                             label="Оформить заказ"
                             className={classes.actionButton}
                             primary={true}
-                            type="submit"/>
-                        }
+                            type="submit"
+                        />
                     </div>
                 </form>
             </div>
         </Dialog>
     )
 })
-OrderCreateDialog.propTyeps = {
-    products: PropTypes.array,
-    open: PropTypes.bool.isRequired,
+PricesCreateDialog.propTyeps = {
+    isUpdate: PropTypes.bool,
+    openDialog: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
-    shortageDialog: PropTypes.shape({
-        shortageLoading: PropTypes.bool.isRequired,
-        openShortageDialog: PropTypes.bool.isRequired,
-        handleOpenShortageDialog: PropTypes.func.isRequired,
-        handleCloseShortageDialog: PropTypes.func.isRequired
-    }).isRequired,
-    createClientDialog: PropTypes.shape({
-        createClientLoading: PropTypes.bool.isRequired,
-        openCreateClientDialog: PropTypes.bool.isRequired,
-        handleOpenCreateClientDialog: PropTypes.func.isRequired,
-        handleCloseCreateClientDialog: PropTypes.func.isRequired,
-        handleSubmitCreateClientDialog: PropTypes.func.isRequired
-    }).isRequired
+    loading: PropTypes.bool.isRequired
 }
-OrderCreateDialog.defaultProps = {
+PricesCreateDialog.defaultProps = {
     isUpdate: false
 }
-export default OrderCreateDialog
+export default PricesCreateDialog

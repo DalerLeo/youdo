@@ -35,6 +35,11 @@ export const SUPPLY_LIST_URL = `/${SUPPLY}`
 export const SUPPLY_ITEM_URL = `${SUPPLY_LIST_URL}/:supplyId`
 export const SUPPLY_ITEM_PATH = `/${SUPPLY}/%d`
 
+export const PRICES = 'prices'
+export const PRICES_LIST_URL = `/${PRICES}`
+export const PRICES_ITEM_URL = `${PRICES_LIST_URL}/:pricesId`
+export const PRICES_ITEM_PATH = `/${PRICES}/%d`
+
 export const ORDER = 'order'
 export const ORDER_LIST_URL = `/${ORDER}`
 export const ORDER_ITEM_URL = `${ORDER_LIST_URL}/:orderId`

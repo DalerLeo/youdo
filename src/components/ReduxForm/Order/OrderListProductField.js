@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import {compose, withHandlers, withReducer, withState} from 'recompose'
+import {Field} from 'redux-form'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
@@ -20,6 +21,7 @@ import OrderProductSearchField from './OrderProductSearchField'
 import TextField from '../Basic/TextField'
 import ProductCostField from '../Product/ProductCostField'
 import OrderProductMeasurementField from './OrderProductMeasurementField'
+import {ProductTypeSearchField} from '../../ReduxForm'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 
@@ -202,29 +204,40 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                     />
                 </div>
                 {openAddProducts && <div className={classes.background}>
-                    <div style={{width: '35%', paddingRight: '20px'}}>
-                        <OrderProductSearchField
-                            label="Наименование товара"
+                    <div xs={12} style={{paddingRight: '20px'}}>
+                        <Field
+                            label="Отфильтровать по типу"
+                            name="type"
+                            component={ProductTypeSearchField}
                             className={classes.inputFieldCustom}
-                            style={{width: '100%'}}
-                            {..._.get(defaultProps, 'product')}
+                            fullWidth={true}
                         />
                     </div>
-                    <div style={{width: '20%', paddingRight: '20px'}}>
-                        <TextField
-                            label="Кол-во"
+                    <div xs={4} style={{paddingRight: '20px'}}>
+                        <Field
+                            label="Наименование товара"
+                            name="product"
+                            component={OrderProductSearchField}
                             className={classes.inputFieldCustom}
-                            style={{width: '100%'}}
-                            {..._.get(defaultProps, 'amount')}
+                            fullWidth={true}
+                        />
+                    </div>
+                    <div xs={2} style={{paddingRight: '20px'}}>
+                        <Field
+                            label="Кол-во"
+                            name="amount"
+                            component={TextField}
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}
                         />
                     </div>
                     <div>
                         <OrderProductMeasurementField/>
                     </div>
-                    <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px'}}>
+                    <div className="summa" style={{width: '10%', textAlign: 'right', paddingRight: '20px'}}>
                         <ProductCostField />
                     </div>
-                    <div style={{width: '20%', textAlign: 'right', paddingTop: '9px'}}>
+                    <div style={{width: '15%', textAlign: 'right', paddingTop: '9px'}}>
                         <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
                     </div>
                 </div>}
