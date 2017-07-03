@@ -53,7 +53,10 @@ export const listFilterSerializer = (data) => {
         'orderStatus': _.get(defaultData, 'orderStatus'),
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
+        'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
+        'delivery_date_1': _.get(defaultData, 'deliveryToDate'),
         'search': _.get(defaultData, 'search'),
+
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)

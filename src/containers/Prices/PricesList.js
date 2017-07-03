@@ -128,21 +128,17 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const deliveryFromDate = _.get(filterForm, ['values', 'dateDelivery', 'fromDate']) || null
-            const deliveryToDate = _.get(filterForm, ['values', 'dateDelivery', 'toDate']) || null
-            const createdFromDate = _.get(filterForm, ['values', 'dateCreated', 'fromDate']) || null
-            const createdToDate = _.get(filterForm, ['values', 'dateCreated', 'toDate']) || null
-            const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const beginFromDate = _.get(filterForm, ['values', 'beginDate', 'fromDate']) || null
+            const beginToDate = _.get(filterForm, ['values', 'beginDate', 'toDate']) || null
+            const tillFromDate = _.get(filterForm, ['values', 'tillFromDate', 'fromDate']) || null
+            const tillToDate = _.get(filterForm, ['values', 'tillToDate', 'toDate']) || null
 
             filter.filterBy({
                 [PRICES_FILTER_OPEN]: false,
-                [PRICES_FILTER_KEY.PROVIDER]: provider,
-                [PRICES_FILTER_KEY.STOCK]: stock,
-                [PRICES_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
-                [PRICES_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD'),
-                [PRICES_FILTER_KEY.CREATED_FROM_DATE]: createdFromDate && createdFromDate.format('YYYY-MM-DD'),
-                [PRICES_FILTER_KEY.CREATED_TO_DATE]: createdToDate && createdToDate.format('YYYY-MM-DD')
+                [PRICES_FILTER_KEY.BEGIN_FROM_DATE]: beginFromDate && beginFromDate.format('YYYY-MM-DD'),
+                [PRICES_FILTER_KEY.BEGIN_TO_DATE]: beginToDate && beginToDate.format('YYYY-MM-DD'),
+                [PRICES_FILTER_KEY.TILL_FROM_DATE]: tillFromDate && tillFromDate.format('YYYY-MM-DD'),
+                [PRICES_FILTER_KEY.TILL_TO_DATE]: tillToDate && tillToDate.format('YYYY-MM-DD')
             })
         },
         handleOpenDeleteDialog: props => () => {
@@ -235,12 +231,10 @@ const PricesList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', PRICES_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PRICES_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', PRICES_DELETE_DIALOG_OPEN]))
-    const provider = _.toInteger(filter.getParam(PRICES_FILTER_KEY.PROVIDER))
-    const stock = _.toInteger(filter.getParam(PRICES_FILTER_KEY.STOCK))
-    const deliveryFromDate = filter.getParam(PRICES_FILTER_KEY.DELIVERY_FROM_DATE)
-    const deliveryToDate = filter.getParam(PRICES_FILTER_KEY.DELIVERY_TO_DATE)
-    const createdFromDate = filter.getParam(PRICES_FILTER_KEY.CREATED_FROM_DATE)
-    const createdToDate = filter.getParam(PRICES_FILTER_KEY.CREATED_TO_DATE)
+    const beginFromDate = filter.getParam(PRICES_FILTER_KEY.BEGIN_FROM_DATE)
+    const beginToDate = filter.getParam(PRICES_FILTER_KEY.BEGIN_TO_DATE)
+    const tillFromDate = filter.getParam(PRICES_FILTER_KEY.TILL_FROM_DATE)
+    const tillToDate = filter.getParam(PRICES_FILTER_KEY.TILL_TO_DATE)
     const detailId = _.get(params, 'pricesId')
 
     const actionsDialog = {
@@ -296,19 +290,13 @@ const PricesList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            provider: {
-                value: provider
+            beginDate: {
+                fromDate: beginFromDate && moment(beginFromDate, 'YYYY-MM-DD'),
+                toDate: beginToDate && moment(beginToDate, 'YYYY-MM-DD')
             },
-            stock: {
-                value: stock
-            },
-            dateDelivery: {
-                fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
-                toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
-            },
-            dateCreated: {
-                fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
-                toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
+            tillDate: {
+                fromDate: tillFromDate && moment(tillFromDate, 'YYYY-MM-DD'),
+                toDate: tillToDate && moment(tillToDate, 'YYYY-MM-DD')
             }
         },
         filterLoading: false,

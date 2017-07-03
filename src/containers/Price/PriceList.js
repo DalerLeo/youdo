@@ -73,6 +73,7 @@ const enhance = compose(
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_FILTER_OPEN]: true})})
+            console.log('salom')
         },
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
