@@ -227,6 +227,7 @@ const ProductGridList = enhance((props) => {
             {currentDetail && <ConfirmDialog
                 type="delete"
                 message={_.get(currentDetail, 'name')}
+                loading={confirmDialog.confirmLoading}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
@@ -239,7 +240,6 @@ ProductGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
@@ -248,6 +248,7 @@ ProductGridList.propTypes = {
         handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
     confirmDialog: PropTypes.shape({
+        confirmLoading: PropTypes.bool.isRequired,
         openConfirmDialog: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,

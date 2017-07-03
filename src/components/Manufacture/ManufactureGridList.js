@@ -287,7 +287,6 @@ const ManufactureGridList = enhance((props) => {
 
     const productConfirm = _.get(productData, 'confirmDialog')
     const productCreate = _.get(productData, 'createDialog')
-    const productUpdate = _.get(productData, 'updateDialog')
     const userCreate = _.get(personData, 'createDialog')
     const userUpdate = _.get(personData, 'updateDialog')
     const userConfirm = _.get(personData, 'confirmDialog')
@@ -309,7 +308,6 @@ const ManufactureGridList = enhance((props) => {
             />
             <ManufactureShowBom
                 open={showBom.open}
-                onSubmit={productData.handleSubmitAddIngredient}
                 onClose={showBom.handleClose}
 
             />
@@ -317,12 +315,6 @@ const ManufactureGridList = enhance((props) => {
                 open={productCreate.open}
                 onClose={productCreate.handleCloseCreateDialog}
                 onSubmit={productCreate.handleSubmitCreateDialog}
-            />
-            <ManufactureAddProductDialog
-                initialValues={productUpdate.initialValues}
-                open={productUpdate.open}
-                onClose={productUpdate.handleCloseUpdateDialog}
-                onSubmit={productUpdate.handleSubmitUpdateDialog}
             />
             <ManufactureEditProductDialog
                 open={createMaterials.open}

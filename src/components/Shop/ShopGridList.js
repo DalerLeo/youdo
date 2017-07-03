@@ -4,9 +4,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -81,26 +78,15 @@ const ShopGridList = enhance((props) => {
         addPhotoDialog,
         filterDialog,
         slideShowDialog,
-        actionsDialog,
         confirmDialog,
         deleteDialog,
         listData,
         detailData,
-        tabData,
         mapLocation,
         navigationButtons,
         classes
     } = props
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
+
     const shopFilterDialog = (
         <ShopFilterForm
             initialValues={filterDialog.initialValues}
@@ -115,7 +101,6 @@ const ShopGridList = enhance((props) => {
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
-            tabData={tabData}
             updateDialog={updateDialog}
             addPhotoDialog={addPhotoDialog}
             slideShowDialog={slideShowDialog}
@@ -134,7 +119,7 @@ const ShopGridList = enhance((props) => {
                 <Col xs={3}>
                     <Link to={{
                         pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
-                        query: filter.getParams()
+                        query: ''
                     }}>{name}</Link>
                 </Col>
                 <Col xs={3}>{client}</Col>
@@ -169,7 +154,6 @@ const ShopGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={shopDetail}
-                actionsDialog={actions}
                 filterDialog={shopFilterDialog}
             />
             <ShopCreateDialog
@@ -237,7 +221,6 @@ ShopGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     mapLocation: PropTypes.object,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
@@ -260,7 +243,7 @@ ShopGridList.propTypes = {
     }).isRequired,
     slideShowDialog: PropTypes.shape({
         openSlideShowDialog: PropTypes.bool.isRequired,
-        gallery: PropTypes.object.isRequired,
+        gallery: PropTypes.object,
         galleryLoading: PropTypes.bool.isRequired,
         handleOpenSlideShowDialog: PropTypes.func.isRequired,
         handleCloseSlideShowDialog: PropTypes.func.isRequired
@@ -288,10 +271,6 @@ ShopGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,

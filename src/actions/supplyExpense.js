@@ -54,36 +54,3 @@ export const supplyExpenseListFetchAction = (supplyId) => {
         payload
     }
 }
-
-export const supplyExpenseCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.SUPPLY_EXPENSE_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SUPPLY_EXPENSE_LIST_CSV,
-        payload
-    }
-}
-
-export const supplyExpenseItemFetchAction = (id) => {
-    const payload = axios()
-        .get(sprintf(API.SUPPLY_EXPENSE_ITEM, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SUPPLY_EXPENSE_ITEM,
-        payload
-    }
-}

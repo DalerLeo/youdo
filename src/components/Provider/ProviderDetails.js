@@ -138,7 +138,7 @@ const ProviderDetails = enhance((props) => {
         <div className={classes.wrapper} key={_.get(data, 'id')}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                onTouchTap={handleCloseDetail}>{providerName}</div>
+                onClick={handleCloseDetail}>{providerName}</div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
@@ -194,9 +194,12 @@ const ProviderDetails = enhance((props) => {
 ProviderDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
-    confirmDialog: PropTypes.object.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default ProviderDetails

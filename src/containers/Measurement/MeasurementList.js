@@ -4,7 +4,7 @@ import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -18,7 +18,6 @@ import {
     measurementCreateAction,
     measurementUpdateAction,
     measurementListFetchAction,
-    measurementCSVFetchAction,
     measurementDeleteAction,
     measurementItemFetchAction
 } from '../../actions/measurement'
@@ -34,8 +33,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['measurement', 'update', 'loading'])
         const list = _.get(state, ['measurement', 'list', 'data'])
         const listLoading = _.get(state, ['measurement', 'list', 'loading'])
-        const csvData = _.get(state, ['measurement', 'csv', 'data'])
-        const csvLoading = _.get(state, ['measurement', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'MeasurementCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -46,8 +43,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             createForm
         }
@@ -66,8 +61,6 @@ const enhance = compose(
         measurementId && dispatch(measurementItemFetchAction(measurementId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
-
     withHandlers({
         handleActionEdit: props => () => {
             return null
@@ -75,18 +68,6 @@ const enhance = compose(
 
         handleOpenDeleteDialog: props => () => {
             return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(measurementCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
         },
 
         handleOpenConfirmDialog: props => (id) => {
@@ -104,12 +85,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(measurementDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[MEASUREMENT_DELETE_DIALOG_OPEN]: false})})
                     dispatch(measurementListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -201,6 +183,7 @@ const MeasurementList = enhance((props) => {
     }
 
     const confirmDialog = {
+        confirmLoading: detailLoading,
         openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
@@ -221,14 +204,6 @@ const MeasurementList = enhance((props) => {
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
-    }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
     const listData = {
@@ -252,7 +227,6 @@ const MeasurementList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

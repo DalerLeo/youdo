@@ -160,14 +160,13 @@ const StatStockFilterForm = enhance((props) => {
                     <div>
                         <Field className={classes.inputField} name="type" component={ProductTypeSearchField} label="Тип продукта" fullWidth={true}/>
                     </div>
-                    <div>
-                        <RaisedButton
-                            type="submit"
-                            primary={true}
-                            buttonStyle={{color: '#fff'}}>
-                            Применить
-                        </RaisedButton>
-                    </div>
+                    <RaisedButton
+                        type="submit"
+                        primary={true}
+                        buttonStyle={{color: '#fff'}}
+                        label="Применить"
+                        style={{marginTop: '15px'}}>
+                    </RaisedButton>
                 </form>
             </Paper>
         </div>

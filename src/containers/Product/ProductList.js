@@ -4,7 +4,7 @@ import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -21,7 +21,6 @@ import {
     productCreateAction,
     productUpdateAction,
     productListFetchAction,
-    productCSVFetchAction,
     productDeleteAction,
     productItemFetchAction
 } from '../../actions/product'
@@ -39,8 +38,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['product', 'update', 'loading'])
         const list = _.get(state, ['product', 'list', 'data'])
         const listLoading = _.get(state, ['product', 'list', 'loading'])
-        const csvData = _.get(state, ['product', 'csv', 'data'])
-        const csvLoading = _.get(state, ['product', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'ProductFilterForm'])
         const createForm = _.get(state, ['form', 'ProductCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -53,8 +50,6 @@ const enhance = compose(
             createLoading,
             showBigImgLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
             createForm
@@ -75,23 +70,9 @@ const enhance = compose(
         productId && !_.get(nextProps, PRODUCT_DELETE_DIALOG_OPEN) && dispatch(productItemFetchAction(productId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
-
     withHandlers({
         handleActionEdit: props => () => {
             return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(productCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
         },
 
         handleOpenConfirmDialog: props => (id) => {
@@ -249,9 +230,10 @@ const ProductList = enhance((props) => {
     const openShowBigImg = toBoolean(_.get(location, ['query', PRODUCT_SHOW_PHOTO_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PRODUCT_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', PRODUCT_DELETE_DIALOG_OPEN]))
-    const category = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.CATEGORY))
+    const brand = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.BRAND))
+    const type = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.TYPE))
+    const measurement = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.MEASUREMENT))
     const detailId = _.toInteger(_.get(params, 'productId'))
-    const tab = _.get(params, 'tab')
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -281,6 +263,7 @@ const ProductList = enhance((props) => {
         handleCloseShowBigImg: props.handleCloseShowBigImg
     }
     const confirmDialog = {
+        confirmLoading: detailLoading,
         openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
@@ -316,9 +299,9 @@ const ProductList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            category: {
-                value: category
-            }
+            brand: {value: brand},
+            type: {value: type},
+            measurement: {value: measurement}
         },
         filterLoading: false,
         openFilterDialog,
@@ -326,19 +309,6 @@ const ProductList = enhance((props) => {
         handleCloseFilterDialog: props.handleCloseFilterDialog,
         handleClearFilterDialog: props.handleClearFilterDialog,
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
-    }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
-    const tabData = {
-        tab,
-        handleTabChange: props.handleTabChange
     }
 
     const listData = {
@@ -358,14 +328,12 @@ const ProductList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                tabData={tabData}
                 createDialog={createDialog}
                 showBigImg={showBigImg}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

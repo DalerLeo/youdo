@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {orderingSnakeCase} from '../../helpers/serializer'
+import {orderingSnakeCase} from '../helpers/serializer'
 
 const MINUS_ONE = -1
 const ZERO = 0

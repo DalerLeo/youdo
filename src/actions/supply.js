@@ -88,23 +88,6 @@ export const supplyListFetchAction = (filter) => {
     }
 }
 
-export const supplyCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.SUPPLY_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SUPPLY_LIST_CSV,
-        payload
-    }
-}
-
 export const supplyItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.SUPPLY_ITEM, id))

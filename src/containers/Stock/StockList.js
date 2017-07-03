@@ -4,7 +4,7 @@ import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -18,7 +18,6 @@ import {
     stockCreateAction,
     stockUpdateAction,
     stockListFetchAction,
-    stockCSVFetchAction,
     stockDeleteAction,
     stockItemFetchAction
 } from '../../actions/stock'
@@ -34,8 +33,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['stock', 'update', 'loading'])
         const list = _.get(state, ['stock', 'list', 'data'])
         const listLoading = _.get(state, ['stock', 'list', 'loading'])
-        const csvData = _.get(state, ['stock', 'csv', 'data'])
-        const csvLoading = _.get(state, ['stock', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'StockCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -46,8 +43,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             createForm
         }
@@ -66,23 +61,9 @@ const enhance = compose(
         stockId && dispatch(stockItemFetchAction(stockId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
-
     withHandlers({
         handleActionEdit: props => () => {
             return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(stockCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
         },
 
         handleOpenConfirmDialog: props => (id) => {
@@ -100,12 +81,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(stockDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_DELETE_DIALOG_OPEN]: false})})
                     dispatch(stockListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -210,6 +192,7 @@ const StockList = enhance((props) => {
     }
 
     const confirmDialog = {
+        confirmLoading: detailLoading,
         openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
@@ -237,14 +220,6 @@ const StockList = enhance((props) => {
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
 
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -266,7 +241,6 @@ const StockList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

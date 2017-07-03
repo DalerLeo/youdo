@@ -1,12 +1,9 @@
 import React from 'react'
 import _ from 'lodash'
-import moment from 'moment'
-import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
-import * as SHOP from '../../constants/shop'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -26,13 +23,13 @@ import {
     shopCreateAction,
     imageCreateAction,
     shopUpdateAction,
-    shopCSVFetchAction,
     shopDeleteAction,
     shopItemFetchAction,
     shopListFetchAction,
     slideShowFetchAction
 } from '../../actions/shop'
 import {openSnackbarAction} from '../../actions/snackbar'
+
 const ZERO = 0
 const ONE = 1
 const MINUS_ONE = -1
@@ -46,8 +43,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['shop', 'update', 'loading'])
         const list = _.get(state, ['shop', 'list', 'data'])
         const listLoading = _.get(state, ['shop', 'list', 'loading'])
-        const csvData = _.get(state, ['shop', 'csv', 'data'])
-        const csvLoading = _.get(state, ['shop', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'ShopFilterForm'])
         const createForm = _.get(state, ['form', 'ShopCreateForm'])
         const mapForm = _.get(state, ['form', 'ShopMapForm'])
@@ -57,6 +52,7 @@ const enhance = compose(
         const gallery = _.get(state, ['shop', 'gallery', 'data'])
         const galleryLoading = _.get(state, ['shop', 'gallery', 'loading'])
         const filter = filterHelper(list, pathname, query)
+
         return {
             list,
             listLoading,
@@ -64,8 +60,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
             createForm,
@@ -82,6 +76,7 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(shopListFetchAction(filter))
     }),
+
     withPropsOnChange((props, nextProps) => {
         const prevId = _.get(props, ['params', 'shopId'])
         const nextId = _.get(nextProps, ['params', 'shopId'])
@@ -92,6 +87,7 @@ const enhance = compose(
             dispatch(shopItemFetchAction(shopId))
         }
     }),
+
     withPropsOnChange((props, nextProps) => {
         const prevId = _.toNumber(_.get(props, ['location', 'query', 'openImagesDialog']))
         const nextId = _.toNumber(_.get(nextProps, ['location', 'query', 'openImagesDialog']))
@@ -104,25 +100,15 @@ const enhance = compose(
             dispatch(slideShowFetchAction(imgId))
         }
     }),
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
+
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-            dispatch(shopCSVFetchAction(props.filter))
-        },
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
         handleOpenConfirmDialog: props => () => {
             const {setOpenConfirmDialog} = props
             setOpenConfirmDialog(true)
         },
+
         handleCloseConfirmDialog: props => () => {
             const {setOpenConfirmDialog} = props
             setOpenConfirmDialog(false)
@@ -130,63 +116,54 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, setOpenConfirmDialog} = props
             dispatch(shopDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     setOpenConfirmDialog(false)
                     dispatch(shopListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
+
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_FILTER_OPEN]: true})})
         },
+
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_FILTER_OPEN]: false})})
         },
-        handleTabChange: props => (tab) => {
-            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
-            hashHistory.push({pathname: sprintf(ROUTER.SHOP_ITEM_TAB_PATH, shopId, tab)})
-        },
+
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
             hashHistory.push({pathname, query: {}})
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const category = _.get(filterForm, ['values', 'category', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client', 'value']) || null
+            const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
+
             filter.filterBy({
                 [SHOP_FILTER_OPEN]: false,
-                [SHOP_FILTER_KEY.CATEGORY]: category,
-                [SHOP_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [SHOP_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [SHOP_FILTER_KEY.CLIENT]: client,
+                [SHOP_FILTER_KEY.MARKET_TYPE]: marketType
             })
-        },
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: true})})
         },
+
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
         },
+
         handleSubmitCreateDialog: props => () => {
             const {location: {pathname}, dispatch, createForm, mapLocation, filter} = props
+
             return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
@@ -196,14 +173,17 @@ const enhance = compose(
                     dispatch(shopListFetchAction(filter))
                 })
         },
+
         handleOpenSlideShowDialog: props => (index) => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_SLIDESHOW_DIALOG_OPEN]: index})})
         },
+
         handleCloseSlideShowDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_SLIDESHOW_DIALOG_OPEN]: MINUS_ONE})})
         },
+
         handlePrevImage: props => (index, last) => {
             const {location: {pathname}, filter} = props
             let currentIndex = index
@@ -224,18 +204,22 @@ const enhance = compose(
             }
             hashHistory.push({pathname, query: filter.getParams({[SHOP_SLIDESHOW_DIALOG_OPEN]: nextIndex})})
         },
+
         handleOpenAddPhotoDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: true})})
         },
+
         handleCloseAddPhotoDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: false})})
         },
+
         handleSubmitAddPhotoDialog: props => () => {
             const {location: {pathname}, dispatch, addPhotoForm, detail, filter} = props
             const shopId = _.get(detail, 'id')
             const imageId = _.get(addPhotoForm, 'image')
+
             return dispatch(imageCreateAction(imageId, shopId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Фотография добавлена'}))
@@ -245,29 +229,36 @@ const enhance = compose(
                     dispatch(shopItemFetchAction(shopId))
                 })
         },
+
         handleOpenMapDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_MAP_DIALOG_OPEN]: true})})
         },
+
         handleCloseMapDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_MAP_DIALOG_OPEN]: false})})
         },
+
         handleSubmitMapDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_MAP_DIALOG_OPEN]: false})})
         },
+
         handleOpenMapUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_MAP_DIALOG_OPEN]: true})})
         },
+
         handleCloseMapUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false})})
         },
+
         handleSubmitMapUpdateDialog: props => () => {
             const {dispatch, mapForm, filter} = props
             const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+
             return dispatch(shopUpdateAction(shopId, _.get(mapForm, ['values'])))
                 .then(() => {
                     return dispatch(shopItemFetchAction(shopId))
@@ -279,17 +270,21 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false}))
                 })
         },
+
         handleOpenUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_DIALOG_OPEN]: true})})
         },
+
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_DIALOG_OPEN]: false})})
         },
+
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
             const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+
             return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(shopItemFetchAction(shopId))
@@ -301,12 +296,14 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[SHOP_UPDATE_DIALOG_OPEN]: false}))
                 })
         },
+
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.SHOP_LIST_URL, query: filter.getParam()})
         }
     })
 )
+
 const ShopList = enhance((props) => {
     const {
         location,
@@ -323,6 +320,7 @@ const ShopList = enhance((props) => {
         gallery,
         galleryLoading
     } = props
+
     const openFilterDialog = toBoolean(_.get(location, ['query', SHOP_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', SHOP_CREATE_DIALOG_OPEN]))
     const openMapDialog = toBoolean(_.get(location, ['query', SHOP_MAP_DIALOG_OPEN]))
@@ -331,15 +329,10 @@ const ShopList = enhance((props) => {
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const openAddPhotoDialog = toBoolean(_.get(location, ['query', ADD_PHOTO_DIALOG_OPEN]))
     const openSlideShowDialog = _.toInteger(_.get(location, ['query', SHOP_SLIDESHOW_DIALOG_OPEN]) || MINUS_ONE) > MINUS_ONE
-    const category = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CATEGORY))
-    const fromDate = filter.getParam(SHOP_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(SHOP_FILTER_KEY.TO_DATE)
+    const client = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CLIENT))
+    const marketType = filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE)
     const detailId = _.toInteger(_.get(params, 'shopId'))
-    const tab = _.get(params, 'tab') || SHOP.DEFAULT_TAB
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
+
     const createDialog = {
         createLoading,
         openCreateDialog,
@@ -347,12 +340,14 @@ const ShopList = enhance((props) => {
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
+
     const addPhotoDialog = {
         openAddPhotoDialog,
         handleOpenAddPhotoDialog: props.handleOpenAddPhotoDialog,
         handleCloseAddPhotoDialog: props.handleCloseAddPhotoDialog,
         handleSubmitAddPhotoDialog: props.handleSubmitAddPhotoDialog
     }
+
     const slideShowDialog = {
         gallery,
         galleryLoading,
@@ -360,26 +355,31 @@ const ShopList = enhance((props) => {
         handleOpenSlideShowDialog: props.handleOpenSlideShowDialog,
         handleCloseSlideShowDialog: props.handleCloseSlideShowDialog
     }
+
     const mapDialog = {
         openMapDialog,
         handleOpenMapDialog: props.handleOpenMapDialog,
         handleCloseMapDialog: props.handleCloseMapDialog,
         handleSubmitMapDialog: props.handleSubmitMapDialog
     }
+
     const deleteDialog = {
         openDeleteDialog,
         handleOpenDeleteDialog: props.handleOpenDeleteDialog,
         handleCloseDeleteDialog: props.handleCloseDeleteDialog
     }
+
     const confirmDialog = {
         openConfirmDialog: props.openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
+
     const navigationButtons = {
         handlePrevImage: props.handlePrevImage,
         handleNextImage: props.handleNextImage
+
     }
     const updateDialog = {
         initialValues: (() => {
@@ -424,6 +424,7 @@ const ShopList = enhance((props) => {
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
+
     const updateMapDialog = {
         initialValues: (() => {
             if (!mapLocation) {
@@ -441,14 +442,14 @@ const ShopList = enhance((props) => {
         handleCloseMapUpdateDialog: props.handleCloseMapUpdateDialog,
         handleSubmitMapUpdateDialog: props.handleSubmitMapUpdateDialog
     }
+
     const filterDialog = {
         initialValues: {
             category: {
-                value: category
+                value: client
             },
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            marketType: {
+                value: marketType
             }
         },
         filterLoading: false,
@@ -458,34 +459,25 @@ const ShopList = enhance((props) => {
         handleClearFilterDialog: props.handleClearFilterDialog,
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-    const tabData = {
-        tab,
-        handleTabChange: props.handleTabChange
-    }
+
     const listData = {
         data: _.get(list, 'results'),
         listLoading
     }
+
     const detailData = {
         id: detailId,
         data: detail,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
+
     return (
         <Layout {...layout}>
             <ShopGridList
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                tabData={tabData}
                 createDialog={createDialog}
                 mapDialog={mapDialog}
                 addPhotoDialog={addPhotoDialog}
@@ -494,13 +486,12 @@ const ShopList = enhance((props) => {
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
                 mapLocation={mapLocation}
                 navigationButtons={navigationButtons}
             />
         </Layout>
     )
 })
+
 export default ShopList

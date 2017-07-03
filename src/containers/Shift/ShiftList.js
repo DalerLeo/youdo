@@ -4,7 +4,7 @@ import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -18,7 +18,6 @@ import {
     shiftCreateAction,
     shiftUpdateAction,
     shiftListFetchAction,
-    shiftCSVFetchAction,
     shiftDeleteAction,
     shiftItemFetchAction
 } from '../../actions/shift'
@@ -34,8 +33,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['shift', 'update', 'loading'])
         const list = _.get(state, ['shift', 'list', 'data'])
         const listLoading = _.get(state, ['shift', 'list', 'loading'])
-        const csvData = _.get(state, ['shift', 'csv', 'data'])
-        const csvLoading = _.get(state, ['shift', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'ShiftCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -46,8 +43,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             createForm
         }
@@ -66,26 +61,12 @@ const enhance = compose(
         shiftId && dispatch(shiftItemFetchAction(shiftId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
-
     withHandlers({
         handleActionEdit: props => () => {
             return null
         },
         handleOpenDeleteDialog: props => () => {
             return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(shiftCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
         },
 
         handleOpenConfirmDialog: props => (id) => {
@@ -104,12 +85,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(shiftDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SHIFT_DELETE_DIALOG_OPEN]: false})})
                     dispatch(shiftListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -202,6 +184,7 @@ const ShiftList = enhance((props) => {
     }
 
     const confirmDialog = {
+        confirmLoading: detailLoading,
         openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
@@ -222,14 +205,6 @@ const ShiftList = enhance((props) => {
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
-    }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
     const listData = {
@@ -253,7 +228,6 @@ const ShiftList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

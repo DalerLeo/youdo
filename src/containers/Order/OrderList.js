@@ -27,7 +27,6 @@ import {
     orderCreateAction,
     orderUpdateAction,
     orderListFetchAction,
-    orderCSVFetchAction,
     orderDeleteAction,
     orderItemFetchAction,
     orderReturnAction,
@@ -61,8 +60,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['order', 'update', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
-        const csvData = _.get(state, ['order', 'csv', 'data'])
-        const csvLoading = _.get(state, ['order', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'OrderFilterForm'])
         const createForm = _.get(state, ['form', 'OrderCreateForm'])
         const clientCreateForm = _.get(state, ['form', 'ClientCreateForm'])
@@ -83,8 +80,6 @@ const enhance = compose(
             returnLoading,
             shortageLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
             createForm,
@@ -143,7 +138,6 @@ const enhance = compose(
         }
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
@@ -158,18 +152,6 @@ const enhance = compose(
             return null
         },
 
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(orderCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
         handleOpenConfirmDialog: props => () => {
             const {setOpenConfirmDialog} = props
             setOpenConfirmDialog(true)
@@ -182,12 +164,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog, filter} = props
             dispatch(orderDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     setOpenConfirmDialog(false)
                     dispatch(orderListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -576,14 +559,6 @@ const OrderList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -630,7 +605,6 @@ const OrderList = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
                 products={products}
             />
         </Layout>

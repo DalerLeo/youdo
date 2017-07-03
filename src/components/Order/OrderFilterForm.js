@@ -190,14 +190,13 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputDateCustom} name="dostDate" component={DateToDateField} label="Дата доставки"/>
                     </div>
 
-                    <div>
-                        <RaisedButton
-                            type="submit"
-                            primary={true}
-                            buttonStyle={{color: '#fff'}}>
-                            Применить
-                        </RaisedButton>
-                    </div>
+                    <RaisedButton
+                        type="submit"
+                        primary={true}
+                        buttonStyle={{color: '#fff'}}
+                        label="Применить"
+                        style={{marginTop: '15px'}}>
+                    </RaisedButton>
                 </form>
             </Paper>
         </div>

@@ -123,23 +123,6 @@ export const transactionListFetchAction = (filter, cashboxId) => {
     }
 }
 
-export const transactionCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.TRANSACTION_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.TRANSACTION_LIST_CSV,
-        payload
-    }
-}
-
 export const transactionItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.TRANSACTION_ITEM, id))

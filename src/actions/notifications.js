@@ -36,22 +36,6 @@ export const notificationListFetchAction = () => {
     }
 }
 
-export const notificationItemFetchAction = (id) => {
-    const payload = axios()
-        .get(sprintf(API.NOTIFICATIONS_ITEM, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.NOTIFICATIONS_ITEM,
-        payload
-    }
-}
-
 export const notificationGetNotViewed = () => {
     const payload = axios()
         .get(API.NOTIFICATIONS_GET_NOT_VIEWED)

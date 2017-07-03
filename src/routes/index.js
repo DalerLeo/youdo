@@ -12,7 +12,6 @@ import {SupplyList} from '../containers/Supply'
 import {OrderList} from '../containers/Order'
 import {ProductList} from '../containers/Product'
 import {ProductTypeList} from '../containers/ProductType'
-import {CategoryList} from '../containers/Category'
 import {ProductPriceList} from '../containers/ProductPrice'
 import {StockList} from '../containers/Stock'
 import {CurrencyList} from '../containers/Currency'
@@ -189,17 +188,6 @@ export default {
                 {
                     path: ROUTES.PRODUCT_PRICE_ITEM_URL,
                     component: userIsAuth(ProductPriceList)
-                }
-            ]
-        },
-        // Category
-        {
-            path: ROUTES.CATEGORY_LIST_URL,
-            component: userIsAuth(CategoryList),
-            childRoutes: [
-                {
-                    path: ROUTES.CATEGORY_ITEM_URL,
-                    component: userIsAuth(CategoryList)
                 }
             ]
         },
