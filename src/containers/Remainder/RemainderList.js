@@ -12,7 +12,8 @@ import {
     REMAINDER_CREATE_DIALOG_OPEN,
     REMAINDER_UPDATE_DIALOG_OPEN,
     REMAINDER_DELETE_DIALOG_OPEN,
-    RemainderGridList
+    RemainderGridList,
+    REMAINDER_FILTER_OPEN
 } from '../../components/Remainder'
 import {
     remainderCreateAction,
@@ -122,6 +123,14 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
+        handleOpenFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_FILTER_OPEN]: true})})
+        },
+        handleCloseFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_FILTER_OPEN]: false})})
+        },
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_CREATE_DIALOG_OPEN]: true})})
@@ -197,12 +206,14 @@ const RemainderList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', REMAINDER_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', REMAINDER_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', REMAINDER_DELETE_DIALOG_OPEN]))
+    const openFilterDialog = toBoolean(_.get(location, ['query', REMAINDER_FILTER_OPEN]))
 
     const detailId = _.toInteger(_.get(params, 'remainderId'))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
+        handleActionDelete: props.handleOpenDeleteDialog,
+
     }
 
     const createDialog = {
@@ -211,6 +222,11 @@ const RemainderList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+    const filterDialog = {
+        openFilterDialog: openFilterDialog,
+        handleOpentFilterDialog: props.handleOpenFilterDialog,
+        handleCloseFilterDialog: props.handleCloseFilterDialog
     }
 
     const confirmDialog = {
@@ -271,6 +287,7 @@ const RemainderList = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 csvDialog={csvDialog}
+                filterDialog={filterDialog}
             />
         </Layout>
     )

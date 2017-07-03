@@ -3,9 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-
-/* Import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit' */
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
 import RemainderCreateDialog from './RemainderCreateDialog'
@@ -13,24 +10,30 @@ import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-
-/* Import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Edit from 'material-ui/svg-icons/image/edit' */
+import CloseIcon2 from '../CloseIcon2'
+import TextField from 'material-ui/TextField'
+import SearchIcon from 'material-ui/svg-icons/action/search'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down-circle'
 import Paper from 'material-ui/Paper'
 import RemainderDetails from './RemainderDetails'
+import RemainderFilterForm from './RemainderFilterForm'
 
 const enhance = compose(
     injectSheet({
         wrapper: {
-            padding: '20px 30px',
+            padding: '15px 30px',
             '& .row': {
-                lineHeight: '0px'
+                alignItems: 'center',
+                '& div': {
+                    lineHeight: '0px'
+                }
+            }
+        },
+        headers: {
+            padding: '0px 30px 10px 30px',
+            '& .row': {
+                alignItems: 'center'
             }
         },
         addButton: {
@@ -57,6 +60,52 @@ const enhance = compose(
                     margin: '0'
                 }
             }
+        },
+        itemData: {
+            textAlign: 'left',
+            fontWeight: '700',
+            fontSize: '17px'
+        },
+        filterWrapper: {
+            width: '300px',
+            zIndex: '99',
+            position: 'absolute',
+            right: '0',
+            top: '0'
+        },
+        filterBtnWrapper: {
+            position: 'absolute',
+            top: '15px',
+            right: '0',
+            marginBottom: '0px'
+        },
+        filterBtn: {
+            backgroundColor: '#12aaeb !important',
+            color: '#fff',
+            fontWeight: '600',
+            padding: '7px 7px',
+            borderRadius: '3px',
+            lineHeight: '12px'
+        },
+        filterTitle: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '20px 30px',
+            borderBottom: '1px #efefef solid',
+            lineHeight: '0'
+        },
+        search: {
+            position: 'relative',
+            display: 'flex',
+            maxWidth: '300px',
+        },
+        searchField: {
+            fontSize: '13px !important'
+        },
+        searchButton: {
+            position: 'absolute !important',
+            right: '-10px'
         }
     })
 )
@@ -82,42 +131,53 @@ const RemainderGridList = enhance((props) => {
         detailData,
         classes
     } = props
+    const filterBtn = (
+        <div className={classes.filterBtnWrapper}>
+            <div className={classes.filterBtn}
+            > Открыть фильтр</div>
+        </div>
+    )
+
+    const remainderFilterDialog = (
+        <RemainderFilterForm/>
+    )
 
     const list = (
-        <Paper zDepth={1} >
-            <div className={classes.wrapper}>
+        <div>
+            <div className={classes.headers}>
                 <Row>
-                    <Col xs={3}>Миф морозная свежесть</Col>
-                    <Col xs={3}>Стиралный порошок</Col>
-                    <Col xs={3}>Наименование склада 1</Col>
-                    <Col xs={2} style={{textAlign: 'right'}}>200 кг</Col>
-                    <Col xs={1} style={{textAlign: 'right'}}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}>
-                            <Arrow/>
-                        </IconButton>
-                    </Col>
+                    <Col xs={3}>Товар</Col>
+                    <Col xs={3}>Тип товара</Col>
+                    <Col xs={4}>Склад</Col>
+                    <Col xs={1} style={{textAlign: 'left'}}>Всего товаров</Col>
                 </Row>
             </div>
-            <RemainderDetails/>
-        </Paper>
+            <Paper zDepth={1} >
+                <div className={classes.wrapper}>
+                    <Row>
+                        <Col xs={3}>Миф морозная свежесть</Col>
+                        <Col xs={3}>Стиралный порошок</Col>
+                        <Col xs={4}>Наименование склада 1</Col>
+                        <Col xs={1} className={classes.itemData}>200 кг</Col>
+                        <Col xs={1} style={{textAlign: 'right'}}>
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}>
+                                <Arrow/>
+                            </IconButton>
+                        </Col>
+                    </Row>
+                </div>
+                <RemainderDetails/>
+            </Paper>
+        </div>
     )
 
     return (
         <Container>
             <SubMenu url={ROUTES.REMAINDER_LIST_URL}/>
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить склад">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
-
+            {filterBtn}
+            <RemainderFilterForm/>
             {list}
 
             <RemainderCreateDialog

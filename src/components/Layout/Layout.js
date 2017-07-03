@@ -107,7 +107,7 @@ const enhance = compose(
         content: {
             background: '#f2f5f8',
             width: 'calc(100% - 140px)',
-            padding: '28px',
+            padding: '0 28px 28px',
             overflow: 'auto'
         },
         notifications: {

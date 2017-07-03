@@ -34,8 +34,8 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
-            height: '50px',
-            fontWeight: '600',
+            padding: '15px 0',
+            fontWeight: '700',
             borderBottom: '1px #efefef solid'
 
         },
@@ -48,7 +48,8 @@ const enhance = compose(
                 margin: '0 -0.5rem'
             },
             '& > .row:first-child': {
-                fontWeight: '600'
+                fontWeight: '600',
+                lineHeight: '20px'
             }
         }
 
@@ -75,7 +76,7 @@ const RemainderDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>Партия товаров</div>
+                <div className={classes.titleLabel}>Парти товаров</div>
                 <div className={classes.gridPagination}>
                     <IconButton
                         iconStyle={iconStyle.icon}
