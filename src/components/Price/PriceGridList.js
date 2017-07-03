@@ -82,6 +82,7 @@ const PriceGridList = enhance((props) => {
         listData,
         detailData
     } = props
+
     const priceFilterDialog = (
         <PriceFilterForm
             initialValues={filterDialog.initialValues}
@@ -96,7 +97,7 @@ const PriceGridList = enhance((props) => {
             priceSupplyDialog={priceSupplyDialog}
             priceSetForm = {priceSetForm}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
-            mergedList={detailData.mergedList()}>
+            mergedList={_.get(detailData.mergedList())}>
         </PriceDetails>
     )
     const priceList = _.map(_.get(listData, 'data'), (item) => {
@@ -115,7 +116,7 @@ const PriceGridList = enhance((props) => {
                 <Col xs={5} style={{display: 'flex', alignItems: 'center'}}>
                     <Link to={{
                         pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id),
-                        query: ''
+                        query: filter.getParams()
                     }}>{name}</Link>
                 </Col>
                 <Col xs={2}>{type}</Col>
@@ -159,6 +160,7 @@ const PriceGridList = enhance((props) => {
 })
 PriceGridList.propTypes = {
     filter: PropTypes.object.isRequired,
+
     listData: PropTypes.object,
     detailData: PropTypes.object,
     filterDialog: PropTypes.shape({

@@ -166,3 +166,8 @@ export const PRICE = 'price'
 export const PRICE_LIST_URL = `/${PRICE}`
 export const PRICE_ITEM_URL = `${PRICE_LIST_URL}/:priceId`
 export const PRICE_ITEM_PATH = `/${PRICE}/%d`
+
+export const REMAINDER = 'remainder'
+export const REMAINDER_LIST_URL = `/${REMAINDER}`
+export const REMAINDER_ITEM_URL = `${REMAINDER_LIST_URL}/:remainderId`
+export const REMAINDER_ITEM_PATH = `/${REMAINDER}/%d`

@@ -36,6 +36,7 @@ import {MarketTypeList} from '../containers/MarketType'
 import {PricesList} from '../containers/Prices'
 import {PriceList} from '../containers/Price'
 import NotFound from '../containers/NotFound'
+import {RemainderList} from '../containers/Remainder'
 
 export default {
     path: '/',
@@ -393,6 +394,17 @@ export default {
                 {
                     path: ROUTES.PRICES_ITEM_URL,
                     component: userIsAuth(PricesList)
+                }
+            ]
+        },
+        // Remainder
+        {
+            path: ROUTES.REMAINDER_LIST_URL,
+            component: userIsAuth(RemainderList),
+            childRoutes: [
+                {
+                    path: ROUTES.REMAINDER_ITEM_URL,
+                    component: userIsAuth(RemainderList)
                 }
             ]
         },
