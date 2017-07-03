@@ -10,10 +10,6 @@ import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import Tooltip from '../ToolTip'
-import CloseIcon2 from '../CloseIcon2'
-import TextField from 'material-ui/TextField'
-import SearchIcon from 'material-ui/svg-icons/action/search'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down-circle'
 import Paper from 'material-ui/Paper'
 import RemainderDetails from './RemainderDetails'
@@ -98,7 +94,7 @@ const enhance = compose(
         search: {
             position: 'relative',
             display: 'flex',
-            maxWidth: '300px',
+            maxWidth: '300px'
         },
         searchField: {
             fontSize: '13px !important'
@@ -177,7 +173,7 @@ const RemainderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.REMAINDER_LIST_URL}/>
             {filterBtn}
-            <RemainderFilterForm/>
+            {remainderFilterDialog}
             {list}
 
             <RemainderCreateDialog

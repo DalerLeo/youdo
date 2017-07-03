@@ -212,8 +212,7 @@ const RemainderList = enhance((props) => {
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog,
-
+        handleActionDelete: props.handleOpenDeleteDialog
     }
 
     const createDialog = {
