@@ -10,7 +10,7 @@ import CloseIcon2 from '../CloseIcon2'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import PriceSetForm from './PriceSetForm'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
+import getConfig from '../../helpers/getConfig'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -128,6 +128,7 @@ const PriceDetails = enhance((props) => {
         handleCloseDetail,
         mergedList
     } = props
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
     const marketTypeIsLoading = _.get(detailData, 'marketTypeLoading')
     const priceListItemsIsLoading = _.get(detailData, 'priceListItemsLoading')
@@ -158,7 +159,7 @@ const PriceDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                     onTouchTap={handleCloseDetail}>
+                     onClick={handleCloseDetail}>
                     {name}</div>
                 <div className={classes.titleButtons}>
                     {!priceSetForm.openPriceSetForm && <Tooltip position="bottom" text="Закрыть">
@@ -236,8 +237,8 @@ const PriceDetails = enhance((props) => {
                             {_.map(mergedList, (item) => {
                                 const id = _.get(item, 'marketTypeId')
                                 const marketName = _.get(item, 'marketTypeName')
-                                const cashPrice = _.get(item, 'cash_price') + ' ' + PRIMARY_CURRENCY_NAME
-                                const transferPrice = _.get(item, 'transfer_price') + ' ' + PRIMARY_CURRENCY_NAME
+                                const cashPrice = _.get(item, 'cash_price') + ' ' + primaryCurrency
+                                const transferPrice = _.get(item, 'transfer_price') + ' ' + primaryCurrency
                                 return (
                                     <Row className="dottedList" key={id}>
                                         <Col xs={6}> {marketName}</Col>
