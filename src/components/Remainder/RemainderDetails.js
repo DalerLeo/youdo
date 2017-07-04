@@ -1,10 +1,9 @@
 import React from 'react'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import IconButton from 'material-ui/IconButton'
+import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import ArrowLeftIcon from './ArrowLeftIcon'
-import ArrowRightIcon from './ArrowRightIcon'
+import Pagination from '../GridList/GridListNavPagination'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -18,7 +17,7 @@ const enhance = compose(
             display: 'flex',
             flexWrap: 'wrap',
             padding: '0 30px',
-            paddingBottom: '20px',
+            paddingBottom: '5px',
             '& a': {
                 color: colorBlue
             }
@@ -34,7 +33,7 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
-            padding: '15px 0',
+            height: '55px',
             fontWeight: '700',
             borderBottom: '1px #efefef solid'
 
@@ -50,6 +49,10 @@ const enhance = compose(
             '& > .row:first-child': {
                 fontWeight: '600',
                 lineHeight: '20px'
+            },
+            '& .dottedList:last-child:after': {
+                content: '""',
+                backgroundImage: 'none'
             }
         }
 
@@ -57,38 +60,14 @@ const enhance = compose(
     withState('openDetails', 'setOpenDetails', false)
 )
 
-const iconStyle = {
-    icon: {
-        color: 'rgba(0, 0, 0, 0.56)',
-        width: 20,
-        height: 20
-    },
-    button: {
-        width: 20,
-        height: 20,
-        padding: 0
-    }
-}
-
 const RemainderDetails = enhance((props) => {
-    const {classes} = props
+    const {classes, filter} = props
 
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}>Парти товаров</div>
-                <div className={classes.gridPagination}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}>
-                        <ArrowLeftIcon />
-                    </IconButton>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}>
-                        <ArrowRightIcon />
-                    </IconButton>
-                </div>
+                <Pagination filter={filter}/>
             </div>
             <div className={classes.content}>
                 <Row className='dottedList'>
@@ -113,7 +92,7 @@ const RemainderDetails = enhance((props) => {
 })
 
 RemainderDetails.propTypes = {
-
+    filter: PropTypes.object.isRequired
 }
 
 export default RemainderDetails

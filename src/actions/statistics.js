@@ -3,9 +3,9 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/remainderSerializer'
+import * as serializers from '../serializers/statisticsSerializer'
 
-export const remainderListFetchAction = (filter, id) => {
+export const statisticsListFetchAction = (filter, id) => {
     const params = serializers.listFilterSerializer(filter.getParams(), id)
     const payload = axios()
         .get((API.REMAINDER_LIST), {params})
@@ -22,10 +22,9 @@ export const remainderListFetchAction = (filter, id) => {
     }
 }
 
-export const remainderItemFetchAction = (id, filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), id)
+export const statisticsItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.REMAINDER_ITEM, id), {params})
+        .get(sprintf(API.REMAINDER_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })

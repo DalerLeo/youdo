@@ -63,12 +63,16 @@ const enhance = compose(
                 fontWeight: '600'
             },
             '& .row': {
-                padding: '10px 0 !important',
+                padding: '0 !important',
                 '& > div': {
                     textAlign: 'right'
                 },
                 '& > div:first-child': {
                     textAlign: 'left'
+                },
+                '& .dottedList': {
+                    padding: '0px!important',
+                    margin: '100px'
                 }
             },
             overflowY: 'hidden',
@@ -94,18 +98,8 @@ const enhance = compose(
 
         inputFieldCustom: {
             fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            }
+            marginTop: '0px!important',
+            height: '40px!important'
         },
         priceRow: {
             display: 'flex',
@@ -113,16 +107,7 @@ const enhance = compose(
             height: '40px'
         },
         dottedList: {
-            extend: 'priceRow',
-            '&:after': {
-                content: '',
-                backgroundImage: 'url(../components/Images/dot.png)',
-                position: 'absolute',
-                bottom: '0',
-                height: '2px',
-                left: '0',
-                right: '0'
-            }
+            extend: 'priceRow'
         }
     })),
     reduxForm({
@@ -187,7 +172,7 @@ const PriceSetForm = enhance((props) => {
                     {_.map(mergedList, (item, index) => {
                         const marketName = _.get(item, 'marketTypeName')
                         return (
-                            <Row className={classes.dottedList} key={index}>
+                            <Row className='dottedList' key={index}>
                                 <Col xs={6}> {marketName}</Col>
                                 <Col style={{textAlign: 'left'}} xs={3}>
                                     <Field

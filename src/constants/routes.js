@@ -166,3 +166,8 @@ export const REMAINDER = 'remainder'
 export const REMAINDER_LIST_URL = `/${REMAINDER}`
 export const REMAINDER_ITEM_URL = `${REMAINDER_LIST_URL}/:remainderId`
 export const REMAINDER_ITEM_PATH = `/${REMAINDER}/%d`
+
+export const STATISTICS = 'statistics'
+export const STATISTICS_LIST_URL = `/${STATISTICS}`
+export const STATISTICS_ITEM_URL = `${STATISTICS_LIST_URL}/:statisticsId`
+export const STATISTICS_ITEM_PATH = `/${STATISTICS}/%d`

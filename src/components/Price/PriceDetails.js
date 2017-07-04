@@ -206,8 +206,8 @@ const PriceDetails = enhance((props) => {
                     </div>
                     <div className={classes.rightSide}>
                         {(marketTypeIsLoading || priceListItemsIsLoading) && <div className={classes.loader}>
-                                                <CircularProgress size={60} thickness={5} />
-                                        </div>}
+                                                                                <CircularProgress size={60} thickness={5} />
+                                                                             </div>}
                         {priceSetForm.openPriceSetForm && <PriceSetForm
                             initialValues={priceSetForm.initialValues}
                             onClose={priceSetForm.handleClosePriceSetForm}
