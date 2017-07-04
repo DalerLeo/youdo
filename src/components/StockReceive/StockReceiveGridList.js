@@ -13,6 +13,7 @@ import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import StockReceiveDetails from './StockReceiveDetails'
+import CreateDialog from './StockReceiveCreateDialog'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/stockReceiveTab'
 import Pagination from '../GridList/GridListNavPagination'
@@ -116,6 +117,7 @@ const StockReceiveGridList = enhance((props) => {
         filter,
         tabData,
         classes,
+        createDialog,
         handleCloseDetail
     } = props
     const tab = _.get(tabData, 'tab')
@@ -160,7 +162,7 @@ const StockReceiveGridList = enhance((props) => {
                                             : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
                                                 : (<span className={classes.error}>Отменен</span>))}</Col>
                                     <Col xs={2} style={{textAlign: 'right'}}>
-                                        <a className={classes.actionButton}>Выполнить</a>
+                                        <a onClick={createDialog.handleOpenCreateDialog} className={classes.actionButton}>Выполнить</a>
                                     </Col>
                                 </Row>
                             </div>
@@ -184,7 +186,7 @@ const StockReceiveGridList = enhance((props) => {
                                             : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
                                                 : (<span className={classes.error}>Отменен</span>))}</Col>
                                     <Col xs={2} style={{textAlign: 'right'}}>
-                                        <a className={classes.actionButton}>Выполнить</a>
+                                        <a onClick={createDialog.handleOpenCreateDialog} className={classes.actionButton}>Выполнить</a>
                                     </Col>
                                 </Row>
                             </div>
@@ -216,16 +218,23 @@ const StockReceiveGridList = enhance((props) => {
             <Tab label="История" value={TAB.STOCK_RECEIVE_TAB_HISTORY}>
                 3
             </Tab>
-            <Pagination
-                filter={filter}
-                customPagination={true}/>
         </Tabs>
     )
 
     return (
         <Container>
             <SubMenu url={ROUTES.STOCK_RECEIVE_LIST_URL}/>
+
             {tabList}
+            <Pagination
+                filter={filter}
+                customPagination={true}/>
+            <CreateDialog
+                loading={createDialog.createLoading}
+                open={createDialog.openCreateDialog}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
+            />
         </Container>
     )
 })
@@ -238,7 +247,14 @@ StockReceiveGridList.propTypes = {
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired
     }),
-    handleCloseDetail: PropTypes.func.isRequired
+    handleCloseDetail: PropTypes.func.isRequired,
+    createDialog: PropTypes.shape({
+        createLoading: PropTypes.bool.isRequired,
+        openCreateDialog: PropTypes.bool.isRequired,
+        handleOpenCreateDialog: PropTypes.func.isRequired,
+        handleCloseCreateDialog: PropTypes.func.isRequired,
+        handleSubmitCreateDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default StockReceiveGridList

@@ -1,5 +1,11 @@
 import _ from 'lodash'
 
+export const createSerializer = (data) => {
+    return {
+
+    }
+}
+
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     return {

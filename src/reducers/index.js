@@ -261,7 +261,8 @@ const rootReducer = combineReducers({
     }),
     stockReceive: combineReducers({
         list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
-        item: createThunkReducer(actionTypes.STOCK_RECEIVE_ITEM)
+        item: createThunkReducer(actionTypes.STOCK_RECEIVE_ITEM),
+        create: createThunkReducer(actionTypes.STOCK_RECEIVE_CREATE)
     }),
     snackbar: snackbarReducer(),
     form: formReducer,

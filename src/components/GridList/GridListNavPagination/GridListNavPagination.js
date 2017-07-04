@@ -20,7 +20,9 @@ const enhance = compose(
         customWrapper: {
             extend: 'wrapper',
             position: 'absolute',
-            right: '0'
+            right: '0',
+            top: '60px',
+            height: '40px'
         },
 
         count: {
