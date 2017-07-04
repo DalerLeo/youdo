@@ -202,14 +202,15 @@ const enhance = compose(
         },
 
         handleSubmitCreateSendDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, cashboxId} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
+            const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
             return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})})
-                    dispatch(transactionListFetchAction(filter))
+                    dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filter))
                 })
         },
@@ -347,7 +348,7 @@ const TransactionList = enhance((props) => {
             }
             return {
                 comment: _.get(detail, 'comment'),
-                category: {
+                expanseCategory: {
                     value: _.get(detail, ['expanseCategory', 'id'])
                 },
                 amount: _.get(detail, 'amount')

@@ -115,7 +115,7 @@ const TransactionCreateDialog = enhance((props) => {
                                 <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
                             </div>
                             {isExpense && <Field
-                                name="categoryId"
+                                name="expanseCategory"
                                 component={ExpensiveCategorySearchField}
                                 label="Категория расхода"
                                 className={classes.inputFieldCustom}

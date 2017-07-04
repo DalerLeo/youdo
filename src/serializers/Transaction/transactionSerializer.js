@@ -20,7 +20,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
 export const createExpenseSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount') > ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
     const comment = _.get(data, 'comment')
-    const objectId = _.get(data, ['categoryId', 'value'])
+    const objectId = _.get(data, ['expanseCategory', 'value'])
     return {
         amount,
         comment,
