@@ -1,8 +1,20 @@
 import _ from 'lodash'
 
 export const createSerializer = (data) => {
-    return {
+    const amount = _.toNumber(_.get(data, 'amount'))
+    const expDate = _.get(data, 'expDate')
+    const barcode = _.get(data, 'barcode')
+    const isDefect = _.get(data, 'isDefect') || false
+    const comment = _.get(data, 'comment')
+    const image = _.get(data, 'image')
 
+    return {
+        amount,
+        expDate,
+        barcode,
+        'is_defect': isDefect,
+        comment,
+        image
     }
 }
 
@@ -14,11 +26,3 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

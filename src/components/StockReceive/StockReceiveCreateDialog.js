@@ -6,15 +6,19 @@ import injectSheet from 'react-jss'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
+import {Row} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
+import Delete from 'material-ui/svg-icons/action/delete-forever'
 import {
-    ProductSearchField,
+    StockReceiveProductSearchField,
     TextField,
     DateField,
-    CheckBox
+    CheckBox,
+    ImageUploadField
 } from '../ReduxForm'
+import StockReceiveMeasurementField from '../ReduxForm/StockReceive/StockReceiveMeasurementField'
 import toCamelCase from '../../helpers/toCamelCase'
 
 const validate = (data) => {
@@ -106,10 +110,68 @@ const enhance = compose(
             borderBottom: '1px dashed',
             fontWeight: '400 !important'
         },
+        isDefect: {
+            marginTop: '-15px',
+            '& .imageDropZone': {
+                margin: '0',
+                width: '100%',
+                height: '200px'
+            },
+            '& > div:last-child': {
+                marginTop: '10px'
+            }
+        },
         rightSide: {
             padding: '0 30px',
             flexBasis: '65%',
             maxWidth: '65%'
+        },
+        rightTitle: {
+            display: 'flex',
+            height: '50px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderBottom: '1px #efefef solid',
+            '& > div:first-child': {
+                fontWeight: 'bold'
+            },
+            '& strong': {
+                fontWeight: 'bold'
+            }
+        },
+        amount: {
+            '& > div': {
+                display: 'inline-block',
+                marginLeft: '10px',
+                '& span': {
+                    display: 'block'
+                }
+            }
+        },
+        list: {
+            marginTop: '10px',
+            '& .dottedList': {
+                padding: '10px 0',
+                margin: '0',
+                justifyContent: 'space-between',
+                '&:first-child': {
+                    fontWeight: '600',
+                    whiteSpace: 'nowrap'
+                },
+                '&:last-child:after': {
+                    display: 'none'
+                },
+                '& > div': {
+                    flexBasis: '16.66%',
+                    marginRight: '0.5rem',
+                    boxSizing: 'border-box',
+                    '&:last-child': {
+                        textAlign: 'right',
+                        flexBasis: '30px',
+                        margin: '0'
+                    }
+                }
+            }
         },
         inputFieldCustom: {
             flexBasis: '200px',
@@ -179,13 +241,27 @@ const customContentStyle = {
     width: '1000px',
     maxWidth: 'none'
 }
+
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 20,
+        height: 20
+    },
+    button: {
+        width: 20,
+        height: 20,
+        padding: 0
+    }
+}
+
 const OrderCreateDialog = enhance((props) => {
     const {
         open,
         handleSubmit,
         onClose,
         classes,
-        isUpdate
+        isDefect
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -199,7 +275,7 @@ const OrderCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение заказа' : 'Добавление заказа'}</span>
+                <span>Оформление заказа</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -213,8 +289,8 @@ const OrderCreateDialog = enhance((props) => {
                         <div className={classes.leftSide}>
                             <div>
                                 <Field
-                                    name="name"
-                                    component={ProductSearchField}
+                                    name="product"
+                                    component={StockReceiveProductSearchField}
                                     className={classes.inputFieldCustom}
                                     label="Наименование товара"
                                     fullWidth={true}
@@ -227,11 +303,11 @@ const OrderCreateDialog = enhance((props) => {
                                         label="Кол-во товара"
                                         fullWidth={true}
                                     />
-                                    <div>шт</div>
+                                    <StockReceiveMeasurementField/>
                                 </div>
                                 <div className={classes.half}>
                                     <Field
-                                        name="amount"
+                                        name="expDate"
                                         component={DateField}
                                         className={classes.inputDateCustom}
                                         label="Срок годности"
@@ -244,12 +320,28 @@ const OrderCreateDialog = enhance((props) => {
                                     label="Отметить как бракованный"
                                     fullWidth={true}
                                 />
+                                {isDefect && <div className={classes.isDefect}>
+                                    <Field
+                                        name="comment"
+                                        component={TextField}
+                                        label="Комментарий"
+                                        fullWidth={true}
+                                        multiLine={true}
+                                        rows={1}
+                                        rowsMax={3}
+                                    />
+                                    <Field
+                                        name="image"
+                                        component={ImageUploadField}
+                                        fullWidth={true}
+                                    />
+                                </div>}
                                 <div style={{marginTop: '20px'}}><strong>Введите / <a className={classes.link}>отсканируйте</a> штрихкод</strong></div>
                                 <Field
                                     name="barcode"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    hintText="XXXX - XXXX - XXXX"
+                                    hintText="XXXX - XXXX - XXXX - XXXX"
                                     fullWidth={true}
                                 />
                             </div>
@@ -262,7 +354,63 @@ const OrderCreateDialog = enhance((props) => {
                             </div>
                         </div>
                         <div className={classes.rightSide}>
+                            <div className={classes.rightTitle}>
+                                <div>Миф морозная свежесть 450g (жесткая упаковка)</div>
+                                <div className={classes.amount}>
+                                    <div>
+                                        <span>Всего товара:</span>
+                                        <span>Принято:</span>
+                                    </div>
+                                    <div>
+                                        <span>300 <strong>шт</strong></span>
+                                        <span>283 <strong>шт</strong></span>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div className={classes.list}>
+                                <Row className="dottedList">
+                                    <div>Код</div>
+                                    <div>Дата приемки</div>
+                                    <div>Срок годности</div>
+                                    <div>Кол-во</div>
+                                    <div>Статус</div>
+                                    <div></div>
+                                </Row>
+
+                                <Row className="dottedList">
+                                    <div>Z857OA45</div>
+                                    <div>25 Сен, 2016</div>
+                                    <div>25 Сен, 2017</div>
+                                    <div>100 шт</div>
+                                    <div>ОК</div>
+                                    <div>
+                                        <IconButton
+                                            disableTouchRipple={true}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            touch={true}>
+                                            <Delete/>
+                                        </IconButton>
+                                    </div>
+                                </Row>
+                                <Row className="dottedList">
+                                    <div>Z857OA45</div>
+                                    <div>25 Сен, 2016</div>
+                                    <div>25 Сен, 2017</div>
+                                    <div>100 шт</div>
+                                    <div>Брак</div>
+                                    <div>
+                                        <IconButton
+                                            disableTouchRipple={true}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            touch={true}>
+                                            <Delete/>
+                                        </IconButton>
+                                    </div>
+                                </Row>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -273,6 +421,7 @@ const OrderCreateDialog = enhance((props) => {
 OrderCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
+    isDefect: PropTypes.bool,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }

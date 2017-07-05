@@ -20,9 +20,9 @@ const enhance = compose(
         customWrapper: {
             extend: 'wrapper',
             position: 'absolute',
-            right: '0',
-            top: '60px',
-            height: '40px'
+            right: '30px',
+            top: '-52px',
+            height: '52px'
         },
 
         count: {
@@ -59,7 +59,7 @@ const enhance = compose(
         }
     })
 )
-const GridListNavPagination = enhance(({classes, onChange, filter, custom}) => {
+const GridListNavPagination = enhance(({classes, onChange, filter, customPagination}) => {
     const prev = filter.prevPage()
     const next = filter.nextPage()
     const firstPage = 1
@@ -67,7 +67,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter, custom}) => {
     const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
 
     return (
-        <div className={custom ? classes.wrapper : classes.customWrapper}>
+        <div className={customPagination ? classes.customWrapper : classes.wrapper}>
             <div className={classes.count}>
                 <SelectField
                     value={filter.getPageRange()}
@@ -105,7 +105,7 @@ GridListNavPagination.propTypes = {
     filter: PropTypes.object.isRequired
 }
 GridListNavPagination.defaultProps = {
-    custom: false
+    customPagination: false
 }
 
 export default GridListNavPagination

@@ -271,6 +271,10 @@ export const REMAINDER_ITEM = `/${REMAINDER}/%d/`
 export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
 
 export const STOCK_RECEIVE = 'dist/supply'
+export const STOCK_HISTORY = 'dist/barcode_history'
+export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`
+export const STOCK_TRANSFER = 'dist/stock_transfer'
+export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`
 export const STOCK_RECEIVE_LIST = `/${STOCK_RECEIVE}/`
 export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
-export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/`
+export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/product_detail/%d/`

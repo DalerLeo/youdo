@@ -11,12 +11,15 @@ import * as STOCK_TAB from '../../constants/stockReceiveTab'
 import {
     StockReceiveGridList,
     STOCK_RECEIVE_CREATE_DIALOG_OPEN,
+    HISTORY_FILTER_OPEN,
     TAB
 } from '../../components/StockReceive'
 import {
     stockReceiveListFetchAction,
     stockReceiveItemFetchAction,
-    stockReceiveCreateAction
+    stockReceiveCreateAction,
+    stockHistoryListFetchAction,
+    stockTransferListFetchAction
 } from '../../actions/stockReceive'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -29,24 +32,38 @@ const enhance = compose(
         const detailLoading = _.get(state, ['stockReceive', 'item', 'loading'])
         const list = _.get(state, ['stockReceive', 'list', 'data'])
         const listLoading = _.get(state, ['stockReceive', 'list', 'loading'])
+        const historyList = _.get(state, ['stockReceive', 'history', 'data'])
+        const historyListLoading = _.get(state, ['stockReceive', 'history', 'loading'])
+        const transferList = _.get(state, ['stockReceive', 'transfer', 'data'])
+        const transferListLoading = _.get(state, ['stockReceive', 'history', 'loading'])
         const createLoading = _.get(state, ['stockReceive', 'create', 'loading'])
         const createForm = _.get(state, ['form', 'StockReceiveCreateForm'])
+        const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
+        const productId = _.toNumber(_.get(state, ['form', 'StockReceiveCreateForm', 'values', 'product', 'value', 'id']))
         const filter = filterHelper(list, pathname, query)
 
         return {
             list,
             listLoading,
+            historyList,
+            historyListLoading,
+            transferList,
+            transferListLoading,
             detail,
             detailLoading,
             createLoading,
             filter,
-            createForm
+            createForm,
+            isDefect,
+            productId
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(stockReceiveListFetchAction(filter))
+        dispatch(stockHistoryListFetchAction(filter))
+        dispatch(stockTransferListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -54,20 +71,48 @@ const enhance = compose(
         const nextId = _.get(nextProps, ['params', 'stockReceiveId'])
         return prevId !== nextId
     }, ({dispatch, params}) => {
-        const zoneId = _.toInteger(_.get(params, 'stockReceiveId'))
-        if (zoneId > ZERO) {
-            dispatch(stockReceiveItemFetchAction(zoneId))
+        const stockReceiveId = _.toInteger(_.get(params, 'stockReceiveId'))
+        if (stockReceiveId > ZERO) {
+            dispatch(stockReceiveItemFetchAction(stockReceiveId))
         }
     }),
 
     withHandlers({
         handleTabChange: props => (tab) => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}} = props
             hashHistory.push({
                 pathname: pathname,
-                query: filter.getParams({[TAB]: tab})
+                query: {[TAB]: tab}
             })
         },
+
+        handleOpenFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: true})})
+        },
+
+        handleCloseFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: false})})
+        },
+
+        handleClearFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
+        },
+
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const manufacture = _.get(filterForm, ['values', 'manufacture', 'value']) || null
+            const group = _.get(filterForm, ['values', 'group', 'value']) || null
+
+            filter.filterBy({
+                [HISTORY_FILTER_OPEN]: false,
+                [HISTORY_FILTER_OPEN.MANUFACTURE]: manufacture,
+                [HISTORY_FILTER_OPEN.GROUP]: group
+            })
+        },
+
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: true})})
@@ -79,9 +124,11 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}} = props
+            const {dispatch, createForm, filter, location: {pathname}, params, productId} = props
+            const formValues = _.get(createForm, ['values'])
+            const supplyId = _.toNumber(_.get(params, 'stockReceiveId'))
 
-            return dispatch(stockReceiveCreateAction(_.get(createForm, ['values'])))
+            return dispatch(stockReceiveCreateAction(formValues, supplyId, productId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -101,10 +148,15 @@ const StockReceiveList = enhance((props) => {
     const {
         list,
         listLoading,
+        historyList,
+        historyListLoading,
+        transferList,
+        transferListLoading,
         location,
         detail,
         detailLoading,
         createLoading,
+        isDefect,
         filter,
         layout,
         params
@@ -112,12 +164,25 @@ const StockReceiveList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
     const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_CREATE_DIALOG_OPEN]))
+    const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
+    const manufacture = _.toInteger(filter.getParam(HISTORY_FILTER_OPEN.MANUFACTURE))
+    const group = _.toInteger(filter.getParam(HISTORY_FILTER_OPEN.GROUP))
     const tab = _.get(location, ['query', TAB]) || STOCK_TAB.STOCK_RECEIVE_DEFAULT_TAB
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
     const listData = {
         data: _.get(list, 'results'),
         listLoading
+    }
+
+    const historyData = {
+        data: _.get(historyList, 'results'),
+        historyListLoading
+    }
+
+    const transferData = {
+        data: _.get(transferList, 'results'),
+        transferListLoading
     }
 
     const detailData = {
@@ -129,6 +194,7 @@ const StockReceiveList = enhance((props) => {
     const createDialog = {
         createLoading,
         openCreateDialog,
+        isDefect,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
@@ -139,12 +205,32 @@ const StockReceiveList = enhance((props) => {
         handleTabChange: props.handleTabChange
     }
 
+    const filterDialog = {
+        initialValues: {
+            manufacture: {
+                value: manufacture
+            },
+            group: {
+                value: group
+            }
+        },
+        filterLoading: false,
+        openFilterDialog,
+        handleOpenFilterDialog: props.handleOpenFilterDialog,
+        handleCloseFilterDialog: props.handleCloseFilterDialog,
+        handleClearFilterDialog: props.handleClearFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+    }
+
     return (
         <Layout {...layout}>
             <StockReceiveGridList
                 filter={filter}
                 tabData={tabData}
                 listData={listData}
+                filterDialog={filterDialog}
+                historyData={historyData}
+                transferData={transferData}
                 detailData={detailData}
                 createDialog={createDialog}
                 handleCloseDetail={handleCloseDetail}
