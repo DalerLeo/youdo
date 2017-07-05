@@ -11,7 +11,7 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
-import UsersFilterForm from '../../Users/UsersFilterForm'
+import PersonFilterForm from '../PersonFilterForm'
 import GridList from '../../GridList'
 
 const listHeader = [
@@ -48,7 +48,7 @@ const ManufacturePerson = (props) => {
     const filterDialog = _.get(personData, 'filterDialog')
 
     const personFilterDialog = (
-        <UsersFilterForm
+        <PersonFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}

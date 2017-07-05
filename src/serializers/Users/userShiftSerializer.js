@@ -18,11 +18,10 @@ export const listFilterSerializer = (data, manufacture) => {
     return {
         manufacture,
         'name': _.get(defaultData, 'name'),
-        'begin_time': _.get(defaultData, 'begin_time'),
-        'end_time': _.get(defaultData, 'end_time'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
+        'shift': _.get(defaultData, 'shift'),
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
