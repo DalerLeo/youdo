@@ -173,3 +173,8 @@ export const REMAINDER = 'remainder'
 export const REMAINDER_LIST_URL = `/${REMAINDER}`
 export const REMAINDER_ITEM_URL = `${REMAINDER_LIST_URL}/:remainderId`
 export const REMAINDER_ITEM_PATH = `/${REMAINDER}/%d`
+
+export const STOCK_RECEIVE = 'stockReceive'
+export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`
+export const STOCK_RECEIVE_ITEM_URL = `${STOCK_RECEIVE_LIST_URL}/:stockReceiveId`
+export const STOCK_RECEIVE_ITEM_PATH = `/${STOCK_RECEIVE}/%d`

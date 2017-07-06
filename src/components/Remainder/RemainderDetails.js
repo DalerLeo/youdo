@@ -35,7 +35,7 @@ const enhance = compose(
             alignItems: 'center',
             width: '100%',
             padding: '15px 0',
-            fontWeight: '700',
+            fontWeight: '600',
             borderBottom: '1px #efefef solid'
 
         },

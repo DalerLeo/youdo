@@ -42,7 +42,7 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700',
+            fontWeight: '600',
             cursor: 'pointer'
         },
         titleButtons: {
@@ -50,7 +50,7 @@ const enhance = compose(
         },
         bodyTitle: {
             display: 'flex',
-            fontWeight: '700',
+            fontWeight: '600',
             marginBottom: '25px',
             fontSize: '14px',
             justifyContent: 'space-between',
@@ -114,7 +114,7 @@ const enhance = compose(
             textAlign: 'right'
         },
         averagePrice: {
-            fontWeight: '700',
+            fontWeight: '600',
             paddingLeft: '20px'
         }
     })

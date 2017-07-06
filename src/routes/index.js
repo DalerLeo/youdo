@@ -37,6 +37,7 @@ import {PricesList} from '../containers/Prices'
 import {PriceList} from '../containers/Price'
 import NotFound from '../containers/NotFound'
 import {RemainderList} from '../containers/Remainder'
+import {StockReceiveList} from '../containers/StockReceive'
 
 export default {
     path: '/',
@@ -405,6 +406,17 @@ export default {
                 {
                     path: ROUTES.REMAINDER_ITEM_URL,
                     component: userIsAuth(RemainderList)
+                }
+            ]
+        },
+        // Stock Receive Transfer
+        {
+            path: ROUTES.STOCK_RECEIVE_LIST_URL,
+            component: userIsAuth(StockReceiveList),
+            childRoutes: [
+                {
+                    path: ROUTES.STOCK_RECEIVE_ITEM_URL,
+                    component: userIsAuth(StockReceiveList)
                 }
             ]
         },
