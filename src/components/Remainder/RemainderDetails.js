@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
@@ -5,28 +6,26 @@ import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../GridList/GridListNavPagination'
 
-const colorBlue = '#12aaeb !important'
+import CircularProgress from 'material-ui/CircularProgress'
+
 const enhance = compose(
     injectSheet({
-        dottedList: {
-            padding: '20px 0'
-        },
-        wrapper: {
-            color: '#333 !important',
-            borderTop: '1px #efefef solid',
-            display: 'flex',
-            flexWrap: 'wrap',
-            padding: '0 30px',
-            paddingBottom: '5px',
-            '& a': {
-                color: colorBlue
-            }
-        },
         loader: {
-            position: 'absolute',
             display: 'flex',
             justifyContent: 'center',
-            width: '100%'
+            width: '100%',
+            background: '#fff'
+        },
+        wrapper: {
+            position: 'relative',
+            padding: '0 30px',
+            marginBottom: '5px',
+            '& .row': {
+                alignItems: 'center',
+                '& div': {
+                    lineHeight: '55px'
+                }
+            }
         },
         title: {
             display: 'flex',
@@ -44,7 +43,8 @@ const enhance = compose(
             '& > .row': {
                 overflowY: 'auto',
                 overflowX: 'hidden',
-                margin: '0 -0.5rem'
+                margin: '0 -0.5rem',
+                padding: '0'
             },
             '& > .row:first-child': {
                 fontWeight: '600',
@@ -54,6 +54,20 @@ const enhance = compose(
                 content: '""',
                 backgroundImage: 'none'
             }
+        },
+        dropDown: {
+
+            position: 'absolute !important',
+            right: '0',
+            top: '5px',
+            '& > div': {
+                borderRadius: '200px',
+                border: 'solid #61a8e8 4px!important',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
         }
 
     }),
@@ -61,33 +75,39 @@ const enhance = compose(
 )
 
 const RemainderDetails = enhance((props) => {
-    const {classes, filter} = props
+    const {classes, filter, detailData} = props
+    const isLoading = _.get(detailData, 'detailLoading')
 
+    if (isLoading) {
+        return (
+            <div className={classes.loader}>
+                <CircularProgress size={40} thickness={4}/>
+            </div>
+        )
+    }
     return (
-        <div className={classes.wrapper}>
-            <div className={classes.title}>
-                <div className={classes.titleLabel}>Парти товаров</div>
-                <Pagination filter={filter}/>
+            <div>
+                <div className={classes.title}>
+                    <div className={classes.titleLabel}>Парти товаров</div>
+                    <Pagination filter={filter}/>
+                </div>
+                <div className={classes.content}>
+                    <Row className='dottedList'>
+                        <Col xs={3}>Код</Col>
+                        <Col style={{textAlign: 'center'}} xs={3}>Дата приемки</Col>
+                        <Col xs={3}>Срок годности</Col>
+                        <Col xs={2}>Кол-во</Col>
+                        <Col xs={1}>Статус</Col>
+                    </Row>
+                    <Row className='dottedList'>
+                        <Col xs={3}>Z857OA458795215ZAR</Col>
+                        <Col style={{textAlign: 'center'}} xs={3}>25 Сен, 2015</Col>
+                        <Col xs={3}>25 Сен, 2015</Col>
+                        <Col xs={2}>100 шт</Col>
+                        <Col xs={1}>Ok</Col>
+                    </Row>
+                </div>
             </div>
-            <div className={classes.content}>
-                <Row className='dottedList'>
-                    <Col xs={3}>Код</Col>
-                    <Col style={{textAlign: 'center'}} xs={3}>Дата приемки</Col>
-                    <Col xs={3}>Срок годности</Col>
-                    <Col xs={2}>Кол-во</Col>
-                    <Col xs={1}>Статус</Col>
-                </Row>
-                <Row className='dottedList'>
-                    <Col xs={3}>Z857OA458795215ZAR</Col>
-                    <Col style={{textAlign: 'center'}} xs={3}>25 Сен, 2015</Col>
-                    <Col xs={3}>25 Сен, 2015</Col>
-                    <Col xs={2}>100 шт</Col>
-                    <Col xs={1}>Ok</Col>
-                </Row>
-
-            </div>
-
-        </div>
     )
 })
 

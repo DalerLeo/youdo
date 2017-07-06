@@ -1,10 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
+import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
+import {Link} from 'react-router'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -12,17 +14,26 @@ import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down-circle'
 import Paper from 'material-ui/Paper'
 import RemainderDetails from './RemainderDetails'
 import RemainderFilterForm from './RemainderFilterForm'
+import CircularProgress from 'material-ui/CircularProgress'
+import ArrowUp from 'material-ui/svg-icons/navigation/arrow-drop-up'
 
 const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'relative',
             padding: '0 30px',
+            marginBottom: '5px',
             '& .row': {
                 alignItems: 'center',
                 '& div': {
                     lineHeight: '55px'
                 }
+            }
+        },
+        wrapperBold: {
+            extend: 'wrapper',
+            '& .row:first-child': {
+                fontWeight: '600'
             }
         },
         headers: {
@@ -94,7 +105,7 @@ const enhance = compose(
         },
         dropDown: {
             position: 'absolute !important',
-            right: '30px',
+            right: '0',
             top: '5px',
             '& > div': {
                 height: '45px',
@@ -124,9 +135,21 @@ const RemainderGridList = enhance((props) => {
         detailData,
         classes,
         filter,
-        filterDialog
+        filterDialog,
+        listData
     } = props
+    const listLoading = _.get(listData, 'listLoading')
+    const detailId = _.get(detailData, 'id')
     const isOpenFilter = filterDialog.openFilterDialog
+
+    if (listLoading) {
+        return (
+            <div className={classes.loader}>
+                <CircularProgress size={80} thickness={5}/>
+            </div>
+        )
+    }
+
     const listHeader = (
         <div className={classes.headers}>
             <Row>
@@ -138,28 +161,63 @@ const RemainderGridList = enhance((props) => {
         </div>
     )
     const list = (
-        <Paper zDepth={1} >
-            <div className={classes.wrapper}>
-                <Row>
-                    <Col xs={3}>Миф морозная свежесть</Col>
-                    <Col xs={3}>Стиралный порошок</Col>
-                    <Col xs={4}>Наименование склада 1</Col>
-                    <Col xs={1} className={classes.itemData}>200 кг</Col>
-                    <Col xs={1} style={{textAlign: 'right'}}>
-                        <IconButton
-                            className={classes.dropDown}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}>
-                            <ArrowDown/>
-                        </IconButton>
-                    </Col>
-                </Row>
+            <div>
+                {_.map(_.get(listData, 'data'), (item) => {
+                    const id = _.get(item, 'id')
+                    const name = _.get(item, 'name')
+                    if (id === detailId) {
+                        return (
+                            <Paper key={id} className={classes.wrapperBold}>
+                                <Row key={id} style={{position: 'relative'}}>
+                                    <Col xs={3}>Миф морозная свежесть</Col>
+                                    <Col xs={3}>{name}</Col>
+                                    <Col xs={4}>Наименование склада 1</Col>
+                                    <Col xs={1} className={classes.itemData}>200 кг</Col>
+                                    <Col xs={1} style={{textAlign: 'right'}}>
+                                        <IconButton
+                                            className={classes.dropDown}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            onTouchTap={_.get(detailData, 'handleCloseDetail')}>
+                                            <ArrowUp/>
+                                        </IconButton>
+                                    </Col>
+                                </Row>
+                                <RemainderDetails
+                                    filter={filter}
+                                    detailData={detailData}
+                                />
+                            </Paper>
+                        )
+                    }
+                    return (
+                        <Paper key={id} className={classes.wrapper}>
+                            <Row key={id} style={{position: 'relative'}}>
+
+                                    <Col xs={3}>Миф морозная свежесть</Col>
+
+                                <Col xs={3}>{name}</Col>
+                                <Col xs={4}>Наименование склада 1</Col>
+                                <Col xs={1} className={classes.itemData}>200 кг</Col>
+                                <Col xs={1} style={{textAlign: 'right'}}>
+                                    <Link to={{
+                                        pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
+                                        query: filter.getParams()
+                                    }}>
+                                    <IconButton
+                                        className={classes.dropDown}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}>
+                                        <ArrowDown/>
+                                    </IconButton>
+                                    </Link>
+                                </Col>
+                            </Row>
+                        </Paper>
+                    )
+                })}
+
             </div>
-            <RemainderDetails
-                filter={filter}
-                handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
-            />
-        </Paper>
     )
 
     return (
@@ -175,7 +233,8 @@ const RemainderGridList = enhance((props) => {
                     </div>
                 }
             {listHeader}
-            {list}
+                {list}
+
         </Container>
     )
 })
