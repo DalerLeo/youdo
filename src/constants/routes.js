@@ -153,6 +153,8 @@ export const PENDING_PAYMENTS_ITEM_PATH = `${PENDING_PAYMENTS}/%d`
 
 export const ZONES = 'zones'
 export const ZONES_LIST_URL = `/${ZONES}`
+export const ZONES_ITEM_URL = `${ZONES_LIST_URL}/:zoneId`
+export const ZONES_ITEM_PATH = `/${ZONES}/%d`
 
 export const TRACKING = 'tracking'
 export const TRACKING_LIST_URL = `/${TRACKING}`
