@@ -19,6 +19,7 @@ export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
+    console.log(_.get(defaultData, 'search'))
     return {
         'currency': _.get(defaultData, 'currency'),
         'name': _.get(defaultData, 'name'),

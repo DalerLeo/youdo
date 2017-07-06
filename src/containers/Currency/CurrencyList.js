@@ -218,7 +218,7 @@ const enhance = compose(
 
         handleCurrencyClick: props => (id) => {
             const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id), query: filter.getParams()})
+            hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, _.toNumber(id)), query: filter.getParams()})
         }
     })
 )
@@ -288,7 +288,7 @@ const CurrencyList = enhance((props) => {
         initialValues: (() => {
             const currencyName = _.get(_.find((_.get(list, 'results')), {'id': detailId}), 'name')
             const currencyRate = _.get(_.find((_.get(list, 'results')), {'id': detailId}), 'rate')
-            if (!currencyName) {
+            if (!currencyName || openCreateDialog) {
                 return {}
             }
             return {

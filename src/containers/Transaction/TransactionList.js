@@ -343,7 +343,7 @@ const TransactionList = enhance((props) => {
 
     const updateExpenseDialog = {
         initialValues: (() => {
-            if (!detailId) {
+            if (!detailId || openCreateExpenseDialog) {
                 return {}
             }
             return {
@@ -363,7 +363,7 @@ const TransactionList = enhance((props) => {
 
     const updateIncomeDialog = {
         initialValues: (() => {
-            if (!detailId) {
+            if (!detailId || openCreateIncomeDialog) {
                 return {}
             }
 

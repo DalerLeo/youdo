@@ -415,7 +415,6 @@ const OrderList = enhance((props) => {
 
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
     const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ORDERSTATUS))
-    const dostDate = filter.getParam(ORDER_FILTER_KEY.DOSTDATE)
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
@@ -511,7 +510,7 @@ const OrderList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
             const HUND = 100

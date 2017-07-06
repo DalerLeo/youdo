@@ -55,9 +55,10 @@ export const cashboxUpdateAction = (id, formValues) => {
     }
 }
 
-export const cashboxListFetchAction = () => {
+export const cashboxListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.CASHBOX_LIST)
+        .get(API.CASHBOX_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })

@@ -200,7 +200,7 @@ const StockList = enhance((props) => {
     }
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
             return {

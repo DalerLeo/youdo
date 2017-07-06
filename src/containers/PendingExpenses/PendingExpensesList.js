@@ -150,7 +150,7 @@ const PendingExpensesList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openUpdateDialog) {
                 return {}
             }
 

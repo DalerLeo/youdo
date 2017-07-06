@@ -712,7 +712,7 @@ const ManufactureList = enhance((props) => {
 
     const updateUser = {
         initialValues: (() => {
-            if (!userShiftItem) {
+            if (!userShiftItem || openCreateUser) {
                 return {}
             }
             return {
