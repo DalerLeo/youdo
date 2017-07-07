@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
@@ -13,23 +13,16 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             color: '#333 !important',
-            position: 'relative',
             borderTop: '1px #efefef solid',
             display: 'flex',
             flexWrap: 'wrap',
             padding: '0 30px 5px',
+            height: 'auto',
+            transition: 'max-height 500ms ease !important',
+            overflowY: 'auto',
             '& a': {
                 color: colorBlue
             }
-        },
-        loader: {
-            width: '100%',
-            height: '100px',
-            background: '#fff',
-            alignItems: 'center',
-            zIndex: '999',
-            justifyContent: 'center',
-            display: 'flex'
         },
         content: {
             width: '100%',
@@ -70,28 +63,19 @@ const StockReceiveDetails = enhance((props) => {
 
     if (_.isEmpty(products)) {
         return (
-            <div className={classes.wrapper}>
-                {detailLoading && <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
-                </div>}
+            <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden'}}>
+                {detailLoading && <LinearProgress/>}
                 <div className={classes.emptyQuery}>
                     <div>Товаров не найдено</div>
-                </div>
-            </div>
-        )
-    } else if (detailLoading) {
-        return (
-            <div className={classes.wrapper}>
-                <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
     }
 
     return (
-        <div className={classes.wrapper}>
-            <div className={classes.content}>
+        <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px'}}>
+            {detailLoading ? <LinearProgress/>
+            : <div className={classes.content}>
                 <Row className='dottedList'>
                     <Col xs={4}>Товар</Col>
                     <Col xs={2}>Тип товара</Col>
@@ -116,7 +100,7 @@ const StockReceiveDetails = enhance((props) => {
                         </Row>
                     )
                 })}
-            </div>
+            </div>}
         </div>
     )
 })

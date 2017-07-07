@@ -43,6 +43,7 @@ const enhance = compose(
         expandedList: {
             margin: '20px -15px',
             transition: 'all 400ms ease-out !important',
+            position: 'relative',
             '& > a': {
                 color: 'inherit'
             }

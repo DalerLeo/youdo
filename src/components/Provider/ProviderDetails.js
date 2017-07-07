@@ -17,7 +17,7 @@ const enhance = compose(
         loader: {
             width: '100%',
             background: '#fff',
-            height: '400px',
+            height: '150px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
