@@ -22,7 +22,7 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             justifyContent: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            display: 'flex'
         },
         wrapper: {
             width: '100%',
@@ -238,7 +238,7 @@ const ShopDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6} />
+                    <CircularProgress size={40} thickness={4} />
                 </div>
             </div>
         )

@@ -22,6 +22,22 @@ export const stockReceiveCreateAction = (formValues, supplyId, productId) => {
     }
 }
 
+export const stockReceiveBarcodeFetchAction = (supplyId, productId) => {
+    const payload = axios()
+        .get(sprintf(API.STOCK_BARCODE_LIST, supplyId, productId))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_BARCODE_LIST,
+        payload
+    }
+}
+
 export const stockReceiveListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
@@ -85,6 +101,22 @@ export const stockTransferListFetchAction = (filter) => {
 
     return {
         type: actionTypes.STOCK_TRANSFER_LIST,
+        payload
+    }
+}
+
+export const stockTransferItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.STOCK_TRANSFER_ITEM, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_TRANSFER_ITEM,
         payload
     }
 }

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
-import numberFormat from '../../helpers/numberFormat'
+import numberformat from '../../helpers/numberFormat'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
 
@@ -17,7 +17,6 @@ const enhance = compose(
             borderTop: '1px #efefef solid',
             display: 'flex',
             flexWrap: 'wrap',
-            padding: '0 30px 5px',
             '& a': {
                 color: colorBlue
             }
@@ -34,6 +33,12 @@ const enhance = compose(
         content: {
             width: '100%',
             overflow: 'hidden',
+            display: 'flex'
+        },
+        leftSide: {
+            flexBasis: '70%',
+            maxWidth: '70%',
+            padding: '0 30px 5px',
             '& > .row': {
                 padding: '15px 0',
                 '&:first-child': {
@@ -43,6 +48,18 @@ const enhance = compose(
                     display: 'none'
                 }
             }
+        },
+        rightSide: {
+            flexBasis: '30%',
+            maxWidth: '30%',
+            padding: '20px 30px',
+            borderLeft: '1px #efefef solid',
+            '& > div:last-child': {
+                marginTop: '5px'
+            }
+        },
+        subtitle: {
+            fontWeight: '600'
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center 25px',
@@ -63,10 +80,11 @@ const enhance = compose(
     withState('openDetails', 'setOpenDetails', false)
 )
 
-const StockReceiveDetails = enhance((props) => {
+const StockTransferDetails = enhance((props) => {
     const {classes, detailData} = props
-    const detailLoading = _.get(detailData, 'detailLoading')
+    const detailLoading = _.get(detailData, 'transferDetailLoading')
     const products = _.get(detailData, ['data', 'products'])
+    const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
 
     if (_.isEmpty(products)) {
         return (
@@ -92,37 +110,37 @@ const StockReceiveDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.content}>
-                <Row className='dottedList'>
-                    <Col xs={4}>Товар</Col>
-                    <Col xs={2}>Тип товара</Col>
-                    <Col xs={2}>Кол-во</Col>
-                    <Col xs={2}>Принято</Col>
-                    <Col xs={2}>Брак</Col>
-                </Row>
-                {_.map(products, (item) => {
-                    const id = _.get(item, 'id')
-                    const name = _.get(item, ['product', 'name'])
-                    const measurement = _.get(item, ['product', 'measurement', 'name'])
-                    const amount = numberFormat(_.get(item, 'amount'), measurement)
-                    const posted = numberFormat(_.get(item, 'postedAmount'), measurement)
-                    const defect = numberFormat(_.get(item, 'defectAmount'), measurement)
-                    return (
-                        <Row key={id} className='dottedList'>
-                            <Col xs={4}>{name}</Col>
-                            <Col xs={2}>Стиральный порошек</Col>
-                            <Col xs={2}>{amount}</Col>
-                            <Col xs={2}>{posted}</Col>
-                            <Col xs={2}>{defect}</Col>
-                        </Row>
-                    )
-                })}
+                <div className={classes.leftSide}>
+                    <Row className='dottedList'>
+                        <Col xs={6}>Товар</Col>
+                        <Col xs={4}>Тип товара</Col>
+                        <Col xs={2}>Кол-во</Col>
+                    </Row>
+                    {_.map(products, (item) => {
+                        const id = _.get(item, 'id')
+                        const name = _.get(item, ['product', 'name'])
+                        const measurement = _.get(item, ['product', 'measurement', 'name'])
+                        const amount = numberformat(_.get(item, 'amount'), measurement)
+                        return (
+                            <Row key={id} className='dottedList'>
+                                <Col xs={6}>{name}</Col>
+                                <Col xs={4}>Стиральный порошек</Col>
+                                <Col xs={2}>{amount}</Col>
+                            </Row>
+                        )
+                    })}
+                </div>
+                <div className={classes.rightSide}>
+                    <div className={classes.subtitle}>Комментарий:</div>
+                    <div>{comment}</div>
+                </div>
             </div>
         </div>
     )
 })
 
-StockReceiveDetails.propTypes = {
+StockTransferDetails.propTypes = {
     detailData: PropTypes.object.isRequired
 }
 
-export default StockReceiveDetails
+export default StockTransferDetails

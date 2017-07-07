@@ -19,7 +19,7 @@ const enhance = compose(
         loader: {
             position: 'absolute',
             background: '#fff',
-            top: '0',
+            top: '100px',
             left: '0',
             width: '100%',
             minHeight: '400px',
@@ -28,8 +28,21 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        listWrapper: {
+            position: 'relative',
+            '& > div:nth-child(2)': {
+                marginTop: '0 !important'
+            }
+        },
         list: {
             marginBottom: '5px',
+            '& > a': {
+                color: 'inherit'
+            }
+        },
+        expandedList: {
+            margin: '20px -15px',
+            transition: 'all 400ms ease-out !important',
             '& > a': {
                 color: 'inherit'
             }
@@ -46,6 +59,7 @@ const enhance = compose(
         },
         headers: {
             color: '#666',
+            fontWeight: '600',
             padding: '15px 30px',
             '& .row': {
                 alignItems: 'center'
@@ -87,13 +101,13 @@ const StockTabReceive = enhance((props) => {
     if (listLoading) {
         return (
             <div className={classes.loader}>
-                <CircularProgress size={80} thickness={5}/>
+                <CircularProgress size={40} thickness={4}/>
             </div>
         )
     }
 
     return (
-        <div style={{position: 'relative'}}>
+        <div className={classes.listWrapper}>
             <div className={classes.headers}>
                 <Row>
                     <Col xs={2}>№ заказа</Col>
@@ -113,7 +127,7 @@ const StockTabReceive = enhance((props) => {
 
                 if (id === detailId) {
                     return (
-                        <Paper key={id} zDepth={1} className={classes.list}>
+                        <Paper key={id} zDepth={1} className={classes.expandedList}>
                             <div className={classes.wrapper}>
                                 <Row className={classes.semibold}>
                                     <Col xs={2}>{id}</Col>
@@ -133,6 +147,7 @@ const StockTabReceive = enhance((props) => {
                             <StockReceiveDetails
                                 key={detailId}
                                 detailData={detailData}
+                                createDialog={createDialog}
                             />
                         </Paper>
                     )
@@ -153,10 +168,6 @@ const StockTabReceive = enhance((props) => {
                                             <span className={classes.begin}>В процессе</span>)
                                             : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
                                                 : (<span className={classes.error}>Отменен</span>))}</Col>
-                                    <Col xs={2} style={{textAlign: 'right'}}>
-                                        <a onClick={createDialog.handleOpenCreateDialog}
-                                           className={classes.actionButton}>Выполнить</a>
-                                    </Col>
                                 </Row>
                             </div>
                         </Link>
@@ -167,6 +178,8 @@ const StockTabReceive = enhance((props) => {
                 loading={createDialog.createLoading}
                 open={createDialog.openCreateDialog}
                 isDefect={createDialog.isDefect}
+                detailProducts={createDialog.detailProducts}
+                listLoading={createDialog.detailLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
@@ -186,6 +199,8 @@ StockTabReceive.propTypes = {
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
         isDefect: PropTypes.bool,
+        detailProducts: PropTypes.object,
+        detailLoading: PropTypes.bool,
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired

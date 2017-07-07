@@ -97,10 +97,19 @@ const enhance = compose(
             maxWidth: '55%',
             padding: '15px 30px'
         },
-        inputField: {
+        inputFieldCustom: {
             fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
             }
         },
         selectContent: {
@@ -189,7 +198,7 @@ const OrderReturnDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                     <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent}>

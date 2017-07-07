@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import GridList from '../GridList'
-import HistoryFilterForm from './HistoryFilterForm'
+import HistoryFilterForm from './StockHistoryFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
@@ -45,9 +45,21 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            position: 'absolute',
+            background: '#fff',
+            top: '72px',
+            left: '0',
+            width: '100%',
+            minHeight: '400px',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
         wrapper: {
             marginTop: '20px',
-            '& .row > div svg': {
+            '& .row > div > svg': {
                 position: 'relative',
                 width: '16px !important',
                 height: '16px !important',
@@ -109,7 +121,7 @@ const StockTabHistory = enhance((props) => {
     if (listLoading) {
         return (
             <div className={classes.loader}>
-                <CircularProgress size={80} thickness={5}/>
+                <CircularProgress size={40} thickness={4}/>
             </div>
         )
     }

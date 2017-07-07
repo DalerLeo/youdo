@@ -344,7 +344,7 @@ const OrderDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -354,7 +354,7 @@ const OrderDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                     onTouchTap={handleCloseDetail}>Заказ №{id}</div>
+                     onClick={handleCloseDetail}>Заказ №{id}</div>
                 <div className={classes.titleSupplier}>
                     <a className={classes.dropdown} onMouseEnter={() => {
                         setOpenDetails(true)
@@ -543,7 +543,7 @@ const OrderDetails = enhance((props) => {
                                         </div>
                                         : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
                                             <div>
-                                                <CircularProgress size={70} thickness={4}/>
+                                                <CircularProgress size={40} thickness={4}/>
                                             </div>
                                         </div>
                                     }

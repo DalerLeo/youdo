@@ -19,7 +19,8 @@ import {
     stockReceiveItemFetchAction,
     stockReceiveCreateAction,
     stockHistoryListFetchAction,
-    stockTransferListFetchAction
+    stockTransferListFetchAction,
+    stockTransferItemFetchAction
 } from '../../actions/stockReceive'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -29,13 +30,18 @@ const enhance = compose(
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['stockReceive', 'item', 'data'])
+        const detailProducts = _.get(state, ['stockReceive', 'item', 'data'])
         const detailLoading = _.get(state, ['stockReceive', 'item', 'loading'])
         const list = _.get(state, ['stockReceive', 'list', 'data'])
         const listLoading = _.get(state, ['stockReceive', 'list', 'loading'])
         const historyList = _.get(state, ['stockReceive', 'history', 'data'])
         const historyListLoading = _.get(state, ['stockReceive', 'history', 'loading'])
         const transferList = _.get(state, ['stockReceive', 'transfer', 'data'])
-        const transferListLoading = _.get(state, ['stockReceive', 'history', 'loading'])
+        const transferListLoading = _.get(state, ['stockReceive', 'transfer', 'loading'])
+        const transferDetail = _.get(state, ['stockReceive', 'transferItem', 'data'])
+        const transferDetailLoading = _.get(state, ['stockReceive', 'transferItem', 'loading'])
+        const barcodeList = _.get(state, ['stockReceive', 'barcodeList', 'data'])
+        const barcodeListLoading = _.get(state, ['stockReceive', 'barcodeList', 'loading'])
         const createLoading = _.get(state, ['stockReceive', 'create', 'loading'])
         const createForm = _.get(state, ['form', 'StockReceiveCreateForm'])
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
@@ -49,7 +55,12 @@ const enhance = compose(
             historyListLoading,
             transferList,
             transferListLoading,
+            transferDetail,
+            transferDetailLoading,
+            barcodeList,
+            barcodeListLoading,
             detail,
+            detailProducts,
             detailLoading,
             createLoading,
             filter,
@@ -58,30 +69,40 @@ const enhance = compose(
             productId
         }
     }),
+
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
-        dispatch(stockReceiveListFetchAction(filter))
-        dispatch(stockHistoryListFetchAction(filter))
-        dispatch(stockTransferListFetchAction(filter))
+        const prevTab = _.get(props, ['location', 'query', 'tab']) || 'receive'
+        const nextTab = _.get(nextProps, ['location', 'query', 'tab']) || 'receive'
+        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) || (prevTab !== nextTab)
+    }, ({dispatch, filter, location}) => {
+        const currentTab = _.get(location, ['query', 'tab']) || 'receive'
+        if (currentTab === 'receive') {
+            dispatch(stockReceiveListFetchAction(filter))
+        } else if (currentTab === 'transfer') {
+            dispatch(stockTransferListFetchAction(filter))
+        } else if (currentTab === 'history') {
+            dispatch(stockHistoryListFetchAction(filter))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevId = _.get(props, ['params', 'stockReceiveId'])
-        const nextId = _.get(nextProps, ['params', 'stockReceiveId'])
+        const prevId = _.toInteger(_.get(props, ['params', 'stockReceiveId']))
+        const nextId = _.toInteger(_.get(nextProps, ['params', 'stockReceiveId']))
         return prevId !== nextId
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, location}) => {
+        const currentTab = _.get(location, ['query', 'tab']) || 'receive'
         const stockReceiveId = _.toInteger(_.get(params, 'stockReceiveId'))
-        if (stockReceiveId > ZERO) {
+        if (stockReceiveId > ZERO && currentTab === 'receive') {
             dispatch(stockReceiveItemFetchAction(stockReceiveId))
+        } else if (stockReceiveId > ZERO && currentTab === 'transfer') {
+            dispatch(stockTransferItemFetchAction(stockReceiveId))
         }
     }),
 
     withHandlers({
         handleTabChange: props => (tab) => {
-            const {location: {pathname}} = props
             hashHistory.push({
-                pathname: pathname,
+                pathname: 'stockReceive',
                 query: {[TAB]: tab}
             })
         },
@@ -124,22 +145,23 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, params, productId} = props
+            const {dispatch, createForm, filter, location: {pathname}, params} = props
             const formValues = _.get(createForm, ['values'])
-            const supplyId = _.toNumber(_.get(params, 'stockReceiveId'))
+            const supplyId = _.toInteger(_.get(params, 'stockReceiveId'))
 
-            return dispatch(stockReceiveCreateAction(formValues, supplyId, productId))
+            return dispatch(stockReceiveCreateAction(formValues, supplyId))
                 .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: false})})
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: false})})
-                    dispatch(stockReceiveListFetchAction(filter))
+                    dispatch(stockReceiveItemFetchAction(supplyId))
                 })
         },
         handleCloseDetail: props => () => {
-            const {filter} = props
-            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParam()})
+            const {location} = props
+            const tab = _.get(location, ['query', 'tab'])
+            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: {[TAB]: tab}})
         }
     })
 )
@@ -152,8 +174,11 @@ const StockReceiveList = enhance((props) => {
         historyListLoading,
         transferList,
         transferListLoading,
+        transferDetail,
+        transferDetailLoading,
         location,
         detail,
+        detailProducts,
         detailLoading,
         createLoading,
         isDefect,
@@ -185,6 +210,12 @@ const StockReceiveList = enhance((props) => {
         transferListLoading
     }
 
+    const transferDetailData = {
+        id: detailId,
+        data: transferDetail,
+        transferDetailLoading
+    }
+
     const detailData = {
         id: detailId,
         data: detail,
@@ -195,6 +226,8 @@ const StockReceiveList = enhance((props) => {
         createLoading,
         openCreateDialog,
         isDefect,
+        detailProducts,
+        detailLoading,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
@@ -231,6 +264,7 @@ const StockReceiveList = enhance((props) => {
                 filterDialog={filterDialog}
                 historyData={historyData}
                 transferData={transferData}
+                transferDetail={transferDetailData}
                 detailData={detailData}
                 createDialog={createDialog}
                 handleCloseDetail={handleCloseDetail}

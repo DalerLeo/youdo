@@ -10,7 +10,7 @@ import moment from 'moment'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
-import StockReceiveDetails from './StockReceiveDetails'
+import StockTransferDetails from './StockTransferDetails'
 import CreateDialog from './StockReceiveCreateDialog'
 import Pagination from '../GridList/GridListNavPagination'
 
@@ -19,7 +19,7 @@ const enhance = compose(
         loader: {
             position: 'absolute',
             background: '#fff',
-            top: '0',
+            top: '100px',
             left: '0',
             width: '100%',
             minHeight: '400px',
@@ -28,8 +28,21 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        listWrapper: {
+            position: 'relative',
+            '& > div:nth-child(2)': {
+                marginTop: '0 !important'
+            }
+        },
         list: {
             marginBottom: '5px',
+            '& > a': {
+                color: 'inherit'
+            }
+        },
+        expandedList: {
+            margin: '20px -15px',
+            transition: 'all 400ms ease-out !important',
             '& > a': {
                 color: 'inherit'
             }
@@ -46,6 +59,7 @@ const enhance = compose(
         },
         headers: {
             color: '#666',
+            fontWeight: '600',
             padding: '15px 30px',
             '& .row': {
                 alignItems: 'center'
@@ -88,13 +102,13 @@ const StockTabTransfer = enhance((props) => {
     if (listLoading) {
         return (
             <div className={classes.loader}>
-                <CircularProgress size={80} thickness={5}/>
+                <CircularProgress size={40} thickness={4}/>
             </div>
         )
     }
 
     return (
-        <div style={{position: 'relative'}}>
+        <div className={classes.listWrapper}>
             <div className={classes.headers}>
                 <Row>
                     <Col xs={1}>№ запроса</Col>
@@ -117,7 +131,7 @@ const StockTabTransfer = enhance((props) => {
 
                 if (id === detailId) {
                     return (
-                        <Paper key={id} zDepth={1} className={classes.list}>
+                        <Paper key={id} zDepth={1} className={classes.expandedList}>
                             <div className={classes.wrapper}>
                                 <Row className={classes.semibold}>
                                     <Col xs={1}>{id}</Col>
@@ -136,7 +150,7 @@ const StockTabTransfer = enhance((props) => {
                                     </Col>
                                 </Row>
                             </div>
-                            <StockReceiveDetails
+                            <StockTransferDetails
                                 key={detailId}
                                 detailData={detailData}
                             />
@@ -161,10 +175,6 @@ const StockTabTransfer = enhance((props) => {
                                             <span className={classes.begin}>В процессе</span>)
                                             : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
                                                 : (<span className={classes.error}>Отменен</span>))}</Col>
-                                    <Col xs={2} style={{textAlign: 'right'}}>
-                                        <a onClick={createDialog.handleOpenCreateDialog}
-                                           className={classes.actionButton}>Выполнить</a>
-                                    </Col>
                                 </Row>
                             </div>
                         </Link>

@@ -75,7 +75,7 @@ const SignInForm = enhance((props) => {
     if (loading) {
         return (
             <Paper className={classes.loader} zDepth={2}>
-                <CircularProgress size={80} thickness={5}/>
+                <CircularProgress size={40} thickness={4}/>
             </Paper>
         )
     }

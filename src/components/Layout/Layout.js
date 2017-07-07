@@ -322,7 +322,7 @@ const Layout = enhance((props) => {
                     <div className={classes.notifBody}>
                         {
                             notificationsLoading ? <div className={classes.loading}>
-                                <CircularProgress size={100} thickness={6}/>
+                                <CircularProgress size={40} thickness={4}/>
                             </div>
                                 : (notificationListExp.length > ZERO ? notificationListExp
                                 : <div className={classes.emptyQuery}>

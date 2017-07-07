@@ -89,7 +89,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: '220px'}}>
                         <div className={classes.loader}>
-                            <CircularProgress size={80} thickness={5}/>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
                         <div className={classes.field}>
                             <div className={classes.info}>
@@ -104,7 +104,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                             <div className={classes.cashbox}>
                                 <Field
                                     name="cashbox"
-                                    className={classes.inputField}
+                                    className={classes.inputFieldCustom}
                                     component={CashboxCustomField}
                                     label="Касса получатель"
                                     fullWidth={true}
@@ -112,7 +112,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 <div className={classes.flex}>
                                     <Field
                                         name="amount"
-                                        className={classes.inputField}
+                                        className={classes.inputFieldCustom}
                                         component={TextField}
                                         label="Сумма"
                                         value={null}
