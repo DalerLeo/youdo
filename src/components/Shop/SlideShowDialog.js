@@ -113,7 +113,7 @@ const SlideShowDialog = enhance((props) => {
             </div>
             <div className={classes.inContent} style={{backgroundImage: 'url(' + imgURL + ')'}}>
                 <div className={classes.loader}>
-                    <CircularProgress size={35} thickness={4}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
                 <div className={classes.navLeft}>
                     <IconButton

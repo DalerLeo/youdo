@@ -243,7 +243,7 @@ const ClientTransactionGridList = enhance((props) => {
                             </div>
                             {clientListLoading
                                 ? <div style={{textAlign: 'center'}}>
-                                    <CircularProgress size={100} thickness={6}/>
+                                    <CircularProgress size={40} thickness={4}/>
                                 </div>
                                 : clientList
                             }

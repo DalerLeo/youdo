@@ -15,6 +15,7 @@ import MainStyles from '../Styles/MainStyles'
 import InComing from 'material-ui/svg-icons/navigation/arrow-upward'
 import OutComing from 'material-ui/svg-icons/navigation/arrow-downward'
 import CircularProgress from 'material-ui/CircularProgress'
+import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
 import StatStockFilterForm from './StatStockFilterForm'
 import getConfig from '../../helpers/getConfig'
@@ -273,11 +274,10 @@ const StatStockGridList = enhance((props) => {
                     </div>
                 </Col>
             </Row>
-            <Row style={{
+            <Paper zDepth={1} style={{
                 margin: '0 0 20px',
                 padding: '8px 30px',
-                background: '#fff',
-                boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'
+                display: 'flex'
             }}>
                 <Col xs={3}>
                     <div className={classes.typeListStock} style={tab === balanceTab ? {background: '#eceff5'} : {background: '#fff'}}>
@@ -310,7 +310,7 @@ const StatStockGridList = enhance((props) => {
                         </div>
                     }
                 </Col>
-            </Row>
+            </Paper>
 
             <GridList
                 filter={filter}

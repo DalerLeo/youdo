@@ -81,8 +81,20 @@ const enhance = compose(
         submit: {
             color: '#fff !important'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     }),
     reduxForm({

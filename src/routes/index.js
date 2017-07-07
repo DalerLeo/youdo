@@ -42,6 +42,7 @@ import {
     StatAgentList,
     StatProductList
         } from '../containers/Statistics'
+import {StockReceiveList} from '../containers/StockReceive'
 
 export default {
     path: '/',
@@ -367,7 +368,7 @@ export default {
             path: ROUTES.ZONES_LIST_URL,
             component: userIsAuth(Zones),
             childRoutes: [{
-                path: ROUTES.ZONES_LIST_URL,
+                path: ROUTES.ZONES_ITEM_URL,
                 component: userIsAuth(Zones)
             }]
         },
@@ -431,7 +432,17 @@ export default {
         {
             path: ROUTES.STATISTICS_PRODUCT_URL,
             component: userIsAuth(StatProductList),
+            childRoutes: []
+        },
+        // Stock Receive Transfer
+        {
+            path: ROUTES.STOCK_RECEIVE_LIST_URL,
+            component: userIsAuth(StockReceiveList),
             childRoutes: [
+                {
+                    path: ROUTES.STOCK_RECEIVE_ITEM_URL,
+                    component: userIsAuth(StockReceiveList)
+                }
             ]
         },
         {
@@ -440,3 +451,4 @@ export default {
         }
     ]
 }
+

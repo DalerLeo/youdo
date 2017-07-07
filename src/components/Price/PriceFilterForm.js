@@ -80,8 +80,20 @@ const enhance = compose(
         submit: {
             color: '#fff !important'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     }),
     reduxForm({
@@ -144,10 +156,10 @@ const PriceFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="measurement" component={MeasurementSearchField} label="Мера"/>
+                        <Field className={classes.inputFieldCustom} name="measurement" component={MeasurementSearchField} label="Мера"/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="brand" component={BrandSearchField} label="Бренд"/>
+                        <Field className={classes.inputFieldCustom} name="brand" component={BrandSearchField} label="Бренд"/>
                     </div>
                     <RaisedButton
                         type="submit"

@@ -44,7 +44,7 @@ const GoogleMapWrapper = enhance(({onMapLoad, ...props}) => {
 
 const Loader = () =>
     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
-        <CircularProgress size={80} thickness={5} />
+        <CircularProgress size={40} thickness={4} />
     </div>
 
 const GoogleMap = (props) => {

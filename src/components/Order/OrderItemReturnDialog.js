@@ -108,7 +108,7 @@ const OrderItemReturnDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.field}>

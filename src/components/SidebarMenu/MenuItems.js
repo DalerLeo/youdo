@@ -41,7 +41,8 @@ export const MenuItems = [
             {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL},
             {name: 'Поставщики', url: ROUTES.PROVIDER_LIST_URL},
             {name: 'Остаток', url: ROUTES.REMAINDER_LIST_URL},
-            {name: 'Поставки', url: ROUTES.SUPPLY_LIST_URL}
+            {name: 'Поставки', url: ROUTES.SUPPLY_LIST_URL},
+            {name: 'Приемка / Передача', url: ROUTES.STOCK_RECEIVE_LIST_URL}
         ],
         url: ROUTES.PRODUCT_LIST_URL
     },

@@ -145,9 +145,12 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const manufactureId = _.get(nextProps, ['params', 'manufactureId'])
         const tab = _.get(props, ['location', 'query', 'tab'])
+        const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
+        const productId = _.get(props, ['location', 'query', 'productId'])
+        const nextProductId = _.get(nextProps, ['location', 'query', 'productId'])
         return (manufactureId && _.get(props, ['params', 'manufactureId']) !== manufactureId) ||
-            ((tab !== _.get(nextProps, ['location', 'query', 'tab'])) ||
-            (_.get(props, ['location', 'query', 'productId']) !== _.get(nextProps, ['location', 'query', 'productId'])) ||
+            ((tab !== nextTab) ||
+            (productId !== nextProductId) ||
             (props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest()) ||
             (props.filterUser.filterRequest() !== nextProps.filterUser.filterRequest()))
     }, ({dispatch, location, params, filterProduct, filterUser, filterEquipment, filterShipment}) => {

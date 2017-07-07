@@ -67,7 +67,7 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
     const dropZoneView = ({acceptedFiles, rejectedFiles}) => {
         const zero = 0
         if (fileUploadLoading) {
-            return (<CircularProgress size={35} thickness={4}/>)
+            return (<CircularProgress size={40} thickness={4}/>)
         }
 
         if (fileUploadErrors !== null) {

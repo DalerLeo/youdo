@@ -153,6 +153,8 @@ export const PENDING_PAYMENTS_ITEM_PATH = `${PENDING_PAYMENTS}/%d`
 
 export const ZONES = 'zones'
 export const ZONES_LIST_URL = `/${ZONES}`
+export const ZONES_ITEM_URL = `${ZONES_LIST_URL}/:zoneId`
+export const ZONES_ITEM_PATH = `/${ZONES}/%d`
 
 export const TRACKING = 'tracking'
 export const TRACKING_LIST_URL = `/${TRACKING}`
@@ -177,3 +179,7 @@ export const STATISTICS_LIST_URL = `/${STATISTICS}`
 export const STATISTICS_AGENT_URL = `/${STATISTICS}/agent`
 export const STATISTICS_PRODUCT_URL = `/${STATISTICS}/product`
 
+export const STOCK_RECEIVE = 'stockReceive'
+export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`
+export const STOCK_RECEIVE_ITEM_URL = `${STOCK_RECEIVE_LIST_URL}/:stockReceiveId`
+export const STOCK_RECEIVE_ITEM_PATH = `/${STOCK_RECEIVE}/%d`

@@ -127,7 +127,7 @@ const ClientDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -137,7 +137,7 @@ const ClientDetails = enhance((props) => {
         <div className={classes.wrapper} key={detId}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                    onTouchTap={handleCloseDetail}>{providerName}</div>
+                    onClick={handleCloseDetail}>{providerName}</div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton

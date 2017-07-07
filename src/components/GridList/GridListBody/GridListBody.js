@@ -2,11 +2,11 @@ import _ from 'lodash'
 import React from 'react'
 import {hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
-import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import Checkbox from 'material-ui/Checkbox'
 import Dot from '../../Images/dot.png'
 import NotFound from '../../Images/not-found.png'
+import Paper from 'material-ui/Paper'
 
 const enhance = compose(
     injectSheet({
@@ -14,7 +14,6 @@ const enhance = compose(
             height: '50px',
             padding: '0 30px',
             background: '#fff',
-            boxShadow: 'rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px',
             '& .row': {
                 width: '100%',
                 alignItems: 'center',
@@ -49,19 +48,20 @@ const enhance = compose(
         detail: {
             margin: '20px -15px !important',
             background: '#fff',
+            display: 'flex',
             borderBottom: '1px dotted #eee',
             alignItems: 'center',
-            boxShadow: 'rgba(0, 0, 0, 0) 0 0 0, rgba(0, 0, 0, 0.227451) 0 5px 10px',
             position: 'relative',
-            minHeight: '150px'
+            minHeight: '150px',
+            transition: 'all 400ms ease-out !important'
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '285px',
-            padding: '260px 0 0',
+            backgroundSize: '225px',
+            padding: '260px 0 50px',
             textAlign: 'center',
-            fontSize: '15px',
-            color: '#666',
+            fontSize: '13px',
+            color: '#999',
             '& svg': {
                 width: '50px !important',
                 height: '50px !important',
@@ -107,21 +107,21 @@ const GridListBody = enhance((props) => {
 
         if (id === detailId) {
             return (
-                <Row className={classes.detail} key={index}>
+                <Paper zDepth={2} className={classes.detail} key={index}>
                     {detail}
-                </Row>
+                </Paper>
             )
         }
 
         return (
-            <div className={classes.item} key={index}>
+            <Paper zDepth={1} className={classes.item} key={index}>
                     <div className={classes.checkbox}>
                         {withoutCheckboxes &&
                         <Checkbox onCheck={onChecked(id)} checked={checkboxChecked}/>
                         }
                     </div>
                 {item}
-            </div>
+            </Paper>
         )
     })
     return (

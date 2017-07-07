@@ -19,10 +19,9 @@ const enhance = compose(
             alignItems: 'center',
             background: '#5d6474',
             overflow: 'hidden',
-            fontWeight: '700',
+            fontWeight: '600',
             color: '#fff',
             display: 'flex',
-            boxShadow: 'rgba(0, 0, 0, 0.156863) 0 3px 10px, rgba(0, 0, 0, 0.227451) 0 3px 10px',
             '& .row': {
                 width: '100%',
                 alignItems: 'center',

@@ -253,6 +253,7 @@ export const ZONE_CREATE = `/${ZONE}/`
 export const ZONE_LIST = `/${ZONE}/`
 export const ZONE_ITEM = `/${ZONE}/%d/`
 export const ZONE_DELETE = `/${ZONE}/%d/`
+export const ZONE_STAT = `/${ZONE}/statistics/`
 
 export const PRICE = 'dist/product'
 export const PRICE_CREATE = `/${PRODUCT}/`
@@ -271,3 +272,16 @@ export const REMAINDER_ITEM = `/${REMAINDER}/%d/`
 export const STATISTICS = 'dist/product'
 export const STATISTICS_LIST = `/${STATISTICS}/`
 export const STATISTICS_ITEM = `/${STATISTICS}/%d/`
+
+export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
+
+export const STOCK_RECEIVE = 'dist/supply'
+export const STOCK_HISTORY = 'dist/barcode_history'
+export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`
+export const STOCK_TRANSFER = 'dist/stock_transfer'
+export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`
+export const STOCK_TRANSFER_ITEM = `/${STOCK_TRANSFER}/%d/`
+export const STOCK_RECEIVE_LIST = `/${STOCK_RECEIVE}/`
+export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
+export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/product_detail/%d/`
+export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE

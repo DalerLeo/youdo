@@ -17,7 +17,7 @@ const enhance = compose(
         loader: {
             width: '100%',
             background: '#fff',
-            height: '400px',
+            height: '150px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -80,7 +80,7 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700',
+            fontWeight: '600',
             cursor: 'pointer'
         },
         titleButtons: {
@@ -128,7 +128,7 @@ const ProviderDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )

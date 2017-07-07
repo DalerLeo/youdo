@@ -343,7 +343,7 @@ const ManufactureGridList = enhance((props) => {
                             {
                                 _.get(listData, 'listLoading')
                                     ? <div style={{textAlign: 'center'}}>
-                                    <CircularProgress size={100} thickness={6}/>
+                                    <CircularProgress size={40} thickness={4}/>
                                 </div>
                                     : manufactureList
                             }
