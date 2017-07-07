@@ -50,6 +50,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'TransactionFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterCashbox = filterHelper(cashboxList, pathname, query)
         const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
         return {
             list,
@@ -62,14 +63,15 @@ const enhance = compose(
             updateLoading,
             filter,
             filterForm,
+            filterCashbox,
             cashboxId,
             createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
-    }, ({dispatch}) => {
-        dispatch(cashboxListFetchAction())
+    }, ({dispatch, filterCashbox}) => {
+        dispatch(cashboxListFetchAction(filterCashbox))
     }),
 
     withPropsOnChange((props, nextProps) => {

@@ -320,22 +320,22 @@ const TransactionGridList = enhance((props) => {
                         filterDialog={transactionFilterDialog}
                     />
 
-                    {/*<TransactionCreateDialog*/}
-                        {/*isExpense={true}*/}
-                        {/*cashboxData={cashboxData}*/}
-                        {/*open={createExpenseDialog.open}*/}
-                        {/*loading={createExpenseDialog.loading}*/}
-                        {/*onClose={createExpenseDialog.handleCloseDialog}*/}
-                        {/*onSubmit={createExpenseDialog.handleSubmitDialog}*/}
-                    {/*/>*/}
+                    <TransactionCreateDialog
+                        isExpense={true}
+                        cashboxData={cashboxData}
+                        open={createExpenseDialog.open}
+                        loading={createExpenseDialog.loading}
+                        onClose={createExpenseDialog.handleCloseDialog}
+                        onSubmit={createExpenseDialog.handleSubmitDialog}
+                    />
 
-                    {/*<TransactionCreateDialog*/}
-                        {/*cashboxData={cashboxData}*/}
-                        {/*open={createIncomeDialog.open}*/}
-                        {/*loading={createIncomeDialog.loading}*/}
-                        {/*onClose={createIncomeDialog.handleCloseDialog}*/}
-                        {/*onSubmit={createIncomeDialog.handleSubmitDialog}*/}
-                    {/*/>*/}
+                    <TransactionCreateDialog
+                        cashboxData={cashboxData}
+                        open={createIncomeDialog.open}
+                        loading={createIncomeDialog.loading}
+                        onClose={createIncomeDialog.handleCloseDialog}
+                        onSubmit={createIncomeDialog.handleSubmitDialog}
+                    />
 
                     <TransactionCreateDialog
                         initialValues={updateExpenseDialog.initialValues}

@@ -380,7 +380,6 @@ const enhance = compose(
         handleSubmitPersonFilterDialog: props => () => {
             const {filterUser, filterPersonForm} = props
             const shift = _.get(filterPersonForm, ['values', 'shift', 'value']) || null
-            console.log(shift)
             filterUser.filterBy({
                 [PRODUCT_FILTER_OPEN]: false,
                 [PRODUCT_FILTER_KEY.SHIFT]: shift

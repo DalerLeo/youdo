@@ -10,7 +10,7 @@ import CloseIcon2 from '../CloseIcon2'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import PriceSetForm from './PriceSetForm'
-import {PRIMARY_CURRENCY_NAME} from '../../constants/primaryCurrency'
+import getConfig from '../../helpers/getConfig'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -236,8 +236,8 @@ const PriceDetails = enhance((props) => {
                             {_.map(mergedList, (item) => {
                                 const id = _.get(item, 'marketTypeId')
                                 const marketName = _.get(item, 'marketTypeName')
-                                const cashPrice = _.get(item, 'cash_price') + ' ' + PRIMARY_CURRENCY_NAME
-                                const transferPrice = _.get(item, 'transfer_price') + ' ' + PRIMARY_CURRENCY_NAME
+                                const cashPrice = _.get(item, 'cash_price') + ' ' + getConfig('PRIMARY_CURRENCY_NAME')
+                                const transferPrice = _.get(item, 'transfer_price') + ' ' + getConfig('PRIMARY_CURRENCY_NAME')
                                 return (
                                     <Row className="dottedList" key={id}>
                                         <Col xs={6}> {marketName}</Col>
