@@ -37,7 +37,11 @@ import {MarketTypeList} from '../containers/MarketType'
 import {PriceList} from '../containers/Price'
 import NotFound from '../containers/NotFound'
 import {RemainderList} from '../containers/Remainder'
-import {StatisticsList} from '../containers/Statistics'
+import {
+    StatisticsList,
+    StatAgentList,
+    StatProductList
+        } from '../containers/Statistics'
 
 export default {
     path: '/',
@@ -403,10 +407,20 @@ export default {
             path: ROUTES.STATISTICS_LIST_URL,
             component: userIsAuth(StatisticsList),
             childRoutes: [
-                {
-                    path: ROUTES.REMAINDER_ITEM_URL,
-                    component: userIsAuth(StatisticsList)
-                }
+            ]
+        },
+        // Statistics/agent
+        {
+            path: ROUTES.STATISTICS_AGENT_URL,
+            component: userIsAuth(StatAgentList),
+            childRoutes: [
+            ]
+        },
+        // Statistics/product
+        {
+            path: ROUTES.STATISTICS_PRODUCT_URL,
+            component: userIsAuth(StatProductList),
+            childRoutes: [
             ]
         },
         {

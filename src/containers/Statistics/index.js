@@ -1,3 +1,9 @@
-import StatisticsList from './StatisticsList'
+import StatisticsList from './Statistics'
+import StatAgentList from './StatAgent'
+import StatProductList from './StatProduct'
 
-export {StatisticsList}
+export {
+    StatisticsList,
+    StatAgentList,
+    StatProductList
+}

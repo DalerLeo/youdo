@@ -169,5 +169,6 @@ export const REMAINDER_ITEM_PATH = `/${REMAINDER}/%d`
 
 export const STATISTICS = 'statistics'
 export const STATISTICS_LIST_URL = `/${STATISTICS}`
-export const STATISTICS_ITEM_URL = `${STATISTICS_LIST_URL}/:statisticsId`
-export const STATISTICS_ITEM_PATH = `/${STATISTICS}/%d`
+export const STATISTICS_AGENT_URL = `/${STATISTICS}/agent`
+export const STATISTICS_PRODUCT_URL = `/${STATISTICS}/product`
+

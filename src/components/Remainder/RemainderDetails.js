@@ -81,7 +81,7 @@ const RemainderDetails = enhance((props) => {
     if (isLoading) {
         return (
             <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
+                <CircularProgress size={60} thickness={5}/>
             </div>
         )
     }

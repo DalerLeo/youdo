@@ -113,6 +113,10 @@ const enhance = compose(
                 alignItems: 'center',
                 justifyContent: 'center'
             }
+        },
+        loader: {
+            display: 'flex',
+            justifyContent: 'center'
         }
     })
 )
@@ -142,14 +146,6 @@ const RemainderGridList = enhance((props) => {
     const detailId = _.get(detailData, 'id')
     const isOpenFilter = filterDialog.openFilterDialog
 
-    if (listLoading) {
-        return (
-            <div className={classes.loader}>
-                <CircularProgress size={80} thickness={5}/>
-            </div>
-        )
-    }
-
     const listHeader = (
         <div className={classes.headers}>
             <Row>
@@ -160,6 +156,13 @@ const RemainderGridList = enhance((props) => {
             </Row>
         </div>
     )
+
+    const listLoader = (
+                <Paper className={classes.loader}>
+                    <CircularProgress size={80} thickness={5}/>
+                </Paper>
+        )
+
     const list = (
             <div>
                 {_.map(_.get(listData, 'data'), (item) => {
@@ -233,7 +236,7 @@ const RemainderGridList = enhance((props) => {
                     </div>
                 }
             {listHeader}
-                {list}
+            {listLoading ? listLoader : list }
 
         </Container>
     )

@@ -270,6 +270,6 @@ export const REMAINDER = 'dist/product'
 export const REMAINDER_LIST = `/${REMAINDER}/`
 export const REMAINDER_ITEM = `/${REMAINDER}/%d/`
 
-export const STATATISTICS = 'dist/product'
-export const STATATISTICS_LIST = `/${STATATISTICS}/`
-export const STATATISTICS_ITEM = `/${STATATISTICS}/%d/`
+export const STATISTICS = 'dist/product'
+export const STATISTICS_LIST = `/${STATISTICS}/`
+export const STATISTICS_ITEM = `/${STATISTICS}/%d/`
