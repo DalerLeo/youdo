@@ -363,7 +363,7 @@ export default {
             path: ROUTES.ZONES_LIST_URL,
             component: userIsAuth(Zones),
             childRoutes: [{
-                path: ROUTES.ZONES_LIST_URL,
+                path: ROUTES.ZONES_ITEM_URL,
                 component: userIsAuth(Zones)
             }]
         },

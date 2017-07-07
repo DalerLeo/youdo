@@ -251,7 +251,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.ZONE_CREATE),
         list: createThunkReducer(actionTypes.ZONE_LIST),
         update: createThunkReducer(actionTypes.ZONE_UPDATE),
-        item: createThunkReducer(actionTypes.ZONE_ITEM)
+        item: createThunkReducer(actionTypes.ZONE_ITEM),
+        statistics: createThunkReducer(actionTypes.ZONE_STAT)
     }),
     remainder: combineReducers({
         create: createThunkReducer(actionTypes.REMAINDER_CREATE),

@@ -253,6 +253,7 @@ export const ZONE_CREATE = `/${ZONE}/`
 export const ZONE_LIST = `/${ZONE}/`
 export const ZONE_ITEM = `/${ZONE}/%d/`
 export const ZONE_DELETE = `/${ZONE}/%d/`
+export const ZONE_STAT = `/${ZONE}/statistics/`
 
 export const PRICE = 'dist/product'
 export const PRICE_CREATE = `/${PRODUCT}/`
