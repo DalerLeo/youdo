@@ -92,8 +92,7 @@ const StockTabTransfer = enhance((props) => {
         detailData,
         filter,
         classes,
-        createDialog,
-        handleCloseDetail
+        createDialog
     } = props
 
     const detailId = _.get(detailData, 'id')

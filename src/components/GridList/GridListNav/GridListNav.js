@@ -86,7 +86,7 @@ export default injectSheet({
             background: '#fff',
             alignItems: 'center',
             padding: '0 5px',
-            marginBottom: '50px',
+            marginBottom: '50px'
         }
     },
     currencyName: {
