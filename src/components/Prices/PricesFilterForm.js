@@ -84,8 +84,20 @@ const enhance = compose(
         submit: {
             color: '#fff !important'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     }),
     reduxForm({
@@ -148,14 +160,14 @@ const PricesFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="provider" component={ProviderSearchField} label="Поставщик"/>
-                        <Field className={classes.inputField} name="stock" component={StockSearchField} label="Склад"/>
+                        <Field className={classes.inputFieldCustom} name="provider" component={ProviderSearchField} label="Поставщик"/>
+                        <Field className={classes.inputFieldCustom} name="stock" component={StockSearchField} label="Склад"/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="dateDelivery" component={DateToDateField} label="Дата поставки" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="dateDelivery" component={DateToDateField} label="Дата поставки" fullWidth={true}/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="dateCreated" component={DateToDateField} label="Дата создания" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="dateCreated" component={DateToDateField} label="Дата создания" fullWidth={true}/>
                     </div>
                     <div>
                         <RaisedButton

@@ -22,7 +22,8 @@ export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     return {
         'page': _.get(defaultData, 'page'),
-        'page_size': _.get(defaultData, 'pageSize')
+        'page_size': _.get(defaultData, 'pageSize'),
+        'search': _.get(defaultData, 'search')
     }
 }
 

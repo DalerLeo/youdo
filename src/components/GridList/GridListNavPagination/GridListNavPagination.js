@@ -84,6 +84,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter, customPaginat
                 <div className={classes.gridPagination}>
                     <IconButton
                         disabled={Boolean(!prev)}
+                        disableTouchRipple={true}
                         iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}
                         onTouchTap={() => prev && hashHistory.push(prev)}>
                         <ArrowLeftIcon />
@@ -91,6 +92,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter, customPaginat
 
                     <IconButton
                         disabled={Boolean(!next)}
+                        disableTouchRipple={true}
                         iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}
                         onTouchTap={() => next && hashHistory.push(next)}>
                         <ArrowRightIcon />

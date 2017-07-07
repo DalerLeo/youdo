@@ -79,14 +79,16 @@ const enhance = compose(
                 fontWeight: '600 !important'
             }
         },
-        inputField: {
+        inputFieldCustom: {
             fontSize: '13px !important',
-            height: '50px !important',
+            height: '45px !important',
+            marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
             },
             '& label': {
-                top: '20px !important'
+                top: '20px !important',
+                lineHeight: '5px !important'
             },
             '& input': {
                 marginTop: '0 !important'

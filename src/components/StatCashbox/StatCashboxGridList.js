@@ -97,7 +97,9 @@ const enhance = compose(
         tab: {
             cursor: 'pointer',
             padding: '20px',
-            height: '100%'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center'
         },
         activeTab: {
             paddingBottom: '20px',

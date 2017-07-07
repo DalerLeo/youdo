@@ -150,7 +150,7 @@ const PriceDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -200,7 +200,7 @@ const PriceDetails = enhance((props) => {
                 </div>
                 <div className={classes.rightSide}>
                     {(marketTypeIsLoading || priceListItemsIsLoading) && <div className={classes.loader}>
-                        <CircularProgress size={60} thickness={5} />
+                        <CircularProgress size={40} thickness={4} />
                     </div>}
                     {priceSetForm.openPriceSetForm && <PriceSetForm
                         initialValues={priceSetForm.initialValues}

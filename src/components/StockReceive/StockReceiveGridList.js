@@ -42,6 +42,9 @@ const enhance = compose(
                 alignItems: 'center'
             }
         },
+        tabWrapper: {
+            position: 'relative'
+        },
         tabs: {
             marginBottom: '0',
             width: '100%',
@@ -103,6 +106,7 @@ const StockReceiveGridList = enhance((props) => {
         listData,
         historyData,
         transferData,
+        transferDetail,
         filterDialog,
         detailData,
         filter,
@@ -114,38 +118,37 @@ const StockReceiveGridList = enhance((props) => {
     const tab = _.get(tabData, 'tab')
 
     const tabList = (
-        <Tabs
-            inkBarStyle={{backgroundColor: '#12aaeb', height: '3px'}}
-            tabItemContainerStyle={{backgroundColor: '#fff', color: '#333'}}
-            value={tab}
-            className={classes.tabs}
-            onChange={(value) => tabData.handleTabChange(value)}>
-            <Tab label="Приемка" value={TAB.STOCK_RECEIVE_TAB_RECEIVE}>
-                <TabReceive
-                    filter={filter}
-                    listData={listData}
-                    detailData={detailData}
-                    createDialog={createDialog}
-                    handleCloseDetail={handleCloseDetail}
-                />
-            </Tab>
-            <Tab label="Передача" value={TAB.STOCK_RECEIVE_TAB_TRANSFER}>
-                <TabTransfer
-                    filter={filter}
-                    listData={transferData}
-                    detailData={detailData}
-                    createDialog={createDialog}
-                    handleCloseDetail={handleCloseDetail}
-                />
-            </Tab>
-            <Tab label="История" value={TAB.STOCK_RECEIVE_TAB_HISTORY}>
-                <TabHistory
-                    filter={filter}
-                    listData={historyData}
-                    filterDialog={filterDialog}
-                />
-            </Tab>
-        </Tabs>
+        <div className={classes.tabWrapper}>
+            <Tabs
+                inkBarStyle={{backgroundColor: '#12aaeb', height: '3px'}}
+                tabItemContainerStyle={{backgroundColor: '#fff', color: '#333'}}
+                value={tab}
+                className={classes.tabs}
+                onChange={(value) => tabData.handleTabChange(value)}>
+                <Tab label="Приемка" value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
+                <Tab label="Передача" value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
+                <Tab label="История" value={TAB.STOCK_RECEIVE_TAB_HISTORY}/>
+            </Tabs>
+            {TAB.STOCK_RECEIVE_TAB_RECEIVE === tab && <TabReceive
+                filter={filter}
+                listData={listData}
+                detailData={detailData}
+                createDialog={createDialog}
+                handleCloseDetail={handleCloseDetail}
+            />}
+            {TAB.STOCK_RECEIVE_TAB_TRANSFER === tab && <TabTransfer
+                filter={filter}
+                listData={transferData}
+                detailData={transferDetail}
+                createDialog={createDialog}
+                handleCloseDetail={handleCloseDetail}
+            />}
+            {TAB.STOCK_RECEIVE_TAB_HISTORY === tab && <TabHistory
+                filter={filter}
+                listData={historyData}
+                filterDialog={filterDialog}
+            />}
+        </div>
     )
 
     return (
@@ -162,6 +165,7 @@ StockReceiveGridList.propTypes = {
     historyData: PropTypes.object,
     transferData: PropTypes.object,
     detailData: PropTypes.object,
+    transferDetail: PropTypes.object,
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired
@@ -171,6 +175,8 @@ StockReceiveGridList.propTypes = {
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
         isDefect: PropTypes.bool,
+        detailProducts: PropTypes.object,
+        detailLoading: PropTypes.bool,
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired

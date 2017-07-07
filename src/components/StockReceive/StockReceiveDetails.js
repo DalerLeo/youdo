@@ -3,8 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import CircularProgress from 'material-ui/CircularProgress'
-import numberformat from '../../helpers/numberFormat'
+import LinearProgress from '../LinearProgress'
+import numberFormat from '../../helpers/numberFormat'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
 
@@ -13,32 +13,25 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             color: '#333 !important',
-            position: 'relative',
             borderTop: '1px #efefef solid',
             display: 'flex',
             flexWrap: 'wrap',
             padding: '0 30px 5px',
+            height: 'auto',
+            transition: 'max-height 500ms ease !important',
+            overflowY: 'auto',
             '& a': {
                 color: colorBlue
             }
-        },
-        loader: {
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            background: '#fff',
-            top: '0',
-            left: '0',
-            alignItems: 'center',
-            zIndex: '999',
-            justifyContent: 'center',
-            display: 'flex'
         },
         content: {
             width: '100%',
             overflow: 'hidden',
             '& > .row': {
                 padding: '15px 0',
+                '&:first-child': {
+                    fontWeight: '600'
+                },
                 '&:last-child:after': {
                     display: 'none'
                 }
@@ -70,10 +63,8 @@ const StockReceiveDetails = enhance((props) => {
 
     if (_.isEmpty(products)) {
         return (
-            <div className={classes.wrapper}>
-                {detailLoading && <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
-                </div>}
+            <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden'}}>
+                {detailLoading && <LinearProgress/>}
                 <div className={classes.emptyQuery}>
                     <div>Товаров не найдено</div>
                 </div>
@@ -82,11 +73,9 @@ const StockReceiveDetails = enhance((props) => {
     }
 
     return (
-        <div className={classes.wrapper}>
-            {detailLoading && <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
-            </div>}
-            <div className={classes.content}>
+        <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px'}}>
+            {detailLoading ? <LinearProgress/>
+            : <div className={classes.content}>
                 <Row className='dottedList'>
                     <Col xs={4}>Товар</Col>
                     <Col xs={2}>Тип товара</Col>
@@ -98,9 +87,9 @@ const StockReceiveDetails = enhance((props) => {
                     const id = _.get(item, 'id')
                     const name = _.get(item, ['product', 'name'])
                     const measurement = _.get(item, ['product', 'measurement', 'name'])
-                    const amount = numberformat(_.get(item, 'amount'), measurement)
-                    const posted = numberformat(_.get(item, 'postedAmount'), measurement)
-                    const defect = numberformat(_.get(item, 'defectAmount'), measurement)
+                    const amount = numberFormat(_.get(item, 'amount'), measurement)
+                    const posted = numberFormat(_.get(item, 'postedAmount'), measurement)
+                    const defect = numberFormat(_.get(item, 'defectAmount'), measurement)
                     return (
                         <Row key={id} className='dottedList'>
                             <Col xs={4}>{name}</Col>
@@ -111,7 +100,7 @@ const StockReceiveDetails = enhance((props) => {
                         </Row>
                     )
                 })}
-            </div>
+            </div>}
         </div>
     )
 })

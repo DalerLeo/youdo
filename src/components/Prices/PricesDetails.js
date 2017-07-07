@@ -277,7 +277,7 @@ const PricesDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -287,7 +287,7 @@ const PricesDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                     onTouchTap={() => { handleCloseDetail() }}>№ {id} {name}</div>
+                     onClick={() => { handleCloseDetail() }}>№ {id} {name}</div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton

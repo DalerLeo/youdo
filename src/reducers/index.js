@@ -264,8 +264,10 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
         history: createThunkReducer(actionTypes.STOCK_HISTORY_LIST),
         transfer: createThunkReducer(actionTypes.STOCK_TRANSFER_LIST),
+        transferItem: createThunkReducer(actionTypes.STOCK_TRANSFER_ITEM),
         item: createThunkReducer(actionTypes.STOCK_RECEIVE_ITEM),
-        create: createThunkReducer(actionTypes.STOCK_RECEIVE_CREATE)
+        create: createThunkReducer(actionTypes.STOCK_RECEIVE_CREATE),
+        barcodeList: createThunkReducer(actionTypes.STOCK_BARCODE_LIST)
     }),
     snackbar: snackbarReducer(),
     form: formReducer,

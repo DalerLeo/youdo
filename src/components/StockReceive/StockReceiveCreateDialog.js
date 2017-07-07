@@ -6,7 +6,7 @@ import injectSheet from 'react-jss'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Row} from 'react-flexbox-grid'
+import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
@@ -18,8 +18,9 @@ import {
     CheckBox,
     ImageUploadField
 } from '../ReduxForm'
-import StockReceiveMeasurementField from '../ReduxForm/StockReceive/StockReceiveMeasurementField'
 import toCamelCase from '../../helpers/toCamelCase'
+import numberFormat from '../../helpers/numberFormat'
+import moment from 'moment'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -44,6 +45,10 @@ const enhance = compose(
             justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        listLoader: {
+            extend: 'loader',
+            display: 'flex'
+        },
         popUp: {
             overflowY: 'hidden !important',
             fontSize: '13px !important',
@@ -57,7 +62,6 @@ const enhance = compose(
             background: '#fff',
             color: '#333',
             fontWeight: 'bold',
-            textTransform: 'uppercase',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -88,56 +92,15 @@ const enhance = compose(
         field: {
             width: '100%'
         },
-        leftSide: {
-            borderRight: '1px #efefef solid',
-            flexBasis: '35%',
-            maxWidth: '35%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            flexDirection: 'column',
-            '& > div:first-child': {
-                height: '100%',
-                padding: '20px 30px'
-            }
-        },
         half: {
             display: 'flex',
             alignItems: 'baseline',
             width: '50%'
         },
-        link: {
-            color: '#12aaeb !important',
-            borderBottom: '1px dashed',
-            fontWeight: '400 !important'
-        },
-        isDefect: {
-            marginTop: '-15px',
-            '& .imageDropZone': {
-                margin: '0',
-                width: '100%',
-                height: '200px'
-            },
-            '& > div:last-child': {
-                marginTop: '10px'
-            }
-        },
-        rightSide: {
+        content: {
             padding: '0 30px',
-            flexBasis: '65%',
-            maxWidth: '65%'
-        },
-        rightTitle: {
-            display: 'flex',
-            height: '50px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '1px #efefef solid',
-            '& > div:first-child': {
-                fontWeight: 'bold'
-            },
-            '& strong': {
-                fontWeight: 'bold'
-            }
+            width: '100%',
+            position: 'relative'
         },
         amount: {
             '& > div': {
@@ -152,24 +115,19 @@ const enhance = compose(
             marginTop: '10px',
             '& .dottedList': {
                 padding: '10px 0',
+                height: '50px',
                 margin: '0',
                 justifyContent: 'space-between',
+                '& > div': {
+                    display: 'flex',
+                    alignItems: 'baseline'
+                },
                 '&:first-child': {
                     fontWeight: '600',
                     whiteSpace: 'nowrap'
                 },
                 '&:last-child:after': {
                     display: 'none'
-                },
-                '& > div': {
-                    flexBasis: '16.66%',
-                    marginRight: '0.5rem',
-                    boxSizing: 'border-box',
-                    '&:last-child': {
-                        textAlign: 'right',
-                        flexBasis: '30px',
-                        margin: '0'
-                    }
                 }
             }
         },
@@ -187,27 +145,6 @@ const enhance = compose(
             },
             '& input': {
                 marginTop: '0 !important'
-            }
-        },
-        inputDateCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            },
-            '& div:first-child': {
-                height: '45px !important'
-            },
-            '& div:first-child div:first-child': {
-                transform: 'translate(0px, 0px) !important'
             }
         },
         bottomButton: {
@@ -261,10 +198,12 @@ const OrderCreateDialog = enhance((props) => {
         handleSubmit,
         onClose,
         classes,
-        isDefect
+        isDefect,
+        detailProducts,
+        listLoading
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
+    const supplyId = _.get(detailProducts, 'id')
     return (
         <Dialog
             modal={true}
@@ -275,7 +214,7 @@ const OrderCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Оформление заказа</span>
+                <span>ПРИЕМКА ТОВАРА (Заказ №{supplyId})</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -283,135 +222,63 @@ const OrderCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                     <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.inContent}>
-                        <div className={classes.leftSide}>
-                            <div>
-                                <Field
-                                    name="product"
-                                    component={StockReceiveProductSearchField}
-                                    className={classes.inputFieldCustom}
-                                    label="Наименование товара"
-                                    fullWidth={true}
-                                />
-                                <div className={classes.half}>
-                                    <Field
-                                        name="amount"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Кол-во товара"
-                                        fullWidth={true}
-                                    />
-                                    <StockReceiveMeasurementField/>
-                                </div>
-                                <div className={classes.half}>
-                                    <Field
-                                        name="expDate"
-                                        component={DateField}
-                                        className={classes.inputDateCustom}
-                                        label="Срок годности"
-                                        fullWidth={true}
-                                    />
-                                </div>
-                                <Field
-                                    name="isDefect"
-                                    component={CheckBox}
-                                    label="Отметить как бракованный"
-                                    fullWidth={true}
-                                />
-                                {isDefect && <div className={classes.isDefect}>
-                                    <Field
-                                        name="comment"
-                                        component={TextField}
-                                        label="Комментарий"
-                                        fullWidth={true}
-                                        multiLine={true}
-                                        rows={1}
-                                        rowsMax={3}
-                                    />
-                                    <Field
-                                        name="image"
-                                        component={ImageUploadField}
-                                        fullWidth={true}
-                                    />
-                                </div>}
-                                <div style={{marginTop: '20px'}}><strong>Введите / <a className={classes.link}>отсканируйте</a> штрихкод</strong></div>
-                                <Field
-                                    name="barcode"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    hintText="XXXX - XXXX - XXXX - XXXX"
-                                    fullWidth={true}
-                                />
-                            </div>
-                            <div className={classes.bottomButton}>
-                                <FlatButton
-                                    label="Принять товар"
-                                    className={classes.actionButton}
-                                    primary={true}
-                                    type="submit"/>
-                            </div>
-                        </div>
-                        <div className={classes.rightSide}>
-                            <div className={classes.rightTitle}>
-                                <div>Миф морозная свежесть 450g (жесткая упаковка)</div>
-                                <div className={classes.amount}>
-                                    <div>
-                                        <span>Всего товара:</span>
-                                        <span>Принято:</span>
-                                    </div>
-                                    <div>
-                                        <span>300 <strong>шт</strong></span>
-                                        <span>283 <strong>шт</strong></span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className={classes.content}>
+                            {listLoading && <div className={classes.listLoader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>}
 
                             <div className={classes.list}>
                                 <Row className="dottedList">
-                                    <div>Код</div>
-                                    <div>Дата приемки</div>
-                                    <div>Срок годности</div>
-                                    <div>Кол-во</div>
-                                    <div>Статус</div>
-                                    <div></div>
+                                    <Col xs={3}>Товар</Col>
+                                    <Col xs={3}>Тип товара</Col>
+                                    <Col xs={2}>Кол-во</Col>
+                                    <Col xs={2}>Принято</Col>
+                                    <Col xs={2}>Брак</Col>
                                 </Row>
+                                {_.map(_.get(detailProducts, 'products'), (item) => {
+                                    const id = _.get(item, 'id')
+                                    const name = _.get(item, ['product', 'name'])
+                                    const amount = numberFormat(_.get(item, 'amount'))
+                                    const measurement = _.get(item, ['product', 'measurement', 'name'])
 
-                                <Row className="dottedList">
-                                    <div>Z857OA45</div>
-                                    <div>25 Сен, 2016</div>
-                                    <div>25 Сен, 2017</div>
-                                    <div>100 шт</div>
-                                    <div>ОК</div>
-                                    <div>
-                                        <IconButton
-                                            disableTouchRipple={true}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            touch={true}>
-                                            <Delete/>
-                                        </IconButton>
-                                    </div>
-                                </Row>
-                                <Row className="dottedList">
-                                    <div>Z857OA45</div>
-                                    <div>25 Сен, 2016</div>
-                                    <div>25 Сен, 2017</div>
-                                    <div>100 шт</div>
-                                    <div>Брак</div>
-                                    <div>
-                                        <IconButton
-                                            disableTouchRipple={true}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            touch={true}>
-                                            <Delete/>
-                                        </IconButton>
-                                    </div>
-                                </Row>
+                                    return (
+                                        <Row key={id} className="dottedList">
+                                            <Col xs={3}>{name}</Col>
+                                            <Col xs={3}>Тип товара</Col>
+                                            <Col xs={2}>{amount} {measurement}</Col>
+                                            <Col xs={2}>
+                                                <Field
+                                                    name="accepted"
+                                                    component={TextField}
+                                                    className={classes.inputFieldCustom}
+                                                    fullWidth={true}
+                                                />
+                                                {measurement}
+                                            </Col>
+                                            <Col xs={2}>
+                                                <Field
+                                                    name="defected"
+                                                    component={TextField}
+                                                    className={classes.inputFieldCustom}
+                                                    fullWidth={true}
+                                                />
+                                                {measurement}
+                                            </Col>
+                                        </Row>
+                                    )
+                                })}
                             </div>
                         </div>
+                    </div>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Принять товар"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"/>
                     </div>
                 </form>
             </div>
@@ -423,6 +290,8 @@ OrderCreateDialog.propTyeps = {
     onClose: PropTypes.func.isRequired,
     isDefect: PropTypes.bool,
     onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    detailProducts: PropTypes.object,
+    listLoading: PropTypes.bool
 }
 export default OrderCreateDialog
