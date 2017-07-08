@@ -14,7 +14,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
-import SetCurrencyDialog from './SetCurrencyDialog'
 import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
@@ -114,9 +113,7 @@ const CurrencyGridList = enhance((props) => {
         detailData,
         classes,
         detailId,
-        detailFilter,
-        setCurrencyUpdateDialog,
-        currencyData
+        detailFilter
     } = props
 
     const actions = (
@@ -217,18 +214,8 @@ const CurrencyGridList = enhance((props) => {
                         actionsDialog={actions}
                     />
 
-                    <SetCurrencyDialog
-                        initialValues={setCurrencyUpdateDialog.initialValues}
-                        open={setCurrencyUpdateDialog.openSetCurrencyDialog}
-                        currentId={_.get(detailData, 'id')}
-                        loading={setCurrencyUpdateDialog.setCurrencyLoading}
-                        onClose={setCurrencyUpdateDialog.handleCloseSetCurrencyDialog}
-                        onSubmit={setCurrencyUpdateDialog.handleSubmitSetCurrencyDialog}
-                        currencyData={currencyData}
-                        currentCurrency={currentCurrency}
-                    />
-
                     <CurrencyCreateDialog
+                        initialValues={createDialog.initialValues}
                         open={createDialog.openCreateDialog}
                         loading={createDialog.createLoading}
                         onClose={createDialog.handleCloseCreateDialog}
@@ -291,8 +278,7 @@ CurrencyGridList.propTypes = {
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,
         handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
-    currencyData: PropTypes.object.isRequired
+    }).isRequired
 }
 
 export default CurrencyGridList
