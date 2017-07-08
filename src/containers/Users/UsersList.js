@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -20,7 +20,6 @@ import {
     usersCreateAction,
     usersUpdateAction,
     usersListFetchAction,
-    usersCSVFetchAction,
     usersDeleteAction,
     usersItemFetchAction
 } from '../../actions/users'
@@ -36,8 +35,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['users', 'update', 'loading'])
         const list = _.get(state, ['users', 'list', 'data'])
         const listLoading = _.get(state, ['users', 'list', 'loading'])
-        const csvData = _.get(state, ['users', 'csv', 'data'])
-        const csvLoading = _.get(state, ['users', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'UsersFilterForm'])
         const createForm = _.get(state, ['form', 'UsersCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -49,8 +46,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
             createForm
@@ -70,23 +65,9 @@ const enhance = compose(
         usersId && dispatch(usersItemFetchAction(usersId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
-
     withHandlers({
         handleActionEdit: props => () => {
             return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(usersCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
         },
 
         handleOpenConfirmDialog: props => (id) => {
@@ -104,12 +85,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
             dispatch(usersDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[USERS_DELETE_DIALOG_OPEN]: false})})
                     dispatch(usersListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -239,7 +221,7 @@ const UsersList = enhance((props) => {
     }
 
     const errorData = {
-        errorText: 'Правильно введите',
+        errorText: 'Введены неправильные значения',
         show: showError
     }
 
@@ -253,6 +235,7 @@ const UsersList = enhance((props) => {
     }
 
     const confirmDialog = {
+        confirmLoading: detailLoading,
         openConfirmDialog: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
@@ -261,7 +244,7 @@ const UsersList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
 
@@ -303,14 +286,6 @@ const UsersList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -333,7 +308,6 @@ const UsersList = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

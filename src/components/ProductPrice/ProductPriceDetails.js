@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState, withHandlers} from 'recompose'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Col} from 'react-flexbox-grid'
@@ -32,7 +32,7 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700',
+            fontWeight: '600',
             cursor: 'pointer'
         },
         buttons: {
@@ -114,16 +114,6 @@ const enhance = compose(
     withState('showAddPrice', 'setShowAddPrice', false),
     withState('priceDetailsOpen', 'setPriceDetailsOpen', false),
     withState('anchorEl', 'setAnchorEl', (<div></div>)),
-
-    withHandlers({
-        handleOpenDetails: props => (event) => {
-            props.setAnchorEl(event.currentTarget)
-            props.setPriceDetailsOpen(true)
-        },
-        handleCloseDetails: props => (event) => {
-            props.setPriceDetailsOpen(false)
-        }
-    })
 )
 
 const ProductPriceDetails = enhance((props) => {
@@ -143,7 +133,7 @@ const ProductPriceDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -153,7 +143,7 @@ const ProductPriceDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                onTouchTap={handleCloseDetail}>{detnName}</div>
+                onClick={handleCloseDetail}>{detnName}</div>
             </div>
             <div className={classes.containerPrice}>
                 <div className={classes.leftPrSide}>
@@ -260,12 +250,6 @@ ProductPriceDetails.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

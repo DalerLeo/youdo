@@ -72,23 +72,6 @@ export const productListFetchAction = (filter, manufacture) => {
     }
 }
 
-export const productCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.PRODUCT_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.PRODUCT_LIST_CSV,
-        payload
-    }
-}
-
 export const productItemFetchAction = (id) => {
     const params = {'thumbnail_type': 'large'}
     const payload = axios()

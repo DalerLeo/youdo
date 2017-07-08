@@ -140,23 +140,6 @@ export const orderItemReturnFetchAction = (orderId) => {
     }
 }
 
-export const orderCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.ORDER_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.ORDER_LIST_CSV,
-        payload
-    }
-}
-
 export const orderItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.ORDER_ITEM, id))

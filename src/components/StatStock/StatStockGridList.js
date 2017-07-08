@@ -8,8 +8,6 @@ import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import StatStockCreateDialog from './StatStockCreateDialog'
-import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
@@ -17,6 +15,7 @@ import MainStyles from '../Styles/MainStyles'
 import InComing from 'material-ui/svg-icons/navigation/arrow-upward'
 import OutComing from 'material-ui/svg-icons/navigation/arrow-downward'
 import CircularProgress from 'material-ui/CircularProgress'
+import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
 import StatStockFilterForm from './StatStockFilterForm'
 import getConfig from '../../helpers/getConfig'
@@ -166,9 +165,6 @@ const enhance = compose(
 const StatStockGridList = enhance((props) => {
     const {
         filter,
-        createDialog,
-        updateDialog,
-        confirmDialog,
         filterDialog,
         listData,
         detailData,
@@ -176,12 +172,6 @@ const StatStockGridList = enhance((props) => {
         statStockData,
         getDocument
     } = props
-
-    const actions = (
-        <div>
-
-        </div>
-    )
 
     const handleClickTapChange = _.get(listData, 'handleClickTapChange')
     const statStockFilterDialog = (
@@ -284,11 +274,10 @@ const StatStockGridList = enhance((props) => {
                     </div>
                 </Col>
             </Row>
-            <Row style={{
+            <Paper zDepth={1} style={{
                 margin: '0 0 20px',
                 padding: '8px 30px',
-                background: '#fff',
-                boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'
+                display: 'flex'
             }}>
                 <Col xs={3}>
                     <div className={classes.typeListStock} style={tab === balanceTab ? {background: '#eceff5'} : {background: '#fff'}}>
@@ -321,38 +310,14 @@ const StatStockGridList = enhance((props) => {
                         </div>
                     }
                 </Col>
-            </Row>
+            </Paper>
 
             <GridList
                 filter={filter}
                 filterDialog={statStockFilterDialog}
                 list={list}
                 detail={statStockDetail}
-                actionsDialog={actions}
             />
-            <StatStockCreateDialog
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                open={updateDialog.openUpdateDialog}
-                loading={updateDialog.updateLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
-
-            <StatStockCreateDialog
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
-            {detailData.data && <ConfirmDialog
-                type="delete"
-                message="adfdasf"
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
         </Container>
     )
 })
@@ -361,26 +326,6 @@ StatStockGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    updateDialog: PropTypes.shape({
-        updateLoading: PropTypes.bool.isRequired,
-        openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenUpdateDialog: PropTypes.func.isRequired,
-        handleCloseUpdateDialog: PropTypes.func.isRequired,
-        handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
     statStockData: PropTypes.object.isRequired,
     handleClickStock: PropTypes.object.isRequired
 }

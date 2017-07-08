@@ -3,7 +3,7 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/ClientTransaction/clientTransactionSerializer'
+import * as serializers from '../serializers/clientTransactionSerializer'
 
 export const clientTransactionCreateIncomeAction = (formValues, clientId) => {
     const requestData = serializers.createIncomeSerializer(formValues, clientId)
@@ -39,10 +39,9 @@ export const clientTransactionCreateExpenseAction = (formValues, clientId) => {
     }
 }
 
-export const clientTransactionCreateSendAction = (formValues, clientId) => {
-    const requestData = serializers.createSendSerializer(formValues, clientId)
+export const clientTransactionCreateSendAction = () => {
     const payload = axios()
-        .post(API.CLIENT_TRANSACTION_SEND, requestData)
+        .post(API.CLIENT_TRANSACTION_SEND)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -72,23 +71,6 @@ export const clientTransactionDeleteAction = (id) => {
     }
 }
 
-export const clientTransactionUpdateExpenseAction = (id, formValues, clientId) => {
-    const requestData = serializers.createExpenseSerializer(formValues, clientId)
-    const payload = axios()
-        .put(sprintf(API.CLIENT_TRANSACTION_ITEM, id), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CLIENT_TRANSACTION_UPDATE,
-        payload
-    }
-}
-
 export const clientTransactionListFetchAction = (filter, clientId) => {
     const params = serializers.listFilterSerializer(filter.getParams(), clientId)
     const payload = axios()
@@ -106,35 +88,3 @@ export const clientTransactionListFetchAction = (filter, clientId) => {
     }
 }
 
-export const clientTransactionCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.CLIENT_TRANSACTION_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CLIENT_TRANSACTION_LIST_CSV,
-        payload
-    }
-}
-
-export const clientTransactionItemFetchAction = (id) => {
-    const payload = axios()
-        .get(sprintf(API.CLIENT_TRANSACTION_ITEM, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CLIENT_TRANSACTION_ITEM,
-        payload
-    }
-}

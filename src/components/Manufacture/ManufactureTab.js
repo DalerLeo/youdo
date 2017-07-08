@@ -21,8 +21,8 @@ const enhance = compose(
             marginBottom: '0',
             width: '100%',
             '& > div': {
-                width: '40% !important',
-                paddingRight: '60%',
+                width: '450px !important',
+                paddingRight: 'calc(100% - 450px)',
                 background: '#fff !important'
             },
             '& > div:first-child': {

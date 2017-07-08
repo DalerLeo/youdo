@@ -72,23 +72,6 @@ export const measurementListFetchAction = (filter) => {
     }
 }
 
-export const measurementCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.MEASUREMENT_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.MEASUREMENT_LIST_CSV,
-        payload
-    }
-}
-
 export const measurementItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.MEASUREMENT_ITEM, id))

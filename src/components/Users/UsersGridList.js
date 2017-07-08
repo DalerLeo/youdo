@@ -129,7 +129,7 @@ const UsersGridList = enhance((props) => {
 
         return (
             <Row key={id}>
-                <Col xs={1}>{id} sdfssdf</Col>
+                <Col xs={1}>{id}</Col>
                 <Col xs={2}>{firstName} {secondName}</Col>
                 <Col xs={2}>{username}</Col>
                 <Col xs={2}>{groups}</Col>
@@ -208,6 +208,7 @@ const UsersGridList = enhance((props) => {
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={currentName}
+                loading={confirmDialog.confirmLoading}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
@@ -228,6 +229,7 @@ UsersGridList.propTypes = {
         handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
     confirmDialog: PropTypes.shape({
+        confirmLoading: PropTypes.bool.isRequired,
         openConfirmDialog: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,

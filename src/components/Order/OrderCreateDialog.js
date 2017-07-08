@@ -16,7 +16,9 @@ import {
     OrderListProductField,
     ClientContactsField,
     TextField,
-    DateField
+    DateField,
+    MarketSearchField,
+    DealTypeSearchField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import MainStyles from '../Styles/MainStyles'
@@ -255,7 +257,7 @@ const OrderCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                     <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.innerWrap}>
                         <div style={{minHeight: '470px', maxHeight: '75vh'}} className={classes.inContent}>
@@ -276,6 +278,12 @@ const OrderCreateDialog = enhance((props) => {
                                         name="contact"
                                         component={ClientContactsField}
                                     />
+                                    <Field
+                                        name="market"
+                                        component={MarketSearchField}
+                                        className={classes.inputFieldCustom}
+                                        label="Название магазина"
+                                        fullWidth={true}/>
                                 </div>
 
                                 {(!notEnough) ? <div className={classes.condition}>
@@ -285,6 +293,12 @@ const OrderCreateDialog = enhance((props) => {
                                         component={DeliveryTypeSearchField}
                                         className={classes.inputFieldCustom}
                                         label="Тип доставки"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="dealType"
+                                        component={DealTypeSearchField}
+                                        className={classes.inputFieldCustom}
+                                        label="Тип сделки"
                                         fullWidth={true}/>
                                     <Field
                                         name="deliveryPrice"

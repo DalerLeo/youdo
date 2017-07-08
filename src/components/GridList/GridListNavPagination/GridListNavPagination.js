@@ -17,6 +17,13 @@ const enhance = compose(
             justifyContent: 'flex-end',
             color: '#5d6474'
         },
+        customWrapper: {
+            extend: 'wrapper',
+            position: 'absolute',
+            right: '30px',
+            top: '-52px',
+            height: '52px'
+        },
 
         count: {
             marginRight: '15px',
@@ -52,7 +59,7 @@ const enhance = compose(
         }
     })
 )
-const GridListNavPagination = enhance(({classes, onChange, filter}) => {
+const GridListNavPagination = enhance(({classes, onChange, filter, customPagination}) => {
     const prev = filter.prevPage()
     const next = filter.nextPage()
     const firstPage = 1
@@ -60,7 +67,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter}) => {
     const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
 
     return (
-        <div className={classes.wrapper}>
+        <div className={customPagination ? classes.customWrapper : classes.wrapper}>
             <div className={classes.count}>
                 <SelectField
                     value={filter.getPageRange()}
@@ -77,6 +84,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter}) => {
                 <div className={classes.gridPagination}>
                     <IconButton
                         disabled={Boolean(!prev)}
+                        disableTouchRipple={true}
                         iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}
                         onTouchTap={() => prev && hashHistory.push(prev)}>
                         <ArrowLeftIcon />
@@ -84,6 +92,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter}) => {
 
                     <IconButton
                         disabled={Boolean(!next)}
+                        disableTouchRipple={true}
                         iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}
                         onTouchTap={() => next && hashHistory.push(next)}>
                         <ArrowRightIcon />
@@ -96,6 +105,9 @@ const GridListNavPagination = enhance(({classes, onChange, filter}) => {
 
 GridListNavPagination.propTypes = {
     filter: PropTypes.object.isRequired
+}
+GridListNavPagination.defaultProps = {
+    customPagination: false
 }
 
 export default GridListNavPagination

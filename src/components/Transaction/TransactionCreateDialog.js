@@ -107,7 +107,7 @@ const TransactionCreateDialog = enhance((props) => {
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: '230px'}}>
                         <div className={classes.loader}>
-                            <CircularProgress size={80} thickness={5}/>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
                         <div className={classes.field}>
                             <div className={classes.itemList}>
@@ -115,7 +115,7 @@ const TransactionCreateDialog = enhance((props) => {
                                 <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
                             </div>
                             {isExpense && <Field
-                                name="categoryId"
+                                name="expanseCategory"
                                 component={ExpensiveCategorySearchField}
                                 label="Категория расхода"
                                 className={classes.inputFieldCustom}

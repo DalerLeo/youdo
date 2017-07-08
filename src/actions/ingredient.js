@@ -69,36 +69,3 @@ export const ingredientListFetchAction = (id) => {
         payload
     }
 }
-
-export const ingredientCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.INGREDIENT_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.INGREDIENT_LIST_CSV,
-        payload
-    }
-}
-
-export const ingredientItemFetchAction = (id) => {
-    const payload = axios()
-        .get(sprintf(API.INGREDIENT_ITEM, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.INGREDIENT_ITEM,
-        payload
-    }
-}

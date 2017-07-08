@@ -12,7 +12,6 @@ import {SupplyList} from '../containers/Supply'
 import {OrderList} from '../containers/Order'
 import {ProductList} from '../containers/Product'
 import {ProductTypeList} from '../containers/ProductType'
-import {CategoryList} from '../containers/Category'
 import {ProductPriceList} from '../containers/ProductPrice'
 import {StockList} from '../containers/Stock'
 import {CurrencyList} from '../containers/Currency'
@@ -34,8 +33,16 @@ import {ShiftList} from '../containers/Shift'
 import {Zones} from '../containers/Zones'
 import {Tracking} from '../containers/Tracking'
 import {MarketTypeList} from '../containers/MarketType'
+import {PricesList} from '../containers/Prices'
 import {PriceList} from '../containers/Price'
 import NotFound from '../containers/NotFound'
+import {RemainderList} from '../containers/Remainder'
+import {
+    StatisticsList,
+    StatAgentList,
+    StatProductList
+        } from '../containers/Statistics'
+import {StockReceiveList} from '../containers/StockReceive'
 
 export default {
     path: '/',
@@ -125,6 +132,28 @@ export default {
                 }
             ]
         },
+        // Prices
+        {
+            path: ROUTES.PRICES_LIST_URL,
+            component: userIsAuth(PricesList),
+            childRoutes: [
+                {
+                    path: ROUTES.PRICES_ITEM_URL,
+                    component: userIsAuth(PricesList)
+                }
+            ]
+        },
+        // PRICE
+        {
+            path: ROUTES.PRICE_LIST_URL,
+            component: userIsAuth(PriceList),
+            childRoutes: [
+                {
+                    path: ROUTES.PRICE_ITEM_URL,
+                    component: userIsAuth(PriceList)
+                }
+            ]
+        },
         // Order
         {
             path: ROUTES.ORDER_LIST_URL,
@@ -166,17 +195,6 @@ export default {
                 {
                     path: ROUTES.PRODUCT_PRICE_ITEM_URL,
                     component: userIsAuth(ProductPriceList)
-                }
-            ]
-        },
-        // Category
-        {
-            path: ROUTES.CATEGORY_LIST_URL,
-            component: userIsAuth(CategoryList),
-            childRoutes: [
-                {
-                    path: ROUTES.CATEGORY_ITEM_URL,
-                    component: userIsAuth(CategoryList)
                 }
             ]
         },
@@ -350,7 +368,7 @@ export default {
             path: ROUTES.ZONES_LIST_URL,
             component: userIsAuth(Zones),
             childRoutes: [{
-                path: ROUTES.ZONES_LIST_URL,
+                path: ROUTES.ZONES_ITEM_URL,
                 component: userIsAuth(Zones)
             }]
         },
@@ -374,14 +392,56 @@ export default {
                 }
             ]
         },
-        // PRICE
+        // Price
         {
-            path: ROUTES.PRICE_LIST_URL,
-            component: userIsAuth(PriceList),
+            path: ROUTES.PRICES_LIST_URL,
+            component: userIsAuth(PricesList),
             childRoutes: [
                 {
-                    path: ROUTES.PRICE_ITEM_URL,
-                    component: userIsAuth(PriceList)
+                    path: ROUTES.PRICES_ITEM_URL,
+                    component: userIsAuth(PricesList)
+                }
+            ]
+        },
+        // Remainder
+        {
+            path: ROUTES.REMAINDER_LIST_URL,
+            component: userIsAuth(RemainderList),
+            childRoutes: [
+                {
+                    path: ROUTES.REMAINDER_ITEM_URL,
+                    component: userIsAuth(RemainderList)
+                }
+            ]
+        },
+        // Statistics
+        {
+            path: ROUTES.STATISTICS_LIST_URL,
+            component: userIsAuth(StatisticsList),
+            childRoutes: [
+            ]
+        },
+        // Statistics/agent
+        {
+            path: ROUTES.STATISTICS_AGENT_URL,
+            component: userIsAuth(StatAgentList),
+            childRoutes: [
+            ]
+        },
+        // Statistics/product
+        {
+            path: ROUTES.STATISTICS_PRODUCT_URL,
+            component: userIsAuth(StatProductList),
+            childRoutes: []
+        },
+        // Stock Receive Transfer
+        {
+            path: ROUTES.STOCK_RECEIVE_LIST_URL,
+            component: userIsAuth(StockReceiveList),
+            childRoutes: [
+                {
+                    path: ROUTES.STOCK_RECEIVE_ITEM_URL,
+                    component: userIsAuth(StockReceiveList)
                 }
             ]
         },
@@ -391,3 +451,4 @@ export default {
         }
     ]
 }
+

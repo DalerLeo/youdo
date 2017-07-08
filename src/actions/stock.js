@@ -71,23 +71,6 @@ export const stockListFetchAction = (filter) => {
     }
 }
 
-export const stockCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.STOCK_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STOCK_LIST_CSV,
-        payload
-    }
-}
-
 export const stockItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.STOCK_ITEM, id))

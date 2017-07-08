@@ -18,7 +18,6 @@ const getItem = (id) => {
             return Promise.resolve(toCamelCase(data))
         })
 }
-
 const ProductTypeSearchField = (props) => {
     return (
         <SearchField

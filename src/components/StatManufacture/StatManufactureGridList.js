@@ -3,14 +3,11 @@ import injectSheet from 'react-jss'
 import React from 'react'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
-import Dialog from 'material-ui/Dialog'
 import Paper from 'material-ui/Paper'
 import {Row, Col} from 'react-flexbox-grid'
 import ReactHighcharts from 'react-highcharts'
 import GridList from '../GridList'
 import Container from '../Container'
-import StatManufactureOrderDetails from './StatManufactureOrderDetails'
-import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import * as ROUTES from '../../constants/routes'
 import StatManufactureCreateDialog from './StatManufactureCreateDialog'
@@ -123,7 +120,9 @@ const enhance = compose(
         tab: {
             cursor: 'pointer',
             padding: '20px',
-            height: '100%'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center'
         },
         activeTab: {
             paddingBottom: '20px',
@@ -191,19 +190,11 @@ const StatManufactureGridList = enhance((props) => {
     const {
         filter,
         createDialog,
-        updateDialog,
-        confirmDialog,
         listData,
         detailData,
-        classes,
-        orderData
+        classes
     } = props
 
-    const actions = (
-        <div>
-
-        </div>
-    )
     const detailId = _.get(detailData, 'id')
     const glue = 3
     const cylindrical = 4
@@ -214,7 +205,7 @@ const StatManufactureGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const manufName = _.get(item, 'name')
         return (
-        <div className={classes.activeTab} style={ detailId === id ? {borderBottom: '3px #12aaeb solid'} : {}}>
+        <div key={id} className={classes.activeTab} style={ detailId === id ? {borderBottom: '3px #12aaeb solid'} : {}}>
             <Paper key={id} zDepth={1} className={classes.tab}
                    style={ detailId === id ? {backgroundColor: '#f2f5f8', cursor: 'auto'} : {}}
                    onClick={() => {
@@ -432,46 +423,13 @@ const StatManufactureGridList = enhance((props) => {
                 key={_.get(detailData, 'id')}
                 filter={filter}
                 list={list}
-                actionsDialog={actions}
-            />
-            <StatManufactureCreateDialog
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                open={updateDialog.openUpdateDialog}
-                loading={updateDialog.updateLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
             <StatManufactureCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
             />
-
-            <Dialog
-                open={_.get(orderData, 'orderDetailOpen')}
-                modal={true}
-                onRequestClose={orderData.handleOrderDetailClose}
-                bodyClassName={classes.popUp}
-                autoScrollBodyContent={true}>
-                <StatManufactureOrderDetails
-                    key={_.get(orderData, 'id')}
-                    data={_.get(orderData, 'orderDetail') || {}}
-                    loading={_.get(orderData, 'detailLoading')}
-                    handleOrderClick={orderData.handleOrderClick}
-                    close={orderData.handleOrderDetailClose}
-                />
-            </Dialog>
-
-            {detailData.data && <ConfirmDialog
-                type="delete"
-                message="adfdasf"
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
         </Container>
     )
 })
@@ -480,27 +438,13 @@ StatManufactureGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
+    orderData: PropTypes.object,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
         handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    updateDialog: PropTypes.shape({
-        updateLoading: PropTypes.bool.isRequired,
-        openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenUpdateDialog: PropTypes.func.isRequired,
-        handleCloseUpdateDialog: PropTypes.func.isRequired,
-        handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    orderData: PropTypes.object
+        handleCloseCreateDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default StatManufactureGridList

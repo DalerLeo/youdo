@@ -11,7 +11,6 @@ import toBoolean from '../../helpers/toBoolean'
 import {
     CURRENCY_CREATE_DIALOG_OPEN,
     CURRENCY_UPDATE_DIALOG_OPEN,
-    PRIMARY_CURRENCY_DIALOG_OPEN,
     CURRENCY_DELETE_DIALOG_OPEN,
     SET_CURRENCY_DIALOG_OPEN,
     CurrencyGridList
@@ -24,12 +23,12 @@ import {
     currencyCSVFetchAction,
     currencyDeleteAction,
     currencyItemFetchAction,
-    currencyPrimaryFetchAction,
-    currencyPrimaryCreateAction
+    currencyPrimaryFetchAction
 } from '../../actions/currency'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const MINUS_ONE = -1
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -39,8 +38,6 @@ const enhance = compose(
         const createLoading = _.get(state, ['currency', 'create', 'loading'])
         const setCurrencyLoading = _.get(state, ['currency', 'create', 'loading'])
         const updateLoading = _.get(state, ['currency', 'update', 'loading'])
-        const primaryCurrency = _.get(state, ['currency', 'primary', 'data', 'data'])
-        const primaryCurrencyLoading = _.get(state, ['currency', 'primary', 'loading'])
         const list = _.get(state, ['currency', 'list', 'data'])
         const listLoading = _.get(state, ['currency', 'list', 'loading'])
         const csvData = _.get(state, ['currency', 'csv', 'data'])
@@ -58,8 +55,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            primaryCurrency,
-            primaryCurrencyLoading,
             setCurrencyLoading,
             csvData,
             csvLoading,
@@ -75,12 +70,6 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(currencyListFetchAction(filter))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        return !nextProps.primaryCurrencyLoading && _.isNil(props.primaryCurrency)
-    }, ({dispatch}) => {
-        dispatch(currencyPrimaryFetchAction())
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -171,29 +160,6 @@ const enhance = compose(
                 })
         },
 
-        handlePrimaryOpenDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: true})})
-        },
-
-        handlePrimaryCloseDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitPrimaryDialog: props => () => {
-            const {dispatch, baseCreateForm, filter, location: {pathname}} = props
-
-            return dispatch(currencyPrimaryCreateAction(_.get(baseCreateForm, ['values'])))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[PRIMARY_CURRENCY_DIALOG_OPEN]: false})})
-                    dispatch(currencyPrimaryFetchAction())
-                })
-        },
-
         handleOpenSetCurrencyDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
@@ -252,7 +218,7 @@ const enhance = compose(
 
         handleCurrencyClick: props => (id) => {
             const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id), query: filter.getParams()})
+            hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, _.toNumber(id)), query: filter.getParams()})
         }
     })
 )
@@ -266,8 +232,6 @@ const CurrencyList = enhance((props) => {
         detailLoading,
         createLoading,
         updateLoading,
-        primaryCurrency,
-        primaryCurrencyLoading,
         filter,
         layout,
         params,
@@ -277,35 +241,18 @@ const CurrencyList = enhance((props) => {
 
     const openCreateDialog = toBoolean(_.get(location, ['query', CURRENCY_CREATE_DIALOG_OPEN]))
     const openSetCurrencyDialog = toBoolean(_.get(location, ['query', SET_CURRENCY_DIALOG_OPEN]))
-    const openPrimaryDialog = toBoolean(_.get(location, ['query', PRIMARY_CURRENCY_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CURRENCY_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', CURRENCY_DELETE_DIALOG_OPEN]))
 
-    const currencyDetailId = _.toInteger(_.get(params, 'currencyId'))
+    const currencyMiniId = _.get(_.nth(_.get(list, ['results']), ZERO), 'id')
+    const currencyDetailId = _.get(params, 'currencyId') ? _.toInteger(_.get(params, 'currencyId'))
+        : props.handleCurrencyClick(currencyMiniId)
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
         handleActionDelete: props.handleOpenDeleteDialog
     }
 
-    const primaryDialog = {
-        initialValues: (() => {
-            if (!primaryCurrency) {
-                return {}
-            }
-            return {
-                currency: {
-                    value: _.get(primaryCurrency, 'currency')
-                }
-            }
-        })(),
-        primaryCurrency: primaryCurrency,
-        openPrimaryDialog,
-        primaryCurrencyLoading,
-        handlePrimaryOpenDialog: props.handlePrimaryOpenDialog,
-        handlePrimaryCloseDialog: props.handlePrimaryCloseDialog,
-        handleSubmitPrimaryDialog: props.handleSubmitPrimaryDialog
-    }
     const createDialog = {
         createLoading,
         openCreateDialog,
@@ -341,7 +288,7 @@ const CurrencyList = enhance((props) => {
         initialValues: (() => {
             const currencyName = _.get(_.find((_.get(list, 'results')), {'id': detailId}), 'name')
             const currencyRate = _.get(_.find((_.get(list, 'results')), {'id': detailId}), 'rate')
-            if (!currencyName) {
+            if (!currencyName || openCreateDialog) {
                 return {}
             }
             return {
@@ -388,12 +335,10 @@ const CurrencyList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}
-                primaryDialog={primaryDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 csvDialog={csvDialog}
-
                 setCurrencyUpdateDialog={setCurrencyUpdateDialog}
                 currencyData={currencyData}
                 detailId={detailId}

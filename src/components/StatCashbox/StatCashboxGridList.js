@@ -12,10 +12,8 @@ import numberFormat from '../../helpers/numberFormat'
 import {Row, Col} from 'react-flexbox-grid'
 import Container from '../Container'
 import StatCashboxOrderDetails from './StatCashboxOrderDetails'
-import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import * as ROUTES from '../../constants/routes'
-import StatCashboxCreateDialog from './StatCashboxCreateDialog'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import FiberManualRecord from 'material-ui/svg-icons/av/fiber-manual-record'
 
@@ -33,7 +31,7 @@ const enhance = compose(
             alignItems: 'center',
             '& span': {
                 color: '#333',
-                fontWeight: '700',
+                fontWeight: '600',
                 fontSize: '24px !important'
             },
             '&:first-child': {
@@ -70,7 +68,7 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700'
+            fontWeight: '600'
         },
         bodyTitle: {
             fontWeight: '600',
@@ -99,7 +97,9 @@ const enhance = compose(
         tab: {
             cursor: 'pointer',
             padding: '20px',
-            height: '100%'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center'
         },
         activeTab: {
             paddingBottom: '20px',
@@ -204,9 +204,6 @@ const enhance = compose(
 const StatCashboxGridList = enhance((props) => {
     const {
         filter,
-        createDialog,
-        updateDialog,
-        confirmDialog,
         listData,
         detailData,
         classes,
@@ -495,22 +492,6 @@ const StatCashboxGridList = enhance((props) => {
                     </ul>
                 </div>
             </div>
-            <StatCashboxCreateDialog
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                open={updateDialog.openUpdateDialog}
-                loading={updateDialog.updateLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
-
-            <StatCashboxCreateDialog
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
             <Dialog
                 open={_.get(orderData, 'orderDetailOpen')}
                 modal={true}
@@ -525,14 +506,6 @@ const StatCashboxGridList = enhance((props) => {
                     close={orderData.handleOrderDetailClose}
                 />
             </Dialog>
-
-            {detailData.data && <ConfirmDialog
-                type="delete"
-                message="adfdasf"
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
         </Container>
     )
 })
@@ -541,26 +514,6 @@ StatCashboxGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    updateDialog: PropTypes.shape({
-        updateLoading: PropTypes.bool.isRequired,
-        openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenUpdateDialog: PropTypes.func.isRequired,
-        handleCloseUpdateDialog: PropTypes.func.isRequired,
-        handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
     orderData: PropTypes.object
 }
 

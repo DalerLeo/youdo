@@ -66,6 +66,7 @@ export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/image/`
+export const SHOP_ITEM_SHOW_IMAGE = 'file/file/%d/'
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
 export const USERS = 'user/crud'
@@ -103,6 +104,12 @@ export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
 export const SUPPLY_DELETE = `/${SUPPLY}/cancel/`
 
+export const PRICES = 'dist/marketing_event'
+export const PRICES_CREATE = `/${PRICES}/`
+export const PRICES_LIST = `/${PRICES}/`
+export const PRICES_ITEM = `/${PRICES}/%d/`
+export const PRICES_DELETE = `/${PRICES}/%d/`
+
 export const ORDER = 'order'
 export const ORDER_CREATE = `/${ORDER}/`
 export const ORDER_RETURN = 'order_return/'
@@ -138,6 +145,7 @@ export const PRODUCT_TYPE = 'dist/product_type'
 export const PRODUCT_TYPE_CREATE = `/${PRODUCT_TYPE}/`
 export const PRODUCT_TYPE_LIST = `/${PRODUCT_TYPE}/`
 export const PRODUCT_TYPE_ITEM = `/${PRODUCT_TYPE}/%d/`
+export const PRODUCT_TYPE_DELETE = `/${PRODUCT_TYPE}/%d/`
 
 export const BRAND = 'dist/brand'
 export const BRAND_CREATE = `/${BRAND}/`
@@ -150,11 +158,6 @@ export const INGREDIENT_CREATE = `/${INGREDIENT}/`
 export const INGREDIENT_LIST = 'dist/product/%d/ingredient_list/'
 export const INGREDIENT_ITEM = `/${INGREDIENT}/%d/`
 export const INGREDIENT_DELETE = `/${INGREDIENT}/%d/`
-
-export const PAYMNET_TYPE = 'dist/payment'
-export const PAYMNET_TYPE_CREATE = `/${PAYMNET_TYPE}/add/`
-export const PAYMNET_TYPE_LIST = `/${PAYMNET_TYPE}/`
-export const PAYMNET_TYPE_ITEM = `/${PAYMNET_TYPE}/%d/`
 
 export const FILE_UPLOAD = '/file/file/'
 
@@ -201,10 +204,7 @@ export const REMAINDER_STOCK_ITEM = `/${REMAINDER_STOCK}/all_balances/balances/%
 export const REMAINDER_STOCK_DELETE = `/${REMAINDER_STOCK}/all_balances/%d`
 
 export const TRANSACTION_STOCK = 'dist/barcode_history'
-export const TRANSACTION_STOCK_CREATE = `/${TRANSACTION_STOCK}/`
 export const TRANSACTION_STOCK_LIST = `/${TRANSACTION_STOCK}/`
-export const TRANSACTION_STOCK_ITEM = `/${TRANSACTION_STOCK}/%d`
-export const TRANSACTION_STOCK_DELETE = `/${TRANSACTION_STOCK}/%d`
 
 export const STATDEBTORS = 'debtors'
 export const STATDEBTORS_CREATE = `/${STATDEBTORS}/`
@@ -235,7 +235,6 @@ export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
 export const MANUFACTURE_PRODUCT = 'create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
-export const MANUFACTURE_PRODUCT_ITEM = `/${MANUFACTURE_PRODUCT}/%d/`
 export const MANUFACTURE_PRODUCT_DELETE = '/delete_ingredient/%d/'
 export const MANUFACTURE_PRODUCT_CHANGE = '/dist/product/%d/change_manufacture/'
 
@@ -249,6 +248,13 @@ export const MARKET_TYPE_LIST = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_ITEM = `/${MARKET_TYPE}/%d/`
 export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`
 
+export const ZONE = 'dist/border'
+export const ZONE_CREATE = `/${ZONE}/`
+export const ZONE_LIST = `/${ZONE}/`
+export const ZONE_ITEM = `/${ZONE}/%d/`
+export const ZONE_DELETE = `/${ZONE}/%d/`
+export const ZONE_STAT = `/${ZONE}/statistics/`
+
 export const PRICE = 'dist/product'
 export const PRICE_CREATE = `/${PRODUCT}/`
 export const PRICE_LIST = `/${PRODUCT}/`
@@ -257,11 +263,25 @@ export const PRICE_DELETE = `/${PRODUCT}/%d/`
 
 export const PRICE_LIST_ITEM = 'dist/price_list_item'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
-
-export const ZONE = 'dist/border'
-export const ZONE_CREATE = `/${ZONE}/`
-export const ZONE_LIST = `/${ZONE}/`
-export const ZONE_ITEM = `/${ZONE}/%d/`
-export const ZONE_DELETE = `/${ZONE}/%d/`
-
 export const TRACKING = 'dist/border'
+
+export const REMAINDER = 'dist/product'
+export const REMAINDER_LIST = `/${REMAINDER}/`
+export const REMAINDER_ITEM = `/${REMAINDER}/%d/`
+
+export const STATISTICS = 'dist/product'
+export const STATISTICS_LIST = `/${STATISTICS}/`
+export const STATISTICS_ITEM = `/${STATISTICS}/%d/`
+
+export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
+
+export const STOCK_RECEIVE = 'dist/supply'
+export const STOCK_HISTORY = 'dist/barcode_history'
+export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`
+export const STOCK_TRANSFER = 'dist/stock_transfer'
+export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`
+export const STOCK_TRANSFER_ITEM = `/${STOCK_TRANSFER}/%d/`
+export const STOCK_RECEIVE_LIST = `/${STOCK_RECEIVE}/`
+export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
+export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/product_detail/%d/`
+export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE

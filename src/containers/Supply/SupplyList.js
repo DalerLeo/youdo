@@ -23,7 +23,6 @@ import {
     supplyCreateAction,
     supplyUpdateAction,
     supplyListFetchAction,
-    supplyCSVFetchAction,
     supplyDeleteAction,
     supplyItemFetchAction,
     supplyDefectAction
@@ -48,8 +47,6 @@ const enhance = compose(
         const list = _.get(state, ['supply', 'list', 'data'])
         const defectData = _.get(state, ['supply', 'defect', 'data'])
         const listLoading = _.get(state, ['supply', 'list', 'loading'])
-        const csvData = _.get(state, ['supply', 'csv', 'data'])
-        const csvLoading = _.get(state, ['supply', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'SupplyFilterForm'])
         const createForm = _.get(state, ['form', 'SupplyCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -67,8 +64,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
             createForm,
@@ -105,7 +100,6 @@ const enhance = compose(
         supplyId && dispatch(supplyExpenseListFetchAction(supplyId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openConfirmExpenseDialog', 'setOpenConfirmExpenseDialog', false),
     withState('openSupplyExpenseConfirmDialog', 'setOpenSupplyExpenseConfirmDialog', false),
@@ -114,18 +108,6 @@ const enhance = compose(
     withHandlers({
         handleActionEdit: props => () => {
             return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(supplyCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
         },
 
         handleOpenConfirmDialog: props => () => {
@@ -161,13 +143,13 @@ const enhance = compose(
             const {dispatch, setExpenseRemoveId, expenseRemoveId, detail} = props
             const id = _.get(detail, 'id')
             dispatch(supplyExpenseDeleteAction(expenseRemoveId))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Oshibka 404'}))
-                })
                 .then(() => {
                     setExpenseRemoveId(false)
                     dispatch(supplyExpenseListFetchAction(id))
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -409,6 +391,9 @@ const SupplyList = enhance((props) => {
                 currency: {
                     value: _.get(detail, ['currency', 'id'])
                 },
+                contact: {
+                    value: _.get(detail, 'contact', 'name') + ' ' + _.get(detail, 'contact', 'phone') + ' ' + _.get(detail, 'contact', 'email')
+                },
                 date_delivery: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 products: forUpdateProducts,
                 comment: _.get(detail, 'comment')
@@ -444,14 +429,6 @@ const SupplyList = enhance((props) => {
         handleCloseFilterDialog: props.handleCloseFilterDialog,
         handleClearFilterDialog: props.handleClearFilterDialog,
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
-    }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
     const listData = {
@@ -499,7 +476,6 @@ const SupplyList = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
 
                 supplyListData={supplyListData}
                 supplyExpenseCreateDialog={supplyExpenseCreateDialog}

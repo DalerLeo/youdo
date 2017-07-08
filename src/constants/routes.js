@@ -35,6 +35,11 @@ export const SUPPLY_LIST_URL = `/${SUPPLY}`
 export const SUPPLY_ITEM_URL = `${SUPPLY_LIST_URL}/:supplyId`
 export const SUPPLY_ITEM_PATH = `/${SUPPLY}/%d`
 
+export const PRICES = 'prices'
+export const PRICES_LIST_URL = `/${PRICES}`
+export const PRICES_ITEM_URL = `${PRICES_LIST_URL}/:pricesId`
+export const PRICES_ITEM_PATH = `/${PRICES}/%d`
+
 export const ORDER = 'order'
 export const ORDER_LIST_URL = `/${ORDER}`
 export const ORDER_ITEM_URL = `${ORDER_LIST_URL}/:orderId`
@@ -148,6 +153,8 @@ export const PENDING_PAYMENTS_ITEM_PATH = `${PENDING_PAYMENTS}/%d`
 
 export const ZONES = 'zones'
 export const ZONES_LIST_URL = `/${ZONES}`
+export const ZONES_ITEM_URL = `${ZONES_LIST_URL}/:zoneId`
+export const ZONES_ITEM_PATH = `/${ZONES}/%d`
 
 export const TRACKING = 'tracking'
 export const TRACKING_LIST_URL = `/${TRACKING}`
@@ -161,3 +168,18 @@ export const PRICE = 'price'
 export const PRICE_LIST_URL = `/${PRICE}`
 export const PRICE_ITEM_URL = `${PRICE_LIST_URL}/:priceId`
 export const PRICE_ITEM_PATH = `/${PRICE}/%d`
+
+export const REMAINDER = 'remainder'
+export const REMAINDER_LIST_URL = `/${REMAINDER}`
+export const REMAINDER_ITEM_URL = `${REMAINDER_LIST_URL}/:remainderId`
+export const REMAINDER_ITEM_PATH = `/${REMAINDER}/%d`
+
+export const STATISTICS = 'statistics'
+export const STATISTICS_LIST_URL = `/${STATISTICS}`
+export const STATISTICS_AGENT_URL = `/${STATISTICS}/agent`
+export const STATISTICS_PRODUCT_URL = `/${STATISTICS}/product`
+
+export const STOCK_RECEIVE = 'stockReceive'
+export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`
+export const STOCK_RECEIVE_ITEM_URL = `${STOCK_RECEIVE_LIST_URL}/:stockReceiveId`
+export const STOCK_RECEIVE_ITEM_PATH = `/${STOCK_RECEIVE}/%d`

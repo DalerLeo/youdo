@@ -4,6 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
+import Paper from 'material-ui/Paper'
 import GridListNav from '../GridListNav'
 import GridListHeader from '../GridListHeader'
 import GridListBody from '../GridListBody'
@@ -37,9 +38,9 @@ const GridList = enhance((props) => {
     const loaderOrList = (listLoading) => {
         if (listLoading) {
             return (
-                <div className={classes.loader}>
-                    <CircularProgress size={100} thickness={6} />
-                </div>
+                <Paper zDepth={1} className={classes.loader}>
+                    <CircularProgress size={40} thickness={4} />
+                </Paper>
             )
         }
 
@@ -55,7 +56,7 @@ const GridList = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <div className={classes.header}>
+            <Paper zDepth={1} className={classes.header}>
                 <GridListNav
                     filter={filter}
                     customData={customData}
@@ -70,7 +71,7 @@ const GridList = enhance((props) => {
                     withoutRow={withoutRow}
                     column={header}
                 />
-            </div>
+            </Paper>
             {loaderOrList(loading)}
         </div>
     )
@@ -91,13 +92,14 @@ GridList.propTypes = {
         listData: PropTypes.array.isRequired
     }),
     detail: PropTypes.node.isRequired,
-    actionsDialog: PropTypes.node.isRequired,
+    actionsDialog: PropTypes.node,
     filterDialog: PropTypes.node
 }
 
 GridList.defaultProps = {
     withoutCheckboxes: false,
-    withoutSearch: false
+    withoutSearch: false,
+    actionsDialog: (<div>no</div>)
 }
 
 export default GridList

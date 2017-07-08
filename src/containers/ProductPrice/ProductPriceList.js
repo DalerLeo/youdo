@@ -4,24 +4,19 @@ import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
-    PRODUCT_PRICE_CREATE_DIALOG_OPEN,
     PRODUCT_PRICE_UPDATE_DIALOG_OPEN,
-    PRODUCT_PRICE_DELETE_DIALOG_OPEN,
     PRODUCT_PRICE_FILTER_KEY,
     PRODUCT_PRICE_FILTER_OPEN,
     ProductPriceGridList
 } from '../../components/ProductPrice'
 import {
-    productPriceCreateAction,
     productPriceUpdateAction,
     productPriceListFetchAction,
-    productPriceCSVFetchAction,
-    productPriceDeleteAction,
     productPriceItemFetchAction
 } from '../../actions/productPrice'
 
@@ -37,8 +32,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['productPrice', 'update', 'loading'])
         const list = _.get(state, ['productPrice', 'list', 'data'])
         const listLoading = _.get(state, ['productPrice', 'list', 'loading'])
-        const csvData = _.get(state, ['productPrice', 'csv', 'data'])
-        const csvLoading = _.get(state, ['productPrice', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'ProductPriceFilterForm'])
         const createForm = _.get(state, ['form', 'ProductPriceCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -50,8 +43,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
             createForm
@@ -72,50 +63,7 @@ const enhance = compose(
         productPriceId && dispatch(productPriceItemFetchAction(productPriceId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
-
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(productPriceCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
-        handleOpenConfirmDialog: props => (id) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.PRODUCT_PRICE_ITEM_PATH, id),
-                query: filter.getParams({[PRODUCT_PRICE_DELETE_DIALOG_OPEN]: true})
-            })
-        },
-
-        handleCloseConfirmDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_PRICE_DELETE_DIALOG_OPEN]: false})})
-        },
-
-        handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, filter, location: {pathname}} = props
-            dispatch(productPriceDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[PRODUCT_PRICE_DELETE_DIALOG_OPEN]: false})})
-                    dispatch(productPriceListFetchAction(filter))
-                })
-        },
-
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRODUCT_PRICE_FILTER_OPEN]: true})})
@@ -143,41 +91,6 @@ const enhance = compose(
                 [PRODUCT_PRICE_FILTER_KEY.MEASUREMENT]: measurement,
                 [PRODUCT_PRICE_FILTER_KEY.BRAND]: brand
             })
-        },
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
-
-        handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_PRICE_CREATE_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_PRICE_CREATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}} = props
-
-            return dispatch(productPriceCreateAction(_.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[PRODUCT_PRICE_CREATE_DIALOG_OPEN]: false})})
-                    dispatch(productPriceListFetchAction(filter))
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -223,7 +136,6 @@ const ProductPriceList = enhance((props) => {
         listLoading,
         detail,
         detailLoading,
-        createLoading,
         updateLoading,
         filter,
         layout,
@@ -231,32 +143,16 @@ const ProductPriceList = enhance((props) => {
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', PRODUCT_PRICE_FILTER_OPEN]))
-    const openCreateDialog = toBoolean(_.get(location, ['query', PRODUCT_PRICE_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PRODUCT_PRICE_UPDATE_DIALOG_OPEN]))
-    const openConfirmDialog = toBoolean(_.get(location, ['query', PRODUCT_PRICE_DELETE_DIALOG_OPEN]))
 
-    const category = _.toInteger(filter.getParam(PRODUCT_PRICE_FILTER_KEY.CATEGORY))
+    const brand = _.toInteger(filter.getParam(PRODUCT_PRICE_FILTER_KEY.BRAND))
+    const type = _.toInteger(filter.getParam(PRODUCT_PRICE_FILTER_KEY.TYPE))
+    const measurement = _.toInteger(filter.getParam(PRODUCT_PRICE_FILTER_KEY.MEASUREMENT))
     const detailId = _.toInteger(_.get(params, 'productPriceId'))
-    const tab = _.get(params, 'tab')
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
         handleActionDelete: props.handleOpenDeleteDialog
-    }
-
-    const createDialog = {
-        createLoading,
-        openCreateDialog,
-        handleOpenCreateDialog: props.handleOpenCreateDialog,
-        handleCloseCreateDialog: props.handleCloseCreateDialog,
-        handleSubmitCreateDialog: props.handleSubmitCreateDialog
-    }
-
-    const confirmDialog = {
-        openConfirmDialog: openConfirmDialog,
-        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
-        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
-        handleSendConfirmDialog: props.handleSendConfirmDialog
     }
 
     const updateDialog = {
@@ -278,9 +174,9 @@ const ProductPriceList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            category: {
-                value: category
-            }
+            brand: {value: brand},
+            type: {value: type},
+            measurement: {value: measurement}
         },
         filterLoading: false,
         openFilterDialog,
@@ -288,19 +184,6 @@ const ProductPriceList = enhance((props) => {
         handleCloseFilterDialog: props.handleCloseFilterDialog,
         handleClearFilterDialog: props.handleClearFilterDialog,
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
-    }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
-    const tabData = {
-        tab,
-        handleTabChange: props.handleTabChange
     }
 
     const listData = {
@@ -321,13 +204,9 @@ const ProductPriceList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                tabData={tabData}
-                createDialog={createDialog}
-                confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

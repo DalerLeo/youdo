@@ -9,20 +9,15 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
-    PENDING_EXPENSES_CREATE_DIALOG_OPEN,
     PENDING_EXPENSES_UPDATE_DIALOG_OPEN,
     PENDING_EXPENSES_FILTER_KEY,
     PENDING_EXPENSES_FILTER_OPEN,
     PendingExpensesGridList
 } from '../../components/PendingExpenses'
 import {
-    pendingExpensesCreateAction,
     pendingExpensesUpdateAction,
     pendingExpensesListFetchAction,
-    pendingExpensesCSVFetchAction,
-    pendingExpensesDeleteAction,
     pendingExpensesItemFetchAction
 } from '../../actions/pendingExpenses'
 
@@ -38,8 +33,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['pendingExpenses', 'update', 'loading'])
         const list = _.get(state, ['pendingExpenses', 'list', 'data'])
         const listLoading = _.get(state, ['pendingExpenses', 'list', 'loading'])
-        const csvData = _.get(state, ['pendingExpenses', 'csv', 'data'])
-        const csvLoading = _.get(state, ['pendingExpenses', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'PendingExpensesFilterForm'])
         const createForm = _.get(state, ['form', 'PendingExpensesCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -51,8 +44,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
             createForm
@@ -73,46 +64,9 @@ const enhance = compose(
         pendingExpensesId && dispatch(pendingExpensesItemFetchAction(pendingExpensesId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(pendingExpensesCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
-        handleOpenConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(true)
-        },
-
-        handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(false)
-        },
-        handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog} = props
-            dispatch(pendingExpensesDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
-                .then(() => {
-                    setOpenConfirmDialog(false)
-                })
-        },
-
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PENDING_EXPENSES_FILTER_OPEN]: true})})
@@ -138,40 +92,6 @@ const enhance = compose(
                 [PENDING_EXPENSES_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [PENDING_EXPENSES_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
-        },
-
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
-
-        handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PENDING_EXPENSES_CREATE_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PENDING_EXPENSES_CREATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter, detail} = props
-            return dispatch(pendingExpensesCreateAction(_.get(createForm, ['values']), detail.id))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push({query: filter.getParams({[PENDING_EXPENSES_CREATE_DIALOG_OPEN]: false})})
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -209,7 +129,6 @@ const PendingExpensesList = enhance((props) => {
         listLoading,
         detail,
         detailLoading,
-        createLoading,
         updateLoading,
         filter,
         layout,
@@ -217,31 +136,10 @@ const PendingExpensesList = enhance((props) => {
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', PENDING_EXPENSES_FILTER_OPEN]))
-    const openCreateDialog = toBoolean(_.get(location, ['query', PENDING_EXPENSES_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PENDING_EXPENSES_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const fromDate = filter.getParam(PENDING_EXPENSES_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(PENDING_EXPENSES_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'pendingExpensesId'))
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
-
-    const createDialog = {
-        createLoading,
-        openCreateDialog,
-        handleOpenCreateDialog: props.handleOpenCreateDialog,
-        handleCloseCreateDialog: props.handleCloseCreateDialog,
-        handleSubmitCreateDialog: props.handleSubmitCreateDialog
-    }
-
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
-    }
 
     const confirmDialog = {
         openConfirmDialog: props.openConfirmDialog,
@@ -252,7 +150,7 @@ const PendingExpensesList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openUpdateDialog) {
                 return {}
             }
 
@@ -319,11 +217,8 @@ const PendingExpensesList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                createDialog={createDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
             />

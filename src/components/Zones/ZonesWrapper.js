@@ -1,16 +1,20 @@
+import _ from 'lodash'
 import React from 'react'
+import {hashHistory, Link} from 'react-router'
 import IconButton from 'material-ui/IconButton'
+import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import {reduxForm} from 'redux-form'
+import CircularProgress from 'material-ui/CircularProgress'
 import TextFieldSearch from 'material-ui/TextField'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {Row, Col} from 'react-flexbox-grid'
-import {compose, withState} from 'recompose'
+import {compose, withState, withHandlers} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import IconMenu from 'material-ui/IconMenu'
@@ -19,13 +23,25 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Tooltip from '../ToolTip'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
-import CloseIcon2 from '../CloseIcon2'
-import Person from '../Images/person.png'
 import ZoneMap from './ZoneMap'
 import AddZonePopup from './AddZonePopup'
+import ZoneDetails from './ZoneDetails'
+import NotFound from '../Images/not-found.png'
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
         addButton: {
             '& button': {
                 backgroundColor: '#275482 !important'
@@ -105,6 +121,7 @@ const enhance = compose(
             display: 'flex',
             padding: '20px 30px',
             borderBottom: '1px #efefef solid',
+            position: 'relative',
             '& > div': {
                 display: 'flex',
                 marginRight: '50px',
@@ -169,7 +186,8 @@ const enhance = compose(
         },
         itemList: {
             height: '100%',
-            overflowY: 'auto'
+            overflowY: 'auto',
+            position: 'relative'
         },
         search: {
             position: 'relative',
@@ -187,104 +205,6 @@ const enhance = compose(
         searchButton: {
             position: 'absolute !important',
             right: '-10px'
-        },
-
-        zoneInfoName: {
-            extend: 'zonesInfo',
-            justifyContent: 'flex-start',
-            right: '0',
-            width: '450px',
-            zIndex: '4'
-        },
-        zoneInfoTitle: {
-            extend: 'zonesInfoTitle',
-            padding: '20px 0',
-            justifyContent: 'space-between',
-            '& > div': {
-                marginRight: '0'
-            }
-        },
-        zoneInfoNameTitle: {
-            background: '#fff',
-            color: '#333',
-            fontWeight: '600',
-            textTransform: 'uppercase',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid #efefef',
-            padding: '20px 30px',
-            zIndex: '999',
-            '& button': {
-                right: '13px',
-                padding: '0 !important',
-                position: 'absolute !important'
-            }
-        },
-        zoneInfoContent: {
-            padding: '0 30px',
-            overflowY: 'auto'
-        },
-        personal: {
-            padding: '20px 0 15px',
-            borderBottom: '1px  #efefef solid',
-            '& > span': {
-                fontWeight: '600',
-                display: 'block',
-                marginBottom: '12px'
-            }
-        },
-        personalWrap: {
-            display: 'flex',
-            flexWrap: 'wrap'
-        },
-        person: {
-            width: '30px',
-            height: '30px',
-            display: 'inline-block',
-            marginRight: '10px',
-            marginBottom: '5px',
-            position: 'relative',
-            '& img': {
-                height: '100%',
-                width: '100%',
-                borderRadius: '50%'
-            },
-            '&:hover > div': {
-                display: 'flex'
-            },
-            '&:nth-child(10n)': {
-                margin: '0 !important'
-            }
-        },
-        deletePers: {
-            cursor: 'pointer',
-            width: '15px',
-            height: '15px',
-            display: 'none',
-            position: 'absolute',
-            top: '-5px',
-            right: '-5px',
-            borderRadius: '50%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#999',
-            '& svg': {
-                width: '13px !important',
-                height: '15px !important'
-            }
-        },
-        stores: {
-            '& span': {
-                fontWeight: '600'
-            },
-            '& .dottedList': {
-                padding: '15px 0',
-                justifyContent: 'space-between',
-                '&:last-child:after': {
-                    display: 'none'
-                }
-            }
         },
         addZoneWrapper: {
             position: 'absolute',
@@ -333,14 +253,34 @@ const enhance = compose(
             '& svg': {
                 fill: '#666 !important'
             }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
     reduxForm({
         form: 'ZoneCreateForm',
         enableReinitialize: true
     }),
-    withState('expandInfo', 'setExpandInfo', false),
-    withState('zoneInfo', 'setZoneInfo', false)
+    withState('search', 'setSearch', ({filter}) => filter.getParam('search')),
+    withHandlers({
+        onSubmit: props => (event) => {
+            const {search, filter} = props
+            event.preventDefault()
+
+            hashHistory.push(filter.createURL({search}))
+        }
+    })
 )
 
 const iconStyle = {
@@ -356,14 +296,30 @@ const iconStyle = {
 
 const ZonesWrapper = enhance((props) => {
     const {
+        filter,
+        listData,
+        statData,
         classes,
-        expandInfo,
-        setExpandInfo,
         addZone,
-        zoneInfo,
-        setZoneInfo
+        detailData,
+        toggle,
+        search,
+        setSearch,
+        onSubmit
     } = props
+    const ONE = 1
+    const isOpenToggle = toggle.openToggle
     const isOpenPopup = addZone.openAddZone
+    const isLoadingList = _.get(listData, 'listLoading')
+    const isListEmpty = _.isEmpty(_.get(listData, 'data'))
+
+    const openDetail = _.get(detailData, 'openDetail')
+
+    const isLoadingStat = _.get(statData, 'statLoading')
+    const activeZones = _.get(statData, ['data', 'activeBorders'])
+    const boundMarkets = _.get(statData, ['data', 'boundMarkets'])
+    const passiveMarkets = _.get(statData, ['data', 'passiveMarkets'])
+    const passiveAgents = _.get(statData, ['data', 'passiveAgents'])
 
     const iconButton = (
         <IconButton
@@ -374,19 +330,23 @@ const ZonesWrapper = enhance((props) => {
     )
 
     const zoneInfoToggle = (
-        <div className={classes.zonesInfo} style={expandInfo ? {right: '0'} : {right: '-450px'}}>
+        <div className={classes.zonesInfo} style={isOpenToggle ? {right: '0'} : {right: '-450px'}}>
             <div className={classes.toggleButton}>
-                {expandInfo ? <div className={classes.expanded} onClick={() => { setExpandInfo(false) }}><Arrow/></div>
-                    : <div className={classes.collapsed} onClick={() => { setExpandInfo(true) }}><Arrow/></div>}
+                {isOpenToggle ? <div className={classes.expanded} onClick={toggle.handleCollapseInfo}><Arrow/></div>
+                    : <div className={classes.collapsed} onClick={toggle.handleExpandInfo}><Arrow/></div>}
             </div>
-            {!zoneInfo ? <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%'}}>
+            {!openDetail ? <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%'}}>
                 <div className={classes.zonesInfoTitle}>
+                    {isLoadingStat &&
+                    <div className={classes.loader}>
+                        <CircularProgress size={25} thickness={3}/>
+                    </div>}
                     <div>
-                        <big>8</big>
-                        <span>активных <br/> зон</span>
+                        <big>{activeZones}</big>
+                        <span>{(activeZones === ONE) ? 'активная' : 'активных'} <br/> {(activeZones === ONE) ? 'зона' : 'зон'}</span>
                     </div>
                     <div>
-                        <big>240</big>
+                        <big>{boundMarkets}</big>
                         <span>магазинов <br/> в зонах</span>
                     </div>
                 </div>
@@ -395,12 +355,14 @@ const ZonesWrapper = enhance((props) => {
                     <div className={classes.listTitle}>
                         <span>Зоны</span>
                         <div className={classes.searchField}>
-                            <form>
+                            <form onSubmit={onSubmit}>
                                 <div className={classes.search}>
                                     <TextFieldSearch
                                         fullWidth={true}
                                         hintText="Поиск"
                                         className={classes.searchField}
+                                        value={search}
+                                        onChange={(event) => setSearch(event.target.value)}
                                     />
                                     <IconButton
                                         iconStyle={{color: '#ccc'}}
@@ -418,122 +380,67 @@ const ZonesWrapper = enhance((props) => {
                         <Col xs={2}>Магазины</Col>
                     </Row>
                     <div className={classes.itemList}>
-                        <Row>
-                            <Col xs={2} style={{color: '#237bde'}}>Z-244</Col>
-                            <Col xs={6}>Название зоны продаж</Col>
-                            <Col xs={2}>48</Col>
-                            <Col xs={2} style={{textAlign: 'right'}}>
-                                <IconMenu
-                                    iconButtonElement={iconButton}
-                                    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                                    targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                                    <MenuItem
-                                        primaryText="Изменить"
-                                        leftIcon={<Edit />}
-                                    />
-                                    <MenuItem
-                                        primaryText="Удалить "
-                                        leftIcon={<DeleteIcon />}
-                                    />
-                                </IconMenu>
-                            </Col>
-                        </Row>
+                        {isLoadingList &&
+                        <div className={classes.loader}>
+                            <CircularProgress size={40} thickness={4}/>
+                        </div>}
+                        {!isListEmpty ? _.map(_.get(listData, 'data'), (item) => {
+                            const id = _.get(item, 'id')
+                            const marketsCount = _.get(item, 'marketsCount')
+                            const name = _.get(item, 'title')
+                            return (
+                                <Row key={id}>
+                                    <Col xs={2} style={{color: '#237bde'}}>Z-{id}</Col>
+                                    <Col xs={6}>
+                                        <Link to={{
+                                            pathname: sprintf(ROUTES.ZONES_ITEM_PATH, id),
+                                            query: filter.getParams()
+                                        }}>{name}</Link>
+                                    </Col>
+                                    <Col xs={2}>{marketsCount}</Col>
+                                    <Col xs={2} style={{textAlign: 'right'}}>
+                                        <IconMenu
+                                            iconButtonElement={iconButton}
+                                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                                            <MenuItem
+                                                primaryText="Изменить"
+                                                leftIcon={<Edit />}
+                                            />
+                                            <MenuItem
+                                                primaryText="Удалить "
+                                                leftIcon={<DeleteIcon />}
+                                            />
+                                        </IconMenu>
+                                    </Col>
+                                </Row>
+                            )
+                        })
+                        : <div className={classes.emptyQuery}>
+                                <div>По вашему запросу ничего не найдено</div>
+                            </div>}
                     </div>
                 </div>
 
                 <div className={classes.zonesInfoFooter}>
+                    {isLoadingStat &&
+                    <div className={classes.loader}>
+                        <CircularProgress size={25} thickness={3}/>
+                    </div>}
                     <div>
-                        <big>24</big>
+                        <big>{passiveMarkets}</big>
                         <span>магазинов <br/> не распределено</span>
                     </div>
                     <div>
-                        <big>11</big>
+                        <big>{passiveAgents}</big>
                         <span>агентов <br/> не распределено</span>
                     </div>
                 </div>
             </div>
-            : <div>
-                    <div className={classes.zoneInfoNameTitle}>
-                        <span>Название зоны (Z-244)</span>
-                        <IconButton onTouchTap={() => { setZoneInfo(false) }}>
-                            <CloseIcon2 color="#666666"/>
-                        </IconButton>
-                    </div>
-                    <div className={classes.zoneInfoContent}>
-                        <div className={classes.zoneInfoTitle}>
-                            <div>
-                                <big>24</big>
-                                <span>всего магазинов <br/> в зоне</span>
-                            </div>
-                            <div>
-                                <big>4</big>
-                                <span>закреплено <br/> агентов</span>
-                            </div>
-                            <div>
-                                <big>2</big>
-                                <span>закреплено <br/> инкассаторов</span>
-                            </div>
-                        </div>
-                        <div className={classes.personal}>
-                            <span>Ответственный персонал:</span>
-                            <div className={classes.personalWrap}>
-                                <div className={classes.person}>
-                                    <img src={Person} alt=""/>
-                                    <div className={classes.deletePers}>
-                                        <CloseIcon2 color="#fff"/>
-                                    </div>
-                                </div>
-                                <div className={classes.person}>
-                                    <img src={Person} alt=""/>
-                                    <div className={classes.deletePers}>
-                                        <CloseIcon2 color="#fff"/>
-                                    </div>
-                                </div>
-                                <div className={classes.person}>
-                                    <img src={Person} alt=""/>
-                                    <div className={classes.deletePers}>
-                                        <CloseIcon2 color="#fff"/>
-                                    </div>
-                                </div>
-                                <div className={classes.person}>
-                                    <img src={Person} alt=""/>
-                                    <div className={classes.deletePers}>
-                                        <CloseIcon2 color="#fff"/>
-                                    </div>
-                                </div>
-                                <div className={classes.person}>
-                                    <img src={Person} alt=""/>
-                                    <div className={classes.deletePers}>
-                                        <CloseIcon2 color="#fff"/>
-                                    </div>
-                                </div>
-                                <div className={classes.person} style={{overflow: 'hidden'}}>
-                                    <Tooltip position="bottom" text="Добавить">
-                                        <FloatingActionButton
-                                            mini={true}
-                                            className={classes.addPerson}>
-                                            <ContentAdd />
-                                        </FloatingActionButton>
-                                    </Tooltip>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={classes.stores}>
-                            <div className="dottedList">
-                                <span>Магазины в зоне</span>
-                                <a>+ добавить</a>
-                            </div>
-                            <div className="dottedList">OOO Angels Food</div>
-                            <div className="dottedList">OOO Angels Food</div>
-                            <div className="dottedList">OOO Angels Food</div>
-                            <div className="dottedList">OOO Angels Food</div>
-                            <div className="dottedList">OOO Angels Food</div>
-                            <div className="dottedList">OOO Angels Food</div>
-                            <div className="dottedList">OOO Angels Food</div>
-                            <div className="dottedList">OOO Angels Food</div>
-                        </div>
-                    </div>
-                </div>}
+            : <ZoneDetails
+                    detailData={detailData}
+                    filter={filter}
+                />}
         </div>
     )
 
@@ -558,7 +465,6 @@ const ZonesWrapper = enhance((props) => {
                     onClose={addZone.handleCloseAddZone}
                     onSubmit={addZone.handleSubmitAddZone}
                 />}
-                <a onClick={() => { setZoneInfo(true) }}>CLick MEeeee</a>
                 {zoneInfoToggle}
             </div>
         </Container>
@@ -566,11 +472,20 @@ const ZonesWrapper = enhance((props) => {
 })
 
 ZonesWrapper.PropTypes = {
+    filter: PropTypes.object,
+    listData: PropTypes.object,
+    detailData: PropTypes.object,
+    statData: PropTypes.object,
     addZone: PropTypes.shape({
         openAddZone: PropTypes.bool.isRequired,
         handleOpenAddZone: PropTypes.func.isRequired,
         handleCloseAddZone: PropTypes.func.isRequired,
         handleSubmitAddZone: PropTypes.func.isRequired
+    }).isRequired,
+    toggle: PropTypes.shape({
+        openToggle: PropTypes.bool.isRequired,
+        handleExpandInfo: PropTypes.func.isRequired,
+        handleCollapseInfo: PropTypes.func.isRequired
     }).isRequired
 }
 

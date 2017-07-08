@@ -71,23 +71,6 @@ export const currencyListFetchAction = (filter) => {
     }
 }
 
-export const currencyCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.CURRENCY_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CURRENCY_LIST_CSV,
-        payload
-    }
-}
-
 export const currencyItemFetchAction = (filter, id) => {
     const params = serializers.itemSerializer(filter.getParams(), id)
     const payload = axios()

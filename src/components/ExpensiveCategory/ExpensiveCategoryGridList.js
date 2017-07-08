@@ -174,6 +174,7 @@ const ExpensiveCategoryGridList = enhance((props) => {
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
+                loading={confirmDialog.confirmLoading}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
@@ -194,6 +195,7 @@ ExpensiveCategoryGridList.propTypes = {
         handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
     confirmDialog: PropTypes.shape({
+        confirmLoading: PropTypes.bool.isRequired,
         openConfirmDialog: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,

@@ -27,7 +27,6 @@ import {
     transactionUpdateIncomeAction,
     transactionCreateSendAction,
     transactionListFetchAction,
-    transactionCSVFetchAction,
     transactionDeleteAction,
     transactionItemFetchAction
 } from '../../actions/transaction'
@@ -48,11 +47,10 @@ const enhance = compose(
         const cashboxList = _.get(state, ['cashbox', 'list', 'data'])
         const cashboxListLoading = _.get(state, ['cashbox', 'list', 'loading'])
         const listLoading = _.get(state, ['transaction', 'list', 'loading'])
-        const csvData = _.get(state, ['transaction', 'csv', 'data'])
-        const csvLoading = _.get(state, ['transaction', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'TransactionFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterCashbox = filterHelper(cashboxList, pathname, query)
         const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
         return {
             list,
@@ -63,18 +61,17 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
+            filterCashbox,
             cashboxId,
             createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
-    }, ({dispatch}) => {
-        dispatch(cashboxListFetchAction())
+    }, ({dispatch, filterCashbox}) => {
+        dispatch(cashboxListFetchAction(filterCashbox))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -96,18 +93,6 @@ const enhance = compose(
             return null
         },
 
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(transactionCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
         handleOpenConfirmDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
@@ -123,12 +108,13 @@ const enhance = compose(
         handleExpenseConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}, cashboxId} = props
             dispatch(transactionDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_DELETE_DIALOG_OPEN]: false})})
                     dispatch(transactionListFetchAction(filter, cashboxId))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -218,14 +204,15 @@ const enhance = compose(
         },
 
         handleSubmitCreateSendDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, cashboxId} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
+            const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
             return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})})
-                    dispatch(transactionListFetchAction(filter))
+                    dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filter))
                 })
         },
@@ -358,12 +345,12 @@ const TransactionList = enhance((props) => {
 
     const updateExpenseDialog = {
         initialValues: (() => {
-            if (!detailId) {
+            if (!detailId || openCreateExpenseDialog) {
                 return {}
             }
             return {
                 comment: _.get(detail, 'comment'),
-                category: {
+                expanseCategory: {
                     value: _.get(detail, ['expanseCategory', 'id'])
                 },
                 amount: _.get(detail, 'amount')
@@ -378,7 +365,7 @@ const TransactionList = enhance((props) => {
 
     const updateIncomeDialog = {
         initialValues: (() => {
-            if (!detailId) {
+            if (!detailId || openCreateIncomeDialog) {
                 return {}
             }
 
@@ -422,14 +409,6 @@ const TransactionList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -465,7 +444,6 @@ const TransactionList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

@@ -5,22 +5,6 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/pendingExpensesSerializer'
 
-export const pendingExpensesDeleteAction = (id) => {
-    const payload = axios()
-        .delete(sprintf(API.PENDING_EXPENSES_DELETE, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.PENDING_EXPENSES_DELETE,
-        payload
-    }
-}
-
 export const pendingExpensesUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues, id)
     const payload = axios()
@@ -51,23 +35,6 @@ export const pendingExpensesListFetchAction = (filter) => {
 
     return {
         type: actionTypes.PENDING_EXPENSES_LIST,
-        payload
-    }
-}
-
-export const pendingExpensesCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.PENDING_EXPENSES_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.PENDING_EXPENSES_LIST_CSV,
         payload
     }
 }

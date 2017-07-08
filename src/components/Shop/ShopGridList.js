@@ -1,13 +1,9 @@
 import _ from 'lodash'
-import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -25,40 +21,38 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-
 const listHeader = [
     {
+        xs: 3,
         sorting: true,
         name: 'name',
-        title: 'Name'
+        title: 'Название'
     },
     {
+        xs: 3,
         sorting: true,
-        name: 'phone',
-        title: 'Phone'
+        name: 'client',
+        title: 'Клиент'
     },
     {
+        xs: 2,
         sorting: true,
-        name: 'address',
-        title: 'Address'
+        name: 'marketType',
+        title: 'Тип'
     },
     {
+        xs: 2,
         sorting: true,
-        name: 'guide',
-        title: 'Guide'
+        name: 'border',
+        title: 'Зона'
     },
     {
+        xs: 2,
         sorting: true,
-        name: 'contactName',
-        title: 'Contact name'
-    },
-    {
-        sorting: true,
-        name: 'createdDate',
-        title: 'Created date'
+        name: 'isActive',
+        title: 'Статус'
     }
 ]
-
 const enhance = compose(
     injectSheet({
         addButton: {
@@ -74,7 +68,6 @@ const enhance = compose(
         }
     })
 )
-
 const ShopGridList = enhance((props) => {
     const {
         filter,
@@ -85,26 +78,14 @@ const ShopGridList = enhance((props) => {
         addPhotoDialog,
         filterDialog,
         slideShowDialog,
-        actionsDialog,
         confirmDialog,
         deleteDialog,
         listData,
         detailData,
-        tabData,
         mapLocation,
+        navigationButtons,
         classes
     } = props
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
 
     const shopFilterDialog = (
         <ShopFilterForm
@@ -120,50 +101,45 @@ const ShopGridList = enhance((props) => {
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
-            tabData={tabData}
             updateDialog={updateDialog}
             addPhotoDialog={addPhotoDialog}
             slideShowDialog={slideShowDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
         />
     )
-
     const shopList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const phone = _.get(item, 'phone') || 'N/A'
-        const address = _.get(item, 'address') || 'N/A'
-        const guide = _.get(item, 'guide') || 'N/A'
-        const contactName = _.get(item, 'contactName') || 'N/A'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-
+        const client = _.get(item, ['client', 'name'])
+        const marketType = _.get(item, ['marketType', 'name'])
+        const zone = _.get(item, 'border') || 'Не определена'
+        const isActive = _.get(item, 'isActive')
         return (
             <Row key={id}>
-                <Col xs={2}>
+                <Col xs={3}>
                     <Link to={{
                         pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
-                        query: filter.getParams()
+                        query: ''
                     }}>{name}</Link>
                 </Col>
-                <Col xs={2}>{phone}</Col>
-                <Col xs={2}>{address}</Col>
-                <Col xs={2}>{guide}</Col>
-                <Col xs={2}>{contactName}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={3}>{client}</Col>
+                <Col xs={2}>{marketType}</Col>
+                <Col xs={2}>{zone}</Col>
+                <Col xs={2}>
+                    {isActive ? <span className="greenFont">Активен</span>
+                        : <span className="redFont">Не активен</span>}
+                </Col>
             </Row>
         )
     })
-
     const list = {
         header: listHeader,
         list: shopList,
         loading: _.get(listData, 'listLoading')
     }
-
     return (
         <Container>
             <SubMenu url={ROUTES.SHOP_LIST_URL}/>
-
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить магазин">
                     <FloatingActionButton
@@ -178,10 +154,8 @@ const ShopGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={shopDetail}
-                actionsDialog={actions}
                 filterDialog={shopFilterDialog}
             />
-
             <ShopCreateDialog
                 mapDialog={mapDialog}
                 updateMapDialog={updateMapDialog}
@@ -191,24 +165,25 @@ const ShopGridList = enhance((props) => {
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
-
             <MapDialog
                 open={mapDialog.openMapDialog}
                 onClose={mapDialog.handleCloseMapDialog}
                 onSubmit={mapDialog.handleSubmitMapDialog}
             />
-
             <AddPhotoDialog
                 open={addPhotoDialog.openAddPhotoDialog}
                 onClose={addPhotoDialog.handleCloseAddPhotoDialog}
                 onSubmit={addPhotoDialog.handleSubmitAddPhotoDialog}
             />
-
             <SlideShowDialog
+                images={_.get(detailData, ['data', 'images'])}
+                loading={slideShowDialog.galleryLoading}
                 open={slideShowDialog.openSlideShowDialog}
+                image={slideShowDialog.gallery}
                 onClose={slideShowDialog.handleCloseSlideShowDialog}
+                prevBtn={navigationButtons.handlePrevImage}
+                nextBtn={navigationButtons.handleNextImage}
             />
-
             <MapDialog
                 isUpdate={true}
                 initialValues={updateMapDialog.initialValues}
@@ -216,7 +191,6 @@ const ShopGridList = enhance((props) => {
                 onClose={updateMapDialog.handleCloseMapUpdateDialog}
                 onSubmit={updateMapDialog.handleSubmitMapUpdateDialog}
             />
-
             <ShopCreateDialog
                 isUpdate={true}
                 mapDialog={mapDialog}
@@ -228,13 +202,11 @@ const ShopGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
-
             <DeleteDialog
                 filter={filter}
                 open={deleteDialog.openDeleteDialog}
                 onClose={deleteDialog.handleCloseDeleteDialog}
             />
-
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -245,12 +217,10 @@ const ShopGridList = enhance((props) => {
         </Container>
     )
 })
-
 ShopGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     mapLocation: PropTypes.object,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
@@ -273,6 +243,8 @@ ShopGridList.propTypes = {
     }).isRequired,
     slideShowDialog: PropTypes.shape({
         openSlideShowDialog: PropTypes.bool.isRequired,
+        gallery: PropTypes.object,
+        galleryLoading: PropTypes.bool.isRequired,
         handleOpenSlideShowDialog: PropTypes.func.isRequired,
         handleCloseSlideShowDialog: PropTypes.func.isRequired
     }).isRequired,
@@ -300,10 +272,6 @@ ShopGridList.propTypes = {
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,
         filterLoading: PropTypes.bool,
@@ -311,7 +279,10 @@ ShopGridList.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    navigationButtons: PropTypes.shape({
+        handlePrevImage: PropTypes.func.isRequired,
+        handleNextImage: PropTypes.func.isRequired
+    })
 }
-
 export default ShopGridList

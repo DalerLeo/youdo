@@ -4,7 +4,7 @@ import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as MANUFACTURE_TAB from '../../constants/manufactureTab'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
@@ -17,7 +17,6 @@ import {
     MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN,
     MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN,
     OPEN_USER_CONFIRM_DIALOG,
-    OPEN_UPDATE_PRODUCT_DIALOG,
     OPEN_DELETE_PRODUCT_DIALOG,
     OPEN_DELETE_MATERIALS_DIALOG,
     MANUFACTURE_CHANGE,
@@ -25,9 +24,9 @@ import {
     ManufactureGridList
 } from '../../components/Manufacture'
 import {PRODUCT_FILTER_KEY, PRODUCT_FILTER_OPEN} from '../../components/Product'
+import {PERSON_FILTER_KEY, PERSON_FILTER_OPEN} from '../../components/Manufacture/PersonFilterForm'
 import {
-    manufactureListFetchAction,
-    manufactureCSVFetchAction
+    manufactureListFetchAction
 } from '../../actions/manufacture'
 import {
     userShiftCreateAction,
@@ -70,8 +69,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['manufacture', 'update', 'loading'])
         const list = _.get(state, ['manufacture', 'list', 'data'])
         const listLoading = _.get(state, ['manufacture', 'list', 'loading'])
-        const csvData = _.get(state, ['manufacture', 'csv', 'data'])
-        const csvLoading = _.get(state, ['manufacture', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'ManufactureCreateForm'])
         const ingredientCreateForm = _.get(state, ['form', 'IngredientCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -89,6 +86,7 @@ const enhance = compose(
         const userShiftLoading = _.get(state, ['userShift', 'list', 'loading'])
         const filterUser = filterHelper(userShiftList, pathname, query)
         const staffCreateForm = _.get(state, ['form', 'ManufactureCreateUserForm'])
+        const filterPersonForm = _.get(state, ['form', 'PersonFilterForm'])
 
         const equipmentList = _.get(state, ['equipment', 'list', 'data'])
         const equipmentListLoading = _.get(state, ['equipment', 'list', 'loading'])
@@ -107,8 +105,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             createForm,
             selectProduct,
@@ -127,6 +123,7 @@ const enhance = compose(
             userShiftList,
             userShiftLoading,
             filterUser,
+            filterPersonForm,
 
             equipmentList,
             equipmentListLoading,
@@ -148,9 +145,12 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const manufactureId = _.get(nextProps, ['params', 'manufactureId'])
         const tab = _.get(props, ['location', 'query', 'tab'])
+        const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
+        const productId = _.get(props, ['location', 'query', 'productId'])
+        const nextProductId = _.get(nextProps, ['location', 'query', 'productId'])
         return (manufactureId && _.get(props, ['params', 'manufactureId']) !== manufactureId) ||
-            ((tab !== _.get(nextProps, ['location', 'query', 'tab'])) ||
-            (_.get(props, ['location', 'query', 'productId']) !== _.get(nextProps, ['location', 'query', 'productId'])) ||
+            ((tab !== nextTab) ||
+            (productId !== nextProductId) ||
             (props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest()) ||
             (props.filterUser.filterRequest() !== nextProps.filterUser.filterRequest()))
     }, ({dispatch, location, params, filterProduct, filterUser, filterEquipment, filterShipment}) => {
@@ -176,7 +176,6 @@ const enhance = compose(
         }
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
     // Product withHandlers
     withHandlers({
         handleOpenProductFilterDialog: props => () => {
@@ -369,6 +368,27 @@ const enhance = compose(
     }),
     // Person withHandlers
     withHandlers({
+        handleOpenPersonFilterDialog: props => () => {
+            const {location: {pathname}, filterUser} = props
+            hashHistory.push({pathname, query: filterUser.getParams({[PERSON_FILTER_OPEN]: true})})
+        },
+        handleClosePersonFilterDialog: props => () => {
+            const {location: {pathname}, filterUser} = props
+            hashHistory.push({pathname, query: filterUser.getParams({[PERSON_FILTER_OPEN]: false})})
+        },
+        handleClearPersonFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
+        },
+        handleSubmitPersonFilterDialog: props => () => {
+            const {filterUser, filterPersonForm} = props
+            const shift = _.get(filterPersonForm, ['values', 'shift', 'value']) || null
+            filterUser.filterBy({
+                [PRODUCT_FILTER_OPEN]: false,
+                [PRODUCT_FILTER_KEY.SHIFT]: shift
+            })
+        },
+
         handleOpenUserCreateDialog: props => () => {
             const {location: {pathname}, filterUser} = props
             hashHistory.push({pathname, query: filterUser.getParams({[OPEN_USER_CREATE_DIALOG]: true})})
@@ -455,18 +475,6 @@ const enhance = compose(
             return null
         },
 
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(manufactureCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
         handleOpenShowBom: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_SHOW_BOM_DIALOG_OPEN]: true})})
@@ -529,7 +537,7 @@ const ManufactureList = enhance((props) => {
     const openEditMaterials = toBoolean(_.get(location, ['query', MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]))
     const openCreateMaterials = toBoolean(_.get(location, ['query', MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]))
     const type = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.TYPE))
-    const measurement = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.MEASUREMENT))
+    const shift = _.toInteger(filterProduct.getParam(PERSON_FILTER_KEY.SHIFT))
     const brand = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.BRAND))
     const openDeleteMaterialsDialog = toBoolean(_.get(location, ['query', OPEN_DELETE_MATERIALS_DIALOG]))
     const tab = _.get(location, ['query', TAB]) || MANUFACTURE_TAB.MANUFACTURE_DEFAULT_TAB
@@ -537,7 +545,7 @@ const ManufactureList = enhance((props) => {
     const openAddProductDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]))
     const openProductConfirmDialog = toBoolean(_.get(location, ['query', OPEN_DELETE_PRODUCT_DIALOG]))
     const openProductFilterDialog = toBoolean(_.get(location, ['query', PRODUCT_FILTER_OPEN]))
-    const openUpdateProductDialog = toBoolean(_.get(location, ['query', OPEN_UPDATE_PRODUCT_DIALOG]))
+    const openPersonFilterDialog = toBoolean(_.get(location, ['query', PERSON_FILTER_OPEN]))
     const openManufactureChangeDialog = toBoolean(_.get(location, ['query', MANUFACTURE_CHANGE]))
     const productId = _.get(props, ['location', 'query', 'productId']) || MINUS_ONE
 
@@ -562,8 +570,7 @@ const ManufactureList = enhance((props) => {
         open: openShowBom,
         handleOpen: props.handleOpenShowBom,
         handleClose: props.handleCloseShowBom,
-        handleLoading: props.handleCloseShowBom,
-        handleSubmit: props.handleSubmitShowBom
+        handleLoading: props.handleCloseShowBom
     }
     const addProductDialog = {
         open: openAddProductDialog,
@@ -641,9 +648,6 @@ const ManufactureList = enhance((props) => {
             },
             brand: {
                 value: brand
-            },
-            measurement: {
-                value: measurement
             }
         },
         filterLoading: false,
@@ -652,31 +656,6 @@ const ManufactureList = enhance((props) => {
         handleCloseFilterDialog: props.handleCloseProductFilterDialog,
         handleClearFilterDialog: props.handleClearProductFilterDialog,
         handleSubmitFilterDialog: props.handleSubmitProductFilterDialog
-    }
-    const updateProductDialog = {
-        initialValues: (() => {
-            if (!detail) {
-                return {}
-            }
-            return {
-                name: _.get(detail, 'name'),
-                type: {
-                    value: _.get(detail, ['type', 'id'])
-                },
-                brand: {
-                    value: _.get(detail, ['brand', 'id'])
-                },
-                measurement: {
-                    value: _.get(detail, ['measurement', 'id'])
-                },
-                image: _.get(detail, 'image')
-            }
-        })(),
-        updateLoading: detailLoading,
-        open: openUpdateProductDialog,
-        handleOpenUpdateDialog: props.handleOpenUpdateProductDialog,
-        handleCloseUpdateDialog: props.handleCloseUpdateProductDialog,
-        handleSubmitUpdateDialog: props.handleSubmitUpdateProductDialog
     }
     const deleteProductDialog = {
         openConfirmDialog: openProductConfirmDialog,
@@ -704,7 +683,6 @@ const ManufactureList = enhance((props) => {
         detailData: productDetailData,
         createDialog: addProductDialog,
         filterDialog: productFilterDialog,
-        updateDialog: updateProductDialog,
         confirmDialog: deleteProductDialog,
         handleItemClick: props.handleItemClick,
         changeManufacture: changeManufacture
@@ -712,16 +690,16 @@ const ManufactureList = enhance((props) => {
 
     const personFilterDialog = {
         initialValues: {
-            category: {
-                value: type
+            shift: {
+                value: shift
             }
         },
         filterLoading: false,
-        openFilterDialog: openProductFilterDialog,
-        handleOpenFilterDialog: props.handleOpenProductFilterDialog,
-        handleCloseFilterDialog: props.handleCloseProductFilterDialog,
-        handleClearFilterDialog: props.handleClearProductFilterDialog,
-        handleSubmitFilterDialog: props.handleSubmitProductFilterDialog
+        openFilterDialog: openPersonFilterDialog,
+        handleOpenFilterDialog: props.handleOpenPersonFilterDialog,
+        handleCloseFilterDialog: props.handleClosePersonFilterDialog,
+        handleClearFilterDialog: props.handleClearPersonFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitPersonFilterDialog
     }
 
     const addUser = {
@@ -736,7 +714,7 @@ const ManufactureList = enhance((props) => {
 
     const updateUser = {
         initialValues: (() => {
-            if (!userShiftItem) {
+            if (!userShiftItem || openCreateUser) {
                 return {}
             }
             return {

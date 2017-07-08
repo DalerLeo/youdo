@@ -75,8 +75,20 @@ const enhance = compose(
                 marginRight: '-12px !important'
             }
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
         title: {
             fontSize: '15px',
@@ -146,23 +158,22 @@ const ClientTransactionFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов"/>
+                        <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов"/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="type" component={TransactionTypeSearchField} label="Тип"/>
+                        <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип"/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
                     </div>
 
-                    <div>
-                        <RaisedButton
-                            type="submit"
-                            primary={true}
-                            buttonStyle={{color: '#fff'}}>
-                            Применить
-                        </RaisedButton>
-                    </div>
+                    <RaisedButton
+                        type="submit"
+                        primary={true}
+                        buttonStyle={{color: '#fff'}}
+                        label="Применить"
+                        style={{marginTop: '15px'}}>
+                    </RaisedButton>
                 </form>
             </Paper>
         </div>

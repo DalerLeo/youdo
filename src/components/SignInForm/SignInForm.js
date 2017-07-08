@@ -31,7 +31,7 @@ const enhance = compose(
             paddingTop: '5px',
             paddingBottom: '22px',
             fontSize: '14px',
-            fontWeight: '700',
+            fontWeight: '600',
             textTransform: 'uppercase',
             textAlign: 'center',
             color: '#647994',
@@ -75,7 +75,7 @@ const SignInForm = enhance((props) => {
     if (loading) {
         return (
             <Paper className={classes.loader} zDepth={2}>
-                <CircularProgress size={80} thickness={5}/>
+                <CircularProgress size={40} thickness={4}/>
             </Paper>
         )
     }

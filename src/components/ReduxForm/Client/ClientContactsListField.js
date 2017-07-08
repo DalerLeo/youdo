@@ -94,7 +94,7 @@ const ClientContactsListField = (props) => {
                                 label="Контактное лицо"
                                 name={`${contact}.name`}
                                 component={TextField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 fullWidth={true}
                             />
                             <div className={classes.flex}>

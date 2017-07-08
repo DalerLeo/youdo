@@ -6,15 +6,12 @@ import {reduxForm} from 'redux-form'
 import {compose} from 'recompose'
 import sprintf from 'sprintf'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import ProductPriceFilterForm from './ProductPriceFilterForm'
 import ProductPriceCreateDialog from './ProductPriceCreateDialog'
-import ConfirmDialog from '../ConfirmDialog'
 import ProductPriceDetails from './ProductPriceDetails'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -72,6 +69,10 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        buttons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
         }
     }),
 
@@ -99,8 +100,6 @@ const ProductPriceGridList = enhance((props) => {
         filter,
         updateDialog,
         filterDialog,
-        actionsDialog,
-        confirmDialog,
         handleOpenDetails,
         handleCloseDetails,
         priceDetailsOpen,
@@ -112,7 +111,6 @@ const ProductPriceGridList = enhance((props) => {
         <ProductPriceDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
-            confirmDialog={confirmDialog}
             priceDetailsOpen={priceDetailsOpen}
             loading={_.get(detailData, 'detailLoading')}
             updateDialog={updateDialog}
@@ -120,18 +118,6 @@ const ProductPriceGridList = enhance((props) => {
             handleCloseDetails={handleCloseDetails}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
         />
-    )
-
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
     )
 
     const productPriceFilterDialog = (
@@ -154,7 +140,7 @@ const ProductPriceGridList = enhance((props) => {
                 <Col xs={3}>
                     <Link to={{
                         pathname: sprintf(ROUTES.PRODUCT_PRICE_ITEM_PATH, id),
-                        query: filter.getParams()
+                        query: ''
                     }}>{name}</Link>
                 </Col>
                 <Col xs={2}>{type}</Col>
@@ -190,7 +176,6 @@ const ProductPriceGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={productPriceDetail}
-                actionsDialog={actions}
                 filterDialog={productPriceFilterDialog}
             />
 
@@ -201,14 +186,6 @@ const ProductPriceGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
-
-            {detailData.data && <ConfirmDialog
-                type="delete"
-                message={_.get(detailData, ['data', 'name'])}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
         </Container>
     )
 })
@@ -217,30 +194,12 @@ ProductPriceGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
         openUpdateDialog: PropTypes.bool.isRequired,
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,

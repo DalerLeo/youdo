@@ -59,7 +59,7 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
 
 GridListNav.propTypes = {
     filter: PropTypes.object.isRequired,
-    actions: PropTypes.node.isRequired,
+    actions: PropTypes.node,
     withoutSearch: PropTypes.bool.isRequired,
     customData: PropTypes.shape({
         dialog: PropTypes.node.isRequired,
@@ -86,8 +86,7 @@ export default injectSheet({
             background: '#fff',
             alignItems: 'center',
             padding: '0 5px',
-            marginBottom: '50px',
-            boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px'
+            marginBottom: '50px'
         }
     },
     currencyName: {

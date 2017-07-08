@@ -17,6 +17,7 @@ import DateField from './Basic/DateField'
 import TimeField from './Basic/TimeField'
 import ProductSearchField from './Product/ProductSearchField'
 import SupplyListProductField from './Supply/SupplyListProductField'
+import PricesListProductField from './PricesListProductField'
 import OrderListReturnField from './Order/OrderListReturnField'
 import OrderListProductField from './Order/OrderListProductField'
 import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
@@ -35,7 +36,10 @@ import ShiftSearchField from './ShiftSearchField'
 import CashboxCustomField from './PendingPayments/CashboxCustomField'
 import VisitFrequencySearchField from './Shop/VisitFrequencySearchField'
 import ShopStatusSearchField from './Shop/ShopStatusSearchField'
+import DealTypeSearchField from './DealTypeSearchField'
 import MarketTypeSearchField from './Shop/MarketTypeSearchField'
+import MarketSearchField from './MarketSearchField'
+import StockReceiveProductSearchField from './StockReceive/StockReceiveProductSearchField'
 
 export {
     ShiftSearchField,
@@ -74,6 +78,10 @@ export {
     CashboxSearchField,
     CashboxCustomField,
     VisitFrequencySearchField,
+    PricesListProductField,
     ShopStatusSearchField,
-    MarketTypeSearchField
+    MarketTypeSearchField,
+    MarketSearchField,
+    DealTypeSearchField,
+    StockReceiveProductSearchField
 }

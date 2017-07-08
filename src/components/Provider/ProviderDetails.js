@@ -17,7 +17,7 @@ const enhance = compose(
         loader: {
             width: '100%',
             background: '#fff',
-            height: '400px',
+            height: '150px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -80,7 +80,7 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700',
+            fontWeight: '600',
             cursor: 'pointer'
         },
         titleButtons: {
@@ -128,7 +128,7 @@ const ProviderDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -138,7 +138,7 @@ const ProviderDetails = enhance((props) => {
         <div className={classes.wrapper} key={_.get(data, 'id')}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                onTouchTap={handleCloseDetail}>{providerName}</div>
+                onClick={handleCloseDetail}>{providerName}</div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
@@ -194,9 +194,12 @@ const ProviderDetails = enhance((props) => {
 ProviderDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
-    confirmDialog: PropTypes.object.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default ProviderDetails

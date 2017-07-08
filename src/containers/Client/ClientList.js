@@ -18,7 +18,6 @@ import {
     clientCreateAction,
     clientUpdateAction,
     clientListFetchAction,
-    clientCSVFetchAction,
     clientDeleteAction,
     clientItemFetchAction
 } from '../../actions/client'
@@ -34,8 +33,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['client', 'update', 'loading'])
         const list = _.get(state, ['client', 'list', 'data'])
         const listLoading = _.get(state, ['client', 'list', 'loading'])
-        const csvData = _.get(state, ['client', 'csv', 'data'])
-        const csvLoading = _.get(state, ['client', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'ClientCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -46,8 +43,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             createForm
         }
@@ -66,24 +61,11 @@ const enhance = compose(
         clientId && dispatch(clientItemFetchAction(clientId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
             return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(clientCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
         },
 
         handleOpenConfirmDialog: props => () => {
@@ -98,12 +80,13 @@ const enhance = compose(
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog, filter} = props
             dispatch(clientDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     setOpenConfirmDialog(false)
                     dispatch(clientListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -228,7 +211,7 @@ const ClientList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {
                     contacts: [{}]
                 }
@@ -253,14 +236,6 @@ const ClientList = enhance((props) => {
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
-    }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
     const tabData = {
@@ -292,7 +267,6 @@ const ClientList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

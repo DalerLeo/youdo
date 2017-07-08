@@ -298,7 +298,7 @@ const SupplyDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -308,7 +308,7 @@ const SupplyDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                    onTouchTap={handleCloseDetail}>Поставка №{id}</div>
+                    onClick={handleCloseDetail}>Поставка №{id}</div>
                 <div className={classes.titleSupplier}>
                     <a className={classes.dropdown} onMouseEnter={() => {
                         setOpenDetails(true)
@@ -379,7 +379,7 @@ const SupplyDetails = enhance((props) => {
                         <Col xs={1}>Недостача</Col>
                         <Col xs={2}>
                             <div style={{textAlign: 'right'}}>Стоимость</div>
-                        </Col>g
+                        </Col>
                         <Col xs={2}>
                             <div style={{textAlign: 'right'}}>Итог</div>
                         </Col>
@@ -435,7 +435,7 @@ const SupplyDetails = enhance((props) => {
                     </div>
                     {supplyExpenseListLoading && <div className={classes.expenseLoader}>
                         <div>
-                            <CircularProgress size={70} thickness={6}/>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
                     </div>}
                     {!supplyExpenseListLoading && _.map(supplyExpenseList, (item) => {

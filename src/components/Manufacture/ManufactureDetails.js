@@ -125,7 +125,7 @@ const ManufactureDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -173,33 +173,36 @@ const ManufactureDetails = enhance((props) => {
         <div key={id} className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                    onTouchTap={handleCloseDetail}>{productTitle}</div>
+                     onTouchTap={handleCloseDetail}>{productTitle}</div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Добавить сырье">
+                    <Tooltip position="bottom" text="Изменение производитель">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
                             onClick={handleOpenChangeManufacture}>
                             <Map />
                         </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Удалить продукт">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
                             onClick={() => { handleDeleteAllIngredient(id) }}>
                             <DeleteIcon />
                         </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Добавить сырье">
                         <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.addButton}
-                        onClick={createMaterials.handleOpen}>
-                        <ContentAdd />
-                    </IconButton>
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.addButton} onClick={ createMaterials.handleOpen }>
+                            <ContentAdd />
+                        </IconButton>
                     </Tooltip>
                 </div>
             </div>
             <div className={classes.materialsList}>
                 {ingredientList.length > ZERO
-                ? <div>
+                    ? <div>
                         <ul className={classes.rawMaterials}>
                             <li key={id} className="dottedList">
                                 <Col xs={7}>
@@ -212,9 +215,9 @@ const ManufactureDetails = enhance((props) => {
                             {ingredientList}
                         </ul>
                     </div>
-                : <div className={classes.emptyQuery}>
-                    <div>По вашему запросу ничего не найдено</div>
-                </div>}
+                    : <div className={classes.emptyQuery}>
+                        <div>По вашему запросу ничего не найдено</div>
+                    </div>}
             </div>
         </div>
     )

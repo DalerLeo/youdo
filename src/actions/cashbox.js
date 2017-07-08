@@ -55,24 +55,8 @@ export const cashboxUpdateAction = (id, formValues) => {
     }
 }
 
-export const cashboxListFetchAction = () => {
-    const payload = axios()
-        .get(API.CASHBOX_LIST)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CASHBOX_LIST,
-        payload
-    }
-}
-
-export const cashboxCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
+export const cashboxListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
         .get(API.CASHBOX_LIST, {params})
         .then((response) => {
@@ -83,7 +67,7 @@ export const cashboxCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.CASHBOX_LIST_CSV,
+        type: actionTypes.CASHBOX_LIST,
         payload
     }
 }

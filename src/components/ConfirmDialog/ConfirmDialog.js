@@ -52,8 +52,20 @@ const enhance = compose(
         field: {
             width: '100%'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
         bottomButton: {
             bottom: '0',
@@ -114,15 +126,7 @@ const ConfirmDialog = enhance((props) => {
     const title = _.get(typesList, [type, 'name'])
     const buttonLabel = _.get(typesList, [type, 'submitName'])
     const text = _.get(typesList, [type, 'text'])
-    if (loading) {
-        return (
-            <div>
-                <div className={classes.loader}>
-                    <CircularProgress/>
-                </div>
-            </div>
-        )
-    }
+
     return (
         <Dialog
             modal={true}
@@ -139,6 +143,10 @@ const ConfirmDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <div className={classes.inContent}>
+                    {loading &&
+                    <div className={classes.loader}>
+                        <CircularProgress size={40} thickness={4}/>
+                    </div>}
                     <div className={classes.confirm}>
                         {text}
                     </div>
@@ -162,6 +170,7 @@ const ConfirmDialog = enhance((props) => {
 ConfirmDialog.propTypes = {
     type: PropTypes.oneOf(['delete', 'cancel']).isRequired,
     message: PropTypes.string.isRequired,
+    loading: PropTypes.bool.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired

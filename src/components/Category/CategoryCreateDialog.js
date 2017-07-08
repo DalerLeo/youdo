@@ -65,14 +65,14 @@ const CategoryCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
                     <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.inContent}>
                         <div className={classes.field}>
                             <Field
                                 name="name"
                                 component={TextField}
-                                className={classes.inputField}
+                                className={classes.inputFieldCustom}
                                 label="Наименование"
                                 fullWidth={true}
                             />
