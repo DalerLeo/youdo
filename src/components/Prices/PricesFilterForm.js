@@ -10,19 +10,16 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-import {ProviderSearchField, StockSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 
 export const PRICES_FILTER_OPEN = 'openFilterDialog'
 
 export const PRICES_FILTER_KEY = {
-    PROVIDER: 'provider',
-    STOCK: 'stock',
-    DELIVERY_FROM_DATE: 'deliveryFromDate',
-    DELIVERY_TO_DATE: 'deliveryToDate',
-    CREATED_FROM_DATE: 'createdFromDate',
-    CREATED_TO_DATE: 'createdToDate'
+    BEGIN_FROM_DATE: 'beginFromDate',
+    BEGIN_TO_DATE: 'beginToDate',
+    TILL_FROM_DATE: 'tillFromDate',
+    TILL_TO_DATE: 'tillToDate'
 }
 
 const enhance = compose(
@@ -160,14 +157,10 @@ const PricesFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="provider" component={ProviderSearchField} label="Поставщик"/>
-                        <Field className={classes.inputFieldCustom} name="stock" component={StockSearchField} label="Склад"/>
+                        <Field className={classes.inputField} name="beginDate" component={DateToDateField} label="Дата поставки" fullWidth={true}/>
                     </div>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="dateDelivery" component={DateToDateField} label="Дата поставки" fullWidth={true}/>
-                    </div>
-                    <div>
-                        <Field className={classes.inputFieldCustom} name="dateCreated" component={DateToDateField} label="Дата создания" fullWidth={true}/>
+                        <Field className={classes.inputField} name="tillDate" component={DateToDateField} label="Дата создания" fullWidth={true}/>
                     </div>
                     <div>
                         <RaisedButton

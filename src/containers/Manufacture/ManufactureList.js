@@ -24,6 +24,7 @@ import {
     ManufactureGridList
 } from '../../components/Manufacture'
 import {PRODUCT_FILTER_KEY, PRODUCT_FILTER_OPEN} from '../../components/Product'
+import {PERSON_FILTER_KEY, PERSON_FILTER_OPEN} from '../../components/Manufacture/PersonFilterForm'
 import {
     manufactureListFetchAction
 } from '../../actions/manufacture'
@@ -85,6 +86,7 @@ const enhance = compose(
         const userShiftLoading = _.get(state, ['userShift', 'list', 'loading'])
         const filterUser = filterHelper(userShiftList, pathname, query)
         const staffCreateForm = _.get(state, ['form', 'ManufactureCreateUserForm'])
+        const filterPersonForm = _.get(state, ['form', 'PersonFilterForm'])
 
         const equipmentList = _.get(state, ['equipment', 'list', 'data'])
         const equipmentListLoading = _.get(state, ['equipment', 'list', 'loading'])
@@ -121,6 +123,7 @@ const enhance = compose(
             userShiftList,
             userShiftLoading,
             filterUser,
+            filterPersonForm,
 
             equipmentList,
             equipmentListLoading,
@@ -365,6 +368,27 @@ const enhance = compose(
     }),
     // Person withHandlers
     withHandlers({
+        handleOpenPersonFilterDialog: props => () => {
+            const {location: {pathname}, filterUser} = props
+            hashHistory.push({pathname, query: filterUser.getParams({[PERSON_FILTER_OPEN]: true})})
+        },
+        handleClosePersonFilterDialog: props => () => {
+            const {location: {pathname}, filterUser} = props
+            hashHistory.push({pathname, query: filterUser.getParams({[PERSON_FILTER_OPEN]: false})})
+        },
+        handleClearPersonFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
+        },
+        handleSubmitPersonFilterDialog: props => () => {
+            const {filterUser, filterPersonForm} = props
+            const shift = _.get(filterPersonForm, ['values', 'shift', 'value']) || null
+            filterUser.filterBy({
+                [PRODUCT_FILTER_OPEN]: false,
+                [PRODUCT_FILTER_KEY.SHIFT]: shift
+            })
+        },
+
         handleOpenUserCreateDialog: props => () => {
             const {location: {pathname}, filterUser} = props
             hashHistory.push({pathname, query: filterUser.getParams({[OPEN_USER_CREATE_DIALOG]: true})})
@@ -513,7 +537,7 @@ const ManufactureList = enhance((props) => {
     const openEditMaterials = toBoolean(_.get(location, ['query', MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]))
     const openCreateMaterials = toBoolean(_.get(location, ['query', MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]))
     const type = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.TYPE))
-    const measurement = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.MEASUREMENT))
+    const shift = _.toInteger(filterProduct.getParam(PERSON_FILTER_KEY.SHIFT))
     const brand = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.BRAND))
     const openDeleteMaterialsDialog = toBoolean(_.get(location, ['query', OPEN_DELETE_MATERIALS_DIALOG]))
     const tab = _.get(location, ['query', TAB]) || MANUFACTURE_TAB.MANUFACTURE_DEFAULT_TAB
@@ -521,6 +545,7 @@ const ManufactureList = enhance((props) => {
     const openAddProductDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]))
     const openProductConfirmDialog = toBoolean(_.get(location, ['query', OPEN_DELETE_PRODUCT_DIALOG]))
     const openProductFilterDialog = toBoolean(_.get(location, ['query', PRODUCT_FILTER_OPEN]))
+    const openPersonFilterDialog = toBoolean(_.get(location, ['query', PERSON_FILTER_OPEN]))
     const openManufactureChangeDialog = toBoolean(_.get(location, ['query', MANUFACTURE_CHANGE]))
     const productId = _.get(props, ['location', 'query', 'productId']) || MINUS_ONE
 
@@ -623,9 +648,6 @@ const ManufactureList = enhance((props) => {
             },
             brand: {
                 value: brand
-            },
-            measurement: {
-                value: measurement
             }
         },
         filterLoading: false,
@@ -668,16 +690,16 @@ const ManufactureList = enhance((props) => {
 
     const personFilterDialog = {
         initialValues: {
-            category: {
-                value: type
+            shift: {
+                value: shift
             }
         },
         filterLoading: false,
-        openFilterDialog: openProductFilterDialog,
-        handleOpenFilterDialog: props.handleOpenProductFilterDialog,
-        handleCloseFilterDialog: props.handleCloseProductFilterDialog,
-        handleClearFilterDialog: props.handleClearProductFilterDialog,
-        handleSubmitFilterDialog: props.handleSubmitProductFilterDialog
+        openFilterDialog: openPersonFilterDialog,
+        handleOpenFilterDialog: props.handleOpenPersonFilterDialog,
+        handleCloseFilterDialog: props.handleClosePersonFilterDialog,
+        handleClearFilterDialog: props.handleClearPersonFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitPersonFilterDialog
     }
 
     const addUser = {
@@ -692,7 +714,7 @@ const ManufactureList = enhance((props) => {
 
     const updateUser = {
         initialValues: (() => {
-            if (!userShiftItem) {
+            if (!userShiftItem || openCreateUser) {
                 return {}
             }
             return {

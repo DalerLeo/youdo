@@ -37,6 +37,11 @@ import {PricesList} from '../containers/Prices'
 import {PriceList} from '../containers/Price'
 import NotFound from '../containers/NotFound'
 import {RemainderList} from '../containers/Remainder'
+import {
+    StatisticsList,
+    StatAgentList,
+    StatProductList
+        } from '../containers/Statistics'
 import {StockReceiveList} from '../containers/StockReceive'
 
 export default {
@@ -409,6 +414,26 @@ export default {
                 }
             ]
         },
+        // Statistics
+        {
+            path: ROUTES.STATISTICS_LIST_URL,
+            component: userIsAuth(StatisticsList),
+            childRoutes: [
+            ]
+        },
+        // Statistics/agent
+        {
+            path: ROUTES.STATISTICS_AGENT_URL,
+            component: userIsAuth(StatAgentList),
+            childRoutes: [
+            ]
+        },
+        // Statistics/product
+        {
+            path: ROUTES.STATISTICS_PRODUCT_URL,
+            component: userIsAuth(StatProductList),
+            childRoutes: []
+        },
         // Stock Receive Transfer
         {
             path: ROUTES.STOCK_RECEIVE_LIST_URL,
@@ -426,3 +451,4 @@ export default {
         }
     ]
 }
+

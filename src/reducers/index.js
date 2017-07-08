@@ -269,6 +269,11 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.STOCK_RECEIVE_CREATE),
         barcodeList: createThunkReducer(actionTypes.STOCK_BARCODE_LIST)
     }),
+    statistics: combineReducers({
+        list: createThunkReducer(actionTypes.REMAINDER_LIST),
+        item: createThunkReducer(actionTypes.REMAINDER_ITEM)
+    }),
+
     snackbar: snackbarReducer(),
     form: formReducer,
     toastr: toastrReducer,

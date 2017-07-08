@@ -50,6 +50,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'TransactionFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterCashbox = filterHelper(cashboxList, pathname, query)
         const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
         return {
             list,
@@ -62,14 +63,15 @@ const enhance = compose(
             updateLoading,
             filter,
             filterForm,
+            filterCashbox,
             cashboxId,
             createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
-    }, ({dispatch}) => {
-        dispatch(cashboxListFetchAction())
+    }, ({dispatch, filterCashbox}) => {
+        dispatch(cashboxListFetchAction(filterCashbox))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -202,14 +204,15 @@ const enhance = compose(
         },
 
         handleSubmitCreateSendDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, cashboxId} = props
+            const {dispatch, createForm, filter, location: {pathname}} = props
+            const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
             return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})})
-                    dispatch(transactionListFetchAction(filter))
+                    dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filter))
                 })
         },
@@ -342,12 +345,12 @@ const TransactionList = enhance((props) => {
 
     const updateExpenseDialog = {
         initialValues: (() => {
-            if (!detailId) {
+            if (!detailId || openCreateExpenseDialog) {
                 return {}
             }
             return {
                 comment: _.get(detail, 'comment'),
-                category: {
+                expanseCategory: {
                     value: _.get(detail, ['expanseCategory', 'id'])
                 },
                 amount: _.get(detail, 'amount')
@@ -362,7 +365,7 @@ const TransactionList = enhance((props) => {
 
     const updateIncomeDialog = {
         initialValues: (() => {
-            if (!detailId) {
+            if (!detailId || openCreateIncomeDialog) {
                 return {}
             }
 

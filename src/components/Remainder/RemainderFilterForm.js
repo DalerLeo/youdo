@@ -12,7 +12,19 @@ import ProductTypeSearchField from '../ReduxForm/Product/ProductTypeSearchField'
 import DateField from '../ReduxForm/RemainderDateField'
 import CheckBox from '../ReduxForm/Basic/CheckBox'
 import {RaisedButton} from 'material-ui'
+import PropTypes from 'prop-types'
+
 export const REMAINDER_FILTER_OPEN = 'openFilterDialog'
+
+export const REMAINDER_FILTER_KEY = {
+    PRODUCT_TYPE: 'productType',
+    STOCK: 'stock',
+    BIGGER_THAN: 'biggerThan',
+    LESS_THAN: 'lessThan',
+    DEFECTIVE: 'defective',
+    OUT_DATED: 'outDated',
+    CURRENT: 'current'
+}
 
 const enhance = compose(
     injectSheet({
@@ -42,10 +54,11 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            padding: '20px 30px',
+            padding: '0 30px',
             borderBottom: '1px #efefef solid',
-            lineHeight: '0',
-            fontWeight: '600'
+            lineHeight: '60px',
+            fontWeight: '600',
+            position: 'relative'
         },
         search: {
             position: 'relative',
@@ -104,6 +117,10 @@ const enhance = compose(
             '& input': {
                 width: '140px'
             }
+        },
+        closeIcon: {
+            position: 'absolute !important',
+            right: '20px'
         }
     }),
     reduxForm({
@@ -118,14 +135,14 @@ const iconStyle = {
         height: 20
     },
     button: {
-        width: 20,
-        height: 20,
+        width: 46,
+        height: 46,
         padding: 0
     }
 }
 
 const RemainderFilterForm = enhance((props) => {
-    const {classes} = props
+    const {classes, onClose} = props
     return (
         <div className={classes.filterWrapper}>
             <Paper zDepth={1} style={{height: '100%'}}>
@@ -134,7 +151,9 @@ const RemainderFilterForm = enhance((props) => {
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
-                        touch={true}>
+                        touch={true}
+                        className={classes.closeIcon}
+                        onTouchTap={onClose}>
                         <CloseIcon2 color="#666666"/>
                     </IconButton>
                 </div>
@@ -161,35 +180,35 @@ const RemainderFilterForm = enhance((props) => {
                             fullWidth={true}/>
                         <Field
                             className={classes.inputFieldCustom}
-                            name="orderStatus"
+                            name="productType"
                             component={ProductTypeSearchField}
                             label="Выберите тип товара"
                             fullWidth={true}/>
                         <div className={classes.subTitle}>Статус товаров</div>
                         <Field
-                            name="currentProducts"
+                            name="current"
                             component={CheckBox}
                             label="Действующие товары"/>
                         <Field
-                            name="defectiveProducts"
+                            name="defective"
                             component={CheckBox}
                             label="Бракованные товары"/>
                         <Field
-                            name="outdatedProducts"
+                            name="outDated"
                             component={CheckBox}
                             label="Просроченные товары"/>
                         <div className={classes.subTitle}>Фильтр по сроку годности</div>
                         <div className={classes.dateLabel} style={{margin: '0'}}>
                             <div>Больше чем:</div>
                             <Field
-                                name="createDate"
+                                name="biggerThan"
                                 component={DateField}
                                 fullWidth={true}/>
                         </div>
                         <div className={classes.dateLabel}>
                             <div>Меньше чем:</div>
                             <Field
-                                name="dostDate"
+                                name="lessThan"
                                 component={DateField}
                                 fullWidth={true}/>
                         </div>
@@ -208,5 +227,9 @@ const RemainderFilterForm = enhance((props) => {
         </div>
     )
 })
+
+RemainderFilterForm.propTypes = {
+    onClose: PropTypes.func.isRequired
+}
 
 export default RemainderFilterForm

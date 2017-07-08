@@ -265,10 +265,14 @@ export const PRICE_LIST_ITEM = 'dist/price_list_item'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 export const TRACKING = 'dist/border'
 
-export const REMAINDER = 'dist/stock'
-export const REMAINDER_CREATE = `/${REMAINDER}/`
+export const REMAINDER = 'dist/product'
 export const REMAINDER_LIST = `/${REMAINDER}/`
 export const REMAINDER_ITEM = `/${REMAINDER}/%d/`
+
+export const STATISTICS = 'dist/product'
+export const STATISTICS_LIST = `/${STATISTICS}/`
+export const STATISTICS_ITEM = `/${STATISTICS}/%d/`
+
 export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
 
 export const STOCK_RECEIVE = 'dist/supply'

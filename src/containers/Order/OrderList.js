@@ -191,9 +191,10 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const dostDate = _.get(filterForm, ['values', 'dostDate', 'date']) || null
+            const fromDate = _.get(filterForm, ['values', 'data', 'fromDate']) || null
+            const deliveryFromDate = _.get(filterForm, ['values', 'deliveryDate', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
+            const deliveryToDate = _.get(filterForm, ['values', 'deliveryDate', 'toDate']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const orderStatus = _.get(filterForm, ['values', 'orderStatus', 'value']) || null
 
@@ -201,9 +202,10 @@ const enhance = compose(
                 [ORDER_FILTER_OPEN]: false,
                 [ORDER_FILTER_KEY.CLIENT]: client,
                 [ORDER_FILTER_KEY.ORDERSTATUS]: orderStatus,
-                [ORDER_FILTER_KEY.DOSTDATE]: dostDate && dostDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [ORDER_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
+                [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [ORDER_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD')
             })
         },
         handleOpenDeleteDialog: props => () => {
@@ -272,15 +274,16 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
         },
         handleSubmitReturnDialog: props => () => {
-            const {dispatch, returnForm, detail, filter, location: {pathname}} = props
+            const {dispatch, returnForm, detail, filter, location: {pathname}, params} = props
+            const orderId = _.toInteger(_.get(params, 'orderId'))
             return dispatch(orderReturnAction(_.get(returnForm, ['values']), detail))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
-                    dispatch(orderItemReturnFetchAction(filter))
-                    dispatch(orderItemFetchAction(filter))
+                    dispatch(orderItemReturnFetchAction(orderId))
+                    dispatch(orderItemFetchAction(orderId))
                 })
         },
 
@@ -412,9 +415,10 @@ const OrderList = enhance((props) => {
 
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
     const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ORDERSTATUS))
-    const dostDate = filter.getParam(ORDER_FILTER_KEY.DOSTDATE)
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
+    const deliveryFromDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
+    const deliveryToDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_TO_DATE)
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
 
@@ -506,7 +510,7 @@ const OrderList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
             const HUND = 100
@@ -543,8 +547,9 @@ const OrderList = enhance((props) => {
             orderStatus: {
                 value: orderStatus
             },
-            dostDate: {
-                dostDate: dostDate && moment(dostDate, 'YYYY-MM-DD')
+            deliveryDate: {
+                deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
+                deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
             },
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),

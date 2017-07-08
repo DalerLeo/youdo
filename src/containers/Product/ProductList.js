@@ -272,7 +272,7 @@ const ProductList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
 

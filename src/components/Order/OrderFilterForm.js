@@ -20,9 +20,12 @@ export const ORDER_FILTER_OPEN = 'openFilterDialog'
 export const ORDER_FILTER_KEY = {
     CLIENT: 'client',
     ORDERSTATUS: 'orderStatus',
-    DOSTDATE: 'dostDate',
+    DOST_DATE: 'dostDate',
+    CREATE_DATE: 'createDate',
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    DELIVERY_FROM_DATE: 'deliveryFromDate',
+    TO_DATE: 'fromDate',
+    DELIVERY_TO_DATE: 'deliveryToDate'
 }
 
 const enhance = compose(
@@ -186,8 +189,8 @@ const OrderFilterForm = enhance((props) => {
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
                         <Field className={classes.inputFieldCustom} name="orderStatus" component={OrderStatusSearchField} label="Статус"/>
-                        <Field className={classes.inputDateCustom} name="createDate" component={DateToDateField} label="Период создания"/>
-                        <Field className={classes.inputDateCustom} name="dostDate" component={DateToDateField} label="Дата доставки"/>
+                        <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
+                        <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label="Дата доставки"/>
                     </div>
 
                     <RaisedButton

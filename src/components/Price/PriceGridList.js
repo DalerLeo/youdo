@@ -97,7 +97,7 @@ const PriceGridList = enhance((props) => {
             priceSupplyDialog={priceSupplyDialog}
             priceSetForm = {priceSetForm}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
-            mergedList={_.get(detailData.mergedList())}>
+            mergedList={(detailData.mergedList())}>
         </PriceDetails>
     )
     const priceList = _.map(_.get(listData, 'data'), (item) => {
@@ -115,8 +115,7 @@ const PriceGridList = enhance((props) => {
             <Row key={id}>
                 <Col xs={5} style={{display: 'flex', alignItems: 'center'}}>
                     <Link to={{
-                        pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id),
-                        query: filter.getParams()
+                        pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id)
                     }}>{name}</Link>
                 </Col>
                 <Col xs={2}>{type}</Col>

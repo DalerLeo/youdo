@@ -128,7 +128,6 @@ const PriceDetails = enhance((props) => {
         handleCloseDetail,
         mergedList
     } = props
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
     const marketTypeIsLoading = _.get(detailData, 'marketTypeLoading')
     const priceListItemsIsLoading = _.get(detailData, 'priceListItemsLoading')
@@ -159,7 +158,7 @@ const PriceDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                     onClick={handleCloseDetail}>
+                     onTouchTap={handleCloseDetail}>
                     {name}</div>
                 <div className={classes.titleButtons}>
                     {!priceSetForm.openPriceSetForm && <Tooltip position="bottom" text="Закрыть">
@@ -237,8 +236,8 @@ const PriceDetails = enhance((props) => {
                             {_.map(mergedList, (item) => {
                                 const id = _.get(item, 'marketTypeId')
                                 const marketName = _.get(item, 'marketTypeName')
-                                const cashPrice = _.get(item, 'cash_price') + ' ' + primaryCurrency
-                                const transferPrice = _.get(item, 'transfer_price') + ' ' + primaryCurrency
+                                const cashPrice = _.get(item, 'cash_price') + ' ' + getConfig('PRIMARY_CURRENCY_NAME')
+                                const transferPrice = _.get(item, 'transfer_price') + ' ' + getConfig('PRIMARY_CURRENCY_NAME')
                                 return (
                                     <Row className="dottedList" key={id}>
                                         <Col xs={6}> {marketName}</Col>

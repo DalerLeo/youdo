@@ -10,18 +10,9 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
-import Delete from 'material-ui/svg-icons/action/delete-forever'
-import {
-    StockReceiveProductSearchField,
-    TextField,
-    DateField,
-    CheckBox,
-    ImageUploadField
-} from '../ReduxForm'
+import {TextField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
-import moment from 'moment'
-
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -179,26 +170,12 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 20,
-        height: 20
-    },
-    button: {
-        width: 20,
-        height: 20,
-        padding: 0
-    }
-}
-
 const OrderCreateDialog = enhance((props) => {
     const {
         open,
         handleSubmit,
         onClose,
         classes,
-        isDefect,
         detailProducts,
         listLoading
     } = props
