@@ -5,6 +5,10 @@
   "main": "index.js",
   "author": "Fennec systems",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/username/repository.git"
+  },
   "eslintConfig": {
     "env": {
       "browser": true,
