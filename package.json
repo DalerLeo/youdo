@@ -4,7 +4,7 @@
   "description": "Fennec ERP system",
   "main": "index.js",
   "author": "Fennec systems",
-  "license": "wd",
+  "license": "MIT",
   "eslintConfig": {
     "env": {
       "browser": true,
