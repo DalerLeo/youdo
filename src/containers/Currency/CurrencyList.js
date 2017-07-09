@@ -12,18 +12,15 @@ import {
     CURRENCY_CREATE_DIALOG_OPEN,
     CURRENCY_UPDATE_DIALOG_OPEN,
     CURRENCY_DELETE_DIALOG_OPEN,
-    SET_CURRENCY_DIALOG_OPEN,
     CurrencyGridList
 } from '../../components/Currency'
 import {
     currencyCreateAction,
-    setCurrencyCreateAction,
     currencyUpdateAction,
     currencyListFetchAction,
     currencyCSVFetchAction,
     currencyDeleteAction,
-    currencyItemFetchAction,
-    currencyPrimaryFetchAction
+    currencyItemFetchAction
 } from '../../actions/currency'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -222,9 +219,12 @@ const CurrencyList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', CURRENCY_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', CURRENCY_DELETE_DIALOG_OPEN]))
 
-    const currencyMiniId = _.get(_.nth(_.get(list, ['results']), ZERO), 'id')
-    const currencyDetailId = _.get(params, 'currencyId') ? _.toInteger(_.get(params, 'currencyId'))
-        : props.handleCurrencyClick(currencyMiniId)
+    if (_.get(list, ['results']) && !_.get(params, 'currencyId')) {
+        const currencyMiniId = _.get(_.nth(_.get(list, ['results']), ZERO), 'id')
+        props.handleCurrencyClick(currencyMiniId)
+    }
+
+    const currencyDetailId = _.toInteger(_.get(params, 'currencyId'))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,

@@ -29,8 +29,8 @@ export const createSerializer = (data, location, image) => {
         phone,
         'contact_name': contactName,
         'location': {
-            'type': 'point',
-            'coordinates': [lat, lon]
+            'lat': lat,
+            'lon': lon
         },
         'is_active': isActive,
         'images': [image]

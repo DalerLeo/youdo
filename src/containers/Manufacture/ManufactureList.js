@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
+import {reset} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -205,8 +206,9 @@ const enhance = compose(
         },
 
         handleOpenAddProductDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: true})})
+            dispatch(reset('ProviderCreateForm'))
         },
         handleCloseAddProductDialog: props => () => {
             const {location: {pathname}, filter} = props
@@ -239,7 +241,6 @@ const enhance = compose(
                 pathname,
                 query: filter.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: false})
             })
-            console.log('exrdctfvgybhnjmk,fhkjsdh')
         },
         handleSendProductConfirmDialog: props => () => {
             const {dispatch, filterProduct, location: {pathname}, params} = props
@@ -288,8 +289,9 @@ const enhance = compose(
     // Ingredient withHandlers
     withHandlers({
         handleOpenCreateMaterials: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: true})})
+            dispatch(reset('IngredientCreateForm'))
         },
         handleCloseCreateMaterials: props => () => {
             const {location: {pathname}, filter} = props
@@ -391,8 +393,9 @@ const enhance = compose(
         },
 
         handleOpenUserCreateDialog: props => () => {
-            const {location: {pathname}, filterUser} = props
+            const {dispatch, location: {pathname}, filterUser} = props
             hashHistory.push({pathname, query: filterUser.getParams({[OPEN_USER_CREATE_DIALOG]: true})})
+            dispatch(reset('ManufactureCreateUserForm'))
         },
         handleCloseUserCreateDialog: props => () => {
             const {location: {pathname}, filterUser} = props
@@ -472,10 +475,6 @@ const enhance = compose(
     }),
     // List withHandlers
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
         handleOpenShowBom: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_SHOW_BOM_DIALOG_OPEN]: true})})

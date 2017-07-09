@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
+import {reset} from 'redux-form'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
@@ -135,8 +136,9 @@ const enhance = compose(
         },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[USERS_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('UsersCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -174,9 +176,6 @@ const enhance = compose(
             const {dispatch, createForm, filter, location: {pathname}} = props
             const usersId = _.toInteger(_.get(props, ['params', 'usersId']))
             return dispatch(usersUpdateAction(usersId, _.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(usersItemFetchAction(usersId))
-                })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })

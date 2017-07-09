@@ -68,7 +68,7 @@ export const USERS_CREATE = `/${USERS}/`
 export const USERS_LIST = `/${USERS}/`
 export const USERS_ITEM = `/${USERS}/%d/`
 export const USERS_DELETE = `/${USERS}/%d/`
-export const USERS_GROUP = 'group/gcrud/'
+export const USERS_GROUP = 'main/group/gcrud/'
 export const USERS_GROUP_ITEM = 'group/gcrud/%d/'
 
 export const CASHBOX = 'finance/cashbox'
@@ -260,7 +260,7 @@ export const PRICE_LIST_ITEM_HISTORY = 'stock/supply_product_history/%d/'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
 
-export const TRACKING = 'dist/border'
+export const TRACKING = 'market/border'
 
 export const REMAINDER = 'main/product'
 export const REMAINDER_LIST = `/${REMAINDER}/`

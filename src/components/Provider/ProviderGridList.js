@@ -3,9 +3,6 @@ import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import sprintf from 'sprintf'
 import GridList from '../GridList'
@@ -66,23 +63,11 @@ const ProviderGridList = enhance((props) => {
         filter,
         createDialog,
         updateDialog,
-        actionsDialog,
         confirmDialog,
         listData,
         detailData,
         classes
     } = props
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
 
     const providerDetail = (
         <ProviderDetail
@@ -136,7 +121,6 @@ const ProviderGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={providerDetail}
-                actionsDialog={actions}
             />
 
             <ProviderCreateDialog
@@ -189,10 +173,6 @@ ProviderGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired
 }
 

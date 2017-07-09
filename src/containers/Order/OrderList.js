@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
@@ -9,7 +10,6 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import * as ORDER_TAB from '../../constants/orderTab'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     ORDER_CREATE_DIALOG_OPEN,
     ORDER_UPDATE_DIALOG_OPEN,
@@ -148,9 +148,6 @@ const enhance = compose(
                 query: filter.getParams({[TAB]: tab})
             })
         },
-        handleActionEdit: props => () => {
-            return null
-        },
 
         handleOpenConfirmDialog: props => () => {
             const {setOpenConfirmDialog} = props
@@ -208,22 +205,11 @@ const enhance = compose(
                 [ORDER_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD')
             })
         },
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('OrderCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -411,7 +397,6 @@ const OrderList = enhance((props) => {
     const openReturnDialog = toBoolean(_.get(location, ['query', ORDER_RETURN_DIALOG_OPEN]))
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
 
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
     const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ORDERSTATUS))
@@ -423,11 +408,6 @@ const OrderList = enhance((props) => {
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
 
     const openCreateClientDialog = toBoolean(_.get(location, ['query', CLIENT_CREATE_DIALOG_OPEN]))
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
 
     const createDialog = {
         createLoading,
@@ -464,12 +444,6 @@ const OrderList = enhance((props) => {
         handleOpenShortageDialog: props.handleOpenShortageDialog,
         handleCloseShortageDialog: props.handleCloseShortageDialog,
         handleSubmitShortageDialog: props.handleSubmitShortageDialog
-    }
-
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
     }
 
     const getDocument = {
@@ -604,11 +578,9 @@ const OrderList = enhance((props) => {
                 itemReturnDialog={itemReturnDialog}
                 returnDialog={returnDialog}
                 shortageDialog={shortageDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 returnDataLoading={returnDataLoading}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 products={products}
             />

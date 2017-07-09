@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import moment from 'moment'
+import {reset} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -74,10 +75,6 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
         handleOpenCSVDialog: props => () => {
             const {dispatch, setOpenCSVDialog} = props
             setOpenCSVDialog(true)
@@ -112,8 +109,9 @@ const enhance = compose(
         },
 
         handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICES_FILTER_OPEN]: true})})
+            dispatch(reset('PricesCreateForm'))
         },
 
         handleCloseFilterDialog: props => () => {
@@ -140,18 +138,6 @@ const enhance = compose(
                 [PRICES_FILTER_KEY.TILL_FROM_DATE]: tillFromDate && tillFromDate.format('YYYY-MM-DD'),
                 [PRICES_FILTER_KEY.TILL_TO_DATE]: tillToDate && tillToDate.format('YYYY-MM-DD')
             })
-        },
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
         handleOpenCreateDialog: props => () => {
@@ -236,11 +222,6 @@ const PricesList = enhance((props) => {
     const tillFromDate = filter.getParam(PRICES_FILTER_KEY.TILL_FROM_DATE)
     const tillToDate = filter.getParam(PRICES_FILTER_KEY.TILL_TO_DATE)
     const detailId = _.get(params, 'pricesId')
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
 
     const createDialog = {
         createLoading,
@@ -336,7 +317,6 @@ const PricesList = enhance((props) => {
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
             />

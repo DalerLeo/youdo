@@ -4,15 +4,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import sprintf from 'sprintf'
-import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import Delete from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import ClientDetails from './ClientDetails'
 import Container from '../Container'
 import ClientCreateDialog from './ClientCreateDialog'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -141,9 +137,7 @@ const ClientGridList = enhance((props) => {
         filter,
         createDialog,
         updateDialog,
-        actionsDialog,
         confirmDialog,
-        deleteDialog,
         listData,
         detailData,
         classes
@@ -152,23 +146,11 @@ const ClientGridList = enhance((props) => {
         <ClientDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
-            deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             updateDialog={updateDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
         />
-    )
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <Delete />
-            </IconButton>
-        </div>
     )
 
     const clientList = _.map(_.get(listData, 'data'), (item) => {
@@ -213,7 +195,6 @@ const ClientGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={clientDetail}
-                actionsDialog={actions}
             />
 
             <ClientCreateDialog
@@ -230,12 +211,6 @@ const ClientGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
-
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
             />
 
             {detailData.data && <ConfirmDialog
@@ -267,21 +242,12 @@ ClientGridList.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
-    }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
         openUpdateDialog: PropTypes.bool.isRequired,
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired
 }
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
+import {reset} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -63,10 +64,6 @@ const enhance = compose(
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
         handleOpenConfirmDialog: props => () => {
             const {setOpenConfirmDialog} = props
             setOpenConfirmDialog(true)
@@ -89,22 +86,10 @@ const enhance = compose(
                 })
         },
 
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
-
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PROVIDER_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('ProviderCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -180,11 +165,6 @@ const ProviderList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', PROVIDER_UPDATE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'providerId'))
 
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
-
     const createDialog = {
         createLoading,
         openCreateDialog,
@@ -250,7 +230,6 @@ const ProviderList = enhance((props) => {
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
             />
         </Layout>
     )
