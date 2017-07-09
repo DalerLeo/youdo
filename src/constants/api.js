@@ -8,12 +8,6 @@ export const SIGN_IN = '/main/user/auth/'
 export const SIGN_OUT = `/${USER}/unauth/`
 export const CONFIG = 'config/'
 
-export const CATEGORY = 'dist/category'
-export const CATEGORY_CREATE = `/${CATEGORY}/`
-export const CATEGORY_LIST = `/${CATEGORY}/`
-export const CATEGORY_ITEM = `/${CATEGORY}/%d/`
-export const CATEGORY_DELETE = `/${CATEGORY}/%d/`
-
 export const EQUIPMENT = 'manufacture/equipment'
 export const EQUIPMENT_CREATE = `/${EQUIPMENT}/`
 export const EQUIPMENT_LIST = `/${EQUIPMENT}/`
@@ -161,7 +155,7 @@ export const INGREDIENT_DELETE = `/${INGREDIENT}/%d/`
 
 export const FILE_UPLOAD = '/main/file/'
 
-export const MANUFACTURE = 'dist/manufacturing'
+export const MANUFACTURE = 'manufacture/manufacturing'
 export const MANUFACTURE_CREATE = `/${MANUFACTURE}/`
 export const MANUFACTURE_LIST = `/${MANUFACTURE}/`
 export const MANUFACTURE_ITEM = `/${MANUFACTURE}/%d/`
@@ -178,13 +172,13 @@ export const SHIFT_LIST = `/${SHIFT}/`
 export const SHIFT_ITEM = `/${SHIFT}/%d/`
 export const SHIFT_DELETE = `/${SHIFT}/%d/`
 
-export const USER_SHIFT = 'dist/user_shift'
+export const USER_SHIFT = 'staff/user_shift'
 export const USER_SHIFT_CREATE = `/${USER_SHIFT}/`
 export const USER_SHIFT_LIST = `/${USER_SHIFT}/`
 export const USER_SHIFT_ITEM = `/${USER_SHIFT}/%d/`
 export const USER_SHIFT_DELETE = `/${USER_SHIFT}/%d/`
 
-export const PENDING_EXPENSES = 'supply_expanse'
+export const PENDING_EXPENSES = 'stock/supply_expanse'
 export const PENDING_EXPENSES_UPDATE = '/transactions/expanse_cashbox/'
 export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`
 export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`
@@ -215,12 +209,12 @@ export const STATDEBTORS_ITEM = `/${STATDEBTORS}/%d/`
 export const STATDEBTORS_DELETE = `/${STATDEBTORS}/%d/`
 export const STATDEBTORS_GET_DOCUMENT = 'sales/debtors_statistics/'
 
-export const PENDING_PAYMENTS = 'order'
-export const PENDING_PAYMENTS_CREATE = '/order_payment/'
+export const PENDING_PAYMENTS = 'sales/order_payment'
+export const PENDING_PAYMENTS_CREATE = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_LIST = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_ITEM = `/${PENDING_PAYMENTS}/%d/`
 
-export const STAT_MANUFACTURE = 'dist/manufacturing'
+export const STAT_MANUFACTURE = 'manufacture/manufacturing'
 export const STAT_MANUFACTURE_CREATE = `/${STAT_MANUFACTURE}/`
 export const STAT_MANUFACTURE_LIST = `/${STAT_MANUFACTURE}/`
 export const STAT_MANUFACTURE_ITEM = `/${STAT_MANUFACTURE}/%d/`
@@ -232,15 +226,15 @@ export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_ITEM = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
 
-export const MANUFACTURE_PRODUCT = 'create_ingredient'
+export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_DELETE = '/delete_ingredient/%d/'
 export const MANUFACTURE_PRODUCT_CHANGE = '/main/product/%d/change_manufacture/'
 
-export const SHIPMENT = 'shipment_statistics'
+export const SHIPMENT = 'manufacture/shipment_statistics/'
 export const SHIPMENT_LIST = `/${SHIPMENT}/`
-export const SHIPMENT_ITEM = 'shipment_details/%d/'
+export const SHIPMENT_ITEM = 'manufacture/shipment_details/%d/'
 
 export const MARKET_TYPE = 'market/market_type'
 export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
@@ -248,7 +242,7 @@ export const MARKET_TYPE_LIST = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_ITEM = `/${MARKET_TYPE}/%d/`
 export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`
 
-export const ZONE = 'dist/border'
+export const ZONE = 'market/border'
 export const ZONE_CREATE = `/${ZONE}/`
 export const ZONE_LIST = `/${ZONE}/`
 export const ZONE_ITEM = `/${ZONE}/%d/`
@@ -265,6 +259,7 @@ export const PRICE_LIST_ITEM = 'sales/price_list_item'
 export const PRICE_LIST_ITEM_HISTORY = 'stock/supply_product_history/%d/'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
+
 export const TRACKING = 'dist/border'
 
 export const REMAINDER = 'main/product'
