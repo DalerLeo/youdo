@@ -133,7 +133,7 @@ const ClientTransactionCreateDialog = enhance((props) => {
                                     <Field
                                         name="currency"
                                         component={CurrencySearchField}
-                                        label="Сумма"
+                                        label="Валюта"
                                         className={classes.inputFieldCustom}
                                         style={{width: '50%'}}
                                         fullWidth={false}/>

@@ -34,6 +34,20 @@ export const priceListFetchAction = (filter, manufacture) => {
         payload
     }
 }
+export const priceListItemHistoryAction = (id) => {
+    const payload = axios()
+        .post(sprintf(API.PRICE_LIST_ITEM_HISTORY), id)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.PRICE_LIST_ITEM_HISTORY,
+        payload
+    }
+}
 export const priceItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.PRICE_ITEM, id))

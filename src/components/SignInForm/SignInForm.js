@@ -13,10 +13,12 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '120px',
+            height: '120px',
             margin: '0 auto',
             padding: '15px',
-            textAlign: 'center',
-            display: 'inline-block'
+            justifyContent: 'center',
+            display: 'flex',
+            alignItems: 'center'
         },
 
         wrapper: {

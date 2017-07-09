@@ -190,14 +190,19 @@ const ShiftList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
-
     const updateDialog = {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
                 return {}
             }
             return {
-                name: _.get(detail, 'name')
+                name: _.get(detail, 'name'),
+                beginTime: {
+                    value: _.get(detail, 'beginTime')
+                },
+                endTime: {
+                    value: _.get(detail, 'endTime')
+                }
             }
         })(),
         updateLoading: detailLoading || updateLoading,
