@@ -184,7 +184,7 @@ const PriceDetails = enhance((props) => {
                         </Row>
                         <Row className="dottedList">
                             <Col xs={2}>
-                                <a onClick={priceSupplyDialog.handleOpenSupplyDialog} className={classes.link}>
+                                <a onClick={ () => { priceSupplyDialog.handleOpenSupplyDialog() }} className={classes.link}>
                                     P-1121
                                 </a>
                             </Col>
@@ -236,8 +236,8 @@ const PriceDetails = enhance((props) => {
                             {_.map(mergedList, (item) => {
                                 const id = _.get(item, 'marketTypeId')
                                 const marketName = _.get(item, 'marketTypeName')
-                                const cashPrice = _.get(item, 'cash_price') + ' ' + getConfig('PRIMARY_CURRENCY_NAME')
-                                const transferPrice = _.get(item, 'transfer_price') + ' ' + getConfig('PRIMARY_CURRENCY_NAME')
+                                const cashPrice = _.get(item, 'cash_price') + ' ' + getConfig('PRIMARY_CURRENCY')
+                                const transferPrice = _.get(item, 'transfer_price') + ' ' + getConfig('PRIMARY_CURRENCY')
                                 return (
                                     <Row className="dottedList" key={id}>
                                         <Col xs={6}> {marketName}</Col>

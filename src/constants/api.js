@@ -4,7 +4,7 @@ export const API_VERSION = 'v1'
 export const API_URL = `http://${API_HOST}/${API_ROOT}/${API_VERSION}`
 
 export const USER = 'main/crud'
-export const SIGN_IN = `/${USER}/auth/`
+export const SIGN_IN = '/main/user/auth/'
 export const SIGN_OUT = `/${USER}/unauth/`
 export const CONFIG = 'config/'
 
@@ -261,8 +261,10 @@ export const PRICE_LIST = `/${PRODUCT}/`
 export const PRICE_ITEM = `/${PRODUCT}/%d/`
 export const PRICE_DELETE = `/${PRODUCT}/%d/`
 
-export const PRICE_LIST_ITEM = 'dist/price_list_item'
+export const PRICE_LIST_ITEM = 'sales/price_list_item'
+export const PRICE_LIST_ITEM_HISTORY = 'stock/supply_product_history/%d/'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
+export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
 export const TRACKING = 'dist/border'
 
 export const REMAINDER = 'main/product'
