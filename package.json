@@ -87,7 +87,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --progress --inline",
-    "build": "webpack --define process.env.NODE_ENV='\"production\"'",
+    "build": "webpack",
     "test": "mocha --timeout 15000 test/AuthSpec.js",
     "lint": "eslint src/"
   }
