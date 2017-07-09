@@ -25,6 +25,8 @@ build:
     - "export API_HOST=api.gapbor.com"
     - "export NODE_ENV=production"
     - "yarn install"
+    - "yarn add global webpack"
+    - "yarn add global webpack-dev-server"
     - "yarn build"
     - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
     - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
