@@ -1,5 +1,5 @@
 before_script:
-  - "export PATH=$PATH:/usr/local/bin"
+#  - "export PATH=$PATH:/usr/local/bin"
   - "export PROJECT_DIR=/web/basic_ui"
   - "export BUILD_DIR=~/basic_ui"
 
