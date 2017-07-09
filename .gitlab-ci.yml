@@ -21,11 +21,11 @@ stages:
 build:
   stage: build
   script:
+    - "export SOURCE_DIR=`pwd`"
     - "export API_HOST=api.gapbor.com"
+#    - "export NODE_ENV=production"
     - "yarn install"
     - "yarn build"
-    - "export NODE_ENV=production"
-    - "export SOURCE_DIR=`pwd`"
     - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
     - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
     - "cp -R ${SOURCE_DIR}/dist/* ~/basic_ui_${CI_BUILD_REF_NAME}"
