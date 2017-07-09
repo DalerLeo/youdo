@@ -23,8 +23,8 @@ build:
   script:
     - "export SOURCE_DIR=`pwd`"
     - "export API_HOST=api.wienerdeming.com"
-    - "export NODE_ENV='production'"
     - "yarn install"
+    - "export NODE_ENV='production'"
     - "yarn build"
     - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
     - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
