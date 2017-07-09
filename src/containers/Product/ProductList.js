@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -129,22 +130,11 @@ const enhance = compose(
                 [PRODUCT_FILTER_KEY.BRAND]: brand
             })
         },
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRODUCT_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('ProductCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -197,9 +187,6 @@ const enhance = compose(
 
             return dispatch(productUpdateAction(productId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(productItemFetchAction(productId))
-                })
-                .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
@@ -234,11 +221,6 @@ const ProductList = enhance((props) => {
     const type = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.TYPE))
     const measurement = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.MEASUREMENT))
     const detailId = _.toInteger(_.get(params, 'productId'))
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
 
     const createDialog = {
         createLoading,
@@ -332,7 +314,6 @@ const ProductList = enhance((props) => {
                 showBigImg={showBigImg}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
             />
         </Layout>

@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -97,8 +98,9 @@ const enhance = compose(
         },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MARKET_TYPE_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('MarketTypeCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -137,9 +139,6 @@ const enhance = compose(
             const marketTypeId = _.toInteger(_.get(props, ['params', 'marketTypeId']))
 
             return dispatch(marketTypeUpdateAction(marketTypeId, _.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(marketTypeItemFetchAction(marketTypeId))
-                })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })

@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -91,22 +92,10 @@ const enhance = compose(
                 })
         },
 
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
-
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[EXPENSIVE_CATEGORY_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('ExpensiveCategoryCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -146,13 +135,11 @@ const enhance = compose(
 
             return dispatch(expensiveCategoryUpdateAction(expensiveCategoryId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(expensiveCategoryItemFetchAction(expensiveCategoryId))
-                })
-                .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[EXPENSIVE_CATEGORY_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(expensiveCategoryListFetchAction(filter))
                 })
         }
     })
@@ -177,11 +164,6 @@ const ExpensiveCategoryList = enhance((props) => {
     const openConfirmDialog = toBoolean(_.get(location, ['query', EXPENSIVE_CATEGORY_DELETE_DIALOG_OPEN]))
 
     const detailId = _.toInteger(_.get(params, 'expensiveCategoryId'))
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
 
     const createDialog = {
         createLoading,
@@ -235,7 +217,6 @@ const ExpensiveCategoryList = enhance((props) => {
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
             />
         </Layout>
     )

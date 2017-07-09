@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -96,8 +97,9 @@ const enhance = compose(
         },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MEASUREMENT_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('MeasurementCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -136,9 +138,6 @@ const enhance = compose(
             const measurementId = _.toInteger(_.get(props, ['params', 'measurementId']))
 
             return dispatch(measurementUpdateAction(measurementId, _.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(measurementItemFetchAction(measurementId))
-                })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })

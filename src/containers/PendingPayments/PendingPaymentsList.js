@@ -140,11 +140,6 @@ const PendingPaymentsList = enhance((props) => {
     const toDate = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'pendingPaymentsId'))
 
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
-
     const confirmDialog = {
         openConfirmDialog: props.openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
@@ -195,7 +190,6 @@ const PendingPaymentsList = enhance((props) => {
                 detailData={detailData}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
             />
         </Layout>
