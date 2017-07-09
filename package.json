@@ -4,11 +4,7 @@
   "description": "Fennec ERP system",
   "main": "index.js",
   "author": "Fennec systems",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/username/repository.git"
-  },
+  "license": "wd",
   "eslintConfig": {
     "env": {
       "browser": true,
