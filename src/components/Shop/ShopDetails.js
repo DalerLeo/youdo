@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Add from 'material-ui/svg-icons/content/add'
+import Close from 'material-ui/svg-icons/navigation/close'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -106,7 +107,13 @@ const enhance = compose(
                 height: '165px',
                 display: 'block',
                 marginRight: '7px',
-                marginBottom: '0'
+                marginBottom: '0',
+                '& svg': {
+                    display: 'block !important'
+                },
+                '&:hover svg': {
+                    opacity: '1'
+                }
             },
             '& span:nth-child(4)': {
                 position: 'relative',
@@ -134,6 +141,16 @@ const enhance = compose(
                 height: '36px',
                 marginBottom: '7px',
                 position: 'relative',
+                zIndex: '1',
+                '& svg': {
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    opacity: '0',
+                    display: 'none !important',
+                    zIndex: '2',
+                    transition: 'all 0.3s ease'
+                },
                 '& strong': {
                     color: '#fff',
                     position: 'absolute',
@@ -209,7 +226,18 @@ const iconStyle = {
     }
 }
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data, confirmDialog, updateDialog, addPhotoDialog, slideShowDialog, handleCloseDetail} = props
+    const {
+        classes,
+        loading,
+        data,
+        confirmDialog,
+        imageDeleteDialog,
+        updateDialog,
+        addPhotoDialog,
+        slideShowDialog,
+        handleCloseDetail
+    } = props
+
     const ZERO = 0
     const MAX_IMAGE_COUNT = 4
     const EVERY_DAY = '1'
@@ -234,6 +262,7 @@ const ShopDetails = enhance((props) => {
     }
     const lastImage = _.last(slicedImages)
     const moreImages = images.length - slicedImages.length
+
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -243,6 +272,7 @@ const ShopDetails = enhance((props) => {
             </div>
         )
     }
+
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
@@ -295,9 +325,10 @@ const ShopDetails = enhance((props) => {
                                 const imgId = _.get(item, 'id')
                                 const isLastImage = (imgId === lastImage.id)
                                 return (
-                                    <span key={index} onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}>
-                                        {isLastImage && moreImages !== ZERO && <strong>{moreImages}+</strong>}
-                                        <img src={src} alt=""/>
+                                    <span key={index}>
+                                        {isLastImage && moreImages !== ZERO && <strong onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}>{moreImages}+</strong>}
+                                        <img src={src} alt="" onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}/>
+                                        <Close color="#e0e0e0" onClick={() => { imageDeleteDialog.handleOpenDeleteImageDialog(imgId) }} />
                                     </span>
                                 )
                             })
@@ -345,6 +376,12 @@ ShopDetails.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
+    imageDeleteDialog: PropTypes.shape({
+        openDeleteImage: PropTypes.bool.isRequired,
+        handleOpenDeleteImageDialog: PropTypes.func.isRequired,
+        handleCloseDeleteImageDialog: PropTypes.func.isRequired,
+        handleSendDeleteImageDialog: PropTypes.func.isRequired
     }).isRequired,
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
