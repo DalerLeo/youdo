@@ -266,9 +266,11 @@ export const REMAINDER = 'main/product'
 export const REMAINDER_LIST = `/${REMAINDER}/`
 export const REMAINDER_ITEM = `/${REMAINDER}/%d/`
 
-export const STATISTICS = 'main/product'
-export const STATISTICS_LIST = `/${STATISTICS}/`
-export const STATISTICS_ITEM = `/${STATISTICS}/%d/`
+export const STATISTICS = 'dist/product'
+export const STAT_AGENT_LIST = `/${STATISTICS}/`
+export const STAT_AGENT_ITEM = `/${STATISTICS}/%d/`
+export const STAT_PRODUCT_LIST = `/${STATISTICS}/`
+export const STAT_PRODUCT_ITEM = `/${STATISTICS}/%d/`
 
 export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
 
