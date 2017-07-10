@@ -59,7 +59,7 @@ export const SHOP = 'market/market'
 export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
-export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/image/`
+export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/images/`
 export const SHOP_ITEM_SHOW_IMAGE = 'file/file/%d/'
 export const SHOP_DELETE = `/${SHOP}/%d/`
 

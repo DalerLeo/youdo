@@ -258,19 +258,8 @@ const enhance = compose(
         },
 
         handleSubmitMapUpdateDialog: props => () => {
-            const {dispatch, mapForm, filter} = props
-            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
-
-            return dispatch(shopUpdateAction(shopId, _.get(mapForm, ['values'])))
-                .then(() => {
-                    return dispatch(shopItemFetchAction(shopId))
-                })
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false}))
-                })
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false})})
         },
 
         handleOpenUpdateDialog: props => () => {
@@ -284,10 +273,10 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, mapLocation} = props
             const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
 
-            return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values'])))
+            return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values']), mapLocation))
                 .then(() => {
                     return dispatch(shopItemFetchAction(shopId))
                 })
@@ -359,6 +348,17 @@ const ShopList = enhance((props) => {
     }
 
     const mapDialog = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            }
+            return {
+                latLng: {
+                    lat: _.get(detail, ['location', 'coordinates', '0']),
+                    lng: _.get(detail, ['location', 'coordinates', '1'])
+                }
+            }
+        })(),
         openMapDialog,
         handleOpenMapDialog: props.handleOpenMapDialog,
         handleCloseMapDialog: props.handleCloseMapDialog,
