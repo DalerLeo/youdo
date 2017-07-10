@@ -13,7 +13,16 @@ import ProductSearchField from '../ReduxForm/Product/ProductSearchField'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
+import Search from 'material-ui/svg-icons/action/search'
+import IconButton from 'material-ui/IconButton'
+import Pagination from '../GridList/GridListNavPagination'
 
+export const STAT_PRODUCT_FILTER_KEY = {
+    PRODUCT: 'product',
+    PRODUCT_TYPE: 'productType',
+    TO_DATE: 'toDate',
+    FROM_DATE: 'fromDate'
+}
 const enhance = compose(
     injectSheet({
         wrapper: {
@@ -80,11 +89,15 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between'
         },
+        form: {
+            display: 'flex',
+            alignItems: 'center'
+        },
         filter: {
             display: 'flex',
-            alignItems: 'baseline',
+            alignItems: 'center',
             '& > div': {
-                width: '20%!important',
+                width: '170px!important',
                 position: 'relative',
                 marginRight: '40px',
                 '&:after': {
@@ -114,23 +127,40 @@ const enhance = compose(
         rightPanel: {
             flexBasis: '75%',
             maxWidth: '75%'
+        },
+        searchButton: {
+            marginBottom: '0!important',
+            marginLeft: '-25px!important'
         }
     }),
     reduxForm({
-        form: 'StatisticsFilterForm',
+        form: 'StatProductFilterForm',
         enableReinitialize: true
     }),
 )
 
 const StatProductGridList = enhance((props) => {
     const {
-        classes
+        classes,
+        filter
     } = props
 
     const headerStyle = {
         backgroundColor: '#5d6474',
         color: '#fff',
         fontWeight: '600'
+    }
+    const iconStyle = {
+        icon: {
+            color: '#333',
+            width: 25,
+            height: 25
+        },
+        button: {
+            width: 40,
+            height: 40,
+            padding: 0
+        }
     }
 
     const sample = 100
@@ -254,29 +284,38 @@ const StatProductGridList = enhance((props) => {
            style={{margin: '0 -28px'}}>
         <Row style={{margin: '0'}}>
             <div className={classes.leftPanel}>
-                <StatSideMenu/>
+                <StatSideMenu currentUrl={ROUTES.STATISTICS_PRODUCT_URL} />
             </div>
             <div className={classes.rightPanel}>
                 <div className={classes.wrapper}>
-                    <form className={classes.filter}>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="ProductType"
-                            component={ProductTypeSearchField}
-                            label="Тип товара"
-                            fullWidth={true}/>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="Product"
-                            component={ProductSearchField}
-                            label="Товар"
-                            fullWidth={true}/>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="date"
-                            component={DateToDateField}
-                            label="Диапазон дат."
-                            fullWidth={true}/>
+                    <form className={classes.form}>
+                        <div className={classes.filter}>
+                            <Field
+                                className={classes.inputFieldCustom}
+                                name="productType"
+                                component={ProductTypeSearchField}
+                                label="Тип товара"
+                                fullWidth={true}/>
+                            <Field
+                                className={classes.inputFieldCustom}
+                                name="product"
+                                component={ProductSearchField}
+                                label="Товар"
+                                fullWidth={true}/>
+                            <Field
+                                className={classes.inputFieldCustom}
+                                name="date"
+                                component={DateToDateField}
+                                label="Диапазон дат."
+                                fullWidth={true}/>
+                        </div>
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            className={classes.searchButton}
+                        >
+                            <Search/>
+                        </IconButton>
                     </form>
                     <div className={classes.balanceButtonWrap}>
                         <div className={classes.balanceInfo}>
@@ -288,6 +327,7 @@ const StatProductGridList = enhance((props) => {
                         </div>
                     </div>
                     <ReactHighcharts config={config}/>
+                    <Pagination filter={filter}/>
                     {headers}
                     {list}
                 </div>

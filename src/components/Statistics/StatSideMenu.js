@@ -1,6 +1,10 @@
 import React from 'react'
+import _ from 'lodash'
+import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import {Link} from 'react-router'
+import PropTypes from 'prop-types'
 
 const enhance = compose(
     injectSheet({
@@ -11,42 +15,72 @@ const enhance = compose(
                 '& div': {
                     lineHeight: '55px'
                 }
+            },
+            '& ul': {
+                fontWeight: '600'
+            },
+            '& li': {
+                paddingLeft: '20px',
+                paddingTop: '18px',
+                fontWeight: '500',
+                '&:last-child': {
+                    paddingBottom: '18px'
+                }
             }
         },
-        ul: {
-            fontWeight: '600'
+        active: {
+            color: '#129fdd'
         },
-        li: {
-            paddingLeft: '20px',
-            paddingTop: '18px',
-            fontWeight: '500'
+        simple: {
+            color: '#333'
         }
-    })
+    }),
 )
 
 const StatSideMenu = enhance((props) => {
-    const {classes} = props
+    const {classes, currentUrl} = props
+    const statMenus = [
+        {
+            section: 'Продажи',
+            url: ROUTES.STATSTOCK_LIST_URL,
+            childs: [
+                {name: 'Агенты', url: ROUTES.STATISTICS_AGENT_URL},
+                {name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL}
+            ]
+        },
+        {
+            section: 'Покупки',
+            url: ROUTES.STATSTOCK_LIST_URL,
+            childs: [
+            ]
+        }
+    ]
 
     return (
         <div className={classes.wrapper}>
-            <ul className={classes.ul}>
-                Продажи
-                <li className={classes.li}>
-                    Агенты
-                </li>
-                <li className={classes.li}>
-                    Магазины
-                </li>
-                <li className={classes.li}>
-                    Товары
-                </li>
-            </ul>
+            {_.map(statMenus, (item, index) => {
+                return (
+                    <ul key={index}>{item.section}
+                        {_.map(item.childs, (object, i) => {
+                            return (
+                                <li key={i}>
+                                     <Link to={object.url}>
+                                         <span className={object.url === currentUrl ? classes.active : classes.simple}>
+                                             {object.name}
+                                         </span>
+                                     </Link>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                )
+            })}
         </div>
     )
 })
 
 StatSideMenu.propTypes = {
-
+    currentUrl: PropTypes.string.isRequired
 }
 
 export default StatSideMenu

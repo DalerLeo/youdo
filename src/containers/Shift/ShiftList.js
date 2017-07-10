@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
+import {reset} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -96,8 +97,9 @@ const enhance = compose(
         },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHIFT_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('ShiftCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {

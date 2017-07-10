@@ -2,13 +2,13 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     CLIENT_CREATE_DIALOG_OPEN,
     CLIENT_UPDATE_DIALOG_OPEN,
@@ -90,22 +90,10 @@ const enhance = compose(
                 })
         },
 
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
-
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('ClientCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -179,14 +167,8 @@ const ClientList = enhance((props) => {
 
     const openCreateDialog = toBoolean(_.get(location, ['query', CLIENT_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CLIENT_UPDATE_DIALOG_OPEN]))
-    const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'clientId'))
     const tab = _.get(params, 'tab')
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
 
     const createDialog = {
         createLoading,
@@ -194,12 +176,6 @@ const ClientList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
-    }
-
-    const deleteDialog = {
-        openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
-        handleCloseDeleteDialog: props.handleCloseDeleteDialog
     }
 
     const confirmDialog = {
@@ -263,10 +239,8 @@ const ClientList = enhance((props) => {
                 detailData={detailData}
                 tabData={tabData}
                 createDialog={createDialog}
-                deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
             />
         </Layout>
     )

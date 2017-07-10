@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import moment from 'moment'
+import {reset} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -85,14 +86,6 @@ const enhance = compose(
     withState('openCSVDialog', 'setOpenCSVDialog', false),
 
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
-        handleOpenDeleteDialog: props => () => {
-            return null
-        },
-
         handleOpenConfirmDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
@@ -150,8 +143,9 @@ const enhance = compose(
         },
 
         handleOpenCreateExpenseDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN]: true})})
+            dispatch(reset('TransactionCreateForm'))
         },
 
         handleCloseCreateExpenseDialog: props => () => {
@@ -172,8 +166,9 @@ const enhance = compose(
         },
 
         handleOpenCreateIncomeDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_INCOME_DIALOG_OPEN]: true})})
+            dispatch(reset('TransactionCreateForm'))
         },
 
         handleCloseCreateIncomeDialog: props => () => {
@@ -194,8 +189,9 @@ const enhance = compose(
         },
 
         handleOpenCreateSendDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: true})})
+            dispatch(reset('TransactionCreateForm'))
         },
 
         handleCloseCreateSendDialog: props => () => {
@@ -313,11 +309,6 @@ const TransactionList = enhance((props) => {
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'transactionId'))
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
 
     const createExpenseDialog = {
         loading: createLoading,
@@ -442,7 +433,6 @@ const TransactionList = enhance((props) => {
                 updateExpenseDialog={updateExpenseDialog}
                 createSendDialog={createSendDialog}
                 confirmDialog={confirmDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
             />
         </Layout>

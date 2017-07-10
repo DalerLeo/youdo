@@ -12,6 +12,7 @@ import {
     StatAgentGridList,
     STAT_AGENT_DIALOG_OPEN
 } from '../../components/Statistics'
+import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/StatAgentGridList'
 import {
     statAgentListFetchAction,
     statAgentItemFetchAction
@@ -27,6 +28,7 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statAgent', 'item', 'loading'])
         const list = _.get(state, ['statAgent', 'list', 'data'])
         const listLoading = _.get(state, ['statAgent', 'list', 'loading'])
+        const filterForm = _.get(state, ['form', 'StatAgentFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -34,7 +36,8 @@ const enhance = compose(
             detail,
             detailLoading,
             filter,
-            query
+            query,
+            filterForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -66,6 +69,22 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParam()})
+        },
+
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
+            const user = _.get(filterForm, ['values', 'user', 'value']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+
+            filter.filterBy({
+                [STAT_AGENT_FILTER_KEY.ZONE]: zone,
+                [STAT_AGENT_FILTER_KEY.USER]: user,
+                [STAT_AGENT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+
+            })
         }
     })
 )

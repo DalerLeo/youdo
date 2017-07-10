@@ -8,6 +8,7 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 
 import {StatProductGridList} from '../../components/Statistics'
+import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/StatProductGridList'
 import {
     statProductListFetchAction,
     statProductItemFetchAction
@@ -23,13 +24,15 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statProduct', 'item', 'loading'])
         const list = _.get(state, ['statProduct', 'list', 'data'])
         const listLoading = _.get(state, ['statProduct', 'list', 'loading'])
+        const filterForm = _.get(state, ['form', 'StatAgentFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
             listLoading,
             detail,
             detailLoading,
-            filter
+            filter,
+            filterForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -49,7 +52,21 @@ const enhance = compose(
     }),
 
     withHandlers({
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const product = _.get(filterForm, ['values', 'product', 'value']) || null
+            const productType = _.get(filterForm, ['values', 'productType', 'value']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
+            filter.filterBy({
+                [STAT_PRODUCT_FILTER_KEY.PRODUCT]: product,
+                [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE]: productType,
+                [STAT_PRODUCT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [STAT_PRODUCT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+
+            })
+        },
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParam()})

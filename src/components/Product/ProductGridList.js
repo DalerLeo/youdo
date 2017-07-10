@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from '../../constants/routes'
@@ -92,25 +91,12 @@ const ProductGridList = enhance((props) => {
         createDialog,
         updateDialog,
         filterDialog,
-        actionsDialog,
         showBigImg,
         confirmDialog,
         listData,
         detailData,
         classes
     } = props
-
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
 
     const productFilterDialog = (
         <ProductFilterForm
@@ -196,7 +182,6 @@ const ProductGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={productDetail}
-                actionsDialog={actions}
                 filterDialog={productFilterDialog}
             />
 
@@ -260,10 +245,6 @@ ProductGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,

@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
+import {reset} from 'redux-form'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
@@ -152,8 +153,9 @@ const enhance = compose(
             })
         },
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('ShopCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {

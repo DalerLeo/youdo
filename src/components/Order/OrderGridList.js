@@ -4,8 +4,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -13,7 +11,6 @@ import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
 import OrderCreateDialog from './OrderCreateDialog'
 import OrderShortageDialog from './OrderShortage'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import ClientCreateDialog from '../Client/ClientCreateDialog'
 import SubMenu from '../SubMenu'
@@ -116,7 +113,6 @@ const OrderGridList = enhance((props) => {
         createDialog,
         updateDialog,
         filterDialog,
-        actionsDialog,
         getDocument,
         transactionsDialog,
         returnDialog,
@@ -124,7 +120,6 @@ const OrderGridList = enhance((props) => {
         products,
         confirmDialog,
         itemReturnDialog,
-        deleteDialog,
         listData,
         detailData,
         returnListData,
@@ -134,17 +129,6 @@ const OrderGridList = enhance((props) => {
         createClientDialog,
         returnDataLoading
     } = props
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
 
     const orderFilterDialog = (
         <OrderFilterForm
@@ -171,7 +155,6 @@ const OrderGridList = enhance((props) => {
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             returnData={_.get(detailData, 'return')}
-            deleteDialog={deleteDialog}
             transactionsDialog={transactionsDialog}
             tabData={tabData}
             getDocument={getDocument}
@@ -296,7 +279,6 @@ const OrderGridList = enhance((props) => {
                 list={list}
                 detail={orderDetail}
                 withoutRow={true}
-                actionsDialog={actions}
                 filterDialog={orderFilterDialog}
             />
 
@@ -325,12 +307,6 @@ const OrderGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
-
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
             />
 
             <ClientCreateDialog
@@ -376,21 +352,12 @@ OrderGridList.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
-    }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
         openUpdateDialog: PropTypes.bool.isRequired,
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired,
     transactionsDialog: PropTypes.shape({
         transactionsLoading: PropTypes.bool.isRequired,
