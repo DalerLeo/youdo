@@ -239,7 +239,6 @@ const enhance = compose(
                 pathname,
                 query: filter.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: false})
             })
-            console.log('exrdctfvgybhnjmk,fhkjsdh')
         },
         handleSendProductConfirmDialog: props => () => {
             const {dispatch, filterProduct, location: {pathname}, params} = props
