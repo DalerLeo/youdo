@@ -1,20 +1,30 @@
 import _ from 'lodash'
 
-export const createSerializer = (data) => {
-    const amount = _.toNumber(_.get(data, 'amount'))
-    const expDate = _.get(data, 'expDate')
-    const barcode = _.get(data, 'barcode')
-    const isDefect = _.get(data, 'isDefect') || false
-    const comment = _.get(data, 'comment')
-    const image = _.get(data, 'image')
+export const createSerializer = (data, detail) => {
+    const provider = _.get(detail, ['provider', 'id'])
+    const products = _.map(_.get(detail, 'products'), (item) => {
+        const amount = _.get(item, 'amount')
+        const supplyProduct = _.get(item, ['product', 'id'])
+        const defectAmount = _.get(item, 'defectAmount')
+
+        return {
+            'supply_product': supplyProduct,
+            amount,
+            'defect_amount': defectAmount
+        }
+    })
+    const stock = _.get(detail, ['stock', 'id'])
+    const dateDelivery = _.get(detail, 'dateDelivery')
+    const contact = _.get(detail, ['contact', 'id'])
+    const currency = _.get(detail, ['currency', 'id'])
 
     return {
-        amount,
-        expDate,
-        barcode,
-        'is_defect': isDefect,
-        comment,
-        image
+        provider,
+        products,
+        stock,
+        'date_delivery': dateDelivery,
+        contact,
+        currency
     }
 }
 

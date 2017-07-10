@@ -145,11 +145,11 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, params} = props
+            const {dispatch, createForm, filter, location: {pathname}, params, detail} = props
             const formValues = _.get(createForm, ['values'])
             const supplyId = _.toInteger(_.get(params, 'stockReceiveId'))
 
-            return dispatch(stockReceiveCreateAction(formValues, supplyId))
+            return dispatch(stockReceiveCreateAction(formValues, supplyId, detail))
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: false})})
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))

@@ -282,5 +282,5 @@ export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`
 export const STOCK_TRANSFER_ITEM = `/${STOCK_TRANSFER}/%d/`
 export const STOCK_RECEIVE_LIST = `/${STOCK_RECEIVE}/`
 export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
-export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/product_detail/%d/`
+export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/accept_products/`
 export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE
