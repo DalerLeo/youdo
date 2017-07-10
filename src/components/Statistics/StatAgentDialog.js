@@ -66,7 +66,7 @@ const enhance = compose(
                 display: 'flex',
                 alignItems: 'center'
             },
-            '& .personImage': {
+            '& .persoknImage': {
                 borderRadius: '50%',
                 overflow: 'hidden',
                 flexBasis: '35px',
@@ -79,6 +79,10 @@ const enhance = compose(
                     height: '100%',
                     width: '100%'
                 }
+            },
+            '& button': {
+                display: 'flex!important',
+                justifyContent: 'center'
             }
 
         },
