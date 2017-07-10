@@ -92,7 +92,7 @@ const iconStyle = {
     }
 }
 const SlideShowDialog = enhance((props) => {
-    const {open, onClose, classes, image, images, prevBtn, nextBtn} = props
+    const {open, onClose, classes, image, images, prevBtn, nextBtn, handleSetPrimaryImage} = props
     const imgURL = _.get(image, 'file')
     const lastIndex = _.get(images, 'length')
     const currentIndex = _.findIndex(images, (o) => {
@@ -108,7 +108,8 @@ const SlideShowDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <IconButton>
-                    <Star color="#ffad36"/>
+                    <Star color="#ffad36"
+                    onTouchTap={handleSetPrimaryImage}/>
                 </IconButton>
             </div>
             <div className={classes.inContent} style={{backgroundImage: 'url(' + imgURL + ')'}}>
@@ -144,6 +145,7 @@ SlideShowDialog.propTyeps = {
     image: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     prevBtn: PropTypes.func.isRequired,
-    nextBtn: PropTypes.func.isRequired
+    nextBtn: PropTypes.func.isRequired,
+    handleSetPrimaryImage: PropTypes.func
 }
 export default SlideShowDialog

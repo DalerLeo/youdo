@@ -82,7 +82,8 @@ const enhance = compose(
                 fontSize: '0',
                 padding: '10px 0px 15px',
                 marginRight: '30px',
-                borderBottom: '3px solid #f2f5f8',
+                borderBottom: '3px solid transparent',
+                cursor: 'pointer',
                 '& a': {
                     fontSize: '13px',
                     color: '#999',
@@ -153,7 +154,7 @@ const enhance = compose(
         },
         statLoader: {
             background: '#fff',
-            height: '71px',
+            height: '66px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
