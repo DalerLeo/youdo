@@ -13,23 +13,32 @@ import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatAgentDialog from './StatAgentDialog'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
+import Person from '../Images/person.png'
+import Search from 'material-ui/svg-icons/action/search'
+import IconButton from 'material-ui/IconButton'
+
+export const STAT_AGENT_FILTER_KEY = {
+    ZONE: 'zone',
+    USER: 'user',
+    DATE: 'date'
+}
 
 const enhance = compose(
     injectSheet({
         wrapper: {
             padding: '20px 30px',
             '& .row': {
-                margin: '0rem !important',
-                '& div': {
-                    lineHeight: '55px'
-                }
+                margin: '0rem !important'
             }
         },
         tableWrapper: {
             padding: '0 30px',
             '& .row': {
                 '& div': {
-                    lineHeight: '55px'
+                    display: 'flex',
+                    lineHeight: '55px',
+                    alignItems: 'center'
+
                 }
             },
             '& .dottedList': {
@@ -40,6 +49,20 @@ const enhance = compose(
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
+                }
+            },
+            '& .personImage': {
+                borderRadius: '50%',
+                overflow: 'hidden',
+                flexBasis: '35px',
+                height: '35px',
+                padding: '0!important',
+                width: '35px',
+                marginRight: '10px',
+                '& img': {
+                    display: 'flex',
+                    height: '100%',
+                    width: '100%'
                 }
             }
         },
@@ -80,11 +103,15 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between'
         },
+        form: {
+            display: 'flex',
+            alignItems: 'center'
+        },
         filter: {
             display: 'flex',
-            alignItems: 'baseline',
+            alignItems: 'center',
             '& > div': {
-                width: '20%!important',
+                width: '170px!important',
                 position: 'relative',
                 marginRight: '40px',
                 '&:after': {
@@ -114,10 +141,14 @@ const enhance = compose(
         rightPanel: {
             flexBasis: '75%',
             maxWidth: '75%'
+        },
+        searchButton: {
+            marginBottom: '0!important',
+            marginLeft: '-25px!important'
         }
     }),
     reduxForm({
-        form: 'StatisticsFilterForm',
+        form: 'StatAgentFilterForm',
         enableReinitialize: true
     }),
 )
@@ -219,6 +250,18 @@ const StatAgentGridList = enhance((props) => {
             color: '#43d0e3'
         }]
     }
+    const iconStyle = {
+        icon: {
+            color: '#333',
+            width: 25,
+            height: 25
+        },
+        button: {
+            width: 40,
+            height: 40,
+            padding: 0
+        }
+    }
     const headers = (
         <Paper
             zDepth={2}
@@ -237,7 +280,11 @@ const StatAgentGridList = enhance((props) => {
         <Paper zDepth={1} >
             <div className={classes.tableWrapper}>
                 <Row className="dottedList">
-                    <Col xs={4}>Исаков Тулкин</Col>
+                    <Col xs={4}>
+                        <div className="personImage">
+                            <img src={Person} alt=""/>
+                        </div>
+                        Исаков Тулкин</Col>
                     <Col xs={5}>Ташкент сел маш</Col>
                     <Col xs={2}>100000 UZS</Col>
                     <Col xs={1}>
@@ -260,29 +307,39 @@ const StatAgentGridList = enhance((props) => {
                    style={{margin: '0 -28px'}}>
                 <Row style={{margin: '0'}}>
                     <div className={classes.leftPanel}>
-                        <StatSideMenu/>
+                        <StatSideMenu currentUrl={ROUTES.STATISTICS_AGENT_URL}/>
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
-                            <form className={classes.filter}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="zone"
-                                    component={UsersSearchField}
-                                    label="Зоны"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="user"
-                                    component={UsersSearchField}
-                                    label="Агенты"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="date"
-                                    component={DateToDateField}
-                                    label="Диапазон дат."
-                                    fullWidth={true}/>
+                            <form className={classes.form}>
+                                <div className={classes.filter}>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="zone"
+                                        component={UsersSearchField}
+                                        label="Зоны"
+                                        fullWidth={true}/>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="user"
+                                        component={UsersSearchField}
+                                        label="Агенты"
+                                        fullWidth={true}/>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="date"
+                                        component={DateToDateField}
+                                        label="Диапазон дат."
+                                        fullWidth={true}/>
+                                </div>
+                                <IconButton
+                                    className={classes.searchButton}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    type="submit"
+                                    >
+                                    <Search/>
+                                </IconButton>
                             </form>
                             <div className={classes.balanceButtonWrap}>
                                 <div className={classes.balanceInfo}>

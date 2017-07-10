@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import {Marker} from 'react-google-maps'
 import {compose, withState} from 'recompose'
@@ -30,7 +31,9 @@ const enhance = compose(
     withState('location', 'setLocation', DEFAULT_LOCATION)
 )
 
-const LocationField = ({classes, location, setLocation, input, meta: {error}}) => {
+const LocationField = (props) => {
+    const {classes, location, setLocation, input, meta: {error}} = props
+    const value = _.get(input, 'value') || location
     const handleClick = (pointer) => {
         input.onChange({lat: pointer.latLng.lat(), lng: pointer.latLng.lng()})
         setLocation({lat: pointer.latLng.lat(), lng: pointer.latLng.lng()})
@@ -39,8 +42,8 @@ const LocationField = ({classes, location, setLocation, input, meta: {error}}) =
     return (
         <div className={classes.wrapper}>
             {error && <div className={classes.error}>{error}</div>}
-            <GoogleMap onClick={handleClick} center={location}>
-                <Marker position={location} />
+            <GoogleMap onClick={handleClick} center={value}>
+                <Marker position={value} />
             </GoogleMap>
         </div>
     )

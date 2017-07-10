@@ -166,6 +166,7 @@ const ShopGridList = enhance((props) => {
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
             <MapDialog
+                initialValues={mapDialog.initialValues}
                 open={mapDialog.openMapDialog}
                 onClose={mapDialog.handleCloseMapDialog}
                 onSubmit={mapDialog.handleSubmitMapDialog}

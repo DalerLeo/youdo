@@ -59,7 +59,7 @@ export const SHOP = 'market/market'
 export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
-export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/image/`
+export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/images/`
 export const SHOP_ITEM_SHOW_IMAGE = 'file/file/%d/'
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
@@ -266,9 +266,11 @@ export const REMAINDER = 'main/product'
 export const REMAINDER_LIST = `/${REMAINDER}/`
 export const REMAINDER_ITEM = `/${REMAINDER}/%d/`
 
-export const STATISTICS = 'main/product'
-export const STATISTICS_LIST = `/${STATISTICS}/`
-export const STATISTICS_ITEM = `/${STATISTICS}/%d/`
+export const STATISTICS = 'dist/product'
+export const STAT_AGENT_LIST = `/${STATISTICS}/`
+export const STAT_AGENT_ITEM = `/${STATISTICS}/%d/`
+export const STAT_PRODUCT_LIST = `/${STATISTICS}/`
+export const STAT_PRODUCT_ITEM = `/${STATISTICS}/%d/`
 
 export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
 

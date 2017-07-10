@@ -8,7 +8,7 @@ import * as serializers from '../serializers/Statistics/statProductSerializer'
 export const statProductListFetchAction = (filter, id) => {
     const params = serializers.listFilterSerializer(filter.getParams(), id)
     const payload = axios()
-        .get((API.STATISTICS_LIST), {params})
+        .get((API.STAT_PRODUCT_LIST), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,14 +17,14 @@ export const statProductListFetchAction = (filter, id) => {
         })
 
     return {
-        type: actionTypes.STAT_LIST,
+        type: actionTypes.STAT_PRODUCT_LIST,
         payload
     }
 }
 
 export const statProductItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.STATISTICS_ITEM, id))
+        .get(sprintf(API.STAT_PRODUCT_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,7 +33,7 @@ export const statProductItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.STATISTICS_ITEM,
+        type: actionTypes.STAT_PRODUCT_ITEM,
         payload
     }
 }

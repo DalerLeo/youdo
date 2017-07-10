@@ -324,7 +324,7 @@ const ShopCreateDialog = enhance((props) => {
                                     label="Ориентир"
                                     fullWidth={true}/>
                                 <div className={classes.addPlace}>
-                                    {!mapLocation ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/> отметить местоположение на карте</a>
+                                    {!(lat && lng) ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/> отметить местоположение на карте</a>
                                     : <div className={classes.flex}>
                                             <div>
                                                 <Place color="#999"/> <span>{lat}</span> <span>{lng}</span>
