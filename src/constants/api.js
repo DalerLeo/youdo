@@ -249,14 +249,15 @@ export const ZONE_ITEM = `/${ZONE}/%d/`
 export const ZONE_DELETE = `/${ZONE}/%d/`
 export const ZONE_STAT = `/${ZONE}/statistics/`
 
-export const PRICE = 'main/product'
-export const PRICE_CREATE = `/${PRODUCT}/`
-export const PRICE_LIST = `/${PRODUCT}/`
+export const PRICE = 'stock/products_net_costs'
+export const PRICE_CREATE = `/${PRICE}/`
+export const PRICE_LIST = `/${PRICE}/`
 export const PRICE_ITEM = `/${PRODUCT}/%d/`
-export const PRICE_DELETE = `/${PRODUCT}/%d/`
+export const PRICE_DELETE = `/${PRICE}/%d/`
 
 export const PRICE_LIST_ITEM = 'sales/price_list_item'
 export const PRICE_LIST_ITEM_HISTORY = 'stock/supply_product_history/%d/'
+export const PRICE_LIST_ITEM_EXPENSES = 'stock/supply_product_expenses/%d/'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
 

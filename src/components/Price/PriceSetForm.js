@@ -39,7 +39,7 @@ const enhance = compose(
         },
         bodyTitle: {
             display: 'flex',
-            fontWeight: '700',
+            fontWeight: '600',
             marginBottom: '25px',
             fontSize: '14px',
             justifyContent: 'space-between',

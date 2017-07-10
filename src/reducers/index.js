@@ -245,7 +245,9 @@ const rootReducer = combineReducers({
     price: combineReducers({
         list: createThunkReducer(actionTypes.PRICE_LIST),
         item: createThunkReducer(actionTypes.PRICE_ITEM),
-        price: createThunkReducer(actionTypes.PRICE_LIST_ITEM_LIST)
+        price: createThunkReducer(actionTypes.PRICE_LIST_ITEM_LIST),
+        history: createThunkReducer(actionTypes.PRICE_LIST_ITEM_HISTORY),
+        expense: createThunkReducer(actionTypes.PRICE_LIST_ITEM_EXPENSES)
     }),
     zone: combineReducers({
         create: createThunkReducer(actionTypes.ZONE_CREATE),

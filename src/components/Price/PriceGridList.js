@@ -5,20 +5,20 @@ import PropTypes from 'prop-types'
 import {Link} from 'react-router'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import PriceFilterForm from './PriceFilterForm'
 import PriceSupplyDialog from './PriceSupplyDialog'
 import SubMenu from '../SubMenu'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import PriceDetails from './PriceDetails'
+import getConfig from '../../helpers/getConfig'
+import numberFormat from '../../helpers/numberFormat'
+
+const ZERO = 0
+
 const listHeader = [
     {
         sorting: true,
@@ -76,13 +76,11 @@ const PriceGridList = enhance((props) => {
     const {
         filter,
         filterDialog,
-        confirmDialog,
         priceSupplyDialog,
         priceSetForm,
         listData,
         detailData
     } = props
-
     const priceFilterDialog = (
         <PriceFilterForm
             initialValues={filterDialog.initialValues}
@@ -103,14 +101,11 @@ const PriceGridList = enhance((props) => {
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const type = _.get(item, ['type', 'name']) || 'N/A'
-        const price = _.get(item, ['measurement', 'name']) || ''
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
+        const netCost = _.get(item, 'netCost') || 'N/A'
+        const minPrice = _.get(item, 'minPrice')
+        const maxPrice = _.get(item, 'maxPrice')
+        const price = (minPrice && maxPrice) ? numberFormat(minPrice) + ' - ' + numberFormat(maxPrice, getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
+        const priceUpdate = _.get(item, 'priceUpdated') ? moment(_.get(item, 'priceUpdated')).format('DD.MM.YYYY') : 'Не установлено'
         return (
             <Row key={id}>
                 <Col xs={5} style={{display: 'flex', alignItems: 'center'}}>
@@ -118,21 +113,9 @@ const PriceGridList = enhance((props) => {
                         pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id)
                     }}>{name}</Link>
                 </Col>
-                <Col xs={2}>{type}</Col>
-                <Col xs={2}>{price}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        />
-                    </IconMenu>
-                </Col>
+                <Col xs={2}>{netCost}</Col>
+                <Col xs={3}>{price}</Col>
+                <Col xs={2}>{priceUpdate}</Col>
             </Row>
         )
     })
@@ -141,6 +124,8 @@ const PriceGridList = enhance((props) => {
         list: priceList,
         loading: _.get(listData, 'listLoading')
     }
+    const expenseList = _.get(detailData, 'priceItemExpenseList')
+    const expenseLoading = _.get(detailData, 'priceItemExpenseLoading')
     return (
         <Container>
             <SubMenu url={ROUTES.PRICE_LIST_URL}/>
@@ -151,8 +136,10 @@ const PriceGridList = enhance((props) => {
                 filterDialog={priceFilterDialog}
             />
             <PriceSupplyDialog
-                open={priceSupplyDialog.openPriceSupplyDialog}
+                open={priceSupplyDialog.openPriceSupplyDialog > ZERO}
                 onClose={priceSupplyDialog.handleCloseSupplyDialog}
+                list={expenseList}
+                loading={expenseLoading}
             />
         </Container>
     )
@@ -171,7 +158,7 @@ PriceGridList.propTypes = {
         handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired,
     priceSupplyDialog: PropTypes.shape({
-        openPriceSupplyDialog: PropTypes.bool.isRequired,
+        openPriceSupplyDialog: PropTypes.number.isRequired,
         handleOpenSupplyDialog: PropTypes.func.isRequired,
         handleCloseSupplyDialog: PropTypes.func.isRequired
     }).isRequired,
