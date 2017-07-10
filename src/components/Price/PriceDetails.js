@@ -11,6 +11,8 @@ import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import PriceSetForm from './PriceSetForm'
 import getConfig from '../../helpers/getConfig'
+import numberFormat from '../../helpers/numberFormat'
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -68,6 +70,7 @@ const enhance = compose(
             }
         },
         leftSide: {
+            position: 'relative',
             extend: 'subBlock',
             flexBasis: '45%',
             maxWidth: '45%',
@@ -132,7 +135,10 @@ const PriceDetails = enhance((props) => {
     const marketTypeIsLoading = _.get(detailData, 'marketTypeLoading')
     const priceListItemsIsLoading = _.get(detailData, 'priceListItemsLoading')
     const priceList = _.get(detailData, 'priceListItemsList')
+    const priceHistoryList = _.get(detailData, 'priceItemHistoryList')
+    const priceHistoryLoading = _.get(detailData, 'priceItemHistoryLoading')
     const name = _.get(detailData, ['data', 'name'])
+    const measurement = _.get(detailData, ['data', 'measurement', 'name'])
     const iconStyle = {
         icon: {
             color: '#666',
@@ -173,30 +179,49 @@ const PriceDetails = enhance((props) => {
                 </div>
             </div>
             <div className={classes.content}>
+
                 <div className={classes.leftSide}>
                     <div className={classes.bodyTitle}>Поставки</div>
-                    <div className={classes.tableContent}>
-                        <Row>
-                            <Col xs={2} style={{fontSize: '15px'}}>&#8470;</Col>
-                            <Col style={{textAlign: 'left'}} xs={3}>Дата</Col>
-                            <Col style={{textAlign: 'left'}} xs={3}>Количество</Col>
-                            <Col xs={4}>Себестоимость</Col>
-                        </Row>
-                        <Row className="dottedList">
-                            <Col xs={2}>
-                                <a onClick={ () => { priceSupplyDialog.handleOpenSupplyDialog() }} className={classes.link}>
-                                    P-1121
-                                </a>
-                            </Col>
-                            <Col style={{textAlign: 'left'}} xs={3}>23 апр, 2017</Col>
-                            <Col style={{textAlign: 'left'}} xs={3}>200 кг</Col>
-                            <Col xs={4}>90 000 UZS</Col>
-                        </Row>
-                        <div className={classes.average}> Усредненная себестоимость:
-                            <span className={classes.averagePrice}>100 000 UZS</span>
+                    {priceHistoryLoading && <div className={classes.loader}>
+                                                <div>
+                                                    <CircularProgress size={40} thickness={4}/>
+                                                </div>
+                                            </div>}
+                    {!priceHistoryLoading &&
+                        <div className={classes.tableContent}>
+                            <Row>
+                                <Col xs={2} style={{fontSize: '15px'}}>&#8470;</Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>Дата</Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>Количество</Col>
+                                <Col xs={4}>Себестоимость</Col>
+                            </Row>
+
+                            {_.map(priceHistoryList, (item) => {
+                                const amount = _.get(item, 'amount')
+                                const netCost = _.get(item, 'netCost')
+                                const id = _.get(item, 'id')
+                                return (
+                                    <Row key={id} className="dottedList">
+                                        <Col xs={2}>
+                                            <a onClick={ () => { priceSupplyDialog.handleOpenSupplyDialog(id) }} className={classes.link}>
+                                                {id}
+                                            </a>
+                                        </Col>
+                                        <Col style={{textAlign: 'left'}} xs={3}>23 апр, 2017</Col>
+                                        <Col style={{textAlign: 'left'}} xs={3}>{numberFormat(amount, measurement)}</Col>
+                                        <Col xs={4}>{numberFormat(netCost, getConfig('PRIMARY_CURRENCY'))}</Col>
+                                    </Row>
+                                )
+                            })}
+
+                            <div className={classes.average}> Усредненная себестоимость:
+                                <span className={classes.averagePrice}>{numberFormat('100000', 'UZS')}</span>
+                            </div>
                         </div>
-                    </div>
+                    }
+
                 </div>
+
                 <div className={classes.rightSide}>
                     {(marketTypeIsLoading || priceListItemsIsLoading) && <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4} />
@@ -255,7 +280,7 @@ const PriceDetails = enhance((props) => {
 PriceDetails.PropTypes = {
     mergedList: PropTypes.func.isRequired,
     priceSupplyDialog: PropTypes.shape({
-        openPriceSupplyDialog: PropTypes.bool.isRequired,
+        openPriceSupplyDialog: PropTypes.number.isRequired,
         handleOpenSupplyDialog: PropTypes.func.isRequired,
         handleCloseSupplyDialog: PropTypes.func.isRequired
     }).isRequired,

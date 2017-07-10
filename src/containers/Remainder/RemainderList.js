@@ -105,7 +105,8 @@ const RemainderList = enhance((props) => {
     const filterDialog = {
         openFilterDialog: openFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,
-        handleCloseFilterDialog: props.handleCloseFilterDialog
+        handleCloseFilterDialog: props.handleCloseFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
     const listData = {
