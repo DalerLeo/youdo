@@ -25,6 +25,10 @@ export const STAT_PRODUCT_FILTER_KEY = {
 }
 const enhance = compose(
     injectSheet({
+        mainWrapper: {
+            margin: '0 -28px',
+            minHeight: 'calc(100% - 32px)'
+        },
         wrapper: {
             padding: '20px 30px',
             '& .row': {
@@ -120,13 +124,13 @@ const enhance = compose(
         },
         leftPanel: {
             backgroundColor: '#f2f5f8',
-            flexBasis: '25%',
-            maxWidth: '25%'
+            flexBasis: '250px',
+            maxWidth: '250px'
 
         },
         rightPanel: {
-            flexBasis: '75%',
-            maxWidth: '75%'
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)'
         },
         searchButton: {
             marginBottom: '0!important',
@@ -280,8 +284,7 @@ const StatProductGridList = enhance((props) => {
     )
 
     const page = (
-    <Paper zDepth={1}
-           style={{margin: '0 -28px'}}>
+    <Paper zDepth={1} className={classes.mainWrapper}>
         <Row style={{margin: '0'}}>
             <div className={classes.leftPanel}>
                 <StatSideMenu currentUrl={ROUTES.STATISTICS_PRODUCT_URL} />
