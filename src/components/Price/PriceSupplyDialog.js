@@ -13,6 +13,7 @@ import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import CircularProgress from 'material-ui/CircularProgress'
 
+const ZERO = 0
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -86,10 +87,11 @@ const PriceSupplyDialog = enhance((props) => {
     const dateDelivery = _.get(list, 'dateDelivery')
     const product = _.get(list, 'product')
     const provider = _.get(list, 'provider')
+    let price = ZERO
     return (
         <Dialog
             modal={true}
-            open={open}
+            open={open > ZERO}
             onRequestClose={onClose}
             className={classes.dialog}
             contentStyle={loading ? {width: '500px'} : {width: '500px'}}
@@ -97,8 +99,8 @@ const PriceSupplyDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <div>
-                    Поставка <span style={{fontSize: '14px'}}> &#8470;</span>
-                </div>
+                    Поставка <span style={{fontSize: '14px', margin: '0 5px'}}> &#8470;</span>
+                    {open} </div>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -128,6 +130,7 @@ const PriceSupplyDialog = enhance((props) => {
                         <div className={classes.subTitle}>Расчет себестоимости за еденицу товара:</div>
                         {_.map(_.get(list, 'expenses'), (item, index) => {
                             const interalCost = _.get(item, 'internalCost')
+                            price = Number(price) + Number(interalCost)
                             const comment = _.get(item, 'comment')
                             return (
                                 <Row key={index}>
@@ -136,6 +139,10 @@ const PriceSupplyDialog = enhance((props) => {
                                 </Row>
                             )
                         })}
+                        <Row>
+                            <div>Себестоимость</div>
+                            <div>{numberFormat(price, getConfig('PRIMARY_CURRENCY'))}</div>
+                        </Row>
                     </div>
                 </div>
             }

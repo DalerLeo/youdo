@@ -11,6 +11,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import PriceSetForm from './PriceSetForm'
 import getConfig from '../../helpers/getConfig'
+import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
@@ -129,16 +130,18 @@ const PriceDetails = enhance((props) => {
         priceSetForm,
         detailData,
         handleCloseDetail,
-        mergedList
+        mergedList,
+        listDetailData
     } = props
     const loading = _.get(detailData, 'detailLoading')
     const marketTypeIsLoading = _.get(detailData, 'marketTypeLoading')
     const priceListItemsIsLoading = _.get(detailData, 'priceListItemsLoading')
-    const priceList = _.get(detailData, 'priceListItemsList')
     const priceHistoryList = _.get(detailData, 'priceItemHistoryList')
     const priceHistoryLoading = _.get(detailData, 'priceItemHistoryLoading')
     const name = _.get(detailData, ['data', 'name'])
     const measurement = _.get(detailData, ['data', 'measurement', 'name'])
+    const priceUpdated = _.get(listDetailData, ['0', 'priceUpdated']) ? moment(_.get(listDetailData, ['0', 'priceUpdated'])).format('DD.MM.YYYY') : 'Не установлено'
+    const averageCost = _.get(listDetailData, ['0', 'netCost'])
     const iconStyle = {
         icon: {
             color: '#666',
@@ -164,7 +167,7 @@ const PriceDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                     onTouchTap={handleCloseDetail}>
+                     onClick={handleCloseDetail}>
                     {name}</div>
                 <div className={classes.titleButtons}>
                     {!priceSetForm.openPriceSetForm && <Tooltip position="bottom" text="Закрыть">
@@ -215,7 +218,7 @@ const PriceDetails = enhance((props) => {
                             })}
 
                             <div className={classes.average}> Усредненная себестоимость:
-                                <span className={classes.averagePrice}>{numberFormat('100000', 'UZS')}</span>
+                                <span className={classes.averagePrice}>{numberFormat(averageCost, getConfig('PRIMARY_CURRENCY'))}</span>
                             </div>
                         </div>
                     }
@@ -226,18 +229,19 @@ const PriceDetails = enhance((props) => {
                     {(marketTypeIsLoading || priceListItemsIsLoading) && <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4} />
                     </div>}
-                    {priceSetForm.openPriceSetForm && <PriceSetForm
-                        initialValues={priceSetForm.initialValues}
-                        onClose={priceSetForm.handleClosePriceSetForm}
-                        onSubmit={priceSetForm.handleSubmitPriceSetForm}
-                        priceList={priceList}
-                        mergedList={mergedList}
-                    />
+                    {!marketTypeIsLoading && !priceListItemsIsLoading && priceSetForm.openPriceSetForm &&
+                        <PriceSetForm
+                            initialValues={priceSetForm.initialValues}
+                            onClose={priceSetForm.handleClosePriceSetForm}
+                            onSubmit={priceSetForm.handleSubmitPriceSetForm}
+                            mergedList={mergedList}
+                            priceUpdatedDate={priceUpdated}
+                        />
                     }
                     {(!marketTypeIsLoading && !priceListItemsIsLoading && !priceSetForm.openPriceSetForm) && <div>
                         <div className={classes.bodyTitle}>
                             <div>Цены на товар
-                                <span className={classes.rightSideTitleDate}> (23 апр, 2017)</span>
+                                <span className={classes.rightSideTitleDate}> ({priceUpdated})</span>
                             </div>
                             <div className={classes.titleButtons}>
                                 <Tooltip position="bottom" text="Изменить">

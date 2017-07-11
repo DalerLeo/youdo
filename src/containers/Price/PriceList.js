@@ -71,16 +71,20 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const priceId = _.get(nextProps, ['params', 'priceId']) || ZERO
         return priceId > ZERO && _.get(props, ['params', 'priceId']) !== priceId
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, location}) => {
         const priceId = _.toInteger(_.get(params, 'priceId'))
+        const supplyId = _.toInteger(_.get(location, ['query', PRICE_SUPPLY_DIALOG_OPEN]))
         if (priceId > ZERO) {
             dispatch(priceItemFetchAction(priceId))
             dispatch(getPriceItemsAction(priceId))
             dispatch(marketTypeGetAllAction())
             dispatch(priceItemHistoryFetchAction(priceId))
-            dispatch(priceItemExpensesFetchAction(priceId))
+        }
+        if (supplyId > ZERO) {
+            dispatch(priceItemExpensesFetchAction(supplyId))
         }
     }),
+
     withHandlers({
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
@@ -116,9 +120,8 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SUPPLY_DIALOG_OPEN]: false})})
         },
         handleOpenPriceSetForm: props => () => {
-            const {dispatch, location: {pathname}, filter} = props
+            const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: true})})
-            return dispatch(marketTypeGetAllAction())
         },
         handleClosePriceSetForm: props => () => {
             const {location: {pathname}, filter} = props
@@ -201,8 +204,8 @@ const PriceList = enhance((props) => {
         priceItemHistoryList,
         priceItemHistoryLoading,
         id: detailId,
+        priceListItemsLoading,
         marketTypeLoading: marketTypeLoading,
-        marketTypeList: _.get(marketTypeList, 'results'),
         mergedList: () => {
             return _.map(_.get(marketTypeList, 'results'), (item) => {
                 const marketTypeId = _.get(item, 'id')
@@ -215,8 +218,6 @@ const PriceList = enhance((props) => {
                 }
             })
         },
-        priceListItemsList: _.get(priceListItemsList, 'results'),
-        priceListItemsLoading,
         data: detail,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
