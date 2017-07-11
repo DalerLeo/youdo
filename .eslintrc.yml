@@ -184,7 +184,6 @@ rules:
   no-multi-assign: "error"
   no-multiple-empty-lines: "error"
   no-new-object: "error"
-  no-plusplus: "error"
   no-restricted-syntax: "error"
   no-tabs: "error"
   no-trailing-spaces: "error"

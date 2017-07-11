@@ -7,8 +7,10 @@ import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import Star from 'material-ui/svg-icons/toggle/star'
+import StarBorder from 'material-ui/svg-icons/toggle/star-border'
 import ArrowLeft from 'material-ui/svg-icons/navigation/chevron-left'
 import ArrowRight from 'material-ui/svg-icons/navigation/chevron-right'
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -21,7 +23,7 @@ const enhance = compose(
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            display: 'flex'
         },
         dialog: {
             cursor: 'pointer'
@@ -56,6 +58,19 @@ const enhance = compose(
             width: '500px',
             height: '500px',
             position: 'relative',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            zIndex: '1',
+            '&:after': {
+                content: '""',
+                backgroundColor: 'transparent',
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0',
+                zIndex: '2'
+            },
             '& img': {
                 width: '100%',
                 height: '100%'
@@ -67,7 +82,8 @@ const enhance = compose(
         arrows: {
             position: 'absolute',
             top: '50%',
-            transform: 'translate(0, -50%)'
+            transform: 'translate(0, -50%)',
+            zIndex: '10'
         },
         navLeft: {
             extend: 'arrows',
@@ -82,8 +98,8 @@ const enhance = compose(
 const iconStyle = {
     icon: {
         color: '#f0f0f0',
-        width: 60,
-        height: 60
+        width: 65,
+        height: 65
     },
     button: {
         width: 70,
@@ -92,12 +108,14 @@ const iconStyle = {
     }
 }
 const SlideShowDialog = enhance((props) => {
-    const {open, onClose, classes, image, images, prevBtn, nextBtn, handleSetPrimaryImage} = props
+    const {loading, open, onClose, classes, image, images, prevBtn, nextBtn, handleSetPrimaryImage} = props
     const imgURL = _.get(image, 'file')
     const lastIndex = _.get(images, 'length')
     const currentIndex = _.findIndex(images, (o) => {
-        return o.id === _.get(image, 'id')
+        const fileId = _.get(o, 'fileId')
+        return fileId === _.get(image, 'id')
     })
+    const isPrimary = _.get(_.find(images, {'fileId': _.get(image, 'id')}), 'isPrimary')
     return (
         <Dialog
             open={open}
@@ -108,14 +126,15 @@ const SlideShowDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <IconButton>
-                    <Star color="#ffad36"
-                    onTouchTap={handleSetPrimaryImage}/>
+                    {isPrimary ? <Star color="#ffad36"/>
+                        : <StarBorder color="#e9e9e9" onTouchTap={handleSetPrimaryImage}/>}
                 </IconButton>
             </div>
-            <div className={classes.inContent} style={{backgroundImage: 'url(' + imgURL + ')'}}>
-                <div className={classes.loader}>
+            <div className={classes.inContent}>
+                {loading ? <div className={classes.loader}>
                     <CircularProgress size={40} thickness={4}/>
                 </div>
+                : <img src={imgURL} alt=""/>}
                 <div className={classes.navLeft}>
                     <IconButton
                         iconStyle={iconStyle.icon}
