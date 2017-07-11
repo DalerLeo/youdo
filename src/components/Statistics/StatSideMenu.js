@@ -17,7 +17,7 @@ const enhance = compose(
                 }
             },
             '& ul': {
-                fontWeight: '600',
+                fontWeight: 'bold',
                 marginBottom: '20px'
             },
             '& li': {

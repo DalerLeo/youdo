@@ -16,6 +16,9 @@ import Person from '../Images/person.png'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import List from 'material-ui/svg-icons/action/list'
+import Excel from 'material-ui/svg-icons/av/equalizer'
+import LinearProgress from 'material-ui/LinearProgress'
+import Pagination from '../GridList/GridListNavPagination'
 
 export const STAT_AGENT_FILTER_KEY = {
     ZONE: 'zone',
@@ -27,10 +30,16 @@ const enhance = compose(
     injectSheet({
         mainWrapper: {
             margin: '0 -28px',
-            minHeight: 'calc(100% - 32px)'
+            height: 'calc(100% - 32px)',
+            boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px !important'
         },
         wrapper: {
             padding: '20px 30px',
+            '& > div:nth-child(2)': {
+                marginTop: '10px',
+                borderTop: '1px #efefef solid',
+                borderBottom: '1px #efefef solid'
+            },
             '& .row': {
                 margin: '0rem !important'
             }
@@ -91,15 +100,6 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
-        excel: {
-            backgroundColor: '#6ec790 !important',
-            color: '#fff',
-            fontWeight: '600',
-            padding: '10px 10px',
-            borderRadius: '3px',
-            lineHeight: '12px',
-            cursor: 'pointer'
-        },
         balanceButtonWrap: {
             display: 'flex',
             alignItems: 'center',
@@ -107,7 +107,8 @@ const enhance = compose(
         },
         form: {
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            justifyContent: 'space-between'
         },
         filter: {
             display: 'flex',
@@ -145,11 +146,23 @@ const enhance = compose(
             maxWidth: 'calc(100% - 250px)'
         },
         searchButton: {
-            marginLeft: '10px !important',
+            marginLeft: '-10px !important',
             '& div': {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
+            }
+        },
+        excel: {
+            background: '#71ce87',
+            borderRadius: '2px',
+            color: '#fff',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '5px 15px',
+            '& svg': {
+                width: '18px !important'
             }
         }
     }),
@@ -162,7 +175,8 @@ const enhance = compose(
 const StatAgentGridList = enhance((props) => {
     const {
         classes,
-        statAgentDialog
+        statAgentDialog,
+        filter
     } = props
 
     const headerStyle = {
@@ -202,7 +216,33 @@ const StatAgentGridList = enhance((props) => {
                         <div className="personImage"><img src={Person}/></div>
                         <div>Исаков Тулкин</div>
                     </Col>
-                    <Col xs={6}>Ташкент сел маш</Col>
+                    <Col xs={6}>
+                        <LinearProgress
+                            color="#58bed9"
+                            mode="determinate"
+                            value={50}
+                            style={{backgroundColor: '#fff', height: '10px'}}/>
+                    </Col>
+                    <Col xs={2}>100000 UZS</Col>
+                    <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
+                        <IconButton
+                            onTouchTap={statAgentDialog.handleOpenStatAgentDialog}>
+                            <List color="#12aaeb"/>
+                        </IconButton>
+                    </Col>
+                </Row>
+                <Row className="dottedList">
+                    <Col xs={3}>
+                        <div className="personImage"><img src={Person}/></div>
+                        <div>Исаков Тулкин</div>
+                    </Col>
+                    <Col xs={6}>
+                        <LinearProgress
+                            color="#58bed9"
+                            mode="determinate"
+                            value={50}
+                            style={{backgroundColor: '#fff', height: '10px'}}/>
+                    </Col>
                     <Col xs={2}>100000 UZS</Col>
                     <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
                         <IconButton
@@ -236,16 +276,20 @@ const StatAgentGridList = enhance((props) => {
                                         component={UsersSearchField}
                                         label="Агенты"
                                         fullWidth={true}/>
+
+                                    <IconButton
+                                        className={classes.searchButton}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        type="submit">
+                                        <Search color="#5d6474"/>
+                                    </IconButton>
                                 </div>
-                                <IconButton
-                                    className={classes.searchButton}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    type="submit"
-                                    >
-                                    <Search color="#5d6474"/>
-                                </IconButton>
+                                <a className={classes.excel}>
+                                    <Excel color="#fff"/> <span>Excel</span>
+                                </a>
                             </form>
+                            <Pagination filter={filter}/>
                             {headers}
                             {list}
                         </div>
@@ -260,12 +304,14 @@ const StatAgentGridList = enhance((props) => {
             {page}
             <StatAgentDialog
                 open={statAgentDialog.openStatAgentDialog}
-                onClose={statAgentDialog.handleCloseStatAgentDialog}/>
+                onClose={statAgentDialog.handleCloseStatAgentDialog}
+                filter={filter}/>
         </Container>
     )
 })
 
 StatAgentGridList.propTypes = {
+    filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
     statAgentDialog: PropTypes.shape({
