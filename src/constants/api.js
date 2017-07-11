@@ -265,17 +265,17 @@ export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
 
 export const TRACKING = 'market/border'
 
-export const REMAINDER = 'main/product'
+export const REMAINDER = 'stock/stock/all_balances'
 export const REMAINDER_LIST = `/${REMAINDER}/`
-export const REMAINDER_ITEM = `/${REMAINDER}/%d/`
+export const REMAINDER_ITEM = `/${PRODUCT}/%d/`
+export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
 
 export const STATISTICS = 'dist/product'
 export const STAT_AGENT_LIST = `/${STATISTICS}/`
 export const STAT_AGENT_ITEM = `/${STATISTICS}/%d/`
 export const STAT_PRODUCT_LIST = `/${STATISTICS}/`
-export const STAT_PRODUCT_ITEM = `/${STATISTICS}/%d/`
 
-export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
+export const STAT_PRODUCT_ITEM = `/${STATISTICS}/%d/`
 
 export const STOCK_RECEIVE = 'stock/supply'
 export const STOCK_HISTORY = 'stock/barcode_history'
