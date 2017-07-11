@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {ClientSearchField} from '../ReduxForm'
+import {ClientSearchField, MarketSearchField, UsersSearchField, DeptSearchField} from '../ReduxForm'
 import OrderStatusSearchField from '../ReduxForm/Order/OrderStatusSearchField'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -20,6 +20,9 @@ export const ORDER_FILTER_OPEN = 'openFilterDialog'
 export const ORDER_FILTER_KEY = {
     CLIENT: 'client',
     ORDERSTATUS: 'orderStatus',
+    SHOP: 'shop',
+    DEPT: 'dept',
+    INITIATOR: 'initiator',
     DOST_DATE: 'dostDate',
     CREATE_DATE: 'createDate',
     FROM_DATE: 'fromDate',
@@ -189,6 +192,9 @@ const OrderFilterForm = enhance((props) => {
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
                         <Field className={classes.inputFieldCustom} name="orderStatus" component={OrderStatusSearchField} label="Статус"/>
+                        <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
+                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersSearchField} label="Инициатор "/>
+                        <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Оплаченный "/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
                         <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label="Дата доставки"/>
                     </div>
