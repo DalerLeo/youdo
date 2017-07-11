@@ -17,19 +17,20 @@ const enhance = compose(
                 }
             },
             '& ul': {
-                fontWeight: '600'
+                fontWeight: 'bold',
+                marginBottom: '20px'
             },
             '& li': {
                 paddingLeft: '20px',
-                paddingTop: '18px',
-                fontWeight: '500',
+                paddingTop: '10px',
+                fontWeight: '400',
                 '&:last-child': {
-                    paddingBottom: '18px'
+                    paddingBottom: '10px'
                 }
             }
         },
         active: {
-            color: '#129fdd'
+            color: '#12aaeb'
         },
         simple: {
             color: '#333'

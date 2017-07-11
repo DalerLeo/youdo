@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
+import Pagination from '../GridList/GridListNavPagination'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -26,7 +27,11 @@ const enhance = compose(
         },
         content: {
             width: '100%',
-            display: 'block'
+            display: 'block',
+            '& > div:last-child': {
+                padding: '0 30px',
+                borderTop: '1px #efefef solid'
+            }
         },
         titleSummary: {
             padding: '20px 30px',
@@ -50,9 +55,6 @@ const enhance = compose(
                 borderTop: '1px #efefef solid'
             }
         },
-        dottedList: {
-            padding: '10px 0'
-        },
         subTitle: {
             paddingBottom: '8px',
             fontStyle: 'italic',
@@ -66,7 +68,7 @@ const enhance = compose(
                 display: 'flex',
                 alignItems: 'center'
             },
-            '& .persoknImage': {
+            '& .personImage': {
                 borderRadius: '50%',
                 overflow: 'hidden',
                 flexBasis: '35px',
@@ -90,19 +92,14 @@ const enhance = compose(
             padding: '0 30px',
             '& .row': {
                 '&:first-child': {
-                    borderTop: '1px #efefef solid',
-                    borderBottom: '1px #efefef solid',
-                    fontWeight: '600',
-                    padding: '15px 0 10px'
+                    fontWeight: '600'
                 }
             },
             '& .dottedList': {
-                padding: '10px 0',
-                '&:after': {
-                },
+                padding: '15px 0',
+
                 '&:last-child:after': {
-                    content: '""',
-                    backgroundImage: 'none'
+                    display: 'none'
                 }
             }
         }
@@ -110,7 +107,7 @@ const enhance = compose(
 )
 
 const StatAgentDialog = enhance((props) => {
-    const {open, loading, onClose, classes} = props
+    const {open, loading, onClose, classes, filter} = props
 
     return (
         <Dialog
@@ -125,42 +122,46 @@ const StatAgentDialog = enhance((props) => {
                 <div>
                     <div className="personImage">
                         <img src={Person} alt=""/>
-                </div>Шохрух Умаров</div>
+                    </div>
+                    <div>Снегирев Нигер</div>
+                </div>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.content}>
                 <div className={classes.titleSummary}>
-                        <div>Товар</div>
-                        <div>Миф морозная свежесть (жесткая упаковка)</div>
+                    <div>Период: <b>22 Апр, 2017 - 22 Май, 2017</b></div>
+                    <div>Сумма: <b>3 000 000 UZS</b></div>
                 </div>
                 <div className={classes.tableWrapper}>
-                    <Row>
-                        <Col xs={2}><span style={{fontSize: '14px'}}> &#8470;</span> заказа</Col>
+                    <Row className="dottedList">
+                        <Col xs={2}>№ заказа</Col>
                         <Col xs={6}>Магазин</Col>
                         <Col xs={2}>Дата</Col>
                         <Col xs={2}>Сумма</Col>
                     </Row>
                     <Row className="dottedList">
                         <Col xs={2}>123452</Col>
-                        <Col xs={6}>Ташкент сел маш</Col>
+                        <Col xs={6}>Наименование объекта для сделки</Col>
+                        <Col xs={2}>22 Апр, 2017</Col>
                         <Col xs={2}>100000 UZS</Col>
-                        <Col xs={2}>ДЕТАЛИ</Col>
                     </Row>
                     <Row className="dottedList">
-                        <Col xs={2}>123453</Col>
-                        <Col xs={6}>Ташкент сел маш</Col>
+                        <Col xs={2}>123452</Col>
+                        <Col xs={6}>Наименование объекта для сделки</Col>
+                        <Col xs={2}>22 Апр, 2017</Col>
                         <Col xs={2}>100000 UZS</Col>
-                        <Col xs={2}>ДЕТАЛИ</Col>
                     </Row>
                 </div>
+                <Pagination filter={filter}/>
             </div>
         </Dialog>
     )
 })
 
 StatAgentDialog.propTyeps = {
+    filter: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool
