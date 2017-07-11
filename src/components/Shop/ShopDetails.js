@@ -9,7 +9,6 @@ import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Add from 'material-ui/svg-icons/content/add'
-import Close from 'material-ui/svg-icons/navigation/close'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -102,19 +101,6 @@ const enhance = compose(
             height: '165px',
             marginRight: 'calc(7% + 36px) !important',
             position: 'relative',
-            '& span:first-child': {
-                width: '230px',
-                height: '165px',
-                display: 'block',
-                marginRight: '7px',
-                marginBottom: '0',
-                '& svg': {
-                    display: 'block !important'
-                },
-                '&:hover svg': {
-                    opacity: '1'
-                }
-            },
             '& span:nth-child(4)': {
                 position: 'relative',
                 zIndex: '1'
@@ -131,30 +117,32 @@ const enhance = compose(
         },
         imageWrapper: {
             height: '100%',
-            marginRight: '36px',
             display: 'flex',
             flexDirection: 'column',
             flexWrap: 'wrap',
-            '& span': {
+            '& img': {
+                width: '100%',
+                height: '100%',
+                cursor: 'pointer'
+            }
+        },
+        otherImages: {
+            order: '2',
+            '& div': {
                 cursor: 'pointer',
                 width: '36px',
                 height: '36px',
                 marginBottom: '7px',
                 position: 'relative',
                 zIndex: '1',
-                '& svg': {
-                    position: 'absolute',
-                    top: '8px',
-                    right: '8px',
-                    opacity: '0',
-                    display: 'none !important',
-                    zIndex: '2',
-                    transition: 'all 0.3s ease'
+                '&:last-child strong': {
+                    display: 'flex !important'
                 },
                 '& strong': {
+                    background: 'rgba(0,0,0, 0.35)',
+                    display: 'none',
                     color: '#fff',
                     position: 'absolute',
-                    display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     top: '0',
@@ -163,11 +151,15 @@ const enhance = compose(
                     bottom: '0',
                     zIndex: '99'
                 }
-            },
-            '& img': {
-                width: '100%',
-                height: '100%'
             }
+        },
+        firstImage: {
+            width: '230px !important',
+            height: '165px !important',
+            display: 'block',
+            marginRight: '7px',
+            marginBottom: '0 !important',
+            order: '1 !important'
         },
         addImg: {
             background: '#999',
@@ -176,7 +168,9 @@ const enhance = compose(
             height: '36px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            marginBottom: '0 !important',
+            order: '3'
         },
         noImage: {
             background: '#efefef',
@@ -231,7 +225,6 @@ const ShopDetails = enhance((props) => {
         loading,
         data,
         confirmDialog,
-        imageDeleteDialog,
         updateDialog,
         addPhotoDialog,
         slideShowDialog,
@@ -240,10 +233,13 @@ const ShopDetails = enhance((props) => {
 
     const ZERO = 0
     const MAX_IMAGE_COUNT = 4
+    const THREE = 3
+
     const EVERY_DAY = '1'
     const ONCE_IN_A_WEEK = '2'
     const TWICE_IN_A_WEEK = '3'
     const IN_A_DAY = '4'
+
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'name'])
@@ -260,7 +256,6 @@ const ShopDetails = enhance((props) => {
     if (images.length > MAX_IMAGE_COUNT) {
         slicedImages = _.slice(images, ZERO, MAX_IMAGE_COUNT)
     }
-    const lastImage = _.last(slicedImages)
     const moreImages = images.length - slicedImages.length
 
     if (loading) {
@@ -272,6 +267,33 @@ const ShopDetails = enhance((props) => {
             </div>
         )
     }
+
+    const primaryImage = _.map(images, (item, index) => {
+        const src = _.get(item, 'image')
+        const isPrimary = _.get(item, 'isPrimary')
+        if (isPrimary) {
+            return (
+                <span key={index} className={classes.firstImage}>
+                    <img src={src} alt="" onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}/>
+                </span>
+            )
+        }
+        return false
+    })
+    let count = 0
+    const otherImages = _.map(images, (item, index) => {
+        const src = _.get(item, 'image')
+        const isPrimary = _.get(item, 'isPrimary')
+        if (!isPrimary && (count++) < THREE) {
+            return (
+                <div key={index} className="smallImages">
+                    {moreImages > ZERO && <strong onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}>{moreImages}+</strong>}
+                    <img src={src} alt="" onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}/>
+                </div>
+            )
+        }
+        return false
+    })
 
     return (
         <div className={classes.wrapper}>
@@ -319,20 +341,11 @@ const ShopDetails = enhance((props) => {
                             <a onClick={addPhotoDialog.handleOpenAddPhotoDialog}>добавить фото</a>
                         </div>
                     </div>
-                        : <div className={classes.imageWrapper}> {
-                            _.map(slicedImages, (item, index) => {
-                                const src = _.get(item, 'image')
-                                const imgId = _.get(item, 'id')
-                                const isLastImage = (imgId === lastImage.id)
-                                return (
-                                    <span key={index}>
-                                        {isLastImage && moreImages !== ZERO && <strong onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}>{moreImages}+</strong>}
-                                        <img src={src} alt="" onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}/>
-                                        <Close color="#e0e0e0" onClick={() => { imageDeleteDialog.handleOpenDeleteImageDialog(imgId) }} />
-                                    </span>
-                                )
-                            })
-                        }
+                        : <div className={classes.imageWrapper}>
+                            {primaryImage}
+                            <div className={classes.otherImages}>
+                                {otherImages}
+                            </div>
                             <div onClick={addPhotoDialog.handleOpenAddPhotoDialog} className={classes.addImg}>
                                 <Add color="#fff"/>
                             </div>
@@ -376,12 +389,6 @@ ShopDetails.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    imageDeleteDialog: PropTypes.shape({
-        openDeleteImage: PropTypes.bool.isRequired,
-        handleOpenDeleteImageDialog: PropTypes.func.isRequired,
-        handleCloseDeleteImageDialog: PropTypes.func.isRequired,
-        handleSendDeleteImageDialog: PropTypes.func.isRequired
     }).isRequired,
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,

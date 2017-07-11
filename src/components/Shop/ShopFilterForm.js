@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import MarketTypeField from '../ReduxForm/Shop/MarketTypeSearchField'
-import {ClientSearchField} from '../ReduxForm'
+import {ClientSearchField, ShopStatusSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -18,7 +18,8 @@ export const SHOP_FILTER_OPEN = 'openFilterDialog'
 
 export const SHOP_FILTER_KEY = {
     CLIENT: 'client',
-    MARKET_TYPE: 'marketType'
+    MARKET_TYPE: 'marketType',
+    STATUS: 'isActive'
 }
 
 const enhance = compose(
@@ -157,16 +158,21 @@ const ShopFilterForm = enhance((props) => {
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <Field
                         className={classes.inputFieldCustom}
-                        name="client"
-                        component={ClientSearchField}
-                        label="Клиент"/>
-
-                    <Field
-                        className={classes.inputFieldCustom}
                         name="marketType"
                         component={MarketTypeField}
                         label="Тип магазина"
                         fullWidth={true}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="isActive"
+                        component={ShopStatusSearchField}
+                        label="Статус"
+                        fullWidth={true}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="client"
+                        component={ClientSearchField}
+                        label="Клиент"/>
 
                     <RaisedButton
                         type="submit"
