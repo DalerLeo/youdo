@@ -3,8 +3,8 @@ export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
 export const API_URL = `http://${API_HOST}/${API_ROOT}/${API_VERSION}`
 
-export const USER = 'main/crud'
-export const SIGN_IN = '/main/user/auth/'
+export const USER = 'main/user'
+export const SIGN_IN = `/${USER}/auth/`
 export const SIGN_OUT = `/${USER}/unauth/`
 export const CONFIG = 'config/'
 
@@ -60,7 +60,9 @@ export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/images/`
-export const SHOP_ITEM_SHOW_IMAGE = 'file/file/%d/'
+export const SHOP_SET_PRIMARY_IMAGE = `/${SHOP}/%d/set_primary_image/`
+export const SHOP_ITEM_SHOW_IMAGE = 'main/file/%d/'
+export const SHOP_ITEM_DELETE_IMAGE = `/${SHOP}/%d/images/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
 export const USERS = 'main/crud'
@@ -249,14 +251,15 @@ export const ZONE_ITEM = `/${ZONE}/%d/`
 export const ZONE_DELETE = `/${ZONE}/%d/`
 export const ZONE_STAT = `/${ZONE}/statistics/`
 
-export const PRICE = 'main/product'
-export const PRICE_CREATE = `/${PRODUCT}/`
-export const PRICE_LIST = `/${PRODUCT}/`
+export const PRICE = 'stock/products_net_costs'
+export const PRICE_CREATE = `/${PRICE}/`
+export const PRICE_LIST = `/${PRICE}/`
 export const PRICE_ITEM = `/${PRODUCT}/%d/`
-export const PRICE_DELETE = `/${PRODUCT}/%d/`
+export const PRICE_DELETE = `/${PRICE}/%d/`
 
 export const PRICE_LIST_ITEM = 'sales/price_list_item'
 export const PRICE_LIST_ITEM_HISTORY = 'stock/supply_product_history/%d/'
+export const PRICE_LIST_ITEM_EXPENSES = 'stock/supply_product_expenses/%d/'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
 

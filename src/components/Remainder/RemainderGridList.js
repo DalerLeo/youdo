@@ -227,7 +227,8 @@ const RemainderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.REMAINDER_LIST_URL}/>
                 {isOpenFilter ? <RemainderFilterForm
-                    onClose={filterDialog.handleCloseFilterDialog}/>
+                    onClose={filterDialog.handleCloseFilterDialog}
+                    onSubmit={filterDialog.handleSubmitFilterDialog}/>
                 : <div
                        className={classes.filterBtnWrapper}>
                         <div onClick={filterDialog.handleOpenFilterDialog} className={classes.filterBtn}>
@@ -249,7 +250,8 @@ RemainderGridList.propTypes = {
     filterDialog: PropTypes.shape({
         openFilterDialog: PropTypes.bool.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired
+        handleOpenFilterDialog: PropTypes.func.isRequired,
+        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

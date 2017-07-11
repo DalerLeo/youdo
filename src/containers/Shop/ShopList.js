@@ -18,11 +18,14 @@ import {
     SHOP_UPDATE_MAP_DIALOG_OPEN,
     ADD_PHOTO_DIALOG_OPEN,
     SHOP_SLIDESHOW_DIALOG_OPEN,
+    DELETE_IMAGE_OPEN,
     ShopGridList
 } from '../../components/Shop'
 import {
     shopCreateAction,
     imageCreateAction,
+    setPrimaryImageAction,
+    imageDeleteAction,
     shopUpdateAction,
     shopDeleteAction,
     shopItemFetchAction,
@@ -103,6 +106,7 @@ const enhance = compose(
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openDeleteImage', 'setOpenDeleteImage', false),
 
     withHandlers({
         handleOpenConfirmDialog: props => () => {
@@ -121,6 +125,41 @@ const enhance = compose(
                     setOpenConfirmDialog(false)
                     dispatch(shopListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                })
+        },
+
+        handleSetPrimaryImage: props => () => {
+            const {dispatch, params, detail, location} = props
+            const images = _.get(detail, 'images')
+            const index = _.toNumber(_.get(location, ['query', 'openImagesDialog']))
+            const imgId = _.toInteger(_.get(_.nth(images, index), 'id'))
+            const shopId = _.toInteger(_.get(params, 'shopId'))
+            dispatch(setPrimaryImageAction(shopId, imgId))
+        },
+
+        handleOpenDeleteImageDialog: props => (id) => {
+            const {setOpenDeleteImage, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[DELETE_IMAGE_OPEN]: id})})
+            setOpenDeleteImage(true)
+        },
+
+        handleCloseDeleteImageDialog: props => () => {
+            const {setOpenDeleteImage, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[DELETE_IMAGE_OPEN]: ZERO})})
+            setOpenDeleteImage(false)
+        },
+        handleSendDeleteImageDialog: props => () => {
+            const {dispatch, setOpenDeleteImage} = props
+            const imgId = _.toInteger(_.get(props, ['location', 'query', 'openDeleteImageDialog']))
+            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+            dispatch(imageDeleteAction(shopId, imgId))
+                .then(() => {
+                    setOpenDeleteImage(false)
+                    dispatch(shopItemFetchAction(shopId))
+                    return dispatch(openSnackbarAction({message: 'Изображение успешно удалено'}))
                 })
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
@@ -354,8 +393,8 @@ const ShopList = enhance((props) => {
             }
             return {
                 latLng: {
-                    lat: _.get(detail, ['location', 'coordinates', '0']),
-                    lng: _.get(detail, ['location', 'coordinates', '1'])
+                    lat: _.get(detail, ['location', 'lat']),
+                    lng: _.get(detail, ['location', 'lon'])
                 }
             }
         })(),
@@ -376,6 +415,13 @@ const ShopList = enhance((props) => {
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
+    }
+
+    const imageDeleteDialog = {
+        openDeleteImage: props.openDeleteImage,
+        handleOpenDeleteImageDialog: props.handleOpenDeleteImageDialog,
+        handleCloseDeleteImageDialog: props.handleCloseDeleteImageDialog,
+        handleSendDeleteImageDialog: props.handleSendDeleteImageDialog
     }
 
     const navigationButtons = {
@@ -408,8 +454,8 @@ const ShopList = enhance((props) => {
                 guide: _.get(detail, 'guide'),
                 phone: _.get(detail, 'phone'),
                 latLng: {
-                    lat: _.get(detail, ['location', 'coordinates', '0']),
-                    lng: _.get(detail, ['location', 'coordinates', '1'])
+                    lat: _.get(detail, ['location', 'lat']),
+                    lng: _.get(detail, ['location', 'lon'])
                 },
                 marketType: {
                     value: _.get(detail, ['marketType', 'id']),
@@ -471,7 +517,8 @@ const ShopList = enhance((props) => {
         id: detailId,
         data: detail,
         detailLoading,
-        handleCloseDetail: props.handleCloseDetail
+        handleCloseDetail: props.handleCloseDetail,
+        handleSetPrimaryImage: props.handleSetPrimaryImage
     }
 
     return (
@@ -487,6 +534,7 @@ const ShopList = enhance((props) => {
                 updateMapDialog={updateMapDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
+                imageDeleteDialog={imageDeleteDialog}
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
                 mapLocation={mapLocation}

@@ -229,7 +229,8 @@ const RemainderFilterForm = enhance((props) => {
 })
 
 RemainderFilterForm.propTypes = {
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired
 }
 
 export default RemainderFilterForm
