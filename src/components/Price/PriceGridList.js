@@ -17,8 +17,6 @@ import PriceDetails from './PriceDetails'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 
-const ZERO = 0
-
 const listHeader = [
     {
         sorting: true,
@@ -81,6 +79,8 @@ const PriceGridList = enhance((props) => {
         listData,
         detailData
     } = props
+    const expenseList = _.get(detailData, 'priceItemExpenseList')
+    const expenseLoading = _.get(detailData, 'priceItemExpenseLoading')
     const priceFilterDialog = (
         <PriceFilterForm
             initialValues={filterDialog.initialValues}
@@ -88,10 +88,16 @@ const PriceGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
+
+    const listDetailData = _.filter(_.get(listData, 'data'), (o) => {
+        return o.id === _.get(detailData, 'id')
+    })
+
     const priceDetail = (
         <PriceDetails
             key={_.get(detailData, 'id')}
             detailData={detailData}
+            listDetailData={listDetailData}
             priceSupplyDialog={priceSupplyDialog}
             priceSetForm = {priceSetForm}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
@@ -101,7 +107,7 @@ const PriceGridList = enhance((props) => {
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const netCost = _.get(item, 'netCost') || 'N/A'
+        const netCost = _.get(item, 'netCost') ? numberFormat(_.get(item, 'netCost'), getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
         const minPrice = _.get(item, 'minPrice')
         const maxPrice = _.get(item, 'maxPrice')
         const price = (minPrice && maxPrice) ? numberFormat(minPrice) + ' - ' + numberFormat(maxPrice, getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
@@ -124,8 +130,7 @@ const PriceGridList = enhance((props) => {
         list: priceList,
         loading: _.get(listData, 'listLoading')
     }
-    const expenseList = _.get(detailData, 'priceItemExpenseList')
-    const expenseLoading = _.get(detailData, 'priceItemExpenseLoading')
+
     return (
         <Container>
             <SubMenu url={ROUTES.PRICE_LIST_URL}/>
@@ -136,7 +141,7 @@ const PriceGridList = enhance((props) => {
                 filterDialog={priceFilterDialog}
             />
             <PriceSupplyDialog
-                open={priceSupplyDialog.openPriceSupplyDialog > ZERO}
+                open={priceSupplyDialog.openPriceSupplyDialog}
                 onClose={priceSupplyDialog.handleCloseSupplyDialog}
                 list={expenseList}
                 loading={expenseLoading}

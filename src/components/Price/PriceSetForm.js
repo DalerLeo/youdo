@@ -23,6 +23,7 @@ const validate = (data) => {
     })
 }
 const enhance = compose(
+
     injectSheet({
         loader: {
             position: 'absolute',
@@ -116,7 +117,8 @@ const PriceSetForm = enhance((props) => {
         handleSubmit,
         classes,
         mergedList,
-        onClose
+        onClose,
+        priceUpdatedDate
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const iconStyle = {
@@ -136,7 +138,7 @@ const PriceSetForm = enhance((props) => {
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.bodyTitle}>
                     <div>Цены на товар
-                        <span className={classes.rightSideTitleDate}> (23 апр, 2017)</span>
+                        <span className={classes.rightSideTitleDate}> ({priceUpdatedDate})</span>
                     </div>
                     <div className={classes.actionButton}>
                         <FlatButton
@@ -194,6 +196,7 @@ const PriceSetForm = enhance((props) => {
 PriceSetForm.propTyeps = {
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    mergedList: PropTypes.object.isRequired,
+    priceUpdatedDate: PropTypes.string.isRequired
 }
 export default PriceSetForm
