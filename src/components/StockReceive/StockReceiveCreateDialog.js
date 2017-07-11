@@ -218,13 +218,14 @@ const OrderCreateDialog = enhance((props) => {
                                 {_.map(_.get(detailProducts, 'products'), (item) => {
                                     const id = _.get(item, 'id')
                                     const name = _.get(item, ['product', 'name'])
+                                    const type = _.get(item, ['product', 'type', 'name'])
                                     const amount = numberFormat(_.get(item, 'amount'))
                                     const measurement = _.get(item, ['product', 'measurement', 'name'])
 
                                     return (
                                         <Row key={id} className="dottedList">
                                             <Col xs={3}>{name}</Col>
-                                            <Col xs={3}>Тип товара</Col>
+                                            <Col xs={3}>{type}</Col>
                                             <Col xs={2}>{amount} {measurement}</Col>
                                             <Col xs={2}>
                                                 <Field

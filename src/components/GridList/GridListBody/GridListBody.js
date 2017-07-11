@@ -128,9 +128,9 @@ const GridListBody = enhance((props) => {
         <div>
             {!_.isEmpty(items)
                 ? <div>{items}</div>
-                : <div className={classes.emptyQuery}>
+                : <Paper zDepth={1} className={classes.emptyQuery}>
                     <div>По вашему запросу ничего не найдено</div>
-                  </div>}
+                  </Paper>}
         </div>
     )
 })

@@ -120,7 +120,12 @@ const StockTabReceive = enhance((props) => {
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
                 const provider = _.get(item, ['provider', 'name'])
-                const acceptedDate = moment(_.get(item, 'acceptedTime')).format('DD.MM.YYYY')
+                let acceptedDate = _.get(item, 'acceptedTime')
+                if (acceptedDate === null) {
+                    acceptedDate = 'Не указана'
+                } else {
+                    acceptedDate = moment(_.get(item, 'acceptedTime')).format('DD.MM.YYYY')
+                }
                 const status = _.toInteger(_.get(item, 'status'))
                 const PENDING = 0
                 const IN_PROGRESS = 1

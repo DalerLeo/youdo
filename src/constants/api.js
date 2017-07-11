@@ -3,8 +3,8 @@ export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
 export const API_URL = `http://${API_HOST}/${API_ROOT}/${API_VERSION}`
 
-export const USER = 'main/crud'
-export const SIGN_IN = '/main/user/auth/'
+export const USER = 'main/user'
+export const SIGN_IN = `/${USER}/auth/`
 export const SIGN_OUT = `/${USER}/unauth/`
 export const CONFIG = 'config/'
 
@@ -60,7 +60,9 @@ export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
 export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/images/`
-export const SHOP_ITEM_SHOW_IMAGE = 'file/file/%d/'
+export const SHOP_SET_PRIMARY_IMAGE = `/${SHOP}/%d/set_primary_image/`
+export const SHOP_ITEM_SHOW_IMAGE = 'main/file/%d/'
+export const SHOP_ITEM_DELETE_IMAGE = `/${SHOP}/%d/images/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 
 export const USERS = 'main/crud'
@@ -283,5 +285,5 @@ export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`
 export const STOCK_TRANSFER_ITEM = `/${STOCK_TRANSFER}/%d/`
 export const STOCK_RECEIVE_LIST = `/${STOCK_RECEIVE}/`
 export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
-export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/product_detail/%d/`
+export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/accept_products/`
 export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE

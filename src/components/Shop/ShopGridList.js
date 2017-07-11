@@ -79,6 +79,7 @@ const ShopGridList = enhance((props) => {
         filterDialog,
         slideShowDialog,
         confirmDialog,
+        imageDeleteDialog,
         deleteDialog,
         listData,
         detailData,
@@ -100,6 +101,7 @@ const ShopGridList = enhance((props) => {
             data={_.get(detailData, 'data') || {}}
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
+            imageDeleteDialog={imageDeleteDialog}
             loading={_.get(detailData, 'detailLoading')}
             updateDialog={updateDialog}
             addPhotoDialog={addPhotoDialog}
@@ -184,6 +186,7 @@ const ShopGridList = enhance((props) => {
                 onClose={slideShowDialog.handleCloseSlideShowDialog}
                 prevBtn={navigationButtons.handlePrevImage}
                 nextBtn={navigationButtons.handleNextImage}
+                handleSetPrimaryImage={_.get(detailData, 'handleSetPrimaryImage')}
             />
             <MapDialog
                 isUpdate={true}
@@ -214,6 +217,13 @@ const ShopGridList = enhance((props) => {
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
+            />}
+            {detailData.data && <ConfirmDialog
+                type="delete"
+                message=""
+                onClose={imageDeleteDialog.handleCloseDeleteImageDialog}
+                onSubmit={imageDeleteDialog.handleSendDeleteImageDialog}
+                open={imageDeleteDialog.openDeleteImage}
             />}
         </Container>
     )
@@ -260,6 +270,12 @@ ShopGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
+    imageDeleteDialog: PropTypes.shape({
+        openDeleteImage: PropTypes.bool.isRequired,
+        handleOpenDeleteImageDialog: PropTypes.func.isRequired,
+        handleCloseDeleteImageDialog: PropTypes.func.isRequired,
+        handleSendDeleteImageDialog: PropTypes.func.isRequired
     }).isRequired,
     deleteDialog: PropTypes.shape({
         openDeleteDialog: PropTypes.bool.isRequired,

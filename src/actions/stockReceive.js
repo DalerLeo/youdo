@@ -5,10 +5,10 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/stockReceiveSerializer'
 
-export const stockReceiveCreateAction = (formValues, supplyId, productId) => {
-    const requestData = serializers.createSerializer(formValues)
+export const stockReceiveCreateAction = (formValues, supplyId, detail) => {
+    const requestData = serializers.createSerializer(formValues, detail)
     const payload = axios()
-        .post(sprintf(API.STOCK_RECEIVE_CREATE, supplyId, productId), requestData)
+        .post(sprintf(API.STOCK_RECEIVE_CREATE, supplyId), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -18,22 +18,6 @@ export const stockReceiveCreateAction = (formValues, supplyId, productId) => {
 
     return {
         type: actionTypes.STOCK_RECEIVE_CREATE,
-        payload
-    }
-}
-
-export const stockReceiveBarcodeFetchAction = (supplyId, productId) => {
-    const payload = axios()
-        .get(sprintf(API.STOCK_BARCODE_LIST, supplyId, productId))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STOCK_BARCODE_LIST,
         payload
     }
 }

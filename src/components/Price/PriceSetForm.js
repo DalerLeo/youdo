@@ -9,7 +9,6 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
-import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
 export const PRICE_SET_FORM_OPEN = 'openSetForm'
 import Tooltip from '../ToolTip'
@@ -24,7 +23,20 @@ const validate = (data) => {
     })
 }
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+
+    injectSheet({
+        loader: {
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
+            textAlign: 'center',
+            display: ({loading}) => loading ? 'flex' : 'none'
+        },
         bodyTitle: {
             display: 'flex',
             fontWeight: '600',
@@ -94,7 +106,7 @@ const enhance = compose(
         dottedList: {
             extend: 'priceRow'
         }
-    })),
+    }),
     reduxForm({
         form: 'PriceCreateForm',
         enableReinitialize: true
