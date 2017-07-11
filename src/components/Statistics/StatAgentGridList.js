@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
@@ -19,6 +20,8 @@ import List from 'material-ui/svg-icons/action/list'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import LinearProgress from 'material-ui/LinearProgress'
 import Pagination from '../GridList/GridListNavPagination'
+import numberFormat from '../../helpers/numberFormat.js'
+import getConfig from '../../helpers/getConfig'
 
 export const STAT_AGENT_FILTER_KEY = {
     ZONE: 'zone',
@@ -176,6 +179,7 @@ const StatAgentGridList = enhance((props) => {
     const {
         classes,
         statAgentDialog,
+        listData,
         filter
     } = props
 
@@ -208,52 +212,40 @@ const StatAgentGridList = enhance((props) => {
         </div>
 
     )
-    const list = (
-        <div>
-            <div className={classes.tableWrapper}>
-                <Row className="dottedList">
-                    <Col xs={3}>
-                        <div className="personImage"><img src={Person}/></div>
-                        <div>Исаков Тулкин</div>
-                    </Col>
-                    <Col xs={6}>
-                        <LinearProgress
-                            color="#58bed9"
-                            mode="determinate"
-                            value={50}
-                            style={{backgroundColor: '#fff', height: '10px'}}/>
-                    </Col>
-                    <Col xs={2}>100000 UZS</Col>
-                    <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
-                        <IconButton
-                            onTouchTap={statAgentDialog.handleOpenStatAgentDialog}>
-                            <List color="#12aaeb"/>
-                        </IconButton>
-                    </Col>
-                </Row>
-                <Row className="dottedList">
-                    <Col xs={3}>
-                        <div className="personImage"><img src={Person}/></div>
-                        <div>Исаков Тулкин</div>
-                    </Col>
-                    <Col xs={6}>
-                        <LinearProgress
-                            color="#58bed9"
-                            mode="determinate"
-                            value={50}
-                            style={{backgroundColor: '#fff', height: '10px'}}/>
-                    </Col>
-                    <Col xs={2}>100000 UZS</Col>
-                    <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
-                        <IconButton
-                            onTouchTap={statAgentDialog.handleOpenStatAgentDialog}>
-                            <List color="#12aaeb"/>
-                        </IconButton>
-                    </Col>
-                </Row>
+
+    const list = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
+
+        return (
+            <div key={id}>
+                <div className={classes.tableWrapper}>
+                    <Row className="dottedList">
+                        <Col xs={3}>
+                            <div className="personImage"><img src={Person}/></div>
+                            <div>{name}</div>
+                        </Col>
+                        <Col xs={6}>
+                            <LinearProgress
+                                color="#58bed9"
+                                mode="determinate"
+                                value={50}
+                                style={{backgroundColor: '#fff', height: '10px'}}/>
+                        </Col>
+                        <Col xs={2}>{income}</Col>
+                        <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
+                            <IconButton
+                                onTouchTap={statAgentDialog.handleOpenStatAgentDialog}>
+                                <List color="#12aaeb"/>
+                            </IconButton>
+                        </Col>
+                    </Row>
+                </div>
             </div>
-        </div>
-    )
+        )
+    })
+
     const page = (
             <Paper zDepth={1} className={classes.mainWrapper}>
                 <Row style={{margin: '0', height: '100%'}}>
