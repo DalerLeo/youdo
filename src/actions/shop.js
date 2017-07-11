@@ -4,6 +4,7 @@ import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/shopSerializer'
+
 export const shopCreateAction = (formValues, location) => {
     const requestData = serializers.createSerializer(formValues, location)
     const payload = axios()
@@ -19,6 +20,7 @@ export const shopCreateAction = (formValues, location) => {
         payload
     }
 }
+
 export const imageCreateAction = (image, id) => {
     const requestData = serializers.imageSerializer(image, id)
     const payload = axios()
@@ -34,6 +36,37 @@ export const imageCreateAction = (image, id) => {
         payload
     }
 }
+
+export const imageDeleteAction = (shopId, imgId) => {
+    const payload = axios()
+        .delete(sprintf(API.SHOP_ITEM_DELETE_IMAGE, shopId, imgId))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.SHOP_ITEM_DELETE_IMAGE,
+        payload
+    }
+}
+
+export const setPrimaryImageAction = (shopId, image) => {
+    const payload = axios()
+        .post(sprintf(API.SHOP_SET_PRIMARY_IMAGE, shopId), {image})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.SHOP_SET_PRIMARY_IMAGE,
+        payload
+    }
+}
+
 export const shopDeleteAction = (id) => {
     const payload = axios()
         .delete(sprintf(API.SHOP_DELETE, id))
@@ -48,8 +81,9 @@ export const shopDeleteAction = (id) => {
         payload
     }
 }
-export const shopUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+
+export const shopUpdateAction = (id, formValues, location) => {
+    const requestData = serializers.createSerializer(formValues, location)
     const payload = axios()
         .put(sprintf(API.SHOP_ITEM, id), requestData)
         .then((response) => {
@@ -63,6 +97,7 @@ export const shopUpdateAction = (id, formValues) => {
         payload
     }
 }
+
 export const shopListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
@@ -93,6 +128,7 @@ export const shopItemFetchAction = (id) => {
         payload
     }
 }
+
 export const slideShowFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.SHOP_ITEM_SHOW_IMAGE, id), {params: {'thumbnail_type': 'large'}})

@@ -22,6 +22,7 @@ const MainStyles = {
         minHeight: '317px !important'
     },
     popUp: {
+        color: '#333 !important',
         overflowY: 'hidden !important',
         fontSize: '13px !important',
         position: 'relative',

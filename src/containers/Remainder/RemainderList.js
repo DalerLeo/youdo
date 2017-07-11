@@ -9,6 +9,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
     RemainderGridList,
+    REMAINDER_TRANSFER_DIALOG_OPEN,
     REMAINDER_FILTER_OPEN,
     REMAINDER_FILTER_KEY
 } from '../../components/Remainder'
@@ -59,6 +60,14 @@ const enhance = compose(
             const {location: {pathname}} = props
             hashHistory.push({pathname})
         },
+        handleOpenTransferDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: true})})
+        },
+        handleCloseTransferDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: false})})
+        },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const biggerThan = _.get(filterForm, ['values', 'biggerThan']) || null
@@ -100,12 +109,19 @@ const RemainderList = enhance((props) => {
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', REMAINDER_FILTER_OPEN]))
-
+    const openTransferDialog = toBoolean(_.get(location, ['query', REMAINDER_TRANSFER_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'remainderId'))
     const filterDialog = {
         openFilterDialog: openFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,
-        handleCloseFilterDialog: props.handleCloseFilterDialog
+        handleCloseFilterDialog: props.handleCloseFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+    }
+
+    const transferDialog = {
+        openTransferDialog: openTransferDialog,
+        handleOpenTransferDialog: props.handleOpenTransferDialog,
+        handleCloseTransferDialog: props.handleCloseTransferDialog
     }
 
     const listData = {
@@ -128,6 +144,7 @@ const RemainderList = enhance((props) => {
                 detailData={detailData}
                 filterDialog={filterDialog}
                 handleCloseDetail={detailData.handleCloseDetail}
+                transferDialog={transferDialog}
             />
         </Layout>
     )

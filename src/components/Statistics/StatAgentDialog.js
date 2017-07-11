@@ -4,12 +4,12 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-
-import {reduxForm} from 'redux-form'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
-import {Row} from 'react-flexbox-grid'
+import {Row, Col} from 'react-flexbox-grid'
+import Person from '../Images/person.png'
+import Pagination from '../GridList/GridListNavPagination'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -27,26 +27,16 @@ const enhance = compose(
         },
         content: {
             width: '100%',
-            display: 'block'
-        },
-        topBlock: {
-            padding: '20px 30px 0px 30px',
-            '&:last-child': {
-                border: 'none'
-            },
-            '& .row': {
-                lineHeight: '35px',
-                padding: '0 10px',
-                '& > div:first-child': {
-                    flexBasis: '25%',
-                    maxWidth: '25%'
-                },
-                '& > div:last-child': {
-                    fontWeight: '600',
-                    flexBasis: '75%',
-                    maxWidth: '75%'
-                }
+            display: 'block',
+            '& > div:last-child': {
+                padding: '0 30px',
+                borderTop: '1px #efefef solid'
             }
+        },
+        titleSummary: {
+            padding: '20px 30px',
+            display: 'flex',
+            justifyContent: 'space-between'
         },
         downBlock: {
             padding: '20px 30px',
@@ -65,23 +55,59 @@ const enhance = compose(
                 borderTop: '1px #efefef solid'
             }
         },
-        dottedList: {
-            padding: '10px 0'
-        },
         subTitle: {
             paddingBottom: '8px',
             fontStyle: 'italic',
             fontWeight: '400'
+        },
+        titleContent: {
+            textTransform: 'capitalize',
+            lineHeight: '60px',
+            padding: '0 30px',
+            '& div': {
+                display: 'flex',
+                alignItems: 'center'
+            },
+            '& .personImage': {
+                borderRadius: '50%',
+                overflow: 'hidden',
+                flexBasis: '35px',
+                height: '35px',
+                padding: '0!important',
+                width: '35px',
+                marginRight: '10px',
+                '& img': {
+                    display: 'flex',
+                    height: '100%',
+                    width: '100%'
+                }
+            },
+            '& button': {
+                display: 'flex!important',
+                justifyContent: 'center'
+            }
+
+        },
+        tableWrapper: {
+            padding: '0 30px',
+            '& .row': {
+                '&:first-child': {
+                    fontWeight: '600'
+                }
+            },
+            '& .dottedList': {
+                padding: '15px 0',
+
+                '&:last-child:after': {
+                    display: 'none'
+                }
+            }
         }
     })),
-    reduxForm({
-        form: 'PriceCreateForm',
-        enableReinitialize: true
-    })
 )
 
 const StatAgentDialog = enhance((props) => {
-    const {open, loading, onClose, classes} = props
+    const {open, loading, onClose, classes, filter} = props
 
     return (
         <Dialog
@@ -89,58 +115,53 @@ const StatAgentDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '400px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '400px'} : {width: '700px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <div>
-                Поставка <span style={{fontSize: '14px'}}> &#8470;</span>
+                    <div className="personImage">
+                        <img src={Person} alt=""/>
+                    </div>
+                    <div>Снегирев Нигер</div>
                 </div>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.content}>
-                <div className={classes.topBlock}>
-                    <Row>
-                        <div>Товар</div>
-                        <div>Миф морозная свежесть (жесткая упаковка)</div>
+                <div className={classes.titleSummary}>
+                    <div>Период: <b>22 Апр, 2017 - 22 Май, 2017</b></div>
+                    <div>Сумма: <b>3 000 000 UZS</b></div>
+                </div>
+                <div className={classes.tableWrapper}>
+                    <Row className="dottedList">
+                        <Col xs={2}>№ заказа</Col>
+                        <Col xs={6}>Магазин</Col>
+                        <Col xs={2}>Дата</Col>
+                        <Col xs={2}>Сумма</Col>
                     </Row>
-                    <Row>
-                        <div>Поставщик:</div>
-                        <div>ООО "Эмомали Рахмон"</div>
+                    <Row className="dottedList">
+                        <Col xs={2}>123452</Col>
+                        <Col xs={6}>Наименование объекта для сделки</Col>
+                        <Col xs={2}>22 Апр, 2017</Col>
+                        <Col xs={2}>100000 UZS</Col>
                     </Row>
-                    <Row className="dottedList" style={{paddingBottom: '10px'}}>
-                        <div>Дата поставки:</div>
-                        <div>22 апр, 2017</div>
+                    <Row className="dottedList">
+                        <Col xs={2}>123452</Col>
+                        <Col xs={6}>Наименование объекта для сделки</Col>
+                        <Col xs={2}>22 Апр, 2017</Col>
+                        <Col xs={2}>100000 UZS</Col>
                     </Row>
                 </div>
-                <div className={classes.downBlock}>
-                    <div className={classes.subTitle}>Расчет себестоимости за еденицу товара:</div>
-                        <Row>
-                            <div>Стоимость товара</div>
-                            <div>20 000</div>
-                        </Row>
-                        <Row>
-                            <div>Стоимость товара</div>
-                            <div>20 000</div>
-                        </Row>
-                        <Row>
-                            <div>Стоимость товара</div>
-                            <div>20 000</div>
-                        </Row>
-
-                    <Row>
-                        <div>Себестоимость товара</div>
-                        <div>29 000</div>
-                    </Row>
-                </div>
+                <Pagination filter={filter}/>
             </div>
         </Dialog>
     )
 })
 
 StatAgentDialog.propTyeps = {
+    filter: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool

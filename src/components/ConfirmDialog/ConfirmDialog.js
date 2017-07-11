@@ -150,9 +150,9 @@ const ConfirmDialog = enhance((props) => {
                     <div className={classes.confirm}>
                         {text}
                     </div>
-                    <div className={classes.background}>
+                    {message && <div className={classes.background}>
                         {message}
-                    </div>
+                    </div>}
                 </div>
                 <div className={classes.bottomButton}>
                     <FlatButton
@@ -170,7 +170,7 @@ const ConfirmDialog = enhance((props) => {
 ConfirmDialog.propTypes = {
     type: PropTypes.oneOf(['delete', 'cancel']).isRequired,
     message: PropTypes.string.isRequired,
-    loading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired

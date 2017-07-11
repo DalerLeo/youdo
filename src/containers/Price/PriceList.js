@@ -19,7 +19,9 @@ import {
     priceCreateAction,
     priceListFetchAction,
     priceItemFetchAction,
-    getPriceItemsAction
+    getPriceItemsAction,
+    priceItemHistoryFetchAction,
+    priceItemExpensesFetchAction
 } from '../../actions/price'
 import {marketTypeGetAllAction} from '../../actions/marketType'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -39,6 +41,10 @@ const enhance = compose(
         const marketTypeLoading = _.get(state, ['marketType', 'list', 'loading'])
         const priceListItemsList = _.get(state, ['price', 'price', 'data'])
         const priceListItemsLoading = _.get(state, ['price', 'price', 'loading'])
+        const priceItemHistoryList = _.get(state, ['price', 'history', 'data'])
+        const priceItemHistoryLoading = _.get(state, ['price', 'history', 'loading'])
+        const priceItemExpenseList = _.get(state, ['price', 'expense', 'data'])
+        const priceItemExpenseLoading = _.get(state, ['price', 'expense', 'loading'])
         return {
             list,
             listLoading,
@@ -50,7 +56,11 @@ const enhance = compose(
             filterForm,
             createForm,
             priceListItemsList,
-            priceListItemsLoading
+            priceListItemsLoading,
+            priceItemHistoryList,
+            priceItemHistoryLoading,
+            priceItemExpenseList,
+            priceItemExpenseLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -61,14 +71,20 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const priceId = _.get(nextProps, ['params', 'priceId']) || ZERO
         return priceId > ZERO && _.get(props, ['params', 'priceId']) !== priceId
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, location}) => {
         const priceId = _.toInteger(_.get(params, 'priceId'))
+        const supplyId = _.toInteger(_.get(location, ['query', PRICE_SUPPLY_DIALOG_OPEN]))
         if (priceId > ZERO) {
             dispatch(priceItemFetchAction(priceId))
             dispatch(getPriceItemsAction(priceId))
             dispatch(marketTypeGetAllAction())
+            dispatch(priceItemHistoryFetchAction(priceId))
+        }
+        if (supplyId > ZERO) {
+            dispatch(priceItemExpensesFetchAction(supplyId))
         }
     }),
+
     withHandlers({
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
@@ -94,18 +110,18 @@ const enhance = compose(
                 [PRICE_FILTER_KEY.BRAND]: brand
             })
         },
-        handleOpenSupplyDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRICE_SUPPLY_DIALOG_OPEN]: true})})
+        handleOpenSupplyDialog: props => (id) => {
+            const {location: {pathname}, filter, dispatch} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRICE_SUPPLY_DIALOG_OPEN]: id})})
+            return dispatch(priceItemExpensesFetchAction(id))
         },
         handleCloseSupplyDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SUPPLY_DIALOG_OPEN]: false})})
         },
         handleOpenPriceSetForm: props => () => {
-            const {dispatch, location: {pathname}, filter} = props
+            const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: true})})
-            return dispatch(marketTypeGetAllAction())
         },
         handleClosePriceSetForm: props => () => {
             const {location: {pathname}, filter} = props
@@ -117,6 +133,7 @@ const enhance = compose(
             return dispatch(priceCreateAction(_.get(createForm, ['values']), priceId))
                 .then(() => {
                     dispatch(priceItemFetchAction(detailId))
+                    dispatch(getPriceItemsAction(detailId))
                     hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -127,6 +144,7 @@ const enhance = compose(
         }
     })
 )
+
 const PriceList = enhance((props) => {
     const {
         location,
@@ -138,12 +156,16 @@ const PriceList = enhance((props) => {
         marketTypeList,
         priceListItemsList,
         priceListItemsLoading,
+        priceItemHistoryList,
+        priceItemHistoryLoading,
+        priceItemExpenseList,
+        priceItemExpenseLoading,
         filter,
         layout,
         params
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', PRICE_FILTER_OPEN]))
-    const openPriceSupplyDialog = toBoolean(_.get(location, ['query', PRICE_SUPPLY_DIALOG_OPEN]))
+    const openPriceSupplyDialog = _.toInteger(_.get(location, ['query', PRICE_SUPPLY_DIALOG_OPEN]))
     const openPriceSetForm = toBoolean(_.get(location, ['query', PRICE_SET_FORM_OPEN]))
     const detailId = _.toInteger(_.get(params, 'priceId'))
     const priceSupplyDialog = {
@@ -177,9 +199,13 @@ const PriceList = enhance((props) => {
         return numberFormat(val)
     }
     const detailData = {
+        priceItemExpenseLoading,
+        priceItemExpenseList,
+        priceItemHistoryList,
+        priceItemHistoryLoading,
         id: detailId,
+        priceListItemsLoading,
         marketTypeLoading: marketTypeLoading,
-        marketTypeList: _.get(marketTypeList, 'results'),
         mergedList: () => {
             return _.map(_.get(marketTypeList, 'results'), (item) => {
                 const marketTypeId = _.get(item, 'id')
@@ -192,8 +218,6 @@ const PriceList = enhance((props) => {
                 }
             })
         },
-        priceListItemsList: _.get(priceListItemsList, 'results'),
-        priceListItemsLoading,
         data: detail,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail

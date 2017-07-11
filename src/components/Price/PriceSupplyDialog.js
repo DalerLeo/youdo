@@ -9,6 +9,11 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import {Row} from 'react-flexbox-grid'
+import getConfig from '../../helpers/getConfig'
+import numberFormat from '../../helpers/numberFormat'
+import CircularProgress from 'material-ui/CircularProgress'
+
+const ZERO = 0
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -78,59 +83,69 @@ const enhance = compose(
     })
 )
 const PriceSupplyDialog = enhance((props) => {
-    const {open, loading, onClose, classes} = props
+    const {open, loading, onClose, classes, list} = props
+    const dateDelivery = _.get(list, 'dateDelivery')
+    const product = _.get(list, 'product')
+    const provider = _.get(list, 'provider')
+    let price = ZERO
     return (
         <Dialog
             modal={true}
-            open={open}
+            open={open > ZERO}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '400px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '500px'} : {width: '500px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <div>
-                    Поставка <span style={{fontSize: '14px'}}> &#8470;</span>
-                </div>
+                    Поставка <span style={{fontSize: '14px', margin: '0 5px'}}> &#8470;</span>
+                    {open} </div>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <div className={classes.content}>
-                <div className={classes.topBlock}>
-                    <Row>
-                        <div>Товар</div>
-                        <div>Миф морозная свежесть (жесткая упаковка)</div>
-                    </Row>
-                    <Row>
-                        <div>Поставщик:</div>
-                        <div>ООО "Эмомали Рахмон"</div>
-                    </Row>
-                    <Row className="dottedList" style={{paddingBottom: '10px'}}>
-                        <div>Дата поставки:</div>
-                        <div>22 апр, 2017</div>
-                    </Row>
+            {loading && <div className={classes.loader}>
+                            <div>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                        </div>}
+            {!loading &&
+                <div className={classes.content}>
+                    <div className={classes.topBlock}>
+                        <Row>
+                            <div>Товар</div>
+                            <div>{product}</div>
+                        </Row>
+                        <Row>
+                            <div>Поставщик:</div>
+                            <div>{provider}</div>
+                        </Row>
+                        <Row className="dottedList" style={{paddingBottom: '10px'}}>
+                            <div>Дата поставки:</div>
+                            <div>{dateDelivery}</div>
+                        </Row>
+                    </div>
+                    <div className={classes.downBlock}>
+                        <div className={classes.subTitle}>Расчет себестоимости за еденицу товара:</div>
+                        {_.map(_.get(list, 'expenses'), (item, index) => {
+                            const interalCost = _.get(item, 'internalCost')
+                            price = Number(price) + Number(interalCost)
+                            const comment = _.get(item, 'comment')
+                            return (
+                                <Row key={index}>
+                                    <div>{comment}</div>
+                                    <div>{numberFormat(interalCost, getConfig('PRIMARY_CURRENCY'))}</div>
+                                </Row>
+                            )
+                        })}
+                        <Row>
+                            <div>Себестоимость</div>
+                            <div>{numberFormat(price, getConfig('PRIMARY_CURRENCY'))}</div>
+                        </Row>
+                    </div>
                 </div>
-                <div className={classes.downBlock}>
-                    <div className={classes.subTitle}>Расчет себестоимости за еденицу товара:</div>
-                    <Row>
-                        <div>Стоимость товара</div>
-                        <div>20 000</div>
-                    </Row>
-                    <Row>
-                        <div>Стоимость товара</div>
-                        <div>20 000</div>
-                    </Row>
-                    <Row>
-                        <div>Стоимость товара</div>
-                        <div>20 000</div>
-                    </Row>
-                    <Row>
-                        <div>Себестоимость товара</div>
-                        <div>29 000</div>
-                    </Row>
-                </div>
-            </div>
+            }
         </Dialog>
     )
 })

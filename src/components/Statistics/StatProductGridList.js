@@ -7,15 +7,28 @@ import Paper from 'material-ui/Paper'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import ReactHighcharts from 'react-highcharts'
 import ProductTypeSearchField from '../ReduxForm/Product/ProductTypeSearchField'
 import ProductSearchField from '../ReduxForm/Product/ProductSearchField'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
+import Search from 'material-ui/svg-icons/action/search'
+import IconButton from 'material-ui/IconButton'
+import Excel from 'material-ui/svg-icons/av/equalizer'
+import Pagination from '../GridList/GridListNavPagination'
 
+export const STAT_PRODUCT_FILTER_KEY = {
+    PRODUCT: 'product',
+    PRODUCT_TYPE: 'productType',
+    TO_DATE: 'toDate',
+    FROM_DATE: 'fromDate'
+}
 const enhance = compose(
     injectSheet({
+        mainWrapper: {
+            margin: '0 -28px',
+            height: 'calc(100% - 32px)'
+        },
         wrapper: {
             padding: '20px 30px',
             '& .row': {
@@ -43,14 +56,6 @@ const enhance = compose(
                 }
             }
         },
-        balanceInfo: {
-            padding: '15px 0'
-        },
-        balance: {
-            paddingRight: '10px',
-            fontSize: '24px!important',
-            fontWeight: '600'
-        },
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
@@ -67,24 +72,26 @@ const enhance = compose(
             }
         },
         excel: {
-            backgroundColor: '#6ec790 !important',
+            background: '#71ce87',
+            borderRadius: '2px',
             color: '#fff',
             fontWeight: '600',
-            padding: '10px 10px',
-            borderRadius: '3px',
-            lineHeight: '12px',
-            cursor: 'pointer'
-        },
-        balanceButtonWrap: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            padding: '5px 15px',
+            '& svg': {
+                width: '18px !important'
+            }
+        },
+        form: {
+            display: 'flex',
+            alignItems: 'center'
         },
         filter: {
             display: 'flex',
-            alignItems: 'baseline',
+            alignItems: 'center',
             '& > div': {
-                width: '20%!important',
+                width: '170px!important',
                 position: 'relative',
                 marginRight: '40px',
                 '&:after': {
@@ -107,24 +114,28 @@ const enhance = compose(
         },
         leftPanel: {
             backgroundColor: '#f2f5f8',
-            flexBasis: '25%',
-            maxWidth: '25%'
+            flexBasis: '250px',
+            maxWidth: '250px'
 
         },
         rightPanel: {
-            flexBasis: '75%',
-            maxWidth: '75%'
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)'
+        },
+        searchButton: {
+            marginLeft: '-10px !important'
         }
     }),
     reduxForm({
-        form: 'StatisticsFilterForm',
+        form: 'StatProductFilterForm',
         enableReinitialize: true
     }),
 )
 
 const StatProductGridList = enhance((props) => {
     const {
-        classes
+        classes,
+        filter
     } = props
 
     const headerStyle = {
@@ -132,92 +143,19 @@ const StatProductGridList = enhance((props) => {
         color: '#fff',
         fontWeight: '600'
     }
-
-    const sample = 100
-    const config = {
-        chart: {
-            type: 'areaspline',
-            height: 245
+    const iconStyle = {
+        icon: {
+            color: '#333',
+            width: 25,
+            height: 25
         },
-        title: {
-            text: '',
-            style: {
-                display: 'none'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            tickmarkPlacement: 'on',
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            }
-        },
-        yAxis: {
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            gridLineColor: '#efefef',
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 0,
-                pointPlacement: 'on'
-            },
-            areaspline: {
-                fillOpacity: 0.7
-            }
-        },
-        tooltip: {
-            shared: true,
-            valueSuffix: ' %',
-            backgroundColor: '#363636',
-            style: {
-                color: '#fff'
-            },
-            borderRadius: 2,
-            borderWidth: 0,
-            enabled: true,
-            shadow: false,
-            useHTML: true,
-            crosshairs: true,
-            pointFormat: '{series.name}: <b>{point.y}</b><br/>в отношении к BoM<br/>'
-        },
-        series: [{
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Эффективность',
-            data: [sample + sample + sample + sample],
-            color: '#7560a5'
-
-        }, {
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'BoM',
-            data: [sample + sample + sample + sample],
-            color: '#43d0e3'
-        }]
+        button: {
+            width: 40,
+            height: 40,
+            padding: 0
+        }
     }
+
     const headers = (
         <Paper
             zDepth={2}
@@ -250,44 +188,47 @@ const StatProductGridList = enhance((props) => {
     )
 
     const page = (
-    <Paper zDepth={1}
-           style={{margin: '0 -28px'}}>
+    <Paper zDepth={1} className={classes.mainWrapper}>
         <Row style={{margin: '0'}}>
             <div className={classes.leftPanel}>
-                <StatSideMenu/>
+                <StatSideMenu currentUrl={ROUTES.STATISTICS_PRODUCT_URL} />
             </div>
             <div className={classes.rightPanel}>
                 <div className={classes.wrapper}>
-                    <form className={classes.filter}>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="ProductType"
-                            component={ProductTypeSearchField}
-                            label="Тип товара"
-                            fullWidth={true}/>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="Product"
-                            component={ProductSearchField}
-                            label="Товар"
-                            fullWidth={true}/>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="date"
-                            component={DateToDateField}
-                            label="Диапазон дат."
-                            fullWidth={true}/>
+                    <form className={classes.form}>
+                        <div className={classes.filter}>
+                            <Field
+                                className={classes.inputFieldCustom}
+                                name="date"
+                                component={DateToDateField}
+                                label="Диапазон дат"
+                                fullWidth={true}/>
+                            <Field
+                                className={classes.inputFieldCustom}
+                                name="productType"
+                                component={ProductTypeSearchField}
+                                label="Тип товара"
+                                fullWidth={true}/>
+                            <Field
+                                className={classes.inputFieldCustom}
+                                name="product"
+                                component={ProductSearchField}
+                                label="Товар"
+                                fullWidth={true}/>
+
+                            <IconButton
+                                className={classes.searchButton}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                type="submit">
+                                <Search color="#5d6474"/>
+                            </IconButton>
+                        </div>
+                        <a className={classes.excel}>
+                            <Excel color="#fff"/> <span>Excel</span>
+                        </a>
                     </form>
-                    <div className={classes.balanceButtonWrap}>
-                        <div className={classes.balanceInfo}>
-                            <span className={classes.balance}>2500 000 UZS</span>
-                            Обшая Сумма от продажи товаров
-                        </div>
-                        <div className={classes.excel}>
-                            скачать excel
-                        </div>
-                    </div>
-                    <ReactHighcharts config={config}/>
+                    <Pagination filter={filter}/>
                     {headers}
                     {list}
                 </div>

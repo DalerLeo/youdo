@@ -18,11 +18,14 @@ import {
     SHOP_UPDATE_MAP_DIALOG_OPEN,
     ADD_PHOTO_DIALOG_OPEN,
     SHOP_SLIDESHOW_DIALOG_OPEN,
+    DELETE_IMAGE_OPEN,
     ShopGridList
 } from '../../components/Shop'
 import {
     shopCreateAction,
     imageCreateAction,
+    setPrimaryImageAction,
+    imageDeleteAction,
     shopUpdateAction,
     shopDeleteAction,
     shopItemFetchAction,
@@ -96,13 +99,14 @@ const enhance = compose(
     }, ({dispatch, location, detail}) => {
         const images = _.get(detail, 'images')
         const index = _.toNumber(_.get(location, ['query', 'openImagesDialog']))
-        const imgId = _.toInteger(_.get(_.nth(images, index), 'id'))
-        if (imgId > ZERO) {
-            dispatch(slideShowFetchAction(imgId))
+        const fileId = _.toInteger(_.get(_.nth(images, index), 'fileId'))
+        if (index > MINUS_ONE) {
+            dispatch(slideShowFetchAction(fileId))
         }
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openDeleteImage', 'setOpenDeleteImage', false),
 
     withHandlers({
         handleOpenConfirmDialog: props => () => {
@@ -127,6 +131,46 @@ const enhance = compose(
                 })
         },
 
+        handleSetPrimaryImage: props => () => {
+            const {dispatch, params, detail, location} = props
+            const images = _.get(detail, 'images')
+            const index = _.toNumber(_.get(location, ['query', 'openImagesDialog']))
+            const fileId = _.toInteger(_.get(_.nth(images, index), 'fileId'))
+            const imgId = _.toInteger(_.get(_.nth(images, index), 'id'))
+            const shopId = _.toInteger(_.get(params, 'shopId'))
+            dispatch(setPrimaryImageAction(shopId, imgId))
+                .then(() => {
+                    dispatch(slideShowFetchAction(fileId))
+                    dispatch(shopItemFetchAction(shopId))
+                })
+        },
+
+        handleOpenDeleteImageDialog: props => (id) => {
+            const {setOpenDeleteImage, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[DELETE_IMAGE_OPEN]: id})})
+            setOpenDeleteImage(true)
+        },
+
+        handleCloseDeleteImageDialog: props => () => {
+            const {setOpenDeleteImage, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[DELETE_IMAGE_OPEN]: ZERO})})
+            setOpenDeleteImage(false)
+        },
+        handleSendDeleteImageDialog: props => () => {
+            const {dispatch, setOpenDeleteImage} = props
+            const imgId = _.toInteger(_.get(props, ['location', 'query', 'openDeleteImageDialog']))
+            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+            dispatch(imageDeleteAction(shopId, imgId))
+                .then(() => {
+                    setOpenDeleteImage(false)
+                    dispatch(shopItemFetchAction(shopId))
+                    return dispatch(openSnackbarAction({message: 'Изображение успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                })
+        },
+
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_FILTER_OPEN]: true})})
@@ -145,11 +189,13 @@ const enhance = compose(
             const {filter, filterForm} = props
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
+            const isActive = _.get(filterForm, ['values', 'isActive', 'value'])
 
             filter.filterBy({
                 [SHOP_FILTER_OPEN]: false,
                 [SHOP_FILTER_KEY.CLIENT]: client,
-                [SHOP_FILTER_KEY.MARKET_TYPE]: marketType
+                [SHOP_FILTER_KEY.MARKET_TYPE]: marketType,
+                [SHOP_FILTER_KEY.STATUS]: isActive
             })
         },
         handleOpenCreateDialog: props => () => {
@@ -258,19 +304,8 @@ const enhance = compose(
         },
 
         handleSubmitMapUpdateDialog: props => () => {
-            const {dispatch, mapForm, filter} = props
-            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
-
-            return dispatch(shopUpdateAction(shopId, _.get(mapForm, ['values'])))
-                .then(() => {
-                    return dispatch(shopItemFetchAction(shopId))
-                })
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false}))
-                })
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false})})
         },
 
         handleOpenUpdateDialog: props => () => {
@@ -284,10 +319,10 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, mapLocation} = props
             const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
 
-            return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values'])))
+            return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values']), mapLocation))
                 .then(() => {
                     return dispatch(shopItemFetchAction(shopId))
                 })
@@ -359,6 +394,17 @@ const ShopList = enhance((props) => {
     }
 
     const mapDialog = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            }
+            return {
+                latLng: {
+                    lat: _.get(detail, ['location', 'lat']),
+                    lng: _.get(detail, ['location', 'lon'])
+                }
+            }
+        })(),
         openMapDialog,
         handleOpenMapDialog: props.handleOpenMapDialog,
         handleCloseMapDialog: props.handleCloseMapDialog,
@@ -376,6 +422,13 @@ const ShopList = enhance((props) => {
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
+    }
+
+    const imageDeleteDialog = {
+        openDeleteImage: props.openDeleteImage,
+        handleOpenDeleteImageDialog: props.handleOpenDeleteImageDialog,
+        handleCloseDeleteImageDialog: props.handleCloseDeleteImageDialog,
+        handleSendDeleteImageDialog: props.handleSendDeleteImageDialog
     }
 
     const navigationButtons = {
@@ -408,8 +461,8 @@ const ShopList = enhance((props) => {
                 guide: _.get(detail, 'guide'),
                 phone: _.get(detail, 'phone'),
                 latLng: {
-                    lat: _.get(detail, ['location', 'coordinates', '0']),
-                    lng: _.get(detail, ['location', 'coordinates', '1'])
+                    lat: _.get(detail, ['location', 'lat']),
+                    lng: _.get(detail, ['location', 'lon'])
                 },
                 marketType: {
                     value: _.get(detail, ['marketType', 'id']),
@@ -471,7 +524,8 @@ const ShopList = enhance((props) => {
         id: detailId,
         data: detail,
         detailLoading,
-        handleCloseDetail: props.handleCloseDetail
+        handleCloseDetail: props.handleCloseDetail,
+        handleSetPrimaryImage: props.handleSetPrimaryImage
     }
 
     return (
@@ -487,6 +541,7 @@ const ShopList = enhance((props) => {
                 updateMapDialog={updateMapDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
+                imageDeleteDialog={imageDeleteDialog}
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
                 mapLocation={mapLocation}

@@ -7,39 +7,73 @@ import Paper from 'material-ui/Paper'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import ReactHighcharts from 'react-highcharts'
 import UsersSearchField from '../ReduxForm/Users/UsersSearchField'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatAgentDialog from './StatAgentDialog'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
+import Person from '../Images/person.png'
+import Search from 'material-ui/svg-icons/action/search'
+import IconButton from 'material-ui/IconButton'
+import List from 'material-ui/svg-icons/action/list'
+import Excel from 'material-ui/svg-icons/av/equalizer'
+import LinearProgress from 'material-ui/LinearProgress'
+import Pagination from '../GridList/GridListNavPagination'
+
+export const STAT_AGENT_FILTER_KEY = {
+    ZONE: 'zone',
+    USER: 'user',
+    DATE: 'date'
+}
 
 const enhance = compose(
     injectSheet({
+        mainWrapper: {
+            margin: '0 -28px',
+            height: 'calc(100% - 32px)',
+            boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px !important'
+        },
         wrapper: {
             padding: '20px 30px',
+            '& > div:nth-child(2)': {
+                marginTop: '10px',
+                borderTop: '1px #efefef solid',
+                borderBottom: '1px #efefef solid'
+            },
             '& .row': {
-                margin: '0rem !important',
-                '& div': {
-                    lineHeight: '55px'
-                }
+                margin: '0rem !important'
             }
         },
         tableWrapper: {
-            padding: '0 30px',
             '& .row': {
-                '& div': {
-                    lineHeight: '55px'
+                '&:after': {
+                    bottom: '-1px'
+                },
+                '& > div': {
+                    display: 'flex',
+                    lineHeight: '50px',
+                    alignItems: 'center'
                 }
             },
             '& .dottedList': {
                 padding: '0',
-                '&:after': {
-                    margin: '0 -25px'
-                },
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
+                }
+            },
+            '& .personImage': {
+                borderRadius: '50%',
+                overflow: 'hidden',
+                flexBasis: '35px',
+                height: '35px',
+                padding: '0!important',
+                width: '35px',
+                marginRight: '10px',
+                '& img': {
+                    display: 'flex',
+                    height: '100%',
+                    width: '100%'
                 }
             }
         },
@@ -66,27 +100,26 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
-        excel: {
-            backgroundColor: '#6ec790 !important',
-            color: '#fff',
-            fontWeight: '600',
-            padding: '10px 10px',
-            borderRadius: '3px',
-            lineHeight: '12px',
-            cursor: 'pointer'
-        },
         balanceButtonWrap: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+        },
+        form: {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
         },
         filter: {
             display: 'flex',
-            alignItems: 'baseline',
+            alignItems: 'center',
             '& > div': {
-                width: '20%!important',
+                width: '170px!important',
                 position: 'relative',
                 marginRight: '40px',
+                '&:last-child': {
+                    margin: '0'
+                },
                 '&:after': {
                     content: '""',
                     position: 'absolute',
@@ -97,27 +130,44 @@ const enhance = compose(
                     marginTop: '-15px',
                     background: '#efefef'
                 },
-                '&:last-child': {
-                    '&:after': {
-                        content: '""',
-                        background: 'none'
-                    }
+                '&:last-child:after': {
+                    display: 'none'
                 }
             }
         },
         leftPanel: {
             backgroundColor: '#f2f5f8',
-            flexBasis: '25%',
-            maxWidth: '25%'
+            flexBasis: '250px',
+            maxWidth: '250px'
 
         },
         rightPanel: {
-            flexBasis: '75%',
-            maxWidth: '75%'
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)'
+        },
+        searchButton: {
+            marginLeft: '-10px !important',
+            '& div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
+        },
+        excel: {
+            background: '#71ce87',
+            borderRadius: '2px',
+            color: '#fff',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '5px 15px',
+            '& svg': {
+                width: '18px !important'
+            }
         }
     }),
     reduxForm({
-        form: 'StatisticsFilterForm',
+        form: 'StatAgentFilterForm',
         enableReinitialize: true
     }),
 )
@@ -125,175 +175,121 @@ const enhance = compose(
 const StatAgentGridList = enhance((props) => {
     const {
         classes,
-        statAgentDialog
+        statAgentDialog,
+        filter
     } = props
 
     const headerStyle = {
-        backgroundColor: '#5d6474',
-        color: '#fff',
+        backgroundColor: '#fff',
         fontWeight: '600'
     }
 
-    const sample = 100
-    const config = {
-        chart: {
-            type: 'areaspline',
-            height: 245
+    const iconStyle = {
+        icon: {
+            color: '#5d6474',
+            width: 22,
+            height: 22
         },
-        title: {
-            text: '',
-            style: {
-                display: 'none'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            tickmarkPlacement: 'on',
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            }
-        },
-        yAxis: {
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            gridLineColor: '#efefef',
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 0,
-                pointPlacement: 'on'
-            },
-            areaspline: {
-                fillOpacity: 0.7
-            }
-        },
-        tooltip: {
-            shared: true,
-            valueSuffix: ' %',
-            backgroundColor: '#363636',
-            style: {
-                color: '#fff'
-            },
-            borderRadius: 2,
-            borderWidth: 0,
-            enabled: true,
-            shadow: false,
-            useHTML: true,
-            crosshairs: true,
-            pointFormat: '{series.name}: <b>{point.y}</b><br/>в отношении к BoM<br/>'
-        },
-        series: [{
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Эффективность',
-            data: [sample + sample + sample + sample],
-            color: '#7560a5'
-
-        }, {
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'BoM',
-            data: [sample + sample + sample + sample],
-            color: '#43d0e3'
-        }]
+        button: {
+            width: 40,
+            height: 40,
+            padding: 0
+        }
     }
     const headers = (
-        <Paper
-            zDepth={2}
-            style={headerStyle}>
+        <div style={headerStyle}>
             <div className={classes.tableWrapper}>
                 <Row>
-                    <Col xs={4}>Агенты</Col>
-                    <Col xs={5}>Зона</Col>
-                    <Col xs={3}>Сумма</Col>
+                    <Col xs={3}>Агенты</Col>
+                    <Col xs={6}>Продажи</Col>
+                    <Col xs={2}>Сумма</Col>
                 </Row>
             </div>
-        </Paper>
+        </div>
 
     )
     const list = (
-        <Paper zDepth={1} >
+        <div>
             <div className={classes.tableWrapper}>
                 <Row className="dottedList">
-                    <Col xs={4}>Исаков Тулкин</Col>
-                    <Col xs={5}>Ташкент сел маш</Col>
+                    <Col xs={3}>
+                        <div className="personImage"><img src={Person}/></div>
+                        <div>Исаков Тулкин</div>
+                    </Col>
+                    <Col xs={6}>
+                        <LinearProgress
+                            color="#58bed9"
+                            mode="determinate"
+                            value={50}
+                            style={{backgroundColor: '#fff', height: '10px'}}/>
+                    </Col>
                     <Col xs={2}>100000 UZS</Col>
-                    <Col xs={1}>
-                        <a onClick={statAgentDialog.handleOpenStatAgentDialog} className={classes.link}>
-                            ДЕТАЛИ
-                        </a>
+                    <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
+                        <IconButton
+                            onTouchTap={statAgentDialog.handleOpenStatAgentDialog}>
+                            <List color="#12aaeb"/>
+                        </IconButton>
                     </Col>
                 </Row>
                 <Row className="dottedList">
-                    <Col xs={4}>Исаков Тулкин</Col>
-                    <Col xs={5}>Ташкент сел маш</Col>
+                    <Col xs={3}>
+                        <div className="personImage"><img src={Person}/></div>
+                        <div>Исаков Тулкин</div>
+                    </Col>
+                    <Col xs={6}>
+                        <LinearProgress
+                            color="#58bed9"
+                            mode="determinate"
+                            value={50}
+                            style={{backgroundColor: '#fff', height: '10px'}}/>
+                    </Col>
                     <Col xs={2}>100000 UZS</Col>
-                    <Col xs={1}>ДЕТАЛИ</Col>
+                    <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
+                        <IconButton
+                            onTouchTap={statAgentDialog.handleOpenStatAgentDialog}>
+                            <List color="#12aaeb"/>
+                        </IconButton>
+                    </Col>
                 </Row>
             </div>
-        </Paper>
+        </div>
     )
     const page = (
-            <Paper zDepth={1}
-                   style={{margin: '0 -28px'}}>
-                <Row style={{margin: '0'}}>
+            <Paper zDepth={1} className={classes.mainWrapper}>
+                <Row style={{margin: '0', height: '100%'}}>
                     <div className={classes.leftPanel}>
-                        <StatSideMenu/>
+                        <StatSideMenu currentUrl={ROUTES.STATISTICS_AGENT_URL}/>
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
-                            <form className={classes.filter}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="zone"
-                                    component={UsersSearchField}
-                                    label="Зоны"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="user"
-                                    component={UsersSearchField}
-                                    label="Агенты"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="date"
-                                    component={DateToDateField}
-                                    label="Диапазон дат."
-                                    fullWidth={true}/>
+                            <form className={classes.form}>
+                                <div className={classes.filter}>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="date"
+                                        component={DateToDateField}
+                                        label="Диапазон дат"
+                                        fullWidth={true}/>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="user"
+                                        component={UsersSearchField}
+                                        label="Агенты"
+                                        fullWidth={true}/>
+
+                                    <IconButton
+                                        className={classes.searchButton}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        type="submit">
+                                        <Search color="#5d6474"/>
+                                    </IconButton>
+                                </div>
+                                <a className={classes.excel}>
+                                    <Excel color="#fff"/> <span>Excel</span>
+                                </a>
                             </form>
-                            <div className={classes.balanceButtonWrap}>
-                                <div className={classes.balanceInfo}>
-                                    <span className={classes.balance}>2500 000 UZS</span>
-                                    Обшая Сумма от продажи товаров
-                                </div>
-                                <div className={classes.excel}>
-                                    скачать excel
-                                </div>
-                            </div>
-                            <ReactHighcharts config={config}/>
+                            <Pagination filter={filter}/>
                             {headers}
                             {list}
                         </div>
@@ -306,15 +302,16 @@ const StatAgentGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
-        <StatAgentDialog
-            open={statAgentDialog.openStatAgentDialog}
-            onClose={statAgentDialog.handleCloseStatAgentDialog}
-        />
+            <StatAgentDialog
+                open={statAgentDialog.openStatAgentDialog}
+                onClose={statAgentDialog.handleCloseStatAgentDialog}
+                filter={filter}/>
         </Container>
     )
 })
 
 StatAgentGridList.propTypes = {
+    filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
     statAgentDialog: PropTypes.shape({

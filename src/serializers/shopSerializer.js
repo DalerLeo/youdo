@@ -32,8 +32,7 @@ export const createSerializer = (data, location, image) => {
             'lat': lat,
             'lon': lon
         },
-        'is_active': isActive,
-        'images': [image]
+        'is_active': isActive
     }
 }
 
