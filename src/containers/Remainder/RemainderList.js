@@ -7,6 +7,8 @@ import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import {reset} from 'redux-form'
+
 import {
     RemainderGridList,
     REMAINDER_TRANSFER_DIALOG_OPEN,
@@ -65,29 +67,25 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: true})})
         },
         handleCloseTransferDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: false})})
+            const {location: {pathname}} = props
+            hashHistory.push({pathname})
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const biggerThan = _.get(filterForm, ['values', 'biggerThan']) || null
-            const lessThan = _.get(filterForm, ['values', 'lessThan']) || null
-            const productType = _.get(filterForm, ['values', 'productType', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-            const defective = _.get(filterForm, ['values', 'defective']) || null
-            const outDated = _.get(filterForm, ['values', 'outDated']) || null
-            const current = _.get(filterForm, ['values', 'current']) || null
-
+            const product = _.get(filterForm, ['values', 'product']) || null
+            const status = _.get(filterForm, ['values', 'status', 'value']) || null
             filter.filterBy({
-                [REMAINDER_FILTER_OPEN]: false,
-                [REMAINDER_FILTER_KEY.PRODUCT_TYPE]: productType,
+                [REMAINDER_FILTER_KEY.TYPE]: type,
                 [REMAINDER_FILTER_KEY.STOCK]: stock,
-                [REMAINDER_FILTER_KEY.BIGGER_THAN]: biggerThan,
-                [REMAINDER_FILTER_KEY.LESS_THAN]: lessThan,
-                [REMAINDER_FILTER_KEY.DEFECTIVE]: defective,
-                [REMAINDER_FILTER_KEY.OUT_DATED]: outDated,
-                [REMAINDER_FILTER_KEY.CURRENT]: current
+                [REMAINDER_FILTER_KEY.PRODUCT]: product,
+                [REMAINDER_FILTER_KEY.STATUS]: status
             })
+        },
+        handleResetFilter: props => () => {
+            const {dispatch} = props
+            dispatch(reset('RemainderFilterForm'))
         },
         handleCloseDetail: props => () => {
             const {filter} = props
@@ -145,6 +143,8 @@ const RemainderList = enhance((props) => {
                 filterDialog={filterDialog}
                 handleCloseDetail={detailData.handleCloseDetail}
                 transferDialog={transferDialog}
+                submitFilter={props.handleSubmitFilterDialog}
+                resetFilter={props.handleResetFilter}
             />
         </Layout>
     )
