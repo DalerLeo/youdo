@@ -8,7 +8,6 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
-import Person from '../Images/person.png'
 import Pagination from '../GridList/GridListNavPagination'
 
 const enhance = compose(
@@ -68,20 +67,6 @@ const enhance = compose(
                 display: 'flex',
                 alignItems: 'center'
             },
-            '& .personImage': {
-                borderRadius: '50%',
-                overflow: 'hidden',
-                flexBasis: '35px',
-                height: '35px',
-                padding: '0!important',
-                width: '35px',
-                marginRight: '10px',
-                '& img': {
-                    display: 'flex',
-                    height: '100%',
-                    width: '100%'
-                }
-            },
             '& button': {
                 display: 'flex!important',
                 justifyContent: 'center'
@@ -108,7 +93,7 @@ const enhance = compose(
     })),
 )
 
-const StatAgentDialog = enhance((props) => {
+const StatMarketDialog = enhance((props) => {
     const {open, loading, onClose, classes, filter} = props
 
     return (
@@ -121,12 +106,7 @@ const StatAgentDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <div>
-                    <div className="personImage">
-                        <img src={Person} alt=""/>
-                    </div>
-                    <div>Снегирев Нигер</div>
-                </div>
+                <span>Наименование магазина</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -139,19 +119,19 @@ const StatAgentDialog = enhance((props) => {
                 <div className={classes.tableWrapper}>
                     <Row className="dottedList">
                         <Col xs={2}>№ заказа</Col>
-                        <Col xs={6}>Магазин</Col>
+                        <Col xs={6}>Агент</Col>
                         <Col xs={2}>Дата</Col>
                         <Col xs={2}>Сумма</Col>
                     </Row>
                     <Row className="dottedList">
                         <Col xs={2}>123452</Col>
-                        <Col xs={6}>Наименование объекта для сделки</Col>
+                        <Col xs={6}>Хабибуллаев Тошмуроджон</Col>
                         <Col xs={2}>22 Апр, 2017</Col>
                         <Col xs={2}>100000 UZS</Col>
                     </Row>
                     <Row className="dottedList">
                         <Col xs={2}>123452</Col>
-                        <Col xs={6}>Наименование объекта для сделки</Col>
+                        <Col xs={6}>Хамидуллаев Хамзабек</Col>
                         <Col xs={2}>22 Апр, 2017</Col>
                         <Col xs={2}>100000 UZS</Col>
                     </Row>
@@ -162,11 +142,11 @@ const StatAgentDialog = enhance((props) => {
     )
 })
 
-StatAgentDialog.propTyeps = {
+StatMarketDialog.propTyeps = {
     filter: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool
 }
 
-export default StatAgentDialog
+export default StatMarketDialog

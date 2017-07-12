@@ -178,6 +178,7 @@ export const STATISTICS = 'statistics'
 export const STATISTICS_LIST_URL = `/${STATISTICS}`
 export const STATISTICS_AGENT_URL = `/${STATISTICS}/agent`
 export const STATISTICS_PRODUCT_URL = `/${STATISTICS}/product`
+export const STATISTICS_MARKET_URL = `/${STATISTICS}/market`
 
 export const STOCK_RECEIVE = 'stockReceive'
 export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`

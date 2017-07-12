@@ -44,7 +44,7 @@ const enhance = compose(
                 borderBottom: '1px #efefef solid'
             },
             '& .row': {
-                margin: '0rem !important'
+                margin: '0 !important'
             }
         },
         tableWrapper: {
@@ -200,6 +200,7 @@ const StatAgentGridList = enhance((props) => {
             padding: 0
         }
     }
+
     const headers = (
         <div style={headerStyle}>
             <div className={classes.tableWrapper}>
@@ -219,29 +220,27 @@ const StatAgentGridList = enhance((props) => {
         const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
 
         return (
-            <div key={id}>
-                <div className={classes.tableWrapper}>
-                    <Row className="dottedList">
-                        <Col xs={3}>
-                            <div className="personImage"><img src={Person}/></div>
-                            <div>{name}</div>
-                        </Col>
-                        <Col xs={6}>
-                            <LinearProgress
-                                color="#58bed9"
-                                mode="determinate"
-                                value={50}
-                                style={{backgroundColor: '#fff', height: '10px'}}/>
-                        </Col>
-                        <Col xs={2}>{income}</Col>
-                        <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
-                            <IconButton
-                                onTouchTap={statAgentDialog.handleOpenStatAgentDialog}>
-                                <List color="#12aaeb"/>
-                            </IconButton>
-                        </Col>
-                    </Row>
-                </div>
+            <div key={id} className={classes.tableWrapper}>
+                <Row className="dottedList">
+                    <Col xs={3}>
+                        <div className="personImage"><img src={Person}/></div>
+                        <div>{name}</div>
+                    </Col>
+                    <Col xs={6}>
+                        <LinearProgress
+                            color="#58bed9"
+                            mode="determinate"
+                            value={50}
+                            style={{backgroundColor: '#fff', height: '10px'}}/>
+                    </Col>
+                    <Col xs={2}>{income}</Col>
+                    <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
+                        <IconButton
+                            onTouchTap={statAgentDialog.handleOpenStatAgentDialog}>
+                            <List color="#12aaeb"/>
+                        </IconButton>
+                    </Col>
+                </Row>
             </div>
         )
     })
@@ -274,7 +273,7 @@ const StatAgentGridList = enhance((props) => {
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         type="submit">
-                                        <Search color="#5d6474"/>
+                                        <Search/>
                                     </IconButton>
                                 </div>
                                 <a className={classes.excel}>
@@ -310,7 +309,7 @@ StatAgentGridList.propTypes = {
         openStatAgentDialog: PropTypes.bool.isRequired,
         handleOpenStatAgentDialog: PropTypes.func.isRequired,
         handleCloseStatAgentDialog: PropTypes.func.isRequired
-    })
+    }).isRequired
 }
 
 export default StatAgentGridList
