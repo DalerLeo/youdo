@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import numberFormat from '../../helpers/numberFormat'
 import toBoolean from '../../helpers/toBoolean'
 import * as ORDER_TAB from '../../constants/orderTab'
 import {
@@ -194,11 +195,17 @@ const enhance = compose(
             const deliveryToDate = _.get(filterForm, ['values', 'deliveryDate', 'toDate']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const orderStatus = _.get(filterForm, ['values', 'orderStatus', 'value']) || null
+            const shop = _.get(filterForm, ['values', 'shop', 'value']) || null
+            const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
+            const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
 
             filter.filterBy({
                 [ORDER_FILTER_OPEN]: false,
                 [ORDER_FILTER_KEY.CLIENT]: client,
                 [ORDER_FILTER_KEY.ORDERSTATUS]: orderStatus,
+                [ORDER_FILTER_KEY.INITIATOR]: initiator,
+                [ORDER_FILTER_KEY.SHOP]: shop,
+                [ORDER_FILTER_KEY.DEPT]: dept,
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
@@ -491,16 +498,28 @@ const OrderList = enhance((props) => {
             const discountPrice = _.toNumber(_.get(detail, 'discountPrice'))
             const totalPrice = _.toNumber(_.get(detail, 'totalPrice'))
             const discount = (discountPrice / (discountPrice + totalPrice)) * HUND
+
+            const deliveryType = _.toInteger(_.get(detail, ['deliveryType', 'id']))
+            let deliveryTypeText = 'Доставка'
+            if (deliveryType === ZERO) {
+                deliveryTypeText = 'Самовывоз'
+            }
             return {
                 client: {
-                    value: _.get(detail, ['client', 'id'])
+                    value: _.toInteger(_.get(detail, ['client', 'id']))
                 },
                 contact: {
-                    value: _.get(detail, ['contact', 'id'])
+                    value: _.toInteger(_.get(detail, ['contact', 'id']))
                 },
-                deliveryType: _.get(detail, ['deliveryType', 'id']),
+                market: {
+                    value: _.toInteger(_.get(detail, ['market', 'id']))
+                },
+                deliveryType: {
+                    value: deliveryType,
+                    text: deliveryTypeText
+                },
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
-                deliveryPrice: _.get(detail, 'deliveryPrice'),
+                deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
                 products: forUpdateProducts

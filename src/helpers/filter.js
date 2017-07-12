@@ -143,6 +143,7 @@ const filter = (data, pathname, query = {}) => {
             openImagesDialog: null,
             openTransferDialog: null,
             openDeleteImageDialog: null,
+            openClientCreate: null,
             tab: null,
             openCreateIncomeDialog: null,
             openPriceSetFrom: null,

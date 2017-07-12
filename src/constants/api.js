@@ -108,9 +108,9 @@ export const PRICES_DELETE = `/${PRICES}/%d/`
 
 export const ORDER = 'sales/order'
 export const ORDER_CREATE = `/${ORDER}/`
-export const ORDER_RETURN = 'order_return/'
-export const ORDER_RETURN_LIST = 'order_return/%d/'
-export const ORDER_TRANSACTION = 'order_payment'
+export const ORDER_RETURN = 'sales/order_return/'
+export const ORDER_RETURN_LIST = `${ORDER_RETURN}/%d/`
+export const ORDER_TRANSACTION = 'sales/order_payment/'
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_DELETE = `/${ORDER}/%d/`
@@ -271,8 +271,8 @@ export const REMAINDER_ITEM = `/${PRODUCT}/%d/`
 export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
 
 export const STATISTICS = 'dist/product'
-export const STAT_AGENT_LIST = `/${STATISTICS}/`
-export const STAT_AGENT_ITEM = `/${STATISTICS}/%d/`
+export const STAT_AGENT_LIST = 'stats/agents'
+export const STAT_AGENT_ITEM = 'stats/agents/%d/'
 export const STAT_PRODUCT_LIST = `/${STATISTICS}/`
 
 export const STAT_PRODUCT_ITEM = `/${STATISTICS}/%d/`

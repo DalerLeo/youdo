@@ -99,9 +99,9 @@ const enhance = compose(
     }, ({dispatch, location, detail}) => {
         const images = _.get(detail, 'images')
         const index = _.toNumber(_.get(location, ['query', 'openImagesDialog']))
-        const imgId = _.toInteger(_.get(_.nth(images, index), 'id'))
-        if (imgId > ZERO) {
-            dispatch(slideShowFetchAction(imgId))
+        const fileId = _.toInteger(_.get(_.nth(images, index), 'fileId'))
+        if (index > MINUS_ONE) {
+            dispatch(slideShowFetchAction(fileId))
         }
     }),
 
@@ -135,9 +135,14 @@ const enhance = compose(
             const {dispatch, params, detail, location} = props
             const images = _.get(detail, 'images')
             const index = _.toNumber(_.get(location, ['query', 'openImagesDialog']))
+            const fileId = _.toInteger(_.get(_.nth(images, index), 'fileId'))
             const imgId = _.toInteger(_.get(_.nth(images, index), 'id'))
             const shopId = _.toInteger(_.get(params, 'shopId'))
             dispatch(setPrimaryImageAction(shopId, imgId))
+                .then(() => {
+                    dispatch(slideShowFetchAction(fileId))
+                    dispatch(shopItemFetchAction(shopId))
+                })
         },
 
         handleOpenDeleteImageDialog: props => (id) => {
@@ -184,11 +189,13 @@ const enhance = compose(
             const {filter, filterForm} = props
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
+            const isActive = _.get(filterForm, ['values', 'isActive', 'value'])
 
             filter.filterBy({
                 [SHOP_FILTER_OPEN]: false,
                 [SHOP_FILTER_KEY.CLIENT]: client,
-                [SHOP_FILTER_KEY.MARKET_TYPE]: marketType
+                [SHOP_FILTER_KEY.MARKET_TYPE]: marketType,
+                [SHOP_FILTER_KEY.STATUS]: isActive
             })
         },
         handleOpenCreateDialog: props => () => {
