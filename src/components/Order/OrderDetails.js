@@ -114,6 +114,10 @@ const enhance = compose(
                 },
                 '& .detailsList': {
                     padding: '10px 0',
+                    '& > div': {
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                    },
                     '&:last-child': {
                         paddingBottom: '0'
                     },
@@ -250,16 +254,16 @@ const OrderDetails = enhance((props) => {
                     }}>
                         <div className="detailsWrap">
                             <Row className="detailsList">
-                                <Col xs={6}>Контактное лицо</Col>
-                                <Col xs={6}>{contactName}</Col>
+                                <Col xs={5}>Контактное лицо</Col>
+                                <Col xs={7}>{contactName}</Col>
                             </Row>
                             <Row className="detailsList">
-                                <Col xs={6}>Телефон</Col>
-                                <Col xs={6}>{contactPhone}</Col>
+                                <Col xs={5}>Телефон</Col>
+                                <Col xs={7}>{contactPhone}</Col>
                             </Row>
                             <Row className="detailsList">
-                                <Col xs={6}>Email</Col>
-                                <Col xs={6}>{contactEmail}</Col>
+                                <Col xs={5}>Email</Col>
+                                <Col xs={7}>{contactEmail}</Col>
                             </Row>
                         </div>
                     </div>

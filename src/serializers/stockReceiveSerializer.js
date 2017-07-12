@@ -2,17 +2,16 @@ import _ from 'lodash'
 
 export const createSerializer = (data, detail) => {
     const provider = _.get(detail, ['provider', 'id'])
-    const products = _.map(_.get(detail, 'products'), (item) => {
-        const amount = _.get(item, 'amount')
-        const supplyProduct = _.get(item, ['product', 'id'])
-        const defectAmount = _.get(item, 'defectAmount')
+    const products = _.map(_.get(detail, 'products'), (item, index) => {
+        const supplyProduct = _.get(item, 'id')
 
         return {
-            'supply_product': supplyProduct,
-            amount,
-            'defect_amount': defectAmount
+            'amount': _.get(data, ['product', index, 'accepted']),
+            'defect_amount': _.get(data, ['product', index, 'defected']),
+            'supply_product': supplyProduct
         }
     })
+
     const stock = _.get(detail, ['stock', 'id'])
     const dateDelivery = _.get(detail, 'dateDelivery')
     const contact = _.get(detail, ['contact', 'id'])
