@@ -61,7 +61,7 @@ const enhance = compose(
             fontWeight: '400'
         },
         titleContent: {
-            textTransform: 'capitalize',
+            textTransform: 'uppercase',
             lineHeight: '60px',
             padding: '0 30px',
             '& div': {

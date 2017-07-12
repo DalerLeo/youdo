@@ -14,6 +14,7 @@ const enhance = compose(
             height: '50px',
             padding: '0 30px',
             background: '#fff',
+            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 2px 6px, rgba(0, 0, 0, 0.12) 0px 2px 4px',
             '& .row': {
                 width: '100%',
                 alignItems: 'center',
@@ -114,7 +115,7 @@ const GridListBody = enhance((props) => {
         }
 
         return (
-            <Paper zDepth={1} className={classes.item} key={index}>
+            <Paper zDepth={1} className={classes.item} key={index} style={{zIndex: index}}>
                     <div className={classes.checkbox}>
                         {withoutCheckboxes &&
                         <Checkbox onCheck={onChecked(id)} checked={checkboxChecked}/>
