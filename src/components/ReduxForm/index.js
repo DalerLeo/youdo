@@ -38,7 +38,7 @@ import VisitFrequencySearchField from './Shop/VisitFrequencySearchField'
 import ShopStatusSearchField from './Shop/ShopStatusSearchField'
 import DealTypeSearchField from './DealTypeSearchField'
 import MarketTypeSearchField from './Shop/MarketTypeSearchField'
-import MarketSearchField from './MarketSearchField'
+import MarketSearchField from './Shop/MarketSearchField'
 import DeptSearchField from './DeptTypeSearchField'
 import StockReceiveProductSearchField from './StockReceive/StockReceiveProductSearchField'
 

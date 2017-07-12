@@ -1,9 +1,9 @@
-import StatisticsList from './Statistics'
 import StatAgentList from './StatAgent'
 import StatProductList from './StatProduct'
+import StatMarketList from './StatMarket'
 
 export {
-    StatisticsList,
     StatAgentList,
-    StatProductList
+    StatProductList,
+    StatMarketList
 }
