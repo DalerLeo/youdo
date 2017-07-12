@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -6,10 +7,12 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
 import Pagination from '../GridList/GridListNavPagination'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -107,7 +110,24 @@ const enhance = compose(
 )
 
 const StatAgentDialog = enhance((props) => {
-    const {open, loading, onClose, classes, filter} = props
+    const {open, loading, onClose, classes, filter, detailData} = props
+
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
+        const id = _.get(item, 'id')
+        const market = _.get(item, ['market', 'name'])
+        const totalPrice = _.get(item, 'totalPrice')
+        const createdDate = moment(_.get(item, 'createdDate')).format('LL')
+
+        return (
+            <Row key={id} className="dottedList">
+                <Col xs={2}>{id}</Col>
+                <Col xs={6}>{market}</Col>
+                <Col xs={2}>{createdDate}</Col>
+                <Col xs={2}>{totalPrice} {primaryCurrency}</Col>
+            </Row>
+        )
+    })
 
     return (
         <Dialog
@@ -141,20 +161,13 @@ const StatAgentDialog = enhance((props) => {
                         <Col xs={2}>Дата</Col>
                         <Col xs={2}>Сумма</Col>
                     </Row>
-                    <Row className="dottedList">
-                        <Col xs={2}>123452</Col>
-                        <Col xs={6}>Наименование объекта для сделки</Col>
-                        <Col xs={2}>22 Апр, 2017</Col>
-                        <Col xs={2}>100000 UZS</Col>
-                    </Row>
-                    <Row className="dottedList">
-                        <Col xs={2}>123452</Col>
-                        <Col xs={6}>Наименование объекта для сделки</Col>
-                        <Col xs={2}>22 Апр, 2017</Col>
-                        <Col xs={2}>100000 UZS</Col>
-                    </Row>
+                    {_.get(detailData, 'detailLoading')
+                        ? <div style={{textAlign: 'center'}}>
+                            <CircularProgress/>
+                        </div>
+                        : orderList}
                 </div>
-                <Pagination filter={filter}/>
+                <Pagination filter={_.get(detailData, 'filter')}/>
             </div>
         </Dialog>
     )

@@ -426,6 +426,10 @@ export default {
             path: ROUTES.STATISTICS_AGENT_URL,
             component: userIsAuth(StatAgentList),
             childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_AGENT_ITEM_URL,
+                    component: userIsAuth(StatAgentList)
+                }
             ]
         },
         // Statistics/product

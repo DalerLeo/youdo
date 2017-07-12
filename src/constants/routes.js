@@ -176,7 +176,11 @@ export const REMAINDER_ITEM_PATH = `/${REMAINDER}/%d`
 
 export const STATISTICS = 'statistics'
 export const STATISTICS_LIST_URL = `/${STATISTICS}`
-export const STATISTICS_AGENT_URL = `/${STATISTICS}/agent`
+
+export const STATISTICS_AGENT = 'statistics/agent'
+export const STATISTICS_AGENT_URL = `/${STATISTICS_AGENT}`
+export const STATISTICS_AGENT_ITEM_URL = `/${STATISTICS_AGENT}/:statAgentId`
+export const STATISTICS_AGENT_ITEM_PATH = `/${STATISTICS_AGENT}/%d`
 export const STATISTICS_PRODUCT_URL = `/${STATISTICS}/product`
 
 export const STOCK_RECEIVE = 'stockReceive'

@@ -24,9 +24,9 @@ import numberFormat from '../../helpers/numberFormat.js'
 import getConfig from '../../helpers/getConfig'
 
 export const STAT_AGENT_FILTER_KEY = {
-    ZONE: 'zone',
-    USER: 'user',
-    DATE: 'date'
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate',
+    USER: 'user'
 }
 
 const enhance = compose(
@@ -180,7 +180,9 @@ const StatAgentGridList = enhance((props) => {
         classes,
         statAgentDialog,
         listData,
-        filter
+        filter,
+        handleSubmitFilterDialog,
+        detailData
     } = props
 
     const headerStyle = {
@@ -236,7 +238,7 @@ const StatAgentGridList = enhance((props) => {
                         <Col xs={2}>{income}</Col>
                         <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
                             <IconButton
-                                onTouchTap={statAgentDialog.handleOpenStatAgentDialog}>
+                                onTouchTap={() => { statAgentDialog.handleOpenStatAgentDialog(id) }}>
                                 <List color="#12aaeb"/>
                             </IconButton>
                         </Col>
@@ -254,7 +256,7 @@ const StatAgentGridList = enhance((props) => {
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
-                            <form className={classes.form}>
+                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
                                 <div className={classes.filter}>
                                     <Field
                                         className={classes.inputFieldCustom}
@@ -295,6 +297,7 @@ const StatAgentGridList = enhance((props) => {
             <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
             <StatAgentDialog
+                detailData={detailData}
                 open={statAgentDialog.openStatAgentDialog}
                 onClose={statAgentDialog.handleCloseStatAgentDialog}
                 filter={filter}/>
