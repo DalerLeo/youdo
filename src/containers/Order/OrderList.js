@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import numberFormat from '../../helpers/numberFormat'
 import toBoolean from '../../helpers/toBoolean'
 import * as ORDER_TAB from '../../constants/orderTab'
 import {
@@ -491,16 +492,28 @@ const OrderList = enhance((props) => {
             const discountPrice = _.toNumber(_.get(detail, 'discountPrice'))
             const totalPrice = _.toNumber(_.get(detail, 'totalPrice'))
             const discount = (discountPrice / (discountPrice + totalPrice)) * HUND
+
+            const deliveryType = _.toInteger(_.get(detail, ['deliveryType', 'id']))
+            let deliveryTypeText = 'Доставка'
+            if (deliveryType === ZERO) {
+                deliveryTypeText = 'Самовывоз'
+            }
             return {
                 client: {
-                    value: _.get(detail, ['client', 'id'])
+                    value: _.toInteger(_.get(detail, ['client', 'id']))
                 },
                 contact: {
-                    value: _.get(detail, ['contact', 'id'])
+                    value: _.toInteger(_.get(detail, ['contact', 'id']))
                 },
-                deliveryType: _.get(detail, ['deliveryType', 'id']),
+                market: {
+                    value: _.toInteger(_.get(detail, ['market', 'id']))
+                },
+                deliveryType: {
+                    value: deliveryType,
+                    text: deliveryTypeText
+                },
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
-                deliveryPrice: _.get(detail, 'deliveryPrice'),
+                deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
                 products: forUpdateProducts

@@ -108,9 +108,9 @@ export const PRICES_DELETE = `/${PRICES}/%d/`
 
 export const ORDER = 'sales/order'
 export const ORDER_CREATE = `/${ORDER}/`
-export const ORDER_RETURN = 'order_return/'
-export const ORDER_RETURN_LIST = 'order_return/%d/'
-export const ORDER_TRANSACTION = 'order_payment'
+export const ORDER_RETURN = 'sales/order_return/'
+export const ORDER_RETURN_LIST = `${ORDER_RETURN}/%d/`
+export const ORDER_TRANSACTION = 'sales/order_payment/'
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_DELETE = `/${ORDER}/%d/`
