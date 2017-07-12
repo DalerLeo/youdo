@@ -38,7 +38,13 @@ const listHeader = [
         sorting: true,
         name: 'client',
         title: 'Клиент',
-        xs: '20%'
+        xs: '15%'
+    },
+    {
+        sorting: true,
+        name: 'market',
+        title: 'Магазин',
+        xs: '15%'
     },
     {
         sorting: true,
@@ -48,14 +54,14 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'dateDelivery',
-        title: 'Дата доставки',
+        name: 'totalCost',
+        title: 'Сумма заказа',
         xs: '15%'
     },
     {
         sorting: true,
-        name: 'totalCost',
-        title: 'Сумма заказа',
+        name: 'dateDelivery',
+        title: 'Дата доставки',
         xs: '15%'
     },
     {
@@ -68,7 +74,7 @@ const listHeader = [
         sorting: true,
         name: 'acceptedCost',
         title: 'Статус',
-        xs: '10%'
+        xs: '5%'
     }
 ]
 
@@ -172,6 +178,7 @@ const OrderGridList = enhance((props) => {
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name'])
+        const market = _.get(item, ['market', 'name'])
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
@@ -187,25 +194,27 @@ const OrderGridList = enhance((props) => {
             <div style={{width: '10%'}}>
                 {id}
             </div>
-            <div style={{width: '20%'}}>
+            <div style={{width: '15%'}}>
                 <Link to={{
                     pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>{client}</Link>
             </div>
             <div style={{width: '15%'}}>
+                {market}
+            </div><div style={{width: '15%'}}>
                 {user}
-            </div>
-            <div style={{width: '15%'}}>
-                {dateDelivery}
             </div>
             <div style={{width: '15%'}}>
                 {totalPrice}
             </div>
             <div style={{width: '15%'}}>
+                {dateDelivery}
+            </div>
+            <div style={{width: '15%'}}>
                 {createdDate}
             </div>
-            <div style={{width: '10%'}} className={classes.buttons}>
+            <div style={{width: '5%'}} className={classes.buttons}>
                 {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
                         <IconButton
                             iconStyle={iconStyle.icon}

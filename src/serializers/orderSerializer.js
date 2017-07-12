@@ -3,6 +3,8 @@ import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
+const ONE = 1
+const TWO = 2
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
     const contact = _.get(data, ['contact'])
@@ -43,10 +45,13 @@ export const createSerializer = (data) => {
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
+    const dept = _.toInteger(_.get(defaultData, 'dept'))
     return {
         'id': _.get(defaultData, 'id'),
         'client': _.get(defaultData, 'client'),
-        'user': _.get(defaultData, 'user'),
+        'user': _.get(defaultData, 'initiator'),
+        'dept': dept === ONE ? true : (dept === TWO ? false : null),
+        'shop': _.get(defaultData, 'shop'),
         'dateDelivery': _.get(defaultData, 'dateDelivery'),
         'totalCost': _.get(defaultData, 'totalCost'),
         'totalBalance': _.get(defaultData, 'totalBalance'),

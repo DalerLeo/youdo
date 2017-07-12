@@ -271,8 +271,8 @@ export const REMAINDER_ITEM = `/${PRODUCT}/%d/`
 export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
 
 export const STATISTICS = 'dist/product'
-export const STAT_AGENT_LIST = `/${STATISTICS}/`
-export const STAT_AGENT_ITEM = `/${STATISTICS}/%d/`
+export const STAT_AGENT_LIST = 'stats/agents'
+export const STAT_AGENT_ITEM = 'stats/agents/%d/'
 export const STAT_PRODUCT_LIST = `/${STATISTICS}/`
 
 export const STAT_PRODUCT_ITEM = `/${STATISTICS}/%d/`

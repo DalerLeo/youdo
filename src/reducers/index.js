@@ -262,6 +262,10 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.REMAINDER_UPDATE),
         item: createThunkReducer(actionTypes.REMAINDER_ITEM)
     }),
+    statAgent: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_AGENT_LIST),
+        item: createThunkReducer(actionTypes.STAT_AGENT_ITEM)
+    }),
     stockReceive: combineReducers({
         list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
         history: createThunkReducer(actionTypes.STOCK_HISTORY_LIST),
