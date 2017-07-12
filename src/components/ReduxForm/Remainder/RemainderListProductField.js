@@ -4,8 +4,10 @@ import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import Groceries from '../Images/groceries.svg'
+import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
+import {Field} from 'redux-form'
+import Dot from '../../Images/dot.png'
 import {
     Table,
     TableBody,
@@ -14,11 +16,11 @@ import {
     TableRow,
     TableRowColumn
 } from 'material-ui/Table'
-import DeleteIcon from '../DeleteIcon/index'
-import ProductCustomSearchField from './Supply/ProductCustomSearchField'
+import DeleteIcon from '../../DeleteIcon/index'
+import ProductCustomSearchField from './ProductCustomSearchField'
 
-import ProductTypeSearchField from './Product/ProductTypeSearchField'
-import TextField from './Basic/TextField'
+import ProductTypeSearchField from '../Product/ProductTypeSearchField'
+import TextField from '../Basic/TextField'
 
 const enhance = compose(
     injectSheet({
@@ -46,28 +48,71 @@ const enhance = compose(
             }
         },
         table: {
-            marginTop: '20px'
+            padding: '20px 30px !important',
+            maxHeight: '200px',
+            overflowY: 'auto'
         },
-        tableTitle: {
-            fontWeight: '600',
-            color: '#333 !important',
-            textAlign: 'left'
+        tableRowHead: {
+            height: '50px !important',
+            border: 'none !important',
+            display: 'table',
+            width: '100%',
+            alignItems: 'center',
+            position: 'relative',
+            '&:after': {
+                content: '" "',
+                backgroundImage: 'url(' + Dot + ')',
+                position: 'absolute',
+                bottom: '0',
+                height: '2px',
+                left: '0',
+                right: '0'
+            },
+            '& th': {
+                textAlign: 'left !important',
+                border: 'none !important',
+                height: '40px !important',
+                fontWeight: '600 !important',
+                fontSize: '13px!important'
+            },
+            '& th:first-child': {
+                width: '70%',
+                textAlign: 'left !important',
+                fontWeight: '600 !important'
+            }
         },
         tableRow: {
-            height: '40px !important',
+            height: '50px !important',
             border: 'none !important',
+            display: 'table',
+            width: '100%',
+            alignItems: 'center',
+            position: 'relative',
+            '&:after': {
+                content: '" "',
+                backgroundImage: 'url(' + Dot + ')',
+                position: 'absolute',
+                bottom: '0',
+                height: '2px',
+                left: '0',
+                right: '0'
+            },
+            '&:last-child:after': {
+                content: '""',
+                backgroundImage: 'none'
+            },
             '& td:first-child': {
-                width: '250px'
+                width: '70%'
             },
             '& tr': {
                 border: 'none !important'
             },
             '& td': {
                 height: '40px !important',
-                padding: '0 5px !important'
+                padding: '0 !important'
             },
             '& th:first-child': {
-                width: '250px',
+                width: '70%',
                 textAlign: 'left !important',
                 fontWeight: '600 !important'
             },
@@ -75,9 +120,15 @@ const enhance = compose(
                 textAlign: 'left !important',
                 border: 'none !important',
                 height: '40px !important',
-                padding: '0 5px !important',
-                fontWeight: '600 !important'
+                fontWeight: '600 !important',
+                fontSize: '13px!important'
             }
+        },
+        tableTitle: {
+            fontWeight: '600',
+            color: '#333 !important',
+            textAlign: 'left',
+            padding: '0 !important'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -109,20 +160,21 @@ const enhance = compose(
         },
         background: {
             display: 'flex',
-            padding: '10px',
-            marginTop: '5px',
+            padding: '0 30px 10px',
             backgroundColor: '#f1f5f8',
+            alignItems: 'baseline',
             position: 'relative',
             zIndex: '2',
             '& > div': {
                 marginTop: '-2px !important',
-                marginRight: '20px'
+                width: '200px !important',
+                marginRight: '20px',
+                '& > div > div': {
+                    width: '200px !important'
+                }
             },
             '& > button > div > span': {
                 padding: '0 !important'
-            },
-            '& > div:last-child': {
-                width: '100% !important'
             },
             '& button': {
                 marginTop: '10px !important'
@@ -173,15 +225,20 @@ const enhance = compose(
     })
 )
 
-const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemove, currency, ...defaultProps}) => {
+const RemainderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, currency, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     return (
         <div className={classes.wrapper}>
             <div>
                 <div className={classes.background}>
-
-                     /*<ProductTypeSearchField />*/
+                    <Field
+                        label="Тип продукта"
+                        name="productType"
+                        className={classes.inputFieldCustom}
+                        component={ProductTypeSearchField}
+                        {..._.get(defaultProps, 'productType')}
+                    />
 
                     <ProductCustomSearchField
                         label="Наименование товара"
@@ -190,10 +247,9 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                     />
                     <TextField
                         label="Кол-во"
-                        className={classes.inputFieldCustom}
                         {..._.get(defaultProps, 'amount')}
                     />
-                    <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
+                    <FlatButton label="Добавить" onTouchTap={handleAdd} style={{color: '#12aaeb', textTransform: 'uppercase'}}/>
                 </div>
             </div>
             {error && <div className={classes.error}>{error}</div>}
@@ -207,11 +263,10 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                         adjustForCheckbox={false}
                         enableSelectAll={false}
                         className={classes.title}>
-                        <TableRow className={classes.tableRow}>
+                        <TableRow className={classes.tableRowHead}>
                             <TableHeaderColumn
                                 className={classes.tableTitle}>Наименование</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
                             <TableHeaderColumn></TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
@@ -224,7 +279,8 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                             <TableRow key={index} className={classes.tableRow}>
                                 <TableRowColumn>{_.get(item, ['product', 'value', 'name'])}</TableRowColumn>
                                 <TableRowColumn>
-                                    {_.get(item, 'amount')} {_.get(item, ['product', 'value', 'measurement', 'name'])}</TableRowColumn>
+                                    {_.get(item, 'amount')} {_.get(item, ['product', 'value', 'measurement', 'name'])}
+                                </TableRowColumn>
                                 <TableRowColumn style={{textAlign: 'right'}}>
                                     <IconButton onTouchTap={() => handleRemove(index)}>
                                         <DeleteIcon color="#666666"/>
@@ -248,4 +304,4 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
     )
 }
 
-export default enhance(SupplyListProductField)
+export default enhance(RemainderListProductField)

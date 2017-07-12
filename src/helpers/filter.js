@@ -141,6 +141,7 @@ const filter = (data, pathname, query = {}) => {
             openUpdateMapDialog: null,
             openAddPhoto: null,
             openImagesDialog: null,
+            openTransferDialog: null,
             openDeleteImageDialog: null,
             tab: null,
             openCreateIncomeDialog: null,
