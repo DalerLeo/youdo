@@ -31,7 +31,7 @@ const enhance = compose(
             '& .row': {
                 alignItems: 'center',
                 '& div': {
-                    lineHeight: '50px'
+                    lineHeight: '48px'
                 }
             }
         },

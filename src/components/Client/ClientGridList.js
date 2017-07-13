@@ -129,6 +129,26 @@ const enhance = compose(
         bodyTitle: {
             fontWeight: '600',
             marginBottom: '10px'
+        },
+        listRow: {
+            position: 'relative',
+            '& > a': {
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                position: 'absolute',
+                top: '0',
+                left: '-30px',
+                right: '-30px',
+                bottom: '0',
+                padding: '0 30px',
+                '& > div:first-child': {
+                    fontWeight: '600'
+                },
+                '& > div': {
+                    fontWeight: '500'
+                }
+            }
         }
     })
 )
@@ -158,15 +178,15 @@ const ClientGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
-            <Row key={id}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={7}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.CLIENT_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{name}</Link>
-                </Col>
-                <Col xs={3}>{createdDate}</Col>
+            <Row key={id} className={classes.listRow}>
+                <Link to={{
+                    pathname: sprintf(ROUTES.CLIENT_ITEM_PATH, id),
+                    query: filter.getParams()
+                }}>
+                    <Col xs={2}>{id}</Col>
+                    <Col xs={7}>{name}</Col>
+                    <Col xs={3}>{createdDate}</Col>
+            </Link>
             </Row>
         )
     })
