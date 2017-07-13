@@ -3,7 +3,6 @@ import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
-import Paper from 'material-ui/Paper'
 import LinearProgress from 'material-ui/LinearProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
@@ -27,8 +26,10 @@ export const STAT_PRODUCT_FILTER_KEY = {
 const enhance = compose(
     injectSheet({
         mainWrapper: {
+            background: '#fff',
             margin: '0 -28px',
-            height: 'calc(100% - 32px)'
+            height: 'calc(100% - 32px)',
+            boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
             padding: '20px 30px',
@@ -48,8 +49,11 @@ const enhance = compose(
                 },
                 '& > div': {
                     display: 'flex',
-                    lineHeight: '50px',
-                    alignItems: 'center'
+                    height: '50px',
+                    alignItems: 'center',
+                    '&:last-child': {
+                        justifyContent: 'flex-end'
+                    }
                 }
             },
             '& .dottedList': {
@@ -150,7 +154,8 @@ const StatProductGridList = enhance((props) => {
 
     const headerStyle = {
         backgroundColor: '#fff',
-        fontWeight: '600'
+        fontWeight: '600',
+        color: '#666'
     }
     const iconStyle = {
         icon: {
@@ -166,52 +171,32 @@ const StatProductGridList = enhance((props) => {
     }
 
     const headers = (
-        <div style={headerStyle}>
-            <div className={classes.tableWrapper}>
-                <Row>
-                    <Col xs={3}>Товар</Col>
-                    <Col xs={3}>Тип товара</Col>
-                    <Col xs={3}>Продажи</Col>
-                    <Col xs={1}>Кол-во</Col>
-                    <Col xs={2}>Сумма</Col>
-                </Row>
-            </div>
-        </div>
-
+        <Row style={headerStyle} className="dottedList">
+            <Col xs={3}>Товар</Col>
+            <Col xs={3}>Тип товара</Col>
+            <Col xs={3}>Продажи</Col>
+            <Col xs={1}>Кол-во</Col>
+            <Col xs={2}>Сумма</Col>
+        </Row>
     )
     const list = (
-        <div className={classes.tableWrapper}>
-            <Row className="dottedList">
-                <Col xs={3}>Миф морозная свежесть</Col>
-                <Col xs={3}>Стиральный парашек</Col>
-                <Col xs={3}>
-                    <LinearProgress
-                        color="#58bed9"
-                        mode="determinate"
-                        value={87}
-                        style={{backgroundColor: '#fff', height: '10px'}}/>
-                </Col>
-                <Col xs={1}>100 шт</Col>
-                <Col xs={2}>100 000 000 USZ</Col>
-            </Row>
-            <Row className="dottedList">
-                <Col xs={3}>Миф морозная свежесть</Col>
-                <Col xs={3}>Стиральный парашек</Col>
-                <Col xs={3}>
-                    <LinearProgress
-                        color="#58bed9"
-                        mode="determinate"
-                        value={50}
-                        style={{backgroundColor: '#fff', height: '10px'}}/>
-                </Col>
-                <Col xs={1}>100 шт</Col>
-                <Col xs={2}>100 000 000 USZ</Col>
-            </Row>
-        </div>
+        <Row className="dottedList">
+            <Col xs={3}>Миф морозная свежесть</Col>
+            <Col xs={3}>Стиральный парашек</Col>
+            <Col xs={3}>
+                <LinearProgress
+                    color="#58bed9"
+                    mode="determinate"
+                    value={87}
+                    style={{backgroundColor: '#fff', height: '10px'}}/>
+            </Col>
+            <Col xs={1}>100 шт</Col>
+            <Col xs={2}>100 000 000 USZ</Col>
+        </Row>
     )
 
     const page = (
-    <Paper zDepth={1} className={classes.mainWrapper}>
+    <div className={classes.mainWrapper}>
         <Row style={{margin: '0', height: '100%'}}>
             <div className={classes.leftPanel}>
                 <StatSideMenu currentUrl={ROUTES.STATISTICS_PRODUCT_URL} />
@@ -252,12 +237,14 @@ const StatProductGridList = enhance((props) => {
                         </a>
                     </form>
                     <Pagination filter={filter}/>
-                    {headers}
-                    {list}
+                    <div className={classes.tableWrapper}>
+                        {headers}
+                        {list}
+                    </div>
                 </div>
             </div>
         </Row>
-    </Paper>
+    </div>
     )
 
     return (

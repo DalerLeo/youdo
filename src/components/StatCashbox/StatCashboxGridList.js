@@ -318,7 +318,7 @@ const StatCashboxGridList = enhance((props) => {
     const config = {
         chart: {
             type: 'areaspline',
-            height: 245
+            height: 145
         },
         title: {
             text: '',

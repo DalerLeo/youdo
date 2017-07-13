@@ -76,7 +76,7 @@ const enhance = compose(
                 overflow: 'hidden',
                 flexBasis: '35px',
                 height: '35px',
-                padding: '0!important',
+                minWidth: '30px',
                 width: '35px',
                 marginRight: '10px',
                 '& img': {
@@ -112,7 +112,7 @@ const enhance = compose(
 )
 
 const StatAgentDialog = enhance((props) => {
-    const {open, loading, onClose, classes, filter, detailData} = props
+    const {open, loading, onClose, classes, detailData} = props
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {

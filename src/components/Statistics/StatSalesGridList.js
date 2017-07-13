@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
@@ -7,22 +6,17 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import UsersSearchField from '../ReduxForm/Users/UsersSearchField'
+import ReactHighcharts from 'react-highcharts'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import StatAgentDialog from './StatAgentDialog'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
 import Person from '../Images/person.png'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
-import List from 'material-ui/svg-icons/action/list'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-import LinearProgress from 'material-ui/LinearProgress'
 import Pagination from '../GridList/GridListNavPagination'
-import numberFormat from '../../helpers/numberFormat.js'
-import getConfig from '../../helpers/getConfig'
 
-export const STAT_AGENT_FILTER_KEY = {
+export const STAT_SALES_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     USER: 'user'
@@ -38,14 +32,17 @@ const enhance = compose(
         },
         wrapper: {
             padding: '20px 30px',
-            '& > div:nth-child(2)': {
-                marginTop: '10px',
-                borderTop: '1px #efefef solid',
-                borderBottom: '1px #efefef solid'
-            },
             '& .row': {
-                margin: '0 !important'
+                marginLeft: '0',
+                marginRight: '0'
             }
+        },
+        pagination: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderTop: '1px #efefef solid',
+            borderBottom: '1px #efefef solid'
         },
         tableWrapper: {
             '& .row': {
@@ -55,7 +52,10 @@ const enhance = compose(
                 '& > div': {
                     display: 'flex',
                     height: '50px',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    '&:last-child': {
+                        justifyContent: 'flex-end'
+                    }
                 }
             },
             '& .dottedList': {
@@ -166,23 +166,111 @@ const enhance = compose(
             '& svg': {
                 width: '18px !important'
             }
+        },
+        diagram: {
+            marginTop: '30px'
+        },
+        salesSummary: {
+            '& > div:first-child': {
+                color: '#666'
+            },
+            '& > div:last-child': {
+                fontSize: '24px',
+                fontWeight: '600'
+            }
         }
     }),
     reduxForm({
-        form: 'StatAgentFilterForm',
+        form: 'StatSalesFilterForm',
         enableReinitialize: true
     }),
 )
 
-const StatAgentGridList = enhance((props) => {
+const StatSalesGridList = enhance((props) => {
     const {
         classes,
-        statAgentDialog,
-        listData,
         filter,
-        handleSubmitFilterDialog,
-        detailData
+        handleSubmitFilterDialog
     } = props
+
+    const sample = 100
+    const deletion = 3
+    const config = {
+        chart: {
+            type: 'areaspline',
+            height: 145
+        },
+        title: {
+            text: '',
+            style: {
+                display: 'none'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            tickmarkPlacement: 'on',
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            },
+            gridLineColor: '#efefef',
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        plotOptions: {
+            series: {
+                lineWidth: 0,
+                pointPlacement: 'on'
+            },
+            areaspline: {
+                fillOpacity: 0.7
+            }
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: ' %',
+            backgroundColor: '#363636',
+            style: {
+                color: '#fff'
+            },
+            borderRadius: 2,
+            borderWidth: 0,
+            enabled: true,
+            shadow: false,
+            useHTML: true,
+            crosshairs: true,
+            pointFormat: '{series.name}: <b>{point.y}</b><br/>в отношении к BoM<br/>'
+        },
+        series: [{
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
+            name: 'Эффективность',
+            data: [sample, sample + (sample / deletion), sample, sample / deletion, sample * deletion],
+            color: '#6cc6de'
+
+        }]
+    }
 
     const headerStyle = {
         backgroundColor: '#fff',
@@ -205,46 +293,32 @@ const StatAgentGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={3}>Агенты</Col>
-            <Col xs={6}>Продажи</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
+            <Col xs={2}>№ Сделки</Col>
+            <Col xs={2}>Дата</Col>
+            <Col xs={3}>Магазин</Col>
+            <Col xs={3}>Агент</Col>
+            <Col xs={2}>Сумма</Col>
         </Row>
     )
 
-    const list = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
-
-        return (
-            <Row key={id} className="dottedList">
-                <Col xs={3}>
-                    <div className="personImage"><img src={Person}/></div>
-                    <div>{name}</div>
-                </Col>
-                <Col xs={6}>
-                    <LinearProgress
-                        color="#58bed9"
-                        mode="determinate"
-                        value={50}
-                        style={{backgroundColor: '#fff', height: '10px'}}/>
-                </Col>
-                <Col xs={2} style={{justifyContent: 'flex-end'}}>{income}</Col>
-                <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
-                    <IconButton
-                        onTouchTap={() => { statAgentDialog.handleOpenStatAgentDialog(id) }}>
-                        <List color="#12aaeb"/>
-                    </IconButton>
-                </Col>
-            </Row>
-        )
-    })
+    const list = (
+        <Row className="dottedList">
+            <Col xs={2}>152</Col>
+            <Col xs={2}>22.07.2017</Col>
+            <Col xs={3}>Название магазина</Col>
+            <Col xs={3}>
+                <div className="personImage"><img src={Person}/></div>
+                <div>Бердыбаев Куркума</div>
+            </Col>
+            <Col xs={2}>2 000 000 UZS</Col>
+        </Row>
+    )
 
     const page = (
             <div className={classes.mainWrapper}>
                 <Row style={{margin: '0', height: '100%'}}>
                     <div className={classes.leftPanel}>
-                        <StatSideMenu currentUrl={ROUTES.STATISTICS_AGENT_URL}/>
+                        <StatSideMenu currentUrl={ROUTES.STATISTICS_SALES_URL}/>
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
@@ -255,12 +329,6 @@ const StatAgentGridList = enhance((props) => {
                                         name="date"
                                         component={DateToDateField}
                                         label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="user"
-                                        component={UsersSearchField}
-                                        label="Агенты"
                                         fullWidth={true}/>
 
                                     <IconButton
@@ -275,7 +343,19 @@ const StatAgentGridList = enhance((props) => {
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>
-                            <Pagination filter={filter}/>
+                            <Row className={classes.diagram}>
+                                <Col xs={3} className={classes.salesSummary}>
+                                    <div>Сумма продаж за период</div>
+                                    <div>35 000 000 UZS</div>
+                                </Col>
+                                <Col xs={9}>
+                                    <ReactHighcharts config={config}/>
+                                </Col>
+                            </Row>
+                            <div className={classes.pagination}>
+                                <div><b>История продаж</b></div>
+                                <Pagination filter={filter}/>
+                            </div>
                             <div className={classes.tableWrapper}>
                                 {headers}
                                 {list}
@@ -290,24 +370,14 @@ const StatAgentGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
-            <StatAgentDialog
-                detailData={detailData}
-                open={statAgentDialog.openStatAgentDialog}
-                onClose={statAgentDialog.handleCloseStatAgentDialog}
-                filter={filter}/>
         </Container>
     )
 })
 
-StatAgentGridList.propTypes = {
+StatSalesGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
-    detailData: PropTypes.object,
-    statAgentDialog: PropTypes.shape({
-        openStatAgentDialog: PropTypes.bool.isRequired,
-        handleOpenStatAgentDialog: PropTypes.func.isRequired,
-        handleCloseStatAgentDialog: PropTypes.func.isRequired
-    }).isRequired
+    detailData: PropTypes.object
 }
 
-export default StatAgentGridList
+export default StatSalesGridList

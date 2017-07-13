@@ -3,7 +3,6 @@ import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
-import Paper from 'material-ui/Paper'
 import LinearProgress from 'material-ui/LinearProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
@@ -28,8 +27,10 @@ export const STAT_MARKET_FILTER_KEY = {
 const enhance = compose(
     injectSheet({
         mainWrapper: {
+            background: '#fff',
             margin: '0 -28px',
-            height: 'calc(100% - 32px)'
+            height: 'calc(100% - 32px)',
+            boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
             padding: '20px 30px',
@@ -49,7 +50,7 @@ const enhance = compose(
                 },
                 '& > div': {
                     display: 'flex',
-                    lineHeight: '50px',
+                    height: '50px',
                     alignItems: 'center',
                     '& img': {
                         width: '35px',
@@ -158,7 +159,8 @@ const StatMarketGridList = enhance((props) => {
 
     const headerStyle = {
         backgroundColor: '#fff',
-        fontWeight: '600'
+        fontWeight: '600',
+        color: '#666'
     }
     const iconStyle = {
         icon: {
@@ -174,44 +176,37 @@ const StatMarketGridList = enhance((props) => {
     }
 
     const headers = (
-        <div style={headerStyle}>
-            <div className={classes.tableWrapper}>
-                <Row>
-                    <Col xs={3}>Магазины</Col>
-                    <Col xs={6}>Продажи</Col>
-                    <Col xs={2} style={{textAlign: 'right'}}>Сумма</Col>
-                </Row>
-            </div>
-        </div>
-
+        <Row style={headerStyle} className="dottedList">
+            <Col xs={3}>Магазины</Col>
+            <Col xs={6}>Продажи</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
+        </Row>
     )
     const list = (
-        <div className={classes.tableWrapper}>
-            <Row className="dottedList">
-                <Col xs={3}>
-                    <img src="http://www.shop-script.su/images/internet-biznes/market-store-icon.jpg" alt=""/>
-                    <span>Наименование магазина</span>
-                </Col>
-                <Col xs={6}>
-                    <LinearProgress
-                        color="#58bed9"
-                        mode="determinate"
-                        value={87}
-                        style={{backgroundColor: '#fff', height: '10px'}}/>
-                </Col>
-                <Col xs={2} style={{textAlign: 'right'}}>100 000 000 USZ</Col>
-                <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
-                    <IconButton
-                        onTouchTap={statMarketDialog.handleOpenStatMarketDialog}>
-                        <List color="#12aaeb"/>
-                    </IconButton>
-                </Col>
-            </Row>
-        </div>
+        <Row className="dottedList">
+            <Col xs={3}>
+                <img src="http://www.shop-script.su/images/internet-biznes/market-store-icon.jpg" alt=""/>
+                <span>Наименование магазина</span>
+            </Col>
+            <Col xs={6}>
+                <LinearProgress
+                    color="#58bed9"
+                    mode="determinate"
+                    value={87}
+                    style={{backgroundColor: '#fff', height: '10px'}}/>
+            </Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>100 000 000 USZ</Col>
+            <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
+                <IconButton
+                    onTouchTap={statMarketDialog.handleOpenStatMarketDialog}>
+                    <List color="#12aaeb"/>
+                </IconButton>
+            </Col>
+        </Row>
     )
 
     const page = (
-    <Paper zDepth={1} className={classes.mainWrapper}>
+    <div className={classes.mainWrapper}>
         <Row style={{margin: '0', height: '100%'}}>
             <div className={classes.leftPanel}>
                 <StatSideMenu currentUrl={ROUTES.STATISTICS_MARKET_URL} />
@@ -246,12 +241,14 @@ const StatMarketGridList = enhance((props) => {
                         </a>
                     </form>
                     <Pagination filter={filter}/>
-                    {headers}
-                    {list}
+                    <div className={classes.tableWrapper}>
+                        {headers}
+                        {list}
+                    </div>
                 </div>
             </div>
         </Row>
-    </Paper>
+    </div>
     )
 
     return (

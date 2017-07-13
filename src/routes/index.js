@@ -38,9 +38,14 @@ import {PriceList} from '../containers/Price'
 import NotFound from '../containers/NotFound'
 import {RemainderList} from '../containers/Remainder'
 import {
+    StatSalesList,
     StatAgentList,
     StatProductList,
-    StatMarketList
+    StatMarketList,
+    StatFinanceList,
+    StatIncomeList,
+    StatOutcomeList,
+    StatDebtorsList
 } from '../containers/Statistics'
 import {StockReceiveList} from '../containers/StockReceive'
 
@@ -417,14 +422,25 @@ export default {
         // Statistics
         {
             path: ROUTES.STATISTICS_LIST_URL,
-            component: userIsAuth(StatAgentList),
+            component: userIsAuth(StatSalesList),
+            childRoutes: []
+        },
+        // Statistics/sales all
+        {
+            path: ROUTES.STATISTICS_SALES_URL,
+            component: userIsAuth(StatSalesList),
             childRoutes: []
         },
         // Statistics/agent
         {
             path: ROUTES.STATISTICS_AGENT_URL,
             component: userIsAuth(StatAgentList),
-            childRoutes: []
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_AGENT_ITEM_URL,
+                    component: userIsAuth(StatAgentList)
+                }
+            ]
         },
         // Statistics/product
         {
@@ -436,6 +452,30 @@ export default {
         {
             path: ROUTES.STATISTICS_MARKET_URL,
             component: userIsAuth(StatMarketList),
+            childRoutes: []
+        },
+        // Statistics/finance
+        {
+            path: ROUTES.STATISTICS_FINANCE_URL,
+            component: userIsAuth(StatFinanceList),
+            childRoutes: []
+        },
+        // Statistics/income
+        {
+            path: ROUTES.STATISTICS_INCOME_URL,
+            component: userIsAuth(StatIncomeList),
+            childRoutes: []
+        },
+        // Statistics/outcome
+        {
+            path: ROUTES.STATISTICS_OUTCOME_URL,
+            component: userIsAuth(StatOutcomeList),
+            childRoutes: []
+        },
+        // Statistics/debtors
+        {
+            path: ROUTES.STATISTICS_DEBTORS_URL,
+            component: userIsAuth(StatDebtorsList),
             childRoutes: []
         },
         // Stock Receive Transfer

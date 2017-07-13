@@ -1,5 +1,4 @@
 import React from 'react'
-import moment from 'moment'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
