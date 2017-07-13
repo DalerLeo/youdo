@@ -37,8 +37,10 @@ const enhance = compose(
         },
         wrapperBold: {
             extend: 'wrapper',
+            margin: '0 -16px',
             '& .row:first-child': {
-                fontWeight: '600'
+                fontWeight: '600',
+                cursor: 'pointer'
             }
         },
         headers: {
@@ -211,10 +213,10 @@ const RemainderGridList = enhance((props) => {
     const listHeader = (
         <div className={classes.headers}>
             <Row>
-                <Col xs={3}>Товар</Col>
-                <Col xs={3}>Тип товара</Col>
-                <Col xs={4}>Склад</Col>
-                <Col xs={2} style={{textAlign: 'left'}}>Всего товаров</Col>
+                <Col xs={4}>Товар</Col>
+                <Col xs={4}>Тип товара</Col>
+                <Col xs={3} style={{textAlign: 'left'}}>Всего товаров</Col>
+                <Col xs={1}></Col>
             </Row>
         </div>
     )
@@ -233,12 +235,11 @@ const RemainderGridList = enhance((props) => {
                     const measurement = _.get(item, ['measurement', 'name'])
                     if (id === detailId) {
                         return (
-                            <Paper key={id} className={classes.wrapperBold}>
+                            <Paper key={id} className={classes.wrapperBold} onTouchTap={_.get(detailData, 'handleCloseDetail')} >
                                 <Row key={id} style={{position: 'relative'}}>
-                                    <Col xs={3}>{product}</Col>
-                                    <Col xs={3}>N/A</Col>
-                                    <Col xs={4}>Наименование склада 1</Col>
-                                    <Col xs={1} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
+                                    <Col xs={4}>{product}</Col>
+                                    <Col xs={4}>N/A</Col>
+                                    <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
                                     <Col xs={1} style={{textAlign: 'right'}}>
                                         <IconButton
                                             className={classes.dropDown}
@@ -257,14 +258,15 @@ const RemainderGridList = enhance((props) => {
                         )
                     }
                     return (
+                        <Link to={{
+                            pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
+                            query: filter.getParams()
+                        }}>
                         <Paper key={id} className={classes.wrapper}>
                             <Row key={id} style={{position: 'relative'}}>
-
-                                    <Col xs={3}>{product}</Col>
-
-                                <Col xs={3}>N/A</Col>
-                                <Col xs={4}>Наименование склада 1</Col>
-                                <Col xs={1} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
+                                <Col xs={4}>{product}</Col>
+                                <Col xs={4}>N/A</Col>
+                                <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
                                 <Col xs={1} style={{textAlign: 'right'}}>
                                     <Link to={{
                                         pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
@@ -280,6 +282,7 @@ const RemainderGridList = enhance((props) => {
                                 </Col>
                             </Row>
                         </Paper>
+                        </Link>
                     )
                 })}
 

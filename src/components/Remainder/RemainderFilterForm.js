@@ -13,16 +13,6 @@ import ProductTypeSearchField from '../ReduxForm/Product/ProductTypeSearchField'
 import RemainderStatusSearchField from '../ReduxForm/Remainder/RemainderStatusSearchField'
 export const REMAINDER_FILTER_OPEN = 'openFilterDialog'
 
-export const REMAINDER_FILTER_KEY = {
-    PRODUCT_TYPE: 'productType',
-    STOCK: 'stock',
-    BIGGER_THAN: 'biggerThan',
-    LESS_THAN: 'lessThan',
-    DEFECTIVE: 'defective',
-    OUT_DATED: 'outDated',
-    CURRENT: 'current'
-}
-
 const enhance = compose(
     injectSheet({
         filters: {
