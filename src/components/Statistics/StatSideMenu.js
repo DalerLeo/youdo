@@ -43,17 +43,22 @@ const StatSideMenu = enhance((props) => {
     const statMenus = [
         {
             section: 'Продажи',
-            url: ROUTES.STATISTICS_AGENT_URL,
+            url: ROUTES.STATISTICS_SALES_URL,
             childs: [
+                {name: 'Общее', url: ROUTES.STATISTICS_SALES_URL},
                 {name: 'Агенты', url: ROUTES.STATISTICS_AGENT_URL},
                 {name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL},
                 {name: 'Магазины', url: ROUTES.STATISTICS_MARKET_URL}
             ]
         },
         {
-            section: 'Покупки',
-            url: ROUTES.STATSTOCK_LIST_URL,
+            section: 'Финансы',
+            url: ROUTES.STATISTICS_FINANCE_URL,
             childs: [
+                {name: 'Общее', url: ROUTES.STATISTICS_FINANCE_URL},
+                {name: 'Доход', url: ROUTES.STATISTICS_INCOME_URL},
+                {name: 'Расход', url: ROUTES.STATISTICS_OUTCOME_URL},
+                {name: 'Задолжники', url: ROUTES.STATISTICS_DEBTORS_URL}
             ]
         }
     ]
@@ -62,7 +67,8 @@ const StatSideMenu = enhance((props) => {
         <div className={classes.wrapper}>
             {_.map(statMenus, (item, index) => {
                 return (
-                    <ul key={index}>{item.section}
+                    <ul key={index}>
+                        {item.section}
                         {_.map(item.childs, (object, i) => {
                             return (
                                 <li key={i}>

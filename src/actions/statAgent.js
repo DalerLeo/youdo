@@ -22,9 +22,10 @@ export const statAgentListFetchAction = (filter, id) => {
     }
 }
 
-export const statAgentItemFetchAction = (id) => {
+export const statAgentItemFetchAction = (filter, filterItem, id) => {
+    const params = serializers.itemSerializer(filter.getParams(), filterItem.getParams(), id)
     const payload = axios()
-        .get(sprintf(API.STAT_AGENT_ITEM, id))
+        .get(sprintf(API.STAT_AGENT_ITEM, id), {params})
         .then((response) => {
             return _.get(response, 'data')
         })

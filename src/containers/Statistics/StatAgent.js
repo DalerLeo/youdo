@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -30,6 +31,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['statAgent', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatAgentFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterItem = filterHelper(detail, pathname, query)
         return {
             list,
             listLoading,
@@ -37,7 +39,8 @@ const enhance = compose(
             detailLoading,
             filter,
             query,
-            filterForm
+            filterForm,
+            filterItem
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -49,17 +52,17 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const statAgentId = _.get(nextProps, ['params', 'statAgentId']) || ZERO
         return statAgentId > ZERO && _.get(props, ['params', 'statAgentId']) !== statAgentId
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, filter, filterItem}) => {
         const statAgentId = _.toInteger(_.get(params, 'statAgentId'))
         if (statAgentId > ZERO) {
-            dispatch(statAgentItemFetchAction(statAgentId))
+            dispatch(statAgentItemFetchAction(filter, filterItem, statAgentId))
         }
     }),
 
     withHandlers({
-        handleOpenStatAgentDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STAT_AGENT_DIALOG_OPEN]: true})})
+        handleOpenStatAgentDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({pathname: sprintf(ROUTER.STATISTICS_AGENT_ITEM_PATH, id), query: filter.getParams({[STAT_AGENT_DIALOG_OPEN]: true})})
         },
 
         handleCloseStatAgentDialog: props => () => {
@@ -71,15 +74,14 @@ const enhance = compose(
             hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParam()})
         },
 
-        handleSubmitFilterDialog: props => () => {
+        handleSubmitFilterDialog: props => (event) => {
+            event.preventDefault()
             const {filter, filterForm} = props
-            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
+
             const user = _.get(filterForm, ['values', 'user', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-
             filter.filterBy({
-                [STAT_AGENT_FILTER_KEY.ZONE]: zone,
                 [STAT_AGENT_FILTER_KEY.USER]: user,
                 [STAT_AGENT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
@@ -98,6 +100,7 @@ const StatAgentList = enhance((props) => {
         detailLoading,
         filter,
         layout,
+        filterItem,
         params
     } = props
 
@@ -115,15 +118,18 @@ const StatAgentList = enhance((props) => {
     }
 
     const detailData = {
+        filter: filterItem,
         id: detailId,
         data: detail,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
+
     return (
         <Layout {...layout}>
             <StatAgentGridList
                 filter={filter}
+                handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 listData={listData}
                 detailData={detailData}
                 statAgentDialog={statAgentDialog}

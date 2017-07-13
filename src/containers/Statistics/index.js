@@ -1,9 +1,19 @@
 import StatAgentList from './StatAgent'
 import StatProductList from './StatProduct'
 import StatMarketList from './StatMarket'
+import StatSalesList from './StatSales'
+import StatFinanceList from './StatFinance'
+import StatIncomeList from './StatIncome'
+import StatOutcomeList from './StatOutcome'
+import StatDebtorsList from './StatDebtors'
 
 export {
     StatAgentList,
     StatProductList,
-    StatMarketList
+    StatMarketList,
+    StatSalesList,
+    StatFinanceList,
+    StatIncomeList,
+    StatOutcomeList,
+    StatDebtorsList
 }
