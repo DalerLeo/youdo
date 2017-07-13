@@ -258,12 +258,12 @@ const RemainderGridList = enhance((props) => {
                         )
                     }
                     return (
-                        <Link to={{
+                        <Link key={id} to={{
                             pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
                             query: filter.getParams()
                         }}>
                         <Paper key={id} className={classes.wrapper}>
-                            <Row key={id} style={{position: 'relative'}}>
+                            <Row style={{position: 'relative'}}>
                                 <Col xs={4}>{product}</Col>
                                 <Col xs={4}>N/A</Col>
                                 <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>

@@ -10,8 +10,9 @@ import {TextField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
-export const PRICE_SET_FORM_OPEN = 'openSetForm'
 import Tooltip from '../ToolTip'
+import CurrencySearchField from '../ReduxForm/CurrencySearchField'
+export const PRICE_SET_FORM_OPEN = 'openSetForm'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -62,15 +63,19 @@ const enhance = compose(
             },
             '& .row': {
                 padding: '0 !important',
-                '& > div': {
-                    textAlign: 'right'
+                '& > div:last-child': {
+                    '& > div > div:last-child': {
+                        top: '10px'
+                    }
                 },
                 '& > div:first-child': {
                     textAlign: 'left'
                 },
                 '& .dottedList': {
                     padding: '0px!important',
-                    margin: '100px'
+                    '& > div:last-child': {
+                        padding: '100px'
+                    }
                 }
             },
             overflowY: 'hidden',
@@ -102,9 +107,6 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             height: '40px'
-        },
-        dottedList: {
-            extend: 'priceRow'
         }
     }),
     reduxForm({
@@ -128,9 +130,11 @@ const PriceSetForm = enhance((props) => {
             height: 20
         },
         button: {
-            width: 48,
-            height: 48,
-            padding: 0
+            width: 20,
+            height: 20,
+            padding: '0',
+            top: '2px',
+            marginLeft: '10px'
         }
     }
     return (
@@ -149,7 +153,9 @@ const PriceSetForm = enhance((props) => {
                         />
                         <Tooltip position="bottom" text="Закрыть">
                             <IconButton
+                                className={classes.closeBtn}
                                 iconStyle={iconStyle.icon}
+                                disableTouchRipple={true}
                                 style={iconStyle.button}
                                 touch={true}
                                 onTouchTap={onClose}>
@@ -161,15 +167,16 @@ const PriceSetForm = enhance((props) => {
                 <div className={classes.tableContent}>
                     <Row className={classes.priceRow}>
                         <Col xs={6}>Тип обьекта</Col>
-                        <Col style={{textAlign: 'left'}} xs={3}>Нал</Col>
-                        <Col style={{textAlign: 'left'}} xs={3}>Безнал</Col>
+                        <Col style={{textAlign: 'left'}} xs={2}>Нал</Col>
+                        <Col style={{textAlign: 'left'}} xs={2}>Безнал</Col>
+                        <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
                     </Row>
                     {_.map(mergedList, (item, index) => {
                         const marketName = _.get(item, 'marketTypeName')
                         return (
                             <Row className='dottedList' key={index}>
                                 <Col xs={6}> {marketName}</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>
+                                <Col style={{textAlign: 'left'}} xs={2}>
                                     <Field
                                         name={'prices[' + index + '][cash_price]'}
                                         className={classes.inputFieldCustom}
@@ -177,13 +184,20 @@ const PriceSetForm = enhance((props) => {
                                         fullWidth={true}
                                     />
                                 </Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>
+                                <Col style={{textAlign: 'left'}} xs={2}>
                                     <Field
                                         name={'prices[' + index + '][transfer_price]'}
                                         className={classes.inputFieldCustom}
                                         component={TextField}
                                         fullWidth={true}
                                     />
+                                </Col>
+                                <Col xs={2}>
+                                    <Field
+                                        name={'prices[' + index + '][currency]'}
+                                        className={classes.inputFieldCustom}
+                                        component={CurrencySearchField}
+                                        fullWidth={true}/>
                                 </Col>
                             </Row>
                         )

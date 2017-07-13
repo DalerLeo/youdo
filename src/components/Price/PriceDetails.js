@@ -104,12 +104,15 @@ const enhance = compose(
                     textAlign: 'right'
                 },
                 '& > div:first-child': {
-                    textAlign: 'left'
+                    textAlign: 'left',
+                    padding: '0!important'
+                },
+                '& > div:last-child': {
+                    padding: '0!important'
                 }
             },
             overflowY: 'auto',
-            overflowX: 'hidden',
-            margin: '0 -0.5rem'
+            overflowX: 'hidden'
         },
         average: {
             fontWeight: '600',
@@ -149,8 +152,8 @@ const PriceDetails = enhance((props) => {
             height: 20
         },
         button: {
-            width: 48,
-            height: 48,
+            width: 20,
+            height: 20,
             padding: 0
         }
     }
@@ -174,6 +177,7 @@ const PriceDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
+                            disableTouchRipple={true}
                             touch={true}
                             onTouchTap={handleCloseDetail}>
                             <CloseIcon2 />
@@ -249,6 +253,7 @@ const PriceDetails = enhance((props) => {
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         touch={true}
+                                        disableTouchRipple={true}
                                         onTouchTap={priceSetForm.handleOpenPriceSetForm}
                                     >
                                         <Edit />
@@ -265,8 +270,9 @@ const PriceDetails = enhance((props) => {
                             {_.map(mergedList, (item) => {
                                 const id = _.get(item, 'marketTypeId')
                                 const marketName = _.get(item, 'marketTypeName')
-                                const cashPrice = _.get(item, 'cash_price') + ' ' + getConfig('PRIMARY_CURRENCY')
-                                const transferPrice = _.get(item, 'transfer_price') + ' ' + getConfig('PRIMARY_CURRENCY')
+                                const currency = _.get(item, ['currency', 'name']) || ' '
+                                const cashPrice = _.get(item, 'cash_price') + ' ' + currency
+                                const transferPrice = _.get(item, 'transfer_price') + ' ' + currency
                                 return (
                                     <Row className="dottedList" key={id}>
                                         <Col xs={6}> {marketName}</Col>

@@ -67,11 +67,32 @@ const enhance = compose(
             '& img': {
                 height: '30px'
             }
+        },
+        listRow: {
+            position: 'relative',
+            '& > a': {
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                position: 'absolute',
+                top: '0',
+                left: '-30px',
+                right: '-30px',
+                bottom: '0',
+                padding: '0 30px',
+                '& > div:first-child': {
+                    fontWeight: '600'
+                },
+                '& > div': {
+                    fontWeight: '500'
+                }
+            }
         }
     })
 )
 const PriceGridList = enhance((props) => {
     const {
+        classes,
         filter,
         filterDialog,
         priceSupplyDialog,
@@ -113,15 +134,15 @@ const PriceGridList = enhance((props) => {
         const price = (minPrice && maxPrice) ? numberFormat(minPrice) + ' - ' + numberFormat(maxPrice, getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
         const priceUpdate = _.get(item, 'priceUpdated') ? moment(_.get(item, 'priceUpdated')).format('DD.MM.YYYY') : 'Не установлено'
         return (
-            <Row key={id}>
-                <Col xs={5} style={{display: 'flex', alignItems: 'center'}}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id)
-                    }}>{name}</Link>
-                </Col>
-                <Col xs={2}>{netCost}</Col>
-                <Col xs={3}>{price}</Col>
-                <Col xs={2}>{priceUpdate}</Col>
+            <Row key={id} className={classes.listRow}>
+                <Link to={{
+                    pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id)
+                }}>
+                    <Col xs={5}>{name}</Col>
+                    <Col xs={2}>{netCost}</Col>
+                    <Col xs={3}>{price}</Col>
+                    <Col xs={2}>{priceUpdate}</Col>
+                </Link>
             </Row>
         )
     })
