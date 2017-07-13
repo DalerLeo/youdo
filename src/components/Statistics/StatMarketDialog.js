@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -7,12 +6,9 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
 import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
-import Person from '../Images/person.png'
 import Pagination from '../GridList/GridListNavPagination'
-import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -64,26 +60,12 @@ const enhance = compose(
             fontWeight: '400'
         },
         titleContent: {
-            textTransform: 'uppercase',
+            textTransform: 'capitalize',
             lineHeight: '60px',
             padding: '0 30px',
             '& div': {
                 display: 'flex',
                 alignItems: 'center'
-            },
-            '& .personImage': {
-                borderRadius: '50%',
-                overflow: 'hidden',
-                flexBasis: '35px',
-                height: '35px',
-                padding: '0!important',
-                width: '35px',
-                marginRight: '10px',
-                '& img': {
-                    display: 'flex',
-                    height: '100%',
-                    width: '100%'
-                }
             },
             '& button': {
                 display: 'flex!important',
@@ -111,25 +93,8 @@ const enhance = compose(
     })),
 )
 
-const StatAgentDialog = enhance((props) => {
-    const {open, loading, onClose, classes, filter, detailData} = props
-
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
-        const id = _.get(item, 'id')
-        const market = _.get(item, ['market', 'name'])
-        const totalPrice = _.get(item, 'totalPrice')
-        const createdDate = moment(_.get(item, 'createdDate')).format('LL')
-
-        return (
-            <Row key={id} className="dottedList">
-                <Col xs={2}>{id}</Col>
-                <Col xs={6}>{market}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}>{totalPrice} {primaryCurrency}</Col>
-            </Row>
-        )
-    })
+const StatMarketDialog = enhance((props) => {
+    const {open, loading, onClose, classes, filter} = props
 
     return (
         <Dialog
@@ -141,12 +106,7 @@ const StatAgentDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <div>
-                    <div className="personImage">
-                        <img src={Person} alt=""/>
-                    </div>
-                    <div>Снегирев Нигер</div>
-                </div>
+                <span>Наименование магазина</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -159,27 +119,34 @@ const StatAgentDialog = enhance((props) => {
                 <div className={classes.tableWrapper}>
                     <Row className="dottedList">
                         <Col xs={2}>№ заказа</Col>
-                        <Col xs={6}>Магазин</Col>
+                        <Col xs={6}>Агент</Col>
                         <Col xs={2}>Дата</Col>
                         <Col xs={2}>Сумма</Col>
                     </Row>
-                    {_.get(detailData, 'detailLoading')
-                        ? <div style={{textAlign: 'center'}}>
-                            <CircularProgress/>
-                        </div>
-                        : orderList}
+                    <Row className="dottedList">
+                        <Col xs={2}>123452</Col>
+                        <Col xs={6}>Хабибуллаев Тошмуроджон</Col>
+                        <Col xs={2}>22 Апр, 2017</Col>
+                        <Col xs={2}>100000 UZS</Col>
+                    </Row>
+                    <Row className="dottedList">
+                        <Col xs={2}>123452</Col>
+                        <Col xs={6}>Хамидуллаев Хамзабек</Col>
+                        <Col xs={2}>22 Апр, 2017</Col>
+                        <Col xs={2}>100000 UZS</Col>
+                    </Row>
                 </div>
-                <Pagination filter={_.get(detailData, 'filter')}/>
+                <Pagination filter={filter}/>
             </div>
         </Dialog>
     )
 })
 
-StatAgentDialog.propTyeps = {
+StatMarketDialog.propTyeps = {
     filter: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool
 }
 
-export default StatAgentDialog
+export default StatMarketDialog

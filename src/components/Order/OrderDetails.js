@@ -9,6 +9,7 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
 import OrderItemReturnDialog from './OrderItemReturnDialog'
+import RightSide from './OrderDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import File from 'material-ui/svg-icons/editor/insert-drive-file'
@@ -17,9 +18,6 @@ import Tooltip from '../ToolTip'
 import Dot from '../Images/dot.png'
 import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
-import {Tabs, Tab} from 'material-ui/Tabs'
-import * as TAB from '../../constants/orderTab'
-import NotFound from '../Images/not-found.png'
 import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
@@ -116,6 +114,10 @@ const enhance = compose(
                 },
                 '& .detailsList': {
                     padding: '10px 0',
+                    '& > div': {
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                    },
                     '&:last-child': {
                         paddingBottom: '0'
                     },
@@ -123,11 +125,6 @@ const enhance = compose(
                         color: '#666'
                     }
                 }
-            }
-        },
-        titleClient: {
-            '& span': {
-                fontWeight: '600'
             }
         },
         titleButtons: {
@@ -153,11 +150,6 @@ const enhance = compose(
                 border: 'none'
             }
         },
-        rightSide: {
-            flexBasis: '70%',
-            maxWidth: '70%',
-            padding: '0 30px 20px'
-        },
         subtitle: {
             fontWeight: '600',
             textTransform: 'uppercase',
@@ -174,109 +166,9 @@ const enhance = compose(
                     textAlign: 'right'
                 }
             }
-        },
-        tabNav: {
-            padding: '15px 0',
-            borderBottom: '1px #f2f5f8 solid',
-            '& a': {
-                margin: '-15px 0',
-                padding: '15px 0',
-                marginRight: '40px',
-                color: '#9b9b9b',
-                '&.active': {
-                    color: '#12aaeb',
-                    borderBottom: '1px solid'
-                }
-            }
-        },
-        tabContent: {
-            '& .row:first-child': {
-                fontWeight: '600'
-            },
-            '& .row': {
-                '& > div': {
-                    textAlign: 'right'
-                },
-                '& > div:first-child': {
-                    textAlign: 'left'
-                }
-            }
-        },
-        tabWrapper: {
-            maxHeight: '232px',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            paddingRight: '30px'
-        },
-        summary: {
-            fontWeight: '600',
-            marginTop: '20px',
-            paddingRight: '30px',
-            textTransform: 'uppercase',
-            textAlign: 'right'
-        },
-        personOrder: {
-            '& div:first-child': {
-                width: '30px',
-                height: '30px',
-                display: 'inline-block',
-                overflow: 'hidden',
-                marginRight: '10px',
-                borderRadius: '50%',
-                '& img': {
-                    width: '30px'
-                }
-            },
-            '& div:last-child': {
-                verticalAlign: 'top',
-                display: 'inline-block'
-            }
-        },
-        colorCat: {
-            marginBottom: '0',
-            width: '100%',
-            '& > div': {
-                width: '40% !important',
-                paddingRight: '60%',
-                background: 'transparent !important'
-            },
-            '& > div:first-child': {
-                borderBottom: '1px #f2f5f8 solid'
-            },
-            '& > div:last-child': {
-                width: '100% !important',
-                padding: '0'
-            },
-            '& > div:nth-child(2) > div': {
-                marginTop: '0px !important',
-                marginBottom: '-1px',
-                backgroundColor: '#12aaeb !important',
-                height: '1px !important'
-            },
-            '& button': {
-                color: '#333 !important',
-                backgroundColor: '#fefefe !important'
-            },
-            '& button > span:first-line': {
-                color: '#a6dff7'
-            },
-            '& button div div': {
-                textTransform: 'initial'
-            }
-        },
-        noReturn: {
-            padding: '100px 0',
-            color: '#999'
-        },
-        emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '215px',
-            padding: '215px 0 0',
-            textAlign: 'center',
-            color: '#999'
         }
     }),
-        withState('openDetails', 'setOpenDetails', false)
+    withState('openDetails', 'setOpenDetails', false)
 )
 
 const iconStyle = {
@@ -291,7 +183,6 @@ const iconStyle = {
         padding: 0
     }
 }
-withState('openDetails', 'setOpenDetails', false)
 
 const OrderDetails = enhance((props) => {
     const {classes,
@@ -312,10 +203,8 @@ const OrderDetails = enhance((props) => {
         returnData,
         handleCloseDetail
     } = props
-    const tab = _.get(tabData, 'tab')
 
     const id = _.get(data, 'id')
-    const products = _.get(data, 'products')
     const contact = _.get(data, 'contact')
     const contactName = _.get(contact, 'name')
     const contactEmail = _.get(contact, 'email') || 'N/A'
@@ -365,16 +254,16 @@ const OrderDetails = enhance((props) => {
                     }}>
                         <div className="detailsWrap">
                             <Row className="detailsList">
-                                <Col xs={6}>Контактное лицо</Col>
-                                <Col xs={6}>{contactName}</Col>
+                                <Col xs={5}>Контактное лицо</Col>
+                                <Col xs={7}>{contactName}</Col>
                             </Row>
                             <Row className="detailsList">
-                                <Col xs={6}>Телефон</Col>
-                                <Col xs={6}>{contactPhone}</Col>
+                                <Col xs={5}>Телефон</Col>
+                                <Col xs={7}>{contactPhone}</Col>
                             </Row>
                             <Row className="detailsList">
-                                <Col xs={6}>Email</Col>
-                                <Col xs={6}>{contactEmail}</Col>
+                                <Col xs={5}>Email</Col>
+                                <Col xs={7}>{contactEmail}</Col>
                             </Row>
                         </div>
                     </div>
@@ -477,84 +366,13 @@ const OrderDetails = enhance((props) => {
                         </div>
                     </div>
                 </div>
-                <div className={classes.rightSide}>
-                    <Tabs
-                        value={tab}
-                        className={classes.colorCat}
-                        onChange={(value) => tabData.handleTabChange(value, id)}>
-                        <Tab label="Список товаров" value={TAB.ORDER_TAB_PRODUCT_LIST}>
-                            <div className={classes.tabContent}>
-                                <div className={classes.tabWrapper}>
-                                    <Row className="dottedList">
-                                        <Col xs={6}>Товар</Col>
-                                        <Col xs={2}>Количество</Col>
-                                        <Col xs={2}>Цена {primaryCurrency}</Col>
-                                        <Col xs={2}>Сумма {primaryCurrency}</Col>
-                                    </Row>
-
-                                    {_.map(products, (item, index) => {
-                                        const product = _.get(item, 'product')
-                                        const productName = _.get(product, 'name')
-                                        const price = _.get(item, 'price')
-                                        const productTotal = _.get(item, 'totalPrice')
-                                        const amount = _.get(item, 'amount')
-                                        const measurement = _.get(product, ['measurement', 'name'])
-                                        return (
-                                            <Row className="dottedList" key={index}>
-                                                <Col xs={6}>{productName}</Col>
-                                                <Col xs={2}>{numberFormat(amount)} {measurement}</Col>
-                                                <Col xs={2}>{numberFormat(price)}</Col>
-                                                <Col xs={2}>{numberFormat(productTotal)}</Col>
-                                            </Row>
-                                        )
-                                    })}
-                                </div>
-                                <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {primaryCurrency}</div>
-                            </div>
-                        </Tab>
-                        <Tab label="Возврат" value={TAB.ORDER_TAB_RETURN}>
-                            {!_.isEmpty(returnData) ? <div className={classes.tabContent}>
-                                    {!returnDataLoading ? <div className={classes.tabWrapper}>
-                                            <Row className="dottedList">
-                                                <Col xs={2}>Код</Col>
-                                                <Col xs={6} style={{textAlign: 'left'}}>Причина возврата</Col>
-                                                <Col xs={2}>Дата возврата</Col>
-                                                <Col xs={2}>Сумма {primaryCurrency}</Col>
-                                            </Row>
-                                            {_.map(returnData, (item, index) => {
-                                                const returnId = _.get(item, 'id')
-                                                const comment = _.get(item, 'comment')
-                                                const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-                                                const totalSum = numberFormat(_.get(item, 'totalPrice'))
-                                                return (
-                                                    <Row className="dottedList" key={index}>
-                                                        <Col xs={2}><a
-                                                            onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(returnId) }}
-                                                            className={classes.link}>
-                                                            {returnId}
-                                                        </a>
-                                                        </Col>
-                                                        <Col style={{textAlign: 'left'}} xs={6}>{comment}</Col>
-                                                        <Col xs={2}>{dateReturn}</Col>
-                                                        <Col xs={2}>{totalSum}</Col>
-                                                    </Row>
-                                                )
-                                            })}
-                                        </div>
-                                        : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
-                                            <div>
-                                                <CircularProgress size={40} thickness={4}/>
-                                            </div>
-                                        </div>
-                                    }
-                            </div>
-                            : <div className={classes.emptyQuery}>
-                                    <div>В данном заказе нет возвратов</div>
-                                </div>}
-                        </Tab>
-                        <Tab label="Исполнение" value={TAB.ORDER_TAB_PERFORMANCE}>3</Tab>
-                    </Tabs>
-                </div>
+                <RightSide
+                    data={data}
+                    tabData={tabData}
+                    itemReturnDialog={itemReturnDialog}
+                    returnData={returnData}
+                    returnDataLoading={returnDataLoading}
+                />
             </div>
             <OrderTransactionsDialog
                 open={transactionsDialog.openTransactionsDialog}
@@ -585,7 +403,7 @@ OrderDetails.propTypes = {
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
         handleTabChange: PropTypes.func.isRequired
-    }),
+    }).isRequired,
     data: PropTypes.object.isRequired,
     returnData: PropTypes.array,
     loading: PropTypes.bool.isRequired,

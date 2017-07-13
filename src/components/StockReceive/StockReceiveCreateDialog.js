@@ -215,7 +215,7 @@ const OrderCreateDialog = enhance((props) => {
                                     <Col xs={2}>Принято</Col>
                                     <Col xs={2}>Брак</Col>
                                 </Row>
-                                {_.map(_.get(detailProducts, 'products'), (item) => {
+                                {_.map(_.get(detailProducts, 'products'), (item, index) => {
                                     const id = _.get(item, 'id')
                                     const name = _.get(item, ['product', 'name'])
                                     const type = _.get(item, ['product', 'type', 'name'])
@@ -229,7 +229,7 @@ const OrderCreateDialog = enhance((props) => {
                                             <Col xs={2}>{amount} {measurement}</Col>
                                             <Col xs={2}>
                                                 <Field
-                                                    name="accepted"
+                                                    name={'product[' + index + '][accepted]'}
                                                     component={TextField}
                                                     className={classes.inputFieldCustom}
                                                     fullWidth={true}
@@ -238,7 +238,7 @@ const OrderCreateDialog = enhance((props) => {
                                             </Col>
                                             <Col xs={2}>
                                                 <Field
-                                                    name="defected"
+                                                    name={'product[' + index + '][defected]'}
                                                     component={TextField}
                                                     className={classes.inputFieldCustom}
                                                     fullWidth={true}

@@ -44,7 +44,7 @@ const enhance = compose(
                 borderBottom: '1px #efefef solid'
             },
             '& .row': {
-                margin: '0rem !important'
+                margin: '0 !important'
             }
         },
         tableWrapper: {
@@ -202,6 +202,7 @@ const StatAgentGridList = enhance((props) => {
             padding: 0
         }
     }
+
     const headers = (
         <div style={headerStyle}>
             <div className={classes.tableWrapper}>
@@ -276,7 +277,7 @@ const StatAgentGridList = enhance((props) => {
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         type="submit">
-                                        <Search color="#5d6474"/>
+                                        <Search/>
                                     </IconButton>
                                 </div>
                                 <a className={classes.excel}>
@@ -313,7 +314,7 @@ StatAgentGridList.propTypes = {
         openStatAgentDialog: PropTypes.bool.isRequired,
         handleOpenStatAgentDialog: PropTypes.func.isRequired,
         handleCloseStatAgentDialog: PropTypes.func.isRequired
-    })
+    }).isRequired
 }
 
 export default StatAgentGridList

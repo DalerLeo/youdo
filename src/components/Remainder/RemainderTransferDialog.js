@@ -12,7 +12,7 @@ import IconButton from 'material-ui/IconButton'
 import PaymentTypeSearchField from '../ReduxForm/PaymentTypeSearchField'
 import DateField from '../ReduxForm/Basic/DateField'
 import TextField from '../ReduxForm/Basic/TextField'
-import RemainderListProductField from '../ReduxForm/RemainderListProductField'
+import RemainderListProductField from '../ReduxForm/Remainder/RemainderListProductField'
 
 export const REMAINDER_TRANSFER_DIALOG_OPEN = 'openTransferDialog'
 
@@ -59,15 +59,22 @@ const enhance = compose(
 
         },
         leftSide: {
-            flexBasis: '35%',
-            maxWidth: '35%',
+            flexBasis: '25%',
+            maxWidth: '25%',
+            height: '280px',
             borderRight: '1px #efefef solid',
-            padding: '20px 30px'
+            padding: '20px 30px',
+            '&  > div > div:first-child': {
+                width: '100% !important'
+            }
+
         },
         rightSide: {
-            flexBasis: '65%',
-            maxWidth: '65%',
-            padding: '20px 30px'
+            flexBasis: '75%',
+            maxWidth: '75%'
+        },
+        dialog: {
+            width: '1000px important'
         },
         dialogBody: {
             display: 'flex'
@@ -82,6 +89,7 @@ const enhance = compose(
             fontSize: '13px !important',
             height: '45px !important',
             marginTop: '7px',
+            width: '100% !important',
             '& div': {
                 fontSize: '13px !important'
             },
@@ -104,7 +112,8 @@ const enhance = compose(
             },
             '& div': {
                 fontSize: '13px !important',
-                height: '45px !important'
+                height: '45px !important',
+                width: '100% !important'
             }
         },
         bottomButton: {
@@ -135,7 +144,7 @@ const enhance = compose(
 )
 
 const RemainderTransferDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -144,7 +153,7 @@ const RemainderTransferDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '700px'} : {width: '1000px'}}
+            contentStyle={{maxWidth: 'none', width: '1000px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.noPadding}>
             <div className={classes.title}>
@@ -157,7 +166,6 @@ const RemainderTransferDialog = enhance((props) => {
             <div className={classes.dialogBody}>
                 <div className={classes.leftSide}>
                     <span className={classes.subTitle}>Условия передачи товара</span>
-
                         <Field
                             className={classes.inputFieldCustom}
                             name="paymentType"
@@ -180,10 +188,10 @@ const RemainderTransferDialog = enhance((props) => {
                             rows={4}
                             rowsMax={6}
                             fullWidth={true}/>
-                </div>
+            </div>
                 <div className={classes.rightSide}>
                     <Fields
-                        names={['products', 'product', 'amount']}
+                        names={['products', 'productType', 'product', 'amount']}
                         component={RemainderListProductField}
                     />
                 </div>

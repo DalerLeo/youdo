@@ -3,6 +3,7 @@ import React from 'react'
 import {compose, withHandlers, withReducer, withState} from 'recompose'
 import {Field} from 'redux-form'
 import injectSheet from 'react-jss'
+import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
@@ -24,6 +25,7 @@ import OrderProductMeasurementField from './OrderProductMeasurementField'
 import {ProductTypeSearchField} from '../../ReduxForm'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
+import Done from 'material-ui/svg-icons/action/done'
 
 const enhance = compose(
     injectSheet({
@@ -113,13 +115,19 @@ const enhance = compose(
             }
         },
         background: {
-            display: 'flex',
+            alignItems: 'baseline',
             padding: '10px 30px',
             margin: '0 -30px',
             marginTop: '5px',
             backgroundColor: '#f1f5f8',
             position: 'relative',
-            zIndex: '2'
+            zIndex: '2',
+            justifyContent: 'space-between',
+            '& > button div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
         }
     }),
     withState('openAddProducts', 'setOpenAddProducts', false),
@@ -168,6 +176,19 @@ const enhance = compose(
     })
 )
 
+const iconStyle = {
+    icon: {
+        color: '#12aaeb',
+        width: 20,
+        height: 20
+    },
+    button: {
+        width: 48,
+        height: 48,
+        padding: 0
+    }
+}
+
 const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProducts, setOpenAddProducts, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
@@ -203,26 +224,27 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                         onTouchTap={() => setOpenAddProducts(!openAddProducts)}
                     />
                 </div>
-                {openAddProducts && <div className={classes.background}>
-                    <div xs={12} style={{paddingRight: '20px'}}>
+                {openAddProducts &&
+                <Row className={classes.background}>
+                    <Col xs={3}>
                         <Field
-                            label="Отфильтровать по типу"
+                            label="Тип товара"
                             name="type"
                             component={ProductTypeSearchField}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                         />
-                    </div>
-                    <div xs={4} style={{paddingRight: '20px'}}>
+                    </Col>
+                    <Col xs={3}>
                         <Field
-                            label="Наименование товара"
+                            label="Наименование"
                             name="product"
                             component={OrderProductSearchField}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                         />
-                    </div>
-                    <div xs={2} style={{paddingRight: '20px'}}>
+                    </Col>
+                    <Col xs={2}>
                         <Field
                             label="Кол-во"
                             name="amount"
@@ -230,17 +252,20 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                         />
-                    </div>
-                    <div>
+                    </Col>
+                    <Col xs={1}>
                         <OrderProductMeasurementField/>
-                    </div>
+                    </Col>
                     <div className="summa" style={{width: '10%', textAlign: 'right', paddingRight: '20px'}}>
                         <ProductCostField />
                     </div>
-                    <div style={{width: '15%', textAlign: 'right', paddingTop: '9px'}}>
-                        <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
-                    </div>
-                </div>}
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        onTouchTap={handleAdd}>
+                        <Done/>
+                    </IconButton>
+                </Row>}
             </div>
             {error && <div className={classes.error}>{error}</div>}
             {!_.isEmpty(products) ? <div className={classes.table}>
