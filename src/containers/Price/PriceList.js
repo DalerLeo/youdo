@@ -8,6 +8,7 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import numberFormat from '../../helpers/numberFormat'
+import {reset} from 'redux-form'
 import {
     PRICE_FILTER_KEY,
     PRICE_FILTER_OPEN,
@@ -87,12 +88,13 @@ const enhance = compose(
 
     withHandlers({
         handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_FILTER_OPEN]: true})})
+            dispatch(reset('PriceFilterForm'))
         },
         handleCloseFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRICE_FILTER_OPEN]: false})})
+            const {location: {pathname}} = props
+            hashHistory.push({pathname})
         },
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
@@ -116,25 +118,25 @@ const enhance = compose(
             return dispatch(priceItemExpensesFetchAction(id))
         },
         handleCloseSupplyDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRICE_SUPPLY_DIALOG_OPEN]: false})})
+            const {location: {pathname}} = props
+            hashHistory.push({pathname})
         },
         handleOpenPriceSetForm: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: true})})
         },
         handleClosePriceSetForm: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
+            const {location: {pathname}} = props
+            hashHistory.push({pathname})
         },
         handleSubmitPriceSetForm: props => () => {
-            const {dispatch, createForm, filter, detail, params: {priceId}, location: {pathname}} = props
+            const {dispatch, createForm, detail, params: {priceId}, location: {pathname}} = props
             const detailId = _.get(detail, 'id')
             return dispatch(priceCreateAction(_.get(createForm, ['values']), priceId))
                 .then(() => {
                     dispatch(priceItemFetchAction(detailId))
                     dispatch(getPriceItemsAction(detailId))
-                    hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
+                    hashHistory.push({pathname})
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
         },
@@ -198,6 +200,12 @@ const PriceList = enhance((props) => {
         const val = _.get(price, 'transferPrice') || ZERO
         return numberFormat(val)
     }
+    const getCurrencyByParams = (marketTypeId) => {
+        const priceList = _.find(_.get(priceListItemsList, ['results']), (item) => {
+            return item.marketType.id === marketTypeId
+        })
+        return _.get(priceList, 'currency')
+    }
     const detailData = {
         priceItemExpenseLoading,
         priceItemExpenseList,
@@ -212,6 +220,7 @@ const PriceList = enhance((props) => {
                 const marketTypeName = _.get(item, 'name')
                 return {
                     'cash_price': getPriceByParams(marketTypeId, 'cash'),
+                    'currency': getCurrencyByParams(marketTypeId),
                     'transfer_price': getPriceByParams(marketTypeId, 'transfer'),
                     'marketTypeId': marketTypeId,
                     marketTypeName
@@ -228,7 +237,8 @@ const PriceList = enhance((props) => {
                 return {
                     'cash_price': _.get(item, 'cash_price'),
                     'transfer_price': _.get(item, 'transfer_price'),
-                    'market_type': _.get(item, 'marketTypeId')
+                    'market_type': _.get(item, 'marketTypeId'),
+                    'currency': {value: _.get(item, ['currency', 'id'])}
                 }
             })
             return {'prices': priceList}

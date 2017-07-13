@@ -27,14 +27,14 @@ const enhance = compose(
                 margin: '0rem !important'
             },
             '& > div': {
-                width: '200px',
+                width: '150px',
                 marginRight: '20px'
             }
         },
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
-            width: '200px !important',
+            width: '150px !important',
             marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
@@ -108,20 +108,24 @@ const RemainderFilterForm = enhance((props) => {
                         className={classes.inputFieldCustom}
                         name="stock"
                         component={StockSearchField}
-                        label="Склад"/>
+                        label="Склад"
+                        fullWidth={true}/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="type"
                         component={ProductTypeSearchField}
+                        fullWidth={true}
                         label="Тип товара"/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="status"
+                        fullWidth={true}
                         component={RemainderStatusSearchField}
                         label="Статус"/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="product"
+                        fullWidth={true}
                         component={TextField}
                         label="Товар"/>
                     <IconButton

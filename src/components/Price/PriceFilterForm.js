@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {BrandSearchField, MeasurementSearchField} from '../ReduxForm'
+import ProductTypeSerachField from '../ReduxForm/Product/ProductTypeSearchField'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -114,7 +115,12 @@ const enhance = compose(
 )
 
 const PriceFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {
+        classes,
+        filterDialog,
+        getCount,
+        handleSubmit
+    } = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -154,12 +160,25 @@ const PriceFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="measurement" component={MeasurementSearchField} label="Мера"/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="measurement"
+                            component={MeasurementSearchField}
+                            label="Мера"/>
                     </div>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="brand" component={BrandSearchField} label="Бренд"/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="brand"
+                            component={BrandSearchField}
+                            label="Бренд"/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="type"
+                            component={ProductTypeSerachField}
+                            label="Тип продукта"/>
                     </div>
                     <RaisedButton
                         type="submit"

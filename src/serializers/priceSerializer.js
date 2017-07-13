@@ -1,12 +1,20 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 export const createSerializer = (data, productId) => {
     const prices = _.get(data, 'prices')
-
+    const newPrices = _.map(prices, (val) => {
+        return {
+            'cash_price': numberWithoutSpaces(_.get(val, 'cash_price')),
+            'market_type': _.get(val, 'market_type'),
+            'transfer_price': numberWithoutSpaces(_.get(val, 'transfer_price')),
+            'currency': _.get(val, ['currency', 'value'])
+        }
+    })
     return {
         'product': productId,
-        'prices': prices
+        'prices': newPrices
     }
 }
 
