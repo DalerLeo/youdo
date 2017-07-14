@@ -8,6 +8,7 @@ import SideBarMenu from '../SidebarMenu'
 import SnakeBar from '../Snackbar'
 import {connect} from 'react-redux'
 import ConfirmDialog from '../ConfirmDialog'
+import ErrorDialog from '../ErrorDialog'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
@@ -341,6 +342,7 @@ const Layout = enhance((props) => {
             </div>
 
             <SnakeBar />
+            <ErrorDialog />
             {notificationsList && <ConfirmDialog
                 type="delete"
                 message={_.get(_.find(notificationsList, {'id': notificationId}), 'title')}
