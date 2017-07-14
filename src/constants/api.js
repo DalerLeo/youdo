@@ -270,12 +270,10 @@ export const REMAINDER_LIST = `/${REMAINDER}/`
 export const REMAINDER_ITEM = `/${PRODUCT}/%d/`
 export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
 
-export const STATISTICS = 'dist/product'
 export const STAT_AGENT_LIST = 'stats/agents'
 export const STAT_AGENT_ITEM = 'sales/order'
-export const STAT_PRODUCT_LIST = `/${STATISTICS}/`
 
-export const STAT_PRODUCT_ITEM = `/${STATISTICS}/%d/`
+export const STAT_PRODUCT_LIST = 'stats/products'
 
 export const STOCK_RECEIVE = 'stock/supply'
 export const STOCK_HISTORY = 'stock/barcode_history'
