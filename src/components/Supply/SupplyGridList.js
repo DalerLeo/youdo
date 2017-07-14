@@ -110,6 +110,26 @@ const enhance = compose(
         waiting: {
             extend: 'dot',
             backgroundColor: '#64b5f6'
+        },
+        listRow: {
+            position: 'relative',
+            '& > a': {
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                position: 'absolute',
+                top: '0',
+                left: '-30px',
+                right: '-30px',
+                bottom: '0',
+                padding: '0 30px',
+                '& > div:first-child': {
+                    fontWeight: '600'
+                },
+                '& > div': {
+                    fontWeight: '500'
+                }
+            }
         }
     })
 )
@@ -183,23 +203,23 @@ const SupplyGridList = enhance((props) => {
         const status = _.toNumber(_.get(item, 'status'))
 
         return (
-            <Row key={id}>
-                <Col xs={1}>{id}</Col>
-                <Col xs={2}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{name}</Link>
-                </Col>
-                <Col xs={2}>{stock}</Col>
-                <Col xs={2}>{dateDelivery}</Col>
-                <Col xs={2}>{totalCost}</Col>
-                <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting} /> ожидает</span>)
-                    : ((status === IN_PROGRESS) ? (<span><i className={classes.begin} /> начался</span>)
-                        : (status === COMPLETED) ? (<span><i className={classes.success} /> принято</span>)
-                            : (<span><i className={classes.error} /> отменен</span>))}</Col>
-                <Col xs={1}>{acceptedCost}</Col>
-                <Col xs={1}>{defectedCost}</Col>
+            <Row key={id} className={classes.listRow}>
+                <Link to={{
+                    pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, id),
+                    query: filter.getParams()
+                }}>
+                    <Col xs={1}>{id}</Col>
+                    <Col xs={2}>{name}</Col>
+                    <Col xs={2}>{stock}</Col>
+                    <Col xs={2}>{dateDelivery}</Col>
+                    <Col xs={2}>{totalCost}</Col>
+                    <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting} /> ожидает</span>)
+                        : ((status === IN_PROGRESS) ? (<span><i className={classes.begin} /> начался</span>)
+                            : (status === COMPLETED) ? (<span><i className={classes.success} /> принято</span>)
+                                : (<span><i className={classes.error} /> отменен</span>))}</Col>
+                    <Col xs={1}>{acceptedCost}</Col>
+                    <Col xs={1}>{defectedCost}</Col>
+                </Link>
             </Row>
         )
     })

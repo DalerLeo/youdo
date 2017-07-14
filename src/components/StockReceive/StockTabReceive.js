@@ -120,12 +120,7 @@ const StockTabReceive = enhance((props) => {
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
                 const provider = _.get(item, ['provider', 'name'])
-                let acceptedDate = _.get(item, 'acceptedTime')
-                if (acceptedDate === null) {
-                    acceptedDate = 'Не указана'
-                } else {
-                    acceptedDate = moment(_.get(item, 'acceptedTime')).format('DD.MM.YYYY')
-                }
+                const dateDelivery = _.get(item, 'dateDelivery') ? moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY') : 'Не указана'
                 const status = _.toInteger(_.get(item, 'status'))
                 const PENDING = 0
                 const IN_PROGRESS = 1
@@ -138,7 +133,7 @@ const StockTabReceive = enhance((props) => {
                                 <Row className={classes.semibold}>
                                     <Col xs={2}>{id}</Col>
                                     <Col xs={4} onClick={handleCloseDetail}>{provider}</Col>
-                                    <Col xs={2}>{acceptedDate}</Col>
+                                    <Col xs={2}>{dateDelivery}</Col>
                                     <Col xs={2}>{status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
                                         : ((status === IN_PROGRESS) ? (
                                             <span className={classes.begin}>В процессе</span>)
@@ -168,7 +163,7 @@ const StockTabReceive = enhance((props) => {
                                 <Row>
                                     <Col xs={2}>{id}</Col>
                                     <Col xs={4}>{provider}</Col>
-                                    <Col xs={2}>{acceptedDate}</Col>
+                                    <Col xs={2}>{dateDelivery}</Col>
                                     <Col xs={2}>{status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
                                         : ((status === IN_PROGRESS) ? (
                                             <span className={classes.begin}>В процессе</span>)

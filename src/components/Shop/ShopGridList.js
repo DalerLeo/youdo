@@ -65,6 +65,26 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        listRow: {
+            position: 'relative',
+            '& > a': {
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                position: 'absolute',
+                top: '0',
+                left: '-30px',
+                right: '-30px',
+                bottom: '0',
+                padding: '0 30px',
+                '& > div:first-child': {
+                    fontWeight: '600'
+                },
+                '& > div': {
+                    fontWeight: '500'
+                }
+            }
         }
     })
 )
@@ -117,20 +137,20 @@ const ShopGridList = enhance((props) => {
         const zone = _.get(item, 'border') || 'Не определена'
         const isActive = _.get(item, 'isActive')
         return (
-            <Row key={id}>
-                <Col xs={3}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
-                        query: ''
-                    }}>{name}</Link>
-                </Col>
-                <Col xs={3}>{client}</Col>
-                <Col xs={2}>{marketType}</Col>
-                <Col xs={2}>{zone}</Col>
-                <Col xs={2}>
-                    {isActive ? <span className="greenFont">Активен</span>
-                        : <span className="redFont">Не активен</span>}
-                </Col>
+            <Row key={id} className={classes.listRow}>
+                <Link to={{
+                    pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
+                    query: ''
+                }}>
+                    <Col xs={3}>{name}</Col>
+                    <Col xs={3}>{client}</Col>
+                    <Col xs={2}>{marketType}</Col>
+                    <Col xs={2}>{zone}</Col>
+                    <Col xs={2}>
+                        {isActive ? <span className="greenFont">Активен</span>
+                            : <span className="redFont">Не активен</span>}
+                    </Col>
+                </Link>
             </Row>
         )
     })
