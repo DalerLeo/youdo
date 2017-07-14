@@ -189,7 +189,6 @@ const StatAgentGridList = enhance((props) => {
         fontWeight: '600',
         color: '#666'
     }
-
     const iconStyle = {
         icon: {
             color: '#5d6474',
