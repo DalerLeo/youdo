@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
+import Paper from 'material-ui/Paper'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
@@ -13,9 +14,7 @@ import RightSide from './OrderDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import File from 'material-ui/svg-icons/editor/insert-drive-file'
-import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
-import Dot from '../Images/dot.png'
 import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
@@ -29,21 +28,10 @@ const enhance = compose(
             color: '#333 !important',
             width: '100%',
             display: 'flex',
-            flexWrap: 'wrap'
-        },
-        dropdown: {
-            position: 'relative',
-            paddingRight: '18px',
-            zIndex: '4',
-            '&:after': {
-                top: '10px',
-                right: '0',
-                content: '""',
-                position: 'absolute',
-                borderTop: '5px solid',
-                borderLeft: '5px solid transparent',
-                borderRight: '5px solid transparent'
-            }
+            flexWrap: 'wrap',
+            transition: 'all 250ms ease-out',
+            maxHeight: '500px',
+            overflow: 'hidden'
         },
         link: {
             extend: 'blue',
@@ -65,7 +53,7 @@ const enhance = compose(
         loader: {
             width: '100%',
             background: '#fff',
-            height: '400px',
+            height: '200px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -77,7 +65,8 @@ const enhance = compose(
             alignItems: 'center',
             width: '100%',
             height: '65px',
-            padding: '0 30px'
+            padding: '0 30px',
+            position: 'relative'
         },
         titleLabel: {
             fontSize: '18px',
@@ -85,51 +74,19 @@ const enhance = compose(
             fontWeight: '600',
             cursor: 'pointer'
         },
-        titleSupplier: {
-            fontSize: '18px',
-            position: 'relative',
-            '& .supplierDetails': {
-                background: '#fff',
-                boxShadow: '0 2px 5px 0px rgba(0, 0, 0, 0.16)',
-                fontSize: '13px',
-                position: 'absolute',
-                padding: '64px 28px 20px',
-                top: '-21px',
-                left: '50%',
-                zIndex: '3',
-                minWidth: '300px',
-                transform: 'translate(-50%, 0)',
-                '& .detailsWrap': {
-                    position: 'relative',
-                    paddingTop: '10px',
-                    '&:before': {
-                        content: '""',
-                        background: 'url(' + Dot + ')',
-                        position: 'absolute',
-                        top: '0',
-                        left: '0',
-                        right: '0',
-                        height: '2px'
-                    }
-                },
-                '& .detailsList': {
-                    padding: '10px 0',
-                    '& > div': {
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                    },
-                    '&:last-child': {
-                        paddingBottom: '0'
-                    },
-                    '& div:first-child': {
-                        color: '#666'
-                    }
-                }
-            }
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         },
         titleButtons: {
             display: 'flex',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            zIndex: '3'
         },
         content: {
             display: 'flex',
@@ -144,7 +101,7 @@ const enhance = compose(
             borderRight: '1px #efefef solid'
         },
         subBlock: {
-            extend: 'padding',
+            padding: '15px 30px',
             borderBottom: '1px #efefef solid',
             '&:last-child': {
                 border: 'none'
@@ -158,17 +115,32 @@ const enhance = compose(
         dataBox: {
             '& li': {
                 display: 'flex',
+                flexWrap: 'wrap',
                 justifyContent: 'space-between',
                 lineHeight: '25px',
+                position: 'relative',
                 width: '100%',
                 '& span:last-child': {
                     fontWeight: '600',
                     textAlign: 'right'
+                },
+                '& a': {
+                    fontWeight: '600'
+                },
+                '& > div': {
+                    background: '#fff',
+                    position: 'absolute',
+                    padding: '15px 30px',
+                    left: 'calc(100% + 15px)',
+                    minWidth: '335px',
+                    zIndex: '-99',
+                    opacity: '0',
+                    top: '10px'
                 }
             }
         }
     }),
-    withState('openDetails', 'setOpenDetails', false)
+    withState('openInfo', 'setOpenInfo', false)
 )
 
 const iconStyle = {
@@ -188,8 +160,8 @@ const OrderDetails = enhance((props) => {
     const {classes,
         loading,
         data,
-        setOpenDetails,
-        openDetails,
+        setOpenInfo,
+        openInfo,
         transactionsDialog,
         returnDialog,
         returnListData,
@@ -205,13 +177,13 @@ const OrderDetails = enhance((props) => {
     } = props
 
     const id = _.get(data, 'id')
-    const contact = _.get(data, 'contact')
-    const contactName = _.get(contact, 'name')
-    const contactEmail = _.get(contact, 'email') || 'N/A'
-    const contactPhone = _.get(contact, 'telephone') || 'N/A'
+    const contactName = _.get(data, ['contact', 'name'])
+    const contactEmail = _.get(data, ['contact', 'email']) || 'N/A'
+    const contactPhone = _.get(data, ['contact', 'telephone']) || 'N/A'
+    const market = _.get(data, ['market', 'name'])
+    const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
 
-    const client = _.get(data, 'client')
-    const clientPerson = _.get(client, 'name')
+    const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
     const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
 
@@ -231,9 +203,11 @@ const OrderDetails = enhance((props) => {
 
     if (loading) {
         return (
-            <div className={classes.loader}>
-                <div>
-                    <CircularProgress size={40} thickness={4}/>
+            <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
+                <div className={classes.loader}>
+                    <div>
+                        <CircularProgress size={40} thickness={4}/>
+                    </div>
                 </div>
             </div>
         )
@@ -242,32 +216,9 @@ const OrderDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}
-                     onClick={handleCloseDetail}>Заказ №{id}</div>
-                <div className={classes.titleSupplier}>
-                    <a className={classes.dropdown} onMouseEnter={() => {
-                        setOpenDetails(true)
-                    }}>{clientPerson}</a>
-                    {openDetails &&
-                    <div className="supplierDetails" onMouseLeave={() => {
-                        setOpenDetails(false)
-                    }}>
-                        <div className="detailsWrap">
-                            <Row className="detailsList">
-                                <Col xs={5}>Контактное лицо</Col>
-                                <Col xs={7}>{contactName}</Col>
-                            </Row>
-                            <Row className="detailsList">
-                                <Col xs={5}>Телефон</Col>
-                                <Col xs={7}>{contactPhone}</Col>
-                            </Row>
-                            <Row className="detailsList">
-                                <Col xs={5}>Email</Col>
-                                <Col xs={7}>{contactEmail}</Col>
-                            </Row>
-                        </div>
-                    </div>
-                    }
+                <div className={classes.titleLabel}>Заказ №{id}</div>
+                <div className={classes.closeDetail}
+                     onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Добавить возврат">
@@ -308,9 +259,48 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                 </div>
             </div>
-
             <div className={classes.content}>
                 <div className={classes.leftSide}>
+                    <div className={classes.subBlock}>
+                        <div className={classes.dataBox}>
+                            <ul>
+                                <li onMouseEnter={() => { setOpenInfo(true) }}
+                                    onMouseLeave={() => {
+                                        if (openInfo) {
+                                            setOpenInfo(false)
+                                        }
+                                    }}>
+                                    <span>Клиент:</span>
+                                    <a><strong>{client}</strong></a>
+
+                                    <Paper style={openInfo && {opacity: '1', zIndex: '2', top: '0'}}>
+                                        <li>
+                                            <span>Контактное лицо:</span>
+                                            <span>{contactName}</span>
+                                        </li>
+                                        <li>
+                                            <span>Телефон:</span>
+                                            <span>{contactPhone}</span>
+                                        </li>
+                                        <li>
+                                            <span>Email:</span>
+                                            <span>{contactEmail}</span>
+                                        </li>
+                                    </Paper>
+                                </li>
+
+                                <li>
+                                    <span>Магазин:</span>
+                                    <span>{market}</span>
+                                </li>
+                                <li>
+                                    <span>Инициатор:</span>
+                                    <span>{agent}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <div className={classes.subBlock}>
                         <div className={classes.subtitle}>Баланс</div>
                         <div className={classes.dataBox}>
