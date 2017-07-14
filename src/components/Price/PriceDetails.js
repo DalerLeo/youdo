@@ -145,6 +145,7 @@ const PriceDetails = enhance((props) => {
     const measurement = _.get(detailData, ['data', 'measurement', 'name'])
     const priceUpdated = _.get(listDetailData, ['0', 'priceUpdated']) ? moment(_.get(listDetailData, ['0', 'priceUpdated'])).format('DD.MM.YYYY') : 'Не установлено'
     const averageCost = _.get(listDetailData, ['0', 'netCost'])
+
     const iconStyle = {
         icon: {
             color: '#666',

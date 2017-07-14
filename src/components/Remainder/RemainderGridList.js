@@ -21,6 +21,7 @@ import RemainderTransferDialog from './RemainderTransferDialog'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import MoreHortIcon from 'material-ui/svg-icons/navigation/more-horiz'
 import RemainderFilterForm from './RemainderFilterForm'
+import RemainderDiscardDialog from './RemainderDiscardDialog'
 
 const enhance = compose(
     injectSheet({
@@ -206,7 +207,8 @@ const RemainderGridList = enhance((props) => {
         listData,
         transferDialog,
         submitFilter,
-        resetFilter
+        resetFilter,
+        discardDialog
     } = props
     const listLoading = _.get(listData, 'listLoading')
     const detailId = _.get(detailData, 'id')
@@ -216,7 +218,7 @@ const RemainderGridList = enhance((props) => {
                 <Col xs={4}>Товар</Col>
                 <Col xs={4}>Тип товара</Col>
                 <Col xs={3} style={{textAlign: 'left'}}>Всего товаров</Col>
-                <Col xs={1}></Col>
+                <Col xs={1} style={{display: 'none'}}>|</Col>
             </Row>
         </div>
     )
@@ -312,7 +314,9 @@ const RemainderGridList = enhance((props) => {
             <RemainderTransferDialog
                 open={transferDialog.openTransferDialog}
                 onClose={transferDialog.handleCloseTransferDialog}/>
-
+            <RemainderDiscardDialog
+                open={discardDialog.openDiscardDialog}
+                onClose={discardDialog.handleCloseDiscardDialog}/>
         </Container>
     )
 })
@@ -331,6 +335,11 @@ RemainderGridList.propTypes = {
         openTransferDialog: PropTypes.bool.isRequired,
         handleOpenTransferDialog: PropTypes.func.isRequired,
         handleCloseTransferDialog: PropTypes.func.isRequired
+    }).isRequired,
+    discardDialog: PropTypes.shape({
+        openDiscardDialog: PropTypes.bool.isRequired,
+        handleOpenDiscardDialog: PropTypes.func.isRequired,
+        handleCloseDiscardDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
