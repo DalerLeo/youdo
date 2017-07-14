@@ -24,14 +24,14 @@ export const MenuItems = [
     {
         name: 'Продажи',
         icon: (<AttachMoney />),
-        url: ROUTES.SHOP_LIST_URL,
+        url: ROUTES.ORDER_LIST_URL,
         childs: [
-            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL},
             {name: 'Заказы', url: ROUTES.ORDER_LIST_URL},
             {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL},
             {name: 'Ценообразование', url: ROUTES.PRODUCT_PRICE_LIST_URL},
             {name: 'Маркетинговые акции', url: ROUTES.PRICES_LIST_URL},
-            {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL}
+            {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL},
+            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL}
         ]
     },
     {
@@ -40,8 +40,8 @@ export const MenuItems = [
         childs: [
             {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL},
             {name: 'Поставщики', url: ROUTES.PROVIDER_LIST_URL},
-            {name: 'Остаток', url: ROUTES.REMAINDER_LIST_URL},
             {name: 'Поставки', url: ROUTES.SUPPLY_LIST_URL},
+            {name: 'Остаток', url: ROUTES.REMAINDER_LIST_URL},
             {name: 'Приемка / Передача', url: ROUTES.STOCK_RECEIVE_LIST_URL}
         ],
         url: ROUTES.PRODUCT_LIST_URL
