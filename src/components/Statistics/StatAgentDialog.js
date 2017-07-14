@@ -13,6 +13,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
 import Pagination from '../GridList/GridListNavPagination'
 import getConfig from '../../helpers/getConfig'
+import numberFormat from '../../helpers/numberFormat.js'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -112,9 +113,24 @@ const enhance = compose(
 )
 
 const StatAgentDialog = enhance((props) => {
-    const {open, loading, onClose, classes, detailData} = props
-
+    const {
+        open,
+        loading,
+        onClose,
+        classes,
+        detailData
+    } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
+    const income = numberFormat(_.get(detailData, ['agentDetail', '0', 'income']), primaryCurrency)
+    const fromDate = _.get(detailData, ['filterDateRange', 'fromDate'])
+                                            ? _.get(detailData, ['filterDateRange', 'fromDate']).format('DD.MM.YYYY')
+                                            : null
+    const toDate = _.get(detailData, ['filterDateRange', 'toDate'])
+                                            ? _.get(detailData, ['filterDateRange', 'toDate']).format('DD.MM.YYYY')
+                                            : null
+    const dateRange = (fromDate && toDate) ? fromDate + ' - ' + toDate : 'Весь'
+
     const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
         const id = _.get(item, 'id')
         const market = _.get(item, ['market', 'name'])
@@ -145,7 +161,7 @@ const StatAgentDialog = enhance((props) => {
                     <div className="personImage">
                         <img src={Person} alt=""/>
                     </div>
-                    <div>Снегирев Нигер</div>
+                    <div>{agentName}</div>
                 </div>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
@@ -153,8 +169,8 @@ const StatAgentDialog = enhance((props) => {
             </div>
             <div className={classes.content}>
                 <div className={classes.titleSummary}>
-                    <div>Период: <strong>22 Апр, 2017 - 22 Май, 2017</strong></div>
-                    <div>Сумма: <strong>3 000 000 UZS</strong></div>
+                    <div>Период: <strong>{dateRange}</strong></div>
+                    <div>Сумма: <strong>{income}</strong></div>
                 </div>
                 <div className={classes.tableWrapper}>
                     <Row className="dottedList">

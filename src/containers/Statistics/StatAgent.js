@@ -101,12 +101,12 @@ const StatAgentList = enhance((props) => {
         filter,
         layout,
         filterItem,
+        filterForm,
         params
     } = props
 
     const openStatAgentDialog = toBoolean(_.get(location, ['query', STAT_AGENT_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'statAgentId'))
-
     const statAgentDialog = {
         openStatAgentDialog,
         handleCloseStatAgentDialog: props.handleCloseStatAgentDialog,
@@ -116,13 +116,22 @@ const StatAgentList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
-
+    const agentDetail = _.filter(_.get(list, 'results'), (item) => {
+        return _.get(item, 'id') === detailId
+    })
+    const filterDateRange = {
+        'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']) || null,
+        'toDate': _.get(filterForm, ['values', 'date', 'toDate']) || null
+    }
     const detailData = {
         filter: filterItem,
         id: detailId,
         data: detail,
+        agentDetail,
         detailLoading,
-        handleCloseDetail: props.handleCloseDetail
+        handleCloseDetail: props.handleCloseDetail,
+        filterDateRange
+
     }
 
     return (
