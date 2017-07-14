@@ -93,8 +93,8 @@ const enhance = compose(
         },
 
         handleCloseCreateDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname})
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PROVIDER_CREATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
@@ -105,7 +105,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname})
+                    hashHistory.push({pathname, query: filter.getParams({[PROVIDER_CREATE_DIALOG_OPEN]: false})})
                     dispatch(providerListFetchAction(filter))
                 })
         },
@@ -119,8 +119,8 @@ const enhance = compose(
         },
 
         handleCloseUpdateDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname})
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PROVIDER_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
