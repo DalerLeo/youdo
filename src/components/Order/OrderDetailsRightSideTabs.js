@@ -41,7 +41,7 @@ const enhance = compose(
             }
         },
         tabWrapper: {
-            maxHeight: '232px',
+            maxHeight: '441px',
             overflowY: 'auto',
             overflowX: 'hidden',
             paddingRight: '30px'
@@ -57,8 +57,8 @@ const enhance = compose(
             marginBottom: '0',
             width: '100%',
             '& > div': {
-                width: '40% !important',
-                paddingRight: '60%',
+                width: '350px !important',
+                paddingRight: 'calc(100% - 400px)',
                 background: 'transparent !important'
             },
             '& > div:first-child': {

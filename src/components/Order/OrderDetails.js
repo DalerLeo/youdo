@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
@@ -13,7 +13,6 @@ import RightSide from './OrderDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import File from 'material-ui/svg-icons/editor/insert-drive-file'
-import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import Dot from '../Images/dot.png'
 import moment from 'moment'
@@ -144,7 +143,7 @@ const enhance = compose(
             borderRight: '1px #efefef solid'
         },
         subBlock: {
-            extend: 'padding',
+            padding: '15px 30px',
             borderBottom: '1px #efefef solid',
             '&:last-child': {
                 border: 'none'
@@ -165,10 +164,12 @@ const enhance = compose(
                     fontWeight: '600',
                     textAlign: 'right'
                 }
+            },
+            '& .lineDote': {
+                margin: '10px 0'
             }
         }
-    }),
-    withState('openDetails', 'setOpenDetails', false)
+    })
 )
 
 const iconStyle = {
@@ -188,8 +189,6 @@ const OrderDetails = enhance((props) => {
     const {classes,
         loading,
         data,
-        setOpenDetails,
-        openDetails,
         transactionsDialog,
         returnDialog,
         returnListData,
@@ -205,13 +204,13 @@ const OrderDetails = enhance((props) => {
     } = props
 
     const id = _.get(data, 'id')
-    const contact = _.get(data, 'contact')
-    const contactName = _.get(contact, 'name')
-    const contactEmail = _.get(contact, 'email') || 'N/A'
-    const contactPhone = _.get(contact, 'telephone') || 'N/A'
+    const contactName = _.get(data, ['contact', 'name'])
+    const contactEmail = _.get(data, ['contact', 'email']) || 'N/A'
+    const contactPhone = _.get(data, ['contact', 'telephone']) || 'N/A'
+    const market = _.get(data, ['market', 'name'])
+    const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
 
-    const client = _.get(data, 'client')
-    const clientPerson = _.get(client, 'name')
+    const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
     const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
 
@@ -245,29 +244,6 @@ const OrderDetails = enhance((props) => {
                 <div className={classes.titleLabel}
                      onClick={handleCloseDetail}>Заказ №{id}</div>
                 <div className={classes.titleSupplier}>
-                    <a className={classes.dropdown} onMouseEnter={() => {
-                        setOpenDetails(true)
-                    }}>{clientPerson}</a>
-                    {openDetails &&
-                    <div className="supplierDetails" onMouseLeave={() => {
-                        setOpenDetails(false)
-                    }}>
-                        <div className="detailsWrap">
-                            <Row className="detailsList">
-                                <Col xs={5}>Контактное лицо</Col>
-                                <Col xs={7}>{contactName}</Col>
-                            </Row>
-                            <Row className="detailsList">
-                                <Col xs={5}>Телефон</Col>
-                                <Col xs={7}>{contactPhone}</Col>
-                            </Row>
-                            <Row className="detailsList">
-                                <Col xs={5}>Email</Col>
-                                <Col xs={7}>{contactEmail}</Col>
-                            </Row>
-                        </div>
-                    </div>
-                    }
                 </div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Добавить возврат">
@@ -308,9 +284,43 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                 </div>
             </div>
-
             <div className={classes.content}>
                 <div className={classes.leftSide}>
+                    <div className={classes.subBlock}>
+                        <div className={classes.subtitle}>Информация</div>
+                        <div className={classes.dataBox}>
+                            <ul>
+                                <li>
+                                    <span>Клиент:</span>
+                                    <span>{client}</span>
+                                </li>
+                                <li>
+                                    <span>Контактное лицо:</span>
+                                    <span>{contactName}</span>
+                                </li>
+                                <li>
+                                    <span>Телефон:</span>
+                                    <span>{contactPhone}</span>
+                                </li>
+                                <li>
+                                    <span>Email:</span>
+                                    <span>{contactEmail}</span>
+                                </li>
+
+                                <hr className="lineDote"/>
+
+                                <li>
+                                    <span>Магазин:</span>
+                                    <span>{market}</span>
+                                </li>
+                                <li>
+                                    <span>Инициатор:</span>
+                                    <span>{agent}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <div className={classes.subBlock}>
                         <div className={classes.subtitle}>Баланс</div>
                         <div className={classes.dataBox}>
