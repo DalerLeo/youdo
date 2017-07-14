@@ -15,11 +15,8 @@ import Paper from 'material-ui/Paper'
 import RemainderDetails from './RemainderDetails'
 import CircularProgress from 'material-ui/CircularProgress'
 import ArrowUp from 'material-ui/svg-icons/navigation/arrow-drop-up'
-import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import RemainderTransferDialog from './RemainderTransferDialog'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import MoreHortIcon from 'material-ui/svg-icons/navigation/more-horiz'
 import RemainderFilterForm from './RemainderFilterForm'
 import RemainderDiscardDialog from './RemainderDiscardDialog'
 
@@ -295,15 +292,17 @@ const RemainderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.REMAINDER_LIST_URL}/>
 
-            <div className={classes.sendButtonWrapper}>
-                <Tooltip position="left" text="Отправить товар">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.sendButton}
-                        onTouchTap={transferDialog.handleOpenTransferDialog}>
-                        <MoreHortIcon />
-                    </FloatingActionButton>
-                </Tooltip>
+            <div className="sendButtonWrapper">
+                <a href="#">
+                </a>
+                <ul>
+                    <li style={{left: '60px'}}><a href="#"> </a></li>
+                    <li
+                        style={{left: '80px'}}
+                        onClick={transferDialog.handleOpenTransferDialog}>
+                        <a href="#"> </a>
+                    </li>
+                </ul>
             </div>
             <RemainderFilterForm
                 onSubmit={submitFilter}
