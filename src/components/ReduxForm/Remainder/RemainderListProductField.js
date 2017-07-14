@@ -4,7 +4,6 @@ import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import {Field} from 'redux-form'
 import Dot from '../../Images/dot.png'
@@ -48,8 +47,9 @@ const enhance = compose(
             }
         },
         table: {
-            padding: '20px 30px !important',
+            padding: '10px 30px !important',
             maxHeight: '200px',
+            minHeight: '200px',
             overflowY: 'auto'
         },
         tableRowHead: {
@@ -76,7 +76,7 @@ const enhance = compose(
                 fontSize: '13px!important'
             },
             '& th:first-child': {
-                width: '70%',
+                width: '80%',
                 textAlign: 'left !important',
                 fontWeight: '600 !important'
             }
@@ -102,7 +102,7 @@ const enhance = compose(
                 backgroundImage: 'none'
             },
             '& td:first-child': {
-                width: '70%'
+                width: '80%'
             },
             '& tr': {
                 border: 'none !important'
@@ -112,7 +112,7 @@ const enhance = compose(
                 padding: '0 !important'
             },
             '& th:first-child': {
-                width: '70%',
+                width: '80%',
                 textAlign: 'left !important',
                 fontWeight: '600 !important'
             },
@@ -166,7 +166,7 @@ const enhance = compose(
             position: 'relative',
             zIndex: '2',
             '& > div': {
-                marginTop: '-2px !important',
+                marginTop: '-7px !important',
                 width: '200px !important',
                 marginRight: '20px',
                 '& > div > div': {
@@ -233,7 +233,7 @@ const RemainderListProductField = ({classes, state, dispatch, handleAdd, handleR
             <div>
                 <div className={classes.background}>
                     <Field
-                        label="Тип продукта"
+                        label="Отфильтровать по типу"
                         name="productType"
                         className={classes.inputFieldCustom}
                         component={ProductTypeSearchField}
@@ -253,8 +253,8 @@ const RemainderListProductField = ({classes, state, dispatch, handleAdd, handleR
                 </div>
             </div>
             {error && <div className={classes.error}>{error}</div>}
-            {!_.isEmpty(products) ? <div className={classes.table}>
-                <Table
+            <div className={classes.table}>
+                 {!_.isEmpty(products) && <Table
                     fixedHeader={true}
                     fixedFooter={false}
                     multiSelectable={false}>
@@ -267,7 +267,7 @@ const RemainderListProductField = ({classes, state, dispatch, handleAdd, handleR
                             <TableHeaderColumn
                                 className={classes.tableTitle}>Наименование</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn></TableHeaderColumn>
+                            <TableHeaderColumn style={{display: 'none'}}>.</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody
@@ -289,17 +289,8 @@ const RemainderListProductField = ({classes, state, dispatch, handleAdd, handleR
                             </TableRow>
                         ))}
                     </TableBody>
-                </Table>
+                </Table>}
             </div>
-                : <div className={classes.imagePlaceholder}>
-                    <div style={{textAlign: 'center', color: '#adadad'}}>
-                        <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
-                            товар?
-                        </div>
-                    </div>
-                </div>
-            }
         </div>
     )
 }
