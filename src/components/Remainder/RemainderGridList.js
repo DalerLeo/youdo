@@ -19,6 +19,10 @@ import numberFormat from '../../helpers/numberFormat'
 import RemainderTransferDialog from './RemainderTransferDialog'
 import RemainderFilterForm from './RemainderFilterForm'
 import RemainderDiscardDialog from './RemainderDiscardDialog'
+import MoreHortIcon from 'material-ui/svg-icons/navigation/more-horiz'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import RemoveIcon from 'material-ui/svg-icons/content/remove'
+import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz'
 
 const enhance = compose(
     injectSheet({
@@ -196,6 +200,20 @@ const iconStyle = {
         padding: 0
     }
 }
+const actionIconStyle = {
+    icon: {
+        width: 30,
+        height: 30,
+        backgroundColor: 'transparent'
+    },
+    button: {
+        width: 30,
+        height: 30,
+        padding: 0,
+        backgroundColor: '#275482'
+
+    }
+}
 const RemainderGridList = enhance((props) => {
     const {
         detailData,
@@ -293,14 +311,30 @@ const RemainderGridList = enhance((props) => {
             <SubMenu url={ROUTES.REMAINDER_LIST_URL}/>
 
             <div className="sendButtonWrapper">
-                <a href="#">
-                </a>
+                <FloatingActionButton
+                    className={classes.sendButton}
+                    mini={true}>
+                    <MoreHortIcon />
+                </FloatingActionButton>
+
                 <ul>
-                    <li style={{left: '60px'}}><a href="#"> </a></li>
+                    <li style={{left: '60px'}}>
+                        <FloatingActionButton
+                            iconStyle={actionIconStyle.icon}
+                            style={actionIconStyle.button}
+                        onTouchTap={discardDialog.handleOpenDiscardDialog}>
+                        <RemoveIcon
+                            style={{width: '20px', height: '30px', margin: 'auto'}}/>
+                        </FloatingActionButton>
+                    </li>
                     <li
-                        style={{left: '80px'}}
-                        onClick={transferDialog.handleOpenTransferDialog}>
-                        <a href="#"> </a>
+                        style={{left: '70px'}}>
+                        <FloatingActionButton
+                            iconStyle={actionIconStyle.icon}
+                            style={actionIconStyle.button}
+                            onTouchTap={transferDialog.handleOpenTransferDialog}>
+                            <SwapHorizIcon style={{width: '20px', height: '30px', margin: 'auto'}}/>
+                        </FloatingActionButton>
                     </li>
                 </ul>
             </div>
