@@ -79,7 +79,6 @@ const enhance = compose(
 const RemainderDetails = enhance((props) => {
     const {classes, filter, detailData} = props
     const isLoading = _.get(detailData, 'detailLoading')
-    console.log(detailData)
     const measurement = _.get(detailData, ['currentRow', '0', 'measurement', 'name'])
     if (isLoading) {
         return (
