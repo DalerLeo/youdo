@@ -273,7 +273,7 @@ const OrderDetails = enhance((props) => {
                                     <span>Клиент:</span>
                                     <a><strong>{client}</strong></a>
 
-                                    <Paper style={openInfo && {opacity: '1', zIndex: '2', top: '0'}}>
+                                    <Paper zDepth={1} style={openInfo && {opacity: '1', zIndex: '2', top: '0'}}>
                                         <li>
                                             <span>Контактное лицо:</span>
                                             <span>{contactName}</span>
