@@ -183,6 +183,10 @@ export const SNACKBAR = 'SNACKBAR'
 export const SNACKBAR_OPEN = `${SNACKBAR}_OPEN`
 export const SNACKBAR_CLOSE = `${SNACKBAR}_CLOSE`
 
+export const ERROR = 'ERROR'
+export const ERROR_OPEN = `${ERROR}_OPEN`
+export const ERROR_CLOSE = `${ERROR}_CLOSE`
+
 export const MANUFACTURE_LIST = 'MANUFACTURE_LIST'
 export const MANUFACTURE_ITEM = 'MANUFACTURE_ITEM'
 export const MANUFACTURE_UPDATE = 'MANUFACTURE_UPDATE'
