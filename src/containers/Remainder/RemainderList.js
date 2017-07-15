@@ -93,8 +93,9 @@ const enhance = compose(
             })
         },
         handleResetFilter: props => () => {
-            const {dispatch} = props
+            const {dispatch, location: {pathname}} = props
             dispatch(reset('RemainderFilterForm'))
+            hashHistory.push({pathname})
         },
         handleCloseDetail: props => () => {
             const {filter} = props
@@ -136,17 +137,20 @@ const RemainderList = enhance((props) => {
         handleOpenTransferDialog: props.handleOpenTransferDialog,
         handleCloseTransferDialog: props.handleCloseTransferDialog
     }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
     }
 
+    const currentRow = _.filter(_.get(list, 'results'), (item) => {
+        return _.get(item, 'id') === detailId
+    })
+
     const detailData = {
         id: detailId,
         data: detail,
         detailLoading,
-        handleCloseDetail: props.handleCloseDetail
+        currentRow
     }
 
     return (

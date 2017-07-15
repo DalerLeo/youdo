@@ -9,7 +9,7 @@ import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
-import PaymentTypeSearchField from '../ReduxForm/PaymentTypeSearchField'
+import StockSearchField from '../ReduxForm/Stock/StockSearchField'
 import DateField from '../ReduxForm/Basic/DateField'
 import TextField from '../ReduxForm/Basic/TextField'
 import RemainderListProductField from '../ReduxForm/Remainder/RemainderListProductField'
@@ -157,7 +157,7 @@ const RemainderTransferDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.noPadding}>
             <div className={classes.title}>
-                <span>ОФОРМЛЕНие ЗАКАЗА</span>
+                <span>передача товаров</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -168,9 +168,9 @@ const RemainderTransferDialog = enhance((props) => {
                     <span className={classes.subTitle}>Условия передачи товара</span>
                         <Field
                             className={classes.inputFieldCustom}
-                            name="paymentType"
-                            component={PaymentTypeSearchField}
-                            label="Тип оплаты"
+                            name="stock"
+                            component={StockSearchField}
+                            label="Склад"
                         />
                         <Field
                             className={classes.inputDateCustom}

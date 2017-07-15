@@ -23,6 +23,7 @@ import MoreHortIcon from 'material-ui/svg-icons/navigation/more-horiz'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import RemoveIcon from 'material-ui/svg-icons/content/remove'
 import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz'
+import Tooltip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -257,28 +258,32 @@ const RemainderGridList = enhance((props) => {
 
                 <ul>
                     <li style={{left: '60px'}}>
-                        <FloatingActionButton
-                            iconStyle={actionIconStyle.icon}
-                            style={actionIconStyle.button}
-                        onTouchTap={discardDialog.handleOpenDiscardDialog}>
-                        <RemoveIcon
-                            style={{width: '20px', height: '30px', margin: 'auto'}}/>
-                        </FloatingActionButton>
+                        <Tooltip position="bottom" text="Списания товара">
+                            <FloatingActionButton
+                                iconStyle={actionIconStyle.icon}
+                                style={actionIconStyle.button}
+                            onTouchTap={discardDialog.handleOpenDiscardDialog}>
+                            <RemoveIcon
+                                style={{width: '20px', height: '30px', margin: 'auto'}}/>
+                            </FloatingActionButton>
+                        </Tooltip>
                     </li>
                     <li
                         style={{left: '70px'}}>
-                        <FloatingActionButton
-                            iconStyle={actionIconStyle.icon}
-                            style={actionIconStyle.button}
-                            onTouchTap={transferDialog.handleOpenTransferDialog}>
-                            <SwapHorizIcon style={{width: '20px', height: '30px', margin: 'auto'}}/>
-                        </FloatingActionButton>
+                        <Tooltip position="bottom" text="Передача товаров" >
+                            <FloatingActionButton
+                                iconStyle={actionIconStyle.icon}
+                                style={actionIconStyle.button}
+                                onTouchTap={transferDialog.handleOpenTransferDialog}>
+                                <SwapHorizIcon style={{width: '20px', height: '30px', margin: 'auto'}}/>
+                            </FloatingActionButton>
+                        </Tooltip>
                     </li>
                 </ul>
             </div>
             <RemainderFilterForm
                 onSubmit={submitFilter}
-                reset={resetFilter}/>
+                resetFilter={resetFilter}/>
             {listHeader}
             {listLoading ? listLoader : list }
 
