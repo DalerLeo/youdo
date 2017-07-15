@@ -40,7 +40,8 @@ const enhance = compose(
             width: '100%',
             height: '65px',
             margin: '0 -30px',
-            padding: '0 30px'
+            padding: '0 30px',
+            position: 'relative'
         },
         titleLabel: {
             fontSize: '18px',
@@ -204,6 +205,15 @@ const enhance = compose(
                     marginLeft: '-32px'
                 }
             }
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
     })
 )
@@ -298,7 +308,10 @@ const ShopDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel} onClick={handleCloseDetail}>{name}</div>
+                <div className={classes.titleLabel}>{name}</div>
+                <div className={classes.closeDetail}
+                    onClick={handleCloseDetail}>
+                </div>
                 <div className={classes.titleButtons}>
                     <div className={classes.frequency}>
                         <span>Частота посещений:</span>

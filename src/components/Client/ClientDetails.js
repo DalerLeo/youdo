@@ -39,7 +39,8 @@ const enhance = compose(
             width: '100%',
             height: '65px',
             padding: '0 30px',
-            borderBottom: '1px #efefef solid'
+            borderBottom: '1px #efefef solid',
+            position: 'relative'
         },
         container: {
             display: 'flex',
@@ -91,6 +92,15 @@ const enhance = compose(
         bodyTitle: {
             fontWeight: '600',
             marginBottom: '10px'
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -136,8 +146,10 @@ const ClientDetails = enhance((props) => {
     return (
         <div className={classes.wrapper} key={detId}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}
-                    onClick={handleCloseDetail}>{providerName}</div>
+                <div className={classes.titleLabel}>{providerName}</div>
+                <div className={classes.closeDetail}
+                     onClick={handleCloseDetail}>
+                </div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton

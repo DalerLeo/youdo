@@ -33,7 +33,7 @@ const enhance = compose(
             '& .row': {
                 alignItems: 'center',
                 '& div': {
-                    lineHeight: '48px'
+                    lineHeight: '55px'
                 }
             }
         },
@@ -41,8 +41,7 @@ const enhance = compose(
             extend: 'wrapper',
             margin: '0 -16px',
             '& .row:first-child': {
-                fontWeight: '600',
-                cursor: 'pointer'
+                fontWeight: '600'
             }
         },
         headers: {
@@ -68,45 +67,7 @@ const enhance = compose(
         itemData: {
             textAlign: 'left',
             fontWeight: '700',
-            fontSize: '17px'
-        },
-        filterWrapper: {
-            width: '300px',
-            zIndex: '99',
-            position: 'absolute',
-            right: '0',
-            top: '0'
-        },
-        filterBtnWrapper: {
-            position: 'absolute',
-            top: '15px',
-            right: '0',
-            marginBottom: '0px',
-            cursor: 'pointer'
-        },
-        filterBtn: {
-            backgroundColor: '#61a8e8 !important',
-            color: '#fff',
-            fontWeight: '600',
-            padding: '10px 10px',
-            borderRadius: '3px',
-            lineHeight: '12px'
-        },
-        filterTitle: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '20px 30px',
-            borderBottom: '1px #efefef solid',
-            lineHeight: '0'
-        },
-        search: {
-            position: 'relative',
-            display: 'flex',
-            maxWidth: '300px'
-        },
-        searchField: {
-            fontSize: '13px !important'
+            fontSize: '16px'
         },
         dropDown: {
             position: 'absolute !important',
@@ -122,43 +83,6 @@ const enhance = compose(
         loader: {
             display: 'flex',
             justifyContent: 'center'
-        },
-        filters: {
-            backgroundColor: '#fff !important',
-            margin: '0 -28px'
-        },
-        filtersWrapper: {
-            display: 'flex',
-            padding: '10px 30px',
-            alignItems: 'center',
-            '& .row': {
-                margin: '0rem !important'
-            },
-            '& > div': {
-                width: '200px',
-                marginRight: '20px'
-            }
-        },
-        inputFieldCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
-            width: '200px !important',
-            marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important',
-                color: 'rgba(0, 0, 0, 0.5)!important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            }
-        },
-        filterForm: {
-            display: 'flex',
-            justifyContent: 'space-between'
         },
         clearBtn: {
             padding: '20px 30px',
@@ -184,6 +108,17 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1',
+            margin: '0 -22px',
+            borderBottom: 'solid 1px #efefef'
         }
     })
 )
@@ -252,8 +187,11 @@ const RemainderGridList = enhance((props) => {
                     const measurement = _.get(item, ['measurement', 'name'])
                     if (id === detailId) {
                         return (
-                            <Paper key={id} className={classes.wrapperBold} onTouchTap={_.get(detailData, 'handleCloseDetail')} >
+                            <Paper key={id} className={classes.wrapperBold}>
                                 <Row key={id} style={{position: 'relative'}}>
+                                    <div className={classes.closeDetail}
+                                        onClick={_.get(detailData, 'handleCloseDetail')}>
+                                    </div>
                                     <Col xs={4}>{product}</Col>
                                     <Col xs={4}>N/A</Col>
                                     <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>

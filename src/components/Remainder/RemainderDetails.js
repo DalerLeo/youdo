@@ -33,7 +33,6 @@ const enhance = compose(
             alignItems: 'center',
             width: '100%',
             height: '55px',
-            padding: '15px 0',
             fontWeight: '600',
             borderBottom: '1px #efefef solid'
 
