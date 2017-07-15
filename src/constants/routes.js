@@ -158,6 +158,8 @@ export const ZONES_ITEM_PATH = `/${ZONES}/%d`
 
 export const TRACKING = 'tracking'
 export const TRACKING_LIST_URL = `/${TRACKING}`
+export const TRACKING_ITEM_URL = `${TRACKING_LIST_URL}/:agentId`
+export const TRACKING_ITEM_PATH = `/${TRACKING}/%d`
 
 export const MARKET_TYPE = 'marketType'
 export const MARKET_TYPE_LIST_URL = `/${MARKET_TYPE}`

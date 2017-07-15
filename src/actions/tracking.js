@@ -55,10 +55,9 @@ export const trackingUpdateAction = (id, formValues) => {
     }
 }
 
-export const trackingListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const trackingListFetchAction = () => {
     const payload = axios()
-        .get(API.TRACKING_LIST, {params})
+        .get(API.TRACKING_LIST)
         .then((response) => {
             return _.get(response, 'data')
         })
