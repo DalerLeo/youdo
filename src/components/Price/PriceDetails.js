@@ -40,7 +40,8 @@ const enhance = compose(
             width: '100%',
             height: '60px',
             padding: '0 30px',
-            borderBottom: '1px #efefef solid'
+            borderBottom: '1px #efefef solid',
+            position: 'relative'
         },
         titleLabel: {
             fontSize: '18px',
@@ -123,6 +124,15 @@ const enhance = compose(
         averagePrice: {
             fontWeight: '600',
             paddingLeft: '20px'
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
     })
 )
@@ -170,9 +180,10 @@ const PriceDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}
+                <div className={classes.titleLabel}>{name}</div>
+                <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
-                    {name}</div>
+                </div>
                 <div className={classes.titleButtons}>
                     {!priceSetForm.openPriceSetForm && <Tooltip position="bottom" text="Закрыть">
                         <IconButton

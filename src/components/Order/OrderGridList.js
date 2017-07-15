@@ -109,6 +109,15 @@ const enhance = compose(
         buttons: {
             display: 'flex',
             justifyContent: 'flex-end'
+        },
+        openDetails: {
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            right: '0',
+            left: '0',
+            margin: '0 -30px',
+            cursor: 'pointer'
         }
     })
 )
@@ -190,15 +199,16 @@ const OrderGridList = enhance((props) => {
         const DELIVERED = 2
         const ZERO = 0
         return (
-        <div style={{width: '100%', display: 'flex', alignItems: 'center'}} key={id}>
+        <div style={{width: '100%', display: 'flex', alignItems: 'center', position: 'relative'}} key={id}>
+            <Link className={classes.openDetails} to={{
+                pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                query: filter.getParams()}}>
+            </Link>
             <div style={{width: '10%'}}>
                 {id}
             </div>
-            <div style={{width: '15%'}}>
-                <Link to={{
-                    pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
-                    query: filter.getParams()
-                }}>{client}</Link>
+            <div style={{width: '15%', fontWeight: '600'}}>
+            {client}
             </div>
             <div style={{width: '15%'}}>
                 {market}

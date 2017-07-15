@@ -59,7 +59,8 @@ const enhance = compose(
             alignItems: 'center',
             width: '100%',
             height: '65px',
-            margin: '-20px 0 0'
+            margin: '-20px 0 0',
+            position: 'relative'
         },
         titleLabel: {
             fontSize: '18px',
@@ -242,6 +243,16 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-end'
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1',
+            margin: '0 -30px'
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -307,8 +318,10 @@ const SupplyDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}
-                    onClick={handleCloseDetail}>Поставка №{id}</div>
+                <div className={classes.titleLabel}>Поставка № {id}</div>
+                <div className={classes.closeDetail}
+                     onClick={handleCloseDetail}>
+                </div>
                 <div className={classes.titleSupplier}>
                     <a className={classes.dropdown} onMouseEnter={() => {
                         setOpenDetails(true)

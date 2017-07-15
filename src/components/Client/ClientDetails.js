@@ -91,6 +91,15 @@ const enhance = compose(
         bodyTitle: {
             fontWeight: '600',
             marginBottom: '10px'
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -136,8 +145,10 @@ const ClientDetails = enhance((props) => {
     return (
         <div className={classes.wrapper} key={detId}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}
-                    onClick={handleCloseDetail}>{providerName}</div>
+                <div className={classes.titleLabel}>{providerName}</div>
+                <div className={classes.closeDetail}
+                     onClick={handleCloseDetail}>
+                </div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton

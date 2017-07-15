@@ -27,7 +27,8 @@ const enhance = compose(
             alignItems: 'center',
             height: '65px',
             padding: '0 30px',
-            borderBottom: '1px #efefef solid'
+            borderBottom: '1px #efefef solid',
+            position: 'relative'
         },
         titleLabel: {
             fontSize: '18px',
@@ -108,6 +109,15 @@ const enhance = compose(
             '& div p:first-child': {
                 width: '120px'
             }
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
     }),
     withState('openDetails', 'setOpenDetails', false),
@@ -143,7 +153,10 @@ const ProductPriceDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}
-                onClick={handleCloseDetail}>{detnName}</div>
+                >{detnName}</div>
+                <div className={classes.closeDetail}
+                     onClick={handleCloseDetail}>
+                </div>
             </div>
             <div className={classes.containerPrice}>
                 <div className={classes.leftPrSide}>
