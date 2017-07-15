@@ -39,7 +39,8 @@ const enhance = compose(
             width: '100%',
             height: '65px',
             padding: '0 30px',
-            borderBottom: '1px #efefef solid'
+            borderBottom: '1px #efefef solid',
+            position: 'relative'
         },
         container: {
             display: 'flex',
