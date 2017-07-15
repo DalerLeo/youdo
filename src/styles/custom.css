@@ -158,7 +158,6 @@ hr.lineDote {
     right: 0;
     margin-bottom: 0;
     border-radius: 100%;
-    background-color: #275482;
 }
 
 .sendButtonWrapper ul {
@@ -182,8 +181,6 @@ hr.lineDote {
 .sendButtonWrapper ul li{
     width: 30px;
     height: 30px;
-    background-color: #275482;
-    border-radius: 100%;
     margin-right: 10px;
     opacity: 0;
     position: relative;
@@ -197,6 +194,14 @@ hr.lineDote {
     -ms-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     transition: all 0.3s ease;
+}
+
+.sendButtonWrapper ul li button div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .sendButtonWrapper:hover ul li {
