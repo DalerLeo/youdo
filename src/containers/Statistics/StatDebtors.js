@@ -3,7 +3,7 @@ import _ from 'lodash'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withHandlers, withPropsOnChange} from 'recompose'
+import {compose, withHandlers, withPropsOnChange, withState} from 'recompose'
 import {
     statDebtorsListFetchAction,
     statDebtorsDataFetchAction,
@@ -15,15 +15,16 @@ import toBoolean from '../../helpers/toBoolean'
 import {StatDebtorsGridList, STAT_DEBTORS_DIALOG_OPEN} from '../../components/Statistics'
 import {STAT_DEBTORS_FILTER_KEY} from '../../components/Statistics/StatDebtorsGridList'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statDebtors', 'item', 'data'])
-        const detailLoading = _.get(state, ['statDebtors', 'item', 'loading'])
+        const detail = _.get(state, ['statisticsDebtors', 'item', 'data'])
+        const detailLoading = _.get(state, ['statisticsDebtors', 'item', 'loading'])
         const statData = _.get(state, ['statisticsDebtors', 'data', 'data'])
-        const list = _.get(state, ['statDebtors', 'list', 'data'])
-        const listLoading = _.get(state, ['statDebtors', 'list', 'loading'])
+        const list = _.get(state, ['statisticsDebtors', 'list', 'data'])
+        const listLoading = _.get(state, ['statisticsDebtors', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatDebtorsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query)
@@ -38,6 +39,7 @@ const enhance = compose(
             statData
         }
     }),
+    withState('openDetail', 'setOpenDetail', false),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
@@ -78,6 +80,16 @@ const enhance = compose(
         handleCloseStatDebtorsDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STAT_DEBTORS_DIALOG_OPEN]: false})})
+        },
+        handleOpenCloseDetail: props => (id) => {
+            const {location: {pathname}, filter, dispatch} = props
+            const currentId = _.toInteger(_.get(props, ['location', 'query', 'detailId']))
+            if (currentId === _.toInteger(id)) {
+                hashHistory.push({pathname, query: filter.getParams({'detailId': ZERO})})
+            } else {
+                hashHistory.push({pathname, query: filter.getParams({'detailId': id})})
+                dispatch(statDebtorsItemFetchAction(id))
+            }
         }
     })
 )
@@ -96,6 +108,7 @@ const StatDebtorsList = enhance((props) => {
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statDebtorsId'))
+    const openDetailId = _.toInteger(_.get(location, ['query', 'detailId']))
     const openStatDebtorsDialog = toBoolean(_.get(location, ['query', STAT_DEBTORS_DIALOG_OPEN]))
 
     const statDebtorsDialog = {
@@ -111,8 +124,9 @@ const StatDebtorsList = enhance((props) => {
     }
 
     const detailData = {
+        openDetailId: openDetailId,
         id: detailId,
-        data: detail,
+        data: _.get(detail, 'results'),
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
@@ -123,6 +137,7 @@ const StatDebtorsList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 statDebtorsDialog={statDebtorsDialog}
+                handleOpenCloseDetail={props.handleOpenCloseDetail}
             />
         </Layout>
     )
