@@ -70,7 +70,7 @@ const enhance = compose(
             position: 'relative',
             overflowX: 'hidden',
             margin: '0 -28px',
-            minHeight: 'calc(100% - 4px)',
+            minHeight: 'calc(100% - 32px)',
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -2px 5px, rgba(0, 0, 0, 0.05) 0px -2px 6px',
             '& > div:first-child': {
                 position: 'absolute',
