@@ -10,11 +10,8 @@ import filterHelper from '../../helpers/filter'
 import {StatProductGridList} from '../../components/Statistics'
 import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/StatProductGridList'
 import {
-    statProductListFetchAction,
-    statProductItemFetchAction
+    statProductListFetchAction
 } from '../../actions/statProduct'
-
-const ZERO = 0
 
 const enhance = compose(
     connect((state, props) => {
@@ -39,16 +36,6 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statProductListFetchAction(filter))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const statProductId = _.get(nextProps, ['params', 'statProductId']) || ZERO
-        return statProductId > ZERO && _.get(props, ['params', 'statProductId']) !== statProductId
-    }, ({dispatch, params}) => {
-        const statProductId = _.toInteger(_.get(params, 'statProductId'))
-        if (statProductId > ZERO) {
-            dispatch(statProductItemFetchAction(statProductId))
-        }
     }),
 
     withHandlers({

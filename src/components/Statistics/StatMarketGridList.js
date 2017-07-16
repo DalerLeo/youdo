@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
@@ -7,7 +8,7 @@ import LinearProgress from 'material-ui/LinearProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import MarketSearchField from '../ReduxForm/Shop/MarketSearchField'
+import TextField from '../ReduxForm/Basic/TextField'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
@@ -17,10 +18,11 @@ import List from 'material-ui/svg-icons/action/list'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
 import StatMarketDialog from './StatMarketDialog'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 
 export const STAT_MARKET_FILTER_KEY = {
-    PRODUCT: 'product',
-    PRODUCT_TYPE: 'productType',
+    SEARCH: 'search',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
@@ -145,16 +147,20 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatProductFilterForm',
+        form: 'StatMarketFilterForm',
         enableReinitialize: true
     }),
 )
 
 const StatMarketGridList = enhance((props) => {
     const {
+        listData,
+        detailData,
         classes,
         filter,
-        statMarketDialog
+        filterItem,
+        statMarketDialog,
+        handleSubmitFilterDialog
     } = props
 
     const headerStyle = {
@@ -182,28 +188,36 @@ const StatMarketGridList = enhance((props) => {
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
         </Row>
     )
-    const list = (
-        <Row className="dottedList">
-            <Col xs={3}>
-                <img src="http://www.shop-script.su/images/internet-biznes/market-store-icon.jpg" alt=""/>
-                <span>Наименование магазина</span>
-            </Col>
-            <Col xs={6}>
-                <LinearProgress
-                    color="#58bed9"
-                    mode="determinate"
-                    value={87}
-                    style={{backgroundColor: '#fff', height: '10px'}}/>
-            </Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>100 000 000 USZ</Col>
-            <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
-                <IconButton
-                    onTouchTap={statMarketDialog.handleOpenStatMarketDialog}>
-                    <List color="#12aaeb"/>
-                </IconButton>
-            </Col>
-        </Row>
-    )
+
+    const list = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        const percent = _.get(item, 'percent')
+        const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
+
+        return (
+            <Row key={id} className="dottedList">
+                <Col xs={3}>
+                    <img src="http://www.shop-script.su/images/internet-biznes/market-store-icon.jpg" alt=""/>
+                    <span>{name}</span>
+                </Col>
+                <Col xs={6}>
+                    <LinearProgress
+                        color="#58bed9"
+                        mode="determinate"
+                        value={percent}
+                        style={{backgroundColor: '#fff', height: '10px'}}/>
+                </Col>
+                <Col xs={2} style={{justifyContent: 'flex-end'}}>{income}</Col>
+                <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
+                    <IconButton
+                        onTouchTap={() => { statMarketDialog.handleOpenStatMarketDialog(id) }}>
+                        <List color="#12aaeb"/>
+                    </IconButton>
+                </Col>
+            </Row>
+        )
+    })
 
     const page = (
     <div className={classes.mainWrapper}>
@@ -213,7 +227,7 @@ const StatMarketGridList = enhance((props) => {
             </div>
             <div className={classes.rightPanel}>
                 <div className={classes.wrapper}>
-                    <form className={classes.form}>
+                    <form className={classes.form} onSubmit={ handleSubmitFilterDialog }>
                         <div className={classes.filter}>
                             <Field
                                 className={classes.inputFieldCustom}
@@ -223,8 +237,8 @@ const StatMarketGridList = enhance((props) => {
                                 fullWidth={true}/>
                             <Field
                                 className={classes.inputFieldCustom}
-                                name="productType"
-                                component={MarketSearchField}
+                                name="search"
+                                component={TextField}
                                 label="Магазин"
                                 fullWidth={true}/>
 
@@ -256,9 +270,10 @@ const StatMarketGridList = enhance((props) => {
             <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
             <StatMarketDialog
+                detailData={detailData}
                 open={statMarketDialog.openStatMarketDialog}
                 onClose={statMarketDialog.handleCloseStatMarketDialog}
-                filter={filter}
+                filter={filterItem}
             />
         </Container>
     )

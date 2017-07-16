@@ -1,3 +1,5 @@
+import _ from 'lodash'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
@@ -8,20 +10,21 @@ import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import ClientSearchField from '../ReduxForm/Client/ClientSearchField'
+import TextField from '../ReduxForm/Basic/TextField'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
-import List from 'material-ui/svg-icons/action/list'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
 import StatIncomeDialog from './StatIncomeDialog'
+import getConfig from '../../helpers/getConfig'
+import numberFormat from '../../helpers/numberFormat'
 
 export const STAT_INCOME_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    USER: 'user'
+    SEARCH: 'search'
 }
 
 const enhance = compose(
@@ -193,11 +196,17 @@ const StatIncomeGridList = enhance((props) => {
         classes,
         filter,
         handleSubmitFilterDialog,
-        statIncomeDialog
+        statIncomeDialog,
+        listData
     } = props
-
-    const sample = 100
-    const deletion = 3
+    let sum = 0
+    const value = _.map(_.get(listData, 'grafData'), (item) => {
+        sum += _.toInteger(_.get(item, 'amount'))
+        return _.toInteger(_.get(item, 'amount'))
+    })
+    const valueName = _.map(_.get(listData, 'grafData'), (item) => {
+        return moment(_.get(item, 'date')).format('LL')
+    })
     const config = {
         chart: {
             type: 'areaspline',
@@ -216,7 +225,8 @@ const StatIncomeGridList = enhance((props) => {
             enabled: false
         },
         xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            categories: valueName,
+                // ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             tickmarkPlacement: 'on',
             title: {
                 text: '',
@@ -269,7 +279,7 @@ const StatIncomeGridList = enhance((props) => {
                 symbol: 'circle'
             },
             name: 'Эффективность',
-            data: [sample, sample + (sample / deletion), sample, deletion * sample / deletion, sample * deletion],
+            data: value,
             color: '#6cc6de'
 
         }]
@@ -297,26 +307,26 @@ const StatIncomeGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={2}>№ заказа</Col>
-            <Col xs={2}>Дата</Col>
+            <Col xs={3}>Дата</Col>
             <Col xs={4}>Клиент</Col>
             <Col xs={3}>Сумма</Col>
         </Row>
     )
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const list = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const date = moment(_.get(item, 'createdDate')).format('YY:MM:DD')
+        const amount = numberFormat(_.get(item, 'amount'))
 
-    const list = (
-        <Row className="dottedList">
-            <Col xs={2}>158</Col>
-            <Col xs={2}>22.08.2017</Col>
-            <Col xs={4}>Имя Фамилия Клиента</Col>
-            <Col xs={3} style={{justifyContent: 'flex-end'}}>3 000 000 UZS</Col>
-            <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
-                <IconButton
-                    onTouchTap={statIncomeDialog.handleOpenStatIncomeDialog}>
-                    <List color="#12aaeb"/>
-                </IconButton>
-            </Col>
-        </Row>
-    )
+        return (
+            <Row key={id} className="dottedList">
+                <Col xs={2}>{id}</Col>
+                <Col xs={3}>{date}</Col>
+                <Col xs={4}>Имя Фамилия Клиента</Col>
+                <Col xs={3} style={{justifyContent: 'flex-end'}}>{amount}</Col>
+            </Row>
+        )
+    })
 
     const page = (
         <div className={classes.mainWrapper}>
@@ -336,8 +346,8 @@ const StatIncomeGridList = enhance((props) => {
                                     fullWidth={true}/>
                                 <Field
                                     className={classes.inputFieldCustom}
-                                    name="client"
-                                    component={ClientSearchField}
+                                    name="search"
+                                    component={TextField}
                                     label="Клиенты"
                                     fullWidth={true}/>
 
@@ -356,7 +366,7 @@ const StatIncomeGridList = enhance((props) => {
                         <Row className={classes.diagram}>
                             <Col xs={3} className={classes.salesSummary}>
                                 <div>Сумма продаж за период</div>
-                                <div>35 000 000 UZS</div>
+                                <div>{sum} {primaryCurrency}</div>
                             </Col>
                             <Col xs={9}>
                                 <ReactHighcharts config={config}/>

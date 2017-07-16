@@ -44,7 +44,9 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() &&
+            (!_.get(props, ['params', 'statAgentId'])) &&
+            (!_.get(nextProps, ['params', 'statAgentId']))
     }, ({dispatch, filter}) => {
         dispatch(statAgentListFetchAction(filter))
     }),
@@ -66,8 +68,8 @@ const enhance = compose(
         },
 
         handleCloseStatAgentDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STAT_AGENT_DIALOG_OPEN]: false})})
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.STATISTICS_AGENT_URL, query: filter.getParams({[STAT_AGENT_DIALOG_OPEN]: false})})
         },
         handleCloseDetail: props => () => {
             const {filter} = props

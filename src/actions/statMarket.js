@@ -3,12 +3,12 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/Statistics/statAgentSerializer'
+import * as serializers from '../serializers/Statistics/statMarketSerializer'
 
-export const statAgentListFetchAction = (filter) => {
+export const statMarketListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get((API.STAT_AGENT_LIST), {params})
+        .get(API.STAT_MARKET_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,15 +17,15 @@ export const statAgentListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.STAT_AGENT_LIST,
+        type: actionTypes.STAT_MARKET_LIST,
         payload
     }
 }
 
-export const statAgentItemFetchAction = (filter, filterItem, id) => {
+export const statMarketItemFetchAction = (filter, filterItem, id) => {
     const params = serializers.itemSerializer(filter.getParams(), filterItem.getParams(), id)
     const payload = axios()
-        .get(sprintf(API.STAT_AGENT_ITEM, id), {params})
+        .get(sprintf(API.STAT_MARKET_ITEM, id), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -34,7 +34,7 @@ export const statAgentItemFetchAction = (filter, filterItem, id) => {
         })
 
     return {
-        type: actionTypes.STAT_AGENT_ITEM,
+        type: actionTypes.STAT_MARKET_ITEM,
         payload
     }
 }

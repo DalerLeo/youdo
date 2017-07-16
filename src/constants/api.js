@@ -270,13 +270,23 @@ export const REMAINDER_LIST = `/${REMAINDER}/`
 export const REMAINDER_ITEM = `/${PRODUCT}/%d/`
 export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
 
-export const STAT_AGENT_LIST = 'stats/agents'
-export const STAT_AGENT_ITEM = 'sales/order'
+export const STAT_AGENT_LIST = 'stats/agents/'
+export const STAT_AGENT_ITEM = 'sales/order/'
 
-export const STAT_PRODUCT_LIST = 'stats/products'
+export const STAT_MARKET_LIST = 'stats/markets/'
+export const STAT_MARKET_ITEM = 'sales/order/'
 
-export const STOCK_RECEIVE = 'stock/supply'
-export const STOCK_HISTORY = 'stock/barcode_history'
+export const STAT_INCOME_DATA = 'stats/transactions/'
+export const STAT_INCOME_LIST = 'finance/transaction/'
+
+export const STAT_DEBTORS_DATA = 'stats/debtors_stats/'
+export const STAT_DEBTORS_LIST = 'stats/debtors/'
+export const STAT_DEBTORS_ITEM = 'sales/order/'
+
+export const STAT_PRODUCT_LIST = 'stats/products/'
+
+export const STOCK_RECEIVE = 'stock/supply/'
+export const STOCK_HISTORY = 'stock/barcode_history/'
 export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`
 export const STOCK_TRANSFER = 'stock/stock_transfer'
 export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`

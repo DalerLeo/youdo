@@ -3,7 +3,12 @@ import _ from 'lodash'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withHandlers} from 'recompose'
+import {compose, withHandlers, withPropsOnChange} from 'recompose'
+import {
+    statDebtorsListFetchAction,
+    statDebtorsDataFetchAction,
+    statDebtorsItemFetchAction
+} from '../../actions/statisticsDeptors'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 
@@ -14,20 +19,38 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statProduct', 'item', 'data'])
-        const detailLoading = _.get(state, ['statProduct', 'item', 'loading'])
-        const list = _.get(state, ['statProduct', 'list', 'data'])
-        const listLoading = _.get(state, ['statProduct', 'list', 'loading'])
+        const detail = _.get(state, ['statDebtors', 'item', 'data'])
+        const detailLoading = _.get(state, ['statDebtors', 'item', 'loading'])
+        const statData = _.get(state, ['statisticsDebtors', 'data', 'data'])
+        const list = _.get(state, ['statDebtors', 'list', 'data'])
+        const listLoading = _.get(state, ['statDebtors', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatDebtorsFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterItem = filterHelper(detail, pathname, query)
         return {
             list,
             listLoading,
             detail,
             detailLoading,
             filter,
-            filterForm
+            filterForm,
+            filterItem,
+            statData
         }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+    }, ({dispatch, filter}) => {
+        dispatch(statDebtorsListFetchAction(filter))
+        dispatch(statDebtorsDataFetchAction())
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const statAgentId = _.get(nextProps, ['params', 'statAgentId'])
+        return statAgentId && _.get(props, ['params', 'statAgentId']) !== statAgentId
+    }, ({dispatch, params, filter, filterItem}) => {
+        const statAgentId = _.toInteger(_.get(params, 'statAgentId'))
+        dispatch(statDebtorsItemFetchAction(filter, filterItem, statAgentId))
     }),
 
     withHandlers({
@@ -68,10 +91,11 @@ const StatDebtorsList = enhance((props) => {
         detailLoading,
         filter,
         layout,
+        statData,
         params
     } = props
 
-    const detailId = _.toInteger(_.get(params, 'statProductId'))
+    const detailId = _.toInteger(_.get(params, 'statDebtorsId'))
     const openStatDebtorsDialog = toBoolean(_.get(location, ['query', STAT_DEBTORS_DIALOG_OPEN]))
 
     const statDebtorsDialog = {
@@ -81,6 +105,7 @@ const StatDebtorsList = enhance((props) => {
     }
 
     const listData = {
+        statData: statData,
         data: _.get(list, 'results'),
         listLoading
     }

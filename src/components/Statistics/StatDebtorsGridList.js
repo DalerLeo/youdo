@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
@@ -16,6 +17,8 @@ import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down-circle'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
 import StatDebtorsDialog from './StatDebtorsDialog'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 
 export const STAT_DEBTORS_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -235,6 +238,7 @@ const StatDebtorsGridList = enhance((props) => {
     const {
         classes,
         filter,
+        listData,
         handleSubmitFilterDialog,
         statDebtorsDialog
     } = props
@@ -260,19 +264,26 @@ const StatDebtorsGridList = enhance((props) => {
         </Row>
     )
 
-    const list = (
-        <Row className={classes.list}>
-            <Col xs={5}>Наименование клиента</Col>
-            <Col xs={3}>2 000 000</Col>
-            <Col xs={3}>1 000 000</Col>
-            <Col xs={1} style={{paddingRight: '0'}}>
-                <IconButton
-                    disableTouchRipple={true}>
-                    <ArrowDown color="#12aaeb"/>
-                </IconButton>
-            </Col>
-        </Row>
-    )
+    const list = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const client = _.get(item, ['client', 'name'])
+        const deptSum = numberFormat(_.get(item, 'deptSum'), getConfig('PRIMARY_CURRENCY'))
+        const expectSum = numberFormat(_.get(item, 'expectSum'), getConfig('PRIMARY_CURRENCY'))
+
+        return (
+            <Row key={id} className={classes.list}>
+                <Col xs={5}>{client}</Col>
+                <Col xs={3}>{deptSum}</Col>
+                <Col xs={3}>{expectSum}</Col>
+                <Col xs={1} style={{paddingRight: '0'}}>
+                    <IconButton
+                        disableTouchRipple={true}>
+                        <ArrowDown color="#12aaeb"/>
+                    </IconButton>
+                </Col>
+            </Row>
+        )
+    })
 
     const expanded = (
         <div className={classes.expandedList}>
@@ -326,6 +337,11 @@ const StatDebtorsGridList = enhance((props) => {
         </div>
     )
 
+    console.log(_.get(listData, 'statData'))
+    const countDebtors = _.get(listData, ['statData', 'debtors'])
+    const deptSum = numberFormat(_.get(listData, ['statData', 'debSum']), getConfig('PRIMARY_CURRENCY'))
+    const expectSum = numberFormat(_.get(listData, ['statData', 'expectSum']), getConfig('PRIMARY_CURRENCY'))
+
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -358,15 +374,15 @@ const StatDebtorsGridList = enhance((props) => {
                         <div className={classes.debtors}>
                             <div>
                                 <span>Всего должников</span>
-                                <div>7 клиентов</div>
+                                <div>{countDebtors} клиентов</div>
                             </div>
                             <div>
                                 <span>Просроченные платежи</span>
-                                <div>3 000 000 UZS</div>
+                                <div>{deptSum}</div>
                             </div>
                             <div>
                                 <span>Ожидаемые поступления</span>
-                                <div>5 000 000 UZS</div>
+                                <div>{expectSum}</div>
                             </div>
                         </div>
                         <div className={classes.pagination}>

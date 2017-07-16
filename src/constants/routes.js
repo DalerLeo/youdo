@@ -177,17 +177,29 @@ export const REMAINDER_ITEM_PATH = `/${REMAINDER}/%d`
 export const STATISTICS = 'statistics'
 export const STATISTICS_LIST_URL = `/${STATISTICS}`
 export const STATISTICS_SALES_URL = `/${STATISTICS}/sales`
+
 export const STATISTICS_AGENT = 'statistics/agent'
 export const STATISTICS_AGENT_URL = `/${STATISTICS_AGENT}`
 export const STATISTICS_AGENT_ITEM_URL = `/${STATISTICS_AGENT}/:statAgentId`
 export const STATISTICS_AGENT_ITEM_PATH = `/${STATISTICS_AGENT}/%d`
+
+export const STATISTICS_MARKET = 'statistics/market'
+export const STATISTICS_MARKET_URL = `/${STATISTICS_MARKET}`
+export const STATISTICS_MARKET_ITEM_URL = `/${STATISTICS_MARKET}/:statMarketId`
+export const STATISTICS_MARKET_ITEM_PATH = `/${STATISTICS_MARKET}/%d`
+
+export const STATISTICS_INCOME = 'statistics/income'
+export const STATISTICS_INCOME_URL = `/${STATISTICS_INCOME}`
+
+export const STATISTICS_DEBTORS = 'statistics/debtors'
+export const STATISTICS_DEBTORS_URL = `/${STATISTICS_DEBTORS}`
+export const STATISTICS_DEBTORS_ITEM_URL = `/${STATISTICS_DEBTORS}/:statDebtorsId`
+export const STATISTICS_DEBTORS_ITEM_PATH = `/${STATISTICS_DEBTORS}/%d`
+
 export const STATISTICS_PRODUCT_URL = `/${STATISTICS}/product`
-export const STATISTICS_MARKET_URL = `/${STATISTICS}/market`
 // ------------------------------------------------------------------------
 export const STATISTICS_FINANCE_URL = `/${STATISTICS}/finance`
-export const STATISTICS_INCOME_URL = `/${STATISTICS}/income`
 export const STATISTICS_OUTCOME_URL = `/${STATISTICS}/outcome`
-export const STATISTICS_DEBTORS_URL = `/${STATISTICS}/debtors`
 
 export const STOCK_RECEIVE = 'stockReceive'
 export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`
