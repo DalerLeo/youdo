@@ -207,6 +207,11 @@ const enhance = compose(
                         has = true
                     }
                 })
+                const fields = ['productType', 'product', 'amount']
+                for (let i = 0; i < fields.length; i++) {
+                    let newChange = _.get(props, [fields[i], 'input', 'onChange'])
+                    props.dispatch(newChange(null))
+                }
                 if (!has) {
                     onChange(_.union(products, [{product, amount, currency}]))
                     has = false
