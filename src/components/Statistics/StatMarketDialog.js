@@ -1,14 +1,18 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
+import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../GridList/GridListNavPagination'
+import getConfig from '../../helpers/getConfig'
+import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -94,8 +98,34 @@ const enhance = compose(
 )
 
 const StatMarketDialog = enhance((props) => {
-    const {open, loading, onClose, classes, filter} = props
+    const {open, loading, onClose, classes, detailData} = props
 
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const marketName = _.get(detailData, ['marketDetail', 'name'])
+    const income = numberFormat(_.get(detailData, ['marketDetail', 'income']), primaryCurrency)
+    const fromDate = _.get(detailData, ['filterDateRange', 'fromDate'])
+        ? _.get(detailData, ['filterDateRange', 'fromDate']).format('DD.MM.YYYY')
+        : null
+    const toDate = _.get(detailData, ['filterDateRange', 'toDate'])
+        ? _.get(detailData, ['filterDateRange', 'toDate']).format('DD.MM.YYYY')
+        : null
+    const dateRange = (fromDate && toDate) ? fromDate + ' - ' + toDate : 'Весь'
+
+    const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
+        const id = _.get(item, 'id')
+        const client = _.get(item, ['client', 'name'])
+        const totalPrice = _.get(item, 'totalPrice')
+        const createdDate = moment(_.get(item, 'createdDate')).format('LL')
+
+        return (
+            <Row key={id} className="dottedList">
+                <Col xs={2}>{id}</Col>
+                <Col xs={4}>{client}</Col>
+                <Col xs={3}>{createdDate}</Col>
+                <Col xs={3}>{totalPrice} {primaryCurrency}</Col>
+            </Row>
+        )
+    })
     return (
         <Dialog
             modal={true}
@@ -106,37 +136,30 @@ const StatMarketDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Наименование магазина</span>
+                <span>{marketName}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.content}>
                 <div className={classes.titleSummary}>
-                    <div>Период: <strong>22 Апр, 2017 - 22 Май, 2017</strong></div>
-                    <div>Сумма: <strong>3 000 000 UZS</strong></div>
+                    <div>Период: <strong>{dateRange}</strong></div>
+                    <div>Сумма: <strong>{income}</strong></div>
                 </div>
                 <div className={classes.tableWrapper}>
                     <Row className="dottedList">
                         <Col xs={2}>№ заказа</Col>
-                        <Col xs={6}>Агент</Col>
-                        <Col xs={2}>Дата</Col>
-                        <Col xs={2}>Сумма</Col>
+                        <Col xs={4}>Агент</Col>
+                        <Col xs={3}>Дата</Col>
+                        <Col xs={3}>Сумма</Col>
                     </Row>
-                    <Row className="dottedList">
-                        <Col xs={2}>123452</Col>
-                        <Col xs={6}>Хабибуллаев Тошмуроджон</Col>
-                        <Col xs={2}>22 Апр, 2017</Col>
-                        <Col xs={2}>100000 UZS</Col>
-                    </Row>
-                    <Row className="dottedList">
-                        <Col xs={2}>123452</Col>
-                        <Col xs={6}>Хамидуллаев Хамзабек</Col>
-                        <Col xs={2}>22 Апр, 2017</Col>
-                        <Col xs={2}>100000 UZS</Col>
-                    </Row>
+                    {_.get(detailData, 'detailLoading')
+                        ? <div style={{textAlign: 'center'}}>
+                            <CircularProgress/>
+                        </div>
+                        : orderList}
                 </div>
-                <Pagination filter={filter}/>
+                <Pagination filter={_.get(detailData, 'filter')}/>
             </div>
         </Dialog>
     )

@@ -271,6 +271,22 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STAT_AGENT_LIST),
         item: createThunkReducer(actionTypes.STAT_AGENT_ITEM)
     }),
+    statProduct: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_PRODUCT_LIST)
+    }),
+    statMarket: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_MARKET_LIST),
+        item: createThunkReducer(actionTypes.STAT_MARKET_ITEM)
+    }),
+    statIncome: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_INCOME_DATA),
+        list: createThunkReducer(actionTypes.STAT_INCOME_LIST)
+    }),
+    statisticsDebtors: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_DEBTORS_DATA),
+        list: createThunkReducer(actionTypes.STAT_DEBTORS_LIST),
+        item: createThunkReducer(actionTypes.STAT_DEBTORS_ITEM)
+    }),
     stockReceive: combineReducers({
         list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
         history: createThunkReducer(actionTypes.STOCK_HISTORY_LIST),

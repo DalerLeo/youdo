@@ -15,22 +15,11 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const itemSerializer = (data, filterItem, id) => {
-    const {...defaultData} = data
-
-    return {
-        'user': id,
-        'page': _.get(filterItem, 'page'),
-        'page_size': _.get(filterItem, 'pageSize'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate')
-    }
-}
-
 export const csvFilterSerializer = (data) => {
     const {...defaultData} = listFilterSerializer(data)
 
     return {
-        ...defaultData
+        ...defaultData,
+        format: 'csv'
     }
 }

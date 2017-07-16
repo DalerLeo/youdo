@@ -14,6 +14,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
+import AddCourseDialog from './AddCourseDialog'
 import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
@@ -113,6 +114,7 @@ const CurrencyGridList = enhance((props) => {
         detailData,
         classes,
         detailId,
+        courseDialog,
         detailFilter
     } = props
 
@@ -196,6 +198,12 @@ const CurrencyGridList = enhance((props) => {
                     </div>
                     <Paper zDepth={2} style={{height: '100%'}}>
                         <div className={classes.listWrapper}>
+                            <FloatingActionButton
+                                mini={true}
+                                className={classes.addButton}
+                                onTouchTap={courseDialog.handleOpenCourseDialog}>
+                                <ContentAdd />
+                            </FloatingActionButton>
                             {_.get(listData, 'listLoading')
                                 ? <div style={{textAlign: 'center'}}>
                                     <CircularProgress size={40} thickness={4}/>
@@ -229,6 +237,12 @@ const CurrencyGridList = enhance((props) => {
                         loading={updateDialog.updateLoading}
                         onClose={updateDialog.handleCloseUpdateDialog}
                         onSubmit={updateDialog.handleSubmitUpdateDialog}
+                    />
+                    <AddCourseDialog
+                        initialValues={courseDialog.initialValues}
+                        open={courseDialog.openCourseDialog}
+                        onClose={courseDialog.handleCloseCourseDialog}
+                        onSubmit={courseDialog.handleSubmitCourseDialog}
                     />
 
                     {detailId !== MINUS_ONE && <ConfirmDialog
@@ -274,6 +288,12 @@ CurrencyGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    courseDialog: PropTypes.shape({
+        openCourseDialog: PropTypes.bool.isRequired,
+        handleOpenCourseDialog: PropTypes.func.isRequired,
+        handleCloseCourseDialog: PropTypes.func.isRequired,
+        handleSubmitCourseDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,

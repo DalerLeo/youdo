@@ -7,7 +7,7 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import UsersSearchField from '../ReduxForm/Users/UsersSearchField'
+import {TextField} from '../ReduxForm'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatAgentDialog from './StatAgentDialog'
 import StatSideMenu from './StatSideMenu'
@@ -25,7 +25,8 @@ import getConfig from '../../helpers/getConfig'
 export const STAT_AGENT_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    USER: 'user'
+    USER: 'user',
+    SEARCH: 'search'
 }
 
 const enhance = compose(
@@ -257,9 +258,9 @@ const StatAgentGridList = enhance((props) => {
                                         fullWidth={true}/>
                                     <Field
                                         className={classes.inputFieldCustom}
-                                        name="user"
-                                        component={UsersSearchField}
-                                        label="Агенты"
+                                        name="search"
+                                        component={TextField}
+                                        label="Поиск"
                                         fullWidth={true}/>
 
                                     <IconButton
