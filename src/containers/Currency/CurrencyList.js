@@ -135,8 +135,7 @@ const enhance = compose(
         },
 
         handleOpenCourseDialog: props => () => {
-            const {location: {pathname}, filter, dispatch} = props
-            dispatch(reset('AddCourseForm'))
+            const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: true})})
         },
 
@@ -155,6 +154,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: false})})
                     dispatch(currencyListFetchAction(filter))
+                    dispatch(reset('AddCourseForm'))
                 })
         },
 
