@@ -73,6 +73,15 @@ const enhance = compose(
         buttons: {
             display: 'flex',
             justifyContent: 'flex-end'
+        },
+        openDetails: {
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            right: '0',
+            left: '0',
+            margin: '0 -30px',
+            cursor: 'pointer'
         }
     }),
 
@@ -136,12 +145,14 @@ const ProductPriceGridList = enhance((props) => {
         const measurement = _.get(item, ['measurement', 'name']) || ''
         const price = _.get(item, 'price') || 'N/A'
         return (
-            <Row key={id}>
-                <Col xs={3}>
-                    <Link to={{
+            <Row key={id} style={{position: 'relative'}}>
+                    <Link className={classes.openDetails} to={{
                         pathname: sprintf(ROUTES.PRODUCT_PRICE_ITEM_PATH, id),
                         query: ''
-                    }}>{name}</Link>
+                    }}>
+                    </Link>
+                <Col xs={3}>
+                    {name}
                 </Col>
                 <Col xs={2}>{type}</Col>
                 <Col xs={2}>{brand}</Col>

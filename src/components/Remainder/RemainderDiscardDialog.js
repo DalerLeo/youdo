@@ -9,12 +9,10 @@ import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
-import StockSearchField from '../ReduxForm/Stock/StockSearchField'
-import DateField from '../ReduxForm/Basic/DateField'
 import TextField from '../ReduxForm/Basic/TextField'
 import RemainderListProductField from '../ReduxForm/Remainder/RemainderListProductField'
 
-export const REMAINDER_TRANSFER_DIALOG_OPEN = 'openTransferDialog'
+export const REMAINDER_DISCARD_DIALOG_OPEN = 'openDiscardDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -51,36 +49,23 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            height: '20px',
-            padding: '15px 30px 20px',
+            height: '19px',
+            padding: '15px 30px 15px',
             fontWeight: '600',
             borderBottom: '1px #efefef solid',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            position: 'relative'
 
-        },
-        leftSide: {
-            flexBasis: '25%',
-            maxWidth: '25%',
-            height: '280px',
-            borderRight: '1px #efefef solid',
-            padding: '20px 30px',
-            '&  > div > div:first-child': {
-                width: '100% !important'
-            }
-
-        },
-        rightSide: {
-            flexBasis: '75%',
-            maxWidth: '75%'
-        },
-        dialog: {
-            width: '1000px important'
         },
         dialogBody: {
-            display: 'flex'
+            '& tbody:last-child': {
+                borderBottom: '1px #efefef solid'
+
+            }
         },
         noPadding: {
-            padding: '0! important'
+            padding: '0! important',
+            maxHeight: 'none !important'
         },
         subTitle: {
             fontWeight: '600'
@@ -117,13 +102,9 @@ const enhance = compose(
             }
         },
         bottomButton: {
-            bottom: '0',
-            left: '0',
-            right: '0',
+            position: 'relative',
             padding: '10px',
-            zIndex: '999',
             borderTop: '1px solid #efefef',
-            background: '#fff',
             textAlign: 'right',
             '& span': {
                 fontSize: '13px !important',
@@ -134,18 +115,60 @@ const enhance = compose(
         },
         actionButton: {
             fontSize: '13px !important',
-            margin: '0 !important'
+            margin: '0 !important',
+            position: 'absolute'
+        },
+        comment: {
+            display: 'flex',
+            alignItems: 'center',
+            padding: '10px 30px'
+        },
+        commentText: {
+            fontSize: '14px',
+            fontWeight: '600'
+        },
+        commentField: {
+            maxHeight: '70px',
+            '& > div:first-child': {
+                padding: '3px 7px',
+                top: '12px',
+                bottom: 'auto !important'
+            },
+            '& hr': {
+                opacity: '0'
+            },
+            '& textarea': {
+                border: 'solid 1px #999999 !important',
+                margin: 'auto',
+                padding: '3px 7px !important'
+            }
         }
     }),
     reduxForm({
-        form: 'RemainderTransferForm',
+        form: 'RemainderDiscardForm',
         enableReinitialize: true
     })
 )
 
-const RemainderTransferDialog = enhance((props) => {
+const RemainderDiscardDialog = enhance((props) => {
     const {open, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+
+    const iconStyle = {
+        icon: {
+            color: '#666',
+            width: 25,
+            height: 25
+        },
+        button: {
+            width: 40,
+            height: 40,
+            position: 'absolute',
+            top: '5px',
+            right: '17px',
+            padding: '0'
+        }
+    }
 
     return (
         <Dialog
@@ -153,69 +176,60 @@ const RemainderTransferDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={{maxWidth: 'none', width: '1000px'}}
+            contentStyle={{maxWidth: 'none', width: '680px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.noPadding}>
             <div className={classes.title}>
-                <span>передача товаров</span>
-                <IconButton onTouchTap={onClose}>
+                <span>СПИСАНИЕ ТОВАРa</span>
+                <IconButton
+                    iconStyle={iconStyle.icon}
+                    style={iconStyle.button}
+                    touch={true}
+                    onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
             <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
-            <div className={classes.dialogBody}>
-                <div className={classes.leftSide}>
-                    <span className={classes.subTitle}>Условия передачи товара</span>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="stock"
-                            component={StockSearchField}
-                            label="Склад"
+                <div className={classes.dialogBody}>
+                        <Fields
+                            names={['products', 'productType', 'product', 'amount']}
+                            component={RemainderListProductField}
                         />
+                    <div className={classes.comment}>
+                        <div className={classes.commentText}>Причина списания
+                            товаров со склада</div>
                         <Field
-                            className={classes.inputDateCustom}
-                            name="deliveryDate"
-                            component={DateField}
-                            label="Дата доставки"
-                        />
-                        <Field
-                            style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
+                            style={{fontSize: '13px'}}
                             name="comment"
                             component={TextField}
-                            label="Оставить комментарий..."
-
+                            hintText="Оставить комментарий..."
+                            className={classes.commentField}
                             multiLine={true}
-                            rows={4}
-                            rowsMax={6}
+                            rows={2}
+                            rowsMax={2}
                             fullWidth={true}/>
-            </div>
-                <div className={classes.rightSide}>
-                    <Fields
-                        names={['products', 'productType', 'product', 'amount']}
-                        component={RemainderListProductField}
+                    </div>
+                </div>
+                <div className={classes.bottomButton}>
+                    <FlatButton
+                        label="СПИСАТЬ"
+                        className={classes.actionButton}
+                        primary={true}
+                        type="submit"
                     />
                 </div>
-            </div>
-            <div className={classes.bottomButton}>
-                <FlatButton
-                    label="ПЕРЕДАТЬ"
-                    className={classes.actionButton}
-                    primary={true}
-                    type="submit"
-                />
-            </div>
             </form>
         </Dialog>
     )
 })
 
-RemainderTransferDialog.propTypes = {
+RemainderDiscardDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired
 }
 
-RemainderTransferDialog.defaultProps = {
+RemainderDiscardDialog.defaultProps = {
     isUpdate: false
 }
 
-export default RemainderTransferDialog
+export default RemainderDiscardDialog

@@ -31,7 +31,7 @@ const validate = (data) => {
 const validateForm = values => {
     const errors = {}
     if (values.password && values.passwordExp && values.password !== values.passwordExp) {
-        errors.password = 'Правильно введите'
+        errors.password = 'Пароли не совпадают'
     }
     return errors
 }

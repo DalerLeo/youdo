@@ -263,12 +263,14 @@ export const PRICE_LIST_ITEM_EXPENSES = 'stock/supply_product_expenses/%d/'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
 
-export const TRACKING = 'market/border'
+export const TRACKING = 'market/agents_location/'
+export const TRACKING_LIST = `${TRACKING}`
+export const TRACKING_ITEM = `${TRACKING}/%d/`
 
-export const REMAINDER = 'stock/stock/all_balances'
-export const REMAINDER_LIST = `/${REMAINDER}/`
-export const REMAINDER_ITEM = `/${PRODUCT}/%d/`
-export const REMAINDER_DELETE = `/${REMAINDER}/%d/`
+export const REMAINDER = 'stock/stock'
+export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
+export const REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
+export const REMAINDER_TRANSFER_ITEM = '/stock/stock_transfer/wb_create/'
 
 export const STAT_AGENT_LIST = 'stats/agents/'
 export const STAT_AGENT_ITEM = 'sales/order/'

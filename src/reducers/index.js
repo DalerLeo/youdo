@@ -6,6 +6,7 @@ import createThunkReducer from '../helpers/createThunkReducer'
 import createStandardReducer from '../helpers/createStandardReducer'
 import * as actionTypes from '../constants/actionTypes'
 import snackbarReducer from './snackbarReducer'
+import errorReducer from './errorReducer'
 
 const rootReducer = combineReducers({
     signIn: createThunkReducer(actionTypes.SIGN_IN),
@@ -256,6 +257,10 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.ZONE_ITEM),
         statistics: createThunkReducer(actionTypes.ZONE_STAT)
     }),
+    tracking: combineReducers({
+        list: createThunkReducer(actionTypes.TRACKING_LIST),
+        item: createThunkReducer(actionTypes.TRACKING_ITEM)
+    }),
     remainder: combineReducers({
         create: createThunkReducer(actionTypes.REMAINDER_CREATE),
         list: createThunkReducer(actionTypes.REMAINDER_LIST),
@@ -297,6 +302,7 @@ const rootReducer = combineReducers({
     }),
 
     snackbar: snackbarReducer(),
+    error: errorReducer(),
     form: formReducer,
     toastr: toastrReducer,
     routing: routerReducer

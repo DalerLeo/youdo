@@ -382,7 +382,7 @@ export default {
             path: ROUTES.TRACKING_LIST_URL,
             component: userIsAuth(Tracking),
             childRoutes: [{
-                path: ROUTES.TRACKING_LIST_URL,
+                path: ROUTES.TRACKING_ITEM_URL,
                 component: userIsAuth(Tracking)
             }]
         },

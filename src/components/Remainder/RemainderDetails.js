@@ -5,8 +5,10 @@ import injectSheet from 'react-jss'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../GridList/GridListNavPagination'
-
+import numberFormat from '../../helpers/numberFormat'
+import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
+import toBoolean from '../../helpers/toBoolean'
 
 const enhance = compose(
     injectSheet({
@@ -33,7 +35,6 @@ const enhance = compose(
             alignItems: 'center',
             width: '100%',
             height: '55px',
-            padding: '15px 0',
             fontWeight: '600',
             borderBottom: '1px #efefef solid'
 
@@ -78,7 +79,7 @@ const enhance = compose(
 const RemainderDetails = enhance((props) => {
     const {classes, filter, detailData} = props
     const isLoading = _.get(detailData, 'detailLoading')
-
+    const measurement = _.get(detailData, ['currentRow', '0', 'measurement', 'name'])
     if (isLoading) {
         return (
             <div className={classes.loader}>
@@ -94,19 +95,25 @@ const RemainderDetails = enhance((props) => {
                 </div>
                 <div className={classes.content}>
                     <Row className='dottedList'>
-                        <Col xs={3}>Код</Col>
-                        <Col style={{textAlign: 'center'}} xs={3}>Дата приемки</Col>
-                        <Col xs={3}>Срок годности</Col>
-                        <Col xs={2}>Кол-во</Col>
+                        <Col xs={4}>Код</Col>
+                        <Col xs={4}>Дата приемки</Col>
+                        <Col xs={3}>Кол-во</Col>
                         <Col xs={1}>Статус</Col>
                     </Row>
-                    <Row className='dottedList'>
-                        <Col xs={3}>Z857OA458795215ZAR</Col>
-                        <Col style={{textAlign: 'center'}} xs={3}>25 Сен, 2015</Col>
-                        <Col xs={3}>25 Сен, 2015</Col>
-                        <Col xs={2}>100 шт</Col>
-                        <Col xs={1}>Ok</Col>
-                    </Row>
+                    {_.map(_.get(detailData, ['data', 'results']), (item) => {
+                        const barcode = _.get(item, 'barcode')
+                        const balance = numberFormat(_.get(item, 'balance'), measurement)
+                        const createdDate = moment(_.get(item, 'createdDate')).format(('DD.MM.YYYY'))
+                        const isDefect = toBoolean(_.get(item, 'isDefect')) ? 'Брак' : 'OK'
+                        return (
+                            <Row key={barcode} className='dottedList'>
+                                <Col xs={4}>{barcode}</Col>
+                                <Col xs={4}>{createdDate}</Col>
+                                <Col xs={3}>{balance} </Col>
+                                <Col xs={1}>{isDefect}</Col>
+                            </Row>
+                        )
+                    })}
                 </div>
             </div>
     )

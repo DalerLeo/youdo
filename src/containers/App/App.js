@@ -1,6 +1,8 @@
+import _ from 'lodash'
 import React from 'react'
 import {connect} from 'react-redux'
 import {setTokenAction, signOutAction} from '../../actions/signIn'
+import {trackingListFetchAction} from '../../actions/tracking'
 import DocumentTitle from 'react-document-title'
 import {hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
@@ -10,6 +12,7 @@ import {
 import * as ROUTES from '../../constants/routes'
 
 const time = 10000
+const refreshAgentsList = 30000
 @compose(
     connect(),
     withHandlers({
@@ -26,12 +29,17 @@ const time = 10000
 class App extends React.Component {
     constructor (props) {
         super(props)
-
+        const pathname = _.get(props, ['location', 'pathname'])
         const {dispatch} = props
         dispatch(setTokenAction())
         setInterval(() => {
             dispatch(notificationGetNotViewed())
         }, time)
+        if (pathname === '/' + ROUTES.TRACKING) {
+            setInterval(() => {
+                dispatch(trackingListFetchAction())
+            }, refreshAgentsList)
+        }
     }
 
     render () {

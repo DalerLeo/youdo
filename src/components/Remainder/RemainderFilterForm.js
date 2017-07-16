@@ -99,7 +99,7 @@ const iconClearStyle = {
 }
 
 const RemainderFilterForm = enhance((props) => {
-    const {classes, reset, onSubmit, handleSubmit} = props
+    const {classes, resetFilter, onSubmit, handleSubmit} = props
     return (
         <Paper zDepth={1} className={classes.filters}>
             <form onSubmit={handleSubmit(onSubmit)} className={classes.filterForm}>
@@ -135,13 +135,14 @@ const RemainderFilterForm = enhance((props) => {
                         <Search/>
                     </IconButton>
                 </div>
-                <div className={classes.clearBtn} onClick={reset}>
+                <div className={classes.clearBtn}>
                     <IconButton
                         iconStyle={iconClearStyle.icon}
-                        style={iconClearStyle.button}>
+                        style={iconClearStyle.button}
+                        onTouchTap={resetFilter}>
                         <CloseIcon2/>
                     </IconButton>
-                    <span style={{marginTop: '-4px'}}>очистить</span>
+                    <div style={{marginTop: '-4px', cursor: 'pointer'}} onClick={resetFilter}>очистить</div>
                 </div>
             </form>
         </Paper>
