@@ -45,15 +45,13 @@ export const CLIENT_LIST = `/${CLIENT}/`
 export const CLIENT_ITEM = `/${CLIENT}/%d/`
 
 export const CURRENCY = 'finance/currencies'
+export const CURRENCY_COURSE_CREATE = 'finance/currency_rate/'
 export const CURRENCY_CREATE = `/${CURRENCY}/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_DELETE = `/${CURRENCY}/%d/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
 export const CURRENCY_PRIMARY = 'currency_primary'
-export const CURRENCY_PRIMARY_CREATE = `/${CURRENCY_PRIMARY}/`
 export const CURRENCY_RATE = 'finance/currency_rate/'
-export const SET_CURRENCY = 'finance/currency_rate'
-export const SET_CURRENCY_CREATE = `/${SET_CURRENCY}/`
 
 export const SHOP = 'market/market'
 export const SHOP_CREATE = `/${SHOP}/`
