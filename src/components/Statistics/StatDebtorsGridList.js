@@ -337,7 +337,6 @@ const StatDebtorsGridList = enhance((props) => {
         </div>
     )
 
-    console.log(_.get(listData, 'statData'))
     const countDebtors = _.get(listData, ['statData', 'debtors'])
     const deptSum = numberFormat(_.get(listData, ['statData', 'debSum']), getConfig('PRIMARY_CURRENCY'))
     const expectSum = numberFormat(_.get(listData, ['statData', 'expectSum']), getConfig('PRIMARY_CURRENCY'))
