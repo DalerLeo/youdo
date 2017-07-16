@@ -99,6 +99,32 @@ const enhance = compose(
         rightSide: {
             flexBasis: '75%',
             marginLeft: '28px'
+        },
+        btnSend: {
+            color: '#12aaeb !important'
+        },
+        btnAdd: {
+            color: '#8acb8d !important'
+        },
+        btnRemove: {
+            color: '#e57373 !important'
+        },
+        outerTitle: {
+            extend: 'flex',
+            justifyContent: 'space-between',
+            fontWeight: '600',
+            paddingBottom: '10px',
+            paddingTop: '5px',
+            '& a': {
+                padding: '2px 10px',
+                border: '1px solid',
+                borderRadius: '2px',
+                marginLeft: '12px'
+            }
+        },
+        buttons: {
+            float: 'right',
+            textAlign: 'right'
         }
     })
 )
@@ -198,12 +224,6 @@ const CurrencyGridList = enhance((props) => {
                     </div>
                     <Paper zDepth={2} style={{height: '100%'}}>
                         <div className={classes.listWrapper}>
-                            <FloatingActionButton
-                                mini={true}
-                                className={classes.addButton}
-                                onTouchTap={courseDialog.handleOpenCourseDialog}>
-                                <ContentAdd />
-                            </FloatingActionButton>
                             {_.get(listData, 'listLoading')
                                 ? <div style={{textAlign: 'center'}}>
                                     <CircularProgress size={40} thickness={4}/>
@@ -214,7 +234,16 @@ const CurrencyGridList = enhance((props) => {
                     </Paper>
                 </div>
                 <div className={classes.rightSide}>
-                    <div className={classes.outerTitle}>История</div>
+                    <div style={{display: 'flex'}}>
+                        <div className={classes.outerTitle}>История</div>
+                        <div className={classes.outerTitle}>
+                            <div className={classes.buttons}>
+                                <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить</a>
+                                <a onClick={createDialog.handleOpenCreateDialog} className={classes.btnSend}>изменение</a>
+                                <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить курс</a>
+                            </div>
+                        </div>
+                    </div>
                     <GridList
                         filter={detailFilter}
                         list={list}
