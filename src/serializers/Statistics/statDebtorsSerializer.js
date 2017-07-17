@@ -16,7 +16,6 @@ export const listFilterSerializer = (data) => {
 }
 
 export const itemSerializer = (id) => {
-
     return {
         'client': id,
         'dept': true
