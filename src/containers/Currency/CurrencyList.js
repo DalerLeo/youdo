@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
-import reset from 'redux-form'
+import {reset} from 'redux-form'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
@@ -12,7 +12,6 @@ import toBoolean from '../../helpers/toBoolean'
 import {
     CURRENCY_CREATE_DIALOG_OPEN,
     CURRENCY_UPDATE_DIALOG_OPEN,
-    CURRENCY_DELETE_DIALOG_OPEN,
     ADD_COURSE_DIALOG_OPEN,
     CurrencyGridList
 } from '../../components/Currency'
@@ -26,7 +25,6 @@ import {
 } from '../../actions/currency'
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const MINUS_ONE = -1
 const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
@@ -38,12 +36,10 @@ const enhance = compose(
         const updateLoading = _.get(state, ['currency', 'update', 'loading'])
         const list = _.get(state, ['currency', 'list', 'data'])
         const listLoading = _.get(state, ['currency', 'list', 'loading'])
-        const csvData = _.get(state, ['currency', 'csv', 'data'])
-        const csvLoading = _.get(state, ['currency', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'CurrencyCreateForm'])
         const courseForm = _.get(state, ['form', 'AddCourseForm'])
         const baseCreateForm = _.get(state, ['form', 'BaseCurrencyCreateForm'])
-        const detailId = _.toInteger(_.get(props, ['location', 'query', 'detailId']) || '-1')
+        const detailId = _.toInteger(_.get(props, ['params', 'currencyId']) || '-1')
         const detailFilter = filterHelper(detail, pathname, query)
         const filter = filterHelper(list, pathname, query)
         return {
@@ -53,8 +49,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             baseCreateForm,
             createForm,
@@ -78,7 +72,6 @@ const enhance = compose(
         currencyId && dispatch(currencyItemFetchAction(detailFilter, currencyId))
     }),
 
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
@@ -86,38 +79,25 @@ const enhance = compose(
             return null
         },
 
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
-        handleOpenConfirmDialog: props => (id) => {
-            const {filter, location: {pathname}} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: true, 'detailId': id})
-            })
+        handleOpenConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(true)
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: false, 'detailId': MINUS_ONE})
-            })
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detailId, filter, location: {pathname}} = props
+            const {dispatch, detailId, filter, setOpenConfirmDialog} = props
             dispatch(currencyDeleteAction(_.toNumber(detailId)))
-                .catch(() => {
+                .then(() => {
+                    setOpenConfirmDialog(false)
+                    dispatch(currencyListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
-                .then(() => {
-                    hashHistory.push({
-                        pathname,
-                        query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: false, 'detailId': MINUS_ONE})
-                    })
-                    dispatch(currencyListFetchAction(filter))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -149,7 +129,7 @@ const enhance = compose(
             const currency = _.get(params, 'currencyId')
             return dispatch(courseCreateAction(_.get(courseForm, ['values']), currency))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: 'Курс обновлен'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: false})})
@@ -185,7 +165,7 @@ const enhance = compose(
             const {dispatch, filter, location: {pathname}} = props
             hashHistory.push({
                 pathname,
-                query: filter.getParams({[CURRENCY_UPDATE_DIALOG_OPEN]: true, 'detailId': id})
+                query: filter.getParams({[CURRENCY_UPDATE_DIALOG_OPEN]: true})
             })
             dispatch(currencyItemFetchAction(id))
         },
@@ -194,7 +174,7 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({
                 pathname,
-                query: filter.getParams({[CURRENCY_UPDATE_DIALOG_OPEN]: false, 'detailId': MINUS_ONE})
+                query: filter.getParams({[CURRENCY_UPDATE_DIALOG_OPEN]: false})
             })
         },
 
@@ -203,13 +183,11 @@ const enhance = compose(
 
             return dispatch(currencyUpdateAction(detailId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(currencyItemFetchAction(detailId))
-                })
-                .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CURRENCY_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(currencyListFetchAction(filter))
                 })
         },
 
@@ -229,6 +207,7 @@ const CurrencyList = enhance((props) => {
         detailLoading,
         createLoading,
         updateLoading,
+        openConfirmDialog,
         filter,
         layout,
         params,
@@ -239,7 +218,6 @@ const CurrencyList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', CURRENCY_CREATE_DIALOG_OPEN]))
     const openCourseDialog = toBoolean(_.get(location, ['query', ADD_COURSE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CURRENCY_UPDATE_DIALOG_OPEN]))
-    const openConfirmDialog = toBoolean(_.get(location, ['query', CURRENCY_DELETE_DIALOG_OPEN]))
 
     if (_.get(list, ['results']) && !_.get(params, 'currencyId')) {
         const currencyMiniId = _.get(_.nth(_.get(list, ['results']), ZERO), 'id')
@@ -299,14 +277,6 @@ const CurrencyList = enhance((props) => {
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
 
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading,
@@ -330,7 +300,6 @@ const CurrencyList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
-                csvDialog={csvDialog}
                 detailId={detailId}
                 detailFilter={detailFilter}
             />

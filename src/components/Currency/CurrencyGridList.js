@@ -27,7 +27,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 4,
+        xs: 2,
         title: '№'
     },
     {
@@ -46,6 +46,15 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
         addButton: {
             '& button': {
                 backgroundColor: '#275482 !important'
@@ -66,7 +75,7 @@ const enhance = compose(
             color: '#333',
             padding: '20px 30px',
             boxSizing: 'border-box',
-            marginBottom: '30px',
+            marginBottom: '15px',
             '&>div': {
                 marginBottom: '10px',
                 '&:last-child': {
@@ -74,31 +83,37 @@ const enhance = compose(
                 }
             }
         },
-        titleButtons: {
-            display: 'flex',
-            justifyContent: 'flex-end'
-        },
-        information: {
-            display: 'flex',
-            alignItems: 'center'
-        },
-        link: {
-            color: '#12aaeb !important',
-            borderBottom: '1px dashed #12aaeb',
-            fontWeight: '600'
-        },
         wrap: {
             display: 'flex',
             margin: '0 -28px',
             padding: '0 28px 0 0',
-            minHeight: 'calc(100% - 41px)'
+            minHeight: 'calc(100% - 120px)'
         },
         leftSide: {
             flexBasis: '25%'
         },
+        list: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '15px 30px',
+            borderBottom: '1px #efefef solid',
+            cursor: 'pointer',
+            '& > div:first-child': {
+                fontWeight: '600'
+            },
+            '& > div:last-child': {
+                textAlign: 'right'
+            }
+        },
         rightSide: {
             flexBasis: '75%',
             marginLeft: '28px'
+        },
+        rightTitle: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
         },
         btnSend: {
             color: '#12aaeb !important'
@@ -155,24 +170,30 @@ const CurrencyGridList = enhance((props) => {
             </IconButton>
         </div>
     )
+
     const currencyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const rate = numberFormat(_.get(item, 'rate'))
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const currentCurrency = getConfig('PRIMARY_CURRENCY')
+        const createdDate = moment(_.get(_.find(_.get(detailData, ['data', 'results']), {'currency': id}), 'createdDate')).format('DD.MM.YYYY')
         const isActive = _.get(detailData, 'id') === id
-        return (
-            <div key={id} className={classes.list}
-                 style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
-                 : {backgroundColor: '#f2f5f8', display: 'relative'}}
-                 onTouchTap={() => { listData.handleCurrencyClick(id) }}>
-                <div xs={6} className={classes.title}>{name}</div>
-                <div xs={6} className={classes.balance}>
-                    <div>{rate}</div>
-                    <div>{createdDate}</div>
+
+        if (name !== currentCurrency) {
+            return (
+                <div key={id} className={classes.list}
+                     style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
+                         : {backgroundColor: '#f2f5f8', display: 'relative'}}
+                     onClick={() => { listData.handleCurrencyClick(id) }}>
+                    <div className={classes.title}>{name}</div>
+                    <div className={classes.balance}>
+                        <div>Курс: {rate}</div>
+                        <div>{createdDate}</div>
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
+        return false
     })
     const currency = _.get(_.find(_.get(listData, 'data'), (o) => {
         return o.id === _.toInteger(_.get(detailData, 'id'))
@@ -184,7 +205,7 @@ const CurrencyGridList = enhance((props) => {
         const rate = numberFormat(_.get(item, 'rate')) || 'N/A'
         return (
             <Row key={id}>
-                <Col xs={4}>{id}</Col>
+                <Col xs={2}>{id}</Col>
                 <Col xs={4}>1 {currency} = {rate} {currentCurrency}</Col>
                 <Col xs={4}>{createdDate}</Col>
             </Row>
@@ -197,7 +218,10 @@ const CurrencyGridList = enhance((props) => {
         loading: _.get(detailData, 'detailLoading')
     }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
+    const confirmMessage = 'Валюта: ' + _.get(currentDetail, 'name')
+    const listLoading = _.get(listData, 'listLoading')
     const detail = <div>a</div>
+
     return (
         <Container>
             <SubMenu url={ROUTES.CURRENCY_LIST_URL}/>
@@ -211,10 +235,10 @@ const CurrencyGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
-            <Paper zDepth={2}>
+            <Paper zDepth={1}>
                 <div className={classes.editContent}>
-                    <div className={classes.semibold}>Основная валюта: <b>{currentCurrency}</b><i style={{fontWeight: '400', color: '#999'}}>(используется
-                        при формировании стоимости продукта / заказа)</i></div>
+                    <div className={classes.semibold}>Основная валюта: <b>{currentCurrency}</b><i style={{fontWeight: '400', color: '#999'}}>
+                        &nbsp;(используется при формировании стоимости продукта / заказа)</i></div>
                 </div>
             </Paper>
             <div className={classes.wrap}>
@@ -222,24 +246,24 @@ const CurrencyGridList = enhance((props) => {
                     <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
                         <div>Валюты</div>
                     </div>
-                    <Paper zDepth={2} style={{height: '100%'}}>
-                        <div className={classes.listWrapper}>
-                            {_.get(listData, 'listLoading')
-                                ? <div style={{textAlign: 'center'}}>
-                                    <CircularProgress size={40} thickness={4}/>
-                                </div>
-                                : currencyList
-                            }
+                    <Paper zDepth={1} style={{height: 'calc(100% - 18px)'}}>
+                        {listLoading
+                            ? <div className={classes.loader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                            : <div className={classes.listWrapper}>
+                            {currencyList}
                         </div>
+                        }
                     </Paper>
                 </div>
                 <div className={classes.rightSide}>
-                    <div style={{display: 'flex'}}>
+                    <div className={classes.rightTitle}>
                         <div className={classes.outerTitle}>История</div>
                         <div className={classes.outerTitle}>
                             <div className={classes.buttons}>
-                                <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить</a>
-                                <a onClick={createDialog.handleOpenCreateDialog} className={classes.btnSend}>изменение</a>
+                                <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить валюту</a>
+                                <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить валюту</a>
                                 <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить курс</a>
                             </div>
                         </div>
@@ -267,6 +291,7 @@ const CurrencyGridList = enhance((props) => {
                         onClose={updateDialog.handleCloseUpdateDialog}
                         onSubmit={updateDialog.handleSubmitUpdateDialog}
                     />
+
                     <AddCourseDialog
                         initialValues={courseDialog.initialValues}
                         open={courseDialog.openCourseDialog}
@@ -276,7 +301,7 @@ const CurrencyGridList = enhance((props) => {
 
                     {detailId !== MINUS_ONE && <ConfirmDialog
                         type="delete"
-                        message={_.get(currentDetail, 'name')}
+                        message={confirmMessage}
                         onClose={confirmDialog.handleCloseConfirmDialog}
                         onSubmit={confirmDialog.handleSendConfirmDialog}
                         open={confirmDialog.openConfirmDialog}
