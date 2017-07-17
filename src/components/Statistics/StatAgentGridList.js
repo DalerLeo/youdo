@@ -16,6 +16,7 @@ import Person from '../Images/person.png'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import List from 'material-ui/svg-icons/action/list'
+import CircularProgress from 'material-ui/CircularProgress'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import LinearProgress from 'material-ui/LinearProgress'
 import Pagination from '../GridList/GridListNavPagination'
@@ -182,7 +183,8 @@ const StatAgentGridList = enhance((props) => {
         listData,
         filter,
         handleSubmitFilterDialog,
-        detailData
+        detailData,
+        getDocument
     } = props
 
     const headerStyle = {
@@ -214,6 +216,7 @@ const StatAgentGridList = enhance((props) => {
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const percent = _.get(item, 'percent')
         const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
 
         return (
@@ -226,7 +229,7 @@ const StatAgentGridList = enhance((props) => {
                     <LinearProgress
                         color="#58bed9"
                         mode="determinate"
-                        value={50}
+                        value={percent}
                         style={{backgroundColor: '#fff', height: '10px'}}/>
                 </Col>
                 <Col xs={2} style={{justifyContent: 'flex-end'}}>{income}</Col>
@@ -271,14 +274,19 @@ const StatAgentGridList = enhance((props) => {
                                         <Search/>
                                     </IconButton>
                                 </div>
-                                <a className={classes.excel}>
+                                <a className={classes.excel}
+                                   onTouchTap = {getDocument.handleGetDocument}>
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>
                             <Pagination filter={filter}/>
                             <div className={classes.tableWrapper}>
                                 {headers}
-                                {list}
+                                {_.get(listData, 'listLoading')
+                                    ? <div style={{textAlign: 'center'}}>
+                                        <CircularProgress size={40} thickness={4} />
+                                    </div>
+                                    : list}
                             </div>
                         </div>
                     </div>
@@ -291,6 +299,7 @@ const StatAgentGridList = enhance((props) => {
             <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
             <StatAgentDialog
+                loading={_.get(detailData.detailLoading)}
                 detailData={detailData}
                 open={statAgentDialog.openStatAgentDialog}
                 onClose={statAgentDialog.handleCloseStatAgentDialog}

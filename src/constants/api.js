@@ -274,18 +274,26 @@ export const REMAINDER_DISCARD = '/stock/stock_transfer/wb_create/'
 
 export const STAT_AGENT_LIST = 'stats/agents/'
 export const STAT_AGENT_ITEM = 'sales/order/'
+export const STAT_AGENT_GET_DOCUMENT = 'stats/agents/export/'
 
 export const STAT_MARKET_LIST = 'stats/markets/'
 export const STAT_MARKET_ITEM = 'sales/order/'
+export const STAT_MARKET_GET_DOCUMENT = 'stats/markets/export'
 
 export const STAT_INCOME_DATA = 'stats/transactions/'
 export const STAT_INCOME_LIST = 'finance/transaction/'
 
+export const STAT_OUTCOME_DATA = 'stats/transactions/'
+export const STAT_OUTCOME_LIST = 'finance/transaction/'
+export const STAT_OUTCOME_GET_DOCUMENT = 'stats/transactions/export'
+
 export const STAT_DEBTORS_DATA = 'stats/debtors_stats/'
 export const STAT_DEBTORS_LIST = 'stats/debtors/'
 export const STAT_DEBTORS_ITEM = 'sales/order/'
+export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 
 export const STAT_PRODUCT_LIST = 'stats/products/'
+export const STAT_PRODUCT_GET_DOCUMENT = 'stats/products/export'
 
 export const STOCK_RECEIVE = 'stock/supply/'
 export const STOCK_HISTORY = 'stock/barcode_history/'

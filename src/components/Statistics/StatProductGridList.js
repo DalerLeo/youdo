@@ -5,6 +5,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
 import LinearProgress from 'material-ui/LinearProgress'
+import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
@@ -155,7 +156,8 @@ const StatProductGridList = enhance((props) => {
         listData,
         classes,
         filter,
-        handleSubmitFilterDialog
+        handleSubmitFilterDialog,
+        getDocument
     } = props
 
     const headerStyle = {
@@ -247,14 +249,19 @@ const StatProductGridList = enhance((props) => {
                                     <Search/>
                                 </IconButton>
                             </div>
-                            <a className={classes.excel}>
+                            <a className={classes.excel}
+                               onTouchTap = {getDocument.handleGetDocument}>
                                 <Excel color="#fff"/> <span>Excel</span>
                             </a>
                         </form>
                         <Pagination filter={filter}/>
                         <div className={classes.tableWrapper}>
                             {headers}
-                            {list}
+                            {_.get(listData, 'listLoading')
+                                ? <div style={{textAlign: 'center'}}>
+                                    <CircularProgress size={40} thickness={4} />
+                                </div>
+                                : list}
                         </div>
                     </div>
                 </div>

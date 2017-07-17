@@ -13,6 +13,7 @@ const STAT_MARKET_DIALOG_OPEN = 'openStatMarketDialog'
 const STAT_FINANCE_DIALOG_OPEN = 'openStatFinanceDialog'
 const STAT_INCOME_DIALOG_OPEN = 'openStatIncomeDialog'
 const STAT_DEBTORS_DIALOG_OPEN = 'openStatDebtorsDialog'
+const STAT_OUTCOME_DIALOG_OPEN = 'openStatOutcomeDialog'
 
 export {
     StatSideMenu,
@@ -28,5 +29,6 @@ export {
     STAT_MARKET_DIALOG_OPEN,
     STAT_FINANCE_DIALOG_OPEN,
     STAT_INCOME_DIALOG_OPEN,
-    STAT_DEBTORS_DIALOG_OPEN
+    STAT_DEBTORS_DIALOG_OPEN,
+    STAT_OUTCOME_DIALOG_OPEN
 }

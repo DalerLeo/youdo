@@ -2,81 +2,104 @@ import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
-import {compose, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
+import toBoolean from '../../helpers/toBoolean'
 
-import {StatOutcomeGridList} from '../../components/Statistics'
+import {
+    StatOutcomeGridList,
+    STAT_OUTCOME_DIALOG_OPEN
+} from '../../components/Statistics'
 import {STAT_OUTCOME_FILTER_KEY} from '../../components/Statistics/StatOutcomeGridList'
+import {
+    statOutcomeListFetchAction,
+    statOutcomeDataFetchAction,
+    getDocumentAction
+} from '../../actions/statOutcome'
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statProduct', 'item', 'data'])
-        const detailLoading = _.get(state, ['statProduct', 'item', 'loading'])
-        const list = _.get(state, ['statProduct', 'list', 'data'])
-        const listLoading = _.get(state, ['statProduct', 'list', 'loading'])
+        const detailLoading = _.get(state, ['statOutcome', 'item', 'loading'])
+        const grafData = _.get(state, ['statOutcome', 'data', 'data'])
+        const list = _.get(state, ['statOutcome', 'list', 'data'])
+        const listLoading = _.get(state, ['statOutcome', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatOutcomeFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
             listLoading,
-            detail,
+            grafData,
             detailLoading,
             filter,
+            query,
             filterForm
         }
     }),
+    withPropsOnChange((props, nextProps) => {
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+    }, ({dispatch, filter}) => {
+        dispatch(statOutcomeListFetchAction(filter))
+        dispatch(statOutcomeDataFetchAction())
+    }),
 
     withHandlers({
-        handleSubmitFilterDialog: props => () => {
+        handleSubmitFilterDialog: props => (event) => {
+            event.preventDefault()
             const {filter, filterForm} = props
-            const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const productType = _.get(filterForm, ['values', 'productType', 'value']) || null
+
+            const search = _.get(filterForm, ['values', 'search']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
-                [STAT_OUTCOME_FILTER_KEY.PRODUCT]: product,
-                [STAT_OUTCOME_FILTER_KEY.PRODUCT_TYPE]: productType,
+                [STAT_OUTCOME_FILTER_KEY.SEARCH]: search,
                 [STAT_OUTCOME_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_OUTCOME_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
+        },
+        handleGetDocument: props => () => {
+            const {dispatch, filter} = props
+            return dispatch(getDocumentAction(filter))
         }
     })
 )
 
 const StatOutcomeList = enhance((props) => {
     const {
+        location,
         list,
+        grafData,
         listLoading,
-        detail,
-        detailLoading,
         filter,
-        layout,
-        params
+        layout
     } = props
 
-    const detailId = _.toInteger(_.get(params, 'statProductId'))
-
+    const openStatOutcomeDialog = toBoolean(_.get(location, ['query', STAT_OUTCOME_DIALOG_OPEN]))
+    const statOutcomeDialog = {
+        openStatOutcomeDialog,
+        handleCloseStatOutcomeDialog: props.handleCloseStatOutcomeDialog,
+        handleOpenStatOutcomeDialog: props.handleOpenStatOutcomeDialog
+    }
     const listData = {
+        grafData: grafData,
         data: _.get(list, 'results'),
         listLoading
     }
-
-    const detailData = {
-        id: detailId,
-        data: detail,
-        detailLoading,
-        handleCloseDetail: props.handleCloseDetail
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
     }
+
     return (
         <Layout {...layout}>
             <StatOutcomeGridList
                 filter={filter}
+                handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 listData={listData}
-                detailData={detailData}
+                statOutcomeDialog={statOutcomeDialog}
+                getDocument={getDocument}
             />
         </Layout>
     )
