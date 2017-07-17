@@ -118,7 +118,7 @@ const enhance = compose(
 )
 
 const PendingPaymentsFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, reset} = props
+    const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -162,7 +162,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
-                            name="market"
+                            name="shop"
                             component={MarketSearchField}
                             label="Магазин"
                             fullWidth={true}/>
