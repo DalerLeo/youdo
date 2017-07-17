@@ -10,19 +10,15 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import ClientSearchField from '../ReduxForm/Client/ClientSearchField'
-import MarketSearchField from '../ReduxForm/Shop/MarketSearchField'
 
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const PENDING_PAYMENTS_FILTER_OPEN = 'openFilterDialog'
+export const CLIENT_BALANCE_FILTER_OPEN = 'openFilterDialog'
 
-export const PENDING_PAYMENTS_FILTER_KEY = {
+export const CLIENT_BALANCE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate',
-    CLIENT: 'client',
-    MARKET: 'market'
+    TO_DATE: 'toDate'
 }
 
 const enhance = compose(
@@ -101,15 +97,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'PendingPaymentsFilterForm',
+        form: 'ClientBalanceFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(PENDING_PAYMENTS_FILTER_KEY)
+            return _(CLIENT_BALANCE_FILTER_KEY)
                 .values()
-                .filter(item => item !== PENDING_PAYMENTS_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -117,7 +113,7 @@ const enhance = compose(
     })
 )
 
-const PendingPaymentsFilterForm = enhance((props) => {
+const ClientBalanceFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
 
@@ -160,28 +156,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="shop"
-                            component={MarketSearchField}
-                            label="Магазин"
-                            fullWidth={true}/>
-                    </div>
-                    <div>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="client"
-                            component={ClientSearchField}
-                            label="Клиент"
-                            fullWidth={true}/>
-                    </div>
-                    <div>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="date"
-                            component={DateToDateField}
-                            label="Диапазон дат"
-                            fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
                     </div>
                     <RaisedButton
                         type="submit"
@@ -196,7 +171,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
     )
 })
 
-PendingPaymentsFilterForm.propTypes = {
+ClientBalanceFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -207,4 +182,4 @@ PendingPaymentsFilterForm.propTypes = {
     })
 }
 
-export default PendingPaymentsFilterForm
+export default ClientBalanceFilterForm

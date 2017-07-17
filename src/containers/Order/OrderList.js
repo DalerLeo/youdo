@@ -11,6 +11,8 @@ import filterHelper from '../../helpers/filter'
 import numberFormat from '../../helpers/numberFormat'
 import toBoolean from '../../helpers/toBoolean'
 import * as ORDER_TAB from '../../constants/orderTab'
+import {openErrorAction} from '../../actions/error'
+
 import {
     ORDER_CREATE_DIALOG_OPEN,
     ORDER_UPDATE_DIALOG_OPEN,
@@ -270,6 +272,9 @@ const enhance = compose(
             const {dispatch, returnForm, detail, filter, location: {pathname}, params} = props
             const orderId = _.toInteger(_.get(params, 'orderId'))
             return dispatch(orderReturnAction(_.get(returnForm, ['values']), detail))
+                .catch((error) => {
+                    dispatch(openErrorAction({message: error}))
+                })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })

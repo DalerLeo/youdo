@@ -56,20 +56,6 @@ const enhance = compose(
                 content: '""',
                 backgroundImage: 'none'
             }
-        },
-        dropDown: {
-
-            position: 'absolute !important',
-            right: '0',
-            top: '5px',
-            '& > div': {
-                borderRadius: '200px',
-                border: 'solid #61a8e8 4px!important',
-                height: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }
         }
 
     }),

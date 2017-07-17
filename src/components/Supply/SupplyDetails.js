@@ -298,7 +298,6 @@ const SupplyDetails = enhance((props) => {
     const dateDelivery = _.get(data, 'dateDelivery') || 'Не указано'
     const acceptedTime = (_.get(data, 'acceptedTime')) ? moment(_.get(data, 'acceptedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не начался'
     const finishedTime = (_.get(data, 'finishedTime')) ? moment(_.get(data, 'finishedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не закончилась'
-
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
 
@@ -411,7 +410,7 @@ const SupplyDetails = enhance((props) => {
                         const postedAmount = _.get(item, 'postedAmount')
                         const defectAmount = _.get(item, 'defectAmount')
                         const measurement = _.get(product, ['measurement', 'name'])
-                        const notAccepted = amount - (postedAmount + defectAmount)
+                        const notAccepted = (_.get(data, 'finishedTime')) ? amount - (postedAmount + defectAmount) : ZERO
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
                                 <Col xs={4}>{productName}</Col>

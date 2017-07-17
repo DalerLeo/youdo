@@ -88,17 +88,17 @@ const enhance = compose(
 
     withHandlers({
         handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter, dispatch} = props
+            const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_FILTER_OPEN]: true})})
-            dispatch(reset('PriceFilterForm'))
         },
         handleCloseFilterDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname})
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRICE_FILTER_OPEN]: false})})
         },
         handleClearFilterDialog: props => () => {
-            const {location: {pathname}} = props
+            const {location: {pathname}, dispatch} = props
             hashHistory.push({pathname, query: {}})
+            dispatch(reset('PriceFilterForm'))
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
@@ -118,16 +118,16 @@ const enhance = compose(
             return dispatch(priceItemExpensesFetchAction(id))
         },
         handleCloseSupplyDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname})
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRICE_SUPPLY_DIALOG_OPEN]: false})})
         },
         handleOpenPriceSetForm: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: true})})
         },
         handleClosePriceSetForm: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname})
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
         },
         handleSubmitPriceSetForm: props => () => {
             const {dispatch, createForm, detail, params: {priceId}, location: {pathname}} = props

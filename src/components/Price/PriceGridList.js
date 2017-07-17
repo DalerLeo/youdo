@@ -136,7 +136,8 @@ const PriceGridList = enhance((props) => {
         return (
             <Row key={id} className={classes.listRow}>
                 <Link to={{
-                    pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id)
+                    pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id),
+                    query: filter.getParams()
                 }}>
                     <Col xs={5}>{name}</Col>
                     <Col xs={2}>{netCost}</Col>

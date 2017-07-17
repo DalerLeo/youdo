@@ -47,6 +47,7 @@ import {
     StatOutcomeList,
     StatDebtorsList
 } from '../containers/Statistics'
+import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveList} from '../containers/StockReceive'
 
 export default {
@@ -496,6 +497,17 @@ export default {
                 {
                     path: ROUTES.STOCK_RECEIVE_ITEM_URL,
                     component: userIsAuth(StockReceiveList)
+                }
+            ]
+        },
+        // ClientBalance
+        {
+            path: ROUTES.CLIENT_BALANCE_LIST_URL,
+            component: userIsAuth(ClientBalanceList),
+            childRoutes: [
+                {
+                    path: ROUTES.CLIENT_BALANCE_ITEM_URL,
+                    component: userIsAuth(ClientBalanceList)
                 }
             ]
         },
