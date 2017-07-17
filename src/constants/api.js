@@ -45,15 +45,13 @@ export const CLIENT_LIST = `/${CLIENT}/`
 export const CLIENT_ITEM = `/${CLIENT}/%d/`
 
 export const CURRENCY = 'finance/currencies'
+export const CURRENCY_COURSE_CREATE = 'finance/currency_rate/'
 export const CURRENCY_CREATE = `/${CURRENCY}/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_DELETE = `/${CURRENCY}/%d/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
 export const CURRENCY_PRIMARY = 'currency_primary'
-export const CURRENCY_PRIMARY_CREATE = `/${CURRENCY_PRIMARY}/`
 export const CURRENCY_RATE = 'finance/currency_rate/'
-export const SET_CURRENCY = 'finance/currency_rate'
-export const SET_CURRENCY_CREATE = `/${SET_CURRENCY}/`
 
 export const SHOP = 'market/market'
 export const SHOP_CREATE = `/${SHOP}/`
@@ -263,7 +261,9 @@ export const PRICE_LIST_ITEM_EXPENSES = 'stock/supply_product_expenses/%d/'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
 
-export const TRACKING = 'market/border'
+export const TRACKING = 'market/agents_location/'
+export const TRACKING_LIST = `${TRACKING}`
+export const TRACKING_ITEM = `${TRACKING}/%d/`
 
 export const REMAINDER = 'stock/stock'
 export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
@@ -271,15 +271,23 @@ export const REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
 export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
 export const REMAINDER_DISCARD = '/stock/stock_transfer/wb_create/'
 
-export const STATISTICS = 'dist/product'
-export const STAT_AGENT_LIST = 'stats/agents'
-export const STAT_AGENT_ITEM = 'sales/order'
-export const STAT_PRODUCT_LIST = `/${STATISTICS}/`
+export const STAT_AGENT_LIST = 'stats/agents/'
+export const STAT_AGENT_ITEM = 'sales/order/'
 
-export const STAT_PRODUCT_ITEM = `/${STATISTICS}/%d/`
+export const STAT_MARKET_LIST = 'stats/markets/'
+export const STAT_MARKET_ITEM = 'sales/order/'
 
-export const STOCK_RECEIVE = 'stock/supply'
-export const STOCK_HISTORY = 'stock/barcode_history'
+export const STAT_INCOME_DATA = 'stats/transactions/'
+export const STAT_INCOME_LIST = 'finance/transaction/'
+
+export const STAT_DEBTORS_DATA = 'stats/debtors_stats/'
+export const STAT_DEBTORS_LIST = 'stats/debtors/'
+export const STAT_DEBTORS_ITEM = 'sales/order/'
+
+export const STAT_PRODUCT_LIST = 'stats/products/'
+
+export const STOCK_RECEIVE = 'stock/supply/'
+export const STOCK_HISTORY = 'stock/barcode_history/'
 export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`
 export const STOCK_TRANSFER = 'stock/stock_transfer'
 export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`

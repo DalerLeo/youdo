@@ -10,11 +10,8 @@ import filterHelper from '../../helpers/filter'
 import {StatProductGridList} from '../../components/Statistics'
 import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/StatProductGridList'
 import {
-    statProductListFetchAction,
-    statProductItemFetchAction
+    statProductListFetchAction
 } from '../../actions/statProduct'
-
-const ZERO = 0
 
 const enhance = compose(
     connect((state, props) => {
@@ -24,7 +21,7 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statProduct', 'item', 'loading'])
         const list = _.get(state, ['statProduct', 'list', 'data'])
         const listLoading = _.get(state, ['statProduct', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatAgentFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatProductFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -41,25 +38,19 @@ const enhance = compose(
         dispatch(statProductListFetchAction(filter))
     }),
 
-    withPropsOnChange((props, nextProps) => {
-        const statProductId = _.get(nextProps, ['params', 'statProductId']) || ZERO
-        return statProductId > ZERO && _.get(props, ['params', 'statProductId']) !== statProductId
-    }, ({dispatch, params}) => {
-        const statProductId = _.toInteger(_.get(params, 'statProductId'))
-        if (statProductId > ZERO) {
-            dispatch(statProductItemFetchAction(statProductId))
-        }
-    }),
-
     withHandlers({
-        handleSubmitFilterDialog: props => () => {
+        handleSubmitFilterDialog: props => (event) => {
+            event.preventDefault()
             const {filter, filterForm} = props
+
+            const search = _.get(filterForm, ['values', 'search']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const productType = _.get(filterForm, ['values', 'productType', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
+                [STAT_PRODUCT_FILTER_KEY.SEARCH]: search,
                 [STAT_PRODUCT_FILTER_KEY.PRODUCT]: product,
                 [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE]: productType,
                 [STAT_PRODUCT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
@@ -103,6 +94,7 @@ const StatProductList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
+                handleSubmitFilterDialog={props.handleSubmitFilterDialog}
             />
         </Layout>
     )

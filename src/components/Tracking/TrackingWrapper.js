@@ -1,22 +1,32 @@
+import _ from 'lodash'
 import React from 'react'
+import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
 import {reduxForm, Field} from 'redux-form'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
-import DateToDateField from '../ReduxForm/Basic/DateToDateFieldCustom'
-import MarketTypeSearch from '../ReduxForm/Shop/MarketTypeSearchField'
-import AgentSearch from '../ReduxForm/Users/UsersSearchField'
+import sprintf from 'sprintf'
+import PropTypes from 'prop-types'
+import {compose} from 'recompose'
+import moment from 'moment'
+import CircularProgress from 'material-ui/CircularProgress'
 import Checkbox from '../ReduxForm/Basic/CheckBox'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import TrackingMap from './TrackingMap'
-import More from 'material-ui/svg-icons/navigation/expand-more'
-import Less from 'material-ui/svg-icons/navigation/expand-less'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
+import TrackingDetails from './TrackingDetails'
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            width: '100%',
+            background: '#fff',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
         red: {
             color: '#e57373 !important'
         },
@@ -28,7 +38,7 @@ const enhance = compose(
             position: 'relative',
             overflowX: 'hidden',
             margin: '0 -28px',
-            minHeight: 'calc(100% - 4px)',
+            minHeight: 'calc(100% - 32px)',
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -2px 5px, rgba(0, 0, 0, 0.05) 0px -2px 6px',
             '& > div:first-child': {
                 position: 'absolute',
@@ -37,6 +47,9 @@ const enhance = compose(
                 right: '0',
                 bottom: '0'
             }
+        },
+        wrapper: {
+
         },
         trackingInfo: {
             background: '#fff',
@@ -85,7 +98,6 @@ const enhance = compose(
         },
         online: {
             color: '#666',
-            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             fontSize: '30px',
@@ -120,6 +132,9 @@ const enhance = compose(
                 left: '-10px !important'
             }
         },
+        filter: {
+            marginBottom: '20px'
+        },
         title: {
             fontWeight: '600',
             marginBottom: '15px'
@@ -131,7 +146,11 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             padding: '10px 0',
-            '& span i': {
+            '& a': {
+                color: '#333',
+                marginRight: '5px'
+            },
+            '& i': {
                 fontSize: '10px',
                 color: '#999'
             },
@@ -144,83 +163,60 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'TrackingCreateForm',
+        form: 'TrackingFilterForm',
         enableReinitialize: true
     }),
-    withState('expandInfo', 'setExpandInfo', true),
-    withState('onlineAgents', 'setOnlineAgents', false)
 )
 
 const TrackingWrapper = enhance((props) => {
     const ZERO = 0
     const {
         classes,
-        expandInfo,
-        setExpandInfo,
-        onlineAgents,
-        setOnlineAgents
+        filter,
+        listData,
+        detailData,
+        toggle
     } = props
-    const online = 30
+
+    const listLoading = _.get(listData, 'listLoading')
+    const isOpenToggle = toggle.openToggle
+    const agentsCount = _.get(listData, ['data', 'length'])
+    let agentsOnline = 0
+
+    const openDetail = _.get(detailData, 'openDetail')
+
     const zoneInfoToggle = (
-        <div className={classes.trackingInfo} style={expandInfo ? {right: '0'} : {right: '-450px'}}>
+        <div className={classes.trackingInfo} style={isOpenToggle ? {right: '0'} : {right: '-450px'}}>
             <div className={classes.toggleButton}>
-                {expandInfo ? <div className={classes.expanded} onClick={() => { setExpandInfo(false) }}><Arrow/></div>
-                    : <div className={classes.collapsed} onClick={() => { setExpandInfo(true) }}><Arrow/></div>}
+                {isOpenToggle ? <div className={classes.expanded} onClick={toggle.handleCollapseInfo}><Arrow/></div>
+                    : <div className={classes.collapsed} onClick={toggle.handleExpandInfo}><Arrow/></div>}
             </div>
+            {!listLoading ? <div className={classes.wrapper}>
                 <div className={classes.trackingInfoTitle}>
                     <span>Агентов <br/> online</span>
-                    <div className={classes.online} onClick={() => { setOnlineAgents(!onlineAgents) }}>
+                    <div className={classes.online}>
                         <div>
-                            <span className={online > ZERO && classes.green}>{online}</span>/<span>45</span>
+                            {
+                                _.map(_.get(listData, 'data'), (item) => {
+                                    const FIVE_MIN = 300000
+                                    const dateNow = _.toInteger(moment().format('x'))
+                                    const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                                    let isOnline = false
+                                    if ((dateNow - registeredDate) <= FIVE_MIN) {
+                                        isOnline = true
+                                    }
+                                    if (isOnline) {
+                                        agentsOnline++
+                                    }
+                                })
+                            }
+                            <span className={agentsOnline > ZERO && classes.green}>{agentsOnline}</span>/<span>{agentsCount}</span>
                         </div>
-                        {onlineAgents ? <Less color="#666"/> : <More color="#666"/>}
                     </div>
                 </div>
                 <div className={classes.content}>
-                    {onlineAgents &&
-                        <div className={classes.activeAgents}>
-                            <div className={classes.agent}>
-                                <Dot color="#81c784"/>
-                                <span>Трололоев Хабибулла</span>
-                            </div>
-                            <div className={classes.agent}>
-                                <Dot color="#81c784"/>
-                                <span>Трололоев Хабибулла</span>
-                            </div>
-                            <div className={classes.agent}>
-                                <Dot/>
-                                <span>Трололоев Хабибулла</span>
-                            </div>
-                            <div className={classes.agent}>
-                                <Dot/>
-                                <span>Трололоев Хабибулла</span>
-                            </div>
-                            <div className={classes.agent}>
-                                <Dot/>
-                                <span>Трололоев Хабибулла <i>(2 часа назад)</i></span>
-                            </div>
-                        </div>
-                    }
                     <div className={classes.filter}>
                         <div className={classes.title}>Фильтры</div>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="border"
-                            component={MarketTypeSearch}
-                            label="Выберите зону"
-                            fullWidth={true}/>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="agent"
-                            component={AgentSearch}
-                            label="Агент"
-                            fullWidth={true}/>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="period"
-                            component={DateToDateField}
-                            label="Посмотреть по периоду"
-                            fullWidth={true}/>
                         <Field
                             name="showMarkets"
                             className={classes.checkbox}
@@ -231,19 +227,54 @@ const TrackingWrapper = enhance((props) => {
                             className={classes.checkbox}
                             component={Checkbox}
                             label="Отображать зоны"/>
-                        <Field
-                            name="agentTrack"
-                            className={classes.checkbox}
-                            component={Checkbox}
-                            label="Пройденный маршрут агента"/>
+                    </div>
+                    <div className={classes.activeAgents}>
+                        {
+                            _.map(_.get(listData, 'data'), (item) => {
+                                const id = _.get(item, 'id')
+                                const agent = _.get(item, 'agent')
+                                const FIVE_MIN = 300000
+                                const dateNow = _.toInteger(moment().format('x'))
+                                const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                                const difference = dateNow - registeredDate
+                                let isOnline = false
+                                if (difference <= FIVE_MIN) {
+                                    isOnline = true
+                                }
+                                const lastSeen = moment(registeredDate).fromNow()
+
+                                return (
+                                    <div key={id} className={classes.agent}>
+                                        <Dot style={isOnline ? {color: '#81c784'} : {color: '#666'}}/>
+                                        <Link to={{
+                                            pathname: sprintf(ROUTES.TRACKING_ITEM_PATH, id),
+                                            query: filter.getParams()
+                                        }}>{agent}</Link>
+                                        {!isOnline && <i>({lastSeen})</i>}
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
                 </div>
+            </div>
+            : <div className={classes.loader}>
+                    <div>
+                        <CircularProgress size={40} thickness={4}/>
+                    </div>
+                </div>}
+            {openDetail &&
+            <TrackingDetails
+                filter={filter}
+                listData={listData}
+                detailData={detailData} />
+            }
         </div>
     )
 
     return (
         <Container>
-            <SubMenu url={ROUTES.ZONES_LIST_URL}/>
+            <SubMenu url={ROUTES.TRACKING_LIST_URL}/>
             <div className={classes.trackingWrapper}>
                 <TrackingMap />
                 {zoneInfoToggle}
@@ -251,5 +282,16 @@ const TrackingWrapper = enhance((props) => {
         </Container>
     )
 })
+
+TrackingWrapper.PropTypes = {
+    filter: PropTypes.object,
+    listData: PropTypes.object,
+    detailData: PropTypes.object,
+    toggle: PropTypes.shape({
+        openToggle: PropTypes.bool.isRequired,
+        handleExpandInfo: PropTypes.func.isRequired,
+        handleCollapseInfo: PropTypes.func.isRequired
+    }).isRequired
+}
 
 export default TrackingWrapper

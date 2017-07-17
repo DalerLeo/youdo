@@ -382,7 +382,7 @@ export default {
             path: ROUTES.TRACKING_LIST_URL,
             component: userIsAuth(Tracking),
             childRoutes: [{
-                path: ROUTES.TRACKING_LIST_URL,
+                path: ROUTES.TRACKING_ITEM_URL,
                 component: userIsAuth(Tracking)
             }]
         },
@@ -452,7 +452,12 @@ export default {
         {
             path: ROUTES.STATISTICS_MARKET_URL,
             component: userIsAuth(StatMarketList),
-            childRoutes: []
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_MARKET_ITEM_URL,
+                    component: userIsAuth(StatMarketList)
+                }
+            ]
         },
         // Statistics/finance
         {
@@ -476,7 +481,12 @@ export default {
         {
             path: ROUTES.STATISTICS_DEBTORS_URL,
             component: userIsAuth(StatDebtorsList),
-            childRoutes: []
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_DEBTORS_ITEM_URL,
+                    component: userIsAuth(StatDebtorsList)
+                }
+            ]
         },
         // Stock Receive Transfer
         {

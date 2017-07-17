@@ -14,6 +14,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
+import AddCourseDialog from './AddCourseDialog'
 import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
@@ -98,6 +99,32 @@ const enhance = compose(
         rightSide: {
             flexBasis: '75%',
             marginLeft: '28px'
+        },
+        btnSend: {
+            color: '#12aaeb !important'
+        },
+        btnAdd: {
+            color: '#8acb8d !important'
+        },
+        btnRemove: {
+            color: '#e57373 !important'
+        },
+        outerTitle: {
+            extend: 'flex',
+            justifyContent: 'space-between',
+            fontWeight: '600',
+            paddingBottom: '10px',
+            paddingTop: '5px',
+            '& a': {
+                padding: '2px 10px',
+                border: '1px solid',
+                borderRadius: '2px',
+                marginLeft: '12px'
+            }
+        },
+        buttons: {
+            float: 'right',
+            textAlign: 'right'
         }
     })
 )
@@ -113,6 +140,7 @@ const CurrencyGridList = enhance((props) => {
         detailData,
         classes,
         detailId,
+        courseDialog,
         detailFilter
     } = props
 
@@ -206,7 +234,16 @@ const CurrencyGridList = enhance((props) => {
                     </Paper>
                 </div>
                 <div className={classes.rightSide}>
-                    <div className={classes.outerTitle}>История</div>
+                    <div style={{display: 'flex'}}>
+                        <div className={classes.outerTitle}>История</div>
+                        <div className={classes.outerTitle}>
+                            <div className={classes.buttons}>
+                                <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить</a>
+                                <a onClick={createDialog.handleOpenCreateDialog} className={classes.btnSend}>изменение</a>
+                                <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить курс</a>
+                            </div>
+                        </div>
+                    </div>
                     <GridList
                         filter={detailFilter}
                         list={list}
@@ -229,6 +266,12 @@ const CurrencyGridList = enhance((props) => {
                         loading={updateDialog.updateLoading}
                         onClose={updateDialog.handleCloseUpdateDialog}
                         onSubmit={updateDialog.handleSubmitUpdateDialog}
+                    />
+                    <AddCourseDialog
+                        initialValues={courseDialog.initialValues}
+                        open={courseDialog.openCourseDialog}
+                        onClose={courseDialog.handleCloseCourseDialog}
+                        onSubmit={courseDialog.handleSubmitCourseDialog}
                     />
 
                     {detailId !== MINUS_ONE && <ConfirmDialog
@@ -274,6 +317,12 @@ CurrencyGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    courseDialog: PropTypes.shape({
+        openCourseDialog: PropTypes.bool.isRequired,
+        handleOpenCourseDialog: PropTypes.func.isRequired,
+        handleCloseCourseDialog: PropTypes.func.isRequired,
+        handleSubmitCourseDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,

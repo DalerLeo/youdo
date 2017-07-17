@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import reset from 'redux-form'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
@@ -12,13 +13,14 @@ import {
     CURRENCY_CREATE_DIALOG_OPEN,
     CURRENCY_UPDATE_DIALOG_OPEN,
     CURRENCY_DELETE_DIALOG_OPEN,
+    ADD_COURSE_DIALOG_OPEN,
     CurrencyGridList
 } from '../../components/Currency'
 import {
+    courseCreateAction,
     currencyCreateAction,
     currencyUpdateAction,
     currencyListFetchAction,
-    currencyCSVFetchAction,
     currencyDeleteAction,
     currencyItemFetchAction
 } from '../../actions/currency'
@@ -39,6 +41,7 @@ const enhance = compose(
         const csvData = _.get(state, ['currency', 'csv', 'data'])
         const csvLoading = _.get(state, ['currency', 'csv', 'loading'])
         const createForm = _.get(state, ['form', 'CurrencyCreateForm'])
+        const courseForm = _.get(state, ['form', 'AddCourseForm'])
         const baseCreateForm = _.get(state, ['form', 'BaseCurrencyCreateForm'])
         const detailId = _.toInteger(_.get(props, ['location', 'query', 'detailId']) || '-1')
         const detailFilter = filterHelper(detail, pathname, query)
@@ -55,6 +58,7 @@ const enhance = compose(
             filter,
             baseCreateForm,
             createForm,
+            courseForm,
             detailId,
             detailFilter
         }
@@ -80,13 +84,6 @@ const enhance = compose(
     withHandlers({
         handleActionEdit: props => () => {
             return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(currencyCSVFetchAction(props.filter))
         },
 
         handleCloseCSVDialog: props => () => {
@@ -135,6 +132,30 @@ const enhance = compose(
         handleCloseDeleteDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
+        },
+
+        handleOpenCourseDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseCourseDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitCourseDialog: props => () => {
+            const {location: {pathname}, dispatch, courseForm, filter, params} = props
+            const currency = _.get(params, 'currencyId')
+            return dispatch(courseCreateAction(_.get(courseForm, ['values']), currency))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: false})})
+                    dispatch(currencyListFetchAction(filter))
+                    dispatch(reset('AddCourseForm'))
+                })
         },
 
         handleOpenCreateDialog: props => () => {
@@ -216,6 +237,7 @@ const CurrencyList = enhance((props) => {
     } = props
 
     const openCreateDialog = toBoolean(_.get(location, ['query', CURRENCY_CREATE_DIALOG_OPEN]))
+    const openCourseDialog = toBoolean(_.get(location, ['query', ADD_COURSE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CURRENCY_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', CURRENCY_DELETE_DIALOG_OPEN]))
 
@@ -240,6 +262,15 @@ const CurrencyList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+    const courseDialog = {
+        initialValues: (() => {
+            return {}
+        })(),
+        openCourseDialog,
+        handleOpenCourseDialog: props.handleOpenCourseDialog,
+        handleCloseCourseDialog: props.handleCloseCourseDialog,
+        handleSubmitCourseDialog: props.handleSubmitCourseDialog
     }
 
     const confirmDialog = {
@@ -295,6 +326,7 @@ const CurrencyList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}
+                courseDialog={courseDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
