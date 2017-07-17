@@ -118,7 +118,7 @@ const enhance = compose(
 )
 
 const PendingPaymentsFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, reset} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {

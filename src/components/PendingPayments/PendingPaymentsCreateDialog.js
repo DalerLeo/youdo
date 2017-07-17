@@ -15,6 +15,7 @@ import MainStyles from '../Styles/MainStyles'
 import numberformat from '../../helpers/numberFormat'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
+import getConfig from '../../helpers/getConfig'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -53,6 +54,9 @@ const enhance = compose(
         infoSummary: {
             color: '#666',
             marginTop: '10px'
+        },
+        inContent: {
+            maxHeight: '52vh'
         }
     })),
     reduxForm({
@@ -67,9 +71,11 @@ const PendingPaymentsCreateDialog = enhance((props) => {
 
     const id = _.get(detailData, 'id')
     const client = _.get(detailData, ['data', 'client'])
-    const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']))
+    const marketName = _.get(detailData, ['data', 'market', 'name'])
+    const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), getConfig('PRIMARY_CURRENCY'))
+    const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), getConfig('PRIMARY_CURRENCY'))
     const clientName = _.get(client, 'name')
-
+    console.log(detailData)
     return (
         <Dialog
             modal={true}
@@ -94,11 +100,13 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                         <div className={classes.field}>
                             <div className={classes.info}>
                                 <div className={classes.infoHeader}>
-                                    <div>{clientName}</div>
+                                    <div><span className={classes.infoSummary}>Клиент:</span> {clientName}</div>
+                                    <div><span className={classes.infoSummary}>Магазин:</span> {marketName}</div>
                                     <div>Заказ №{id}</div>
                                 </div>
                                 <div className={classes.infoSummary}>
-                                    <div>Сумма заказа:<span style={{marginLeft: '10px'}}>{totalBalance}</span></div>
+                                    <div>Сумма заказа:<span style={{marginLeft: '10px'}}>{totalPrice}</span></div>
+                                    <div>Остаток:<span style={{marginLeft: '10px'}}>{totalBalance}</span></div>
                                 </div>
                             </div>
                             <div className={classes.cashbox}>

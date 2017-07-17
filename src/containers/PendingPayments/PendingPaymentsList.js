@@ -9,6 +9,7 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import reset from 'redux-form'
 import {
     PENDING_PAYMENTS_UPDATE_DIALOG_OPEN,
     PENDING_PAYMENTS_FILTER_KEY,
@@ -66,8 +67,9 @@ const enhance = compose(
 
     withHandlers({
         handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({[PENDING_PAYMENTS_FILTER_OPEN]: true})})
+            dispatch(reset('PendingPaymentsFilterForm'))
         },
 
         handleCloseFilterDialog: props => () => {

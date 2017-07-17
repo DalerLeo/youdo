@@ -27,12 +27,18 @@ const listHeader = [
         sorting: false,
         name: 'clientName',
         title: 'Клиент',
-        xs: 3
+        xs: 2
+    },
+    {
+        sorting: false,
+        name: 'marketName',
+        title: 'Магазин',
+        xs: 2
     },
     {
         sorting: true,
         name: 'created_date',
-        title: 'Дата',
+        title: 'Дата создания',
         xs: 2
     },
     {
@@ -45,7 +51,7 @@ const listHeader = [
         sorting: true,
         name: 'total_balance',
         title: 'Остаток',
-        xs: 3
+        xs: 2
     }
 ]
 
@@ -93,14 +99,13 @@ const PendingPaymentsGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
-
     const pendingPaymentsDetail = (
         <span>a</span>
     )
-
     const pendingPaymentsList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, 'client')
+        const market = _.get(item, ['market', 'name'])
         const clientName = _.get(client, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), getConfig('PRIMARY_CURRENCY'))
@@ -108,10 +113,11 @@ const PendingPaymentsGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={3}>{clientName}</Col>
+                <Col xs={2}>{clientName}</Col>
+                <Col xs={2}>{market}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={2}>{totalPrice}</Col>
-                <Col xs={3}>{totalBalance}</Col>
+                <Col xs={2}>{totalBalance}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
                         iconStyle={iconStyle.icon}
