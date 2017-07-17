@@ -293,7 +293,8 @@ const RemainderGridList = enhance((props) => {
                 onSubmit={transferDialog.handleSubmitTransferDialog}/>
             <RemainderDiscardDialog
                 open={discardDialog.openDiscardDialog}
-                onClose={discardDialog.handleCloseDiscardDialog}/>
+                onClose={discardDialog.handleCloseDiscardDialog}
+                onSubmit={discardDialog.handleSubmitDiscardDialog}/>
         </Container>
     )
 })
@@ -317,7 +318,8 @@ RemainderGridList.propTypes = {
     discardDialog: PropTypes.shape({
         openDiscardDialog: PropTypes.bool.isRequired,
         handleOpenDiscardDialog: PropTypes.func.isRequired,
-        handleCloseDiscardDialog: PropTypes.func.isRequired
+        handleCloseDiscardDialog: PropTypes.func.isRequired,
+        handleSubmitDiscardDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

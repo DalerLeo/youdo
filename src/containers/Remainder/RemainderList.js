@@ -20,7 +20,8 @@ import {
 import {
     remainderListFetchAction,
     remainderItemFetchAction,
-    remainderTransferAction
+    remainderTransferAction,
+    remainderDiscardAction
 } from '../../actions/remainder'
 
 const enhance = compose(
@@ -33,6 +34,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['remainder', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'RemainderFilterForm'])
         const transferForm = _.get(state, ['form', 'RemainderTransferForm'])
+        const discardForm = _.get(state, ['form', 'RemainderDiscardForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -42,7 +44,8 @@ const enhance = compose(
             detailLoading,
             filter,
             filterForm,
-            transferForm
+            transferForm,
+            discardForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -66,6 +69,19 @@ const enhance = compose(
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_FILTER_OPEN]: true})})
+        },
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const product = _.get(filterForm, ['values', 'product']) || null
+            const status = _.get(filterForm, ['values', 'status', 'value']) || null
+            filter.filterBy({
+                [REMAINDER_FILTER_KEY.TYPE]: type,
+                [REMAINDER_FILTER_KEY.STOCK]: stock,
+                [REMAINDER_FILTER_KEY.PRODUCT]: product,
+                [REMAINDER_FILTER_KEY.STATUS]: status
+            })
         },
         handleOpenTransferDialog: props => () => {
             const {location: {pathname}, filter} = props
@@ -94,18 +110,16 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: false})})
         },
-        handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm} = props
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-            const product = _.get(filterForm, ['values', 'product']) || null
-            const status = _.get(filterForm, ['values', 'status', 'value']) || null
-            filter.filterBy({
-                [REMAINDER_FILTER_KEY.TYPE]: type,
-                [REMAINDER_FILTER_KEY.STOCK]: stock,
-                [REMAINDER_FILTER_KEY.PRODUCT]: product,
-                [REMAINDER_FILTER_KEY.STATUS]: status
-            })
+        handleSubmitDiscardDialog: props => () => {
+            const {location: {pathname}, dispatch, discardForm, filter} = props
+            return dispatch(remainderDiscardAction(_.get(discardForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно списано'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: false})})
+                    dispatch(remainderListFetchAction(filter))
+                })
         },
         handleResetFilter: props => () => {
             const {dispatch, location: {pathname}} = props
@@ -145,7 +159,8 @@ const RemainderList = enhance((props) => {
     const discardDialog = {
         openDiscardDialog,
         handleOpenDiscardDialog: props.handleOpenDiscardDialog,
-        handleCloseDiscardDialog: props.handleCloseDiscardDialog
+        handleCloseDiscardDialog: props.handleCloseDiscardDialog,
+        handleSubmitDiscardDialog: props.handleSubmitDiscardDialog
     }
     const transferDialog = {
         openTransferDialog: openTransferDialog,

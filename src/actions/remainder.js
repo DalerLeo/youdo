@@ -43,7 +43,7 @@ export const remainderTransferAction = (formValues) => {
     const requestData = serializers.transferSerializer(formValues)
 
     const payload = axios()
-        .post(API.REMAINDER_TRANSFER_ITEM, requestData)
+        .post(API.REMAINDER_TRANSFER, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -52,7 +52,24 @@ export const remainderTransferAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.REMAINDER_TRANSFER_ITEM,
+        type: actionTypes.REMAINDER_TRANSFER,
+        payload
+    }
+}
+
+export const remainderDiscardAction = (formValues) => {
+    const requestData = serializers.discardSerializer(formValues)
+
+    const payload = axios()
+        .post(API.REMAINDER_DISCARD, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.REMAINDER_DISCARD,
         payload
     }
 }

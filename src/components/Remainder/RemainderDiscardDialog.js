@@ -151,8 +151,8 @@ const enhance = compose(
 )
 
 const RemainderDiscardDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {open, handleSubmit, onSubmit, onClose, classes} = props
+    // const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))/
 
     const iconStyle = {
         icon: {
@@ -189,7 +189,7 @@ const RemainderDiscardDialog = enhance((props) => {
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
+            <form onSubmit={handleSubmit(onSubmit)} className={classes.form} style={{minHeight: 'auto'}}>
                 <div className={classes.dialogBody}>
                         <Fields
                             names={['products', 'productType', 'product', 'amount']}
@@ -225,7 +225,8 @@ const RemainderDiscardDialog = enhance((props) => {
 
 RemainderDiscardDialog.propTypes = {
     open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired
 }
 
 RemainderDiscardDialog.defaultProps = {

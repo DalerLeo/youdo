@@ -35,3 +35,18 @@ export const transferSerializer = (data) => {
     }
 }
 
+export const discardSerializer = (data) => {
+    const comment = _.get(data, ['comment'])
+    const products = _.map(_.get(data, 'products'), (item) => {
+        return {
+            amount: item.amount,
+            product: item.product.value.id
+        }
+    })
+
+    return {
+        products,
+        comment
+    }
+}
+
