@@ -101,6 +101,9 @@ const enhance = compose(
             cursor: 'pointer',
             '& > div:first-child': {
                 fontWeight: '600'
+            },
+            '& > div:last-child': {
+                textAlign: 'right'
             }
         },
         rightSide: {
@@ -167,25 +170,30 @@ const CurrencyGridList = enhance((props) => {
             </IconButton>
         </div>
     )
+
     const currencyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const rate = numberFormat(_.get(item, 'rate'))
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const currentCurrency = getConfig('PRIMARY_CURRENCY')
+        const createdDate = moment(_.get(_.find(_.get(detailData, ['data', 'results']), {'currency': id}), 'createdDate')).format('DD.MM.YYYY')
         const isActive = _.get(detailData, 'id') === id
 
-        return (
-            <div key={id} className={classes.list}
-                 style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
-                 : {backgroundColor: '#f2f5f8', display: 'relative'}}
-                 onClick={() => { listData.handleCurrencyClick(id) }}>
-                <div className={classes.title}>{name}</div>
-                <div className={classes.balance}>
-                    <div>{rate}</div>
-                    <div>{createdDate}</div>
+        if (name !== currentCurrency) {
+            return (
+                <div key={id} className={classes.list}
+                     style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
+                         : {backgroundColor: '#f2f5f8', display: 'relative'}}
+                     onClick={() => { listData.handleCurrencyClick(id) }}>
+                    <div className={classes.title}>{name}</div>
+                    <div className={classes.balance}>
+                        <div>Курс: {rate}</div>
+                        <div>{createdDate}</div>
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
+        return false
     })
     const currency = _.get(_.find(_.get(listData, 'data'), (o) => {
         return o.id === _.toInteger(_.get(detailData, 'id'))
@@ -238,7 +246,7 @@ const CurrencyGridList = enhance((props) => {
                     <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
                         <div>Валюты</div>
                     </div>
-                    <Paper zDepth={1} style={{height: 'calc(100% - 33px)'}}>
+                    <Paper zDepth={1} style={{height: 'calc(100% - 18px)'}}>
                         {listLoading
                             ? <div className={classes.loader}>
                                 <CircularProgress size={40} thickness={4}/>
