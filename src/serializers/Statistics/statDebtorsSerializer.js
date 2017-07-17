@@ -15,15 +15,10 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const itemSerializer = (data, filterItem, id) => {
-    const {...defaultData} = data
-
+export const itemSerializer = (id) => {
     return {
-        'user': id,
-        'page': _.get(filterItem, 'page'),
-        'page_size': _.get(filterItem, 'pageSize'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate')
+        'client': id,
+        'dept': true
     }
 }
 

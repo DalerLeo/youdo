@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
@@ -12,6 +13,7 @@ import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import List from 'material-ui/svg-icons/action/list'
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down-circle'
 import Excel from 'material-ui/svg-icons/av/equalizer'
@@ -239,8 +241,10 @@ const StatDebtorsGridList = enhance((props) => {
         classes,
         filter,
         listData,
+        detailData,
         handleSubmitFilterDialog,
-        statDebtorsDialog
+        statDebtorsDialog,
+        handleOpenCloseDetail
     } = props
 
     const iconStyle = {
@@ -263,13 +267,71 @@ const StatDebtorsGridList = enhance((props) => {
             <Col xs={3}>Ожидаемые (UZS)</Col>
         </Row>
     )
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const detailList = _.map(_.get(detailData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const createdDate = moment(_.get(item, 'createdDate')).format(('DD.MM.YYYY'))
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
+        const totalBalance = numberFormat(_.get(item, 'totalBalance'), primaryCurrency)
+        const totalExpected = numberFormat(_.toInteger(_.get(item, 'totalPrice')) - _.toInteger(_.get(item, 'totalBalance')), primaryCurrency)
+
+        return (
+            <Row key={id} className="dottedList">
+                <Col xs={2}>{id}</Col>
+                <Col xs={3}>{createdDate}</Col>
+                <Col xs={2}>{totalPrice}</Col>
+                <Col xs={2}>{totalBalance}</Col>
+                <Col xs={2}>{totalExpected}</Col>
+                <Col xs={1} style={{paddingRight: '0'}}>
+                    <IconButton
+                        onTouchTap={statDebtorsDialog.handleOpenStatDebtorsDialog}>
+                        <List color="#12aaeb"/>
+                    </IconButton>
+                </Col>
+            </Row>
+        )
+    })
 
     const list = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
+        const id = _.get(item, ['client', 'id'])
         const client = _.get(item, ['client', 'name'])
         const deptSum = numberFormat(_.get(item, 'deptSum'), getConfig('PRIMARY_CURRENCY'))
         const expectSum = numberFormat(_.get(item, 'expectSum'), getConfig('PRIMARY_CURRENCY'))
 
+        if (_.get(detailData, 'openDetailId') === id) {
+            return (
+                <div className={classes.expandedList}>
+                    <Row>
+                        <Col xs={5}>{client}</Col>
+                        <Col xs={3}>{deptSum}</Col>
+                        <Col xs={3}>{expectSum}</Col>
+                        <Col xs={1} style={{paddingRight: '0'}}>
+                            <IconButton
+                                style={{transform: 'rotate(180deg)'}}
+                                disableTouchRipple={true}
+                                onTouchTap={() => {
+                                    handleOpenCloseDetail(id)
+                                }}>
+                                <ArrowDown color="#12aaeb"/>
+                            </IconButton>
+                        </Col>
+                    </Row>
+                    <div className={classes.detail}>
+                        <Row className="dottedList">
+                            <Col xs={2}>№ заказа</Col>
+                            <Col xs={3}>Ожидаемая дата платежа</Col>
+                            <Col xs={2}>Сумма заказа (UZS)</Col>
+                            <Col xs={2}>Оплачено (UZS)</Col>
+                            <Col xs={2}>Долг (UZS)</Col>
+                        </Row>
+                        {_.get(detailData, 'detailLoading')
+                            ? <div style={{textAlign: 'center'}}>
+                                <CircularProgress size={40} thickness={4} />
+                            </div>
+                            : detailList}
+                    </div>
+                </div>)
+        }
         return (
             <Row key={id} className={classes.list}>
                 <Col xs={5}>{client}</Col>
@@ -277,65 +339,16 @@ const StatDebtorsGridList = enhance((props) => {
                 <Col xs={3}>{expectSum}</Col>
                 <Col xs={1} style={{paddingRight: '0'}}>
                     <IconButton
-                        disableTouchRipple={true}>
+                        disableTouchRipple={true}
+                        onTouchTap={() => {
+                            handleOpenCloseDetail(id)
+                        }}>
                         <ArrowDown color="#12aaeb"/>
                     </IconButton>
                 </Col>
             </Row>
         )
     })
-
-    const expanded = (
-        <div className={classes.expandedList}>
-            <Row>
-                <Col xs={5}>Наименование клиента</Col>
-                <Col xs={3}>2 000 000</Col>
-                <Col xs={3}>1 000 000</Col>
-                <Col xs={1} style={{paddingRight: '0'}}>
-                    <IconButton
-                        style={{transform: 'rotate(180deg)'}}
-                        disableTouchRipple={true}>
-                        <ArrowDown color="#12aaeb"/>
-                    </IconButton>
-                </Col>
-            </Row>
-            <div className={classes.detail}>
-                <Row className="dottedList">
-                    <Col xs={2}>№ заказа</Col>
-                    <Col xs={3}>Ожидаемая дата платежа</Col>
-                    <Col xs={2}>Сумма заказа (UZS)</Col>
-                    <Col xs={2}>Оплачено (UZS)</Col>
-                    <Col xs={2}>Долг (UZS)</Col>
-                </Row>
-                <Row className="dottedList">
-                    <Col xs={2}>312</Col>
-                    <Col xs={3}>22.06.2017</Col>
-                    <Col xs={2}>30 000 000</Col>
-                    <Col xs={2}>17 000 000</Col>
-                    <Col xs={2}>13 000 000</Col>
-                    <Col xs={1} style={{paddingRight: '0'}}>
-                        <IconButton
-                            onTouchTap={statDebtorsDialog.handleOpenStatDebtorsDialog}>
-                            <List color="#12aaeb"/>
-                        </IconButton>
-                    </Col>
-                </Row>
-                <Row className="dottedList">
-                    <Col xs={2}>312</Col>
-                    <Col xs={3}>22.06.2017</Col>
-                    <Col xs={2}>30 000 000</Col>
-                    <Col xs={2}>17 000 000</Col>
-                    <Col xs={2}>13 000 000</Col>
-                    <Col xs={1} style={{paddingRight: '0'}}>
-                        <IconButton
-                            onTouchTap={statDebtorsDialog.handleOpenStatDebtorsDialog}>
-                            <List color="#12aaeb"/>
-                        </IconButton>
-                    </Col>
-                </Row>
-            </div>
-        </div>
-    )
 
     const countDebtors = _.get(listData, ['statData', 'debtors'])
     const deptSum = numberFormat(_.get(listData, ['statData', 'debSum']), getConfig('PRIMARY_CURRENCY'))
@@ -390,8 +403,11 @@ const StatDebtorsGridList = enhance((props) => {
                         </div>
                         <div className={classes.tableWrapper}>
                             {headers}
-                            {list} {list}
-                            {expanded}
+                            {_.get(listData, 'listLoading')
+                                ? <div style={{textAlign: 'center'}}>
+                                    <CircularProgress size={40} thickness={4} />
+                                </div>
+                                : list}
                         </div>
                     </div>
                 </div>
