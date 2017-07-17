@@ -140,8 +140,8 @@ const StockTabReceive = enhance((props) => {
                                             : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
                                                 : (<span className={classes.error}>Отменен</span>))}</Col>
                                     <Col xs={2} style={{textAlign: 'right'}}>
-                                        <a onClick={createDialog.handleOpenCreateDialog}
-                                           className={classes.actionButton}>Выполнить</a>
+                                        {!status && <a onClick={createDialog.handleOpenCreateDialog}
+                                           className={classes.actionButton}>Выполнить</a>}
                                     </Col>
                                 </Row>
                             </div>
