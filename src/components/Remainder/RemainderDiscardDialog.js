@@ -225,7 +225,8 @@ const RemainderDiscardDialog = enhance((props) => {
 
 RemainderDiscardDialog.propTypes = {
     open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired
 }
 
 RemainderDiscardDialog.defaultProps = {

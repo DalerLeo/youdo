@@ -268,7 +268,8 @@ export const TRACKING_ITEM = `${TRACKING}/%d/`
 export const REMAINDER = 'stock/stock'
 export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
 export const REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
-export const REMAINDER_TRANSFER_ITEM = '/stock/stock_transfer/wb_create/'
+export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
+export const REMAINDER_DISCARD = '/stock/stock_transfer/wb_create/'
 
 export const STAT_AGENT_LIST = 'stats/agents/'
 export const STAT_AGENT_ITEM = 'sales/order/'
