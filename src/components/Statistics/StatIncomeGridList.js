@@ -16,6 +16,7 @@ import SubMenu from '../SubMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
+import CircularProgress from 'material-ui/CircularProgress'
 import Pagination from '../GridList/GridListNavPagination'
 import StatIncomeDialog from './StatIncomeDialog'
 import getConfig from '../../helpers/getConfig'
@@ -226,7 +227,6 @@ const StatIncomeGridList = enhance((props) => {
         },
         xAxis: {
             categories: valueName,
-                // ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             tickmarkPlacement: 'on',
             title: {
                 text: '',
@@ -378,7 +378,11 @@ const StatIncomeGridList = enhance((props) => {
                         </div>
                         <div className={classes.tableWrapper}>
                             {headers}
-                            {list}
+                            {_.get(listData, 'listLoading')
+                                ? <div style={{textAlign: 'center'}}>
+                                    <CircularProgress size={40} thickness={4} />
+                                </div>
+                                : list}
                         </div>
                     </div>
                 </div>
@@ -391,6 +395,7 @@ const StatIncomeGridList = enhance((props) => {
             <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
             <StatIncomeDialog
+                loading={statIncomeDialog.loading}
                 open={statIncomeDialog.openStatIncomeDialog}
                 onClose={statIncomeDialog.handleCloseStatIncomeDialog}
             />

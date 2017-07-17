@@ -10,7 +10,8 @@ import filterHelper from '../../helpers/filter'
 import {StatProductGridList} from '../../components/Statistics'
 import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/StatProductGridList'
 import {
-    statProductListFetchAction
+    statProductListFetchAction,
+    getDocumentAction
 } from '../../actions/statProduct'
 
 const enhance = compose(
@@ -61,6 +62,10 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParam()})
+        },
+        handleGetDocument: props => () => {
+            const {dispatch, filter} = props
+            return dispatch(getDocumentAction(filter))
         }
     })
 )
@@ -88,6 +93,10 @@ const StatProductList = enhance((props) => {
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
+    }
+
     return (
         <Layout {...layout}>
             <StatProductGridList
@@ -95,6 +104,7 @@ const StatProductList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
+                getDocument={getDocument}
             />
         </Layout>
     )

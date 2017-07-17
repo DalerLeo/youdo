@@ -14,6 +14,7 @@ import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import List from 'material-ui/svg-icons/action/list'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
@@ -160,7 +161,8 @@ const StatMarketGridList = enhance((props) => {
         filter,
         filterItem,
         statMarketDialog,
-        handleSubmitFilterDialog
+        handleSubmitFilterDialog,
+        getDocument
     } = props
 
     const headerStyle = {
@@ -250,14 +252,19 @@ const StatMarketGridList = enhance((props) => {
                                 <Search/>
                             </IconButton>
                         </div>
-                        <a className={classes.excel}>
+                        <a className={classes.excel}
+                           onTouchTap = {getDocument.handleGetDocument}>
                             <Excel color="#fff"/> <span>Excel</span>
                         </a>
                     </form>
                     <Pagination filter={filter}/>
                     <div className={classes.tableWrapper}>
                         {headers}
-                        {list}
+                        {_.get(listData, 'listLoading')
+                            ? <div style={{textAlign: 'center'}}>
+                                <CircularProgress size={40} thickness={4} />
+                            </div>
+                            : list}
                     </div>
                 </div>
             </div>
@@ -270,6 +277,7 @@ const StatMarketGridList = enhance((props) => {
             <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
             <StatMarketDialog
+                loading={detailData.detailLoading}
                 detailData={detailData}
                 open={statMarketDialog.openStatMarketDialog}
                 onClose={statMarketDialog.handleCloseStatMarketDialog}
