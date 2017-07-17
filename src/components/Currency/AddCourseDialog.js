@@ -40,7 +40,7 @@ const enhance = compose(
         },
 
         fields: {
-            display: ({loading}) => !loading ? 'flex' : 'none'
+            width: '100%'
         }
     })),
     reduxForm({
@@ -62,7 +62,7 @@ const PrimaryCurrencyDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Выбрать основную валюту</span>
+                <span>Установить курс</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>

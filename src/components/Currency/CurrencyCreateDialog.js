@@ -75,13 +75,21 @@ const CurrencyCreateDialog = enhance((props) => {
                                 label="Наименование"
                                 fullWidth={true}
                             />
-                            <Field
-                                name="rate"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="Курс"
-                                fullWidth={true}
-                            />
+                            {isUpdate
+                                ? <Field
+                                    name="rate"
+                                    disabled={true}
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Курс"
+                                    fullWidth={true}/>
+                                : <Field
+                                        name="rate"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Курс"
+                                        fullWidth={true}/>
+                            }
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

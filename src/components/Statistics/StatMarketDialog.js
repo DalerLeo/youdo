@@ -64,7 +64,6 @@ const enhance = compose(
             fontWeight: '400'
         },
         titleContent: {
-            textTransform: 'capitalize',
             lineHeight: '60px',
             padding: '0 30px',
             '& div': {
@@ -135,7 +134,7 @@ const StatMarketDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '700px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
-            <div className={classes.titleContent}>
+            <div className={classes.titleContent} style={{textTransform: 'capitalize'}}>
                 <span>{marketName}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
