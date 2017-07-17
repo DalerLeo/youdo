@@ -295,3 +295,8 @@ export const STOCK_RECEIVE_LIST = `/${STOCK_RECEIVE}/`
 export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
 export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/accept_products/`
 export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE
+
+export const CLIENT_BALANCE = 'sales/client'
+export const CLIENT_BALANCE_LIST = `/${CLIENT_BALANCE}/`
+export const CLIENT_BALANCE_ITEM = `/${CLIENT_BALANCE}/%d/`
+export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
