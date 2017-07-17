@@ -84,11 +84,15 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const client = _.get(filterForm, ['values', 'client', 'value'])
+            const market = _.get(filterForm, ['values', 'market', 'value'])
 
             filter.filterBy({
                 [PENDING_PAYMENTS_FILTER_OPEN]: false,
                 [PENDING_PAYMENTS_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [PENDING_PAYMENTS_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [PENDING_PAYMENTS_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [PENDING_PAYMENTS_FILTER_KEY.MARKET]: market,
+                [PENDING_PAYMENTS_FILTER_KEY.CLIENT]: client
             })
         },
 

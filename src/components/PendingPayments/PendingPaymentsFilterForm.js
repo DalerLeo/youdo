@@ -10,6 +10,8 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
+import ClientSearchField from '../ReduxForm/Client/ClientSearchField'
+import MarketSearchField from '../ReduxForm/Shop/MarketSearchField'
 
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -18,7 +20,9 @@ export const PENDING_PAYMENTS_FILTER_OPEN = 'openFilterDialog'
 
 export const PENDING_PAYMENTS_FILTER_KEY = {
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    TO_DATE: 'toDate',
+    CLIENT: 'client',
+    MARKET: 'market'
 }
 
 const enhance = compose(
@@ -156,7 +160,28 @@ const PendingPaymentsFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="market"
+                            component={MarketSearchField}
+                            label="Магазин"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="client"
+                            component={ClientSearchField}
+                            label="Клиент"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="date"
+                            component={DateToDateField}
+                            label="Диапазон дат"
+                            fullWidth={true}/>
                     </div>
                     <RaisedButton
                         type="submit"
