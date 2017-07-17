@@ -259,7 +259,8 @@ const rootReducer = combineReducers({
     }),
     tracking: combineReducers({
         list: createThunkReducer(actionTypes.TRACKING_LIST),
-        item: createThunkReducer(actionTypes.TRACKING_ITEM)
+        item: createThunkReducer(actionTypes.TRACKING_ITEM),
+        location: createThunkReducer(actionTypes.LOCATION_LIST)
     }),
     remainder: combineReducers({
         create: createThunkReducer(actionTypes.REMAINDER_CREATE),

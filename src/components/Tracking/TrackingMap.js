@@ -1,43 +1,48 @@
+import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
-import {withGoogleMap, GoogleMap as DefaultGoogleMap} from 'react-google-maps'
+import {withGoogleMap, GoogleMap as DefaultGoogleMap, Marker, Polyline} from 'react-google-maps'
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs'
 import CircularProgress from 'material-ui/CircularProgress'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
-import DrawingManager from 'react-google-maps/lib/drawing/DrawingManager'
+import PropTypes from 'prop-types'
 
 const enhance = compose(
     withScriptjs,
     withGoogleMap
 )
 
-const GoogleMapWrapper = enhance(({onMapLoad, ...props}) => {
+const GoogleMapWrapper = enhance(({onMapLoad, listData, handleOpenDetails, agentLocation, handleAgentTrack, ...props}) => {
+    const agentCoordinates = [
+        _.map(_.get(agentLocation, 'results'), (item) => {
+            const lat = _.get(item, ['point', 'lat'])
+            const lng = _.get(item, ['point', 'lon'])
+            return {lat: lat, lng: lng}
+        })
+    ]
     return (
         <DefaultGoogleMap ref={onMapLoad} {...props}>
-            <DrawingManager
-                defaultDrawingMode={google.maps.drawing.OverlayType.CIRCLE}
-                defaultOptions={{
-                    drawingControl: true,
-                    drawingControlOptions: {
-                        position: google.maps.ControlPosition.TOP_CENTER,
-                        drawingModes: [
-                            google.maps.drawing.OverlayType.CIRCLE,
-                            google.maps.drawing.OverlayType.POLYGON,
-                            google.maps.drawing.OverlayType.POLYLINE,
-                            google.maps.drawing.OverlayType.RECTANGLE
-                        ]
-                    },
-                    circleOptions: {
-                        fillColor: '#ffff00',
-                        fillOpacity: 1,
-                        strokeWeight: 5,
-                        clickable: false,
-                        editable: true,
-                        zIndex: 1
-                    }
-                }}
-            />
+            {_.map(listData, (item) => {
+                const id = _.get(item, 'id')
+                const lat = _.get(item, ['location', 'lat'])
+                const lng = _.get(item, ['location', 'lon'])
+                return (
+                    <Marker
+                        key={id}
+                        onClick={() => { handleAgentTrack(id) }}
+                        position={{lat: lat, lng: lng}}
+                    />
+                )
+            })}
             {props.children}
+            <Polyline
+                path={_.get(agentCoordinates, '0')}
+                geodesic={true}
+                strokeColor='#12aaeb'
+                strokeOpacity={1.0}
+                strokeWeight={2}
+            />
+
         </DefaultGoogleMap>
     )
 })
@@ -48,7 +53,7 @@ const Loader = () =>
     </div>
 
 const GoogleMap = (props) => {
-    const {...defaultProps} = props
+    const {listData, handleOpenDetails, agentLocation, handleAgentTrack, ...defaultProps} = props
 
     return (
         <GoogleMapWrapper
@@ -59,10 +64,21 @@ const GoogleMap = (props) => {
             mapElement={<div style={{height: '100%'}} />}
             defaultZoom={15}
             radius="500"
+            listData={listData}
+            handleOpenDetails={handleOpenDetails}
+            agentLocation={agentLocation}
+            handleAgentTrack={handleAgentTrack}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>
     )
+}
+
+GoogleMap.PropTypes = {
+    listData: PropTypes.object,
+    handleOpenDetails: PropTypes.func,
+    handleAgentTrack: PropTypes.func,
+    agentLocation: PropTypes.object
 }
 
 export default GoogleMap

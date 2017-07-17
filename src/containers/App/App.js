@@ -12,7 +12,7 @@ import {
 import * as ROUTES from '../../constants/routes'
 
 const time = 10000
-const refreshAgentsList = 30000
+const refreshAgentsList = 5000
 @compose(
     connect(),
     withHandlers({
