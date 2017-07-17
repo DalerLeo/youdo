@@ -12,7 +12,6 @@ import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import CurrencySearchField from '../ReduxForm/CurrencySearchField'
-export const PRICE_SET_FORM_OPEN = 'openSetForm'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
