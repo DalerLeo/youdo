@@ -264,6 +264,7 @@ export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
 export const TRACKING = 'market/agents_location/'
 export const TRACKING_LIST = `${TRACKING}`
 export const TRACKING_ITEM = `${TRACKING}/%d/`
+export const LOCATION_LIST = 'market/location/'
 
 export const REMAINDER = 'stock/stock'
 export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`

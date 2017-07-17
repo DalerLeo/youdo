@@ -10,9 +10,7 @@ import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import {reduxForm, Field} from 'redux-form'
-import DateToDateField from '../ReduxForm/Basic/DateToDateFieldCustom'
-import MarketTypeSearch from '../ReduxForm/Shop/MarketTypeSearchField'
-import AgentSearch from '../ReduxForm/Users/UsersSearchField'
+import DateField from '../ReduxForm/Basic/DateField'
 import Checkbox from '../ReduxForm/Basic/CheckBox'
 
 const enhance = compose(
@@ -86,6 +84,24 @@ const enhance = compose(
             '& input': {
                 marginTop: '0 !important'
             }
+        },
+        inputDateCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            },
+            '& div:first-child': {
+                height: '45px !important'
+            }
         }
     }),
     reduxForm({
@@ -124,39 +140,29 @@ const TrackingDetails = enhance((props) => {
             <div className={classes.content}>
                 <div className={classes.filter}>
                     <div className={classes.subtitle}>Фильтры</div>
-                    <Field
-                        className={classes.inputFieldCustom}
-                        name="border"
-                        component={MarketTypeSearch}
-                        label="Выберите зону"
-                        fullWidth={true}/>
-                    <Field
-                        className={classes.inputFieldCustom}
-                        name="agent"
-                        component={AgentSearch}
-                        label="Агент"
-                        fullWidth={true}/>
-                    <Field
-                        className={classes.inputFieldCustom}
-                        name="period"
-                        component={DateToDateField}
-                        label="Посмотреть по периоду"
-                        fullWidth={true}/>
-                    <Field
-                        name="showMarkets"
-                        className={classes.checkbox}
-                        component={Checkbox}
-                        label="Отображать магазины"/>
-                    <Field
-                        name="showZones"
-                        className={classes.checkbox}
-                        component={Checkbox}
-                        label="Отображать зоны"/>
-                    <Field
-                        name="agentTrack"
-                        className={classes.checkbox}
-                        component={Checkbox}
-                        label="Пройденный маршрут агента"/>
+                    <form>
+                        <Field
+                            className={classes.inputDateCustom}
+                            name="date"
+                            component={DateField}
+                            label="Посмотреть по дате"
+                            fullWidth={true}/>
+                        <Field
+                            name="showMarkets"
+                            className={classes.checkbox}
+                            component={Checkbox}
+                            label="Отображать магазины"/>
+                        <Field
+                            name="showZones"
+                            className={classes.checkbox}
+                            component={Checkbox}
+                            label="Отображать зоны"/>
+                        <Field
+                            name="agentTrack"
+                            className={classes.checkbox}
+                            component={Checkbox}
+                            label="Пройденный маршрут агента"/>
+                    </form>
                 </div>
             </div>
         </div>

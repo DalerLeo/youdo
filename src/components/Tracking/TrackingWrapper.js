@@ -175,7 +175,10 @@ const TrackingWrapper = enhance((props) => {
         filter,
         listData,
         detailData,
-        toggle
+        toggle,
+        handleOpenDetails,
+        handleAgentTrack,
+        agentLocation
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -217,16 +220,18 @@ const TrackingWrapper = enhance((props) => {
                 <div className={classes.content}>
                     <div className={classes.filter}>
                         <div className={classes.title}>Фильтры</div>
-                        <Field
-                            name="showMarkets"
-                            className={classes.checkbox}
-                            component={Checkbox}
-                            label="Отображать магазины"/>
-                        <Field
-                            name="showZones"
-                            className={classes.checkbox}
-                            component={Checkbox}
-                            label="Отображать зоны"/>
+                        <form>
+                            <Field
+                                name="showMarkets"
+                                className={classes.checkbox}
+                                component={Checkbox}
+                                label="Отображать магазины"/>
+                            <Field
+                                name="showZones"
+                                className={classes.checkbox}
+                                component={Checkbox}
+                                label="Отображать зоны"/>
+                        </form>
                     </div>
                     <div className={classes.activeAgents}>
                         {
@@ -265,6 +270,7 @@ const TrackingWrapper = enhance((props) => {
                 </div>}
             {openDetail &&
             <TrackingDetails
+                initialValues={props.initialValues}
                 filter={filter}
                 listData={listData}
                 detailData={detailData} />
@@ -276,7 +282,12 @@ const TrackingWrapper = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.TRACKING_LIST_URL}/>
             <div className={classes.trackingWrapper}>
-                <TrackingMap />
+                <TrackingMap
+                    listData={_.get(listData, 'data')}
+                    handleOpenDetails={handleOpenDetails}
+                    agentLocation={agentLocation}
+                    handleAgentTrack={handleAgentTrack}
+                />
                 {zoneInfoToggle}
             </div>
         </Container>
@@ -287,11 +298,14 @@ TrackingWrapper.PropTypes = {
     filter: PropTypes.object,
     listData: PropTypes.object,
     detailData: PropTypes.object,
+    agentLocation: PropTypes.object,
     toggle: PropTypes.shape({
         openToggle: PropTypes.bool.isRequired,
         handleExpandInfo: PropTypes.func.isRequired,
         handleCollapseInfo: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    handleOpenDetails: PropTypes.func,
+    handleAgentTrack: PropTypes.func
 }
 
 export default TrackingWrapper
