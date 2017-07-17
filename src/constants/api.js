@@ -209,8 +209,8 @@ export const STATDEBTORS_ITEM = `/${STATDEBTORS}/%d/`
 export const STATDEBTORS_DELETE = `/${STATDEBTORS}/%d/`
 export const STATDEBTORS_GET_DOCUMENT = 'sales/debtors_statistics/'
 
-export const PENDING_PAYMENTS = 'sales/order_payment'
-export const PENDING_PAYMENTS_CREATE = `/${PENDING_PAYMENTS}/`
+export const PENDING_PAYMENTS = 'sales/order'
+export const PENDING_PAYMENTS_CREATE = `/sales/order_payment/`
 export const PENDING_PAYMENTS_LIST = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_ITEM = `/${PENDING_PAYMENTS}/%d/`
 
