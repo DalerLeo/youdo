@@ -2,10 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import {Link} from 'react-router'
 import injectSheet from 'react-jss'
-import sprintf from 'sprintf'
 import moment from 'moment'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -13,6 +10,9 @@ import Paper from 'material-ui/Paper'
 import StockReceiveDetails from './StockReceiveDetails'
 import CreateDialog from './StockReceiveCreateDialog'
 import Pagination from '../GridList/GridListNavPagination'
+
+const SUPPLY = 'supply'
+const TRANSFER = 'transfer'
 
 const enhance = compose(
     injectSheet({
@@ -35,6 +35,7 @@ const enhance = compose(
             }
         },
         list: {
+            cursor: 'pointer',
             marginBottom: '5px',
             '& > a': {
                 color: 'inherit'
@@ -97,8 +98,8 @@ const StockTabReceive = enhance((props) => {
         handleCloseDetail
     } = props
     const detailId = _.get(detailData, 'id')
+    const detailType = _.get(detailData, 'type')
     const listLoading = _.get(listData, 'listLoading')
-
     if (listLoading) {
         return (
             <div className={classes.loader}>
@@ -111,34 +112,43 @@ const StockTabReceive = enhance((props) => {
         <div className={classes.listWrapper}>
             <div className={classes.headers}>
                 <Row>
-                    <Col xs={2}>№ заказа</Col>
-                    <Col xs={4}>От кого</Col>
+                    <Col xs={1}>№ заказа</Col>
+                    <Col xs={3}>От кого</Col>
+                    <Col xs={2}>Тип</Col>
                     <Col xs={2}>Дата приемки</Col>
                     <Col xs={2}>Статус</Col>
                 </Row>
             </div>
-            {_.map(_.get(listData, 'data'), (item) => {
+            {_.map(_.get(listData, 'data'), (item, index) => {
                 const id = _.get(item, 'id')
-                const provider = _.get(item, ['provider', 'name'])
-                const dateDelivery = _.get(item, 'dateDelivery') ? moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY') : 'Не указана'
+                const by = _.get(item, ['by'])
+                const type = _.get(item, ['type'])
+                const date = _.get(item, 'date') ? moment(_.get(item, 'date')).format('DD.MM.YYYY') : 'Не указана'
                 const status = _.toInteger(_.get(item, 'status'))
                 const PENDING = 0
                 const IN_PROGRESS = 1
                 const COMPLETED = 2
 
-                if (id === detailId) {
+                if (id === detailId && type === detailType) {
                     return (
-                        <Paper key={id} zDepth={1} className={classes.expandedList}>
+                        <Paper key={index} zDepth={1} className={classes.expandedList}>
                             <div className={classes.wrapper}>
                                 <Row className={classes.semibold}>
-                                    <Col xs={2}>{id}</Col>
-                                    <Col xs={4} onClick={handleCloseDetail}>{provider}</Col>
-                                    <Col xs={2}>{dateDelivery}</Col>
-                                    <Col xs={2}>{status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
-                                        : ((status === IN_PROGRESS) ? (
-                                            <span className={classes.begin}>В процессе</span>)
-                                            : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
-                                                : (<span className={classes.error}>Отменен</span>))}</Col>
+                                    <Col xs={1}>{id}</Col>
+                                    <Col xs={3} onClick={handleCloseDetail}>{by}</Col>
+                                    <Col xs={2}>
+                                        {type === SUPPLY ? ('Поставка')
+                                            : ((type === TRANSFER) ? ('Передача')
+                                                : ('Возврат'))}
+                                    </Col>
+                                    <Col xs={2}>{date}</Col>
+                                    <Col xs={2}>
+                                        {status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
+                                            : ((status === IN_PROGRESS) ? (
+                                                <span className={classes.begin}>В процессе</span>)
+                                                : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
+                                                    : (<span className={classes.error}>Отменен</span>))}
+                                    </Col>
                                     <Col xs={2} style={{textAlign: 'right'}}>
                                         {!status && <a onClick={createDialog.handleOpenCreateDialog}
                                            className={classes.actionButton}>Выполнить</a>}
@@ -154,24 +164,30 @@ const StockTabReceive = enhance((props) => {
                     )
                 }
                 return (
-                    <Paper key={id} zDepth={1} className={classes.list}>
-                        <Link to={{
-                            pathname: sprintf(ROUTES.STOCK_RECEIVE_ITEM_PATH, id),
-                            query: filter.getParams()
-                        }}>
+                    <Paper
+                        key={index}
+                        zDepth={1}
+                        className={classes.list}
+                        onClick={() => { listData.handleOpenDetail(id, type) }}>
                             <div className={classes.wrapper}>
                                 <Row>
-                                    <Col xs={2}>{id}</Col>
-                                    <Col xs={4}>{provider}</Col>
-                                    <Col xs={2}>{dateDelivery}</Col>
-                                    <Col xs={2}>{status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
-                                        : ((status === IN_PROGRESS) ? (
-                                            <span className={classes.begin}>В процессе</span>)
-                                            : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
-                                                : (<span className={classes.error}>Отменен</span>))}</Col>
+                                    <Col xs={1}>{id}</Col>
+                                    <Col xs={3}>{by}</Col>
+                                    <Col xs={2}>
+                                        {type === SUPPLY ? ('Поставка')
+                                            : ((type === TRANSFER) ? ('Передача')
+                                                : ('Возврат'))}
+                                    </Col>
+                                    <Col xs={2}>{date}</Col>
+                                    <Col xs={2}>
+                                        {status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
+                                            : ((status === IN_PROGRESS) ? (
+                                                <span className={classes.begin}>В процессе</span>)
+                                                : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
+                                                    : (<span className={classes.error}>Отменен</span>))}
+                                    </Col>
                                 </Row>
                             </div>
-                        </Link>
                     </Paper>
                 )
             })}
