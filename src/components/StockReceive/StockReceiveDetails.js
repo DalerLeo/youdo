@@ -27,6 +27,12 @@ const enhance = compose(
         content: {
             width: '100%',
             overflow: 'hidden',
+            display: 'flex'
+        },
+        leftSide: {
+            flexBasis: '70%',
+            maxWidth: '70%',
+            padding: '0 30px 5px',
             '& > .row': {
                 padding: '15px 0',
                 '&:first-child': {
@@ -36,6 +42,18 @@ const enhance = compose(
                     display: 'none'
                 }
             }
+        },
+        rightSide: {
+            flexBasis: '30%',
+            maxWidth: '30%',
+            padding: '20px 30px',
+            borderLeft: '1px #efefef solid',
+            '& > div:last-child': {
+                marginTop: '5px'
+            }
+        },
+        subtitle: {
+            fontWeight: '600'
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center 25px',
@@ -58,9 +76,10 @@ const enhance = compose(
 
 const StockReceiveDetails = enhance((props) => {
     const {classes, detailData} = props
+    const type = _.get(detailData, 'type')
     const detailLoading = _.get(detailData, 'detailLoading')
-    const products = _.get(detailData, ['data', 'products'])
-
+    const products = (type === 'order_return') ? _.get(detailData, ['data', 'returnedProducts']) : _.get(detailData, ['data', 'products'])
+    const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
     if (_.isEmpty(products)) {
         return (
             <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden'}}>
@@ -76,32 +95,32 @@ const StockReceiveDetails = enhance((props) => {
         <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px'}}>
             {detailLoading ? <LinearProgress/>
             : <div className={classes.content}>
-                <Row className='dottedList'>
-                    <Col xs={4}>Товар</Col>
-                    <Col xs={2}>Тип товара</Col>
-                    <Col xs={2}>Кол-во</Col>
-                    <Col xs={2}>Принято</Col>
-                    <Col xs={2}>Брак</Col>
-                </Row>
-                {_.map(products, (item) => {
-                    const id = _.get(item, 'id')
-                    const name = _.get(item, ['product', 'name'])
-                    const type = _.get(item, ['product', 'type', 'name'])
-                    const measurement = _.get(item, ['product', 'measurement', 'name'])
-                    const amount = numberFormat(_.get(item, 'amount'), measurement)
-                    const posted = numberFormat(_.get(item, 'postedAmount'), measurement)
-                    const defect = numberFormat(_.get(item, 'defectAmount'), measurement)
-                    return (
-                        <Row key={id} className='dottedList'>
-                            <Col xs={4}>{name}</Col>
-                            <Col xs={2}>{type}</Col>
-                            <Col xs={2}>{amount}</Col>
-                            <Col xs={2}>{posted}</Col>
-                            <Col xs={2}>{defect}</Col>
+                    <div className={classes.leftSide}>
+                        <Row className='dottedList'>
+                            <Col xs={6}>Товар</Col>
+                            <Col xs={4}>Тип товара</Col>
+                            <Col xs={2}>Кол-во</Col>
                         </Row>
-                    )
-                })}
-            </div>}
+                        {_.map(products, (item) => {
+                            const id = _.get(item, 'id')
+                            const name = (type === 'order_return') ? _.get(item, ['product']) : _.get(item, ['product', 'name'])
+                            const measurement = _.get(item, ['product', 'measurement', 'name'])
+                            const amount = numberFormat(_.get(item, 'amount'), measurement)
+                            return (
+                                <Row key={id} className='dottedList'>
+                                    <Col xs={6}>{name}</Col>
+                                    <Col xs={4}>Стиральный порошек</Col>
+                                    <Col xs={2}>{amount}</Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
+                    <div className={classes.rightSide}>
+                        <div className={classes.subtitle}>Комментарий:</div>
+                        <div>{comment}</div>
+                    </div>
+                </div>
+            }
         </div>
     )
 })

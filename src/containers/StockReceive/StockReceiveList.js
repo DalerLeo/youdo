@@ -7,6 +7,7 @@ import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import sprintf from 'sprintf'
 import * as STOCK_TAB from '../../constants/stockReceiveTab'
 import {
     StockReceiveGridList,
@@ -22,16 +23,23 @@ import {
     stockTransferListFetchAction,
     stockTransferItemFetchAction
 } from '../../actions/stockReceive'
+import {orderReturnListAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const TYPE = 'openType'
 const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['stockReceive', 'item', 'data'])
+        const stockReceiveType = _.get(props, ['location', 'query', 'openType'])
+        const detail = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'data'])
+                        : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
+                            : _.get(state, ['order', 'returnList', 'data'])
         const detailProducts = _.get(state, ['stockReceive', 'item', 'data'])
-        const detailLoading = _.get(state, ['stockReceive', 'item', 'loading'])
+        const detailLoading = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'loading'])
+                                : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'transferItem', 'loading'])
+                                    : _.get(state, ['order', 'returnList', 'loading'])
         const list = _.get(state, ['stockReceive', 'list', 'data'])
         const listLoading = _.get(state, ['stockReceive', 'list', 'loading'])
         const historyList = _.get(state, ['stockReceive', 'history', 'data'])
@@ -91,9 +99,16 @@ const enhance = compose(
         return prevId !== nextId
     }, ({dispatch, params, location}) => {
         const currentTab = _.get(location, ['query', 'tab']) || 'receive'
+        const stockReceiveType = _.get(location, ['query', 'openType'])
         const stockReceiveId = _.toInteger(_.get(params, 'stockReceiveId'))
         if (stockReceiveId > ZERO && currentTab === 'receive') {
-            dispatch(stockReceiveItemFetchAction(stockReceiveId))
+            if (stockReceiveType === 'supply') {
+                dispatch(stockReceiveItemFetchAction(stockReceiveId))
+            } else if (stockReceiveType === 'transfer') {
+                dispatch(stockTransferItemFetchAction(stockReceiveId))
+            } else if (stockReceiveType === 'order_return') {
+                dispatch(orderReturnListAction(stockReceiveId))
+            }
         } else if (stockReceiveId > ZERO && currentTab === 'transfer') {
             dispatch(stockTransferItemFetchAction(stockReceiveId))
         }
@@ -161,6 +176,13 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams()})
+        },
+        handleOpenDetail: props => (id, type) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.STOCK_RECEIVE_ITEM_PATH, id),
+                query: filter.getParams({[TYPE]: type})
+            })
         }
     })
 )
@@ -185,7 +207,7 @@ const StockReceiveList = enhance((props) => {
         layout,
         params
     } = props
-
+    const detailType = _.get(location, ['query', TYPE])
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
     const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_CREATE_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
@@ -196,7 +218,8 @@ const StockReceiveList = enhance((props) => {
 
     const listData = {
         data: _.get(list, 'results'),
-        listLoading
+        listLoading,
+        handleOpenDetail: props.handleOpenDetail
     }
 
     const historyData = {
@@ -216,6 +239,7 @@ const StockReceiveList = enhance((props) => {
     }
 
     const detailData = {
+        type: detailType,
         id: detailId,
         data: detail,
         detailLoading

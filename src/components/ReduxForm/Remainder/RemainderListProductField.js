@@ -4,7 +4,6 @@ import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import {connect} from 'react-redux'
 import {Field} from 'redux-form'
 import Dot from '../../Images/dot.png'
 import {
@@ -181,12 +180,6 @@ const enhance = compose(
             }
         }
     }),
-    connect((state) => {
-        const currency = _.get(state, ['form', 'SupplyCreateForm', 'values', 'currency', 'text'])
-        return {
-            currency
-        }
-    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
@@ -195,7 +188,6 @@ const enhance = compose(
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
-            const currency = _.get(props, ['currency'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
 
@@ -213,7 +205,7 @@ const enhance = compose(
                     props.dispatch(newChange(null))
                 }
                 if (!has) {
-                    onChange(_.union(products, [{product, amount, currency}]))
+                    onChange(_.union(products, [{product, amount}]))
                     has = false
                 }
             }
@@ -230,7 +222,7 @@ const enhance = compose(
     })
 )
 
-const RemainderListProductField = ({classes, state, dispatch, handleAdd, handleRemove, currency, ...defaultProps}) => {
+const RemainderListProductField = ({classes, handleAdd, handleRemove, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     return (
