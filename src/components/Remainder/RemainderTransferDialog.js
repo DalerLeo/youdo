@@ -166,29 +166,35 @@ const RemainderTransferDialog = enhance((props) => {
             <div className={classes.dialogBody}>
                 <div className={classes.leftSide}>
                     <span className={classes.subTitle}>Условия передачи товара</span>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="stock"
-                            component={StockSearchField}
-                            label="Склад"
-                        />
-                        <Field
-                            className={classes.inputDateCustom}
-                            name="deliveryDate"
-                            component={DateField}
-                            label="Дата доставки"
-                        />
-                        <Field
-                            style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
-                            name="comment"
-                            component={TextField}
-                            label="Оставить комментарий..."
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="fromStock"
+                        component={StockSearchField}
+                        label="С какого склада"
+                    />
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="toStock"
+                        component={StockSearchField}
+                        label="На Склад"
+                    />
+                    <Field
+                        className={classes.inputDateCustom}
+                        name="deliveryDate"
+                        component={DateField}
+                        label="Дата доставки"
+                    />
+                    <Field
+                        style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
+                        name="comment"
+                        component={TextField}
+                        label="Оставить комментарий..."
 
-                            multiLine={true}
-                            rows={4}
-                            rowsMax={6}
-                            fullWidth={true}/>
-            </div>
+                        multiLine={true}
+                        rows={4}
+                        rowsMax={6}
+                        fullWidth={true}/>
+                </div>
                 <div className={classes.rightSide}>
                     <Fields
                         names={['products', 'productType', 'product', 'amount']}

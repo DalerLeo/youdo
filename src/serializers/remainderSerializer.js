@@ -17,7 +17,8 @@ export const listFilterSerializer = (data, remaider) => {
 }
 
 export const transferSerializer = (data) => {
-    const stock = _.get(data, ['stock', 'value'])
+    const fromStock = _.get(data, ['fromStock', 'value'])
+    const toStock = _.get(data, ['toStock', 'value'])
     const comment = _.get(data, ['comment'])
     const deliveryDate = moment(_.get(data, 'deliveryDate')).format('YYYY-MM-DD')
     const products = _.map(_.get(data, 'products'), (item) => {
@@ -28,7 +29,8 @@ export const transferSerializer = (data) => {
     })
 
     return {
-        'to_stock': stock,
+        'from_stock': fromStock,
+        'to_stock': toStock,
         'date_delivery': deliveryDate,
         products,
         comment
