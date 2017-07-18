@@ -47,7 +47,6 @@ const enhance = compose(
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
         const productId = _.toNumber(_.get(state, ['form', 'StockReceiveCreateForm', 'values', 'product', 'value', 'id']))
         const filter = filterHelper(list, pathname, query)
-        console.log(query)
 
         return {
             list,
