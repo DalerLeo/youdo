@@ -30,7 +30,7 @@ const enhance = compose(
             display: 'flex',
             flexWrap: 'wrap',
             transition: 'all 250ms ease-out',
-            maxHeight: '500px',
+            maxHeight: '590px',
             overflow: 'hidden'
         },
         link: {
@@ -90,14 +90,16 @@ const enhance = compose(
         },
         content: {
             display: 'flex',
-            width: '100%'
+            width: '100%',
+            '& > div': {
+                boxSizing: 'border-box'
+            }
         },
         padding: {
             padding: '20px 30px'
         },
         leftSide: {
-            flexBasis: '30%',
-            maxWidth: '30%',
+            width: '320px',
             borderRight: '1px #efefef solid'
         },
         subBlock: {
@@ -182,6 +184,7 @@ const OrderDetails = enhance((props) => {
     const contactPhone = _.get(data, ['contact', 'telephone']) || 'N/A'
     const market = _.get(data, ['market', 'name'])
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
+    const dealType = _.get(data, 'dealType')
 
     const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
@@ -198,6 +201,7 @@ const OrderDetails = enhance((props) => {
     const discountPrice = _.toNumber(_.get(data, 'discountPrice'))
     const totalPrice = _.toNumber(_.get(data, 'totalPrice'))
     const totalPaid = _.get(data, 'totalPaid')
+    const paymentType = _.get(data, 'paymentType')
     const totalBalance = _.get(data, 'totalBalance')
     const discount = (discountPrice / (discountPrice + totalPrice)) * percent
 
@@ -297,6 +301,10 @@ const OrderDetails = enhance((props) => {
                                     <span>Инициатор:</span>
                                     <span>{agent}</span>
                                 </li>
+                                <li>
+                                    <span>Тип сделки:</span>
+                                    <span>{(dealType === '0') ? 'Стандартная' : 'Консигнация'}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -306,8 +314,12 @@ const OrderDetails = enhance((props) => {
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Дата оплаты:</span>
+                                    <span>Дата ожидаемой оплаты:</span>
                                     <span>22.05.2017</span>
+                                </li>
+                                <li>
+                                    <span>Тип оплаты:</span>
+                                    <span>{(paymentType === '0') ? 'Наличными' : 'Перечислением'}</span>
                                 </li>
                                 <li>
                                     <span>Стоимость доставки:</span>

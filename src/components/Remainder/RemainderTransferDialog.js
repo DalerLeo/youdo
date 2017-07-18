@@ -36,6 +36,15 @@ const enhance = compose(
             width: '100%',
             background: '#fff'
         },
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%'
+        },
         wrapper: {
             position: 'relative',
             padding: '0 30px',
@@ -48,15 +57,21 @@ const enhance = compose(
             }
         },
         title: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            height: '20px',
-            padding: '15px 30px 20px',
-            fontWeight: '600',
-            borderBottom: '1px #efefef solid',
-            textTransform: 'uppercase'
-
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important'
+            }
         },
         leftSide: {
             flexBasis: '25%',
@@ -80,6 +95,7 @@ const enhance = compose(
             display: 'flex'
         },
         noPadding: {
+            color: '#333 !important',
             padding: '0! important'
         },
         subTitle: {

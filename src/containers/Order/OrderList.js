@@ -272,9 +272,6 @@ const enhance = compose(
             const {dispatch, returnForm, detail, filter, location: {pathname}, params} = props
             const orderId = _.toInteger(_.get(params, 'orderId'))
             return dispatch(orderReturnAction(_.get(returnForm, ['values']), detail))
-                .catch((error) => {
-                    dispatch(openErrorAction({message: error}))
-                })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -282,6 +279,17 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
                     dispatch(orderItemReturnFetchAction(orderId))
                     dispatch(orderItemFetchAction(orderId))
+                })
+                .catch((error) => {
+                    const commentError = _.get(error, ['comment', '0'])
+                    const amountError = _.map(_.get(error, 'returned_products'), (item) => {
+                        const amount = _.get(item, ['amount', '0'])
+                        if (amount) {
+                            return (<div style={{marginTop: '10px'}}>Количество возвращаемого товара превышает количество товара в заказе</div>)
+                        }
+                        return false
+                    })
+                    dispatch(openErrorAction({message: <div>{(commentError) && 'Введите комментарий к возврату!'} {amountError}</div>}))
                 })
         },
 

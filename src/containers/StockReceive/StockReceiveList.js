@@ -47,6 +47,7 @@ const enhance = compose(
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
         const productId = _.toNumber(_.get(state, ['form', 'StockReceiveCreateForm', 'values', 'product', 'value', 'id']))
         const filter = filterHelper(list, pathname, query)
+        console.log(query)
 
         return {
             list,
@@ -159,9 +160,8 @@ const enhance = compose(
                 })
         },
         handleCloseDetail: props => () => {
-            const {location} = props
-            const tab = _.get(location, ['query', 'tab'])
-            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: {[TAB]: tab}})
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams()})
         }
     })
 )

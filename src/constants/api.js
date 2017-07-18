@@ -297,11 +297,11 @@ export const STAT_PRODUCT_GET_DOCUMENT = 'stats/products/export'
 
 export const STOCK_RECEIVE = 'stock/supply/'
 export const STOCK_HISTORY = 'stock/barcode_history/'
-export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`
+export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}`
 export const STOCK_TRANSFER = 'stock/stock_transfer'
 export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`
 export const STOCK_TRANSFER_ITEM = `/${STOCK_TRANSFER}/%d/`
-export const STOCK_RECEIVE_LIST = `/${STOCK_RECEIVE}/`
+export const STOCK_RECEIVE_LIST = `/${STOCK_RECEIVE}`
 export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
 export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/accept_products/`
 export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE

@@ -27,20 +27,30 @@ import Tooltip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
+        listWrapper: {
+            '& > div:first-child': {
+                marginTop: '0 !important'
+            }
+        },
         wrapper: {
             position: 'relative',
             padding: '0 30px',
             marginBottom: '5px',
+            transition: 'all 400ms ease-out !important',
+            '& > a': {
+                color: 'inherit'
+            },
             '& .row': {
                 alignItems: 'center',
                 '& div': {
-                    lineHeight: '55px'
+                    lineHeight: '48px'
                 }
             }
         },
         wrapperBold: {
             extend: 'wrapper',
-            margin: '0 -16px',
+            margin: '20px -15px !important',
+            transition: 'all 400ms ease-out !important',
             '& .row:first-child': {
                 fontWeight: '600'
             }
@@ -73,7 +83,7 @@ const enhance = compose(
         dropDown: {
             position: 'absolute !important',
             right: '0',
-            top: '5px',
+            top: '2px',
             '& > div': {
                 height: '45px',
                 display: 'flex',
@@ -83,6 +93,8 @@ const enhance = compose(
         },
         loader: {
             display: 'flex',
+            height: '400px',
+            alignItems: 'center',
             justifyContent: 'center'
         },
         clearBtn: {
@@ -159,7 +171,8 @@ const RemainderGridList = enhance((props) => {
         transferDialog,
         submitFilter,
         resetFilter,
-        discardDialog
+        discardDialog,
+        handleCloseDetail
     } = props
     const listLoading = _.get(listData, 'listLoading')
     const detailId = _.get(detailData, 'id')
@@ -175,74 +188,75 @@ const RemainderGridList = enhance((props) => {
     )
 
     const listLoader = (
-                <Paper className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
-                </Paper>
-        )
+        <Paper className={classes.loader}>
+            <CircularProgress size={40} thickness={4}/>
+        </Paper>
+    )
     const list = (
-            <div>
-                {_.map(_.get(listData, 'data'), (item) => {
-                    const id = _.get(item, 'id')
-                    const product = _.get(item, 'title')
-                    const balance = _.get(item, 'balance')
-                    const measurement = _.get(item, ['measurement', 'name'])
-                    if (id === detailId) {
-                        return (
-                            <Paper key={id} className={classes.wrapperBold}>
-                                <Row key={id} style={{position: 'relative'}}>
-                                    <div className={classes.closeDetail}
-                                        onClick={_.get(detailData, 'handleCloseDetail')}>
-                                    </div>
-                                    <Col xs={4}>{product}</Col>
-                                    <Col xs={4}>N/A</Col>
-                                    <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
-                                    <Col xs={1} style={{textAlign: 'right'}}>
-                                        <IconButton
-                                            className={classes.dropDown}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            onTouchTap={_.get(detailData, 'handleCloseDetail')}>
-                                            <ArrowUp/>
-                                        </IconButton>
-                                    </Col>
-                                </Row>
-                                <RemainderDetails
-                                    filter={filter}
-                                    detailData={detailData}
-                                />
-                            </Paper>
-                        )
-                    }
+        <div className={classes.listWrapper}>
+            {_.map(_.get(listData, 'data'), (item) => {
+                const id = _.get(item, 'id')
+                const product = _.get(item, 'title')
+                const balance = _.get(item, 'balance')
+                const measurement = _.get(item, ['measurement', 'name'])
+                if (id === detailId) {
                     return (
-                        <Link key={id} to={{
-                            pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
-                            query: filter.getParams()
-                        }}>
-                        <Paper key={id} className={classes.wrapper}>
-                            <Row style={{position: 'relative'}}>
+                        <Paper key={id} className={classes.wrapperBold}>
+                            <Row key={id} style={{position: 'relative'}}>
+                                <div className={classes.closeDetail}
+                                    onClick={handleCloseDetail}>
+                                </div>
                                 <Col xs={4}>{product}</Col>
                                 <Col xs={4}>N/A</Col>
                                 <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
                                 <Col xs={1} style={{textAlign: 'right'}}>
-                                    <Link to={{
-                                        pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
-                                        query: filter.getParams()
-                                    }}>
+                                    <IconButton
+                                        className={classes.dropDown}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        onTouchTap={handleCloseDetail}>
+                                        <ArrowUp/>
+                                    </IconButton>
+                                </Col>
+                            </Row>
+                            <RemainderDetails
+                                filter={filter}
+                                detailData={detailData}
+                                handleCloseDetail={handleCloseDetail}
+                            />
+                        </Paper>
+                    )
+                }
+                return (
+                <Paper key={id} className={classes.wrapper}>
+                    <Link key={id} to={{
+                        pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>
+                        <Row style={{position: 'relative'}}>
+                            <Col xs={4}>{product}</Col>
+                            <Col xs={4}>N/A</Col>
+                            <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
+                            <Col xs={1} style={{textAlign: 'right'}}>
+                                <Link to={{
+                                    pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
+                                    query: filter.getParams()
+                                }}>
                                     <IconButton
                                         className={classes.dropDown}
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}>
                                         <ArrowDown/>
                                     </IconButton>
-                                    </Link>
-                                </Col>
-                            </Row>
-                        </Paper>
-                        </Link>
-                    )
-                })}
+                                </Link>
+                            </Col>
+                        </Row>
+                    </Link>
+                </Paper>
+                )
+            })}
 
-            </div>
+        </div>
     )
 
     return (
@@ -258,7 +272,7 @@ const RemainderGridList = enhance((props) => {
 
                 <ul>
                     <li style={{left: '60px'}}>
-                        <Tooltip position="bottom" text="Списания товара">
+                        <Tooltip position="bottom" text="Списание товара">
                             <FloatingActionButton
                                 iconStyle={actionIconStyle.icon}
                                 style={actionIconStyle.button}
@@ -268,8 +282,7 @@ const RemainderGridList = enhance((props) => {
                             </FloatingActionButton>
                         </Tooltip>
                     </li>
-                    <li
-                        style={{left: '70px'}}>
+                    <li style={{left: '70px'}}>
                         <Tooltip position="bottom" text="Передача товаров" >
                             <FloatingActionButton
                                 iconStyle={actionIconStyle.icon}

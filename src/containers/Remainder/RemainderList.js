@@ -191,7 +191,7 @@ const RemainderList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 filterDialog={filterDialog}
-                handleCloseDetail={detailData.handleCloseDetail}
+                handleCloseDetail={props.handleCloseDetail}
                 transferDialog={transferDialog}
                 submitFilter={props.handleSubmitFilterDialog}
                 resetFilter={props.handleResetFilter}

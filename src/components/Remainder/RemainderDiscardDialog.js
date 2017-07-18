@@ -46,16 +46,21 @@ const enhance = compose(
             }
         },
         title: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            height: '19px',
-            padding: '15px 30px 15px',
-            fontWeight: '600',
-            borderBottom: '1px #efefef solid',
-            textTransform: 'uppercase',
-            position: 'relative'
-
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important'
+            }
         },
         dialogBody: {
             '& tbody:last-child': {
@@ -65,7 +70,8 @@ const enhance = compose(
         },
         noPadding: {
             padding: '0! important',
-            maxHeight: 'none !important'
+            maxHeight: 'none !important',
+            color: '#333 !important'
         },
         subTitle: {
             fontWeight: '600'
@@ -163,9 +169,6 @@ const RemainderDiscardDialog = enhance((props) => {
         button: {
             width: 40,
             height: 40,
-            position: 'absolute',
-            top: '5px',
-            right: '17px',
             padding: '0'
         }
     }
@@ -180,7 +183,7 @@ const RemainderDiscardDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.noPadding}>
             <div className={classes.title}>
-                <span>СПИСАНИЕ ТОВАРa</span>
+                <span>Списание товара</span>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}

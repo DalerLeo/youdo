@@ -36,6 +36,7 @@ const enhance = compose(
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
+            height: 'calc(100% - 40px)',
             padding: '20px 30px',
             '& > div:nth-child(2)': {
                 marginTop: '10px',
@@ -47,6 +48,9 @@ const enhance = compose(
             }
         },
         tableWrapper: {
+            height: 'calc(100% - 118px)',
+            overflowY: 'auto',
+            overflowX: 'hidden',
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
@@ -136,7 +140,8 @@ const enhance = compose(
         },
         rightPanel: {
             flexBasis: 'calc(100% - 250px)',
-            maxWidth: 'calc(100% - 250px)'
+            maxWidth: 'calc(100% - 250px)',
+            overflow: 'hidden'
         },
         searchButton: {
             marginLeft: '-10px !important',
