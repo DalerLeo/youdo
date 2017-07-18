@@ -308,7 +308,7 @@ const Layout = enhance((props) => {
             <div className={classes.notifications} style={openNotifications ? {} : {display: 'none'}}>
                 <Paper className={classes.notificationsWrapper} zDepth={4}>
                     <div className={classes.header}>
-                        <div>Уведомления test33</div>
+                        <div>Уведомления</div>
                         <div>
                             <IconButton
                                 iconStyle={iconStyle.icon}
