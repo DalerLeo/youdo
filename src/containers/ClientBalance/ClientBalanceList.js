@@ -10,7 +10,7 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
-    CLIENT_BALANCE_UPDATE_DIALOG_OPEN,
+    CLIENT_BALANCE_INFO_DIALOG_OPEN,
     CLIENT_BALANCE_FILTER_KEY,
     CLIENT_BALANCE_FILTER_OPEN,
     ClientBalanceGridList
@@ -95,13 +95,13 @@ const enhance = compose(
             const {filter} = props
             hashHistory.push({
                 pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
-                query: filter.getParams({[CLIENT_BALANCE_UPDATE_DIALOG_OPEN]: true})
+                query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: true})
             })
         },
 
-        handleCloseUpdateDialog: props => () => {
+        handleCloseInfoDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_UPDATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -119,7 +119,7 @@ const ClientBalanceList = enhance((props) => {
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
-    const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_UPDATE_DIALOG_OPEN]))
+    const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
     const fromDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
