@@ -12,6 +12,7 @@ import CloseIcon2 from '../CloseIcon2'
 import {reduxForm, Field} from 'redux-form'
 import DateField from '../ReduxForm/Basic/DateField'
 import Checkbox from '../ReduxForm/Basic/CheckBox'
+import RaisedButton from 'material-ui/RaisedButton'
 
 const enhance = compose(
     injectSheet({
@@ -105,9 +106,9 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'TrackingAgentFilterForm',
+        form: 'TrackingFilterForm',
         enableReinitialize: true
-    }),
+    })
 )
 
 const TrackingDetails = enhance((props) => {
@@ -115,7 +116,9 @@ const TrackingDetails = enhance((props) => {
         classes,
         filter,
         listData,
-        detailData
+        handleSubmit,
+        detailData,
+        filterForm
     } = props
     const loading = _.get(detailData, 'detailLoading')
     const id = _.get(detailData, 'id')
@@ -140,7 +143,7 @@ const TrackingDetails = enhance((props) => {
             <div className={classes.content}>
                 <div className={classes.filter}>
                     <div className={classes.subtitle}>Фильтры</div>
-                    <form>
+                    <form onSubmit={handleSubmit(filterForm.handleSubmitFilterDialog)}>
                         <Field
                             className={classes.inputDateCustom}
                             name="date"
@@ -162,6 +165,11 @@ const TrackingDetails = enhance((props) => {
                             className={classes.checkbox}
                             component={Checkbox}
                             label="Пройденный маршрут агента"/>
+                        <RaisedButton
+                            label="Применить"
+                            backgroundColor="#12aaeb"
+                            labelColor="#fff"
+                            type="submit"/>
                     </form>
                 </div>
             </div>
@@ -172,7 +180,10 @@ const TrackingDetails = enhance((props) => {
 TrackingDetails.PropTypes = {
     filter: PropTypes.object,
     listData: PropTypes.object,
-    detailData: PropTypes.object
+    detailData: PropTypes.object,
+    filterForm: PropTypes.shape({
+        handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default TrackingDetails
