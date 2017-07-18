@@ -1,14 +1,17 @@
+import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
+import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
+import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
-import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import Pagination from '../GridList/GridListNavPagination'
-import {Row} from 'react-flexbox-grid'
+import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({
@@ -47,8 +50,7 @@ const enhance = compose(
             '& > .row': {
                 margin: '0',
                 padding: '0',
-                '& > div': {
-                },
+                '& > div': {},
                 '& > div:first-child': {
                     display: 'flex',
                     '& > svg': {
@@ -108,7 +110,23 @@ const iconStyle = {
 }
 
 const ClientBalanceCreateDialog = enhance((props) => {
-    const {open, loading, filter, onClose, classes} = props
+    const {open, loading, filter, onClose, classes, detailData, name, balance} = props
+
+    const detailList = _.map(_.get(detailData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD-MM-YYYY')
+        const comment = _.get(item, 'comment')
+        const amount = numberFormat(_.get(item, 'amount'), _.get(item, ['currency', 'name']))
+
+        return (
+            <Row key={id} className='dottedList'>
+                <div style={{flexBasis: '5%', maxWidth: '5%'}}><ArrowUpIcon/></div>
+                <div style={{flexBasis: '25%', maxWidth: '25%'}}>Z-{id}</div>
+                <div style={{flexBasis: '15%', maxWidth: '15%'}}>{createdDate}</div>
+                <div style={{flexBasis: '40%', maxWidth: '40%'}}>{comment}</div>
+                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{amount}</div>
+            </Row>)
+    })
     return (
         <Dialog
             modal={true}
@@ -117,51 +135,41 @@ const ClientBalanceCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '1000px'} : {width: '1000px', minWidth: 'auto', maxWidth: 'auto'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.dialog}>
-                <Row className={classes.title}>
-                    <div>ИНФОРМАЦИЯ ПО БОЛАНСУ КЛИЕНТА</div>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        onTouchTap={onClose}>
-                        <CloseIcon2/>
-                    </IconButton>
-                </Row>
-                <div className={classes.infoBlock}>
-                    <div className={classes.info}>
-                        <div>
-                            <span>Клиент</span>
-                            <div>ООО Наименование клиента</div>
-                        </div>
-                        <div>
-                            <span>Баланс</span>
-                            <div>- 800 000 UZS</div>
-                        </div>
+            <Row className={classes.title}>
+                <div>ИНФОРМАЦИЯ ПО БОЛАНСУ КЛИЕНТА</div>
+                <IconButton
+                    iconStyle={iconStyle.icon}
+                    style={iconStyle.button}
+                    onTouchTap={onClose}>
+                    <CloseIcon2/>
+                </IconButton>
+            </Row>
+            <div className={classes.infoBlock}>
+                <div className={classes.info}>
+                    <div>
+                        <span>Клиент</span>
+                        <div>{name}</div>
                     </div>
-                    <Pagination filter={filter}/>
+                    <div>
+                        <span>Баланс</span>
+                        <div>{balance}</div>
+                    </div>
                 </div>
-                <div className={classes.content}>
-                    <Row>
-                        <div style={{flexBasis: '5%', maxWidth: '5%'}}></div>
-                        <div style={{flexBasis: '25%', maxWidth: '25%'}}>Транзакция / Заказ</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%'}}>Дата</div>
-                        <div style={{flexBasis: '40%', maxWidth: '40%'}}>Описание</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Сумма</div>
-                    </Row>
-                    <Row className='dottedList'>
-                        <div style={{flexBasis: '5%', maxWidth: '5%'}}><ArrowDownIcon/></div>
-                        <div style={{flexBasis: '25%', maxWidth: '25%'}}>Z-123122</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%'}}>2017-02-10</div>
-                        <div style={{flexBasis: '40%', maxWidth: '40%'}}>В какой магазин и на какую сумму заказ</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>1 000 000 UZS</div>
-                    </Row>
-                    <Row className='dottedList'>
-                        <div style={{flexBasis: '5%', maxWidth: '5%'}}><ArrowUpIcon/></div>
-                        <div style={{flexBasis: '25%', maxWidth: '25%'}}>Z-123122</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%'}}>2017-02-10</div>
-                        <div style={{flexBasis: '40%', maxWidth: '40%'}}>В какой магазин и на какую сумму заказ</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>1 000 000 UZS</div>
-                    </Row>
-                </div>
+                <Pagination filter={filter}/>
+            </div>
+            <div className={classes.content}>
+                <Row>
+                    <div style={{flexBasis: '5%', maxWidth: '5%'}}></div>
+                    <div style={{flexBasis: '25%', maxWidth: '25%'}}>Транзакция / Заказ</div>
+                    <div style={{flexBasis: '15%', maxWidth: '15%'}}>Дата</div>
+                    <div style={{flexBasis: '40%', maxWidth: '40%'}}>Описание</div>
+                    <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Сумма</div>
+                </Row>
+                {loading
+                    ? <div style={{textAlign: 'center'}}>
+                        <CircularProgress size={40} thickness={4}/>
+                    </div> : detailList}
+            </div>
         </Dialog>
     )
 })
