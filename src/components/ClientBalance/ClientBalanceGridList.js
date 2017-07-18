@@ -8,7 +8,7 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import ClientBlanceFilterForm from './ClientBalanceFilterForm'
-import ClientBlanceCreateDialog from './ClientBalanceCreateDialog'
+import ClientBlanceCreateDialog from './ClientBalanceInfoDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -122,7 +122,7 @@ const ClientBlanceGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.PENDING_EXPENSES_LIST_URL}/>
+            <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
 
             <GridList
                 filter={filter}
