@@ -1,3 +1,5 @@
+import _ from 'lodash'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
@@ -12,10 +14,12 @@ import ClientSearchField from '../ReduxForm/Client/ClientSearchField'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
 import Search from 'material-ui/svg-icons/action/search'
+import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import Person from '../Images/person.png'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
+import getConfig from '../../helpers/getConfig'
 
 export const STAT_OUTCOME_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -189,13 +193,21 @@ const enhance = compose(
 
 const StatOutcomeGridList = enhance((props) => {
     const {
+        listData,
         classes,
         filter,
-        handleSubmitFilterDialog
+        handleSubmitFilterDialog,
+        getDocument
     } = props
 
-    const sample = 100
-    const deletion = 3
+    let sum = 0
+    const value = _.map(_.get(listData, 'grafData'), (item) => {
+        sum += _.toInteger(_.get(item, 'amount'))
+        return _.toInteger(_.get(item, 'amount'))
+    })
+    const valueName = _.map(_.get(listData, 'grafData'), (item) => {
+        return moment(_.get(item, 'date')).format('LL')
+    })
     const config = {
         chart: {
             type: 'areaspline',
@@ -214,7 +226,7 @@ const StatOutcomeGridList = enhance((props) => {
             enabled: false
         },
         xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            categories: valueName,
             tickmarkPlacement: 'on',
             title: {
                 text: '',
@@ -267,7 +279,7 @@ const StatOutcomeGridList = enhance((props) => {
                 symbol: 'circle'
             },
             name: 'Эффективность',
-            data: [sample, sample + (sample / deletion), sample, deletion * sample / deletion, sample * deletion],
+            data: value,
             color: '#eb9696'
 
         }]
@@ -292,6 +304,7 @@ const StatOutcomeGridList = enhance((props) => {
         }
     }
 
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>№</Col>
@@ -302,18 +315,23 @@ const StatOutcomeGridList = enhance((props) => {
         </Row>
     )
 
-    const list = (
-        <Row className="dottedList">
-            <Col xs={1}>331</Col>
-            <Col xs={2}>Логистика</Col>
-            <Col xs={4}>Описание расхода если есть если нет то пусто</Col>
-            <Col xs={3}>
-                <div className="personImage"><img src={Person}/></div>
-                <div>Бамбамбиев Куркуда</div>
-            </Col>
-            <Col xs={2}>3 000 000 UZS</Col>
-        </Row>
-    )
+    const list = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const comment = _.get(item, 'comment')
+
+        return (
+            <Row key={id} className="dottedList">
+                <Col xs={1}>{id}</Col>
+                <Col xs={2}>Логистика</Col>
+                <Col xs={4}>{comment}</Col>
+                <Col xs={3}>
+                    <div className="personImage"><img src={Person}/></div>
+                    <div>Бамбамбиев Куркуда</div>
+                </Col>
+                <Col xs={2}>3 000 000 UZS</Col>
+            </Row>
+        )
+    })
 
     const page = (
         <div className={classes.mainWrapper}>
@@ -347,13 +365,13 @@ const StatOutcomeGridList = enhance((props) => {
                                 </IconButton>
                             </div>
                             <a className={classes.excel}>
-                                <Excel color="#fff"/> <span>Excel</span>
+                                <Excel color="#fff" onTouchTap = {() => { getDocument.handleGetDocument() }} /> <span>Excel</span>
                             </a>
                         </form>
                         <Row className={classes.diagram}>
                             <Col xs={3} className={classes.salesSummary}>
                                 <div>Сумма продаж за период</div>
-                                <div>35 000 000 UZS</div>
+                                <div>{sum} {primaryCurrency}</div>
                             </Col>
                             <Col xs={9}>
                                 <ReactHighcharts config={config}/>
@@ -365,7 +383,11 @@ const StatOutcomeGridList = enhance((props) => {
                         </div>
                         <div className={classes.tableWrapper}>
                             {headers}
-                            {list}
+                            {_.get(listData, 'listLoading')
+                                ? <div style={{textAlign: 'center'}}>
+                                    <CircularProgress size={40} thickness={4}/>
+                                </div>
+                                : list}
                         </div>
                     </div>
                 </div>

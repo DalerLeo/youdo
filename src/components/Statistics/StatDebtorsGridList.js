@@ -28,6 +28,8 @@ export const STAT_DEBTORS_FILTER_KEY = {
     USER: 'user'
 }
 
+const ZERO = 0
+
 const enhance = compose(
     injectSheet({
         mainWrapper: {
@@ -244,7 +246,8 @@ const StatDebtorsGridList = enhance((props) => {
         detailData,
         handleSubmitFilterDialog,
         statDebtorsDialog,
-        handleOpenCloseDetail
+        handleOpenCloseDetail,
+        getDocument
     } = props
 
     const iconStyle = {
@@ -284,7 +287,7 @@ const StatDebtorsGridList = enhance((props) => {
                 <Col xs={2}>{totalExpected}</Col>
                 <Col xs={1} style={{paddingRight: '0'}}>
                     <IconButton
-                        onTouchTap={statDebtorsDialog.handleOpenStatDebtorsDialog}>
+                        onTouchTap={() => { statDebtorsDialog.handleOpenStatDebtorsDialog(id) }}>
                         <List color="#12aaeb"/>
                     </IconButton>
                 </Col>
@@ -309,9 +312,7 @@ const StatDebtorsGridList = enhance((props) => {
                             <IconButton
                                 style={{transform: 'rotate(180deg)'}}
                                 disableTouchRipple={true}
-                                onTouchTap={() => {
-                                    handleOpenCloseDetail(id)
-                                }}>
+                                onTouchTap={() => { handleOpenCloseDetail.handleCloseDetail(id) }}>
                                 <ArrowDown color="#12aaeb"/>
                             </IconButton>
                         </Col>
@@ -340,9 +341,7 @@ const StatDebtorsGridList = enhance((props) => {
                 <Col xs={1} style={{paddingRight: '0'}}>
                     <IconButton
                         disableTouchRipple={true}
-                        onTouchTap={() => {
-                            handleOpenCloseDetail(id)
-                        }}>
+                        onTouchTap={() => { handleOpenCloseDetail.handleOpenDetail(id) }}>
                         <ArrowDown color="#12aaeb"/>
                     </IconButton>
                 </Col>
@@ -353,7 +352,6 @@ const StatDebtorsGridList = enhance((props) => {
     const countDebtors = _.get(listData, ['statData', 'debtors'])
     const deptSum = numberFormat(_.get(listData, ['statData', 'debSum']), getConfig('PRIMARY_CURRENCY'))
     const expectSum = numberFormat(_.get(listData, ['statData', 'expectSum']), getConfig('PRIMARY_CURRENCY'))
-
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -379,7 +377,8 @@ const StatDebtorsGridList = enhance((props) => {
                                     <Search/>
                                 </IconButton>
                             </div>
-                            <a className={classes.excel}>
+                            <a className={classes.excel}
+                               onTouchTap = {getDocument.handleGetDocument}>
                                 <Excel color="#fff"/> <span>Excel</span>
                             </a>
                         </form>
@@ -420,8 +419,10 @@ const StatDebtorsGridList = enhance((props) => {
             <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
             <StatDebtorsDialog
-                open={statDebtorsDialog.openStatDebtorsDialog}
+                open={_.get(statDebtorsDialog, 'openStatDebtorsDialog') !== ZERO}
                 onClose={statDebtorsDialog.handleCloseStatDebtorsDialog}
+                data={_.get(detailData, 'detailOrder')}
+                loading={_.get(detailData, 'detailOrderLoading')}
             />
         </Container>
     )

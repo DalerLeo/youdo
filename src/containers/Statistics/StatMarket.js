@@ -10,7 +10,8 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
     statMarketListFetchAction,
-    statMarketItemFetchAction
+    statMarketItemFetchAction,
+    getDocumentAction
 } from '../../actions/statMarket'
 
 import {StatMarketGridList, STAT_MARKET_DIALOG_OPEN} from '../../components/Statistics'
@@ -82,6 +83,10 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParam()})
+        },
+        handleGetDocument: props => () => {
+            const {dispatch, filter} = props
+            return dispatch(getDocumentAction(filter))
         }
     })
 )
@@ -130,6 +135,9 @@ const StatMarketList = enhance((props) => {
         filterDateRange
 
     }
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
+    }
     return (
         <Layout {...layout}>
             <StatMarketGridList
@@ -138,6 +146,7 @@ const StatMarketList = enhance((props) => {
                 detailData={detailData}
                 statMarketDialog={statMarketDialog}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
+                getDocument={getDocument}
             />
         </Layout>
     )

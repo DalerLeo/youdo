@@ -158,7 +158,10 @@ const filter = (data, pathname, query = {}) => {
             openSetCurrencyDialog: null,
             openHistoryDialog: null,
             openDeleteDialog: null,
-            openUpdateDialog: null
+            openUpdateDialog: null,
+            openStatDebtorsDialog: null,
+            detailId: null,
+            orderId: null
         }))
     }
 

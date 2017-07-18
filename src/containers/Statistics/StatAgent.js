@@ -16,7 +16,8 @@ import {
 import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/StatAgentGridList'
 import {
     statAgentListFetchAction,
-    statAgentItemFetchAction
+    statAgentItemFetchAction,
+    getDocumentAction
 } from '../../actions/statAgent'
 
 const ZERO = 0
@@ -91,6 +92,10 @@ const enhance = compose(
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
+        },
+        handleGetDocument: props => () => {
+            const {dispatch, filter} = props
+            return dispatch(getDocumentAction(filter))
         }
     })
 )
@@ -137,6 +142,9 @@ const StatAgentList = enhance((props) => {
         filterDateRange
 
     }
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
+    }
 
     return (
         <Layout {...layout}>
@@ -146,6 +154,7 @@ const StatAgentList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 statAgentDialog={statAgentDialog}
+                getDocument={getDocument}
             />
         </Layout>
     )
