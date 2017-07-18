@@ -7,7 +7,7 @@ import Layout from '../../components/Layout'
 import sprintf from 'sprintf'
 import * as ROUTER from '../../constants/routes'
 import TrackingWrapper from '../../components/Tracking/TrackingWrapper'
-import {TOGGLE_INFO, TRACKING_FILTER_KEY} from '../../components/Tracking'
+import {TOGGLE_INFO} from '../../components/Tracking'
 import toBoolean from '../../helpers/toBoolean'
 import filterHelper from '../../helpers/filter'
 import moment from 'moment'
@@ -15,6 +15,15 @@ import {
     trackingListFetchAction,
     locationListAction
 } from '../../actions/tracking'
+
+const TRACKING_FILTER_KEY = {
+    DATE: 'date',
+    ZONE: 'zone',
+    AGENT: 'agent',
+    SHOW_MARKETS: 'showMarkets',
+    SHOW_ZONES: 'showZones',
+    AGENT_TRACK: 'agentTrack'
+}
 
 const enhance = compose(
     connect((state, props) => {
@@ -25,6 +34,7 @@ const enhance = compose(
         const detail = _.get(state, ['tracking', 'item', 'data'])
         const detailLoading = _.get(state, ['tracking', 'item', 'loading'])
         const agentLocation = _.get(state, ['tracking', 'location', 'data'])
+        const filterForm = _.get(state, ['form', 'TrackingFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             query,
@@ -34,7 +44,8 @@ const enhance = compose(
             listLoading,
             detail,
             detailLoading,
-            agentLocation
+            agentLocation,
+            filterForm
         }
     }),
 
@@ -46,19 +57,21 @@ const enhance = compose(
         dispatch(trackingListFetchAction(filter))
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const prevTrack = toBoolean(_.get(props, ['query', 'agentTrack'])) || false
+        const nextTrack = toBoolean(_.get(nextProps, ['query', 'agentTrack'])) || false
+        return prevTrack !== nextTrack && nextTrack === true
+    }, ({dispatch, params}) => {
+        const id = _.get(params, 'agentId')
+        dispatch(locationListAction(id))
+    }),
+
     withHandlers({
         handleOpenDetails: props => (id) => {
             const {dispatch, filter} = props
             hashHistory.push({pathname: sprintf(ROUTER.TRACKING_ITEM_PATH, id), query: filter.getParams({[TOGGLE_INFO]: true})})
 
             return dispatch(locationListAction(id, filter))
-        },
-
-        handleAgentTrack: props => (id) => {
-            const {dispatch, filter} = props
-            hashHistory.push({pathname: sprintf(ROUTER.TRACKING_ITEM_PATH, id), query: filter.getParams({[TOGGLE_INFO]: true})})
-
-            return dispatch(locationListAction(id))
         },
 
         handleExpandInfo: props => () => {
@@ -75,23 +88,20 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const showZones = _.get(filterForm, ['values', 'showZones', 'value']) || null
-            const showMarkets = _.get(filterForm, ['values', 'showMarkets', 'value']) || null
-            const agentTrack = _.get(filterForm, ['values', 'agentTrack', 'value']) || null
-            const agent = _.get(filterForm, ['values', 'agent', 'value']) || null
-            const zone = _.get(filterForm, ['values', 'border', 'value']) || null
-            const fromDate = _.get(filterForm, ['values', 'period', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'period', 'toDate']) || null
+            const showZones = _.get(filterForm, ['values', 'showZones']) || null
+            const showMarkets = _.get(filterForm, ['values', 'showMarkets']) || null
+            const agentTrack = _.get(filterForm, ['values', 'agentTrack']) || null
+            const agent = _.get(filterForm, ['values', 'agent']) || null
+            const zone = _.get(filterForm, ['values', 'border']) || null
+            const date = _.get(filterForm, ['values', 'date']) || null
 
             filter.filterBy({
-                [TRACKING_FILTER_KEY.PERIOD_FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [TRACKING_FILTER_KEY.PERIOD_TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [TRACKING_FILTER_KEY.DATE]: moment(date).format('YYYY-MM-DD'),
                 [TRACKING_FILTER_KEY.ZONE]: zone,
                 [TRACKING_FILTER_KEY.AGENT]: agent,
                 [TRACKING_FILTER_KEY.SHOW_MARKETS]: showMarkets,
                 [TRACKING_FILTER_KEY.SHOW_ZONES]: showZones,
                 [TRACKING_FILTER_KEY.AGENT_TRACK]: agentTrack
-
             })
         }
     })
@@ -114,6 +124,13 @@ const Tracking = enhance((props) => {
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
 
+    const showZones = filter.getParam(TRACKING_FILTER_KEY.SHOW_ZONES)
+    const showMarkets = filter.getParam(TRACKING_FILTER_KEY.SHOW_MARKETS)
+    const agentTrack = filter.getParam(TRACKING_FILTER_KEY.AGENT_TRACK)
+    const agent = filter.getParam(TRACKING_FILTER_KEY.AGENT)
+    const zone = filter.getParam(TRACKING_FILTER_KEY.ZONE)
+    const date = filter.getParam(TRACKING_FILTER_KEY.DATE)
+
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -126,12 +143,24 @@ const Tracking = enhance((props) => {
         detailLoading
     }
 
+    const filterForm = {
+        initialValues: {
+            agentTrack: {agentTrack},
+            date: {date},
+            showMarkets: {showMarkets},
+            showZones: {showZones},
+            agent: {agent},
+            zone: {zone}
+        },
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+    }
+
     const toggle = {
         openToggle,
         handleExpandInfo: props.handleExpandInfo,
         handleCollapseInfo: props.handleCollapseInfo
     }
-    const jasur = {
+    const currentDate = {
         date: moment(moment().format('YYYY-MM-DD')).toDate()
     }
 
@@ -140,12 +169,12 @@ const Tracking = enhance((props) => {
             <TrackingWrapper
                 filter={filter}
                 listData={listData}
-                initialValues={jasur}
+                initialValues={currentDate}
                 toggle={toggle}
                 detailData={detailData}
+                filterForm={filterForm}
                 agentLocation={agentLocation}
                 handleOpenDetails={props.handleOpenDetails}
-                handleAgentTrack={props.handleAgentTrack}
             />
         </Layout>
     )

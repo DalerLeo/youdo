@@ -12,7 +12,14 @@ const enhance = compose(
     withGoogleMap
 )
 
-const GoogleMapWrapper = enhance(({onMapLoad, listData, handleOpenDetails, agentLocation, handleAgentTrack, ...props}) => {
+const GoogleMapWrapper = enhance((
+    {
+        onMapLoad,
+        listData,
+        handleOpenDetails,
+        agentLocation,
+        ...props
+    }) => {
     const agentCoordinates = [
         _.map(_.get(agentLocation, 'results'), (item) => {
             const lat = _.get(item, ['point', 'lat'])
@@ -29,7 +36,7 @@ const GoogleMapWrapper = enhance(({onMapLoad, listData, handleOpenDetails, agent
                 return (
                     <Marker
                         key={id}
-                        onClick={() => { handleAgentTrack(id) }}
+                        onClick={() => { handleOpenDetails(id) }}
                         position={{lat: lat, lng: lng}}
                     />
                 )
@@ -53,7 +60,12 @@ const Loader = () =>
     </div>
 
 const GoogleMap = (props) => {
-    const {listData, handleOpenDetails, agentLocation, handleAgentTrack, ...defaultProps} = props
+    const {
+        listData,
+        handleOpenDetails,
+        agentLocation,
+        ...defaultProps
+    } = props
 
     return (
         <GoogleMapWrapper
@@ -67,7 +79,6 @@ const GoogleMap = (props) => {
             listData={listData}
             handleOpenDetails={handleOpenDetails}
             agentLocation={agentLocation}
-            handleAgentTrack={handleAgentTrack}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>
@@ -77,7 +88,6 @@ const GoogleMap = (props) => {
 GoogleMap.PropTypes = {
     listData: PropTypes.object,
     handleOpenDetails: PropTypes.func,
-    handleAgentTrack: PropTypes.func,
     agentLocation: PropTypes.object
 }
 

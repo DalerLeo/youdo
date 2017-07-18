@@ -10,6 +10,7 @@ import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import moment from 'moment'
+import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Checkbox from '../ReduxForm/Basic/CheckBox'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
@@ -177,8 +178,10 @@ const TrackingWrapper = enhance((props) => {
         detailData,
         toggle,
         handleOpenDetails,
-        handleAgentTrack,
-        agentLocation
+        agentLocation,
+        handleSubmit,
+        showAgentTrack,
+        filterForm
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -220,7 +223,7 @@ const TrackingWrapper = enhance((props) => {
                 <div className={classes.content}>
                     <div className={classes.filter}>
                         <div className={classes.title}>Фильтры</div>
-                        <form>
+                        <form onSubmit={handleSubmit(filterForm.handleSubmitFilterDialog)}>
                             <Field
                                 name="showMarkets"
                                 className={classes.checkbox}
@@ -231,6 +234,11 @@ const TrackingWrapper = enhance((props) => {
                                 className={classes.checkbox}
                                 component={Checkbox}
                                 label="Отображать зоны"/>
+                            <RaisedButton
+                                label="Применить"
+                                backgroundColor="#12aaeb"
+                                labelColor="#fff"
+                                type="submit"/>
                         </form>
                     </div>
                     <div className={classes.activeAgents}>
@@ -273,7 +281,9 @@ const TrackingWrapper = enhance((props) => {
                 initialValues={props.initialValues}
                 filter={filter}
                 listData={listData}
-                detailData={detailData} />
+                detailData={detailData}
+                filterForm={filterForm}
+            />
             }
         </div>
     )
@@ -286,7 +296,7 @@ const TrackingWrapper = enhance((props) => {
                     listData={_.get(listData, 'data')}
                     handleOpenDetails={handleOpenDetails}
                     agentLocation={agentLocation}
-                    handleAgentTrack={handleAgentTrack}
+                    showAgentTrack={showAgentTrack}
                 />
                 {zoneInfoToggle}
             </div>
@@ -305,7 +315,9 @@ TrackingWrapper.PropTypes = {
         handleCollapseInfo: PropTypes.func.isRequired
     }).isRequired,
     handleOpenDetails: PropTypes.func,
-    handleAgentTrack: PropTypes.func
+    filterForm: PropTypes.shape({
+        handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default TrackingWrapper
