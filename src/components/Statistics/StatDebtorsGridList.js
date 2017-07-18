@@ -39,6 +39,7 @@ const enhance = compose(
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
+            height: 'calc(100% - 40px)',
             padding: '20px 30px',
             '& .row': {
                 marginLeft: '0',
@@ -69,7 +70,12 @@ const enhance = compose(
             borderBottom: '1px #efefef solid'
         },
         tableWrapper: {
+            height: 'calc(100% - 169px)',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            margin: '0 -30px !important',
             '& .row': {
+                padding: '0 30px',
                 '&:after': {
                     bottom: '-1px'
                 },
@@ -106,8 +112,6 @@ const enhance = compose(
             }
         },
         list: {
-            padding: '0 30px',
-            margin: '0 -30px !important',
             '&:nth-child(even)': {
                 background: '#f9f9f9'
             },
@@ -118,8 +122,8 @@ const enhance = compose(
         },
         expandedList: {
             extend: 'list',
-            borderTop: '1px #efefef solid',
-            borderBottom: '1px #efefef solid',
+            borderTop: '1px #dadada solid',
+            borderBottom: '1px #dadada solid',
             '& > div': {
                 fontWeight: 'bold'
             }
@@ -130,7 +134,6 @@ const enhance = compose(
             display: 'block !important',
             borderTop: '1px #efefef solid',
             '& .dottedList': {
-                padding: '0',
                 '& > div:nth-child(2)': {
                     justifyContent: 'flex-start'
                 },
@@ -197,7 +200,8 @@ const enhance = compose(
         },
         rightPanel: {
             flexBasis: 'calc(100% - 250px)',
-            maxWidth: 'calc(100% - 250px)'
+            maxWidth: 'calc(100% - 250px)',
+            overflow: 'hidden'
         },
         searchButton: {
             marginLeft: '-10px !important',

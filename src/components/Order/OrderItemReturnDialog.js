@@ -81,11 +81,12 @@ const OrderItemReturnDialog = enhance((props) => {
     const comment = _.get(returnListData, 'comment')
     const totalPrice = numberFormat(_.get(returnListData, 'totalPrice'))
     const productList = _.map(_.get(returnListData, 'returnedProducts'), (item) => {
+        const product = _.get(item, 'product')
         const amount = _.get(item, 'amount')
         const returnId = _.get(item, 'id')
         return (
             <Row key={returnId} className="dottedList">
-                <Col xs={3}>Товар</Col>
+                <Col xs={3}>{product}</Col>
                 <Col xs={3}>{amount}</Col>
                 <Col xs={3}>Цена</Col>
                 <Col xs={3}>{totalPrice}</Col>

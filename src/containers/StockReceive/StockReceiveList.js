@@ -174,9 +174,8 @@ const enhance = compose(
                 })
         },
         handleCloseDetail: props => () => {
-            const {location} = props
-            const tab = _.get(location, ['query', 'tab'])
-            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: {[TAB]: tab}})
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams()})
         },
         handleOpenDetail: props => (id, type) => {
             const {filter} = props

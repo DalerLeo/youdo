@@ -94,7 +94,8 @@ const iconClearStyle = {
     button: {
         width: 30,
         height: 30,
-        padding: 0
+        padding: 0,
+        zIndex: 0
     }
 }
 
