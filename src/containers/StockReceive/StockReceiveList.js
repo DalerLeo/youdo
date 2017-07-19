@@ -13,6 +13,7 @@ import {
     StockReceiveGridList,
     STOCK_RECEIVE_CREATE_DIALOG_OPEN,
     HISTORY_FILTER_OPEN,
+    HISTORY_FILTER_KEY,
     TAB
 } from '../../components/StockReceive'
 import {
@@ -139,13 +140,20 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const manufacture = _.get(filterForm, ['values', 'manufacture', 'value']) || null
-            const group = _.get(filterForm, ['values', 'group', 'value']) || null
+            const brand = _.get(filterForm, ['values', 'manufacture', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const product = _.get(filterForm, ['values', 'product', 'value']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
-                [HISTORY_FILTER_OPEN.MANUFACTURE]: manufacture,
-                [HISTORY_FILTER_OPEN.GROUP]: group
+                [HISTORY_FILTER_OPEN.BRAND]: brand,
+                [HISTORY_FILTER_OPEN.TYPE]: type,
+                [HISTORY_FILTER_OPEN.PRODUCT]: product,
+                [HISTORY_FILTER_OPEN.FROM_DATE]: fromDate,
+                [HISTORY_FILTER_OPEN.TO_DATE]: toDate
+
             })
         },
 

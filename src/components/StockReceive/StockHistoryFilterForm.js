@@ -9,13 +9,21 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {ManufactureSearchField, UsersGroupSearchField} from '../ReduxForm'
+import {
+    ProductSearchField,
+    BrandSearchField,
+    DateToDateField,
+    ProductTypeSearchField
+} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const USERS_FILTER_KEY = {
-    MANUFACTURE: 'manufacture',
-    GROUP: 'group'
+export const HISTORY_FILTER_KEY = {
+    PRODUCT: 'product',
+    TYPE: 'type',
+    BRAND: 'brand',
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate'
 }
 
 const enhance = compose(
@@ -94,15 +102,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'UsersFilterForm',
+        form: 'HistoryFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(USERS_FILTER_KEY)
+            return _(HISTORY_FILTER_KEY)
                 .values()
-                .filter(item => item !== USERS_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== HISTORY_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -110,7 +118,7 @@ const enhance = compose(
     })
 )
 
-const UsersFilterForm = enhance((props) => {
+const HistoryFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
 
@@ -153,10 +161,31 @@ const UsersFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="manufacture" component={ManufactureSearchField} label="Производство" fullWidth={true}/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="brand"
+                            component={BrandSearchField}
+                            label="Бренд"
+                            fullWidth={true}/>
                     </div>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="group" component={UsersGroupSearchField} label="Принадлежность к группе" fullWidth={true}/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="type"
+                            component={ProductTypeSearchField}
+                            label="Тип товара"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="product"
+                            component={ProductSearchField}
+                            label="Товар"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Период" fullWidth={true}/>
                     </div>
 
                     <RaisedButton
@@ -172,7 +201,7 @@ const UsersFilterForm = enhance((props) => {
     )
 })
 
-UsersFilterForm.propTypes = {
+HistoryFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -183,4 +212,4 @@ UsersFilterForm.propTypes = {
     })
 }
 
-export default UsersFilterForm
+export default HistoryFilterForm
