@@ -8,6 +8,7 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
+import reset from 'redux-form'
 import * as STOCK_TAB from '../../constants/stockReceiveTab'
 import {
     StockReceiveGridList,
@@ -136,8 +137,9 @@ const enhance = compose(
         },
 
         handleClearFilterDialog: props => () => {
-            const {location: {pathname}} = props
+            const {location: {pathname}, dispatch} = props
             hashHistory.push({pathname, query: {[TAB]: 'history'}})
+            dispatch(reset('HistoryFilterForm'))
         },
 
         handleSubmitFilterDialog: props => () => {

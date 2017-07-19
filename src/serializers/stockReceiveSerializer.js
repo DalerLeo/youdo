@@ -1,5 +1,7 @@
 import _ from 'lodash'
-
+const ONE = 1
+const ZERO = 0
+const TWO = 2
 export const createSerializer = (data, detail) => {
     const provider = _.get(detail, ['provider', 'id'])
     const products = _.map(_.get(detail, 'products'), (item, index) => {
@@ -29,11 +31,14 @@ export const createSerializer = (data, detail) => {
 
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
+    const type = (_.toInteger(_.get(defaultData, 'type')) === _.toInteger(ONE)) ? ZERO
+                    : (_.toInteger(_.get(defaultData, 'type')) === _.toInteger(TWO)) ? ONE
+                        : null
     return {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'search': _.get(defaultData, 'search'),
-        'type': _.get(defaultData, 'type'),
+        'type': type,
         'product': _.get(defaultData, 'product'),
         'brand': _.get(defaultData, 'brand'),
         'from_date': _.get(defaultData, 'fromDate'),
