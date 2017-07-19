@@ -18,6 +18,8 @@ import {
 
 const TRACKING_FILTER_KEY = {
     DATE: 'date',
+    FROM_TIME: 'fromTime',
+    TO_TIME: 'toTime',
     ZONE: 'zone',
     AGENT: 'agent',
     SHOW_MARKETS: 'showMarkets',
@@ -25,6 +27,7 @@ const TRACKING_FILTER_KEY = {
     AGENT_TRACK: 'agentTrack'
 }
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -36,6 +39,8 @@ const enhance = compose(
         const agentLocation = _.get(state, ['tracking', 'location', 'data'])
         const filterForm = _.get(state, ['form', 'TrackingFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const isOpenTrack = toBoolean(_.get(query, 'agentTrack'))
+
         return {
             query,
             pathname,
@@ -45,7 +50,8 @@ const enhance = compose(
             detail,
             detailLoading,
             agentLocation,
-            filterForm
+            filterForm,
+            isOpenTrack
         }
     }),
 
@@ -58,12 +64,17 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevTrack = toBoolean(_.get(props, ['query', 'agentTrack'])) || false
-        const nextTrack = toBoolean(_.get(nextProps, ['query', 'agentTrack'])) || false
-        return prevTrack !== nextTrack && nextTrack === true
-    }, ({dispatch, params}) => {
-        const id = _.get(params, 'agentId')
-        dispatch(locationListAction(id))
+        const prevAgent = _.get(props, ['params', 'agentId'])
+        const nextAgent = _.get(nextProps, ['params', 'agentId'])
+        const prevTrack = toBoolean(_.get(props, ['query', 'agentTrack']))
+        const nextTrack = toBoolean(_.get(nextProps, ['query', 'agentTrack']))
+        return (prevAgent !== nextAgent || prevTrack !== nextTrack) && nextTrack === true
+    }, ({dispatch, params, location}) => {
+        const id = _.toInteger(_.get(params, 'agentId'))
+        const date = _.get(location, ['query', 'date'])
+        if (id > ZERO) {
+            dispatch(locationListAction(id, date))
+        }
     }),
 
     withHandlers({
@@ -94,9 +105,13 @@ const enhance = compose(
             const agent = _.get(filterForm, ['values', 'agent']) || null
             const zone = _.get(filterForm, ['values', 'border']) || null
             const date = _.get(filterForm, ['values', 'date']) || null
+            const fromTime = _.get(filterForm, ['values', 'fromTime']) || null
+            const toTime = _.get(filterForm, ['values', 'toTime']) || null
 
             filter.filterBy({
                 [TRACKING_FILTER_KEY.DATE]: moment(date).format('YYYY-MM-DD'),
+                [TRACKING_FILTER_KEY.FROM_TIME]: moment(fromTime).format('HH-mm'),
+                [TRACKING_FILTER_KEY.TO_TIME]: moment(toTime).format('HH-mm'),
                 [TRACKING_FILTER_KEY.ZONE]: zone,
                 [TRACKING_FILTER_KEY.AGENT]: agent,
                 [TRACKING_FILTER_KEY.SHOW_MARKETS]: showMarkets,
@@ -117,6 +132,7 @@ const Tracking = enhance((props) => {
         detail,
         detailLoading,
         agentLocation,
+        isOpenTrack,
         layout
     } = props
 
@@ -130,6 +146,8 @@ const Tracking = enhance((props) => {
     const agent = filter.getParam(TRACKING_FILTER_KEY.AGENT)
     const zone = filter.getParam(TRACKING_FILTER_KEY.ZONE)
     const date = filter.getParam(TRACKING_FILTER_KEY.DATE)
+    const fromTime = filter.getParam(TRACKING_FILTER_KEY.FROM_TIME)
+    const toTime = filter.getParam(TRACKING_FILTER_KEY.TO_TIME)
 
     const listData = {
         data: _.get(list, 'results'),
@@ -147,6 +165,8 @@ const Tracking = enhance((props) => {
         initialValues: {
             agentTrack: {agentTrack},
             date: {date},
+            fromTime: {fromTime},
+            toTime: {toTime},
             showMarkets: {showMarkets},
             showZones: {showZones},
             agent: {agent},
@@ -175,6 +195,7 @@ const Tracking = enhance((props) => {
                 filterForm={filterForm}
                 agentLocation={agentLocation}
                 handleOpenDetails={props.handleOpenDetails}
+                isOpenTrack={isOpenTrack}
             />
         </Layout>
     )

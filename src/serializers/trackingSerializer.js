@@ -4,8 +4,6 @@ import {orderingSnakeCase} from '../helpers/serializer'
 export const agentLocationSerializer = (user, date) => {
     return {
         'page_size': 6000,
-        'begin_date': date,
-        'end_date': date,
         user
     }
 }

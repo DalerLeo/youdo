@@ -10,7 +10,8 @@ import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import {reduxForm, Field} from 'redux-form'
-import DateField from '../ReduxForm/Basic/DateField'
+import moment from 'moment'
+import {DateField, TimeField} from '../ReduxForm'
 import Checkbox from '../ReduxForm/Basic/CheckBox'
 import RaisedButton from 'material-ui/RaisedButton'
 
@@ -23,7 +24,8 @@ const enhance = compose(
             left: '0',
             right: '0',
             bottom: '0',
-            zIndex: '2'
+            zIndex: '2',
+            overflowY: 'auto'
         },
         loader: {
             position: 'absolute',
@@ -68,6 +70,13 @@ const enhance = compose(
             '& span': {
                 top: '-10px !important',
                 left: '-10px !important'
+            }
+        },
+        halfField: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            '& > div': {
+                width: '49%'
             }
         },
         inputFieldCustom: {
@@ -118,7 +127,8 @@ const TrackingDetails = enhance((props) => {
         listData,
         handleSubmit,
         detailData,
-        filterForm
+        filterForm,
+        agentLocation
     } = props
     const loading = _.get(detailData, 'detailLoading')
     const id = _.get(detailData, 'id')
@@ -150,6 +160,20 @@ const TrackingDetails = enhance((props) => {
                             component={DateField}
                             label="Посмотреть по дате"
                             fullWidth={true}/>
+                        <div className={classes.halfField}>
+                            <Field
+                                className={classes.inputDateCustom}
+                                name="fromTime"
+                                component={TimeField}
+                                label="Время начала"
+                                fullWidth={true}/>
+                            <Field
+                                className={classes.inputDateCustom}
+                                name="toTime"
+                                component={TimeField}
+                                label="Время конца"
+                                fullWidth={true}/>
+                        </div>
                         <Field
                             name="showMarkets"
                             className={classes.checkbox}
@@ -172,6 +196,15 @@ const TrackingDetails = enhance((props) => {
                             type="submit"/>
                     </form>
                 </div>
+
+                {
+                    _.map(_.get(agentLocation, 'results'), (item, index) => {
+                        const registeredTime = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY, h:mm:ss')
+                        return (
+                            <div key={index}>{registeredTime}</div>
+                        )
+                    })
+                }
             </div>
         </div>
     )
@@ -183,7 +216,8 @@ TrackingDetails.PropTypes = {
     detailData: PropTypes.object,
     filterForm: PropTypes.shape({
         handleSubmitFilterDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    agentLocation: PropTypes.object
 }
 
 export default TrackingDetails

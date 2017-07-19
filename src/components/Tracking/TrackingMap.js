@@ -5,7 +5,10 @@ import {withGoogleMap, GoogleMap as DefaultGoogleMap, Marker, Polyline} from 're
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs'
 import CircularProgress from 'material-ui/CircularProgress'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
+import moment from 'moment'
 import PropTypes from 'prop-types'
+import RedPin from '../Images/person-pin-red.png'
+import GreenPin from '../Images/person-pin-green.png'
 
 const enhance = compose(
     withScriptjs,
@@ -18,6 +21,7 @@ const GoogleMapWrapper = enhance((
         listData,
         handleOpenDetails,
         agentLocation,
+        isOpenTrack,
         ...props
     }) => {
     const agentCoordinates = [
@@ -27,27 +31,46 @@ const GoogleMapWrapper = enhance((
             return {lat: lat, lng: lng}
         })
     ]
+    const polyLineOptions = {
+        strokeColor: '#19677e',
+        strokeOpacity: 1,
+        strokeWeight: 3
+    }
     return (
         <DefaultGoogleMap ref={onMapLoad} {...props}>
             {_.map(listData, (item) => {
                 const id = _.get(item, 'id')
                 const lat = _.get(item, ['location', 'lat'])
                 const lng = _.get(item, ['location', 'lon'])
+
+                const FIVE_MIN = 300000
+                const dateNow = _.toInteger(moment().format('x'))
+                const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                const difference = dateNow - registeredDate
+                let isOnline = false
+                if (difference <= FIVE_MIN) {
+                    isOnline = true
+                }
+
                 return (
                     <Marker
                         key={id}
                         onClick={() => { handleOpenDetails(id) }}
                         position={{lat: lat, lng: lng}}
+                        options={
+                        {icon:
+                        {url: isOnline ? GreenPin : RedPin,
+                            size: {width: 26, height: 30},
+                            scaledSize: {width: 26, height: 30}
+                        }}}
                     />
                 )
             })}
             {props.children}
             <Polyline
-                path={_.get(agentCoordinates, '0')}
+                path={isOpenTrack ? _.get(agentCoordinates, '0') : []}
                 geodesic={true}
-                strokeColor='#12aaeb'
-                strokeOpacity={1.0}
-                strokeWeight={2}
+                options={polyLineOptions}
             />
 
         </DefaultGoogleMap>
@@ -64,6 +87,7 @@ const GoogleMap = (props) => {
         listData,
         handleOpenDetails,
         agentLocation,
+        isOpenTrack,
         ...defaultProps
     } = props
 
@@ -79,6 +103,7 @@ const GoogleMap = (props) => {
             listData={listData}
             handleOpenDetails={handleOpenDetails}
             agentLocation={agentLocation}
+            isOpenTrack={isOpenTrack}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>
@@ -88,7 +113,8 @@ const GoogleMap = (props) => {
 GoogleMap.PropTypes = {
     listData: PropTypes.object,
     handleOpenDetails: PropTypes.func,
-    agentLocation: PropTypes.object
+    agentLocation: PropTypes.object,
+    isOpenTrack: PropTypes.bool
 }
 
 export default GoogleMap
