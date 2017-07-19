@@ -53,6 +53,7 @@ const enhance = compose(
         const barcodeListLoading = _.get(state, ['stockReceive', 'barcodeList', 'loading'])
         const createLoading = _.get(state, ['stockReceive', 'create', 'loading'])
         const createForm = _.get(state, ['form', 'StockReceiveCreateForm'])
+        const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
         const productId = _.toNumber(_.get(state, ['form', 'StockReceiveCreateForm', 'values', 'product', 'value', 'id']))
         const filter = filterHelper(list, pathname, query)
@@ -75,14 +76,15 @@ const enhance = compose(
             filter,
             createForm,
             isDefect,
-            productId
+            productId,
+            historyFilterForm
         }
     }),
 
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['location', 'query', 'tab']) || 'receive'
         const nextTab = _.get(nextProps, ['location', 'query', 'tab']) || 'receive'
-        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) || (prevTab !== nextTab)
+        return (props.filter.filterRequest() !== nextProps.filter.filterRequest()) || (prevTab !== nextTab)
     }, ({dispatch, filter, location}) => {
         const currentTab = _.get(location, ['query', 'tab']) || 'receive'
         if (currentTab === 'receive') {
@@ -135,24 +137,25 @@ const enhance = compose(
 
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {}})
+            hashHistory.push({pathname, query: {[TAB]: 'history'}})
         },
 
         handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm} = props
-            const brand = _.get(filterForm, ['values', 'manufacture', 'value']) || null
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-
+            const {filter, historyFilterForm} = props
+            const brand = _.get(historyFilterForm, ['values', 'brand', 'value']) || null
+            const type = _.get(historyFilterForm, ['values', 'type', 'value']) || null
+            const productType = _.get(historyFilterForm, ['values', 'productType', 'value']) || null
+            const product = _.get(historyFilterForm, ['values', 'product', 'value']) || null
+            const fromDate = _.get(historyFilterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(historyFilterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
-                [HISTORY_FILTER_OPEN.BRAND]: brand,
-                [HISTORY_FILTER_OPEN.TYPE]: type,
-                [HISTORY_FILTER_OPEN.PRODUCT]: product,
-                [HISTORY_FILTER_OPEN.FROM_DATE]: fromDate,
-                [HISTORY_FILTER_OPEN.TO_DATE]: toDate
+                [HISTORY_FILTER_KEY.BRAND]: brand,
+                [HISTORY_FILTER_KEY.TYPE]: type,
+                [HISTORY_FILTER_KEY.PRODUCT_TYPE]: productType,
+                [HISTORY_FILTER_KEY.PRODUCT]: product,
+                [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [HISTORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
         },
@@ -219,8 +222,12 @@ const StockReceiveList = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
     const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_CREATE_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
-    const manufacture = _.toInteger(filter.getParam(HISTORY_FILTER_OPEN.MANUFACTURE))
-    const group = _.toInteger(filter.getParam(HISTORY_FILTER_OPEN.GROUP))
+    const brand = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.BRAND))
+    const type = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.TYPE))
+    const productType = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.PRODUCT_TYPE))
+    const product = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.PRODUCT))
+    const fromDate = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.FROM_DATE))
+    const toDate = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.TO_DATE))
     const tab = _.get(location, ['query', TAB]) || STOCK_TAB.STOCK_RECEIVE_DEFAULT_TAB
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
@@ -271,11 +278,23 @@ const StockReceiveList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            manufacture: {
-                value: manufacture
+            brand: {
+                value: brand
             },
-            group: {
-                value: group
+            type: {
+                value: type
+            },
+            product: {
+                value: product
+            },
+            fromDate: {
+                value: fromDate
+            },
+            toDate: {
+                value: toDate
+            },
+            productType: {
+                value: productType
             }
         },
         filterLoading: false,

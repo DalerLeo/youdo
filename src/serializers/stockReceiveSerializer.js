@@ -32,7 +32,14 @@ export const listFilterSerializer = (data) => {
     return {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
-        'search': _.get(defaultData, 'search')
+        'search': _.get(defaultData, 'search'),
+        'type': _.get(defaultData, 'type'),
+        'product': _.get(defaultData, 'product'),
+        'brand': _.get(defaultData, 'brand'),
+        'from_date': _.get(defaultData, 'fromDate'),
+        'to_date': _.get(defaultData, 'toDate'),
+        'product_type': _.get(defaultData, 'productType')
+
     }
 }
 

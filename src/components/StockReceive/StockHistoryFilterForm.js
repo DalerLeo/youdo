@@ -13,7 +13,8 @@ import {
     ProductSearchField,
     BrandSearchField,
     DateToDateField,
-    ProductTypeSearchField
+    ProductTypeSearchField,
+    StockStatusSearchField
 } from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -21,6 +22,7 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 export const HISTORY_FILTER_KEY = {
     PRODUCT: 'product',
     TYPE: 'type',
+    PRODUCT_TYPE: 'productType',
     BRAND: 'brand',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
@@ -119,7 +121,7 @@ const enhance = compose(
 )
 
 const HistoryFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -159,7 +161,7 @@ const HistoryFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
@@ -171,7 +173,7 @@ const HistoryFilterForm = enhance((props) => {
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
-                            name="type"
+                            name="productType"
                             component={ProductTypeSearchField}
                             label="Тип товара"
                             fullWidth={true}/>
@@ -185,7 +187,20 @@ const HistoryFilterForm = enhance((props) => {
                             fullWidth={true}/>
                     </div>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Период" fullWidth={true}/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="type"
+                            component={StockStatusSearchField}
+                            label="Статус"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="date"
+                            component={DateToDateField}
+                            label="Период"
+                            fullWidth={true}/>
                     </div>
 
                     <RaisedButton

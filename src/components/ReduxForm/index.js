@@ -41,9 +41,11 @@ import MarketTypeSearchField from './Shop/MarketTypeSearchField'
 import MarketSearchField from './Shop/MarketSearchField'
 import DeptSearchField from './DeptTypeSearchField'
 import StockReceiveProductSearchField from './StockReceive/StockReceiveProductSearchField'
+import StockStatusSearchField from './StockStatusSearchField'
 
 export {
     ShiftSearchField,
+    StockStatusSearchField,
     ProductMeasurementField,
     TransactionTypeSearchField,
     UsersGroupSearchField,
