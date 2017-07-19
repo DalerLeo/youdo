@@ -11,6 +11,7 @@ import PropTypes from 'prop-types'
 import StockSearchField from '../ReduxForm/Stock/StockSearchField'
 import ProductTypeSearchField from '../ReduxForm/Product/ProductTypeSearchField'
 import RemainderStatusSearchField from '../ReduxForm/Remainder/RemainderStatusSearchField'
+import Pagination from '../GridList/GridListNavPagination'
 export const REMAINDER_FILTER_OPEN = 'openFilterDialog'
 
 const enhance = compose(
@@ -21,20 +22,18 @@ const enhance = compose(
         },
         filtersWrapper: {
             display: 'flex',
-            padding: '10px 30px',
+            paddingRight: '20px',
             alignItems: 'center',
             '& .row': {
                 margin: '0rem !important'
             },
             '& > div': {
-                width: '150px',
                 marginRight: '20px'
             }
         },
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
-            width: '150px !important',
             marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
@@ -50,13 +49,15 @@ const enhance = compose(
         },
         filterForm: {
             display: 'flex',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            padding: '10px 30px'
         },
         clearBtn: {
-            padding: '20px 30px',
             display: 'flex',
             alignItems: 'center',
             color: '#909090',
+            paddingLeft: '20px',
+            marginRight: '0!important',
             '& button': {
                 '& > div': {
                     display: 'flex',
@@ -100,7 +101,7 @@ const iconClearStyle = {
 }
 
 const RemainderFilterForm = enhance((props) => {
-    const {classes, resetFilter, onSubmit, handleSubmit} = props
+    const {classes, resetFilter, onSubmit, handleSubmit, filter} = props
     return (
         <Paper zDepth={1} className={classes.filters}>
             <form onSubmit={handleSubmit(onSubmit)} className={classes.filterForm}>
@@ -135,16 +136,17 @@ const RemainderFilterForm = enhance((props) => {
                         type="submit">
                         <Search/>
                     </IconButton>
+                    <div className={classes.clearBtn}>
+                        <IconButton
+                            iconStyle={iconClearStyle.icon}
+                            style={iconClearStyle.button}
+                            onTouchTap={resetFilter}>
+                            <CloseIcon2/>
+                        </IconButton>
+                        <div style={{marginTop: '-4px', cursor: 'pointer'}} onClick={resetFilter}>очистить</div>
+                    </div>
                 </div>
-                <div className={classes.clearBtn}>
-                    <IconButton
-                        iconStyle={iconClearStyle.icon}
-                        style={iconClearStyle.button}
-                        onTouchTap={resetFilter}>
-                        <CloseIcon2/>
-                    </IconButton>
-                    <div style={{marginTop: '-4px', cursor: 'pointer'}} onClick={resetFilter}>очистить</div>
-                </div>
+                <Pagination filter={filter}/>
             </form>
         </Paper>
     )

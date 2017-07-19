@@ -296,7 +296,8 @@ const RemainderGridList = enhance((props) => {
             </div>
             <RemainderFilterForm
                 onSubmit={submitFilter}
-                resetFilter={resetFilter}/>
+                resetFilter={resetFilter}
+                filter={filter}/>
             {listHeader}
             {listLoading ? listLoader : list }
 
