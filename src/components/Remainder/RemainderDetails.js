@@ -8,7 +8,6 @@ import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat'
 import moment from 'moment'
 import LinearProgress from '../LinearProgress'
-import toBoolean from '../../helpers/toBoolean'
 
 const enhance = compose(
     injectSheet({
@@ -53,6 +52,12 @@ const enhance = compose(
                 content: '""',
                 backgroundImage: 'none'
             }
+        },
+        error: {
+            color: '#e57373'
+        },
+        success: {
+            color: '#81c784'
         }
 
     }),
@@ -82,13 +87,13 @@ const RemainderDetails = enhance((props) => {
                         const barcode = _.get(item, 'barcode')
                         const balance = numberFormat(_.get(item, 'balance'), measurement)
                         const createdDate = moment(_.get(item, 'createdDate')).format(('DD.MM.YYYY'))
-                        const isDefect = toBoolean(_.get(item, 'isDefect')) ? 'Брак' : 'OK'
+                        const isDefect = _.get(item, 'isDefect') ? 'Брак' : 'OK'
                         return (
                             <Row key={barcode} className='dottedList'>
                                 <Col xs={4}>{barcode}</Col>
                                 <Col xs={4}>{createdDate}</Col>
                                 <Col xs={3}>{balance} </Col>
-                                <Col xs={1}>{isDefect}</Col>
+                                <Col xs={1}> <span className={_.get(item, 'isDefect') ? classes.error : classes.success }>{isDefect}</span></Col>
                             </Row>
                         )
                     })}

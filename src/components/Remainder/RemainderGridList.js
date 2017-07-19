@@ -14,7 +14,6 @@ import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down-circle'
 import Paper from 'material-ui/Paper'
 import RemainderDetails from './RemainderDetails'
 import CircularProgress from 'material-ui/CircularProgress'
-import ArrowUp from 'material-ui/svg-icons/navigation/arrow-drop-up'
 import numberFormat from '../../helpers/numberFormat'
 import RemainderTransferDialog from './RemainderTransferDialog'
 import RemainderFilterForm from './RemainderFilterForm'
@@ -90,6 +89,10 @@ const enhance = compose(
                 alignItems: 'center',
                 justifyContent: 'center'
             }
+        },
+        dropUp: {
+            extend: 'dropDown',
+            transform: 'rotate(180deg)'
         },
         loader: {
             display: 'flex',
@@ -179,9 +182,10 @@ const RemainderGridList = enhance((props) => {
     const listHeader = (
         <div className={classes.headers}>
             <Row>
-                <Col xs={4}>Товар</Col>
-                <Col xs={4}>Тип товара</Col>
+                <Col xs={3}>Товар</Col>
+                <Col xs={3}>Тип товара</Col>
                 <Col xs={3} style={{textAlign: 'left'}}>Всего товаров</Col>
+                <Col xs={2} style={{textAlign: 'left'}}>Браконный товары</Col>
                 <Col xs={1} style={{display: 'none'}}>|</Col>
             </Row>
         </div>
@@ -197,8 +201,10 @@ const RemainderGridList = enhance((props) => {
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
                 const product = _.get(item, 'title')
-                const balance = _.get(item, 'balance')
+                const balance = Number(_.get(item, 'balance')) + Number(_.get(item, 'defects'))
+                const defects = _.get(item, 'defects')
                 const measurement = _.get(item, ['measurement', 'name'])
+                const type = _.get(item, ['type', 'name'])
                 if (id === detailId) {
                     return (
                         <Paper key={id} className={classes.wrapperBold}>
@@ -206,16 +212,17 @@ const RemainderGridList = enhance((props) => {
                                 <div className={classes.closeDetail}
                                     onClick={handleCloseDetail}>
                                 </div>
-                                <Col xs={4}>{product}</Col>
-                                <Col xs={4}>N/A</Col>
+                                <Col xs={3}>{product}</Col>
+                                <Col xs={3}>{type}</Col>
                                 <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
+                                <Col xs={2} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
                                 <Col xs={1} style={{textAlign: 'right'}}>
                                     <IconButton
-                                        className={classes.dropDown}
+                                        className={classes.dropUp}
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         onTouchTap={handleCloseDetail}>
-                                        <ArrowUp/>
+                                        <ArrowDown/>
                                     </IconButton>
                                 </Col>
                             </Row>
@@ -234,9 +241,10 @@ const RemainderGridList = enhance((props) => {
                         query: filter.getParams()
                     }}>
                         <Row style={{position: 'relative'}}>
-                            <Col xs={4}>{product}</Col>
-                            <Col xs={4}>N/A</Col>
+                            <Col xs={3}>{product}</Col>
+                            <Col xs={3}>{type}</Col>
                             <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
+                            <Col xs={2} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
                             <Col xs={1} style={{textAlign: 'right'}}>
                                 <Link to={{
                                     pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
