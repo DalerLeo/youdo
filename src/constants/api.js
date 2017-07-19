@@ -96,7 +96,7 @@ export const SUPPLY_CREATE = `/${SUPPLY}/`
 export const SUPPLY_LIST = `/${SUPPLY}/`
 export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
-export const SUPPLY_DELETE = `/${SUPPLY}/cancel/`
+export const SUPPLY_DELETE = `/${SUPPLY}/cancel`
 
 export const PRICES = 'market/discount'
 export const PRICES_CREATE = `/${PRICES}/`
