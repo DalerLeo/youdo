@@ -180,7 +180,7 @@ const TrackingWrapper = enhance((props) => {
         handleOpenDetails,
         agentLocation,
         handleSubmit,
-        showAgentTrack,
+        isOpenTrack,
         filterForm
     } = props
 
@@ -283,6 +283,7 @@ const TrackingWrapper = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 filterForm={filterForm}
+                agentLocation={agentLocation}
             />
             }
         </div>
@@ -296,7 +297,7 @@ const TrackingWrapper = enhance((props) => {
                     listData={_.get(listData, 'data')}
                     handleOpenDetails={handleOpenDetails}
                     agentLocation={agentLocation}
-                    showAgentTrack={showAgentTrack}
+                    isOpenTrack={isOpenTrack}
                 />
                 {zoneInfoToggle}
             </div>
@@ -317,7 +318,8 @@ TrackingWrapper.PropTypes = {
     handleOpenDetails: PropTypes.func,
     filterForm: PropTypes.shape({
         handleSubmitFilterDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    isOpenTrack: PropTypes.bool
 }
 
 export default TrackingWrapper
