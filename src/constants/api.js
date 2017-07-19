@@ -311,3 +311,8 @@ export const CLIENT_BALANCE = 'sales/client_balances'
 export const CLIENT_BALANCE_LIST = `/${CLIENT_BALANCE}/`
 export const CLIENT_BALANCE_ITEM = 'sales/client_transaction/'
 export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
+
+export const PLAN = 'market/border'
+export const PLAN_CREATE = `/${PLAN}/`
+export const PLAN_LIST = `/${PLAN}/`
+export const PLAN_ITEM = `/${PLAN}/%d/`
