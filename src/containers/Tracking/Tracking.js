@@ -13,7 +13,8 @@ import filterHelper from '../../helpers/filter'
 import moment from 'moment'
 import {
     trackingListFetchAction,
-    locationListAction
+    locationListAction,
+    marketsLocationFetchAction
 } from '../../actions/tracking'
 
 const TRACKING_FILTER_KEY = {
@@ -37,6 +38,7 @@ const enhance = compose(
         const detail = _.get(state, ['tracking', 'item', 'data'])
         const detailLoading = _.get(state, ['tracking', 'item', 'loading'])
         const agentLocation = _.get(state, ['tracking', 'location', 'data'])
+        const marketsLocation = _.get(state, ['tracking', 'markets', 'data'])
         const filterForm = _.get(state, ['form', 'TrackingFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const isOpenTrack = toBoolean(_.get(query, 'agentTrack'))
@@ -50,6 +52,7 @@ const enhance = compose(
             detail,
             detailLoading,
             agentLocation,
+            marketsLocation,
             filterForm,
             isOpenTrack
         }
@@ -75,6 +78,14 @@ const enhance = compose(
         if (id > ZERO) {
             dispatch(locationListAction(id, date))
         }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevMarket = toBoolean(_.get(props, ['query', 'showMarkets']))
+        const nextMarket = toBoolean(_.get(nextProps, ['query', 'showMarkets']))
+        return prevMarket !== nextMarket && nextMarket === true
+    }, ({dispatch}) => {
+        dispatch(marketsLocationFetchAction())
     }),
 
     withHandlers({
@@ -132,6 +143,7 @@ const Tracking = enhance((props) => {
         detail,
         detailLoading,
         agentLocation,
+        marketsLocation,
         isOpenTrack,
         layout
     } = props
@@ -194,6 +206,7 @@ const Tracking = enhance((props) => {
                 detailData={detailData}
                 filterForm={filterForm}
                 agentLocation={agentLocation}
+                marketsLocation={marketsLocation}
                 handleOpenDetails={props.handleOpenDetails}
                 isOpenTrack={isOpenTrack}
             />

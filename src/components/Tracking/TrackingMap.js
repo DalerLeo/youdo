@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose} from 'recompose'
-import {withGoogleMap, GoogleMap as DefaultGoogleMap, Marker, Polyline} from 'react-google-maps'
+import {compose, withState} from 'recompose'
+import {withGoogleMap, GoogleMap as DefaultGoogleMap, Marker, Polyline, InfoWindow} from 'react-google-maps'
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs'
 import CircularProgress from 'material-ui/CircularProgress'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
@@ -9,19 +9,24 @@ import moment from 'moment'
 import PropTypes from 'prop-types'
 import RedPin from '../Images/person-pin-red.png'
 import GreenPin from '../Images/person-pin-green.png'
+import MarketLocation from '../Images/market-location.png'
 
+const ZERO = 0
 const enhance = compose(
     withScriptjs,
-    withGoogleMap
+    withGoogleMap,
+    withState('openMarketInfo', 'setOpenMarketInfo', ZERO)
 )
 
-const GoogleMapWrapper = enhance((
-    {
+const GoogleMapWrapper = enhance(({
         onMapLoad,
         listData,
         handleOpenDetails,
         agentLocation,
+        marketsLocation,
         isOpenTrack,
+        openMarketInfo,
+        setOpenMarketInfo,
         ...props
     }) => {
     const agentCoordinates = [
@@ -38,6 +43,31 @@ const GoogleMapWrapper = enhance((
     }
     return (
         <DefaultGoogleMap ref={onMapLoad} {...props}>
+            {_.map(marketsLocation, (item) => {
+                const id = _.get(item, 'id')
+                const name = _.get(item, 'name')
+                const lat = _.get(item, ['location', 'coordinates', '0'])
+                const lng = _.get(item, ['location', 'coordinates', '1'])
+
+                return (
+                    <Marker
+                        key={id}
+                        onClick={() => { setOpenMarketInfo(id) }}
+                        position={{lat: lat, lng: lng}}
+                        options={
+                        {icon:
+                        {url: MarketLocation,
+                            size: {width: 15, height: 15},
+                            scaledSize: {width: 15, height: 15}
+                        }}}>
+
+                        {(id === openMarketInfo) && <InfoWindow>
+                            <div>{name}</div>
+                        </InfoWindow>}
+                    </Marker>
+                )
+            })}
+
             {_.map(listData, (item) => {
                 const id = _.get(item, 'id')
                 const lat = _.get(item, ['location', 'lat'])
@@ -62,8 +92,8 @@ const GoogleMapWrapper = enhance((
                         {url: isOnline ? GreenPin : RedPin,
                             size: {width: 26, height: 30},
                             scaledSize: {width: 26, height: 30}
-                        }}}
-                    />
+                        }}}>
+                    </Marker>
                 )
             })}
             {props.children}
@@ -87,6 +117,7 @@ const GoogleMap = (props) => {
         listData,
         handleOpenDetails,
         agentLocation,
+        marketsLocation,
         isOpenTrack,
         ...defaultProps
     } = props
@@ -103,6 +134,7 @@ const GoogleMap = (props) => {
             listData={listData}
             handleOpenDetails={handleOpenDetails}
             agentLocation={agentLocation}
+            marketsLocation={marketsLocation}
             isOpenTrack={isOpenTrack}
             {...defaultProps}>
             {props.children}
@@ -114,6 +146,7 @@ GoogleMap.PropTypes = {
     listData: PropTypes.object,
     handleOpenDetails: PropTypes.func,
     agentLocation: PropTypes.object,
+    marketsLocation: PropTypes.object,
     isOpenTrack: PropTypes.bool
 }
 

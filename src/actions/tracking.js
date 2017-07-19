@@ -20,6 +20,22 @@ export const trackingListFetchAction = () => {
     }
 }
 
+export const marketsLocationFetchAction = () => {
+    const payload = axios()
+        .get(API.MARKETS_LOCATION)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.MARKETS_LOCATION,
+        payload
+    }
+}
+
 export const locationListAction = (id, date) => {
     const params = serializers.agentLocationSerializer(id, date)
     const payload = axios()

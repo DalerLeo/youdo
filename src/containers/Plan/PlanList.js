@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
@@ -10,9 +10,7 @@ import PlanWrapper from '../../components/Plan/PlanWrapper'
 import {ADD_PLAN} from '../../components/Plan'
 import {
     planCreateAction,
-    planListFetchAction,
-    planListSearchFetchAction,
-    planItemFetchAction
+    planListFetchAction
 } from '../../actions/plan'
 import {openSnackbarAction} from '../../actions/snackbar'
 const enhance = compose(

@@ -179,6 +179,7 @@ const TrackingWrapper = enhance((props) => {
         toggle,
         handleOpenDetails,
         agentLocation,
+        marketsLocation,
         handleSubmit,
         isOpenTrack,
         filterForm
@@ -297,6 +298,7 @@ const TrackingWrapper = enhance((props) => {
                     listData={_.get(listData, 'data')}
                     handleOpenDetails={handleOpenDetails}
                     agentLocation={agentLocation}
+                    marketsLocation={marketsLocation}
                     isOpenTrack={isOpenTrack}
                 />
                 {zoneInfoToggle}
@@ -310,6 +312,7 @@ TrackingWrapper.PropTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
     agentLocation: PropTypes.object,
+    marketsLocation: PropTypes.object,
     toggle: PropTypes.shape({
         openToggle: PropTypes.bool.isRequired,
         handleExpandInfo: PropTypes.func.isRequired,
