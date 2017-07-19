@@ -212,5 +212,5 @@ export const STOCK_RECEIVE_ITEM_PATH = `/${STOCK_RECEIVE}/%d`
 
 export const CLIENT_BALANCE = 'clientBalance'
 export const CLIENT_BALANCE_LIST_URL = `/${CLIENT_BALANCE}`
-export const CLIENT_BALANCE_ITEM_URL = `${CLIENT_BALANCE_LIST_URL}/:clientId`
+export const CLIENT_BALANCE_ITEM_URL = `${CLIENT_BALANCE_LIST_URL}/:clientBalanceId`
 export const CLIENT_BALANCE_ITEM_PATH = `${CLIENT_BALANCE}/%d`
