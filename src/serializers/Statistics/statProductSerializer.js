@@ -19,8 +19,8 @@ export const listFilterSerializer = (data) => {
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
         'type': _.get(defaultData, 'productType'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate')
+        'begin_date': _.get(defaultData, 'fromDate'),
+        'end_date': _.get(defaultData, 'toDate')
     }
 }
 

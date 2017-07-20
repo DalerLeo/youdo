@@ -41,6 +41,7 @@ import MarketTypeSearchField from './Shop/MarketTypeSearchField'
 import MarketSearchField from './Shop/MarketSearchField'
 import DeptSearchField from './DeptTypeSearchField'
 import StockReceiveProductSearchField from './StockReceive/StockReceiveProductSearchField'
+import FrequencySearchField from './FrequencySearchField'
 
 export {
     ShiftSearchField,
@@ -85,5 +86,6 @@ export {
     MarketSearchField,
     DealTypeSearchField,
     DeptSearchField,
-    StockReceiveProductSearchField
+    StockReceiveProductSearchField,
+    FrequencySearchField
 }

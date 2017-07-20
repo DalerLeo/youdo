@@ -94,6 +94,20 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
+        inputFieldCustom2: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '5px !important'
+            }
+        },
         title: {
             fontWeight: '600',
             border: 'none !important'
@@ -204,12 +218,12 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                     />
                     <TextField
                         label="Кол-во"
-                        className={classes.inputFieldCustom}
+                        className={classes.inputFieldCustom2}
                         {..._.get(defaultProps, 'amount')}
                     />
                     <TextField
                         label="Сумма"
-                        className={classes.inputFieldCustom}
+                        className={classes.inputFieldCustom2}
                         normalize={normalizeNumber}
                         {..._.get(defaultProps, 'cost')}
                     />

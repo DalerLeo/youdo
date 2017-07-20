@@ -408,9 +408,9 @@ const SupplyDetails = enhance((props) => {
                         const amount = _.toInteger(_.get(item, 'amount'))
                         const itemPrice = cost / amount
                         const postedAmount = _.get(item, 'postedAmount')
-                        const defectAmount = _.get(item, 'defectAmount')
                         const measurement = _.get(product, ['measurement', 'name'])
-                        const notAccepted = (_.get(data, 'finishedTime')) ? amount - (postedAmount + defectAmount) : ZERO
+                        const defectAmount = _.toInteger(_.get(item, 'defectAmount'))
+                        const notAccepted = postedAmount + defectAmount < amount ? numberFormat(amount - defectAmount - postedAmount, measurement) : numberFormat(ZERO, measurement)
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
                                 <Col xs={4}>{productName}</Col>
