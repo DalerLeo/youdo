@@ -264,6 +264,7 @@ export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
 export const TRACKING = 'market/agents_location/'
 export const TRACKING_LIST = `${TRACKING}`
 export const TRACKING_ITEM = `${TRACKING}/%d/`
+export const MARKETS_LOCATION = `${SHOP}/locations/`
 export const LOCATION_LIST = 'market/location/'
 
 export const REMAINDER = 'stock/stock'
@@ -312,3 +313,8 @@ export const CLIENT_BALANCE = 'sales/client_balances'
 export const CLIENT_BALANCE_LIST = `/${CLIENT_BALANCE}/`
 export const CLIENT_BALANCE_ITEM = 'sales/client_transaction/'
 export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
+
+export const PLAN = 'market/border'
+export const PLAN_CREATE = `/${PLAN}/`
+export const PLAN_LIST = `/${PLAN}/`
+export const PLAN_ITEM = `/${PLAN}/%d/`
