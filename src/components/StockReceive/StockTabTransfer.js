@@ -92,7 +92,7 @@ const StockTabTransfer = enhance((props) => {
         detailData,
         filter,
         classes,
-        createDialog
+        acceptDialog
     } = props
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
     const detailId = _.get(detailData, 'id')
@@ -143,7 +143,7 @@ const StockTabTransfer = enhance((props) => {
                                             : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
                                                 : (<span className={classes.error}>Отменен</span>))}</Col>
                                     <Col xs={2} style={{textAlign: 'right'}}>
-                                        <a onClick={createDialog.handleOpenCreateDialog}
+                                        <a onClick={acceptDialog.handleOpenAcceptDialog}
                                            className={classes.actionButton}>Выполнить</a>
                                     </Col>
                                 </Row>
@@ -181,11 +181,10 @@ const StockTabTransfer = enhance((props) => {
             })}
             <ConfirmDialog
                 type="submit"
-                message={'Заказ ' + _.get(currentDetail, 'receiver')}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-                open={createDialog.openCreateDialog}
+                message={'Запрос № ' + _.get(currentDetail, 'id')}
+                onClose={acceptDialog.handleCloseAcceptDialog}
+                onSubmit={acceptDialog.handleSubmitAcceptDialog}
+                open={acceptDialog.openAcceptDialog}
             />
             <Pagination
                 filter={filter}
@@ -199,13 +198,11 @@ StockTabTransfer.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
     handleCloseDetail: PropTypes.func.isRequired,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        isDefect: PropTypes.bool,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
+    acceptDialog: PropTypes.shape({
+        openAcceptDialog: PropTypes.bool.isRequired,
+        handleOpenAcceptDialog: PropTypes.func.isRequired,
+        handleCloseAcceptDialog: PropTypes.func.isRequired,
+        handleSubmitAcceptDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

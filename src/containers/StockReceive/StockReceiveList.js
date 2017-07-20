@@ -15,7 +15,8 @@ import {
     STOCK_RECEIVE_CREATE_DIALOG_OPEN,
     HISTORY_FILTER_OPEN,
     HISTORY_FILTER_KEY,
-    TAB
+    TAB,
+    STOCK_TRANSFER_ACCEPT_DIALOG_OPEN
 } from '../../components/StockReceive'
 import {
     stockReceiveListFetchAction,
@@ -23,7 +24,8 @@ import {
     stockReceiveCreateAction,
     stockHistoryListFetchAction,
     stockTransferListFetchAction,
-    stockTransferItemFetchAction
+    stockTransferItemFetchAction,
+    stockTransferItemAcceptAction
 } from '../../actions/stockReceive'
 import {orderReturnListAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -161,7 +163,29 @@ const enhance = compose(
 
             })
         },
+        handleOpenAcceptDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_TRANSFER_ACCEPT_DIALOG_OPEN]: true})})
+        },
 
+        handleCloseAcceptDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_TRANSFER_ACCEPT_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitAcceptDialog: props => () => {
+            const {dispatch, filter, location: {pathname}, params, transferList} = props
+            const supplyId = _.toInteger(_.get(params, 'stockReceiveId'))
+            const currentDetail = _.find(_.get(transferList, 'results'), {'id': supplyId})
+            return dispatch(stockTransferItemAcceptAction(_.get(currentDetail, 'id'), _.get(currentDetail, 'stock')))
+                    .then(() => {
+                        hashHistory.push({pathname, query: filter.getParams({[STOCK_TRANSFER_ACCEPT_DIALOG_OPEN]: false})})
+                        return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    })
+                    .then(() => {
+                        dispatch(stockTransferItemFetchAction(supplyId))
+                    })
+        },
         handleOpenCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: true})})
@@ -222,6 +246,7 @@ const StockReceiveList = enhance((props) => {
     } = props
     const detailType = _.get(location, ['query', TYPE])
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
+    const openAcceptDialog = toBoolean(_.get(location, ['query', STOCK_TRANSFER_ACCEPT_DIALOG_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_CREATE_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
     const brand = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.BRAND))
@@ -262,6 +287,12 @@ const StockReceiveList = enhance((props) => {
         detailLoading
     }
 
+    const acceptDialog = {
+        openAcceptDialog,
+        handleOpenAcceptDialog: props.handleOpenAcceptDialog,
+        handleCloseAcceptDialog: props.handleCloseAcceptDialog,
+        handleSubmitAcceptDialog: props.handleSubmitAcceptDialog
+    }
     const createDialog = {
         createLoading,
         openCreateDialog,
@@ -320,6 +351,7 @@ const StockReceiveList = enhance((props) => {
                 detailData={detailData}
                 createDialog={createDialog}
                 handleCloseDetail={handleCloseDetail}
+                acceptDialog={acceptDialog}
             />
         </Layout>
     )

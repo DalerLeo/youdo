@@ -2,6 +2,15 @@ import _ from 'lodash'
 const ONE = 1
 const ZERO = 0
 const TWO = 2
+
+export const acceptSerializer = (id, stock) => {
+    return {
+        'order': id,
+        'comment': 'fdasfasdfa',
+        stock
+    }
+}
+
 export const createSerializer = (data, detail) => {
     const provider = _.get(detail, ['provider', 'id'])
     const products = _.map(_.get(detail, 'products'), (item, index) => {
