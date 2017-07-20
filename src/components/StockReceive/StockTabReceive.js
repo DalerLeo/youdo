@@ -10,9 +10,7 @@ import Paper from 'material-ui/Paper'
 import StockReceiveDetails from './StockReceiveDetails'
 import CreateDialog from './StockReceiveCreateDialog'
 import Pagination from '../GridList/GridListNavPagination'
-
-const SUPPLY = 'supply'
-const TRANSFER = 'transfer'
+import stockTypeFormat from '../../helpers/stockTypeFormat'
 
 const enhance = compose(
     injectSheet({
@@ -123,6 +121,7 @@ const StockTabReceive = enhance((props) => {
                 const id = _.get(item, 'id')
                 const by = _.get(item, ['by'])
                 const type = _.get(item, ['type'])
+                const formattedType = stockTypeFormat(type)
                 const date = _.get(item, 'date') ? moment(_.get(item, 'date')).format('DD.MM.YYYY') : 'Не указана'
                 const status = _.toInteger(_.get(item, 'status'))
                 const PENDING = 0
@@ -136,11 +135,7 @@ const StockTabReceive = enhance((props) => {
                                 <Row className={classes.semibold}>
                                     <Col xs={1}>{id}</Col>
                                     <Col xs={3} onClick={handleCloseDetail}>{by}</Col>
-                                    <Col xs={2}>
-                                        {type === SUPPLY ? ('Поставка')
-                                            : ((type === TRANSFER) ? ('Передача')
-                                                : ('Возврат'))}
-                                    </Col>
+                                    <Col xs={2}>{formattedType}</Col>
                                     <Col xs={2}>{date}</Col>
                                     <Col xs={2}>
                                         {status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
@@ -174,9 +169,7 @@ const StockTabReceive = enhance((props) => {
                                     <Col xs={1}>{id}</Col>
                                     <Col xs={3}>{by}</Col>
                                     <Col xs={2}>
-                                        {type === SUPPLY ? ('Поставка')
-                                            : ((type === TRANSFER) ? ('Передача')
-                                                : ('Возврат'))}
+                                        {formattedType}
                                     </Col>
                                     <Col xs={2}>{date}</Col>
                                     <Col xs={2}>

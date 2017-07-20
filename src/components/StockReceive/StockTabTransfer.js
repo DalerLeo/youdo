@@ -11,8 +11,8 @@ import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import StockTransferDetails from './StockTransferDetails'
-import CreateDialog from './StockReceiveCreateDialog'
 import Pagination from '../GridList/GridListNavPagination'
+import ConfirmDialog from '../ConfirmDialog'
 
 const enhance = compose(
     injectSheet({
@@ -92,12 +92,11 @@ const StockTabTransfer = enhance((props) => {
         detailData,
         filter,
         classes,
-        createDialog
+        acceptDialog
     } = props
-
+    const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
     const detailId = _.get(detailData, 'id')
     const listLoading = _.get(listData, 'transferListLoading')
-
     if (listLoading) {
         return (
             <div className={classes.loader}>
@@ -118,11 +117,11 @@ const StockTabTransfer = enhance((props) => {
                     <Col xs={1}>Статус</Col>
                 </Row>
             </div>
-            {_.map(_.get(listData, 'data'), (item) => {
+            {_.map(_.get(listData, 'data'), (item, index) => {
                 const id = _.get(item, 'id')
-                const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-                const modifiedDate = moment(_.get(item, 'modifiedDate')).format('DD.MM.YYYY')
-                const toStock = _.get(item, ['toStock', 'name'])
+                const dateRequest = moment(_.get(item, 'dateRequest')).format('DD.MM.YYYY')
+                const dateDelivery = moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY')
+                const receiver = _.get(item, ['receiver'])
                 const status = _.toInteger(_.get(item, 'status'))
                 const PENDING = 0
                 const IN_PROGRESS = 1
@@ -130,21 +129,21 @@ const StockTabTransfer = enhance((props) => {
 
                 if (id === detailId) {
                     return (
-                        <Paper key={id} zDepth={1} className={classes.expandedList}>
+                        <Paper key={index} zDepth={1} className={classes.expandedList}>
                             <div className={classes.wrapper}>
                                 <Row className={classes.semibold}>
                                     <Col xs={1}>{id}</Col>
-                                    <Col xs={2}>{createdDate}</Col>
-                                    <Col xs={2}>Na sklad</Col>
-                                    <Col xs={2}>{toStock}</Col>
-                                    <Col xs={2}>{modifiedDate}</Col>
+                                    <Col xs={2}>{dateRequest}</Col>
+                                    <Col xs={2}>Заказ</Col>
+                                    <Col xs={2}>{receiver}</Col>
+                                    <Col xs={2}>{dateDelivery}</Col>
                                     <Col xs={1}>{status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
                                         : ((status === IN_PROGRESS) ? (
                                             <span className={classes.begin}>В процессе</span>)
                                             : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
                                                 : (<span className={classes.error}>Отменен</span>))}</Col>
                                     <Col xs={2} style={{textAlign: 'right'}}>
-                                        <a onClick={createDialog.handleOpenCreateDialog}
+                                        <a onClick={acceptDialog.handleOpenAcceptDialog}
                                            className={classes.actionButton}>Выполнить</a>
                                     </Col>
                                 </Row>
@@ -157,7 +156,7 @@ const StockTabTransfer = enhance((props) => {
                     )
                 }
                 return (
-                    <Paper key={id} zDepth={1} className={classes.list}>
+                    <Paper key={index} zDepth={1} className={classes.list}>
                         <Link to={{
                             pathname: sprintf(ROUTES.STOCK_RECEIVE_ITEM_PATH, id),
                             query: filter.getParams()
@@ -165,10 +164,10 @@ const StockTabTransfer = enhance((props) => {
                             <div className={classes.wrapper}>
                                 <Row>
                                     <Col xs={1}>{id}</Col>
-                                    <Col xs={2}>{createdDate}</Col>
-                                    <Col xs={2}>Na sklad</Col>
-                                    <Col xs={2}>{toStock}</Col>
-                                    <Col xs={2}>{modifiedDate}</Col>
+                                    <Col xs={2}>{dateRequest}</Col>
+                                    <Col xs={2}>Заказ</Col>
+                                    <Col xs={2}>{receiver}</Col>
+                                    <Col xs={2}>{dateDelivery}</Col>
                                     <Col xs={1}>{status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
                                         : ((status === IN_PROGRESS) ? (
                                             <span className={classes.begin}>В процессе</span>)
@@ -180,12 +179,12 @@ const StockTabTransfer = enhance((props) => {
                     </Paper>
                 )
             })}
-            <CreateDialog
-                loading={createDialog.createLoading}
-                open={createDialog.openCreateDialog}
-                isDefect={createDialog.isDefect}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
+            <ConfirmDialog
+                type="submit"
+                message={'Запрос № ' + _.get(currentDetail, 'id')}
+                onClose={acceptDialog.handleCloseAcceptDialog}
+                onSubmit={acceptDialog.handleSubmitAcceptDialog}
+                open={acceptDialog.openAcceptDialog}
             />
             <Pagination
                 filter={filter}
@@ -199,13 +198,11 @@ StockTabTransfer.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
     handleCloseDetail: PropTypes.func.isRequired,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        isDefect: PropTypes.bool,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
+    acceptDialog: PropTypes.shape({
+        openAcceptDialog: PropTypes.bool.isRequired,
+        handleOpenAcceptDialog: PropTypes.func.isRequired,
+        handleCloseAcceptDialog: PropTypes.func.isRequired,
+        handleSubmitAcceptDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
