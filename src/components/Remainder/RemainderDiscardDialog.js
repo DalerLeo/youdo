@@ -11,6 +11,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import TextField from '../ReduxForm/Basic/TextField'
 import RemainderListProductField from '../ReduxForm/Remainder/RemainderListProductField'
+import {StockSearchField} from '../ReduxForm'
 
 export const REMAINDER_DISCARD_DIALOG_OPEN = 'openDiscardDialog'
 
@@ -63,6 +64,7 @@ const enhance = compose(
             }
         },
         dialogBody: {
+            display: 'flex',
             '& tbody:last-child': {
                 borderBottom: '1px #efefef solid'
 
@@ -148,6 +150,21 @@ const enhance = compose(
                 margin: 'auto',
                 padding: '3px 7px !important'
             }
+        },
+        leftSide: {
+            flexBasis: '25%',
+            maxWidth: '25%',
+            height: '280px',
+            borderRight: '1px #efefef solid',
+            padding: '20px 30px',
+            '&  > div > div:first-child': {
+                width: '100% !important'
+            }
+
+        },
+        rightSide: {
+            flexBasis: '75%',
+            maxWidth: '75%'
         }
     }),
     reduxForm({
@@ -179,7 +196,7 @@ const RemainderDiscardDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={{maxWidth: 'none', width: '680px'}}
+            contentStyle={{maxWidth: 'none', width: '1000px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.noPadding}>
             <div className={classes.title}>
@@ -194,23 +211,29 @@ const RemainderDiscardDialog = enhance((props) => {
             </div>
             <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
                 <div className={classes.dialogBody}>
+                    <div className={classes.leftSide}>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="fromStock"
+                            component={StockSearchField}
+                            label="С какого склада"
+                        />
+                        <Field
+                            style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
+                            name="comment"
+                            component={TextField}
+                            label="Оставить комментарий..."
+
+                            multiLine={true}
+                            rows={4}
+                            rowsMax={6}
+                            fullWidth={true}/>
+                    </div>
+                    <div className={classes.rightSide}>
                         <Fields
                             names={['products', 'productType', 'product', 'amount']}
                             component={RemainderListProductField}
                         />
-                    <div className={classes.comment}>
-                        <div className={classes.commentText}>Причина списания
-                            товаров со склада</div>
-                        <Field
-                            style={{fontSize: '13px'}}
-                            name="comment"
-                            component={TextField}
-                            hintText="Оставить комментарий..."
-                            className={classes.commentField}
-                            multiLine={true}
-                            rows={2}
-                            rowsMax={2}
-                            fullWidth={true}/>
                     </div>
                 </div>
                 <div className={classes.bottomButton}>

@@ -105,3 +105,20 @@ export const stockTransferItemFetchAction = (id) => {
     }
 }
 
+export const stockTransferItemAcceptAction = (id, stock) => {
+    const requestData = serializers.acceptSerializer(id, stock)
+    const payload = axios()
+        .post(API.STOCK_TRANSFER_ACCEPT, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_TRANSFER_ACCEPT,
+        payload
+    }
+}
+

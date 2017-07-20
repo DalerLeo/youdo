@@ -10,7 +10,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
-import Pagination from '../GridList/GridListNavPagination'
+import Pagination from '../ReduxForm/Pagination'
 import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(

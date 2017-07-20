@@ -1,12 +1,15 @@
 import _ from 'lodash'
 import React from 'react'
-import SearchField from '../Basic/SearchField'
+import SearchField from './Basic/SearchField'
 
 const Items = [
-    {id: 0, name: 'OK'},
-    {id: 1, name: 'Брак'}
+    {id: 1, name: 'Каждый день'},
+    {id: 2, name: 'Раз в неделю'},
+    {id: 2, name: 'Два раза в неделю'},
+    {id: 2, name: 'Иногда'}
 ]
-const getOptions = () => {
+
+const getOptions = (search) => {
     return Promise.resolve(Items)
 }
 
@@ -15,7 +18,7 @@ const getItem = (id) => {
         _.find(Items, (o) => { return o.id === _.toInteger(id) }))
 }
 
-const RemainderStatusSearchField = (props) => {
+const FrequencySearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -28,4 +31,4 @@ const RemainderStatusSearchField = (props) => {
     )
 }
 
-export default RemainderStatusSearchField
+export default FrequencySearchField
