@@ -10,6 +10,12 @@ export const acceptSerializer = (id, stock) => {
     }
 }
 
+export const stockReceiveConfirmSerializer = (status) => {
+    return {
+        'status': status
+    }
+}
+
 export const createSerializer = (data, detail) => {
     const provider = _.get(detail, ['provider', 'id'])
     const products = _.map(_.get(detail, 'products'), (item, index) => {

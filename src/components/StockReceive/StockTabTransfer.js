@@ -92,9 +92,8 @@ const StockTabTransfer = enhance((props) => {
         detailData,
         filter,
         classes,
-        acceptDialog
+        confirmDialog
     } = props
-    const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
     const detailId = _.get(detailData, 'id')
     const listLoading = _.get(listData, 'transferListLoading')
     if (listLoading) {
@@ -143,7 +142,7 @@ const StockTabTransfer = enhance((props) => {
                                             : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
                                                 : (<span className={classes.error}>Отменен</span>))}</Col>
                                     <Col xs={2} style={{textAlign: 'right'}}>
-                                        <a onClick={acceptDialog.handleOpenAcceptDialog}
+                                        <a onClick={() => { confirmDialog.handleOpenConfirmDialog(IN_PROGRESS) }}
                                            className={classes.actionButton}>Выполнить</a>
                                     </Col>
                                 </Row>
@@ -181,10 +180,10 @@ const StockTabTransfer = enhance((props) => {
             })}
             <ConfirmDialog
                 type="submit"
-                message={'Запрос № ' + _.get(currentDetail, 'id')}
-                onClose={acceptDialog.handleCloseAcceptDialog}
-                onSubmit={acceptDialog.handleSubmitAcceptDialog}
-                open={acceptDialog.openAcceptDialog}
+                message={'Запрос № ' + _.get(detailData, ['currentTransferDetail', 'id'])}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.handleSubmitTransferAcceptDialog}
+                open={confirmDialog.openConfirmDialog}
             />
             <Pagination
                 filter={filter}
@@ -198,11 +197,11 @@ StockTabTransfer.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
     handleCloseDetail: PropTypes.func.isRequired,
-    acceptDialog: PropTypes.shape({
-        openAcceptDialog: PropTypes.bool.isRequired,
-        handleOpenAcceptDialog: PropTypes.func.isRequired,
-        handleCloseAcceptDialog: PropTypes.func.isRequired,
-        handleSubmitAcceptDialog: PropTypes.func.isRequired
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.number.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSubmitTransferAcceptDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

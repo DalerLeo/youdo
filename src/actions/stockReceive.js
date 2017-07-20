@@ -122,3 +122,19 @@ export const stockTransferItemAcceptAction = (id, stock) => {
     }
 }
 
+export const stockReceiveItemConfirmAction = (id, status) => {
+    const requestData = serializers.stockReceiveConfirmSerializer(status)
+    const payload = axios()
+        .post(sprintf(API.STOCK_RECEIVE_CHANGE_STATUS, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_CHANGE_STATUS,
+        payload
+    }
+}

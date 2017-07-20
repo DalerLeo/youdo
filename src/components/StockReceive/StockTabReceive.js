@@ -8,10 +8,13 @@ import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import StockReceiveDetails from './StockReceiveDetails'
-import CreateDialog from './StockReceiveCreateDialog'
 import Pagination from '../GridList/GridListNavPagination'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
-
+import ConfirmDialog from '../ConfirmDialog'
+import CreateDialog from './StockReceiveCreateDialog'
+const ZERO = 0
+const APPROVE = 1
+const CANCEL = 2
 const enhance = compose(
     injectSheet({
         loader: {
@@ -69,7 +72,7 @@ const enhance = compose(
             background: '#12aaeb',
             borderRadius: '2px',
             color: '#fff',
-            padding: '5px 20px'
+            padding: '5px 10px'
         },
         success: {
             color: '#81c784'
@@ -92,8 +95,9 @@ const StockTabReceive = enhance((props) => {
         detailData,
         filter,
         classes,
-        createDialog,
-        handleCloseDetail
+        confirmDialog,
+        handleCloseDetail,
+        createDialog
     } = props
     const detailId = _.get(detailData, 'id')
     const detailType = _.get(detailData, 'type')
@@ -144,16 +148,21 @@ const StockTabReceive = enhance((props) => {
                                                 : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
                                                     : (<span className={classes.error}>Отменен</span>))}
                                     </Col>
-                                    <Col xs={2} style={{textAlign: 'right'}}>
-                                        {!status && <a onClick={createDialog.handleOpenCreateDialog}
-                                           className={classes.actionButton}>Выполнить</a>}
+                                    <Col xs={2}>
+                                        {type === 'transfer'
+                                            ? <a onClick={() => { confirmDialog.handleOpenConfirmDialog(APPROVE) }}
+                                           className={classes.actionButton}>Выполнить</a>
+                                            : <a onClick={createDialog.handleOpenCreateDialog}
+                                            className={classes.actionButton}>Выполнить</a> }
+
+                                        {type === 'transfer' && <a onClick={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
+                                                       className={classes.actionButton}>Отменить</a>}
                                     </Col>
                                 </Row>
                             </div>
                             <StockReceiveDetails
                                 key={detailId}
                                 detailData={detailData}
-                                createDialog={createDialog}
                             />
                         </Paper>
                     )
@@ -184,6 +193,14 @@ const StockTabReceive = enhance((props) => {
                     </Paper>
                 )
             })}
+
+            <ConfirmDialog
+                type={confirmDialog.openConfirmDialog === APPROVE ? 'submit' : 'cancel' }
+                message={'Запрос № ' + _.get(detailData, ['currentDetail', 'id'])}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.handleSubmitReceiveConfirmDialog}
+                open={confirmDialog.openConfirmDialog > ZERO}
+            />
             <CreateDialog
                 loading={createDialog.createLoading}
                 open={createDialog.openCreateDialog}
@@ -205,6 +222,12 @@ StockTabReceive.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
     handleCloseDetail: PropTypes.func.isRequired,
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.number.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSubmitReceiveConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,

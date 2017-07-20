@@ -368,26 +368,28 @@ const ShopDetails = enhance((props) => {
                     <div className={classes.infoTitle}>Детали</div>
                     <ul className={classes.details}>
                         <li>Клиент</li>
+                        <li>Создал</li>
                         <li>Тип заведения</li>
                         <li>Зона</li>
-                        <li>Адрес</li>
-                        <li>Ориентир</li>
                     </ul>
                     <ul className={classes.details}>
                         <li>{client}</li>
+                        <li>{client}</li>
                         <li>{shopType}</li>
                         <li>{!zone ? <span className="redFont">Не определена</span> : {zone}}</li>
-                        <li>{address}</li>
-                        <li>{guide}</li>
                     </ul>
                 </div>
                 <div className={classes.infoBlock}>
                     <div className={classes.infoTitle}>Контакты</div>
                     <ul className={classes.details}>
                         <li>{contactName}</li>
+                        <li>Адрес</li>
+                        <li>Ориентир</li>
                     </ul>
                     <ul className={classes.details}>
                         <li>{phone}</li>
+                        <li>{address}</li>
+                        <li>{guide}</li>
                     </ul>
                 </div>
             </div>
