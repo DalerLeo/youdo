@@ -33,6 +33,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'ClientBalanceFilterForm'])
         const createForm = _.get(state, ['form', 'ClientBalanceCreateForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterItem = filterHelper(detail, pathname, query)
 
         return {
             list,
@@ -42,6 +43,7 @@ const enhance = compose(
             createLoading,
             updateLoading,
             filter,
+            filterItem,
             filterForm,
             createForm
         }
@@ -56,9 +58,9 @@ const enhance = compose(
         const clientBalanceId = _.get(nextProps, ['params', 'clientBalanceId'])
 
         return clientBalanceId && _.get(props, ['params', 'clientBalanceId']) !== clientBalanceId
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, filterItem}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
-        clientBalanceId && dispatch(clientBalanceItemFetchAction(clientBalanceId))
+        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -114,6 +116,7 @@ const ClientBalanceList = enhance((props) => {
         detail,
         detailLoading,
         filter,
+        filterItem,
         layout,
         params
     } = props
@@ -153,7 +156,7 @@ const ClientBalanceList = enhance((props) => {
 
     const detailData = {
         id: detailId,
-        data: detail,
+        data: _.get(detail, 'results'),
         detailLoading
     }
 
@@ -161,6 +164,7 @@ const ClientBalanceList = enhance((props) => {
         <Layout {...layout}>
             <ClientBalanceGridList
                 filter={filter}
+                filterItem={filterItem}
                 listData={listData}
                 detailData={detailData}
                 infoDialog={infoDialog}

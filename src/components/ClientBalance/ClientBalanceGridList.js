@@ -7,12 +7,12 @@ import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import ClientBlanceFilterForm from './ClientBalanceFilterForm'
 import ClientBlanceCreateDialog from './ClientBalanceInfoDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
+import numberFormat from '../../helpers/numberFormat'
 
 const listHeader = [
     {
@@ -73,19 +73,11 @@ const iconStyle = {
 const ClientBlanceGridList = enhance((props) => {
     const {
         filter,
+        filterItem,
         infoDialog,
-        filterDialog,
         listData,
         detailData
     } = props
-
-    const clientBalanceFilterDialog = (
-        <ClientBlanceFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
-    )
 
     const clientBalanceDetail = (
         <span>a</span>
@@ -93,14 +85,15 @@ const ClientBlanceGridList = enhance((props) => {
     const clientBalanceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const address = _.get(item, 'address')
+        const balance = _.get(item, 'balance')
+        const orders = _.get(item, 'orders')
         const clientName = _.get(item, 'name')
         return (
             <Row key={id}>
                 <Col xs={3}>{clientName}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={4}>{id}</Col>
-                <Col xs={2}>{address}</Col>
+                <Col xs={4}>{orders}</Col>
+                <Col xs={2}>{balance}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
                         iconStyle={iconStyle.icon}
@@ -120,6 +113,8 @@ const ClientBlanceGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
+
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
@@ -128,14 +123,16 @@ const ClientBlanceGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={clientBalanceDetail}
-                filterDialog={clientBalanceFilterDialog}
+                loading={_.get(listData, 'listLoading')}
             />
 
             <ClientBlanceCreateDialog
                 open={infoDialog.openInfoDialog}
                 detailData={detailData}
                 onClose={infoDialog.handleCloseInfoDialog}
-                filter={filter}
+                filter={filterItem}
+                name={_.get(client, 'name')}
+                balance={ numberFormat(_.get(client, 'balance'))}
             />
         </Container>
     )

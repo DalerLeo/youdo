@@ -96,7 +96,7 @@ export const SUPPLY_CREATE = `/${SUPPLY}/`
 export const SUPPLY_LIST = `/${SUPPLY}/`
 export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
-export const SUPPLY_DELETE = `/${SUPPLY}/cancel/`
+export const SUPPLY_DELETE = `/${SUPPLY}/cancel`
 
 export const PRICES = 'market/discount'
 export const PRICES_CREATE = `/${PRICES}/`
@@ -106,7 +106,7 @@ export const PRICES_DELETE = `/${PRICES}/%d/`
 
 export const ORDER = 'sales/order'
 export const ORDER_CREATE = `/${ORDER}/`
-export const ORDER_RETURN = 'sales/order_return/'
+export const ORDER_RETURN = 'sales/order_return'
 export const ORDER_RETURN_LIST = `${ORDER_RETURN}/%d/`
 export const ORDER_TRANSACTION = 'sales/order_payment/'
 export const ORDER_LIST = `/${ORDER}/`
@@ -295,18 +295,20 @@ export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = 'stats/products/export'
 
-export const STOCK_RECEIVE = 'stock/supply/'
-export const STOCK_HISTORY = 'stock/barcode_history/'
+export const STOCK_RECEIVE = 'stock/income_tasks'
+export const STOCK_HISTORY = 'stock/barcode_history'
 export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`
-export const STOCK_TRANSFER = 'stock/stock_transfer'
+export const STOCK_TRANSFER = 'stock/outcome_tasks'
 export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`
-export const STOCK_TRANSFER_ITEM = `/${STOCK_TRANSFER}/%d/`
+export const STOCK_TRANSFER_ITEM = '/sales/order/%d/'
+export const STOCK_TRANSFER_ACCEPT = '/stock/accept_outcome/'
 export const STOCK_RECEIVE_LIST = `/${STOCK_RECEIVE}/`
-export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
+export const STOCK_RECEIVE_ITEM = '/stock/supply/%d/'
+
 export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/accept_products/`
 export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE
 
-export const CLIENT_BALANCE = 'sales/client'
+export const CLIENT_BALANCE = 'sales/client_balances'
 export const CLIENT_BALANCE_LIST = `/${CLIENT_BALANCE}/`
-export const CLIENT_BALANCE_ITEM = `/${CLIENT_BALANCE}/%d/`
+export const CLIENT_BALANCE_ITEM = 'sales/client_transaction/'
 export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`

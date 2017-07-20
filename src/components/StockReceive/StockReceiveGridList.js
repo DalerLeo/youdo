@@ -113,7 +113,8 @@ const StockReceiveGridList = enhance((props) => {
         tabData,
         classes,
         createDialog,
-        handleCloseDetail
+        handleCloseDetail,
+        acceptDialog
     } = props
     const tab = _.get(tabData, 'tab')
 
@@ -140,8 +141,8 @@ const StockReceiveGridList = enhance((props) => {
                 filter={filter}
                 listData={transferData}
                 detailData={transferDetail}
-                createDialog={createDialog}
                 handleCloseDetail={handleCloseDetail}
+                acceptDialog={acceptDialog}
             />}
             {TAB.STOCK_RECEIVE_TAB_HISTORY === tab && <TabHistory
                 filter={filter}
@@ -188,6 +189,12 @@ StockReceiveGridList.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired,
+    acceptDialog: PropTypes.shape({
+        openAcceptDialog: PropTypes.bool.isRequired,
+        handleOpenAcceptDialog: PropTypes.func.isRequired,
+        handleCloseAcceptDialog: PropTypes.func.isRequired,
+        handleSubmitAcceptDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
@@ -39,9 +38,10 @@ export const clientBalanceListFetchAction = (filter) => {
     }
 }
 
-export const clientBalanceItemFetchAction = (id) => {
+export const clientBalanceItemFetchAction = (filter, id) => {
+    const params = serializers.itemFilterSerializer(filter.getParams(), id)
     const payload = axios()
-        .get(sprintf(API.CLIENT_BALANCE_ITEM, id))
+        .get(API.CLIENT_BALANCE_ITEM, {params})
         .then((response) => {
             return _.get(response, 'data')
         })

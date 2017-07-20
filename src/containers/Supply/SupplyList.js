@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import Layout from '../../components/Layout'
@@ -119,8 +120,9 @@ const enhance = compose(
             setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog, filter} = props
-            dispatch(supplyDeleteAction(detail.id))
+            const {dispatch, params, setOpenConfirmDialog, filter} = props
+            const detailId = _.get(params, 'supplyId')
+            dispatch(supplyDeleteAction(detailId))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                 })
@@ -266,8 +268,9 @@ const enhance = compose(
 
     withHandlers({
         handleSupplyExpenseOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('SupplyExpenseCreateForm'))
         },
 
         handleSupplyExpenseCloseCreateDialog: props => () => {

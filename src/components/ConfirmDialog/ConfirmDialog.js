@@ -121,6 +121,9 @@ const ConfirmDialog = enhance((props) => {
         },
         cancel: {
             name: 'Подтверждение отмены', submitName: 'Отменить', text: 'Вы уверены что хотите отменить эти данные?'
+        },
+        submit: {
+            name: 'Выполнить', submitName: 'Да', text: 'Вы уверены что хотите подтвердить?'
         }
     }
     const title = _.get(typesList, [type, 'name'])
@@ -168,7 +171,7 @@ const ConfirmDialog = enhance((props) => {
 })
 
 ConfirmDialog.propTypes = {
-    type: PropTypes.oneOf(['delete', 'cancel']).isRequired,
+    type: PropTypes.oneOf(['delete', 'cancel', 'submit']).isRequired,
     message: PropTypes.string.isRequired,
     loading: PropTypes.bool,
     open: PropTypes.bool.isRequired,

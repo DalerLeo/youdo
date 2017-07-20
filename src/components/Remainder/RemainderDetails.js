@@ -7,8 +7,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat'
 import moment from 'moment'
-import CircularProgress from 'material-ui/CircularProgress'
-import toBoolean from '../../helpers/toBoolean'
+import LinearProgress from '../LinearProgress'
 
 const enhance = compose(
     injectSheet({
@@ -19,14 +18,11 @@ const enhance = compose(
             background: '#fff'
         },
         wrapper: {
-            position: 'relative',
-            padding: '0 30px',
-            marginBottom: '5px',
-            '& .row': {
-                alignItems: 'center',
-                '& div': {
-                    lineHeight: '55px'
-                }
+            height: 'auto',
+            transition: 'max-height 500ms ease !important',
+            overflowY: 'auto',
+            '& .progress': {
+                background: 'transparent'
             }
         },
         title: {
@@ -34,7 +30,7 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
-            height: '55px',
+            height: '48px',
             fontWeight: '600',
             borderBottom: '1px #efefef solid'
 
@@ -56,6 +52,12 @@ const enhance = compose(
                 content: '""',
                 backgroundImage: 'none'
             }
+        },
+        error: {
+            color: '#e57373'
+        },
+        success: {
+            color: '#81c784'
         }
 
     }),
@@ -66,20 +68,15 @@ const RemainderDetails = enhance((props) => {
     const {classes, filter, detailData} = props
     const isLoading = _.get(detailData, 'detailLoading')
     const measurement = _.get(detailData, ['currentRow', '0', 'measurement', 'name'])
-    if (isLoading) {
-        return (
-            <div className={classes.loader}>
-                <CircularProgress size={60} thickness={5}/>
-            </div>
-        )
-    }
+
     return (
-            <div>
-                <div className={classes.title}>
-                    <div className={classes.titleLabel}>Парти товаров</div>
-                    <Pagination filter={filter}/>
-                </div>
-                <div className={classes.content}>
+        <div className={classes.wrapper}>
+            {isLoading ? <LinearProgress />
+            : <div className={classes.content}>
+                    <div className={classes.title}>
+                        <div className={classes.titleLabel}>Парти товаров</div>
+                        <Pagination filter={filter}/>
+                    </div>
                     <Row className='dottedList'>
                         <Col xs={4}>Код</Col>
                         <Col xs={4}>Дата приемки</Col>
@@ -90,18 +87,19 @@ const RemainderDetails = enhance((props) => {
                         const barcode = _.get(item, 'barcode')
                         const balance = numberFormat(_.get(item, 'balance'), measurement)
                         const createdDate = moment(_.get(item, 'createdDate')).format(('DD.MM.YYYY'))
-                        const isDefect = toBoolean(_.get(item, 'isDefect')) ? 'Брак' : 'OK'
+                        const isDefect = _.get(item, 'isDefect') ? 'Брак' : 'OK'
                         return (
                             <Row key={barcode} className='dottedList'>
                                 <Col xs={4}>{barcode}</Col>
                                 <Col xs={4}>{createdDate}</Col>
                                 <Col xs={3}>{balance} </Col>
-                                <Col xs={1}>{isDefect}</Col>
+                                <Col xs={1}> <span className={_.get(item, 'isDefect') ? classes.error : classes.success }>{isDefect}</span></Col>
                             </Row>
                         )
                     })}
                 </div>
-            </div>
+            }
+        </div>
     )
 })
 

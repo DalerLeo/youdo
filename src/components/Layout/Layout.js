@@ -23,7 +23,7 @@ import {
     notificationGetNotViewed
 } from '../../actions/notifications'
 import {openSnackbarAction} from '../../actions/snackbar'
-import NotFound from '../Images/not-found.png'
+import Notifications from '../Images/Notification.png'
 
 const iconStyle = {
     icon: {
@@ -118,7 +118,7 @@ const enhance = compose(
             left: '0',
             width: '100%',
             height: '100%',
-            zIndex: '5'
+            transition: 'all 300ms ease'
         },
         notificationsWrapper: {
             background: '#fff',
@@ -234,11 +234,12 @@ const enhance = compose(
             position: 'relative !important'
         },
         emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '215px',
-            padding: '215px 0 0',
+            background: 'url(' + Notifications + ') no-repeat center center',
+            backgroundSize: '115px',
+            padding: '200px 0 20px',
             textAlign: 'center',
-            color: '#999'
+            color: '#999',
+            fontWeight: 'bold'
         }
     })
 )
@@ -305,7 +306,7 @@ const Layout = enhance((props) => {
     })
     return (
         <div className={classes.wrapper}>
-            <div className={classes.notifications} style={openNotifications ? {} : {display: 'none'}}>
+            <div className={classes.notifications} style={openNotifications ? {opacity: '1', zIndex: '4'} : {opacity: '0', zIndex: '-99'}}>
                 <Paper className={classes.notificationsWrapper} zDepth={4}>
                     <div className={classes.header}>
                         <div>Уведомления</div>
@@ -327,7 +328,7 @@ const Layout = enhance((props) => {
                             </div>
                                 : (notificationListExp.length > ZERO ? notificationListExp
                                 : <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
+                                    <div>Нет уведомлений</div>
                                 </div>)
                         }
                     </div>
