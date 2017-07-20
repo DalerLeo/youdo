@@ -26,7 +26,8 @@ import {
     stockTransferListFetchAction,
     stockTransferItemFetchAction,
     stockTransferItemAcceptAction,
-    stockReceiveItemConfirmAction
+    stockReceiveItemConfirmAction,
+    stockReceiveItemReturnAction
 } from '../../actions/stockReceive'
 import {orderReturnListAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -175,7 +176,16 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
         },
-
+        handleSubmitOrderReturnDialog: props => () => {
+            const {dispatch, filter, location: {pathname}, params} = props
+            const id = _.toInteger(_.get(params, 'stockReceiveId'))
+            return dispatch(stockReceiveItemReturnAction(id))
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
+                    dispatch(stockReceiveListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                })
+        },
         handleSubmitTransferAcceptDialog: props => () => {
             const {dispatch, filter, location: {pathname}, params, transferList} = props
             const id = _.toInteger(_.get(params, 'stockReceiveId'))
@@ -307,7 +317,8 @@ const StockReceiveList = enhance((props) => {
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSubmitTransferAcceptDialog: props.handleSubmitTransferAcceptDialog,
-        handleSubmitReceiveConfirmDialog: props.handleSubmitReceiveConfirmDialog
+        handleSubmitReceiveConfirmDialog: props.handleSubmitReceiveConfirmDialog,
+        handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog
     }
     const createDialog = {
         createLoading,

@@ -196,7 +196,8 @@ StockReceiveGridList.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSubmitTransferAcceptDialog: PropTypes.func.isRequired,
-        handleSubmitReceiveConfirmDialog: PropTypes.func.isRequired
+        handleSubmitReceiveConfirmDialog: PropTypes.func.isRequired,
+        handleSubmitOrderReturnDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

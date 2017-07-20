@@ -13,6 +13,7 @@ import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
 import CreateDialog from './StockReceiveCreateDialog'
 const ZERO = 0
+const RETURN = 3
 const APPROVE = 1
 const CANCEL = 2
 const enhance = compose(
@@ -152,7 +153,8 @@ const StockTabReceive = enhance((props) => {
                                         {type === 'transfer'
                                             ? <a onClick={() => { confirmDialog.handleOpenConfirmDialog(APPROVE) }}
                                            className={classes.actionButton}>Выполнить</a>
-                                            : <a onClick={createDialog.handleOpenCreateDialog}
+                                            : (type === 'order_return') ? confirmDialog.handleOpenConfirmDialog(RETURN)
+                                                : <a onClick={createDialog.handleOpenCreateDialog}
                                             className={classes.actionButton}>Выполнить</a> }
 
                                         {type === 'transfer' && <a onClick={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
@@ -195,7 +197,7 @@ const StockTabReceive = enhance((props) => {
             })}
 
             <ConfirmDialog
-                type={confirmDialog.openConfirmDialog === APPROVE ? 'submit' : 'cancel' }
+                type={confirmDialog.openConfirmDialog === CANCEL ? 'cancel' : 'submit' }
                 message={'Запрос № ' + _.get(detailData, ['currentDetail', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSubmitReceiveConfirmDialog}
@@ -226,7 +228,8 @@ StockTabReceive.propTypes = {
         openConfirmDialog: PropTypes.number.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSubmitReceiveConfirmDialog: PropTypes.func.isRequired
+        handleSubmitReceiveConfirmDialog: PropTypes.func.isRequired,
+        handleSubmitOrderReturnDialog: PropTypes.func.isRequired
     }).isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,

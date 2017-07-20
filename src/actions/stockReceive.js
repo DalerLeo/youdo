@@ -123,9 +123,8 @@ export const stockTransferItemAcceptAction = (id, stock) => {
 }
 
 export const stockReceiveItemConfirmAction = (id, status) => {
-    const requestData = serializers.stockReceiveConfirmSerializer(status)
     const payload = axios()
-        .post(sprintf(API.STOCK_RECEIVE_CHANGE_STATUS, id), requestData)
+        .post(sprintf(API.STOCK_RECEIVE_TRANSFER_CHANGE_STATUS, id), {params: {status: status}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -134,7 +133,23 @@ export const stockReceiveItemConfirmAction = (id, status) => {
         })
 
     return {
-        type: actionTypes.STOCK_RECEIVE_CHANGE_STATUS,
+        type: actionTypes.STOCK_RECEIVE_TRANSFER_CHANGE_STATUS,
+        payload
+    }
+}
+
+export const stockReceiveItemReturnAction = (id) => {
+    const payload = axios()
+        .post(API.STOCK_RECEIVE_ACCEPT_ORDER_RETURN, {params: {id: id}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_ACCEPT_ORDER_RETURN,
         payload
     }
 }
