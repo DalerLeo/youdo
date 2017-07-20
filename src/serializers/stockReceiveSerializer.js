@@ -6,7 +6,6 @@ const TWO = 2
 export const acceptSerializer = (id, stock) => {
     return {
         'order': id,
-        'comment': 'fdasfasdfa',
         stock
     }
 }

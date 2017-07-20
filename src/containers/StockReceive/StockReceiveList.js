@@ -40,10 +40,12 @@ const enhance = compose(
         const detail = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'data'])
                         : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
                             : _.get(state, ['order', 'returnList', 'data'])
+
         const detailProducts = _.get(state, ['stockReceive', 'item', 'data'])
         const detailLoading = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'loading'])
                                 : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'transferItem', 'loading'])
                                     : _.get(state, ['order', 'returnList', 'loading'])
+
         const list = _.get(state, ['stockReceive', 'list', 'data'])
         const listLoading = _.get(state, ['stockReceive', 'list', 'loading'])
         const historyList = _.get(state, ['stockReceive', 'history', 'data'])
@@ -181,9 +183,6 @@ const enhance = compose(
                     .then(() => {
                         hashHistory.push({pathname, query: filter.getParams({[STOCK_TRANSFER_ACCEPT_DIALOG_OPEN]: false})})
                         return dispatch(openSnackbarAction({message: 'Успешно принять'}))
-                    })
-                    .then(() => {
-                        dispatch(stockTransferItemFetchAction(supplyId))
                     })
         },
         handleOpenCreateDialog: props => () => {

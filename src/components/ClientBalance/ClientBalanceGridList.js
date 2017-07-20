@@ -7,7 +7,6 @@ import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import ClientBlanceFilterForm from './ClientBalanceFilterForm'
 import ClientBlanceCreateDialog from './ClientBalanceInfoDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -76,18 +75,9 @@ const ClientBlanceGridList = enhance((props) => {
         filter,
         filterItem,
         infoDialog,
-        filterDialog,
         listData,
         detailData
     } = props
-
-    const clientBalanceFilterDialog = (
-        <ClientBlanceFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
-    )
 
     const clientBalanceDetail = (
         <span>a</span>
@@ -134,7 +124,6 @@ const ClientBlanceGridList = enhance((props) => {
                 list={list}
                 detail={clientBalanceDetail}
                 loading={_.get(listData, 'listLoading')}
-                filterDialog={clientBalanceFilterDialog}
             />
 
             <ClientBlanceCreateDialog

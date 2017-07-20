@@ -113,7 +113,7 @@ const StatMarketDialog = enhance((props) => {
     const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name'])
-        const totalPrice = _.get(item, 'totalPrice')
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'))
         const createdDate = moment(_.get(item, 'createdDate')).format('LL')
 
         return (
