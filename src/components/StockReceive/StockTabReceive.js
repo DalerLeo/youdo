@@ -153,7 +153,6 @@ const StockTabReceive = enhance((props) => {
                                         {type === 'transfer'
                                             ? <a onClick={() => { confirmDialog.handleOpenConfirmDialog(APPROVE) }}
                                            className={classes.actionButton}>Выполнить</a>
-                                            : (type === 'order_return') ? confirmDialog.handleOpenConfirmDialog(RETURN)
                                                 : <a onClick={createDialog.handleOpenCreateDialog}
                                             className={classes.actionButton}>Выполнить</a> }
 
