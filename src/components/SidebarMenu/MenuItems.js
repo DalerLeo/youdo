@@ -18,7 +18,8 @@ export const MenuItems = [
             {name: 'Склады', url: ROUTES.STATSTOCK_LIST_URL},
             {name: 'Должники', url: ROUTES.STATDEBTORS_LIST_URL},
             {name: 'Производство', url: ROUTES.STAT_MANUFACTURE_LIST_URL},
-            {name: 'Финансы', url: ROUTES.STAT_CASHBOX_LIST_URL}
+            {name: 'Финансы', url: ROUTES.STAT_CASHBOX_LIST_URL},
+            {name: 'План', url: ROUTES.PLAN_LIST_URL}
         ]
     },
     {
