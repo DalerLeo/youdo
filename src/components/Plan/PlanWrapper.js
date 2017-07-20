@@ -1,8 +1,6 @@
-import _ from 'lodash'
 import React from 'react'
-import {hashHistory, Link} from 'react-router'
+import {hashHistory} from 'react-router'
 import IconButton from 'material-ui/IconButton'
-import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import * as ROUTES from '../../constants/routes'
 import {reduxForm} from 'redux-form'
@@ -74,20 +72,8 @@ const enhance = compose(
     })
 )
 
-const iconStyle = {
-    icon: {
-        color: '#666'
-    },
-    button: {
-        width: 45,
-        height: 45,
-        padding: '0 12px'
-    }
-}
-
 const PlanWrapper = enhance((props) => {
     const {
-        filter,
         classes,
         addPlan,
         search,

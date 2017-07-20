@@ -25,6 +25,7 @@ const GoogleMapWrapper = enhance(({
         agentLocation,
         marketsLocation,
         isOpenTrack,
+        isOpenMarkets,
         openMarketInfo,
         setOpenMarketInfo,
         ...props
@@ -49,23 +50,26 @@ const GoogleMapWrapper = enhance(({
                 const lat = _.get(item, ['location', 'coordinates', '0'])
                 const lng = _.get(item, ['location', 'coordinates', '1'])
 
-                return (
-                    <Marker
-                        key={id}
-                        onClick={() => { setOpenMarketInfo(id) }}
-                        position={{lat: lat, lng: lng}}
-                        options={
-                        {icon:
-                        {url: MarketLocation,
-                            size: {width: 15, height: 15},
-                            scaledSize: {width: 15, height: 15}
-                        }}}>
+                if (isOpenMarkets) {
+                    return (
+                        <Marker
+                            key={id}
+                            onClick={() => { setOpenMarketInfo(id) }}
+                            position={{lat: lat, lng: lng}}
+                            options={
+                            {icon:
+                            {url: MarketLocation,
+                                size: {width: 15, height: 15},
+                                scaledSize: {width: 15, height: 15}
+                            }}}>
 
-                        {(id === openMarketInfo) && <InfoWindow>
-                            <div>{name}</div>
-                        </InfoWindow>}
-                    </Marker>
-                )
+                            {(id === openMarketInfo) && <InfoWindow>
+                                <div>{name}</div>
+                            </InfoWindow>}
+                        </Marker>
+                    )
+                }
+                return false
             })}
 
             {_.map(listData, (item) => {
@@ -119,6 +123,7 @@ const GoogleMap = (props) => {
         agentLocation,
         marketsLocation,
         isOpenTrack,
+        isOpenMarkets,
         ...defaultProps
     } = props
 
@@ -136,6 +141,7 @@ const GoogleMap = (props) => {
             agentLocation={agentLocation}
             marketsLocation={marketsLocation}
             isOpenTrack={isOpenTrack}
+            isOpenMarkets={isOpenMarkets}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>
@@ -147,7 +153,8 @@ GoogleMap.PropTypes = {
     handleOpenDetails: PropTypes.func,
     agentLocation: PropTypes.object,
     marketsLocation: PropTypes.object,
-    isOpenTrack: PropTypes.bool
+    isOpenTrack: PropTypes.bool,
+    isOpenMarkets: PropTypes.bool
 }
 
 export default GoogleMap

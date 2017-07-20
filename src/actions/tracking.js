@@ -36,8 +36,8 @@ export const marketsLocationFetchAction = () => {
     }
 }
 
-export const locationListAction = (id, date) => {
-    const params = serializers.agentLocationSerializer(id, date)
+export const locationListAction = (id, data) => {
+    const params = serializers.agentLocationSerializer(id, data)
     const payload = axios()
         .get(API.LOCATION_LIST, {params})
         .then((response) => {
