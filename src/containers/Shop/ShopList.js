@@ -188,6 +188,7 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
+            const createdBy = _.get(filterForm, ['values', 'createdBy', 'value']) || null
             const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
             const isActive = _.get(filterForm, ['values', 'isActive', 'value'])
             const frequency = _.get(filterForm, ['values', 'frequency', 'value']) || null
@@ -195,6 +196,7 @@ const enhance = compose(
             filter.filterBy({
                 [SHOP_FILTER_OPEN]: false,
                 [SHOP_FILTER_KEY.CLIENT]: client,
+                [SHOP_FILTER_KEY.CREATED_BY]: createdBy,
                 [SHOP_FILTER_KEY.MARKET_TYPE]: marketType,
                 [SHOP_FILTER_KEY.STATUS]: isActive,
                 [SHOP_FILTER_KEY.FREQUENCY]: frequency
@@ -338,7 +340,7 @@ const enhance = compose(
 
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.SHOP_LIST_URL, query: filter.getParam()})
+            hashHistory.push({pathname: ROUTER.SHOP_LIST_URL, query: filter.getParams()})
         }
     })
 )

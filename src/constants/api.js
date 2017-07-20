@@ -296,15 +296,17 @@ export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = 'stats/products/export'
 
-export const STOCK_RECEIVE = 'stock/income_tasks'
+export const STOCK_RECEIVE = 'stock/supply'
 export const STOCK_HISTORY = 'stock/barcode_history'
 export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`
 export const STOCK_TRANSFER = 'stock/outcome_tasks'
 export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`
 export const STOCK_TRANSFER_ITEM = '/sales/order/%d/'
 export const STOCK_TRANSFER_ACCEPT = '/stock/accept_outcome/'
-export const STOCK_RECEIVE_LIST = `/${STOCK_RECEIVE}/`
-export const STOCK_RECEIVE_ITEM = '/stock/supply/%d/'
+export const STOCK_RECEIVE_LIST = '/stock/income_tasks/'
+export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
+export const STOCK_RECEIVE_TRANSFER_CHANGE_STATUS = 'stock/stock_transfer/%d/change_status/'
+export const STOCK_RECEIVE_ACCEPT_ORDER_RETURN = 'stock/accept_order_return/'
 
 export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/accept_products/`
 export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE

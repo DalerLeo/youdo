@@ -140,7 +140,7 @@ const ShopGridList = enhance((props) => {
             <Row key={id} className={classes.listRow}>
                 <Link to={{
                     pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
-                    query: ''
+                    query: filter.getParams()
                 }}>
                     <Col xs={3}>{name}</Col>
                     <Col xs={3}>{client}</Col>
