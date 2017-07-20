@@ -1,6 +1,8 @@
+import _ from 'lodash'
 import React from 'react'
-import {hashHistory} from 'react-router'
+import {hashHistory, Link} from 'react-router'
 import IconButton from 'material-ui/IconButton'
+import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import * as ROUTES from '../../constants/routes'
 import {reduxForm} from 'redux-form'
@@ -8,11 +10,12 @@ import TextFieldSearch from 'material-ui/TextField'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
+import Tooltip from '../ToolTip'
 import injectSheet from 'react-jss'
 import {compose, withState, withHandlers} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
+import Calendar from 'material-ui/svg-icons/action/today'
 
 const enhance = compose(
     injectSheet({
@@ -49,8 +52,7 @@ const enhance = compose(
         },
         searchField: {
             fontSize: '13px !important',
-            width: '100%',
-            marginLeft: '50px'
+            width: '100%'
         },
         searchButton: {
             position: 'absolute !important',
@@ -72,8 +74,20 @@ const enhance = compose(
     })
 )
 
+const iconStyle = {
+    icon: {
+        color: '#666'
+    },
+    button: {
+        width: 45,
+        height: 45,
+        padding: '0 12px'
+    }
+}
+
 const PlanWrapper = enhance((props) => {
     const {
+        filter,
         classes,
         addPlan,
         search,
@@ -81,7 +95,16 @@ const PlanWrapper = enhance((props) => {
         onSubmit
     } = props
 
-    const zoneInfoToggle = (
+    const leftSide = (
+        <div className={classes.leftSide}>
+            <div className={classes.titleDate}>
+                <Calendar color="#666"/>
+
+            </div>
+        </div>
+    )
+
+    const wrapper = (
         <div className={classes.searchField}>
             <form onSubmit={onSubmit}>
                 <div className={classes.search}>
@@ -118,8 +141,8 @@ const PlanWrapper = enhance((props) => {
                 </Tooltip>
             </div>
 
-            <div className={classes.zonesWrapper}>
-                {zoneInfoToggle}
+            <div className={classes.wrapper}>
+                {wrapper}
             </div>
         </Container>
     )
