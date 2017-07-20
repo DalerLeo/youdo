@@ -14,6 +14,7 @@ import Delivery from 'material-ui/svg-icons/maps/local-shipping'
 import Assignment from 'material-ui/svg-icons/action/assignment'
 import Warning from 'material-ui/svg-icons/alert/error-outline'
 
+const timelineColor = '#4fc3e2'
 const enhance = compose(
     injectSheet({
         padding: {
@@ -85,6 +86,68 @@ const enhance = compose(
         },
         warning: {
             extend: 'done'
+        },
+        timeline: {
+            position: 'relative',
+            marginTop: '30px',
+            padding: '0 25px'
+        },
+        timelineBlock: {
+            position: 'relative',
+            marginBottom: '10px',
+            '&:before': {
+                content: '""',
+                position: 'absolute',
+                left: 'calc(50% - 2px)',
+                width: '4px',
+                height: '100%',
+                background: timelineColor
+            },
+            '&:nth-child(even)': {
+                '& > div:last-child': {
+                    float: 'right',
+                    '& > span': {
+                        right: 'auto',
+                        left: '-95px'
+                    }
+                },
+                '&:after': {
+                    content: '""',
+                    display: 'table',
+                    clear: 'both'
+                }
+            }
+        },
+        timelineDot: {
+            background: timelineColor,
+            width: '16px',
+            height: '16px',
+            top: '15px',
+            left: 'calc(50% - 8px)',
+            position: 'absolute',
+            borderRadius: '50%',
+            outline: '2px #f4f4f4 solid'
+        },
+        timelineContent: {
+            boxSizing: 'border-box',
+            borderRadius: '2px',
+            background: '#fff',
+            padding: '15px 20px',
+            position: 'relative',
+            width: 'calc(50% - 30px)',
+            '& h2': {
+                color: '#999',
+                fontSize: '16px',
+                lineHeight: '14px',
+                marginBottom: '10px'
+            },
+            '& > span': {
+                position: 'absolute',
+                top: '12px',
+                right: '-95px',
+                fontSize: '16px !important',
+                fontWeight: 'bold'
+            }
         }
     })
 )
@@ -182,6 +245,30 @@ const PlanDetails = enhance((props) => {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div className={classes.timeline}>
+                <div className={classes.timelineBlock}>
+                    <div className={classes.timelineDot}>
+                    </div>
+
+                    <Paper className={classes.timelineContent}>
+                        <h2>Title of section 1</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio, dolorum provident rerum aut hic quasi placeat iure tempora laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui ut.</p>
+                        <span className={classes.date}>10:56</span>
+                    </Paper>
+                </div>
+
+                <div className={classes.timelineBlock}>
+                    <div className={classes.timelineDot}>
+                    </div>
+
+                    <Paper className={classes.timelineContent}>
+                        <h2>Title of section 1</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio, dolorum provident rerum aut hic quasi placeat iure tempora laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui ut.</p>
+                        <span className={classes.date}>11:42</span>
+                    </Paper>
                 </div>
             </div>
         </div>
