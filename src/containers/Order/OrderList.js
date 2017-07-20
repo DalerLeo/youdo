@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import sprintf from 'sprintf'
 import numberFormat from '../../helpers/numberFormat'
 import toBoolean from '../../helpers/toBoolean'
 import * as ORDER_TAB from '../../constants/orderTab'
@@ -381,7 +382,7 @@ const enhance = compose(
 
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.ORDER_LIST_URL, query: filter.getParam()})
+            hashHistory.push({pathname: ROUTER.ORDER_LIST_URL, query: filter.getParams()})
         }
     }),
 )

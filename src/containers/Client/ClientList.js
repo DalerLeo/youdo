@@ -146,7 +146,7 @@ const enhance = compose(
 
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.CLIENT_LIST_URL, query: filter.getParam()})
+            hashHistory.push({pathname: ROUTER.CLIENT_LIST_URL, query: filter.getParams()})
         }
     })
 )
