@@ -1,343 +1,472 @@
-import _ from 'lodash'
 import React from 'react'
-import IconButton from 'material-ui/IconButton'
-import * as ROUTES from '../../constants/routes'
-import {Link} from 'react-router'
+import FlatButton from 'material-ui/FlatButton'
+import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
-import sprintf from 'sprintf'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import CircularProgress from 'material-ui/CircularProgress'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
-import CloseIcon2 from '../CloseIcon2'
 import Person from '../Images/person.png'
+import Add from 'material-ui/svg-icons/content/add'
+import Place from 'material-ui/svg-icons/maps/place'
+import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
+import Delivery from 'material-ui/svg-icons/maps/local-shipping'
+import Assignment from 'material-ui/svg-icons/action/assignment'
+import Warning from 'material-ui/svg-icons/alert/error-outline'
+import Checked from 'material-ui/svg-icons/toggle/check-box'
+import Indeterminate from 'material-ui/svg-icons/toggle/indeterminate-check-box'
+import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
 
+const timelineColor = '#22a6c6'
 const enhance = compose(
     injectSheet({
-        detailWrap: {
-            height: '100%',
-            position: 'relative'
+        padding: {
+            padding: '20px 30px'
         },
-        loader: {
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            background: '#fff',
-            top: '0',
-            left: '0',
-            alignItems: 'center',
-            zIndex: '999',
-            justifyContent: 'center',
-            display: 'flex'
+        wrapper: {
+            background: '#f4f4f4 !important',
+            width: 'calc(100% - 350px)',
+            extend: 'padding',
+            zIndex: '2',
+            boxShadow: '-3px -2px 12px 0px rgba(0, 0, 0, 0.07), -4px -4px 16px 0px rgba(0, 0, 0, 0.08)'
         },
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
+        agentInfo: {
+            border: '1px #e9e9e9 solid',
+            '& > div': {
+                padding: '15px 20px'
             }
         },
-        addPerson: {
-            boxShadow: 'none !important',
-            '& button': {
-                background: '#199ee0 !important',
-                width: '30px !important',
-                height: '30px !important',
-                '& svg': {
-                    width: '20px !important',
-                    height: '30px !important'
+        header: {
+            background: '#e3e3e3',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            '& button > div': {
+                display: 'flex',
+                alignItems: 'center'
+            }
+        },
+        info: {
+            '& > span': {
+                display: 'block',
+                lineHeight: '1.2'
+            }
+        },
+        agent: {
+            display: 'flex',
+            alignItems: 'center',
+            fontWeight: '600',
+            '& img': {
+                borderRadius: '50%',
+                width: '32px',
+                minWidth: '32px',
+                height: '32px',
+                marginRight: '10px'
+            }
+        },
+        achieves: {
+            extend: 'header',
+            background: '#fff'
+        },
+        done: {
+            display: 'flex',
+            alignItems: 'center',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                marginRight: '50px',
+                '& span': {
+                    display: 'block',
+                    lineHeight: '1.2',
+                    color: '#666',
+                    fontSize: '14px !important',
+                    fontWeight: '600'
+                },
+                '&:last-child': {
+                    margin: '0'
                 }
             }
         },
-        zonesInfo: {
-            background: '#fff',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            position: 'absolute',
-            width: '450px',
-            top: '0',
-            bottom: '0',
-            transition: 'all 0.3s ease',
-            zIndex: '2'
+        warning: {
+            extend: 'done'
         },
-        zonesInfoTitle: {
-            display: 'flex',
-            padding: '20px 30px',
-            borderBottom: '1px #efefef solid',
+        timelineWrapper: {
+            margin: '30px -30px 0',
+            padding: '0 30px',
+            height: 'calc(100% - 140px)',
+            overflowY: 'auto',
             position: 'relative',
-            '& > div': {
-                display: 'flex',
-                marginRight: '50px',
-                '& big': {
-                    fontSize: '28px',
-                    lineHeight: '28px',
-                    marginRight: '10px'
-                },
-                '& span': {
-                    fontSize: '12px !important',
-                    lineHeight: '14px'
+            '&:after': {
+                background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(244,244,244,1)' +
+                ' 80%,rgba(244,244,244,1) 100%)',
+                content: '""',
+                position: 'fixed',
+                bottom: '0',
+                right: '0',
+                left: '415px',
+                height: '50px',
+                zIndex: '6'
+            },
+            '&::-webkit-scrollbar': {
+                width: '0'
+            }
+        },
+        timeline: {
+            position: 'relative',
+            marginTop: '10px',
+            padding: '0 25px 20px'
+        },
+        timelineBlockWrapper: {
+            '& > div:first-child': {
+                '&:before': {
+                    height: 'calc(100% + 20px)',
+                    bottom: '0'
                 }
             },
             '& > div:last-child': {
-                margin: '0'
-            }
-        },
-        zoneInfoName: {
-            extend: 'zonesInfo',
-            justifyContent: 'flex-start',
-            right: '0',
-            width: '450px',
-            zIndex: '4'
-        },
-        zoneInfoTitle: {
-            extend: 'zonesInfoTitle',
-            padding: '20px 0',
-            justifyContent: 'space-between',
-            '& > div': {
-                marginRight: '0'
-            }
-        },
-        zoneInfoNameTitle: {
-            background: '#fff',
-            color: '#333',
-            fontWeight: '600',
-            textTransform: 'uppercase',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid #efefef',
-            padding: '20px 30px',
-            zIndex: '999',
-            '& button': {
-                right: '13px',
-                top: '5px',
-                padding: '0 !important',
-                position: 'absolute !important'
-            }
-        },
-        zoneInfoContent: {
-            padding: '0 30px',
-            overflowY: 'auto'
-        },
-        personal: {
-            padding: '20px 0 15px',
-            borderBottom: '1px  #efefef solid',
-            '& > span': {
-                fontWeight: '600',
-                display: 'block',
-                marginBottom: '12px'
-            }
-        },
-        personalWrap: {
-            display: 'flex',
-            flexWrap: 'wrap'
-        },
-        person: {
-            width: '30px',
-            height: '30px',
-            display: 'inline-block',
-            marginRight: '10px',
-            marginBottom: '5px',
-            position: 'relative',
-            '& img': {
-                height: '100%',
-                width: '100%',
-                borderRadius: '50%'
-            },
-            '&:hover > div': {
-                display: 'flex'
-            },
-            '&:nth-child(10n)': {
-                margin: '0 !important'
-            }
-        },
-        deletePers: {
-            cursor: 'pointer',
-            width: '15px',
-            height: '15px',
-            display: 'none',
-            position: 'absolute',
-            top: '-5px',
-            right: '-5px',
-            borderRadius: '50%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#999',
-            '& svg': {
-                width: '13px !important',
-                height: '15px !important'
-            }
-        },
-        stores: {
-            '& span': {
-                fontWeight: '600'
-            },
-            '& .dottedList': {
-                padding: '15px 0',
-                justifyContent: 'space-between',
-                '&:last-child:after': {
-                    display: 'none'
+                '&:before': {
+                    height: 'calc(100% + 20px)',
+                    top: '0'
                 }
             }
         },
-        addZoneWrapper: {
+        timelineDate: {
+            background: timelineColor,
+            color: '#fff',
+            fontWeight: '600',
+            borderRadius: '2px',
+            margin: '0 auto 30px',
+            width: '110px',
+            textAlign: 'center',
+            padding: '6px 0'
+        },
+        timelineBlock: {
+            position: 'relative',
+            marginBottom: '10px',
+            '&:before': {
+                content: '""',
+                position: 'absolute',
+                left: 'calc(50% - 2px)',
+                width: '4px',
+                height: '100%',
+                background: timelineColor
+            },
+            '&:nth-child(even)': {
+                '& > div:last-child': {
+                    float: 'right',
+                    textAlign: 'left',
+                    '&:before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: '15px',
+                        left: '-13px',
+                        right: 'auto',
+                        borderTop: '8px solid transparent',
+                        borderLeft: 'none',
+                        borderRight: '11px solid rgba(0, 0, 0, 0.12)',
+                        borderBottom: '8px solid transparent',
+                        filter: 'blur(1px)',
+                        zIndex: '1'
+                    },
+                    '&:after': {
+                        content: '""',
+                        position: 'absolute',
+                        top: '13px',
+                        right: 'auto',
+                        left: '-12px',
+                        borderTop: '10px solid transparent',
+                        borderRight: '12px solid #fff',
+                        borderLeft: 'none',
+                        borderBottom: '10px solid transparent',
+                        zIndex: '3'
+                    },
+                    '& li': {
+                        justifyContent: 'flex-end',
+                        flexDirection: 'row-reverse',
+                        '& svg': {
+                            marginLeft: '0',
+                            marginRight: '10px'
+                        }
+                    },
+                    '& > span': {
+                        right: 'auto',
+                        left: '-95px'
+                    }
+                },
+                '&:after': {
+                    content: '""',
+                    display: 'table',
+                    clear: 'both'
+                }
+            },
+            '&:last-child': {
+                marginBottom: '0'
+            }
+        },
+        timelineBlockPassive: {
+            extend: 'timelineBlock',
+            '&:before': {
+                background: '#ccc'
+            },
+            '& > div:first-child': {
+                background: '#ccc'
+            }
+        },
+        timelineDot: {
+            background: timelineColor,
+            width: '16px',
+            height: '16px',
+            top: '15px',
+            left: 'calc(50% - 8px)',
             position: 'absolute',
-            top: '10px',
-            left: '50%',
-            marginLeft: '-275px',
-            padding: '7px 20px',
-            width: '550px',
-            height: '60px',
-            '& form': {
+            borderRadius: '50%',
+            outline: '2px #f4f4f4 solid'
+        },
+        timelineContent: {
+            boxSizing: 'border-box',
+            borderRadius: '2px',
+            background: '#fff',
+            color: '#666 !important',
+            padding: '15px 20px',
+            position: 'relative',
+            width: 'calc(50% - 30px)',
+            zIndex: '3',
+            textAlign: 'right',
+            '&:before': {
+                content: '""',
+                position: 'absolute',
+                top: '15px',
+                right: '-13px',
+                borderTop: '8px solid transparent',
+                borderLeft: '11px solid rgba(0, 0, 0, 0.12)',
+                borderBottom: '8px solid transparent',
+                filter: 'blur(1px)',
+                zIndex: '1'
+            },
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                top: '13px',
+                right: '-12px',
+                borderTop: '10px solid transparent',
+                borderLeft: '12px solid #fff',
+                borderBottom: '10px solid transparent',
+                zIndex: '3'
+            },
+            '& h2': {
+                fontSize: '16px',
+                lineHeight: '14px',
+                marginBottom: '10px'
+            },
+            '& li': {
+                lineHeight: '25px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%',
-                height: '100%'
-            }
-        },
-        inputFieldCustom: {
-            flexBasis: '200px',
-            fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
+                justifyContent: 'flex-end',
+                '& svg': {
+                    width: '20px !important',
+                    height: '20px !important',
+                    marginLeft: '10px'
+                }
             },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            }
-        },
-        actionButton: {
-            '& span': {
-                color: '#129fdd !important',
-                fontWeight: '600 !important'
-            }
-        },
-        addZoneClose: {
-            position: 'absolute',
-            right: '30px',
-            '& button': {
-                background: '#fff !important'
-            },
-            '& svg': {
-                fill: '#666 !important'
+            '& > span': {
+                position: 'absolute',
+                top: '12px',
+                right: '-95px',
+                fontSize: '16px !important',
+                fontWeight: 'bold'
             }
         }
     })
 )
 
-const ZoneDetails = enhance((props) => {
-    const {
-        classes,
-        filter,
-        detailData
-    } = props
-    const loading = _.get(detailData, 'detailLoading')
-    const id = _.get(detailData, ['data', 'id'])
-    const name = _.get(detailData, ['data', 'properties', 'title'])
+const PlanDetails = enhance((props) => {
+    const {classes} = props
+    const buttonStyle = {
+        button: {
+            height: '28px',
+            lineHeight: '28px'
+        },
+        icon: {
+            color: '#fff',
+            fill: '#fff',
+            width: 16,
+            height: 16
+        }
+    }
+    const achieveIcon = {
+        basic: {
+            color: '#999',
+            width: 32,
+            minWidth: 32,
+            height: 32,
+            marginRight: 5
+        },
+        error: {
+            width: 32,
+            minWidth: 32,
+            height: 32,
+            marginRight: 5,
+            color: '#ef5350'
+        }
+    }
+
     return (
-        <div className={classes.detailWrap}>
-            {loading && <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
-            </div>}
-            <div className={classes.zoneInfoNameTitle}>
-                <span>{name} (Z-{id})</span>
-                <Link to={{
-                    pathname: sprintf(ROUTES.ZONES_LIST_URL),
-                    query: filter.getParams()
-                }}>
-                    <IconButton>
-                        <CloseIcon2 color="#666666"/>
-                    </IconButton>
-                </Link>
-            </div>
-            <div className={classes.zoneInfoContent}>
-                <div className={classes.zoneInfoTitle}>
-                    <div>
-                        <big>24</big>
-                        <span>всего магазинов <br/> в зоне</span>
+        <div className={classes.wrapper}>
+            <div className={classes.agentInfo}>
+                <div className={classes.header}>
+                    <div className={classes.info}>
+                        <span>Агент</span>
+                        <span>Название зоны</span>
                     </div>
-                    <div>
-                        <big>4</big>
-                        <span>закреплено <br/> агентов</span>
+                    <div className={classes.agent}>
+                        <img src={Person} alt=""/>
+                        <div>Бердиев <br/> Абдупахмон</div>
                     </div>
-                    <div>
-                        <big>2</big>
-                        <span>закреплено <br/> инкассаторов</span>
-                    </div>
+                    <FlatButton
+                        label="Добавить задание"
+                        backgroundColor="rgb(18, 170, 235)"
+                        style={buttonStyle.button}
+                        rippleColor="#fff"
+                        hoverColor="rgba(18, 170, 235, 0.7)"
+                        labelStyle={{textTransform: 'none', color: '#fff'}}
+                        icon={<Add style={buttonStyle.icon}/>}
+                    />
                 </div>
-                <div className={classes.personal}>
-                    <span>Ответственный персонал:</span>
-                    <div className={classes.personalWrap}>
-                        <div className={classes.person}>
-                            <img src={Person} alt=""/>
-                            <div className={classes.deletePers}>
-                                <CloseIcon2 color="#fff"/>
+                <div className={classes.achieves}>
+                    <div className={classes.done}>
+                        <div>
+                            <Place style={achieveIcon.basic}/>
+                            <div>
+                                <span>10 / 20</span>
+                                <span>посещено</span>
                             </div>
                         </div>
-                        <div className={classes.person}>
-                            <img src={Person} alt=""/>
-                            <div className={classes.deletePers}>
-                                <CloseIcon2 color="#fff"/>
+                        <div>
+                            <Balance style={achieveIcon.basic}/>
+                            <div>
+                                <span>5</span>
+                                <span>сделки</span>
                             </div>
                         </div>
-                        <div className={classes.person}>
-                            <img src={Person} alt=""/>
-                            <div className={classes.deletePers}>
-                                <CloseIcon2 color="#fff"/>
+                        <div>
+                            <Delivery style={achieveIcon.basic}/>
+                            <div>
+                                <span>3 / 3</span>
+                                <span>доставки</span>
                             </div>
                         </div>
-                        <div className={classes.person}>
-                            <img src={Person} alt=""/>
-                            <div className={classes.deletePers}>
-                                <CloseIcon2 color="#fff"/>
+                        <div>
+                            <Assignment style={achieveIcon.basic}/>
+                            <div>
+                                <span>3 / 3</span>
+                                <span>отчеты</span>
                             </div>
-                        </div>
-                        <div className={classes.person}>
-                            <img src={Person} alt=""/>
-                            <div className={classes.deletePers}>
-                                <CloseIcon2 color="#fff"/>
-                            </div>
-                        </div>
-                        <div className={classes.person} style={{overflow: 'hidden'}}>
-                            <Tooltip position="bottom" text="Добавить">
-                                <FloatingActionButton
-                                    mini={true}
-                                    className={classes.addPerson}>
-                                    <ContentAdd />
-                                </FloatingActionButton>
-                            </Tooltip>
                         </div>
                     </div>
-                </div>
-                <div className={classes.stores}>
-                    <div className="dottedList">
-                        <span>Магазины в зоне</span>
-                        <a>+ добавить</a>
+                    <div className={classes.warning}>
+                        <div>
+                            <Warning style={achieveIcon.error}/>
+                            <div>
+                                <span>10</span>
+                                <span>не выполнено</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
                 </div>
             </div>
-        </div>
+
+            <div className={classes.timelineWrapper}>
+                <div className={classes.timeline}>
+                    <div className={classes.timelineDate}>22 Апр, 2017</div>
+                    <div className={classes.timelineBlockWrapper}>
+                        <div className={classes.timelineBlock}>
+                            <div className={classes.timelineDot}>
+                            </div>
+
+                            <Paper className={classes.timelineContent}>
+                                <h2>Title of section 1</h2>
+                                <ul>
+                                    <li>Посещение магазина <Checked color="#92ce95"/></li>
+                                    <li>Заключение сделки <Checked color="#92ce95"/></li>
+                                    <li>Посещение магазина <Checked color="#92ce95"/></li>
+
+                                </ul>
+                                <span className={classes.date}>10:56</span>
+                            </Paper>
+                        </div>
+
+                        <div className={classes.timelineBlock}>
+                            <div className={classes.timelineDot}>
+                            </div>
+
+                            <Paper className={classes.timelineContent}>
+                                <h2>Title of section 2</h2>
+                                <ul>
+                                    <li>Посещение магазина <Checked color="#92ce95"/></li>
+                                    <li>Заключение сделки <Indeterminate color="#e57373"/></li>
+                                    <li>Посещение магазина <CheckOutline color="#999"/></li>
+                                </ul>
+                                <span className={classes.date}>11:42</span>
+                            </Paper>
+                        </div>
+
+                        <div className={classes.timelineBlockPassive}>
+                            <div className={classes.timelineDot}>
+                            </div>
+
+                            <Paper className={classes.timelineContent}>
+                                <h2>Title of section 1</h2>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio, dolorum provident rerum aut hic quasi placeat iure tempora
+                                    laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui ut.</p>
+                            </Paper>
+                        </div>
+                    </div>
+                </div>
+                <div className={classes.timeline}>
+                    <div className={classes.timelineDate}>22 Апр, 2017</div>
+                    <div className={classes.timelineBlockWrapper}>
+                        <div className={classes.timelineBlock}>
+                            <div className={classes.timelineDot}>
+                            </div>
+
+                            <Paper className={classes.timelineContent}>
+                                <h2>Title of section 1</h2>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio, dolorum provident rerum aut hic quasi placeat iure tempora
+                                    laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui ut.</p>
+                                <span className={classes.date}>10:56</span>
+                            </Paper>
+                        </div>
+
+                        <div className={classes.timelineBlock}>
+                            <div className={classes.timelineDot}>
+                            </div>
+
+                            <Paper className={classes.timelineContent}>
+                                <h2>Title of section 2</h2>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio, dolorum provident rerum aut?</p>
+                                <span className={classes.date}>11:42</span>
+                            </Paper>
+                        </div>
+
+                        <div className={classes.timelineBlockPassive}>
+                            <div className={classes.timelineDot}>
+                            </div>
+
+                            <Paper className={classes.timelineContent}>
+                                <h2>Title of section 1</h2>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio, dolorum provident rerum aut hic quasi placeat iure tempora
+                                    laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui ut.</p>
+                            </Paper>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
     )
 })
 
-ZoneDetails.PropTypes = {
+PlanDetails.PropTypes = {
     filter: PropTypes.object,
     detailData: PropTypes.object
 }
 
-export default ZoneDetails
+export default PlanDetails
