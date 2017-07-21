@@ -243,7 +243,7 @@ const OrderGridList = enhance((props) => {
                             </IconButton>
                         </Tooltip>
 
-                        : (status === DELIVERED) ? <Tooltip position="bottom" text="Забрали товар">
+                        : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -268,7 +268,7 @@ const OrderGridList = enhance((props) => {
                                 </IconButton>
                             </Tooltip>
                 }
-               <Tooltip position="bottom" text="Есть долг">
+               <Tooltip position="bottom" text={totalBalance > ZERO ? 'Есть долг' : 'Всё оплачено'}>
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}

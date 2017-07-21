@@ -111,7 +111,7 @@ export const ORDER_RETURN_LIST = `${ORDER_RETURN}/%d/`
 export const ORDER_TRANSACTION = 'sales/order_payment/'
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
-export const ORDER_DELETE = `/${ORDER}/%d/`
+export const ORDER_CANCEL = `/${ORDER}/%d/cancel`
 export const GET_DOCUMENT = 'order_document/%d/'
 
 export const SUPPLY_EXPENSE = 'stock/supply_expanse'
