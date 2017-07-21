@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import MarketTypeField from '../ReduxForm/Shop/MarketTypeSearchField'
-import {ClientSearchField, ShopStatusSearchField, FrequencySearchField} from '../ReduxForm'
+import {ClientSearchField, ShopStatusSearchField, FrequencySearchField, UsersSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -20,7 +20,8 @@ export const SHOP_FILTER_KEY = {
     CLIENT: 'client',
     MARKET_TYPE: 'marketType',
     STATUS: 'isActive',
-    FREQUENCY: 'frequency'
+    FREQUENCY: 'frequency',
+    CREATED_BY: 'createdBy'
 }
 
 const enhance = compose(
@@ -169,6 +170,11 @@ const ShopFilterForm = enhance((props) => {
                         component={ShopStatusSearchField}
                         label="Статус"
                         fullWidth={true}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="createdBy"
+                        component={UsersSearchField}
+                        label="Создал"/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="client"

@@ -197,6 +197,7 @@ const OrderGridList = enhance((props) => {
         const REQUESTED = 0
         const READY = 1
         const DELIVERED = 2
+        const GIVEN = 4
         const ZERO = 0
         return (
         <div style={{width: '100%', display: 'flex', alignItems: 'center', position: 'relative'}} key={id}>
@@ -248,6 +249,14 @@ const OrderGridList = enhance((props) => {
                                 style={iconStyle.button}
                                 touch={true}>
                                 <MapsLocalShipping color="#81c784" />
+                            </IconButton>
+                        </Tooltip>
+                        : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}>
+                                <MapsLocalShipping color="#f0ad4e" />
                             </IconButton>
                         </Tooltip>
                             : <Tooltip position="bottom" text="Заказ отменен">

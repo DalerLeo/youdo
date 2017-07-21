@@ -112,9 +112,9 @@ const StockReceiveGridList = enhance((props) => {
         filter,
         tabData,
         classes,
-        createDialog,
         handleCloseDetail,
-        acceptDialog
+        confirmDialog,
+        createDialog
     } = props
     const tab = _.get(tabData, 'tab')
 
@@ -134,15 +134,16 @@ const StockReceiveGridList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                createDialog={createDialog}
+                confirmDialog={confirmDialog}
                 handleCloseDetail={handleCloseDetail}
+                createDialog={createDialog}
             />}
             {TAB.STOCK_RECEIVE_TAB_TRANSFER === tab && <TabTransfer
                 filter={filter}
                 listData={transferData}
                 detailData={transferDetail}
                 handleCloseDetail={handleCloseDetail}
-                acceptDialog={acceptDialog}
+                confirmDialog={confirmDialog}
             />}
             {TAB.STOCK_RECEIVE_TAB_HISTORY === tab && <TabHistory
                 filter={filter}
@@ -172,6 +173,14 @@ StockReceiveGridList.propTypes = {
         handleTabChange: PropTypes.func.isRequired
     }),
     handleCloseDetail: PropTypes.func.isRequired,
+    filterDialog: PropTypes.shape({
+        initialValues: PropTypes.object,
+        filterLoading: PropTypes.bool,
+        openFilterDialog: PropTypes.bool.isRequired,
+        handleOpenFilterDialog: PropTypes.func.isRequired,
+        handleCloseFilterDialog: PropTypes.func.isRequired,
+        handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired,
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
@@ -182,19 +191,13 @@ StockReceiveGridList.propTypes = {
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
-    filterDialog: PropTypes.shape({
-        initialValues: PropTypes.object,
-        filterLoading: PropTypes.bool,
-        openFilterDialog: PropTypes.bool.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
-    }).isRequired,
-    acceptDialog: PropTypes.shape({
-        openAcceptDialog: PropTypes.bool.isRequired,
-        handleOpenAcceptDialog: PropTypes.func.isRequired,
-        handleCloseAcceptDialog: PropTypes.func.isRequired,
-        handleSubmitAcceptDialog: PropTypes.func.isRequired
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.number.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSubmitTransferAcceptDialog: PropTypes.func.isRequired,
+        handleSubmitReceiveConfirmDialog: PropTypes.func.isRequired,
+        handleSubmitOrderReturnDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
