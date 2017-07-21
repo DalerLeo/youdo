@@ -49,6 +49,7 @@ export const listFilterSerializer = (data) => {
         'type': type,
         'product': _.get(defaultData, 'product'),
         'brand': _.get(defaultData, 'brand'),
+        'stock': _.get(defaultData, 'stock'),
         'from_date': _.get(defaultData, 'fromDate'),
         'to_date': _.get(defaultData, 'toDate'),
         'product_type': _.get(defaultData, 'productType')

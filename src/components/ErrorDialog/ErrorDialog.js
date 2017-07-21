@@ -7,7 +7,6 @@ import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import Error from 'material-ui/svg-icons/alert/error-outline'
-import FlatButton from 'material-ui/FlatButton'
 import {closeErrorAction} from '../../actions/error'
 
 const enhance = compose(
@@ -60,12 +59,6 @@ const enhance = compose(
     })
 )
 
-const buttonStyle = {
-    border: '1px #fff solid',
-    height: '34px',
-    lineHeight: '34px'
-}
-
 const ErrorDialog = ({dispatch, message, open, classes, ...defaultProps}) => {
     const close = () => dispatch(closeErrorAction())
     return (
@@ -87,14 +80,6 @@ const ErrorDialog = ({dispatch, message, open, classes, ...defaultProps}) => {
                 <div className={classes.inContent}>
                     <Error color="#fff" style={{width: '55px', height: '55px'}}/>
                     <div>{message}</div>
-                    <FlatButton
-                        label="Обновить"
-                        backgroundColor="transparent"
-                        style={buttonStyle}
-                        rippleColor="#ff6663"
-                        hoverColor="rgba(255,255,255,0.3)"
-                        labelStyle={{textTransform: 'none', color: '#fff'}}
-                        />
                 </div>
             </div>
         </Dialog>

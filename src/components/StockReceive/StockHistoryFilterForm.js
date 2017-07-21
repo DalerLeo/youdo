@@ -14,7 +14,8 @@ import {
     BrandSearchField,
     DateToDateField,
     ProductTypeSearchField,
-    StockStatusSearchField
+    StockStatusSearchField,
+    StockSearchField
 } from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -25,7 +26,8 @@ export const HISTORY_FILTER_KEY = {
     PRODUCT_TYPE: 'productType',
     BRAND: 'brand',
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    TO_DATE: 'toDate',
+    STOCK: 'stock'
 }
 
 const enhance = compose(
@@ -184,6 +186,14 @@ const HistoryFilterForm = enhance((props) => {
                             name="product"
                             component={ProductSearchField}
                             label="Товар"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="stock"
+                            component={StockSearchField}
+                            label="Склад"
                             fullWidth={true}/>
                     </div>
                     <div>
