@@ -253,7 +253,6 @@ const StatDebtorsGridList = enhance((props) => {
         handleOpenCloseDetail,
         getDocument
     } = props
-    console.log(listData)
     const iconStyle = {
         icon: {
             color: '#5d6474',
