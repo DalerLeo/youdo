@@ -1,8 +1,5 @@
-import _ from 'lodash'
 import React from 'react'
-import {hashHistory, Link} from 'react-router'
 import IconButton from 'material-ui/IconButton'
-import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
@@ -339,7 +336,7 @@ const PlanWrapper = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.ZONES_LIST_URL}/>
+            <SubMenu url={ROUTES.PLAN_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить зону">
