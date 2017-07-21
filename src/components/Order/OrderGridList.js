@@ -196,8 +196,8 @@ const OrderGridList = enhance((props) => {
         const status = _.toInteger(_.get(item, 'status'))
         const REQUESTED = 0
         const READY = 1
-        const DELIVERED = 2
-        const GIVEN = 4
+        const GIVEN = 2
+        const DELIVERED = 3
         const ZERO = 0
         return (
         <div style={{width: '100%', display: 'flex', alignItems: 'center', position: 'relative'}} key={id}>
