@@ -12,7 +12,7 @@ export const listFilterSerializer = (data, remaider) => {
         'type': _.get(defaultData, 'type'),
         'stock': _.get(defaultData, 'stock'),
         'status': _.get(defaultData, 'status'),
-        'search': _.get(defaultData, 'product')
+        'searching': _.get(defaultData, 'product')
     }
 }
 
