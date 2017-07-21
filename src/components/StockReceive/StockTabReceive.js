@@ -153,8 +153,11 @@ const StockTabReceive = enhance((props) => {
                                         {type === 'transfer'
                                             ? <a onClick={() => { confirmDialog.handleOpenConfirmDialog(APPROVE) }}
                                            className={classes.actionButton}>Выполнить</a>
-                                                : <a onClick={createDialog.handleOpenCreateDialog}
-                                            className={classes.actionButton}>Выполнить</a> }
+                                                : (type === 'order_return')
+                                                    ? <a onClick={() => { confirmDialog.handleOpenConfirmDialog(RETURN) }}
+                                                                                 className={classes.actionButton}>Выполнить</a>
+                                                        : <a onClick={createDialog.handleOpenCreateDialog}
+                                                                 className={classes.actionButton}>Выполнить</a> }
 
                                         {type === 'transfer' && <a onClick={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
                                                        className={classes.actionButton}>Отменить</a>}
@@ -199,7 +202,7 @@ const StockTabReceive = enhance((props) => {
                 type={confirmDialog.openConfirmDialog === CANCEL ? 'cancel' : 'submit' }
                 message={'Запрос № ' + _.get(detailData, ['currentDetail', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSubmitReceiveConfirmDialog}
+                onSubmit={confirmDialog.openConfirmDialog === RETURN ? confirmDialog.handleSubmitOrderReturnDialog : confirmDialog.handleSubmitReceiveConfirmDialog}
                 open={confirmDialog.openConfirmDialog > ZERO}
             />
             <CreateDialog

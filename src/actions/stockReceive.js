@@ -124,7 +124,7 @@ export const stockTransferItemAcceptAction = (id, stock) => {
 
 export const stockReceiveItemConfirmAction = (id, status) => {
     const payload = axios()
-        .post(sprintf(API.STOCK_RECEIVE_TRANSFER_CHANGE_STATUS, id), {params: {status: status}})
+        .post(sprintf(API.STOCK_RECEIVE_TRANSFER_CHANGE_STATUS, id), {status: status})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -140,7 +140,7 @@ export const stockReceiveItemConfirmAction = (id, status) => {
 
 export const stockReceiveItemReturnAction = (id) => {
     const payload = axios()
-        .post(API.STOCK_RECEIVE_ACCEPT_ORDER_RETURN, {params: {id: id}})
+        .post(API.STOCK_RECEIVE_ACCEPT_ORDER_RETURN, {order_return: id})
         .then((response) => {
             return _.get(response, 'data')
         })
