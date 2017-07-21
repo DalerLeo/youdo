@@ -29,12 +29,12 @@ const listHeader = [
         sorting: true,
         name: 'date',
         title: 'Дата',
-        xs: 1
+        xs: 3
     },
     {
-        name: 'fromTo',
-        title: 'От кого / Кому',
-        xs: 4
+        name: 'stock',
+        title: 'Склад',
+        xs: 2
     },
     {
         sorting: true,
@@ -94,20 +94,20 @@ const StockTabHistory = enhance((props) => {
     const historyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const product = _.get(item, ['product', 'name'])
+        const stock = _.get(item, ['stock', 'name'])
         const amount = numberFormat(_.get(item, 'amount'))
         const measurement = _.get(item, ['product', 'measurement', 'name'])
-        const date = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const date = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
         const genericType = stockTypeFormat(_.get(item, ['generic', 'type']))
         const type = _.get(item, 'type')
-
         return (
             <Row key={id}>
                 <Col xs={4}>
                     {(type === 'Out') ? <ArrowUp color="#e57373"/> : <ArrowDown color="#81c784"/>} {product}
                 </Col>
                 <Col xs={1}>{amount} {measurement}</Col>
-                <Col xs={1}>{date}</Col>
-                <Col xs={4}>asdasd / asdasd</Col>
+                <Col xs={3}>{date}</Col>
+                <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{genericType}</Col>
             </Row>
         )

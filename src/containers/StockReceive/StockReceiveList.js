@@ -8,7 +8,6 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
-import reset from 'redux-form'
 import * as STOCK_TAB from '../../constants/stockReceiveTab'
 import {
     StockReceiveGridList,
@@ -31,6 +30,7 @@ import {
 } from '../../actions/stockReceive'
 import {orderReturnListAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
+import {openErrorAction} from '../../actions/error'
 
 const TYPE = 'openType'
 const ZERO = 0
@@ -143,14 +143,14 @@ const enhance = compose(
         },
 
         handleClearFilterDialog: props => () => {
-            const {location: {pathname}, dispatch} = props
+            const {location: {pathname}} = props
             hashHistory.push({pathname, query: {[TAB]: 'history'}})
-            dispatch(reset('HistoryFilterForm'))
         },
 
         handleSubmitFilterDialog: props => () => {
             const {filter, historyFilterForm} = props
             const brand = _.get(historyFilterForm, ['values', 'brand', 'value']) || null
+            const stock = _.get(historyFilterForm, ['values', 'stock', 'value']) || null
             const type = _.get(historyFilterForm, ['values', 'type', 'value']) || null
             const productType = _.get(historyFilterForm, ['values', 'productType', 'value']) || null
             const product = _.get(historyFilterForm, ['values', 'product', 'value']) || null
@@ -159,6 +159,7 @@ const enhance = compose(
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
                 [HISTORY_FILTER_KEY.BRAND]: brand,
+                [HISTORY_FILTER_KEY.STOCK]: stock,
                 [HISTORY_FILTER_KEY.TYPE]: type,
                 [HISTORY_FILTER_KEY.PRODUCT_TYPE]: productType,
                 [HISTORY_FILTER_KEY.PRODUCT]: product,
@@ -231,6 +232,12 @@ const enhance = compose(
                 .then(() => {
                     dispatch(stockReceiveItemFetchAction(supplyId))
                 })
+                .catch((error) => {
+                    const comment = _.map(error, (item) => {
+                        return _.get(item, 'amount')
+                    })
+                    return dispatch(openErrorAction({message: comment}))
+                })
         },
         handleCloseDetail: props => () => {
             const {filter} = props
@@ -272,6 +279,7 @@ const StockReceiveList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_CREATE_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
     const brand = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.BRAND))
+    const stock = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.STOCK))
     const type = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.TYPE))
     const productType = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.PRODUCT_TYPE))
     const product = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.PRODUCT))
@@ -355,6 +363,9 @@ const StockReceiveList = enhance((props) => {
             },
             productType: {
                 value: productType
+            },
+            stock: {
+                value: stock
             }
         },
         filterLoading: false,

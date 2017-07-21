@@ -6,7 +6,9 @@ const Items = [
     {id: 0, name: 'Запрос отправлен'},
     {id: 1, name: 'Готов'},
     {id: 2, name: 'Доставлен'},
-    {id: 3, name: 'Отменен'}
+    {id: 3, name: 'Отменен'},
+    {id: 4, name: 'Передан доставщику'}
+
 ]
 const getOptions = () => {
     return Promise.resolve(Items)

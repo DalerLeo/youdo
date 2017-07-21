@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/remainderSerializer'
 
-export const remainderListFetchAction = (filter, id) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), id)
+export const remainderListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
         .get((API.REMAINDER_LIST), {params})
         .then((response) => {
@@ -23,7 +23,7 @@ export const remainderListFetchAction = (filter, id) => {
 }
 
 export const remainderItemFetchAction = (id, filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), id)
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
         .get(sprintf(API.REMAINDER_ITEM, id), {params})
         .then((response) => {

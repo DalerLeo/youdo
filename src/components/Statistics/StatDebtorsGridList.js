@@ -253,7 +253,6 @@ const StatDebtorsGridList = enhance((props) => {
         handleOpenCloseDetail,
         getDocument
     } = props
-
     const iconStyle = {
         icon: {
             color: '#5d6474',
@@ -302,9 +301,8 @@ const StatDebtorsGridList = enhance((props) => {
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, ['client', 'id'])
         const client = _.get(item, ['client', 'name'])
-        const deptSum = numberFormat(_.get(item, 'deptSum'), getConfig('PRIMARY_CURRENCY'))
+        const deptSum = numberFormat(_.get(item, 'debtSum'), getConfig('PRIMARY_CURRENCY'))
         const expectSum = numberFormat(_.get(item, 'expectSum'), getConfig('PRIMARY_CURRENCY'))
-
         if (_.get(detailData, 'openDetailId') === id) {
             return (
                 <div className={classes.expandedList}>
@@ -437,7 +435,7 @@ StatDebtorsGridList.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
     statDebtorsDialog: PropTypes.shape({
-        openStatDebtorsDialog: PropTypes.bool.isRequired,
+        openStatDebtorsDialog: PropTypes.number.isRequired,
         handleCloseStatDebtorsDialog: PropTypes.func.isRequired,
         handleOpenStatDebtorsDialog: PropTypes.func.isRequired
     }).isRequired

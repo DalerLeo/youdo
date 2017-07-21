@@ -22,7 +22,11 @@ import MoreHortIcon from 'material-ui/svg-icons/navigation/more-horiz'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import RemoveIcon from 'material-ui/svg-icons/content/remove'
 import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz'
+import {TextField} from '../ReduxForm'
+import Search from 'material-ui/svg-icons/action/search'
 import Tooltip from '../ToolTip'
+import Pagination from '../GridList/GridListNavPagination'
+import {reduxForm, Field} from 'redux-form'
 
 const enhance = compose(
     injectSheet({
@@ -65,6 +69,13 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between'
         },
+        search: {
+            display: 'flex',
+            alignItems: 'center',
+            position: 'absolute',
+            width: '220px',
+            left: 'calc(50% - 110px)'
+        },
         products: {
             display: 'flex',
             '& > div': {
@@ -100,6 +111,21 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'center'
         },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
         clearBtn: {
             padding: '20px 30px',
             display: 'flex',
@@ -114,10 +140,22 @@ const enhance = compose(
             }
 
         },
+        nav: {
+            height: '54px',
+            position: 'relative',
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '0 30px'
+        },
         sendButton: {
             '& button': {
                 backgroundColor: '#275482 !important'
             }
+        },
+        filterHolder: {
+            width: '150px',
+            display: 'flex',
+            alignItems: 'center'
         },
         sendButtonWrapper: {
             position: 'absolute',
@@ -136,7 +174,11 @@ const enhance = compose(
             margin: '0 -22px',
             borderBottom: 'solid 1px #efefef'
         }
-    })
+    }),
+    reduxForm({
+        form: 'RemainderSearchForm',
+        enableReinitialize: true
+    }),
 )
 
 const iconStyle = {
@@ -148,6 +190,18 @@ const iconStyle = {
     button: {
         width: 45,
         height: 45,
+        padding: 0
+    }
+}
+const iconSearchStyle = {
+    icon: {
+        color: '#333',
+        width: 25,
+        height: 25
+    },
+    button: {
+        width: 40,
+        height: 40,
         padding: 0
     }
 }
@@ -172,11 +226,13 @@ const RemainderGridList = enhance((props) => {
         filter,
         listData,
         transferDialog,
-        submitFilter,
-        resetFilter,
         discardDialog,
-        handleCloseDetail
+        handleCloseDetail,
+        filterDialog,
+        handleSubmit,
+        searchSubmit
     } = props
+
     const listLoading = _.get(listData, 'listLoading')
     const detailId = _.get(detailData, 'id')
     const listHeader = (
@@ -190,7 +246,22 @@ const RemainderGridList = enhance((props) => {
             </Row>
         </div>
     )
-
+    const search = (
+            <form onSubmit={handleSubmit(searchSubmit)} className={classes.search}>
+                <Field
+                    className={classes.inputFieldCustom}
+                    name="search"
+                    fullWidth={true}
+                    component={TextField}
+                    hintText="Товар"/>
+                <IconButton
+                    iconStyle={iconSearchStyle.icon}
+                    style={iconSearchStyle.button}
+                    type="submit">
+                    <Search/>
+                </IconButton>
+            </form>
+    )
     const listLoader = (
         <Paper className={classes.loader}>
             <CircularProgress size={40} thickness={4}/>
@@ -302,10 +373,18 @@ const RemainderGridList = enhance((props) => {
                     </li>
                 </ul>
             </div>
-            <RemainderFilterForm
-                onSubmit={submitFilter}
-                resetFilter={resetFilter}
-                filter={filter}/>
+            <Paper zDepth={1} className={classes.nav}>
+                <div className={classes.filterHolder}>
+                    <RemainderFilterForm
+                        filterDialog={filterDialog}
+                        filter={filter}
+                        initialValues={filterDialog.initialValues}/>
+                </div>
+                {search}
+                <div>
+                    <Pagination filter={filter}/>
+                </div>
+            </Paper>
             {listHeader}
             {listLoading ? listLoader : list }
 
@@ -329,7 +408,8 @@ RemainderGridList.propTypes = {
         openFilterDialog: PropTypes.bool.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
+        handleSubmitFilterDialog: PropTypes.func.isRequired,
+        handleClearFilterDialog: PropTypes.func.isRequired
     }).isRequired,
     transferDialog: PropTypes.shape({
         openTransferDialog: PropTypes.bool.isRequired,
