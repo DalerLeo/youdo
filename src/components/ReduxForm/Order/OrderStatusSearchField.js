@@ -4,10 +4,10 @@ import SearchField from '../Basic/SearchField'
 
 const Items = [
     {id: 0, name: 'Запрос отправлен'},
-    {id: 1, name: 'Готов'},
-    {id: 2, name: 'Доставлен'},
-    {id: 3, name: 'Отменен'},
-    {id: 4, name: 'Передан доставщику'}
+    {id: 1, name: 'Есть на складе'},
+    {id: 2, name: 'Передан доставщику'},
+    {id: 3, name: 'Доставлен'},
+    {id: 4, name: 'Отменен'}
 
 ]
 const getOptions = () => {
