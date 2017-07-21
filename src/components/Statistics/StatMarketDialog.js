@@ -8,25 +8,30 @@ import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
-import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../GridList/GridListNavPagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
-            position: 'absolute',
             width: '100%',
-            height: '100%',
+            height: '400px',
             background: '#fff',
-            top: '0',
-            left: '0',
             alignItems: 'center',
             zIndex: '999',
-            textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            justifyContent: 'center',
+            display: 'flex'
+        },
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%'
         },
         content: {
             width: '100%',
@@ -64,15 +69,24 @@ const enhance = compose(
             fontWeight: '400'
         },
         titleContent: {
-            lineHeight: '60px',
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
             padding: '0 30px',
+            height: '59px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                position: 'absolute !important'
+            },
             '& div': {
                 display: 'flex',
                 alignItems: 'center'
-            },
-            '& button': {
-                display: 'flex!important',
-                justifyContent: 'center'
             }
 
         },
@@ -93,12 +107,13 @@ const enhance = compose(
                 }
             }
         }
-    })),
+    }),
 )
 
 const StatMarketDialog = enhance((props) => {
-    const {open, loading, onClose, classes, detailData} = props
+    const {open, onClose, classes, detailData} = props
 
+    const loading = _.get(detailData, 'detailLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const marketName = _.get(detailData, ['marketDetail', 'name'])
     const income = numberFormat(_.get(detailData, ['marketDetail', 'income']), primaryCurrency)
@@ -134,32 +149,33 @@ const StatMarketDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '700px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
-            <div className={classes.titleContent} style={{textTransform: 'capitalize'}}>
-                <span>{marketName}</span>
-                <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
-                </IconButton>
+            {loading ? <div className={classes.loader}>
+                <CircularProgress/>
             </div>
-            <div className={classes.content}>
-                <div className={classes.titleSummary}>
-                    <div>Период: <strong>{dateRange}</strong></div>
-                    <div>Сумма: <strong>{income}</strong></div>
-                </div>
-                <div className={classes.tableWrapper}>
-                    <Row className="dottedList">
-                        <Col xs={2}>№ заказа</Col>
-                        <Col xs={4}>Агент</Col>
-                        <Col xs={3}>Дата</Col>
-                        <Col xs={3}>Сумма</Col>
-                    </Row>
-                    {_.get(detailData, 'detailLoading')
-                        ? <div style={{textAlign: 'center'}}>
-                            <CircularProgress/>
+            : <div>
+                    <div className={classes.titleContent} style={{textTransform: 'capitalize'}}>
+                        <span>{marketName}</span>
+                        <IconButton onTouchTap={onClose}>
+                            <CloseIcon2 color="#666666"/>
+                        </IconButton>
+                    </div>
+                    <div className={classes.content}>
+                        <div className={classes.titleSummary}>
+                            <div>Период: <strong>{dateRange}</strong></div>
+                            <div>Сумма: <strong>{income}</strong></div>
                         </div>
-                        : orderList}
-                </div>
-                <Pagination filter={_.get(detailData, 'filter')}/>
-            </div>
+                        <div className={classes.tableWrapper}>
+                            <Row className="dottedList">
+                                <Col xs={2}>№ заказа</Col>
+                                <Col xs={4}>Агент</Col>
+                                <Col xs={3}>Дата</Col>
+                                <Col xs={3}>Сумма</Col>
+                            </Row>
+                            {orderList}
+                        </div>
+                        <Pagination filter={_.get(detailData, 'filter')}/>
+                    </div>
+                </div>}
         </Dialog>
     )
 })

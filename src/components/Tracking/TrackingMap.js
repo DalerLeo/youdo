@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withState} from 'recompose'
 import {withGoogleMap, GoogleMap as DefaultGoogleMap, Marker, Polyline, InfoWindow} from 'react-google-maps'
+import MarkerClusterer from 'react-google-maps/lib/addons/MarkerClusterer'
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs'
 import CircularProgress from 'material-ui/CircularProgress'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
@@ -28,6 +29,7 @@ const GoogleMapWrapper = enhance(({
         isOpenMarkets,
         openMarketInfo,
         setOpenMarketInfo,
+        shopDetails,
         ...props
     }) => {
     const agentCoordinates = [
@@ -44,62 +46,68 @@ const GoogleMapWrapper = enhance(({
     }
     return (
         <DefaultGoogleMap ref={onMapLoad} {...props}>
-            {_.map(marketsLocation, (item) => {
-                const id = _.get(item, 'id')
-                const name = _.get(item, 'name')
-                const lat = _.get(item, ['location', 'coordinates', '0'])
-                const lng = _.get(item, ['location', 'coordinates', '1'])
+            <MarkerClusterer
+                averageCenter
+                enableRetinaIcons
+                maxZoom={16}>
+                {_.map(marketsLocation, (item) => {
+                    const id = _.get(item, 'id')
+                    const name = _.get(item, 'name')
+                    const lat = _.get(item, ['location', 'coordinates', '0'])
+                    const lng = _.get(item, ['location', 'coordinates', '1'])
 
-                if (isOpenMarkets) {
+                    if (isOpenMarkets) {
+                        return (
+                            <Marker
+                                key={id}
+                                onClick={() => { shopDetails.handleOpenShopDetails(id) }}
+                                position={{lat: lat, lng: lng}}
+                                options={
+                                {icon:
+                                {url: MarketLocation,
+                                    size: {width: 15, height: 15},
+                                    scaledSize: {width: 15, height: 15}
+                                }}}>
+
+                                {(id === openMarketInfo) && <InfoWindow>
+                                    <div>{name}</div>
+                                </InfoWindow>}
+                            </Marker>
+                        )
+                    }
+                    return false
+                })}
+            </MarkerClusterer>
+            <MarkerClusterer>
+                {_.map(listData, (item) => {
+                    const id = _.get(item, 'id')
+                    const lat = _.get(item, ['location', 'lat'])
+                    const lng = _.get(item, ['location', 'lon'])
+
+                    const FIVE_MIN = 300000
+                    const dateNow = _.toInteger(moment().format('x'))
+                    const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                    const difference = dateNow - registeredDate
+                    let isOnline = false
+                    if (difference <= FIVE_MIN) {
+                        isOnline = true
+                    }
+
                     return (
                         <Marker
                             key={id}
-                            onClick={() => { setOpenMarketInfo(id) }}
+                            onClick={() => { handleOpenDetails(id) }}
                             position={{lat: lat, lng: lng}}
                             options={
                             {icon:
-                            {url: MarketLocation,
-                                size: {width: 15, height: 15},
-                                scaledSize: {width: 15, height: 15}
+                            {url: isOnline ? GreenPin : RedPin,
+                                size: {width: 26, height: 30},
+                                scaledSize: {width: 26, height: 30}
                             }}}>
-
-                            {(id === openMarketInfo) && <InfoWindow>
-                                <div>{name}</div>
-                            </InfoWindow>}
                         </Marker>
                     )
-                }
-                return false
-            })}
-
-            {_.map(listData, (item) => {
-                const id = _.get(item, 'id')
-                const lat = _.get(item, ['location', 'lat'])
-                const lng = _.get(item, ['location', 'lon'])
-
-                const FIVE_MIN = 300000
-                const dateNow = _.toInteger(moment().format('x'))
-                const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
-                const difference = dateNow - registeredDate
-                let isOnline = false
-                if (difference <= FIVE_MIN) {
-                    isOnline = true
-                }
-
-                return (
-                    <Marker
-                        key={id}
-                        onClick={() => { handleOpenDetails(id) }}
-                        position={{lat: lat, lng: lng}}
-                        options={
-                        {icon:
-                        {url: isOnline ? GreenPin : RedPin,
-                            size: {width: 26, height: 30},
-                            scaledSize: {width: 26, height: 30}
-                        }}}>
-                    </Marker>
-                )
-            })}
+                })}
+            </MarkerClusterer>
             {props.children}
             <Polyline
                 path={isOpenTrack ? _.get(agentCoordinates, '0') : []}
@@ -124,6 +132,7 @@ const GoogleMap = (props) => {
         marketsLocation,
         isOpenTrack,
         isOpenMarkets,
+        shopDetails,
         ...defaultProps
     } = props
 
@@ -142,6 +151,7 @@ const GoogleMap = (props) => {
             marketsLocation={marketsLocation}
             isOpenTrack={isOpenTrack}
             isOpenMarkets={isOpenMarkets}
+            shopDetails={shopDetails}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>
@@ -154,7 +164,12 @@ GoogleMap.PropTypes = {
     agentLocation: PropTypes.object,
     marketsLocation: PropTypes.object,
     isOpenTrack: PropTypes.bool,
-    isOpenMarkets: PropTypes.bool
+    isOpenMarkets: PropTypes.bool,
+    shopDetails: PropTypes.shape({
+        openShopDetails: PropTypes.number.isRequired,
+        handleOpenShopDetails: PropTypes.func.isRequired,
+        handleCloseShopDetails: PropTypes.func.isRequired
+    })
 }
 
 export default GoogleMap

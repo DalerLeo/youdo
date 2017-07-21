@@ -7,7 +7,7 @@ import Layout from '../../components/Layout'
 import sprintf from 'sprintf'
 import * as ROUTER from '../../constants/routes'
 import TrackingWrapper from '../../components/Tracking/TrackingWrapper'
-import {TOGGLE_INFO} from '../../components/Tracking'
+import {TOGGLE_INFO, OPEN_SHOP_DETAILS} from '../../components/Tracking'
 import toBoolean from '../../helpers/toBoolean'
 import filterHelper from '../../helpers/filter'
 import moment from 'moment'
@@ -16,6 +16,7 @@ import {
     locationListAction,
     marketsLocationFetchAction
 } from '../../actions/tracking'
+import {shopItemFetchAction} from '../../actions/shop'
 
 const TRACKING_FILTER_KEY = {
     DATE: 'date',
@@ -41,6 +42,8 @@ const enhance = compose(
         const filter = filterHelper(list, pathname, query)
         const isOpenTrack = toBoolean(_.get(query, 'agentTrack'))
         const isOpenMarkets = toBoolean(_.get(query, 'showMarkets'))
+        const marketData = _.get(state, ['shop', 'item', 'data'])
+        const marketDataLoading = _.get(state, ['shop', 'item', 'loading'])
 
         return {
             query,
@@ -54,7 +57,9 @@ const enhance = compose(
             marketsLocation,
             filterForm,
             isOpenTrack,
-            isOpenMarkets
+            isOpenMarkets,
+            marketData,
+            marketDataLoading
         }
     }),
 
@@ -92,10 +97,31 @@ const enhance = compose(
         dispatch(marketsLocationFetchAction())
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const prevMarket = _.get(props, ['query', 'openShop'])
+        const nextMarket = _.get(nextProps, ['query', 'openShop'])
+        return prevMarket !== nextMarket && nextMarket > ZERO
+    }, ({dispatch, location}) => {
+        const id = _.toInteger(_.get(location, ['query', 'openShop']))
+        if (id > ZERO) {
+            dispatch(shopItemFetchAction(id))
+        }
+    }),
+
     withHandlers({
         handleOpenDetails: props => (id) => {
             const {filter} = props
             hashHistory.push({pathname: sprintf(ROUTER.TRACKING_ITEM_PATH, id), query: filter.getParams({[TOGGLE_INFO]: true})})
+        },
+
+        handleOpenShopDetails: props => (id) => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_SHOP_DETAILS]: id, [TOGGLE_INFO]: true})})
+        },
+
+        handleCloseShopDetails: props => () => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_SHOP_DETAILS]: ZERO})})
         },
 
         handleExpandInfo: props => () => {
@@ -144,6 +170,8 @@ const Tracking = enhance((props) => {
         marketsLocation,
         isOpenTrack,
         isOpenMarkets,
+        marketData,
+        marketDataLoading,
         layout
     } = props
 
@@ -151,6 +179,7 @@ const Tracking = enhance((props) => {
     const openToggle = toBoolean(_.get(location, ['query', TOGGLE_INFO]))
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
+    const openShopDetails = _.toInteger(_.get(location, ['query', OPEN_SHOP_DETAILS]) || ZERO) > ZERO
 
     const showZones = toBoolean(filter.getParam(TRACKING_FILTER_KEY.SHOW_ZONES)) || false
     const showMarkets = toBoolean(filter.getParam(TRACKING_FILTER_KEY.SHOW_MARKETS)) || false
@@ -161,8 +190,8 @@ const Tracking = enhance((props) => {
     const toDate = _.split(filter.getParam(TRACKING_FILTER_KEY.TO_TIME), '-', split)
     const fromHour = _.get(fromDate, '0') || '00'
     const fromMinute = _.get(fromDate, '1') || '00'
-    const toHour = _.get(toDate, '0') || '00'
-    const toMinute = _.get(toDate, '1') || '00'
+    const toHour = _.get(toDate, '0') || '23'
+    const toMinute = _.get(toDate, '1') || '59'
 
     let currentDate = moment().format('YYYY-MM-DD')
     if (date) {
@@ -201,6 +230,14 @@ const Tracking = enhance((props) => {
         handleCollapseInfo: props.handleCollapseInfo
     }
 
+    const shopDetails = {
+        marketData,
+        marketDataLoading,
+        openShopDetails,
+        handleOpenShopDetails: props.handleOpenShopDetails,
+        handleCloseShopDetails: props.handleCloseShopDetails
+    }
+
     return (
         <Layout {...layout}>
             <TrackingWrapper
@@ -208,8 +245,10 @@ const Tracking = enhance((props) => {
                 listData={listData}
                 toggle={toggle}
                 detailData={detailData}
+                shopDetails={shopDetails}
                 filterForm={filterForm}
                 agentLocation={agentLocation}
+                initialValues={filterForm.initialValues}
                 marketsLocation={marketsLocation}
                 handleOpenDetails={props.handleOpenDetails}
                 isOpenTrack={isOpenTrack}

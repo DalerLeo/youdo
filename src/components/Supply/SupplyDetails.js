@@ -7,7 +7,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Delete from 'material-ui/svg-icons/action/delete'
+import Cancel from 'material-ui/svg-icons/content/remove-circle'
 import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
@@ -70,7 +70,12 @@ const enhance = compose(
         },
         titleButtons: {
             display: 'flex',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            '& button > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
         },
         titleSupplier: {
             fontSize: '18px',
@@ -347,7 +352,7 @@ const SupplyDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Изменить">
+                    {!finishedTime && <Tooltip position="bottom" text="Изменить">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -355,14 +360,14 @@ const SupplyDetails = enhance((props) => {
                             onTouchTap={updateDialog.handleOpenUpdateDialog}>
                             <Edit />
                         </IconButton>
-                    </Tooltip>
+                    </Tooltip>}
                     <Tooltip position="bottom" text="Отменить">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
-                            <Delete />
+                            <Cancel />
                         </IconButton>
                     </Tooltip>
                 </div>
