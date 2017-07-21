@@ -33,6 +33,7 @@ const enhance = compose(
         const list = _.get(state, ['remainder', 'list', 'data'])
         const listLoading = _.get(state, ['remainder', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'RemainderFilterForm'])
+        const searchForm = _.get(state, ['form', 'RemainderSearchForm'])
         const transferForm = _.get(state, ['form', 'RemainderTransferForm'])
         const discardForm = _.get(state, ['form', 'RemainderDiscardForm'])
         const filter = filterHelper(list, pathname, query)
@@ -45,7 +46,8 @@ const enhance = compose(
             filter,
             filterForm,
             transferForm,
-            discardForm
+            discardForm,
+            searchForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -68,19 +70,29 @@ const enhance = compose(
         },
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_FILTER_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_FILTER_OPEN]: false})})
+        },
+        handleClearFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-            const product = _.get(filterForm, ['values', 'product']) || null
             const status = _.get(filterForm, ['values', 'status', 'value']) || null
             filter.filterBy({
+                [REMAINDER_FILTER_OPEN]: false,
                 [REMAINDER_FILTER_KEY.TYPE]: type,
                 [REMAINDER_FILTER_KEY.STOCK]: stock,
-                [REMAINDER_FILTER_KEY.PRODUCT]: product,
                 [REMAINDER_FILTER_KEY.STATUS]: status
+            })
+        },
+        handleSubmitSearch: props => () => {
+            const {filter, searchForm} = props
+            const search = _.get(searchForm, ['values', 'search']) || null
+            filter.filterBy({
+                'search': search
             })
         },
         handleOpenTransferDialog: props => () => {
@@ -145,15 +157,31 @@ const RemainderList = enhance((props) => {
         params
     } = props
 
+    const stock = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.STOCK))
+    const type = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.TYPE))
+    const status = filter.getParam(REMAINDER_FILTER_KEY.STATUS)
     const openFilterDialog = toBoolean(_.get(location, ['query', REMAINDER_FILTER_OPEN]))
     const openTransferDialog = toBoolean(_.get(location, ['query', REMAINDER_TRANSFER_DIALOG_OPEN]))
     const openDiscardDialog = toBoolean(_.get(location, ['query', REMAINDER_DISCARD_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'remainderId'))
+
     const filterDialog = {
+        initialValues: {
+            stock: {
+                value: stock
+            },
+            type: {
+                value: type
+            },
+            status: {
+                value: status
+            }
+        },
         openFilterDialog: openFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,
         handleCloseFilterDialog: props.handleCloseFilterDialog,
-        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog,
+        handleClearFilterDialog: props.handleClearFilterDialog
     }
 
     const discardDialog = {
@@ -193,9 +221,9 @@ const RemainderList = enhance((props) => {
                 filterDialog={filterDialog}
                 handleCloseDetail={props.handleCloseDetail}
                 transferDialog={transferDialog}
-                submitFilter={props.handleSubmitFilterDialog}
                 resetFilter={props.handleResetFilter}
                 discardDialog={discardDialog}
+                searchSubmit={props.handleSubmitSearch}
             />
         </Layout>
     )

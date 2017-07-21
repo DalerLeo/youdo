@@ -1,9 +1,15 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 import moment from 'moment'
+const ONE = 1
+const ZERO = 0
+const TWO = 2
 
-export const listFilterSerializer = (data, remaider) => {
+export const listFilterSerializer = (data) => {
     const {...defaultData} = data
+    const status = (_.toInteger(_.get(defaultData, 'status')) === _.toInteger(ONE)) ? ZERO
+        : (_.toInteger(_.get(defaultData, 'status')) === _.toInteger(TWO)) ? ONE
+            : null
     const ordering = _.get(data, 'ordering')
     return {
         'page': _.get(defaultData, 'page'),
@@ -11,8 +17,8 @@ export const listFilterSerializer = (data, remaider) => {
         'ordering': ordering && orderingSnakeCase(ordering),
         'type': _.get(defaultData, 'type'),
         'stock': _.get(defaultData, 'stock'),
-        'status': _.get(defaultData, 'status'),
-        'search': _.get(defaultData, 'product')
+        'status': status,
+        'search': _.get(defaultData, 'search')
     }
 }
 
