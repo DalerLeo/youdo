@@ -50,7 +50,7 @@ export const SUPPLY_LIST = 'SUPPLY_LIST'
 export const SUPPLY_ITEM = 'SUPPLY_ITEM'
 export const SUPPLY_UPDATE = 'SUPPLY_UPDATE'
 export const SUPPLY_CREATE = 'SUPPLY_CREATE'
-export const SUPPLY_DELETE = 'SUPPLY_DELETE'
+export const SUPPLY_CANCEL = 'SUPPLY_CANCEL'
 export const SUPPLY_DEFECT = 'SUPPLY_DEFECT'
 
 export const PRICES_LIST = 'PRICES_LIST'

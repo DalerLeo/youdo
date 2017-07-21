@@ -4,23 +4,6 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/clientBalanceSerializer'
 
-export const clientBalanceUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues, id)
-    const payload = axios()
-        .post(API.CLIENT_BALANCE_UPDATE, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CLIENT_BALANCE_UPDATE,
-        payload
-    }
-}
-
 export const clientBalanceListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()

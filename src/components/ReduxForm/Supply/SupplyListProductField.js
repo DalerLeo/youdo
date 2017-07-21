@@ -123,6 +123,7 @@ const enhance = compose(
         },
         background: {
             display: 'flex',
+            alignItems: 'flex-end',
             padding: '10px',
             marginTop: '5px',
             backgroundColor: '#f1f5f8',
@@ -139,7 +140,7 @@ const enhance = compose(
                 width: '100% !important'
             },
             '& button': {
-                marginTop: '10px !important'
+                alignSelf: 'center'
             }
         }
     }),

@@ -14,7 +14,7 @@ const enhance = compose(
             height: '50px',
             padding: '0 30px',
             background: '#fff',
-            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 2px 6px, rgba(0, 0, 0, 0.12) 0px 2px 4px',
+            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.12) 0px 3px 4px !important',
             '& .row': {
                 width: '100%',
                 alignItems: 'center',

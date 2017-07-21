@@ -17,6 +17,7 @@ import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import TrackingMap from './TrackingMap'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
 import TrackingDetails from './TrackingDetails'
+import ShopDetails from './TrackingShopDetails'
 
 const enhance = compose(
     injectSheet({
@@ -183,7 +184,8 @@ const TrackingWrapper = enhance((props) => {
         handleSubmit,
         isOpenTrack,
         isOpenMarkets,
-        filterForm
+        filterForm,
+        shopDetails
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -192,6 +194,10 @@ const TrackingWrapper = enhance((props) => {
     let agentsOnline = 0
 
     const openDetail = _.get(detailData, 'openDetail')
+    let openShopDetail = false
+    if (_.get(shopDetails, 'openShopDetails') > ZERO) {
+        openShopDetail = true
+    }
 
     const zoneInfoToggle = (
         <div className={classes.trackingInfo} style={isOpenToggle ? {right: '0'} : {right: '-450px'}}>
@@ -288,6 +294,11 @@ const TrackingWrapper = enhance((props) => {
                 agentLocation={agentLocation}
             />
             }
+            {openShopDetail &&
+            <ShopDetails
+                shopDetails={shopDetails}
+            />
+            }
         </div>
     )
 
@@ -302,6 +313,7 @@ const TrackingWrapper = enhance((props) => {
                     marketsLocation={marketsLocation}
                     isOpenTrack={isOpenTrack}
                     isOpenMarkets={isOpenMarkets}
+                    shopDetails={shopDetails}
                 />
                 {zoneInfoToggle}
             </div>
@@ -325,7 +337,12 @@ TrackingWrapper.PropTypes = {
         handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired,
     isOpenTrack: PropTypes.bool,
-    isOpenMarkets: PropTypes.bool
+    isOpenMarkets: PropTypes.bool,
+    shopDetails: PropTypes.shape({
+        openShopDetails: PropTypes.number.isRequired,
+        handleOpenShopDetails: PropTypes.func.isRequired,
+        handleCloseShopDetails: PropTypes.func.isRequired
+    })
 }
 
 export default TrackingWrapper
