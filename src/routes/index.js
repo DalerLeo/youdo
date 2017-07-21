@@ -49,6 +49,7 @@ import {
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveList} from '../containers/StockReceive'
+import {PlanList} from '../containers/Plan'
 
 export default {
     path: '/',
@@ -508,6 +509,17 @@ export default {
                 {
                     path: ROUTES.CLIENT_BALANCE_ITEM_URL,
                     component: userIsAuth(ClientBalanceList)
+                }
+            ]
+        },
+        // Plan
+        {
+            path: ROUTES.PLAN_LIST_URL,
+            component: userIsAuth(PlanList),
+            childRoutes: [
+                {
+                    path: ROUTES.PLAN_ITEM_URL,
+                    component: userIsAuth(PlanList)
                 }
             ]
         },
