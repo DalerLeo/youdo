@@ -7,12 +7,13 @@ import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import ClientBlanceCreateDialog from './ClientBalanceInfoDialog'
+import ClientBalanceCreateDialog from './ClientBalanceInfoDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 
 const listHeader = [
     {
@@ -24,20 +25,20 @@ const listHeader = [
     {
         sorting: true,
         name: 'created_date',
-        title: 'Дата созданияt',
-        xs: 2
+        title: 'Дата создания',
+        xs: 3
     },
     {
         sorting: true,
         name: 'number_of_orders',
         title: 'Кол-во заказов',
-        xs: 4
+        xs: 3
     },
     {
         sorting: true,
         name: 'balance',
         title: 'Баланс',
-        xs: 3
+        xs: 2
     }
 ]
 
@@ -85,15 +86,16 @@ const ClientBlanceGridList = enhance((props) => {
     const clientBalanceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const balance = _.get(item, 'balance')
-        const orders = _.get(item, 'orders')
+        const balance = numberFormat(_.get(item, 'balance'))
+        const currentCurrency = getConfig('PRIMARY_CURRENCY')
+        const orders = numberFormat(_.get(item, 'orders'))
         const clientName = _.get(item, 'name')
         return (
             <Row key={id}>
                 <Col xs={3}>{clientName}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={4}>{orders}</Col>
-                <Col xs={2}>{balance}</Col>
+                <Col xs={3}>{createdDate}</Col>
+                <Col xs={3}>{orders}</Col>
+                <Col xs={2}>{balance} {currentCurrency}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
                         iconStyle={iconStyle.icon}
@@ -126,13 +128,13 @@ const ClientBlanceGridList = enhance((props) => {
                 loading={_.get(listData, 'listLoading')}
             />
 
-            <ClientBlanceCreateDialog
+            <ClientBalanceCreateDialog
                 open={infoDialog.openInfoDialog}
                 detailData={detailData}
                 onClose={infoDialog.handleCloseInfoDialog}
                 filter={filterItem}
                 name={_.get(client, 'name')}
-                balance={ numberFormat(_.get(client, 'balance'))}
+                balance={numberFormat(_.get(client, 'balance'))}
             />
         </Container>
     )

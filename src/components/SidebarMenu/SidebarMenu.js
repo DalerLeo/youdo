@@ -4,7 +4,7 @@ import _ from 'lodash'
 import {connect} from 'react-redux'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
 import ToolTip from '../ToolTip'
 import {MenuItems} from './MenuItems'
@@ -13,21 +13,16 @@ import Badge from 'material-ui/Badge'
 import Logo from '../Images/logo.png'
 
 const style = {
-    iconStyle: {
-        width: 30,
-        height: 30
-    },
     style: {
-        width: 66,
-        height: 66,
-        padding: 16
+        display: 'flex',
+        width: 84,
+        height: 60,
+        minWidth: 'none'
     }
 }
 
-const touch = true
-
 const enhance = compose(
-    connect((state, props) => {
+    connect((state) => {
         const count = _.get(state, ['notifications', 'timeInterval', 'data'])
         return count
     })
@@ -39,13 +34,11 @@ const SideBarMenu = enhance((props) => {
         return (
             <Link to={item.url} key={index}>
                 <ToolTip position="right" text={item.name}>
-                    <IconButton
-                        iconStyle={style.iconStyle}
-                        style={style.style}
+                    <FlatButton
                         disableTouchRipple={true}
-                        touch={touch}>
+                        style={style.style}>
                         {item.icon}
-                    </IconButton>
+                    </FlatButton>
                 </ToolTip>
             </Link>
         )
@@ -62,45 +55,37 @@ const SideBarMenu = enhance((props) => {
                     badgeContent={count}
                     badgeStyle={{top: 8, right: 10}}>
                     <ToolTip position="right" text="Уведомления">
-                        <IconButton
-                            iconStyle={style.iconStyle}
+                        <FlatButton
+                            disableTouchRipple={true}
                             style={style.style}
-                            className="ass23"
-                            touch={touch}
                             onTouchTap={() => {
                                 handleOpenNotificationBar(true)
-                            }}
-                            disableTouchRipple={true}>
+                            }}>
                             <Notification />
-                        </IconButton>
+                        </FlatButton>
                     </ToolTip>
                 </Badge>
                     : <ToolTip position="right" text="Уведомления">
-                        <IconButton
-                            iconStyle={style.iconStyle}
+                        <FlatButton
+                            disableTouchRipple={true}
                             style={style.style}
-                            className="ass23"
-                            touch={touch}
                             onTouchTap={() => {
                                 handleOpenNotificationBar(true)
-                            }}
-                            disableTouchRipple={true}>
+                            }}>
                             <Notification />
-                        </IconButton>
+                        </FlatButton>
                     </ToolTip>
                 }
                 {items}
 
                 <div className={classes.logout}>
                     <ToolTip position="right" text="Выйти">
-                        <IconButton
-                            iconStyle={style.iconStyle}
-                            style={style.style}
-                            touch={touch}
+                        <FlatButton
                             disableTouchRipple={true}
+                            style={style.style}
                             onClick={handleSignOut}>
                             <SettingsPower />
-                        </IconButton>
+                        </FlatButton>
                     </ToolTip>
                 </div>
             </div>
@@ -127,8 +112,8 @@ export default injectSheet({
         position: 'relative',
         width: '100%',
         '& button': {
-            width: '100% !important',
-            height: '60px !important',
+            alignItems: 'center',
+            justifyContent: 'center',
             opacity: '0.5',
             '&:hover': {
                 opacity: '1'

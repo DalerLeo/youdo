@@ -60,7 +60,7 @@ export const orderReturnListAction = (id) => {
 
 export const orderDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.ORDER_DELETE, id))
+        .post(sprintf(API.ORDER_CANCEL, id), {})
         .then((response) => {
             return _.get(response, 'data')
         })

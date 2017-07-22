@@ -189,10 +189,12 @@ const OrderDetails = enhance((props) => {
     const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
     const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
+    const paymentDate = moment(_.get(data, 'paymentDate')).format('DD.MM.YYYY')
 
     const REQUESTED = 0
     const READY = 1
-    const DELIVERED = 2
+    const GIVEN = 2
+    const DELIVERED = 3
     const status = _.toInteger(_.get(data, 'status'))
 
     const percent = 100
@@ -315,7 +317,7 @@ const OrderDetails = enhance((props) => {
                             <ul>
                                 <li>
                                     <span>Дата ожидаемой оплаты:</span>
-                                    <span>22.05.2017</span>
+                                    <span>{paymentDate}</span>
                                 </li>
                                 <li>
                                     <span>Тип оплаты:</span>
@@ -352,6 +354,7 @@ const OrderDetails = enhance((props) => {
                                     <span>Текущий статус:</span>
                                     {(status === REQUESTED) ? <span className={classes.yellow}>Запрос отправлен</span>
                                         : (status === READY) ? <span className={classes.green}>Готов</span>
+                                            : (status === GIVEN) ? <span className={classes.yellow}>Передан доставщику</span>
                                             : (status === DELIVERED) ? <span className={classes.green}>Доставлен</span>
                                                 : <span className={classes.red}>Отменен</span>
                                     }

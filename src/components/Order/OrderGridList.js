@@ -196,8 +196,8 @@ const OrderGridList = enhance((props) => {
         const status = _.toInteger(_.get(item, 'status'))
         const REQUESTED = 0
         const READY = 1
-        const DELIVERED = 2
-        const GIVEN = 4
+        const GIVEN = 2
+        const DELIVERED = 3
         const ZERO = 0
         return (
         <div style={{width: '100%', display: 'flex', alignItems: 'center', position: 'relative'}} key={id}>
@@ -243,7 +243,7 @@ const OrderGridList = enhance((props) => {
                             </IconButton>
                         </Tooltip>
 
-                        : (status === DELIVERED) ? <Tooltip position="bottom" text="Забрали товар">
+                        : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -268,7 +268,7 @@ const OrderGridList = enhance((props) => {
                                 </IconButton>
                             </Tooltip>
                 }
-               <Tooltip position="bottom" text="Есть долг">
+               <Tooltip position="bottom" text={totalBalance > ZERO ? 'Есть долг' : 'Всё оплачено'}>
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}

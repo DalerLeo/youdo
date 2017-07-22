@@ -96,7 +96,7 @@ export const SUPPLY_CREATE = `/${SUPPLY}/`
 export const SUPPLY_LIST = `/${SUPPLY}/`
 export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
-export const SUPPLY_DELETE = `/${SUPPLY}/cancel`
+export const SUPPLY_CANCEL = `/${SUPPLY}/cancel`
 
 export const PRICES = 'market/discount'
 export const PRICES_CREATE = `/${PRICES}/`
@@ -111,7 +111,7 @@ export const ORDER_RETURN_LIST = `${ORDER_RETURN}/%d/`
 export const ORDER_TRANSACTION = 'sales/order_payment/'
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
-export const ORDER_DELETE = `/${ORDER}/%d/`
+export const ORDER_CANCEL = `/${ORDER}/%d/cancel`
 export const GET_DOCUMENT = 'order_document/%d/'
 
 export const SUPPLY_EXPENSE = 'stock/supply_expanse'
@@ -308,7 +308,7 @@ export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
 export const STOCK_RECEIVE_TRANSFER_CHANGE_STATUS = 'stock/stock_transfer/%d/change_status/'
 export const STOCK_RECEIVE_ACCEPT_ORDER_RETURN = 'stock/accept_order_return/'
 
-export const STOCK_RECEIVE_CREATE = `/${STOCK_RECEIVE}/%d/accept_products/`
+export const STOCK_RECEIVE_CREATE = '/stock/supply/%d/accept_products/'
 export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE
 
 export const CLIENT_BALANCE = 'sales/client_balances'
