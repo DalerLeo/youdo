@@ -10,64 +10,65 @@ import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
+import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
 import Pagination from '../ReduxForm/Pagination'
+import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({
         loader: {
-            display: 'flex',
-            justifyContent: 'center',
             width: '100%',
-            background: '#fff'
+            height: '300px',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
         },
-        dialog: {
-            padding: '0!important',
-            '& .row': {
-                alignItems: 'center',
-                '& > div': {
-                    lineHeight: '50px'
-                }
-            }
+        red: {
+            color: '#e57373 !important'
         },
-        title: {
+        green: {
+            color: '#81c784 !important'
+        },
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            position: 'relative',
-            height: '50px',
-            fontWeight: '600',
-            borderBottom: '1px #efefef solid',
-            margin: '0',
-            boxSizing: 'border-box',
-            padding: '0 30px'
-
-        },
-        content: {
-            width: '100%',
-            padding: '0 30px',
-            boxSizing: 'border-box',
-            '& > .row': {
-                margin: '0',
-                padding: '0',
-                '& > div': {},
-                '& > div:first-child': {
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important',
+                '& > div': {
                     display: 'flex',
-                    '& > svg': {
-                        width: '20px !important',
-                        height: '20px !important'
-                    }
+                    justifyContent: 'center',
+                    alignItems: 'center'
                 }
-            },
-            '& > .row:first-child': {
-                fontWeight: '600',
-                lineHeight: '20px',
-                borderBottom: 'solid 1px #efefef'
-            },
-            '& .dottedList:last-child:after': {
-                content: '""',
-                backgroundImage: 'none'
             }
+        },
+        subtitle: {
+            fontWeight: '600',
+            marginBottom: '20px'
+        },
+        bodyContent: {
+            width: '100%'
         },
         infoBlock: {
             display: 'flex',
@@ -88,8 +89,34 @@ const enhance = compose(
             '& span': {
                 fontWeight: '500'
             }
+        },
+        content: {
+            width: '100%',
+            padding: '0 30px 10px',
+            boxSizing: 'border-box',
+            '& > .row': {
+                margin: '0',
+                padding: '15px 0',
+                '& > div': {
+                    padding: '0 0.5rem',
+                    boxSizing: 'border-box'
+                },
+                '& > div:first-child': {
+                    display: 'flex',
+                    '& > svg': {
+                        width: '18px !important',
+                        height: '18px !important'
+                    }
+                }
+            },
+            '& > .row:first-child': {
+                fontWeight: '600',
+                borderBottom: 'solid 1px #efefef'
+            },
+            '& .row:last-child:after': {
+                display: 'none'
+            }
         }
-
     })
 )
 
@@ -110,21 +137,26 @@ const iconStyle = {
 }
 
 const ClientBalanceCreateDialog = enhance((props) => {
-    const {open, loading, filter, onClose, classes, detailData, name, balance} = props
+    const {open, filter, onClose, classes, detailData, name, balance} = props
+    const ZERO = 0
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
+    const loading = _.get(detailData, 'detailLoading')
 
     const detailList = _.map(_.get(detailData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD-MM-YYYY')
-        const comment = _.get(item, 'comment')
-        const amount = numberFormat(_.get(item, 'amount'), _.get(item, ['currency', 'name']))
+        const id = _.get(item, 'order') || _.get(item, 'transaction')
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const comment = _.get(item, 'comment') || 'Комментариев нет'
+        const amount = _.toNumber(_.get(item, 'amount'))
 
         return (
             <Row key={id} className='dottedList'>
-                <div style={{flexBasis: '5%', maxWidth: '5%'}}><ArrowUpIcon/></div>
-                <div style={{flexBasis: '25%', maxWidth: '25%'}}>Z-{id}</div>
+                <div style={{flexBasis: '5%', maxWidth: '5%'}}>
+                    {(amount > ZERO) ? <ArrowUpIcon color="#92ce95"/> : <ArrowDownIcon color="#e27676"/>}
+                </div>
+                <div style={{flexBasis: '25%', maxWidth: '25%'}}>{(_.get(item, 'order')) ? 'З-' : 'Т-'}{id}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%'}}>{createdDate}</div>
-                <div style={{flexBasis: '40%', maxWidth: '40%'}}>{comment}</div>
-                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{amount}</div>
+                <div style={{flexBasis: '35%', maxWidth: '35%'}}>{comment}</div>
+                <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}>{numberFormat(amount, currentCurrency)}</div>
             </Row>)
     })
     return (
@@ -132,44 +164,48 @@ const ClientBalanceCreateDialog = enhance((props) => {
             modal={true}
             open={open}
             onRequestClose={onClose}
-            contentStyle={loading ? {width: '1000px'} : {width: '1000px', minWidth: 'auto', maxWidth: 'auto'}}
+            contentStyle={loading ? {width: '500px'} : {width: '1000px'}}
             bodyStyle={{minHeight: 'auto'}}
-            bodyClassName={classes.dialog}>
-            <Row className={classes.title}>
-                <div>ИНФОРМАЦИЯ ПО БОЛАНСУ КЛИЕНТА</div>
+            bodyClassName={classes.popUp}>
+            <div className={classes.titleContent}>
+                <span>Информация по балансу клиента</span>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
                     onTouchTap={onClose}>
                     <CloseIcon2/>
                 </IconButton>
-            </Row>
-            <div className={classes.infoBlock}>
-                <div className={classes.info}>
-                    <div>
-                        <span>Клиент</span>
-                        <div>{name}</div>
+            </div>
+            {loading ? <div className={classes.loader}>
+                    <CircularProgress size={40} thickness={4}/>
+                </div>
+                : <div className={classes.bodyContent}>
+                    <div className={classes.infoBlock}>
+                        <div className={classes.info}>
+                            <div>
+                                <span>Клиент</span>
+                                <div>{name}</div>
+                            </div>
+                            <div>
+                                <span>Баланс</span>
+                                <div className={(balance > ZERO) ? classes.green : classes.red}>{numberFormat(balance, currentCurrency)}</div>
+                            </div>
+                        </div>
+                        <Pagination filter={filter}/>
                     </div>
-                    <div>
-                        <span>Баланс</span>
-                        <div>{balance}</div>
+                    <div className={classes.content}>
+                        <Row>
+                            <div style={{flexBasis: '5%', maxWidth: '5%'}}>
+                            </div>
+                            <div style={{flexBasis: '25%', maxWidth: '25%'}}>Транзакция / заказ</div>
+                            <div style={{flexBasis: '15%', maxWidth: '15%'}}>Дата</div>
+                            <div style={{flexBasis: '35%', maxWidth: '35%'}}>Описание</div>
+                            <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}>Сумма</div>
+                        </Row>
+                        {detailList}
                     </div>
                 </div>
-                <Pagination filter={filter}/>
-            </div>
-            <div className={classes.content}>
-                <Row>
-                    <div style={{flexBasis: '5%', maxWidth: '5%'}}></div>
-                    <div style={{flexBasis: '25%', maxWidth: '25%'}}>Транзакция / Заказ</div>
-                    <div style={{flexBasis: '15%', maxWidth: '15%'}}>Дата</div>
-                    <div style={{flexBasis: '40%', maxWidth: '40%'}}>Описание</div>
-                    <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Сумма</div>
-                </Row>
-                {loading
-                    ? <div style={{textAlign: 'center'}}>
-                        <CircularProgress size={40} thickness={4}/>
-                    </div> : detailList}
-            </div>
+            }
         </Dialog>
     )
 })

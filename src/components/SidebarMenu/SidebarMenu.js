@@ -14,7 +14,6 @@ import Logo from '../Images/logo.png'
 
 const style = {
     style: {
-        display: 'flex',
         width: 84,
         height: 60,
         minWidth: 'none'
@@ -35,7 +34,7 @@ const SideBarMenu = enhance((props) => {
             <Link to={item.url} key={index}>
                 <ToolTip position="right" text={item.name}>
                     <FlatButton
-                        disableTouchRipple={true}
+                        rippleColor="#fff"
                         style={style.style}>
                         {item.icon}
                     </FlatButton>
@@ -50,13 +49,13 @@ const SideBarMenu = enhance((props) => {
                 <div className={classes.logo}>
                     <img src={Logo}/>
                 </div>
-                {count ? <Badge
+                <Badge
                     className={classes.badge}
                     badgeContent={count}
-                    badgeStyle={{top: 8, right: 10}}>
+                    badgeStyle={count ? {top: 8, right: 10} : {display: 'none'}}>
                     <ToolTip position="right" text="Уведомления">
                         <FlatButton
-                            disableTouchRipple={true}
+                            rippleColor="#fff"
                             style={style.style}
                             onTouchTap={() => {
                                 handleOpenNotificationBar(true)
@@ -65,23 +64,13 @@ const SideBarMenu = enhance((props) => {
                         </FlatButton>
                     </ToolTip>
                 </Badge>
-                    : <ToolTip position="right" text="Уведомления">
-                        <FlatButton
-                            disableTouchRipple={true}
-                            style={style.style}
-                            onTouchTap={() => {
-                                handleOpenNotificationBar(true)
-                            }}>
-                            <Notification />
-                        </FlatButton>
-                    </ToolTip>
-                }
+
                 {items}
 
                 <div className={classes.logout}>
                     <ToolTip position="right" text="Выйти">
                         <FlatButton
-                            disableTouchRipple={true}
+                            rippleColor="#fff"
                             style={style.style}
                             onClick={handleSignOut}>
                             <SettingsPower />
@@ -112,9 +101,14 @@ export default injectSheet({
         position: 'relative',
         width: '100%',
         '& button': {
-            alignItems: 'center',
-            justifyContent: 'center',
             opacity: '0.5',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                width: '100%'
+            },
             '&:hover': {
                 opacity: '1'
             }
@@ -135,7 +129,7 @@ export default injectSheet({
     badge: {
         padding: '0 !important',
         width: '100%',
-        '& span': {
+        '& > span': {
             fontSize: '11px !important',
             backgroundColor: '#009688 !important',
             color: '#fff !important',

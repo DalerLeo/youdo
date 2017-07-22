@@ -16,16 +16,18 @@ import ClientCreateDialog from '../Client/ClientCreateDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import moment from 'moment'
+import getConfig from '../../helpers/getConfig'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import MapsLocalShipping from 'material-ui/svg-icons/maps/local-shipping'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
-import Home from 'material-ui/svg-icons/action/home'
-import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
-import VisibilityOff from 'material-ui/svg-icons/action/visibility-off'
-import moment from 'moment'
-import CachedIcon from 'material-ui/svg-icons/action/cached'
+import Delivered from 'material-ui/svg-icons/action/done-all'
+import Available from 'material-ui/svg-icons/av/playlist-add-check'
+import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
+import Transfered from 'material-ui/svg-icons/action/motorcycle'
+import Payment from 'material-ui/svg-icons/action/credit-card'
+import InProcess from 'material-ui/svg-icons/action/cached'
 
 const listHeader = [
     {
@@ -91,6 +93,20 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         },
+        listWrapper: {
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            margin: '0 -0.5rem',
+            position: 'relative',
+            '& > div': {
+                padding: '0 0.5rem',
+                boxSizing: 'border-box',
+                '&:last-child': {
+                    padding: '0'
+                }
+            }
+        },
         dot: {
             display: 'inline-block',
             height: '7px',
@@ -108,7 +124,7 @@ const enhance = compose(
         },
         buttons: {
             display: 'flex',
-            justifyContent: 'flex-end'
+            justifyContent: 'space-around'
         },
         openDetails: {
             position: 'absolute',
@@ -186,21 +202,24 @@ const OrderGridList = enhance((props) => {
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
+        const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const client = _.get(item, ['client', 'name'])
         const market = _.get(item, ['market', 'name'])
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
         const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
-        const totalPrice = numberFormat(_.get(item, 'totalPrice'), 'SUM')
+        const balanceTooltip = numberFormat(totalBalance, currentCurrency)
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
         const REQUESTED = 0
         const READY = 1
         const GIVEN = 2
         const DELIVERED = 3
+        const CANCELED = 4
         const ZERO = 0
         return (
-        <div style={{width: '100%', display: 'flex', alignItems: 'center', position: 'relative'}} key={id}>
+        <div className={classes.listWrapper} key={id}>
             <Link className={classes.openDetails} to={{
                 pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                 query: filter.getParams()}}>
@@ -228,54 +247,62 @@ const OrderGridList = enhance((props) => {
             <div style={{width: '5%'}} className={classes.buttons}>
                 {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
                         <IconButton
+                            disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}>
-                            <CachedIcon color="#666"/>
+                            <InProcess color="#f0ad4e"/>
                         </IconButton>
                     </Tooltip>
                     : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
                             <IconButton
+                                disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}>
-                                <Home color="#81c784"/>
+                                <Available color="#f0ad4e"/>
                             </IconButton>
                         </Tooltip>
 
                         : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
                             <IconButton
+                                disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}>
-                                <MapsLocalShipping color="#81c784" />
+                                <Delivered color="#81c784" />
                             </IconButton>
                         </Tooltip>
                         : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
                             <IconButton
+                                disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}>
-                                <MapsLocalShipping color="#f0ad4e" />
+                                <Transfered color="#f0ad4e" />
                             </IconButton>
                         </Tooltip>
                             : <Tooltip position="bottom" text="Заказ отменен">
                                 <IconButton
+                                    disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
                                     touch={true}>
-                                    <VisibilityOff color='#e57373'/>
+                                    <Canceled color='#e57373'/>
                                 </IconButton>
                             </Tooltip>
                 }
-               <Tooltip position="bottom" text={totalBalance > ZERO ? 'Есть долг' : 'Всё оплачено'}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}>
-                        <AccountBalanceWallet color={totalBalance > ZERO ? '#e57373' : '#4db6ac'}/>
-                    </IconButton>
-                </Tooltip>
+                {!(status === CANCELED) &&
+                    <Tooltip position="bottom" text={totalBalance > ZERO ? ('Есть долг ' + balanceTooltip) : 'Оплачено'}>
+                        <IconButton
+                            disableTouchRipple={true}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
+                            <Payment color={totalBalance > ZERO ? '#e57373' : '#81c784'}/>
+                        </IconButton>
+                    </Tooltip>
+                }
             </div>
         </div>
         )

@@ -301,10 +301,11 @@ const SupplyDetails = enhance((props) => {
     const contactEmail = _.get(contact, 'email')
     const contactPhone = _.get(contact, 'phone')
     const dateDelivery = _.get(data, 'dateDelivery') || 'Не указано'
-    const acceptedTime = (_.get(data, 'acceptedTime')) ? moment(_.get(data, 'acceptedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не начался'
+    const acceptedTime = (_.get(data, 'acceptedTime')) ? moment(_.get(data, 'acceptedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не началась'
     const finishedTime = (_.get(data, 'finishedTime')) ? moment(_.get(data, 'finishedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не закончилась'
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
+    const isFinished = !_.isEmpty(_.get(data, 'finishedTime'))
 
     const supplyExpenseList = _.get(supplyListData, 'data')
     const supplyExpenseListLoading = _.get(supplyListData, 'supplyExpenseListLoading')
@@ -322,7 +323,7 @@ const SupplyDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>Поставка № {id}</div>
+                <div className={classes.titleLabel}>Поставка №{id}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
@@ -352,17 +353,19 @@ const SupplyDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
-                    {!finishedTime && <Tooltip position="bottom" text="Изменить">
+                    <Tooltip position="bottom" text="Изменить">
                         <IconButton
+                            disabled={isFinished && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={updateDialog.handleOpenUpdateDialog}>
                             <Edit />
                         </IconButton>
-                    </Tooltip>}
+                    </Tooltip>
                     <Tooltip position="bottom" text="Отменить">
                         <IconButton
+                            disabled={isFinished && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

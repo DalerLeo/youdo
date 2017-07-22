@@ -30,7 +30,18 @@ const enhance = compose(
 )
 
 const GridList = enhance((props) => {
-    const {classes, list, customData, detail, filter, filterDialog, actionsDialog, withoutCheckboxes, withoutRow, withoutSearch} = props
+    const {
+        classes,
+        list,
+        customData,
+        detail,
+        filter,
+        filterDialog,
+        actionsDialog,
+        withoutCheckboxes,
+        withoutRow,
+        withoutSearch
+    } = props
     const header = _.get(list, 'header')
     const listItems = _.get(list, 'list')
     const loading = _.get(list, 'loading')

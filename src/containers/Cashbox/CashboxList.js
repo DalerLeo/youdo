@@ -108,7 +108,7 @@ const enhance = compose(
         handleOpenCreateDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: true})})
-            dispatch(reset('StockCreateForm'))
+            dispatch(reset('CashboxCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
