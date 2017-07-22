@@ -9,7 +9,6 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import reset from 'redux-form'
 import {
     PENDING_PAYMENTS_UPDATE_DIALOG_OPEN,
     PENDING_PAYMENTS_FILTER_KEY,
@@ -67,9 +66,8 @@ const enhance = compose(
 
     withHandlers({
         handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter, dispatch} = props
+            const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PENDING_PAYMENTS_FILTER_OPEN]: true})})
-            dispatch(reset('PendingPaymentsFilterForm'))
         },
 
         handleCloseFilterDialog: props => () => {
@@ -86,15 +84,17 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const client = _.get(filterForm, ['values', 'client', 'value'])
-            const market = _.get(filterForm, ['values', 'market', 'value'])
+            const client = _.get(filterForm, ['values', 'client', 'value']) || null
+            const market = _.get(filterForm, ['values', 'market', 'value']) || null
+            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
 
             filter.filterBy({
                 [PENDING_PAYMENTS_FILTER_OPEN]: false,
                 [PENDING_PAYMENTS_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [PENDING_PAYMENTS_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [PENDING_PAYMENTS_FILTER_KEY.MARKET]: market,
-                [PENDING_PAYMENTS_FILTER_KEY.CLIENT]: client
+                [PENDING_PAYMENTS_FILTER_KEY.CLIENT]: client,
+                [PENDING_PAYMENTS_FILTER_KEY.PAYMENT_TYPE]: paymentType
             })
         },
 
@@ -143,6 +143,9 @@ const PendingPaymentsList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', PENDING_PAYMENTS_FILTER_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PENDING_PAYMENTS_UPDATE_DIALOG_OPEN]))
     const fromDate = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.FROM_DATE)
+    const paymentType = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.PAYMENT_TYPE)
+    const client = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.CLIENT)
+    const market = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.MARKET)
     const toDate = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'pendingPaymentsId'))
 
@@ -167,6 +170,15 @@ const PendingPaymentsList = enhance((props) => {
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            },
+            paymentType: {
+                value: paymentType
+            },
+            client: {
+                value: client
+            },
+            market: {
+                value: market
             }
         },
         filterLoading: false,
