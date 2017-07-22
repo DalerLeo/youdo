@@ -141,7 +141,7 @@ const enhance = compose(
 
         },
         nav: {
-            height: '54px',
+            height: '48px',
             position: 'relative',
             display: 'flex',
             justifyContent: 'space-between',

@@ -40,7 +40,8 @@ const enhance = compose(
             display: 'flex',
             backgroundColor: '#efefef',
             position: 'absolute',
-            padding: '19px 30px',
+            padding: '0 30px',
+            height: '48px',
             marginLeft: '-30px',
             '& > div:nth-child(2)': {
                 position: 'absolute',
