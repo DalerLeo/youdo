@@ -28,17 +28,20 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        titleContent: {
+            padding: '15px 30px'
+        },
         content: {
             width: '100%',
             display: 'block'
         },
         topBlock: {
-            padding: '20px 30px 0px 30px',
+            padding: '10px 30px 0px',
             '&:last-child': {
                 border: 'none'
             },
             '& .row': {
-                lineHeight: '35px',
+                lineHeight: '30px',
                 padding: '0 10px',
                 '& > div:first-child': {
                     flexBasis: '25%',
@@ -54,7 +57,7 @@ const enhance = compose(
         downBlock: {
             padding: '20px 30px',
             '& .row': {
-                lineHeight: '35px',
+                lineHeight: '40px',
                 padding: '0 10px',
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -65,14 +68,12 @@ const enhance = compose(
             },
             '& .row:last-child': {
                 fontWeight: '600',
-                borderTop: '1px #efefef solid'
+                borderTop: '1px #efefef solid',
+                lineHeight: 'normal',
+                paddingTop: '8px'
             }
         },
-        dottedList: {
-            padding: '10px 0'
-        },
         subTitle: {
-            paddingBottom: '8px',
             fontStyle: 'italic',
             fontWeight: '400'
         }

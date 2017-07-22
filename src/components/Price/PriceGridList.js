@@ -7,15 +7,32 @@ import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {TextField} from '../ReduxForm'
+import Tooltip from '../ToolTip'
 import Container from '../Container'
 import PriceFilterForm from './PriceFilterForm'
 import PriceSupplyDialog from './PriceSupplyDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import PriceDetails from './PriceDetails'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
+import DoneIcon from 'material-ui/svg-icons/action/done'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import toCamelCase from '../../helpers/toCamelCase'
+
+const validate = (data) => {
+    const errors = toCamelCase(data)
+    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
+    throw new SubmissionError({
+        ...errors,
+        latLng,
+        _error: nonFieldErrors
+    })
+}
 
 const listHeader = [
     {
@@ -56,6 +73,19 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            marginTop: '0px!important',
+            height: '20px!important',
+            width: '50px!important',
+            '& hr': {
+                bottom: '0!important'
+            },
+            '& input': {
+                top: '-2px',
+                textAlign: 'right'
+            }
+        },
         priceImg: {
             width: '30px',
             height: '30px',
@@ -66,6 +96,24 @@ const enhance = compose(
             textAlign: 'center',
             '& img': {
                 height: '30px'
+            }
+        },
+        pricePercent: {
+            position: 'absolute',
+            top: '0',
+            right: 0,
+            display: 'flex',
+            alignItems: 'center',
+            height: '60px',
+            '& > div:first-child': {
+                padding: '0 10px',
+                '& > div': {
+                    textAlign: 'right'
+                }
+            },
+            '& span': {
+                fontSize: '12px !important',
+                fontWeight: '600'
             }
         },
         listRow: {
@@ -88,18 +136,28 @@ const enhance = compose(
                 }
             }
         }
-    })
+    }),
+    withState('globalPrice', 'setGlobalPrice', true),
+
+reduxForm({
+    form: 'PriceGlobalForm',
+    enableReinitialize: true
+})
 )
 const PriceGridList = enhance((props) => {
     const {
         classes,
         filter,
+        globalPrice,
+        setGlobalPrice,
         filterDialog,
         priceSupplyDialog,
         priceSetForm,
         listData,
-        detailData
+        detailData,
+        handleSubmit
     } = props
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const expenseList = _.get(detailData, 'priceItemExpenseList')
     const expenseLoading = _.get(detailData, 'priceItemExpenseLoading')
     const priceFilterDialog = (
@@ -109,7 +167,6 @@ const PriceGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
-
     const listDetailData = _.filter(_.get(listData, 'data'), (o) => {
         return o.id === _.get(detailData, 'id')
     })
@@ -124,6 +181,40 @@ const PriceGridList = enhance((props) => {
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             mergedList={(detailData.mergedList())}>
         </PriceDetails>
+    )
+
+    const pricePercent = (
+        <form onSubmit={onSubmit} className={classes.pricePercent}>
+            <div>
+                <span>Наценка за безнал</span>
+                <div>
+                    {globalPrice && <Field
+                        name='globalPrice'
+                        className={classes.inputFieldCustom}
+                        component={TextField}
+                        fullWidth={true}
+                    />}
+                    {!globalPrice && <Link onClick={() => { setGlobalPrice(true) }} >10 %</Link>}
+                </div>
+            </div>
+            <div>
+                {globalPrice &&
+                <Tooltip position="bottom" text="">
+                    <FloatingActionButton
+                        mini={true}
+                        type="submit"
+                        className={classes.addButton}
+                        onTouchTap={() => {
+                            onSubmit().then(() => {
+                                setGlobalPrice(false)
+                            })
+                        }}>
+
+                        <DoneIcon/>
+                    </FloatingActionButton>
+                </Tooltip>}
+            </div>
+        </form>
     )
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -156,6 +247,7 @@ const PriceGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.PRICE_LIST_URL}/>
+            {pricePercent}
             <GridList
                 filter={filter}
                 list={list}

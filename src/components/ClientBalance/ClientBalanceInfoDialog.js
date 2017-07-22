@@ -11,9 +11,10 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
-
+import getConfig from '../../helpers/getConfig'
 import Pagination from '../ReduxForm/Pagination'
 import numberFormat from '../../helpers/numberFormat'
+
 const ZERO = 0
 const enhance = compose(
     injectSheet({
@@ -121,7 +122,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
         const comment = _.get(item, 'comment')
         const amountType = Number(_.get(item, 'amount'))
         const amountColor = amountType > ZERO ? '#81c784' : '#e57373'
-        const amount = numberFormat(_.get(item, 'amount'), _.get(item, ['currency', 'name']))
+        const amount = numberFormat(_.get(item, 'amount'), _.get(item, ['currency']))
         const order = _.get(item, 'order') || '0'
         const transaction = _.get(item, 'transaction') || '0'
 
@@ -161,7 +162,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
                     </div>
                     <div>
                         <span>Баланс</span>
-                        <div style={{color: balanceColor}}>{numberFormat(balance)}</div>
+                        <div style={{color: balanceColor}}>{numberFormat(balance, getConfig('PRIMARY_CURRENCY'))}</div>
                     </div>
                 </div>
                 <Pagination filter={filter}/>
