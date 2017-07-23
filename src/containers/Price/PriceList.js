@@ -37,6 +37,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['price', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'PriceFilterForm'])
         const createForm = _.get(state, ['form', 'PriceCreateForm'])
+        const globalForm = _.get(state, ['form', 'PriceGlobalForm'])
         const filter = filterHelper(list, pathname, query)
         const marketTypeList = _.get(state, ['marketType', 'list', 'data'])
         const marketTypeLoading = _.get(state, ['marketType', 'list', 'loading'])
@@ -61,7 +62,8 @@ const enhance = compose(
             priceItemHistoryList,
             priceItemHistoryLoading,
             priceItemExpenseList,
-            priceItemExpenseLoading
+            priceItemExpenseLoading,
+            globalForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -139,6 +141,11 @@ const enhance = compose(
                     hashHistory.push({pathname})
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
+        },
+        handleSubmitGlobalPriceForm: props => () => {
+            const {globalForm} = props
+            const globalPrice = _.get(globalForm, ['values', 'globalPrice'])
+            return globalPrice
         },
         handleCloseDetail: props => () => {
             const {filter} = props
@@ -257,6 +264,7 @@ const PriceList = enhance((props) => {
                 priceSupplyDialog={priceSupplyDialog}
                 priceSetForm={priceSetForm}
                 filterDialog={filterDialog}
+                onSubmit={props.handleSubmitGlobalPriceForm}
             />
         </Layout>
     )

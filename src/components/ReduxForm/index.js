@@ -43,8 +43,10 @@ import DeptSearchField from './DeptTypeSearchField'
 import StockReceiveProductSearchField from './StockReceive/StockReceiveProductSearchField'
 import FrequencySearchField from './FrequencySearchField'
 import StockStatusSearchField from './StockStatusSearchField'
+import PriceMainRadioButton from './PriceMainRadioButton'
 
 export {
+    PriceMainRadioButton,
     ShiftSearchField,
     StockStatusSearchField,
     ProductMeasurementField,
