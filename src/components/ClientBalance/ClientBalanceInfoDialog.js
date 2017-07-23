@@ -15,7 +15,6 @@ import Pagination from '../ReduxForm/Pagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 
-const ZERO = 0
 const enhance = compose(
     injectSheet({
         loader: {
