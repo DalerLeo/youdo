@@ -18,7 +18,7 @@ export const listFilterSerializer = (data) => {
         'type': _.get(defaultData, 'type'),
         'stock': _.get(defaultData, 'stock'),
         'status': status,
-        'search': _.get(defaultData, 'search')
+        'searching': _.get(defaultData, 'search')
     }
 }
 

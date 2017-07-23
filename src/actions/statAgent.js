@@ -45,7 +45,7 @@ export const getDocumentAction = (filter) => {
     const payload = axios()
         .get(sprintf(API.STAT_AGENT_GET_DOCUMENT), {params})
         .then((response) => {
-            fileDownload(response.data, 'договор.xls')
+            fileDownload(response.data, 'document.xlsx')
             return _.get(response, 'data')
         })
         .catch((error) => {

@@ -1,7 +1,8 @@
 export const API_HOST = process.env.API_HOST
 export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
-export const API_URL = `http://${API_HOST}/${API_ROOT}/${API_VERSION}`
+export const API_URL = (API_HOST === 'https://apistick.wienerdeming.com/') ? 'https://apistick.wienerdeming.com/'
+    : `http://${API_HOST}/${API_ROOT}/${API_VERSION}`
 
 export const USER = 'main/user'
 export const SIGN_IN = `/${USER}/auth/`
@@ -106,9 +107,10 @@ export const PRICES_DELETE = `/${PRICES}/%d/`
 
 export const ORDER = 'sales/order'
 export const ORDER_CREATE = `/${ORDER}/`
-export const ORDER_RETURN = 'sales/order_return/'
-export const ORDER_RETURN_LIST = `${ORDER_RETURN}/%d/`
-export const ORDER_TRANSACTION = 'sales/order_payment/'
+export const ORDER_RETURN = '/sales/order_return/'
+export const ORDER_RETURN_LIST = '/sales/order_return/%d/'
+export const ORDER_TRANSACTION = '/sales/client_transaction/'
+
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_CANCEL = `/${ORDER}/%d/cancel`
