@@ -7,11 +7,12 @@ import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
+import ClientBalanceFilterForm from './ClientBalanceFilterForm'
 import ClientBalanceCreateDialog from './ClientBalanceInfoDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
+import List from 'material-ui/svg-icons/action/list'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 
@@ -36,6 +37,7 @@ const listHeader = [
     },
     {
         sorting: true,
+        alignRight: true,
         name: 'balance',
         title: 'Баланс',
         xs: 2
@@ -44,16 +46,8 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
-            }
-        },
-        addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
+        rightAlign: {
+            textAlign: 'right'
         }
     })
 )
@@ -72,13 +66,24 @@ const iconStyle = {
 }
 
 const ClientBlanceGridList = enhance((props) => {
+    const ZERO = 0
     const {
+        classes,
         filter,
+        filterDialog,
         filterItem,
         infoDialog,
         listData,
         detailData
     } = props
+
+    const clientBalanceFilterDialog = (
+        <ClientBalanceFilterForm
+            initialValues={filterDialog.initialValues}
+            filter={filter}
+            filterDialog={filterDialog}
+        />
+    )
 
     const clientBalanceDetail = (
         <span>a</span>
@@ -86,23 +91,32 @@ const ClientBlanceGridList = enhance((props) => {
     const clientBalanceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const balance = numberFormat(_.get(item, 'balance'))
+        const balance = _.toNumber(_.get(item, 'balance'))
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const orders = numberFormat(_.get(item, 'orders'))
         const clientName = _.get(item, 'name')
+        const balanceStyle = {
+            color: '#333'
+        }
+        if (balance > ZERO) {
+            balanceStyle.color = '#92ce95'
+        } else if (balance < ZERO) {
+            balanceStyle.color = '#e27676'
+        }
         return (
             <Row key={id}>
                 <Col xs={3}>{clientName}</Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={3}>{orders}</Col>
-                <Col xs={2}>{balance} {currentCurrency}</Col>
+                <Col xs={2} className={classes.rightAlign} style={balanceStyle}>{numberFormat(balance)} {currentCurrency}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
+                        disabled={(balance === ZERO) && true}
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
                         touch={true}
                         onTouchTap={() => { infoDialog.handleOpenInfoDialog(id) }}>
-                        <AddPayment />
+                        <List />
                     </IconButton>
                 </Col>
             </Row>
@@ -125,6 +139,7 @@ const ClientBlanceGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={clientBalanceDetail}
+                filterDialog={clientBalanceFilterDialog}
                 loading={_.get(listData, 'listLoading')}
             />
 

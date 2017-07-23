@@ -44,14 +44,13 @@ const enhance = compose(
         icon: {
             height: '15px !important',
             position: 'absolute !important',
-            top: '10px !important',
-            right: '0px !important',
+            top: '10px',
+            right: '0px',
             color: '#fff !important'
         },
         button: {
             color: '#fff !important',
             minWidth: 'auto !important',
-            padding: '0px 30px 0px 0px !important',
             position: 'relative !important',
             '&:hover': {
                 backgroundColor: 'transparent !important'
@@ -63,23 +62,24 @@ const enhance = compose(
         headerPadding: {
             padding: '0 30px',
             width: '100%',
-            '& div div': {
-                paddingLeft: '10px'
+            '& .row': {
+                margin: '0'
             },
-            '& div div:first-child': {
-                paddingLeft: '5px'
+            '& .row > div:first-child': {
+                paddingLeft: '0'
             }
         },
         withoutRowDiv: {
             width: '100%',
             display: 'flex',
+            margin: '0 -0.5rem',
             alignItems: 'center',
-            '& div': {
-                paddingLeft: '0 !important'
+            '& > div': {
+                padding: '0 0.5rem !important',
+                boxSizing: 'border-box'
             },
             '& div:last-child': {
-                textAlign: 'right',
-                paddingRight: '10px'
+                textAlign: 'right'
             }
         }
     }),
@@ -124,38 +124,47 @@ const GridListHeader = enhance((props) => {
     const firstIndex = 0
     const items = _.map(column, (item, index) => {
         const xs = (!_.isNil(item.xs)) ? item.xs : (index === firstIndex ? firstColumnSize : defaultColumnSize)
+        const alignRight = _.get(item, 'alignRight')
 
         if (_.get(item, 'sorting')) {
             const name = _.get(item, 'name')
             const sortingType = filter.getSortingType(name)
             const Icon = !_.isNull(sortingType) ? sortingType ? (
-                        <ArrowUpIcon className={classes.icon}/>
-                    ) : (<ArrowDownIcon className={classes.icon}/>) : null
+                        <ArrowUpIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>
+                    ) : (<ArrowDownIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>) : null
 
             if (withoutRow) {
                 return (<Col style={{width: xs}} key={index}>
                     <Link
                         className={classes.sortingButton}
                         onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
-                        <FlatButton className={classes.button}>
+                        <FlatButton
+                            className={classes.button}
+                            style={{paddingRight: '30px'}}
+                            disableTouchRipple={true}>
                             <span>{_.get(item, 'title')}</span> {Icon}
                         </FlatButton>
                     </Link>
                 </Col>)
             }
-            return (<Col xs={xs} key={index}>
+            return (<Col xs={xs} key={index} style={alignRight && {textAlign: 'right'}}>
                         <Link
                             className={classes.sortingButton}
                             onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
-                            <FlatButton className={classes.button}>
-                                <span>{_.get(item, 'title')}</span> {Icon}
+                            <FlatButton
+                                className={classes.button}
+                                style={alignRight ? {paddingRight: '0', paddingLeft: '30px'} : {paddingRight: '30px'}}
+                                disableTouchRipple={true}>
+                                {alignRight && Icon} <span>{_.get(item, 'title')}</span> {!alignRight && Icon}
                             </FlatButton>
                         </Link>
                     </Col>)
         }
 
         return (
-            <Col xs={xs} key={index}>{_.get(item, 'title')}</Col>
+            <Col xs={xs} key={index}>
+                {_.get(item, 'title')}
+            </Col>
         )
     })
 
