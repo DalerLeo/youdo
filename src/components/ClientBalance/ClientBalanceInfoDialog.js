@@ -10,9 +10,12 @@ import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
+import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
+import getConfig from '../../helpers/getConfig'
 import Pagination from '../ReduxForm/Pagination'
 import numberFormat from '../../helpers/numberFormat'
 
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         loader: {
@@ -111,20 +114,27 @@ const iconStyle = {
 
 const ClientBalanceCreateDialog = enhance((props) => {
     const {open, loading, filter, onClose, classes, detailData, name, balance} = props
+    const balanceColor = Number(balance) > ZERO ? '#81c784' : '#e57373'
 
     const detailList = _.map(_.get(detailData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD-MM-YYYY')
         const comment = _.get(item, 'comment')
-        const amount = numberFormat(_.get(item, 'amount'), _.get(item, ['currency', 'name']))
+        const amountType = Number(_.get(item, 'amount'))
+        const amountColor = amountType > ZERO ? '#81c784' : '#e57373'
+        const amount = numberFormat(_.get(item, 'amount'), _.get(item, ['currency']))
+        const order = _.get(item, 'order') || '0'
+        const transaction = _.get(item, 'transaction') || '0'
 
         return (
             <Row key={id} className='dottedList'>
-                <div style={{flexBasis: '5%', maxWidth: '5%'}}><ArrowUpIcon/></div>
-                <div style={{flexBasis: '25%', maxWidth: '25%'}}>Z-{id}</div>
+                <div style={{flexBasis: '5%', maxWidth: '5%'}}>{amountType >= ZERO ? <ArrowUpIcon color='#81c784' />
+                                                                                    : <ArrowDownIcon color="#e57373"/> }
+                </div>
+                <div style={{flexBasis: '25%', maxWidth: '25%'}}>Z-{id} / {transaction} / {order}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%'}}>{createdDate}</div>
                 <div style={{flexBasis: '40%', maxWidth: '40%'}}>{comment}</div>
-                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{amount}</div>
+                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right', color: amountColor}}>{amount}</div>
             </Row>)
     })
     return (
@@ -152,7 +162,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
                     </div>
                     <div>
                         <span>Баланс</span>
-                        <div>{balance}</div>
+                        <div style={{color: balanceColor}}>{numberFormat(balance, getConfig('PRIMARY_CURRENCY'))}</div>
                     </div>
                 </div>
                 <Pagination filter={filter}/>

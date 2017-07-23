@@ -127,7 +127,6 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     />
                                     <CashboxCurrencyField/>
                                 </div>
-                                <div>Использовать</div>
                                 <Field
                                     name="now"
                                     style={{marginTop: '10px'}}

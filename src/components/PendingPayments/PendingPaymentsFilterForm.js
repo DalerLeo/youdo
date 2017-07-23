@@ -9,9 +9,12 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import ClientSearchField from '../ReduxForm/Client/ClientSearchField'
-import MarketSearchField from '../ReduxForm/Shop/MarketSearchField'
+import {
+    PaymentTypeSearchField,
+    MarketSearchField,
+    ClientSearchField,
+    DateToDateField
+} from '../ReduxForm'
 
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -22,7 +25,8 @@ export const PENDING_PAYMENTS_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     CLIENT: 'client',
-    MARKET: 'market'
+    MARKET: 'market',
+    PAYMENT_TYPE: 'paymentType'
 }
 
 const enhance = compose(
@@ -162,7 +166,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
-                            name="shop"
+                            name="market"
                             component={MarketSearchField}
                             label="Магазин"
                             fullWidth={true}/>
@@ -173,6 +177,14 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             name="client"
                             component={ClientSearchField}
                             label="Клиент"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="paymentType"
+                            component={PaymentTypeSearchField}
+                            label="Тип оплаты"
                             fullWidth={true}/>
                     </div>
                     <div>

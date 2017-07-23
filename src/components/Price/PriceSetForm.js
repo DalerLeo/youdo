@@ -6,12 +6,12 @@ import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, PriceMainRadioButton, CurrencySearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
-import CurrencySearchField from '../ReduxForm/CurrencySearchField'
+
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -106,6 +106,18 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             height: '40px'
+        },
+        radios: {
+            '& > div': {
+                '&:first-child': {
+                    fontWeight: '600'
+                },
+                lineHeight: '40px',
+                paddingRight: '20px'
+            },
+            '& .dottedList': {
+                padding: '8px 20px 8px 0px !important'
+            }
         }
     }),
     reduxForm({
@@ -163,6 +175,18 @@ const PriceSetForm = enhance((props) => {
                         </Tooltip>
                     </div>
                 </div>
+                <div style={{display: 'flex'}} >
+                    <div className={classes.radios}>
+                        <div>Основной</div>
+                        <div>
+                            <Field
+                                name='isPrimary'
+                                component={PriceMainRadioButton}
+                                mergedList={mergedList}
+                                fullWidth={true}>
+                            </Field>
+                        </div>
+                    </div>
                 <div className={classes.tableContent}>
                     <Row className={classes.priceRow}>
                         <Col xs={6}>Тип обьекта</Col>
@@ -170,37 +194,38 @@ const PriceSetForm = enhance((props) => {
                         <Col style={{textAlign: 'left'}} xs={2}>Безнал</Col>
                         <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
                     </Row>
-                    {_.map(mergedList, (item, index) => {
-                        const marketName = _.get(item, 'marketTypeName')
-                        return (
-                            <Row className='dottedList' key={index}>
-                                <Col xs={6}> {marketName}</Col>
-                                <Col style={{textAlign: 'left'}} xs={2}>
-                                    <Field
-                                        name={'prices[' + index + '][cash_price]'}
-                                        className={classes.inputFieldCustom}
-                                        component={TextField}
-                                        fullWidth={true}
-                                    />
-                                </Col>
-                                <Col style={{textAlign: 'left'}} xs={2}>
-                                    <Field
-                                        name={'prices[' + index + '][transfer_price]'}
-                                        className={classes.inputFieldCustom}
-                                        component={TextField}
-                                        fullWidth={true}
-                                    />
-                                </Col>
-                                <Col xs={2}>
-                                    <Field
-                                        name={'prices[' + index + '][currency]'}
-                                        className={classes.inputFieldCustom}
-                                        component={CurrencySearchField}
-                                        fullWidth={true}/>
-                                </Col>
-                            </Row>
-                        )
-                    })}
+                        {_.map(mergedList, (item, index) => {
+                            const marketName = _.get(item, 'marketTypeName')
+                            return (
+                                <Row className='dottedList' key={index}>
+                                    <Col xs={6}> {marketName}</Col>
+                                    <Col style={{textAlign: 'left'}} xs={2}>
+                                        <Field
+                                            name={'prices[' + index + '][cash_price]'}
+                                            className={classes.inputFieldCustom}
+                                            component={TextField}
+                                            fullWidth={true}
+                                        />
+                                    </Col>
+                                    <Col style={{textAlign: 'left'}} xs={2}>
+                                        <Field
+                                            name={'prices[' + index + '][transfer_price]'}
+                                            className={classes.inputFieldCustom}
+                                            component={TextField}
+                                            fullWidth={true}
+                                        />
+                                    </Col>
+                                    <Col xs={2}>
+                                        <Field
+                                            name={'prices[' + index + '][currency]'}
+                                            className={classes.inputFieldCustom}
+                                            component={CurrencySearchField}
+                                            fullWidth={true}/>
+                                    </Col>
+                                </Row>
+                            )
+                        })}
+                </div>
                 </div>
             </form>
         </div>
