@@ -111,14 +111,14 @@ const OrderTransactionsDialog = enhance((props) => {
                                 <Col xs={3}>Дата оплаты</Col>
                                 <Col xs={3}>Сумма оплаты</Col>
                             </Row>
-                            {_.map(_.get(paymentData, 'data'), (item) => {
+                            {_.map(_.get(paymentData, 'data'), (item, index) => {
                                 const id = _.get(item, ['transaction', 'id'])
                                 const cashbox = _.get(item, ['transaction', 'cashbox', 'name'])
                                 const payDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
                                 const amount = numberFormat(_.get(item, ['transaction', 'amount']))
 
                                 return (
-                                    <Row key={id} className="dottedList">
+                                    <Row key={index} className="dottedList">
                                         <Col xs={3}>{id}</Col>
                                         <Col xs={3}>{cashbox}</Col>
                                         <Col xs={3}>{payDate}</Col>

@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ExpensiveCategorySearchField, CurrencySearchField} from '../ReduxForm'
+import {TextField, ExpensiveCategorySearchField, CurrencySearchField, normalizeNumber} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 
@@ -126,6 +126,7 @@ const ClientTransactionCreateDialog = enhance((props) => {
                                     name="amount"
                                     component={TextField}
                                     label="Сумма"
+                                    normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
                                     style={{width: '50%'}}
                                     fullWidth={false}/>

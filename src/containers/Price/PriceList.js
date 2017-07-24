@@ -132,10 +132,11 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
         },
         handleSubmitPriceSetForm: props => () => {
-            const {dispatch, createForm, detail, params: {priceId}, location: {pathname}} = props
+            const {dispatch, createForm, detail, params: {priceId}, location: {pathname}, filter} = props
             const detailId = _.get(detail, 'id')
             return dispatch(priceCreateAction(_.get(createForm, ['values']), priceId))
                 .then(() => {
+                    dispatch(priceListFetchAction(filter))
                     dispatch(priceItemFetchAction(detailId))
                     dispatch(getPriceItemsAction(detailId))
                     hashHistory.push({pathname})

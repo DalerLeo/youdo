@@ -192,10 +192,10 @@ const ProviderList = enhance((props) => {
                 return {
                     name: _.get(contact, 'name'),
                     email: _.get(contact, 'email'),
-                    phone: _.get(contact, 'phone')
+                    phone: _.get(contact, 'phone'),
+                    id: _.get(contact, 'id')
                 }
             })
-
             return {
                 name: _.get(detail, 'name'),
                 address: _.get(detail, 'address'),

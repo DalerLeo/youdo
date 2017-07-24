@@ -44,9 +44,15 @@ import StockReceiveProductSearchField from './StockReceive/StockReceiveProductSe
 import FrequencySearchField from './FrequencySearchField'
 import StockStatusSearchField from './StockStatusSearchField'
 import PriceMainRadioButton from './PriceMainRadioButton'
+import normalizeDiscount from './normalizers/normalizeDiscount'
+import normalizeNumber from './normalizers/normalizeNumber'
+import ZoneSearchField from './ZoneSearchField'
 
 export {
+    ZoneSearchField,
     PriceMainRadioButton,
+    normalizeDiscount,
+    normalizeNumber,
     ShiftSearchField,
     StockStatusSearchField,
     ProductMeasurementField,

@@ -8,8 +8,9 @@ import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {connect} from 'react-redux'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ExpensiveCategorySearchField} from '../ReduxForm'
+import {TextField, ExpensiveCategorySearchField, CheckBox, ClientSearchField, normalizeNumber} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 
@@ -80,11 +81,17 @@ const enhance = compose(
     reduxForm({
         form: 'TransactionCreateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const showClients = _.get(state, ['form', 'TransactionCreateForm', 'values', 'showClients'])
+        return {
+            showClients
+        }
     })
 )
 
 const TransactionCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData, isExpense} = props
+    const {open, loading, handleSubmit, onClose, classes, cashboxData, isExpense, showClients} = props
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
@@ -114,10 +121,31 @@ const TransactionCreateDialog = enhance((props) => {
                                 <div className={classes.label}>Касса:</div>
                                 <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
                             </div>
-                            {isExpense && <Field
+                            {isExpense && <div>
+                            <Field
+                                name="showClients"
+                                className={classes.checkbox}
+                                component={CheckBox}
+                                label="Снят с заказа"/>
+                            <Field
                                 name="expanseCategory"
                                 component={ExpensiveCategorySearchField}
                                 label="Категория расхода"
+                                className={classes.inputFieldCustom}
+                                fullWidth={true}/>
+                            </div>
+                            }
+
+                            {!isExpense && <Field
+                                name="showClients"
+                                className={classes.checkbox}
+                                component={CheckBox}
+                                label="Оплата с клиента"/>
+                            }
+                            {showClients && <Field
+                                name="client"
+                                component={ClientSearchField}
+                                label="Клиент"
                                 className={classes.inputFieldCustom}
                                 fullWidth={true}/>
                             }
@@ -126,6 +154,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     name="amount"
                                     component={TextField}
                                     label="Сумма"
+                                    normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
                                     style={{width: '50%'}}
                                     fullWidth={false}/>

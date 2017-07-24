@@ -28,6 +28,7 @@ import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import Transfered from 'material-ui/svg-icons/action/motorcycle'
 import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/action/cached'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -205,14 +206,30 @@ const OrderGridList = enhance((props) => {
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const client = _.get(item, ['client', 'name'])
         const market = _.get(item, ['market', 'name'])
+        const paymentDate = moment(_.get(item, 'paymentDate'))
+        const now = moment()
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
-        const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
+        const dateDelivery = dateFormat((_.get(item, 'dateDelivery')), '')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
         const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
         const balanceTooltip = numberFormat(totalBalance, currentCurrency)
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
         const REQUESTED = 0
+        const PAY_PENDING = (
+            <div>
+                {'Оплата ожидается: ' + paymentDate.locale('ru').format('DD MMM YYYY')}
+                <br/>
+                {'Ожидаемый платеж: ' + balanceTooltip}
+            </div>
+        )
+        const PAY_DELAY = (
+            <div>
+                {'Оплата ожидалась: ' + paymentDate.locale('ru').format('DD MMM YYYY')}
+                <br/>
+                {'Долг: ' + balanceTooltip}
+            </div>
+        )
         const READY = 1
         const GIVEN = 2
         const DELIVERED = 3
@@ -293,13 +310,22 @@ const OrderGridList = enhance((props) => {
                             </Tooltip>
                 }
                 {!(status === CANCELED) &&
-                    <Tooltip position="bottom" text={totalBalance > ZERO ? ('Есть долг ' + balanceTooltip) : 'Оплачено'}>
+                    <Tooltip position="bottom" text={(totalBalance > ZERO) && ((paymentDate.diff(now, 'days') <= ZERO))
+                                                        ? PAY_DELAY
+                                                            : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
+                                                                ? PAY_PENDING
+                                                                    : 'Оплачено'}>
                         <IconButton
                             disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}>
-                            <Payment color={totalBalance > ZERO ? '#e57373' : '#81c784'}/>
+                            <Payment color={(totalBalance > ZERO) && ((paymentDate.diff(now, 'days') <= ZERO))
+                                ? '#e57373'
+                                    : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
+                                        ? '#B7BBB7'
+                                            : '#81c784'
+                            }/>
                         </IconButton>
                     </Tooltip>
                 }
