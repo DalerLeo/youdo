@@ -13,10 +13,9 @@ import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
-import List from 'material-ui/svg-icons/action/list'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
-import StatFinanceDialog from './StatFinanceDialog'
+import getConfig from '../../helpers/getConfig'
 
 export const STAT_FINANCE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -177,13 +176,28 @@ const enhance = compose(
         diagram: {
             marginTop: '30px'
         },
-        salesSummary: {
-            '& > div:first-child': {
-                color: '#666'
-            },
+        summaryTitle: {
+            color: '#666'
+        },
+        summaryValue: {
+            fontSize: '24px',
+            fontWeight: '600'
+        },
+        mainSummary: {
             '& > div:last-child': {
-                fontSize: '24px',
-                fontWeight: '600'
+                borderBottom: '1px #efefef solid',
+                paddingBottom: '10px'
+            }
+        },
+        secondarySummary: {
+            margin: '10px 0',
+            '& > div:nth-child(even)': {
+                fontSize: '16px'
+            }
+        },
+        chart: {
+            '& .highcharts-label': {
+                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px !important'
             }
         }
     }),
@@ -197,9 +211,10 @@ const StatFinanceGridList = enhance((props) => {
     const {
         classes,
         filter,
-        handleSubmitFilterDialog,
-        statFinanceDialog
+        handleSubmitFilterDialog
     } = props
+
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
 
     const sample = 100
     const deletion = 3
@@ -255,27 +270,42 @@ const StatFinanceGridList = enhance((props) => {
         },
         tooltip: {
             shared: true,
-            valueSuffix: ' %',
-            backgroundColor: '#363636',
+            valueSuffix: ' ' + currentCurrency,
+            backgroundColor: '#fff',
             style: {
-                color: '#fff'
+                color: '#666',
+                fontFamily: 'Open Sans',
+                fontWeight: '600'
             },
-            borderRadius: 2,
+            borderRadius: 0,
             borderWidth: 0,
             enabled: true,
-            shadow: false,
+            shadow: true,
             useHTML: true,
             crosshairs: true,
-            pointFormat: '{series.name}: <b>{point.y}</b><br/>в отношении к BoM<br/>'
+            pointFormat:
+                '<div class="diagramTooltip">' +
+                    '{series.name}: {point.y}' +
+                '</div>'
         },
         series: [{
             marker: {
                 enabled: false,
                 symbol: 'circle'
             },
-            name: 'Эффективность',
+            name: 'Доход',
             data: [sample, sample + (sample / deletion), sample, deletion * sample / deletion, sample * deletion],
             color: '#6cc6de'
+
+        },
+        {
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
+            name: 'Расход',
+            data: [sample, sample - (sample / deletion), sample + deletion, deletion - (sample / deletion), sample],
+            color: '#EB9696'
 
         }]
     }
@@ -303,7 +333,7 @@ const StatFinanceGridList = enhance((props) => {
         <Row style={headerStyle} className="dottedList">
             <Col xs={2}>№ заказа</Col>
             <Col xs={2}>Дата</Col>
-            <Col xs={4}>Клиент</Col>
+            <Col xs={5}>Клиент</Col>
             <Col xs={3}>Сумма</Col>
         </Row>
     )
@@ -312,14 +342,8 @@ const StatFinanceGridList = enhance((props) => {
         <Row className="dottedList">
             <Col xs={2}>158</Col>
             <Col xs={2}>22.08.2017</Col>
-            <Col xs={4}>Имя Фамилия Клиента</Col>
-            <Col xs={3} style={{justifyContent: 'flex-end'}}>3 000 000 UZS</Col>
-            <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
-                <IconButton
-                    onTouchTap={statFinanceDialog.handleOpenStatFinanceDialog}>
-                    <List color="#12aaeb"/>
-                </IconButton>
-            </Col>
+            <Col xs={5}>Имя Фамилия Клиента</Col>
+            <Col xs={3} style={{justifyContent: 'flex-end'}}>3 000 000 {currentCurrency}</Col>
         </Row>
     )
 
@@ -360,10 +384,19 @@ const StatFinanceGridList = enhance((props) => {
                             </form>
                             <Row className={classes.diagram}>
                                 <Col xs={3} className={classes.salesSummary}>
-                                    <div>Сумма продаж за период</div>
-                                    <div>35 000 000 UZS</div>
+                                    <div className={classes.mainSummary}>
+                                        <div className={classes.summaryTitle}>Прибыль за период</div>
+                                        <div className={classes.summaryValue}>5 000 000 {currentCurrency}</div>
+                                    </div>
+                                    <div className={classes.secondarySummary}>
+                                        <div className={classes.summaryTitle}>Доход</div>
+                                        <div className={classes.summaryValue}>20 000 000 {currentCurrency}</div>
+
+                                        <div className={classes.summaryTitle}>Расход</div>
+                                        <div className={classes.summaryValue}>-15 000 000 {currentCurrency}</div>
+                                    </div>
                                 </Col>
-                                <Col xs={9}>
+                                <Col xs={9} className={classes.chart}>
                                     <ReactHighcharts config={config}/>
                                 </Col>
                             </Row>
@@ -385,10 +418,6 @@ const StatFinanceGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
-            <StatFinanceDialog
-                open={statFinanceDialog.openStatFinanceDialog}
-                onClose={statFinanceDialog.handleCloseStatFinanceDialog}
-            />
         </Container>
     )
 })
@@ -396,12 +425,7 @@ const StatFinanceGridList = enhance((props) => {
 StatFinanceGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
-    detailData: PropTypes.object,
-    statFinanceDialog: PropTypes.shape({
-        openStatFinanceDialog: PropTypes.bool.isRequired,
-        handleCloseStatFinanceDialog: PropTypes.func.isRequired,
-        handleOpenStatFinanceDialog: PropTypes.func.isRequired
-    }).isRequired
+    detailData: PropTypes.object
 }
 
 export default StatFinanceGridList

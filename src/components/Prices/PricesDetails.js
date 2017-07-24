@@ -297,7 +297,7 @@ const PricesDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>№ {id} {name}</div>
+                <div className={classes.titleLabel}>№{id} {name}</div>
                 <div className={classes.closeDetail}
                      onClick={() => { handleCloseDetail() }}>
                 </div>

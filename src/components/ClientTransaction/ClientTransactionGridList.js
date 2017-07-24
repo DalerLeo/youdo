@@ -54,18 +54,23 @@ const enhance = compose(
             display: 'flex',
             margin: '0 -28px',
             padding: '0 28px 0 0',
-            minHeight: 'calc(100% - 41px)'
+            minHeight: 'calc(100% - 66px)'
         },
         listWrapper: {
             border: '1px solid #d9dde1',
             borderBottom: 'none',
             height: '100%'
         },
+        searchForm: {
+            padding: '10px 30px 0'
+        },
         leftSide: {
-            flexBasis: '25%'
+            flexBasis: '25%',
+            maxWidth: '25%'
         },
         rightSide: {
             flexBasis: '75%',
+            maxWidth: '75%',
             marginLeft: '28px'
         },
         list: {
@@ -197,7 +202,7 @@ const ClientTransactionGridList = enhance((props) => {
         const isActive = _.get(detailData, 'id') === id
         return (
             <div key={id} className={classes.list}
-                 onTouchTap={() => { clientData.handleClickClient(id) }}
+                 onClick={() => { clientData.handleClickClient(id) }}
                  style={isActive ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                 <div>
                     <div className={classes.title}>{name}</div>
@@ -228,7 +233,7 @@ const ClientTransactionGridList = enhance((props) => {
                     </div>
                     <Paper zDepth={2} style={{height: '100%'}}>
                         <div className={classes.listWrapper}>
-                            <div>
+                            <div className={classes.searchForm}>
                                 <GridListNavSearch filter={filterClient} filterIsEmpty={false}/>
                             </div>
                             <div className={classes.list}
