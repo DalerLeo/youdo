@@ -360,6 +360,7 @@ const OrderGridList = enhance((props) => {
                 list={list}
                 detail={orderDetail}
                 withoutRow={true}
+                withInvoice={true}
                 filterDialog={orderFilterDialog}
             />
 

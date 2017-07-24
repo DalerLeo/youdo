@@ -5,8 +5,11 @@ import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import GridListNavPagination from '../GridListNavPagination'
 import GridListNavSearch from '../GridListNavSearch'
+import IconButton from 'material-ui/IconButton'
+import Print from 'material-ui/svg-icons/action/print'
+import Tooltip from '../../ToolTip'
 
-const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData}) => {
+const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData, withInvoice}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
     const listData = _.get(customData, ['listData', 'data'])
@@ -39,8 +42,14 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
                     <Col xs={4}>
                         {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>}
                     </Col>
-                    <Col xs={4}>
+                    <Col xs={4} className={classes.flex}>
                         <GridListNavPagination filter={filter}/>
+                        {withInvoice &&
+                        <Tooltip position="left" text="Распечатать накладые">
+                            <IconButton>
+                                <Print color="#666"/>
+                            </IconButton>
+                        </Tooltip>}
                     </Col>
                 </Row>}
 
@@ -61,6 +70,7 @@ GridListNav.propTypes = {
     filter: PropTypes.object.isRequired,
     actions: PropTypes.node,
     withoutSearch: PropTypes.bool.isRequired,
+    withInvoice: PropTypes.bool,
     customData: PropTypes.shape({
         dialog: PropTypes.node.isRequired,
         listData: PropTypes.array.isRequired
@@ -106,5 +116,13 @@ export default injectSheet({
     actionButtons: {
         display: 'flex',
         justifyContent: 'flex-end'
+    },
+    flex: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        '& > div:last-child': {
+            marginLeft: '20px'
+        }
     }
 })(GridListNav)

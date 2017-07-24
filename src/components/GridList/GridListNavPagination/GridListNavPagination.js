@@ -27,10 +27,11 @@ const enhance = compose(
 
         count: {
             marginRight: '15px',
-            height: '54px !important',
+            height: '50px !important',
             '& > div': {
                 fontSize: '13px !important',
-                marginTop: '3px !important'
+                marginTop: '0 !important',
+                height: '100% !important'
             }
         },
 

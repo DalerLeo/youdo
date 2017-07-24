@@ -90,7 +90,7 @@ const TransactionSendDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '325px'}}>
+                    <div className={classes.inContent} style={{minHeight: '235px'}}>
                         <div className={classes.loader}>
                             <CircularProgress size={40} thickness={4}/>
                         </div>
@@ -101,12 +101,14 @@ const TransactionSendDialog = enhance((props) => {
                             </div>
                             <Field
                                 name="categoryId"
+                                className={classes.inputFieldCustom}
                                 component={CashboxSearchField}
                                 label="Касса получатель"
                                 fullWidth={true}/>
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
                                 <Field
                                     name="amount"
+                                    className={classes.inputFieldCustom}
                                     component={TextField}
                                     label="Сумма"
                                     normalize={normalizeNumber}
@@ -118,12 +120,10 @@ const TransactionSendDialog = enhance((props) => {
                             </div>
                             <Field
                                 name="comment"
+                                className={classes.inputFieldCustom}
                                 style={{lineHeight: '20px', fontSize: '13px'}}
                                 component={TextField}
                                 label="Комментарий..."
-                                multiLine={true}
-                                rows={1}
-                                rowsMax={3}
                                 fullWidth={true}/>
                         </div>
                     </div>

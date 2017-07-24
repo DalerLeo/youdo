@@ -40,8 +40,10 @@ const GridList = enhance((props) => {
         actionsDialog,
         withoutCheckboxes,
         withoutRow,
+        withInvoice,
         withoutSearch
     } = props
+
     const header = _.get(list, 'header')
     const listItems = _.get(list, 'list')
     const loading = _.get(list, 'loading')
@@ -74,6 +76,7 @@ const GridList = enhance((props) => {
                     filterDialog={filterDialog}
                     actions={actionsDialog}
                     withoutSearch={withoutSearch}
+                    withInvoice={withInvoice}
                 />
                 <GridListHeader
                     filter={filter}
@@ -93,6 +96,7 @@ GridList.propTypes = {
     withoutCheckboxes: PropTypes.bool,
     withoutSearch: PropTypes.bool,
     withoutRow: PropTypes.bool,
+    withInvoice: PropTypes.bool,
     list: PropTypes.shape({
         header: PropTypes.array.isRequired,
         list: PropTypes.array.isRequired,
@@ -110,6 +114,7 @@ GridList.propTypes = {
 GridList.defaultProps = {
     withoutCheckboxes: false,
     withoutSearch: false,
+    withInvoice: false,
     actionsDialog: (<div>no</div>)
 }
 

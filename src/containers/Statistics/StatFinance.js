@@ -1,13 +1,11 @@
 import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
-import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
-import toBoolean from '../../helpers/toBoolean'
 
-import {StatFinanceGridList, STAT_FINANCE_DIALOG_OPEN} from '../../components/Statistics'
+import {StatFinanceGridList} from '../../components/Statistics'
 import {STAT_FINANCE_FILTER_KEY} from '../../components/Statistics/StatFinanceGridList'
 
 const enhance = compose(
@@ -45,23 +43,12 @@ const enhance = compose(
                 [STAT_FINANCE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
-        },
-
-        handleOpenStatFinanceDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STAT_FINANCE_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseStatFinanceDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STAT_FINANCE_DIALOG_OPEN]: false})})
         }
     })
 )
 
 const StatFinanceList = enhance((props) => {
     const {
-        location,
         list,
         listLoading,
         detail,
@@ -72,13 +59,6 @@ const StatFinanceList = enhance((props) => {
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statProductId'))
-    const openStatFinanceDialog = toBoolean(_.get(location, ['query', STAT_FINANCE_DIALOG_OPEN]))
-
-    const statFinanceDialog = {
-        openStatFinanceDialog,
-        handleCloseStatFinanceDialog: props.handleCloseStatFinanceDialog,
-        handleOpenStatFinanceDialog: props.handleOpenStatFinanceDialog
-    }
 
     const listData = {
         data: _.get(list, 'results'),
@@ -97,7 +77,6 @@ const StatFinanceList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                statFinanceDialog={statFinanceDialog}
             />
         </Layout>
     )
