@@ -30,7 +30,7 @@ const enhance = compose(
             display: 'flex',
             flexWrap: 'wrap',
             transition: 'all 250ms ease-out',
-            maxHeight: '590px',
+            maxHeight: '615px',
             overflow: 'hidden'
         },
         link: {
@@ -177,7 +177,6 @@ const OrderDetails = enhance((props) => {
         returnData,
         handleCloseDetail
     } = props
-
     const id = _.get(data, 'id')
     const contactName = _.get(data, ['contact', 'name'])
     const contactEmail = _.get(data, ['contact', 'email']) || 'N/A'
@@ -189,6 +188,7 @@ const OrderDetails = enhance((props) => {
     const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
     const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
+    const createdDate = moment(_.get(data, 'createdDate')).format('DD.MM.YYYY HH:MM')
     const paymentDate = moment(_.get(data, 'paymentDate')).format('DD.MM.YYYY')
 
     const REQUESTED = 0
@@ -207,6 +207,10 @@ const OrderDetails = enhance((props) => {
     const totalBalance = _.get(data, 'totalBalance')
     const discount = (discountPrice / (discountPrice + totalPrice)) * percent
 
+    let productTotal = _.toNumber(zero)
+    _.map(_.get(data, 'products'), (item) => {
+        productTotal += _.toNumber(_.get(item, 'totalPrice'))
+    })
     if (loading) {
         return (
             <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
@@ -304,6 +308,11 @@ const OrderDetails = enhance((props) => {
                                     <span>{agent}</span>
                                 </li>
                                 <li>
+                                    <span>Дата создания</span>
+                                    <span>{createdDate}</span>
+                                </li>
+
+                                <li>
                                     <span>Тип сделки:</span>
                                     <span>{(dealType === '0') ? 'Стандартная' : 'Консигнация'}</span>
                                 </li>
@@ -324,12 +333,20 @@ const OrderDetails = enhance((props) => {
                                     <span>{(paymentType === '0') ? 'Наличными' : 'Перечислением'}</span>
                                 </li>
                                 <li>
+                                    <span>Стоимость товаров:</span>
+                                    <span>{numberFormat(productTotal, primaryCurrency)}</span>
+                                </li>
+                                <li>
                                     <span>Стоимость доставки:</span>
                                     <span>{numberFormat(deliveryPrice)} {primaryCurrency}</span>
                                 </li>
                                 <li>
                                     <span>Скидка({discount}%):</span>
                                     <span>{numberFormat(discountPrice)} {primaryCurrency}</span>
+                                </li>
+                                <li>
+                                    <span>ИТОГО</span>
+                                    <span>{numberFormat(totalPrice, primaryCurrency)}</span>
                                 </li>
                                 <li>
                                     <span>Оплачено:</span>

@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 export const createSerializer = (data, order) => {
     const amount = _.get(data, 'amount')
@@ -7,7 +8,7 @@ export const createSerializer = (data, order) => {
     const now = _.get(data, 'now') || true
     return {
         order,
-        amount,
+        'amount': numberWithoutSpaces(amount),
         cashbox,
         now
     }

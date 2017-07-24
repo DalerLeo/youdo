@@ -197,7 +197,9 @@ const ClientList = enhance((props) => {
                 return {
                     name: _.get(contact, 'name'),
                     email: _.get(contact, 'email'),
-                    telephone: _.get(contact, 'telephone')
+                    telephone: _.get(contact, 'telephone'),
+                    id: _.get(contact, 'id')
+
                 }
             })
 

@@ -18,7 +18,8 @@ import {
     TextField,
     DateField,
     MarketSearchField,
-    DealTypeSearchField
+    DealTypeSearchField,
+    normalizeDiscount
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import MainStyles from '../Styles/MainStyles'
@@ -306,6 +307,7 @@ const OrderCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         label={'Стоимость доставки (' + primaryCurrency + ')'}
                                         fullWidth={true}
+                                        normalize={normalizeNumber}
                                         />
                                     <Field
                                             name="deliveryDate"
@@ -325,7 +327,7 @@ const OrderCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         label="Скидка (%)"
                                         style={{width: '50%'}}
-                                        normalize={normalizeNumber}/>
+                                        normalize={normalizeDiscount}/>
                                     <Field
                                         name="paymentDate"
                                         component={DateField}

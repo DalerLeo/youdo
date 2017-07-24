@@ -106,9 +106,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
     const tab = _.get(tabData, 'tab')
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
-    const totalPrice = _.toNumber(_.get(data, 'totalPrice'))
-
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    let totalProductPrice = _.toNumber('0')
     return (
         <div className={classes.rightSide}>
             <Tabs
@@ -132,6 +131,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const productTotal = _.get(item, 'totalPrice')
                                 const amount = _.get(item, 'amount')
                                 const measurement = _.get(product, ['measurement', 'name'])
+                                totalProductPrice += _.toNumber(productTotal)
+
                                 return (
                                     <Row className="dottedList" key={index}>
                                         <Col xs={6}>{productName}</Col>
@@ -142,7 +143,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 )
                             })}
                         </div>
-                        <div className={classes.summary}>Итого: {numberFormat(totalPrice)} {primaryCurrency}</div>
+                        <div className={classes.summary}>Общая сумма товаров: {numberFormat(totalProductPrice)} {primaryCurrency}</div>
                     </div>
                 </Tab>
 

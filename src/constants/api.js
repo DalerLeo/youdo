@@ -71,7 +71,7 @@ export const USERS_LIST = `/${USERS}/`
 export const USERS_ITEM = `/${USERS}/%d/`
 export const USERS_DELETE = `/${USERS}/%d/`
 export const USERS_GROUP = 'main/group/gcrud/'
-export const USERS_GROUP_ITEM = 'group/gcrud/%d/'
+export const USERS_GROUP_ITEM = `/${USERS_GROUP}/%d/`
 
 export const CASHBOX = 'finance/cashbox'
 export const CASHBOX_CREATE = `/${CASHBOX}/`

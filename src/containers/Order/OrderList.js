@@ -198,6 +198,7 @@ const enhance = compose(
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const orderStatus = _.get(filterForm, ['values', 'orderStatus', 'value']) || null
             const shop = _.get(filterForm, ['values', 'shop', 'value']) || null
+            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
 
@@ -206,6 +207,7 @@ const enhance = compose(
                 [ORDER_FILTER_KEY.CLIENT]: client,
                 [ORDER_FILTER_KEY.ORDERSTATUS]: orderStatus,
                 [ORDER_FILTER_KEY.INITIATOR]: initiator,
+                [ORDER_FILTER_KEY.ZONE]: zone,
                 [ORDER_FILTER_KEY.SHOP]: shop,
                 [ORDER_FILTER_KEY.DEPT]: dept,
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
@@ -419,6 +421,7 @@ const OrderList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
 
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
+    const zone = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ZONE))
     const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ORDERSTATUS))
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_FROM_DATE)
@@ -552,6 +555,9 @@ const OrderList = enhance((props) => {
             },
             orderStatus: {
                 value: orderStatus
+            },
+            zone: {
+                value: zone
             },
             deliveryDate: {
                 deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
