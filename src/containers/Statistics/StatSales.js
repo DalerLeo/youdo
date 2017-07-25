@@ -16,7 +16,6 @@ import {
     orderItemFetchAction
 } from '../../actions/order'
 
-const TAB = 'tab'
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -25,8 +24,7 @@ const enhance = compose(
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
-        const returnData = _.get(state, ['order', 'return', 'data', 'results'])
-        const filterForm = _.get(state, ['form', 'StatAgentFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatSalesFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -34,9 +32,7 @@ const enhance = compose(
             detail,
             detailLoading,
             filter,
-            filterForm,
-            returnData
-        }
+            filterForm}
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
@@ -63,24 +59,13 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const productType = _.get(filterForm, ['values', 'productType', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
-                [STAT_SALES_FILTER_KEY.PRODUCT]: product,
-                [STAT_SALES_FILTER_KEY.PRODUCT_TYPE]: productType,
                 [STAT_SALES_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_SALES_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
-            })
-        },
-        handleTabChange: props => (tab) => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname: pathname,
-                query: filter.getParams({[TAB]: tab})
             })
         }
     })
@@ -131,6 +116,7 @@ const StatSalesList = enhance((props) => {
                 detailData={detailData}
                 statSaleDialog={statSaleDialog}
                 type={order}
+                onSubmit={props.handleSubmitFilterDialog}
             />
         </Layout>
     )

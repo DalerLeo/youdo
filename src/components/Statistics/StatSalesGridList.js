@@ -21,8 +21,7 @@ import StatSaleDialog from './StatSaleDialog'
 import moment from 'moment'
 export const STAT_SALES_FILTER_KEY = {
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate',
-    USER: 'user'
+    TO_DATE: 'toDate'
 }
 
 const enhance = compose(
@@ -198,9 +197,10 @@ const StatSalesGridList = enhance((props) => {
         classes,
         type,
         filter,
-        handleSubmitFilterDialog,
+        onSubmit,
         listData,
         statSaleDialog,
+        handleSubmit,
         detailData
     } = props
     const sample = 100
@@ -349,7 +349,7 @@ const StatSalesGridList = enhance((props) => {
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+                            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                                 <div className={classes.filter}>
                                     <Field
                                         className={classes.inputFieldCustom}

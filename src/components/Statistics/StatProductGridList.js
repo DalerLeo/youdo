@@ -38,6 +38,8 @@ const enhance = compose(
         },
         wrapper: {
             height: 'calc(100% - 40px)',
+            overflowY: 'auto',
+            overflowX: 'hidden',
             padding: '20px 30px',
             '& > div:nth-child(2)': {
                 marginTop: '10px',
@@ -50,8 +52,6 @@ const enhance = compose(
         },
         tableWrapper: {
             height: 'calc(100% - 118px)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
@@ -109,7 +109,7 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             '& > div': {
-                width: '170px!important',
+                width: '140px !important',
                 position: 'relative',
                 marginRight: '40px',
                 '&:after': {
