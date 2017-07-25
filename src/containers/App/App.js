@@ -40,6 +40,15 @@ class App extends React.Component {
                 dispatch(trackingListFetchAction())
             }, refreshAgentsList)
         }
+
+        const mediaQueryList = window.matchMedia('print')
+        mediaQueryList.addListener((mql) => {
+            if (mql.matches) {
+                // Console.log('on before print equivalent')
+            } else {
+                // Console.log('on after print equivalent')
+            }
+        })
     }
 
     render () {

@@ -28,7 +28,7 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             justifyContent: 'center',
-            display: ({loading}) => !loading ? 'flex' : 'none'
+            display: 'flex'
         },
         returnInfo: {
             padding: '25px 0',
@@ -38,6 +38,12 @@ const enhance = compose(
                 '&:first-child': {
                     fontWeight: '600'
                 }
+            }
+        },
+        flex: {
+            alignItems: 'initial',
+            '& > div:first-child': {
+                maxWidth: '60%'
             }
         },
         returnedItems: {
@@ -108,9 +114,9 @@ const OrderItemReturnDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <div className={classes.loader}>
+                {loading && <div className={classes.loader}>
                     <CircularProgress size={40} thickness={4}/>
-                </div>
+                </div>}
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.field}>
                         <div className={classes.returnInfo}>

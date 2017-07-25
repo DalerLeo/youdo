@@ -7,6 +7,7 @@ const TRANSACTION_UPDATE_EXPENSE_DIALOG_OPEN = 'openUpdateExpenseDialog'
 const TRANSACTION_UPDATE_INCOME_DIALOG_OPEN = 'openUpdateIncomeDialog'
 const TRANSACTION_CREATE_SEND_DIALOG_OPEN = 'openSendDialog'
 const TRANSACTION_DELETE_DIALOG_OPEN = 'openDeleteDialog'
+const TRANSACTION_CASH_DIALOG_OPEN = 'openAcceptCashDialog'
 
 export {
 
@@ -18,5 +19,6 @@ export {
     TRANSACTION_DELETE_DIALOG_OPEN,
     TRANSACTION_FILTER_KEY,
     TRANSACTION_FILTER_OPEN,
+    TRANSACTION_CASH_DIALOG_OPEN,
     TransactionGridList
 }

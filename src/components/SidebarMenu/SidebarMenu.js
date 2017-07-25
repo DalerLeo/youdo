@@ -49,10 +49,10 @@ const SideBarMenu = enhance((props) => {
                 <div className={classes.logo}>
                     <img src={Logo}/>
                 </div>
-                <Badge
+                {count ? <Badge
                     className={classes.badge}
                     badgeContent={count}
-                    badgeStyle={count ? {top: 8, right: 10} : {display: 'none'}}>
+                    badgeStyle={{top: 8, right: 10}}>
                     <ToolTip position="right" text="Уведомления">
                         <FlatButton
                             rippleColor="#fff"
@@ -64,7 +64,17 @@ const SideBarMenu = enhance((props) => {
                         </FlatButton>
                     </ToolTip>
                 </Badge>
-
+                    : <ToolTip position="right" text="Уведомления">
+                        <FlatButton
+                            rippleColor="#fff"
+                            style={style.style}
+                            onTouchTap={() => {
+                                handleOpenNotificationBar(true)
+                            }}>
+                            <Notification />
+                        </FlatButton>
+                    </ToolTip>
+                }
                 {items}
 
                 <div className={classes.logout}>

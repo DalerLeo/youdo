@@ -20,6 +20,8 @@ import Person from '../Images/person.png'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
 import getConfig from '../../helpers/getConfig'
+import numberFormat from '../../helpers/numberFormat'
+import NotFound from '../Images/not-found.png'
 
 export const STAT_OUTCOME_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -29,6 +31,15 @@ export const STAT_OUTCOME_FILTER_KEY = {
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            width: '100%',
+            height: 'calc(100% - 200px)',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
         mainWrapper: {
             background: '#fff',
             margin: '0 -28px',
@@ -188,6 +199,19 @@ const enhance = compose(
                 fontSize: '24px',
                 fontWeight: '600'
             }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
     reduxForm({
@@ -204,6 +228,8 @@ const StatOutcomeGridList = enhance((props) => {
         handleSubmitFilterDialog,
         getDocument
     } = props
+
+    const listLoading = _.get(listData, 'listLoading')
 
     let sum = 0
     const value = _.map(_.get(listData, 'grafData'), (item) => {
@@ -323,6 +349,7 @@ const StatOutcomeGridList = enhance((props) => {
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
+        const amount = _.get(item, 'amount')
 
         return (
             <Row key={id} className="dottedList">
@@ -333,7 +360,7 @@ const StatOutcomeGridList = enhance((props) => {
                     <div className="personImage"><img src={Person}/></div>
                     <div>Бамбамбиев Куркуда</div>
                 </Col>
-                <Col xs={2}>3 000 000 UZS</Col>
+                <Col xs={2}>{numberFormat(amount, primaryCurrency)}</Col>
             </Row>
         )
     })
@@ -370,13 +397,14 @@ const StatOutcomeGridList = enhance((props) => {
                                 </IconButton>
                             </div>
                             <a className={classes.excel}>
-                                <Excel color="#fff" onTouchTap = {() => { getDocument.handleGetDocument() }} /> <span>Excel</span>
+                                <Excel color="#fff" onTouchTap={() => { getDocument.handleGetDocument() }}/>
+                                <span>Excel</span>
                             </a>
                         </form>
                         <Row className={classes.diagram}>
                             <Col xs={3} className={classes.salesSummary}>
                                 <div>Сумма продаж за период</div>
-                                <div>{sum} {primaryCurrency}</div>
+                                <div>{numberFormat(sum)} {primaryCurrency}</div>
                             </Col>
                             <Col xs={9}>
                                 <ReactHighcharts config={config}/>
@@ -386,14 +414,17 @@ const StatOutcomeGridList = enhance((props) => {
                             <div><b>История заказов</b></div>
                             <Pagination filter={filter}/>
                         </div>
-                        <div className={classes.tableWrapper}>
+                        {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                            <div>По вашему запросу ничего не найдено</div>
+                        </div>
+                        : <div className={classes.tableWrapper}>
                             {headers}
-                            {_.get(listData, 'listLoading')
-                                ? <div style={{textAlign: 'center'}}>
+                            {listLoading
+                                ? <div className={classes.loader}>
                                     <CircularProgress size={40} thickness={4}/>
                                 </div>
                                 : list}
-                        </div>
+                        </div>}
                     </div>
                 </div>
             </Row>

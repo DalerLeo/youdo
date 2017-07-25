@@ -6,7 +6,7 @@ import {reset} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -19,6 +19,7 @@ import {
     TRANSACTION_DELETE_DIALOG_OPEN,
     TRANSACTION_FILTER_KEY,
     TRANSACTION_FILTER_OPEN,
+    TRANSACTION_CASH_DIALOG_OPEN,
     TransactionGridList
 } from '../../components/Transaction'
 import {
@@ -69,6 +70,7 @@ const enhance = compose(
             createForm
         }
     }),
+
     withPropsOnChange((props, nextProps) => {
         return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
     }, ({dispatch, filterCashbox}) => {
@@ -82,8 +84,6 @@ const enhance = compose(
         const cashboxId = _.get(location, ['query', 'cashboxId'])
         dispatch(transactionListFetchAction(filter, cashboxId))
     }),
-
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
 
     withHandlers({
         handleOpenConfirmDialog: props => (id) => {
@@ -275,6 +275,28 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]: false}))
                     dispatch(transactionListFetchAction(filter, cashboxId))
                 })
+        },
+
+        handleOpenCashDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseCashDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitCashDialog: props => () => {
+            const {dispatch, createForm, filter, location: {pathname}} = props
+            const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
+            return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: false})})
+                })
         }
     })
 )
@@ -303,6 +325,7 @@ const TransactionList = enhance((props) => {
     const openUpdateIncomeDialog = toBoolean(_.get(location, ['query', TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]))
     const openCreateSendDialog = toBoolean(_.get(location, ['query', TRANSACTION_CREATE_SEND_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', TRANSACTION_DELETE_DIALOG_OPEN]))
+    const openCashDialog = toBoolean(_.get(location, ['query', TRANSACTION_CASH_DIALOG_OPEN]))
 
     const categoryExpense = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
     const type = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
@@ -379,6 +402,13 @@ const TransactionList = enhance((props) => {
         handleExpenseConfirmDialog: props.handleExpenseConfirmDialog
     }
 
+    const cashDialog = {
+        open: openCashDialog,
+        handleOpenCashDialog: props.handleOpenCashDialog,
+        handleCloseCashDialog: props.handleCloseCashDialog,
+        handleSubmitCashDialog: props.handleSubmitCashDialog
+    }
+
     const filterDialog = {
         initialValues: {
             category: {
@@ -433,6 +463,7 @@ const TransactionList = enhance((props) => {
                 updateExpenseDialog={updateExpenseDialog}
                 createSendDialog={createSendDialog}
                 confirmDialog={confirmDialog}
+                cashDialog={cashDialog}
                 filterDialog={filterDialog}
             />
         </Layout>

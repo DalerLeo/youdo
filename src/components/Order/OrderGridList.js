@@ -58,6 +58,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'totalCost',
+        alignRight: true,
         title: 'Сумма заказа',
         xs: '15%'
     },
@@ -96,6 +97,7 @@ const enhance = compose(
         },
         listWrapper: {
             width: '100%',
+            height: '100%',
             display: 'flex',
             alignItems: 'center',
             margin: '0 -0.5rem',
@@ -159,7 +161,8 @@ const OrderGridList = enhance((props) => {
         tabData,
         classes,
         createClientDialog,
-        returnDataLoading
+        returnDataLoading,
+        printDialog
     } = props
 
     const orderFilterDialog = (
@@ -176,8 +179,8 @@ const OrderGridList = enhance((props) => {
             height: 20
         },
         button: {
-            width: 48,
-            height: 48,
+            width: 30,
+            height: 30,
             padding: 0,
             zIndex: 0
         }
@@ -236,33 +239,21 @@ const OrderGridList = enhance((props) => {
         const CANCELED = 4
         const ZERO = 0
         return (
-        <div className={classes.listWrapper} key={id}>
-            <Link className={classes.openDetails} to={{
-                pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
-                query: filter.getParams()}}>
-            </Link>
-            <div style={{width: '10%'}}>
-                {id}
-            </div>
-            <div style={{width: '15%', fontWeight: '600'}}>
-            {client}
-            </div>
-            <div style={{width: '15%'}}>
-                {market}
-            </div><div style={{width: '15%'}}>
-                {user}
-            </div>
-            <div style={{width: '15%'}}>
-                {totalPrice}
-            </div>
-            <div style={{width: '15%'}}>
-                {dateDelivery}
-            </div>
-            <div style={{width: '15%'}}>
-                {createdDate}
-            </div>
-            <div style={{width: '5%'}} className={classes.buttons}>
-                {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
+            <div className={classes.listWrapper} key={id}>
+                <Link className={classes.openDetails} to={{
+                    pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                    query: filter.getParams()
+                }}>
+                </Link>
+                <div style={{width: '10%'}}>{id}</div>
+                <div style={{width: '15%', fontWeight: '600'}}>{client}</div>
+                <div style={{width: '15%'}}>{market}</div>
+                <div style={{width: '15%'}}>{user}</div>
+                <div style={{width: '15%', textAlign: 'right'}}>{totalPrice}</div>
+                <div style={{width: '15%'}}>{dateDelivery}</div>
+                <div style={{width: '15%'}}>{createdDate}</div>
+                <div style={{width: '5%'}} className={classes.buttons}>
+                    {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
                         <IconButton
                             disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
@@ -271,7 +262,7 @@ const OrderGridList = enhance((props) => {
                             <InProcess color="#f0ad4e"/>
                         </IconButton>
                     </Tooltip>
-                    : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
+                        : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -281,40 +272,40 @@ const OrderGridList = enhance((props) => {
                             </IconButton>
                         </Tooltip>
 
-                        : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
-                            <IconButton
-                                disableTouchRipple={true}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}>
-                                <Delivered color="#81c784" />
-                            </IconButton>
-                        </Tooltip>
-                        : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
-                            <IconButton
-                                disableTouchRipple={true}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}>
-                                <Transfered color="#f0ad4e" />
-                            </IconButton>
-                        </Tooltip>
-                            : <Tooltip position="bottom" text="Заказ отменен">
+                            : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
                                     touch={true}>
-                                    <Canceled color='#e57373'/>
+                                    <Delivered color="#81c784"/>
                                 </IconButton>
                             </Tooltip>
-                }
-                {!(status === CANCELED) &&
+                                : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
+                                    <IconButton
+                                        disableTouchRipple={true}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        touch={true}>
+                                        <Transfered color="#f0ad4e"/>
+                                    </IconButton>
+                                </Tooltip>
+                                    : <Tooltip position="bottom" text="Заказ отменен">
+                                        <IconButton
+                                            disableTouchRipple={true}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            touch={true}>
+                                            <Canceled color='#e57373'/>
+                                        </IconButton>
+                                    </Tooltip>
+                    }
+                    {!(status === CANCELED) &&
                     <Tooltip position="bottom" text={(totalBalance > ZERO) && ((paymentDate.diff(now, 'days') <= ZERO))
-                                                        ? PAY_DELAY
-                                                            : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
-                                                                ? PAY_PENDING
-                                                                    : 'Оплачено'}>
+                        ? PAY_DELAY
+                        : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
+                            ? PAY_PENDING
+                            : 'Оплачено'}>
                         <IconButton
                             disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
@@ -322,15 +313,15 @@ const OrderGridList = enhance((props) => {
                             touch={true}>
                             <Payment color={(totalBalance > ZERO) && ((paymentDate.diff(now, 'days') <= ZERO))
                                 ? '#e57373'
-                                    : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
-                                        ? '#B7BBB7'
-                                            : '#81c784'
+                                : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
+                                    ? '#B7BBB7'
+                                    : '#81c784'
                             }/>
                         </IconButton>
                     </Tooltip>
-                }
+                    }
+                </div>
             </div>
-        </div>
         )
     })
 
@@ -362,6 +353,7 @@ const OrderGridList = enhance((props) => {
                 withoutRow={true}
                 withInvoice={true}
                 filterDialog={orderFilterDialog}
+                printDialog={printDialog}
             />
 
             <OrderCreateDialog
@@ -483,7 +475,12 @@ OrderGridList.propTypes = {
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired
     }),
-    returnDataLoading: PropTypes.bool
+    returnDataLoading: PropTypes.bool,
+    printDialog: PropTypes.shape({
+        openPrint: PropTypes.bool.isRequired,
+        handleOpenPrintDialog: PropTypes.func.isRequired,
+        handleClosePrintDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default OrderGridList

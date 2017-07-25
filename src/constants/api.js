@@ -299,6 +299,10 @@ export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = 'stats/products/export'
 
+export const STAT_OUTCOME_CATEGORY_LIST = 'stats/agents/'
+export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
+export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
+
 export const STOCK_RECEIVE = 'stock/supply'
 export const STOCK_HISTORY = 'stock/barcode_history'
 export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`

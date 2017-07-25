@@ -42,6 +42,7 @@ const listHeader = [
     },
     {
         sorting: true,
+        alignRight: true,
         name: 'amount',
         title: 'Сумма',
         xs: 3
@@ -62,7 +63,10 @@ const enhance = compose(
             height: '100%'
         },
         searchForm: {
-            padding: '10px 30px 0'
+            padding: '10px 30px 0',
+            '& form > div': {
+                maxWidth: '100%'
+            }
         },
         leftSide: {
             flexBasis: '25%',
@@ -192,7 +196,7 @@ const ClientTransactionGridList = enhance((props) => {
                 <Col xs={1}>{id}</Col>
                 <Col xs={5}>{comment}</Col>
                 <Col xs={3}>{createdDate}</Col>
-                <Col className={type >= zero ? classes.green : classes.red} xs={3}>{amount} {currency}</Col>
+                <Col style={{textAlign: 'right'}} className={type >= zero ? classes.green : classes.red} xs={3}>{amount} {currency}</Col>
             </Row>
         )
     })
