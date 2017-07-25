@@ -7,8 +7,10 @@ import StatFinanceGridList from './StatFinanceGridList'
 import StatIncomeGridList from './StatIncomeGridList'
 import StatOutcomeGridList from './StatOutcomeGridList'
 import StatDebtorsGridList from './StatDebtorsGridList'
+import StatRemainderGridList from './StatRemainderGridLIst'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
+const STAT_REMAINDER_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_SALES_DIALOG_OPEN = 'openStatSalesDialog'
 const STAT_MARKET_DIALOG_OPEN = 'openStatMarketDialog'
 const STAT_FINANCE_DIALOG_OPEN = 'openStatFinanceDialog'
@@ -26,11 +28,13 @@ export {
     StatIncomeGridList,
     StatOutcomeGridList,
     StatDebtorsGridList,
+    StatRemainderGridList,
     STAT_AGENT_DIALOG_OPEN,
     STAT_MARKET_DIALOG_OPEN,
     STAT_FINANCE_DIALOG_OPEN,
     STAT_INCOME_DIALOG_OPEN,
     STAT_DEBTORS_DIALOG_OPEN,
     STAT_OUTCOME_DIALOG_OPEN,
-    STAT_SALES_DIALOG_OPEN
+    STAT_SALES_DIALOG_OPEN,
+    STAT_REMAINDER_DIALOG_OPEN
 }

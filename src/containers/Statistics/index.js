@@ -6,6 +6,7 @@ import StatFinanceList from './StatFinance'
 import StatIncomeList from './StatIncome'
 import StatOutcomeList from './StatOutcome'
 import StatDebtorsList from './StatDebtors'
+import StatRemainderList from './StatRemainder'
 
 export {
     StatAgentList,
@@ -15,5 +16,6 @@ export {
     StatFinanceList,
     StatIncomeList,
     StatOutcomeList,
-    StatDebtorsList
+    StatDebtorsList,
+    StatRemainderList
 }
