@@ -354,7 +354,7 @@ const StatSalesGridList = enhance((props) => {
                                     <div>35 000 000 UZS</div>
                                 </Col>
                                 <Col xs={9}>
-                                    <ReactHighcharts config={config}/>
+                                    <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
                                 </Col>
                             </Row>
                             <div className={classes.pagination}>
