@@ -315,6 +315,10 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.CLIENT_BALANCE_UPDATE),
         item: createThunkReducer(actionTypes.CLIENT_BALANCE_ITEM)
     }),
+    statRemainder: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_REMAINDER_LIST),
+        item: createThunkReducer(actionTypes.STAT_REMAINDER_ITEM)
+    }),
 
     snackbar: snackbarReducer(),
     error: errorReducer(),

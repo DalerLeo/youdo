@@ -12,7 +12,6 @@ import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatAgentDialog from './StatAgentDialog'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
-import Person from '../Images/person.png'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import List from 'material-ui/svg-icons/action/list'
@@ -252,7 +251,6 @@ const StatAgentGridList = enhance((props) => {
         return (
             <Row key={id} className="dottedList">
                 <Col xs={3}>
-                    <div className="personImage"><img src={Person}/></div>
                     <div>{name}</div>
                 </Col>
                 <Col xs={6}>

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import _ from 'lodash'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
@@ -10,16 +11,17 @@ import ReactHighcharts from 'react-highcharts'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
-import Person from '../Images/person.png'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
-
+import List from 'material-ui/svg-icons/action/list'
+import numberFormat from '../../helpers/numberFormat'
+import StatSaleDialog from './StatSaleDialog'
+import moment from 'moment'
 export const STAT_SALES_FILTER_KEY = {
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate',
-    USER: 'user'
+    TO_DATE: 'toDate'
 }
 
 const enhance = compose(
@@ -46,9 +48,7 @@ const enhance = compose(
             borderBottom: '1px #efefef solid'
         },
         tableWrapper: {
-            height: 'calc(100% - 283px)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
+
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
@@ -150,7 +150,8 @@ const enhance = compose(
         rightPanel: {
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
-            overflow: 'hidden'
+            overflowY: 'auto',
+            overflowX: 'hidden'
         },
         searchButton: {
             marginLeft: '-10px !important',
@@ -194,10 +195,14 @@ const enhance = compose(
 const StatSalesGridList = enhance((props) => {
     const {
         classes,
+        type,
         filter,
-        handleSubmitFilterDialog
+        onSubmit,
+        listData,
+        statSaleDialog,
+        handleSubmit,
+        detailData
     } = props
-
     const sample = 100
     const deletion = 3
     const config = {
@@ -301,22 +306,39 @@ const StatSalesGridList = enhance((props) => {
             <Col xs={2}>№ Сделки</Col>
             <Col xs={2}>Дата</Col>
             <Col xs={3}>Магазин</Col>
-            <Col xs={3}>Агент</Col>
-            <Col xs={2}>Сумма</Col>
+            <Col xs={2}>Агент</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
+            <Col xs={1} style={{display: 'none'}}>|</Col>
         </Row>
     )
-
     const list = (
-        <Row className="dottedList">
-            <Col xs={2}>152</Col>
-            <Col xs={2}>22.07.2017</Col>
-            <Col xs={3}>Название магазина</Col>
-            <Col xs={3}>
-                <div className="personImage"><img src={Person}/></div>
-                <div>Бердыбаев Куркума</div>
-            </Col>
-            <Col xs={2}>2 000 000 UZS</Col>
-        </Row>
+        _.map(_.get(listData, 'data'), (item) => {
+            const marketName = _.get(item, ['market', 'name'])
+            const id = _.get(item, 'id')
+            const createdDate = moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM')
+            const firstName = _.get(item, ['user', 'firstName'])
+            const secondName = _.get(item, ['user', 'secondName '])
+            const totalPrice = _.get(item, 'totalPrice')
+            return (
+                <Row key={id} className="dottedList">
+                    <Col xs={2}>{id}</Col>
+                    <Col xs={2}>{createdDate}</Col>
+                    <Col xs={3}>{marketName}</Col>
+                    <Col xs={2}>
+                        <div>{firstName} {secondName}</div>
+                    </Col>
+                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice)} UZS</Col>
+                    <Col xs={1}>
+                        <IconButton
+                            onTouchTap={ () => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
+
+                            <List color="#12aaeb"/>
+                        </IconButton>
+                    </Col>
+                </Row>
+            )
+        })
+
     )
 
     const page = (
@@ -327,7 +349,7 @@ const StatSalesGridList = enhance((props) => {
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+                            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                                 <div className={classes.filter}>
                                     <Field
                                         className={classes.inputFieldCustom}
@@ -354,7 +376,7 @@ const StatSalesGridList = enhance((props) => {
                                     <div>35 000 000 UZS</div>
                                 </Col>
                                 <Col xs={9}>
-                                    <ReactHighcharts config={config}/>
+                                    <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
                                 </Col>
                             </Row>
                             <div className={classes.pagination}>
@@ -375,6 +397,13 @@ const StatSalesGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
+            <StatSaleDialog
+                loading={_.get(detailData.detailLoading)}
+                detailData={detailData}
+                open={statSaleDialog.openStatSaleDialog}
+                onClose={statSaleDialog.handleCloseStatSaleDialog}
+                filter={filter}
+                type={type}/>
         </Container>
     )
 })
@@ -382,7 +411,12 @@ const StatSalesGridList = enhance((props) => {
 StatSalesGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
-    detailData: PropTypes.object
+    detailData: PropTypes.object,
+    statSaleDialog: PropTypes.shape({
+        openStatSaleDialog: PropTypes.bool.isRequired,
+        handleOpenStatSaleDialog: PropTypes.func.isRequired,
+        handleCloseStatSaleDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default StatSalesGridList

@@ -635,6 +635,7 @@ const OrderList = enhance((props) => {
     }
 
     document.getElementById('wrapper').style.height = '100%'
+    const order = true
     return (
         <Layout {...layout}>
             <OrderGridList
@@ -657,6 +658,7 @@ const OrderList = enhance((props) => {
                 filterDialog={filterDialog}
                 products={products}
                 printDialog={printDialog}
+                type={order}
             />
         </Layout>
     )

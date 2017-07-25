@@ -162,7 +162,8 @@ const OrderGridList = enhance((props) => {
         classes,
         createClientDialog,
         returnDataLoading,
-        printDialog
+        printDialog,
+        type
     } = props
 
     const orderFilterDialog = (
@@ -202,6 +203,7 @@ const OrderGridList = enhance((props) => {
             returnDataLoading={returnDataLoading}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+            type={type}
         />
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {
