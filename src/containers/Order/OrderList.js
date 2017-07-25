@@ -23,7 +23,8 @@ import {
     ORDER_RETURN_DIALOG_OPEN,
     ORDER_SHORTAGE_DIALOG_OPEN,
     TAB,
-    OrderGridList
+    OrderGridList,
+    OrderPrint
 } from '../../components/Order'
 const CLIENT_CREATE_DIALOG_OPEN = 'openClientCreate'
 import {
@@ -142,8 +143,19 @@ const enhance = compose(
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openPrint', 'setOpenPrint', false),
 
     withHandlers({
+        handleOpenPrintDialog: props => () => {
+            const {setOpenPrint} = props
+            setOpenPrint(true)
+        },
+
+        handleClosePrintDialog: props => () => {
+            const {setOpenPrint} = props
+            setOpenPrint(false)
+        },
+
         handleTabChange: props => (tab) => {
             const {location: {pathname}, filter} = props
             hashHistory.push({
@@ -287,11 +299,15 @@ const enhance = compose(
                     const amountError = _.map(_.get(error, 'returned_products'), (item) => {
                         const amount = _.get(item, ['amount', '0'])
                         if (amount) {
-                            return (<div style={{marginTop: '10px'}}>Количество возвращаемого товара превышает количество товара в заказе</div>)
+                            return (
+                                <div style={{marginTop: '10px'}}>Количество возвращаемого товара превышает количество
+                                    товара в заказе</div>)
                         }
                         return false
                     })
-                    dispatch(openErrorAction({message: <div>{(commentError) && 'Введите комментарий к возврату!'} {amountError}</div>}))
+                    dispatch(openErrorAction({
+                        message: <div>{(commentError) && 'Введите комментарий к возврату!'} {amountError}</div>
+                    }))
                 })
         },
 
@@ -311,7 +327,13 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно отправлено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ORDER_SHORTAGE_DIALOG_OPEN]: false, [ORDER_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({
+                            [ORDER_SHORTAGE_DIALOG_OPEN]: false,
+                            [ORDER_CREATE_DIALOG_OPEN]: false
+                        })
+                    })
                     dispatch(orderListFetchAction(filter))
                 })
         },
@@ -409,6 +431,7 @@ const OrderList = enhance((props) => {
         filter,
         layout,
         products,
+        openPrint,
         params
     } = props
 
@@ -600,6 +623,18 @@ const OrderList = enhance((props) => {
         transactionsLoading
     }
 
+    const printDialog = {
+        openPrint,
+        handleOpenPrintDialog: props.handleOpenPrintDialog,
+        handleClosePrintDialog: props.handleClosePrintDialog
+    }
+
+    if (openPrint) {
+        document.getElementById('wrapper').style.height = 'auto'
+        return <OrderPrint printDialog={printDialog}/>
+    }
+
+    document.getElementById('wrapper').style.height = '100%'
     const order = true
     return (
         <Layout {...layout}>
@@ -622,6 +657,7 @@ const OrderList = enhance((props) => {
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
                 products={products}
+                printDialog={printDialog}
                 type={order}
             />
         </Layout>

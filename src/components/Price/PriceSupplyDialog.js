@@ -7,7 +7,6 @@ import Dialog from 'material-ui/Dialog'
 import {reduxForm} from 'redux-form'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
-import MainStyles from '../Styles/MainStyles'
 import {Row} from 'react-flexbox-grid'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
@@ -15,21 +14,41 @@ import CircularProgress from 'material-ui/CircularProgress'
 
 const ZERO = 0
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
-            position: 'absolute',
             width: '100%',
-            height: '100%',
+            height: '300px',
             background: '#fff',
-            top: '0',
-            left: '0',
             alignItems: 'center',
             zIndex: '999',
-            textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            justifyContent: 'center',
+            display: 'flex'
+        },
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%'
         },
         titleContent: {
-            padding: '15px 30px'
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important'
+            }
         },
         content: {
             width: '100%',
@@ -77,7 +96,7 @@ const enhance = compose(
             fontStyle: 'italic',
             fontWeight: '400'
         }
-    })),
+    }),
     reduxForm({
         form: 'PriceCreateForm',
         enableReinitialize: true
@@ -94,25 +113,21 @@ const PriceSupplyDialog = enhance((props) => {
             modal={true}
             open={open > ZERO}
             onRequestClose={onClose}
-            className={classes.dialog}
-            contentStyle={loading ? {width: '500px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <div>
-                    Поставка <span style={{fontSize: '14px', margin: '0 5px'}}> &#8470;</span>
-                    {open} </div>
+                <div>Поставка №{open}</div>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            {loading && <div className={classes.loader}>
-                            <div>
-                                <CircularProgress size={40} thickness={4}/>
-                            </div>
-                        </div>}
-            {!loading &&
-                <div className={classes.content}>
+            {loading ? <div className={classes.loader}>
+                <div>
+                    <CircularProgress size={40} thickness={4}/>
+                </div>
+            </div>
+                : <div className={classes.content}>
                     <div className={classes.topBlock}>
                         <Row>
                             <div>Товар</div>
@@ -145,8 +160,7 @@ const PriceSupplyDialog = enhance((props) => {
                             <div>{numberFormat(price, getConfig('PRIMARY_CURRENCY'))}</div>
                         </Row>
                     </div>
-                </div>
-            }
+                </div>}
         </Dialog>
     )
 })

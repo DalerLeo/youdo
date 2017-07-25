@@ -21,6 +21,7 @@ import Pagination from '../GridList/GridListNavPagination'
 import StatIncomeDialog from './StatIncomeDialog'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
+import NotFound from '../Images/not-found.png'
 
 export const STAT_INCOME_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -30,6 +31,15 @@ export const STAT_INCOME_FILTER_KEY = {
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            width: '100%',
+            height: 'calc(100% - 200px)',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
         mainWrapper: {
             background: '#fff',
             margin: '0 -28px',
@@ -189,6 +199,19 @@ const enhance = compose(
                 fontSize: '24px',
                 fontWeight: '600'
             }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
     reduxForm({
@@ -205,6 +228,9 @@ const StatIncomeGridList = enhance((props) => {
         statIncomeDialog,
         listData
     } = props
+
+    const listLoading = _.get(listData, 'listLoading')
+
     let sum = 0
     const value = _.map(_.get(listData, 'grafData'), (item) => {
         sum += _.toInteger(_.get(item, 'amount'))
@@ -321,7 +347,7 @@ const StatIncomeGridList = enhance((props) => {
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const date = moment(_.get(item, 'createdDate')).format('YY:MM:DD')
-        const amount = numberFormat(_.get(item, 'amount'))
+        const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
 
         return (
             <Row key={id} className="dottedList">
@@ -371,7 +397,7 @@ const StatIncomeGridList = enhance((props) => {
                         <Row className={classes.diagram}>
                             <Col xs={3} className={classes.salesSummary}>
                                 <div>Сумма продаж за период</div>
-                                <div>{sum} {primaryCurrency}</div>
+                                <div>{numberFormat(sum, primaryCurrency)}</div>
                             </Col>
                             <Col xs={9}>
                                 <ReactHighcharts config={config}/>
@@ -381,14 +407,17 @@ const StatIncomeGridList = enhance((props) => {
                             <div><b>История заказов</b></div>
                             <Pagination filter={filter}/>
                         </div>
-                        <div className={classes.tableWrapper}>
+                        {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                            <div>По вашему запросу ничего не найдено</div>
+                        </div>
+                        : <div className={classes.tableWrapper}>
                             {headers}
-                            {_.get(listData, 'listLoading')
-                                ? <div style={{textAlign: 'center'}}>
-                                    <CircularProgress size={40} thickness={4} />
+                            {listLoading
+                                ? <div className={classes.loader}>
+                                    <CircularProgress size={40} thickness={4}/>
                                 </div>
                                 : list}
-                        </div>
+                        </div>}
                     </div>
                 </div>
             </Row>

@@ -21,6 +21,7 @@ import LinearProgress from 'material-ui/LinearProgress'
 import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat.js'
 import getConfig from '../../helpers/getConfig'
+import NotFound from '../Images/not-found.png'
 
 export const STAT_AGENT_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -31,6 +32,15 @@ export const STAT_AGENT_FILTER_KEY = {
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            width: '100%',
+            height: 'calc(100% - 200px)',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
         mainWrapper: {
             background: '#fff',
             margin: '0 -28px',
@@ -172,6 +182,19 @@ const enhance = compose(
             '& svg': {
                 width: '18px !important'
             }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
     reduxForm({
@@ -190,6 +213,8 @@ const StatAgentGridList = enhance((props) => {
         detailData,
         getDocument
     } = props
+
+    const listLoading = _.get(listData, 'listLoading')
 
     const headerStyle = {
         backgroundColor: '#fff',
@@ -278,19 +303,22 @@ const StatAgentGridList = enhance((props) => {
                                     </IconButton>
                                 </div>
                                 <a className={classes.excel}
-                                   onTouchTap = {getDocument.handleGetDocument}>
+                                   onClick = {getDocument.handleGetDocument}>
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>
                             <Pagination filter={filter}/>
-                            <div className={classes.tableWrapper}>
-                                {headers}
-                                {_.get(listData, 'listLoading')
-                                    ? <div style={{textAlign: 'center'}}>
-                                        <CircularProgress size={40} thickness={4} />
-                                    </div>
-                                    : list}
+                            {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                                <div>По вашему запросу ничего не найдено</div>
                             </div>
+                            : <div className={classes.tableWrapper}>
+                                    {headers}
+                                    {listLoading
+                                        ? <div className={classes.loader}>
+                                            <CircularProgress size={40} thickness={4} />
+                                        </div>
+                                        : list}
+                                </div>}
                         </div>
                     </div>
                 </Row>

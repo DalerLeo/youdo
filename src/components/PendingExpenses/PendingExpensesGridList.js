@@ -37,6 +37,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'measurement',
+        alignRight: true,
         title: 'Сумма',
         xs: 3
     }
@@ -104,7 +105,7 @@ const PendingExpensesGridList = enhance((props) => {
                 <Col xs={2}>{supplyNo}</Col>
                 <Col xs={4}>{comment}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={3}>{summary} {currency}</Col>
+                <Col xs={3} style={{textAlign: 'right'}}>{summary} {currency}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
                         iconStyle={iconStyle.icon}

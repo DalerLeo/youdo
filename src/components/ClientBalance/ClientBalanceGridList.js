@@ -21,7 +21,7 @@ const listHeader = [
         sorting: true,
         name: 'client',
         title: 'Клиент',
-        xs: 3
+        xs: 4
     },
     {
         sorting: true,
@@ -33,7 +33,7 @@ const listHeader = [
         sorting: true,
         name: 'number_of_orders',
         title: 'Кол-во заказов',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -105,9 +105,9 @@ const ClientBlanceGridList = enhance((props) => {
         }
         return (
             <Row key={id}>
-                <Col xs={3}>{clientName}</Col>
+                <Col xs={4}>{clientName}</Col>
                 <Col xs={3}>{createdDate}</Col>
-                <Col xs={3}>{orders}</Col>
+                <Col xs={2}>{orders}</Col>
                 <Col xs={2} className={classes.rightAlign} style={balanceStyle}>{numberFormat(balance)} {currentCurrency}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton

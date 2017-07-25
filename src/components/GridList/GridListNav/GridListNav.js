@@ -9,13 +9,15 @@ import IconButton from 'material-ui/IconButton'
 import Print from 'material-ui/svg-icons/action/print'
 import Tooltip from '../../ToolTip'
 
-const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData, withInvoice}) => {
+const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData, withInvoice, printDialog}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
     const listData = _.get(customData, ['listData', 'data'])
     const handleUpdateDialog = _.get(customData, ['dialog', 'handleOpenSetCurrencyDialog'])
     const gridDataId = _.get(customData, 'id')
     const currentCurrency = _.get(_.find(listData, {'id': gridDataId}), 'name')
+    const listCount = filter.getCounts()
+    const MAX_COUNT = 300
     return (
         <div className={classes.wrapper}>
             <div style={{padding: '0 30px'}}>
@@ -45,8 +47,10 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
                     <Col xs={4} className={classes.flex}>
                         <GridListNavPagination filter={filter}/>
                         {withInvoice &&
-                        <Tooltip position="left" text="Распечатать накладые">
-                            <IconButton>
+                        <Tooltip position="left" text={(listCount > MAX_COUNT) ? 'Превышено количество данных' : 'Распечатать накладные'}>
+                            <IconButton
+                                disabled={(listCount > MAX_COUNT) && true}
+                                onTouchTap={printDialog.handleOpenPrintDialog}>
                                 <Print color="#666"/>
                             </IconButton>
                         </Tooltip>}
@@ -81,6 +85,11 @@ GridListNav.propTypes = {
         handleOpenSetCurrencyDialog: PropTypes.func.isRequired,
         handleCloseSetCurrencyDialog: PropTypes.func.isRequired,
         handleSubmitSetCurrencyDialog: PropTypes.func.isRequired
+    }),
+    printDialog: PropTypes.shape({
+        openPrint: PropTypes.bool,
+        handleOpenPrintDialog: PropTypes.func,
+        handleClosePrintDialog: PropTypes.func
     })
 }
 

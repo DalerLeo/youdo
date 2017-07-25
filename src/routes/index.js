@@ -46,6 +46,7 @@ import {
     StatIncomeList,
     StatOutcomeList,
     StatDebtorsList,
+    StatOutcomeCategoryList,
     StatRemainderList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
@@ -496,6 +497,12 @@ export default {
                     component: userIsAuth(StatDebtorsList)
                 }
             ]
+        },
+        // Statistics/outcomeCategory
+        {
+            path: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL,
+            component: userIsAuth(StatOutcomeCategoryList),
+            childRoutes: []
         },
         // Stock Receive Transfer
         {

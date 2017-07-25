@@ -134,13 +134,13 @@ const GridListHeader = enhance((props) => {
                     ) : (<ArrowDownIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>) : null
 
             if (withoutRow) {
-                return (<Col style={{width: xs}} key={index}>
+                return (<Col style={alignRight ? {textAlign: 'right', width: xs} : {width: xs}} key={index}>
                     <Link
                         className={classes.sortingButton}
                         onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
                         <FlatButton
                             className={classes.button}
-                            style={{paddingRight: '30px'}}
+                            style={alignRight ? {paddingRight: '0', paddingLeft: '30px'} : {paddingRight: '30px'}}
                             disableTouchRipple={true}>
                             <span>{_.get(item, 'title')}</span> {Icon}
                         </FlatButton>

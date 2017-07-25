@@ -44,12 +44,14 @@ const listHeader = [
     {
         sorting: true,
         name: 'total_price',
+        alignRight: true,
         title: 'Сумма заказа',
         xs: 2
     },
     {
         sorting: true,
         name: 'total_balance',
+        alignRight: true,
         title: 'Остаток',
         xs: 2
     }
@@ -116,8 +118,8 @@ const PendingPaymentsGridList = enhance((props) => {
                 <Col xs={2}>{clientName}</Col>
                 <Col xs={2}>{market}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}>{totalPrice}</Col>
-                <Col xs={2}>{totalBalance}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{totalPrice}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{totalBalance}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
                         iconStyle={iconStyle.icon}

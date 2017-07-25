@@ -4,31 +4,28 @@ import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
-import LinearProgress from 'material-ui/LinearProgress'
-import CircularProgress from 'material-ui/CircularProgress'
-import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {TextField} from '../ReduxForm'
-import ProductTypeSearchField from '../ReduxForm/Product/ProductTypeSearchField'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
+import Person from '../Images/person.png'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import Excel from 'material-ui/svg-icons/av/equalizer'
+import LinearProgress from 'material-ui/LinearProgress'
 import Pagination from '../GridList/GridListNavPagination'
-import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat.js'
+import getConfig from '../../helpers/getConfig'
 import NotFound from '../Images/not-found.png'
 
-export const STAT_PRODUCT_FILTER_KEY = {
-    SEARCH: 'search',
-    PRODUCT: 'product',
-    PRODUCT_TYPE: 'productType',
-    TO_DATE: 'toDate',
-    FROM_DATE: 'fromDate'
+export const STAT_OUTCOME_CATEGORY_FILTER_KEY = {
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate'
 }
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -47,10 +44,8 @@ const enhance = compose(
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
-            height: 'calc(100% - 40px)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             padding: '20px 30px',
+            height: 'calc(100% - 40px)',
             '& > div:nth-child(2)': {
                 marginTop: '10px',
                 borderTop: '1px #efefef solid',
@@ -62,6 +57,8 @@ const enhance = compose(
         },
         tableWrapper: {
             height: 'calc(100% - 118px)',
+            overflowY: 'auto',
+            overflowX: 'hidden',
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
@@ -69,10 +66,7 @@ const enhance = compose(
                 '& > div': {
                     display: 'flex',
                     height: '50px',
-                    alignItems: 'center',
-                    '&:last-child': {
-                        justifyContent: 'flex-end'
-                    }
+                    alignItems: 'center'
                 }
             },
             '& .dottedList': {
@@ -81,7 +75,28 @@ const enhance = compose(
                     content: '""',
                     backgroundImage: 'none'
                 }
+            },
+            '& .personImage': {
+                borderRadius: '50%',
+                overflow: 'hidden',
+                height: '30px',
+                minWidth: '30px',
+                width: '30px',
+                marginRight: '10px',
+                '& img': {
+                    display: 'flex',
+                    height: '100%',
+                    width: '100%'
+                }
             }
+        },
+        balanceInfo: {
+            padding: '15px 0'
+        },
+        balance: {
+            paddingRight: '10px',
+            fontSize: '24px!important',
+            fontWeight: '600'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -98,17 +113,10 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
-        excel: {
-            background: '#71ce87',
-            borderRadius: '2px',
-            color: '#fff',
-            fontWeight: '600',
+        balanceButtonWrap: {
             display: 'flex',
             alignItems: 'center',
-            padding: '5px 15px',
-            '& svg': {
-                width: '18px !important'
-            }
+            justifyContent: 'space-between'
         },
         form: {
             display: 'flex',
@@ -119,9 +127,12 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             '& > div': {
-                width: '140px !important',
+                width: '170px!important',
                 position: 'relative',
                 marginRight: '40px',
+                '&:last-child': {
+                    margin: '0'
+                },
                 '&:after': {
                     content: '""',
                     position: 'absolute',
@@ -132,11 +143,8 @@ const enhance = compose(
                     marginTop: '-15px',
                     background: '#efefef'
                 },
-                '&:last-child': {
-                    '&:after': {
-                        content: '""',
-                        background: 'none'
-                    }
+                '&:last-child:after': {
+                    display: 'none'
                 }
             }
         },
@@ -159,6 +167,18 @@ const enhance = compose(
                 justifyContent: 'center'
             }
         },
+        excel: {
+            background: '#71ce87',
+            borderRadius: '2px',
+            color: '#fff',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '5px 15px',
+            '& svg': {
+                width: '18px !important'
+            }
+        },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
             backgroundSize: '200px',
@@ -174,20 +194,21 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatProductFilterForm',
+        form: 'StatOutcomeCategoryFilterForm',
         enableReinitialize: true
     }),
 )
 
-const StatProductGridList = enhance((props) => {
+const StatOutcomeCategoryGridList = enhance((props) => {
     const {
-        listData,
         classes,
+        listData,
         filter,
         handleSubmitFilterDialog,
         getDocument
     } = props
 
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
 
     const headerStyle = {
@@ -210,96 +231,82 @@ const StatProductGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={3}>Товар</Col>
-            <Col xs={3}>Тип товара</Col>
-            <Col xs={3}>Продажи</Col>
-            <Col xs={1}>Кол-во</Col>
-            <Col xs={2}>Сумма</Col>
+            <Col xs={3}>Категория</Col>
+            <Col xs={6}>Процентное соотношение</Col>
+            <Col xs={3} style={{justifyContent: 'flex-end'}}>Сумма ({currentCurrency})</Col>
         </Row>
     )
+
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const type = _.get(item, 'type')
         const percent = _.get(item, 'percent')
-        const count = _.get(item, 'count')
-        const measurement = _.get(item, 'measurement')
         const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
 
         return (
             <Row key={id} className="dottedList">
-                <Col xs={3}>{name}</Col>
-                <Col xs={3}>{type}</Col>
                 <Col xs={3}>
+                    <div className="personImage"><img src={Person}/></div>
+                    <div>{name}</div>
+                </Col>
+                <Col xs={6}>
                     <LinearProgress
                         color="#58bed9"
                         mode="determinate"
                         value={percent}
                         style={{backgroundColor: '#fff', height: '10px'}}/>
                 </Col>
-                <Col xs={1}>{count} {measurement}</Col>
-                <Col xs={2}>{income}</Col>
+                <Col xs={3} style={{justifyContent: 'flex-end'}}>{income}</Col>
             </Row>
         )
     })
 
     const page = (
-        <div className={classes.mainWrapper}>
-            <Row style={{margin: '0', height: '100%'}}>
-                <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_PRODUCT_URL}/>
-                </div>
-                <div className={classes.rightPanel}>
-                    <div className={classes.wrapper}>
-                        <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                            <div className={classes.filter}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="date"
-                                    component={DateToDateField}
-                                    label="Диапазон дат"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="productType"
-                                    component={ProductTypeSearchField}
-                                    label="Тип товара"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="search"
-                                    component={TextField}
-                                    label="Поиск"
-                                    fullWidth={true}/>
-                                <IconButton
-                                    className={classes.searchButton}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    type="submit">
-                                    <Search/>
-                                </IconButton>
-                            </div>
-                            <a className={classes.excel}
-                               onClick={getDocument.handleGetDocument}>
-                                <Excel color="#fff"/> <span>Excel</span>
-                            </a>
-                        </form>
-                        <Pagination filter={filter}/>
-                        {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
-                            <div>По вашему запросу ничего не найдено</div>
-                        </div>
-                        : <div className={classes.tableWrapper}>
-                            {headers}
-                            {listLoading
-                                ? <div className={classes.loader}>
-                                    <CircularProgress size={40} thickness={4} />
-                                </div>
-                                : list}
-                        </div>}
+            <div className={classes.mainWrapper}>
+                <Row style={{margin: '0', height: '100%'}}>
+                    <div className={classes.leftPanel}>
+                        <StatSideMenu currentUrl={ROUTES.STATISTICS_OUTCOME_CATEGORY_URL}/>
                     </div>
-                </div>
-            </Row>
-        </div>
+                    <div className={classes.rightPanel}>
+                        <div className={classes.wrapper}>
+                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+                                <div className={classes.filter}>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="date"
+                                        component={DateToDateField}
+                                        label="Диапазон дат"
+                                        fullWidth={true}/>
+
+                                    <IconButton
+                                        className={classes.searchButton}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        type="submit">
+                                        <Search/>
+                                    </IconButton>
+                                </div>
+                                <a className={classes.excel}
+                                   onClick = {getDocument.handleGetDocument}>
+                                    <Excel color="#fff"/> <span>Excel</span>
+                                </a>
+                            </form>
+                            <Pagination filter={filter}/>
+                            {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                                <div>По вашему запросу ничего не найдено</div>
+                            </div>
+                            : <div className={classes.tableWrapper}>
+                                    {headers}
+                                    {listLoading
+                                        ? <div className={classes.loader}>
+                                            <CircularProgress size={40} thickness={4} />
+                                        </div>
+                                        : list}
+                                </div>}
+                        </div>
+                    </div>
+                </Row>
+            </div>
     )
 
     return (
@@ -310,9 +317,9 @@ const StatProductGridList = enhance((props) => {
     )
 })
 
-StatProductGridList.propTypes = {
-    listData: PropTypes.object,
-    detailData: PropTypes.object
+StatOutcomeCategoryGridList.propTypes = {
+    filter: PropTypes.object.isRequired,
+    listData: PropTypes.object
 }
 
-export default StatProductGridList
+export default StatOutcomeCategoryGridList

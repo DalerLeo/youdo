@@ -7,6 +7,7 @@ import StatFinanceGridList from './StatFinanceGridList'
 import StatIncomeGridList from './StatIncomeGridList'
 import StatOutcomeGridList from './StatOutcomeGridList'
 import StatDebtorsGridList from './StatDebtorsGridList'
+import StatOutcomeCategoryGridList from './StatOutcomeCategoryGridList'
 import StatRemainderGridList from './StatRemainderGridLIst'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
@@ -28,6 +29,7 @@ export {
     StatIncomeGridList,
     StatOutcomeGridList,
     StatDebtorsGridList,
+    StatOutcomeCategoryGridList,
     StatRemainderGridList,
     STAT_AGENT_DIALOG_OPEN,
     STAT_MARKET_DIALOG_OPEN,

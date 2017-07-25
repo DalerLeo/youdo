@@ -163,6 +163,7 @@ const filter = (data, pathname, query = {}) => {
             openDeleteDialog: null,
             openUpdateDialog: null,
             openStatDebtorsDialog: null,
+            openAcceptCashDialog: null,
             detailId: null,
             orderId: null
         }))
