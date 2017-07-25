@@ -425,13 +425,19 @@ export default {
         {
             path: ROUTES.STATISTICS_LIST_URL,
             component: userIsAuth(StatSalesList),
-            childRoutes: []
+            childRoutes: [
+            ]
         },
         // Statistics/sales all
         {
             path: ROUTES.STATISTICS_SALES_URL,
             component: userIsAuth(StatSalesList),
-            childRoutes: []
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_SALES_ITEM_URL,
+                    component: userIsAuth(StatSalesList)
+                }
+            ]
         },
         // Statistics/agent
         {

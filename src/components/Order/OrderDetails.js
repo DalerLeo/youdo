@@ -18,7 +18,7 @@ import Tooltip from '../ToolTip'
 import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
-
+import StatRightSide from './OrderStatDetailsRightSide'
 const enhance = compose(
     injectSheet({
         dottedList: {
@@ -171,6 +171,7 @@ const OrderDetails = enhance((props) => {
         itemReturnDialog,
         confirmDialog,
         handleOpenUpdateDialog,
+        type,
         tabData,
         paymentData,
         getDocument,
@@ -188,7 +189,7 @@ const OrderDetails = enhance((props) => {
     const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
     const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
-    const createdDate = moment(_.get(data, 'createdDate')).format('DD.MM.YYYY HH:MM')
+    const createdDate = moment(_.get(data, 'createdDate')).format('DD.MM.YYYY')
     const paymentDate = moment(_.get(data, 'paymentDate')).format('DD.MM.YYYY')
 
     const REQUESTED = 0
@@ -225,7 +226,7 @@ const OrderDetails = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     return (
         <div className={classes.wrapper}>
-            <div className={classes.title}>
+            {type && <div className={classes.title}>
                 <div className={classes.titleLabel}>Заказ №{id}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
@@ -268,7 +269,7 @@ const OrderDetails = enhance((props) => {
                         </IconButton>
                     </Tooltip>
                 </div>
-            </div>
+            </div>}
             <div className={classes.content}>
                 <div className={classes.leftSide}>
                     <div className={classes.subBlock}>
@@ -333,7 +334,7 @@ const OrderDetails = enhance((props) => {
                                     <span>{(paymentType === '0') ? 'Наличными' : 'Перечислением'}</span>
                                 </li>
                                 <li>
-                                    <span>Стоимость товаров:</span>
+                                    <span>Стоимост товаров</span>
                                     <span>{numberFormat(productTotal, primaryCurrency)}</span>
                                 </li>
                                 <li>
@@ -350,7 +351,7 @@ const OrderDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>Оплачено:</span>
-                                    {(totalPaid !== zero) ? <span>
+                                    {(totalPaid !== zero && type) ? <span>
                                         <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {primaryCurrency}</a>
                                     </span>
                                         : <span>{totalPaid} {primaryCurrency}</span>}
@@ -388,33 +389,37 @@ const OrderDetails = enhance((props) => {
                         </div>
                     </div>
                 </div>
+                {type &&
                 <RightSide
                     data={data}
                     tabData={tabData}
                     itemReturnDialog={itemReturnDialog}
                     returnData={returnData}
                     returnDataLoading={returnDataLoading}
-                />
+                />}
+                {!type &&
+                <StatRightSide
+                    data={data}/>}
             </div>
-            <OrderTransactionsDialog
+            {type && <OrderTransactionsDialog
                 open={transactionsDialog.openTransactionsDialog}
                 loading={transactionsDialog.transactionsLoading}
                 onClose={transactionsDialog.handleCloseTransactionsDialog}
                 paymentData={paymentData}
-            />
-            <OrderReturnDialog
+            />}
+            {type && <OrderReturnDialog
                 open={returnDialog.openReturnDialog}
                 loading={returnDialog.returnLoading}
                 onClose={returnDialog.handleCloseReturnDialog}
                 onSubmit={returnDialog.handleSubmitReturnDialog}
                 orderData={data}
-            />
-            <OrderItemReturnDialog
+            />}
+            {type && <OrderItemReturnDialog
                 returnListData={returnListData}
                 open={itemReturnDialog.openOrderItemReturnDialog}
                 loading={itemReturnDialog.returnDialogLoading}
                 onClose={itemReturnDialog.handleCloseItemReturnDialog}
-            />
+            />}
         </div>
     )
 })
@@ -423,25 +428,25 @@ OrderDetails.propTypes = {
     paymentData: PropTypes.object,
     returnListData: PropTypes.object,
     tabData: PropTypes.shape({
-        tab: PropTypes.string.isRequired,
-        handleTabChange: PropTypes.func.isRequired
-    }).isRequired,
+        tab: PropTypes.string,
+        handleTabChange: PropTypes.func
+    }),
     data: PropTypes.object.isRequired,
     returnData: PropTypes.array,
     loading: PropTypes.bool.isRequired,
     returnDialog: PropTypes.shape({
-        returnLoading: PropTypes.bool.isRequired,
-        openReturnDialog: PropTypes.bool.isRequired,
-        handleOpenReturnDialog: PropTypes.func.isRequired,
-        handleCloseReturnDialog: PropTypes.func.isRequired
-    }).isRequired,
+        returnLoading: PropTypes.bool,
+        openReturnDialog: PropTypes.bool,
+        handleOpenReturnDialog: PropTypes.func,
+        handleCloseReturnDialog: PropTypes.func
+    }),
     itemReturnDialog: PropTypes.shape({
-        returnDialogLoading: PropTypes.bool.isRequired,
-        openOrderItemReturnDialog: PropTypes.bool.isRequired,
-        handleOpenItemReturnDialog: PropTypes.func.isRequired,
-        handleCloseItemReturnDialog: PropTypes.func.isRequired
-    }).isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
+        returnDialogLoading: PropTypes.bool,
+        openOrderItemReturnDialog: PropTypes.bool,
+        handleOpenItemReturnDialog: PropTypes.func,
+        handleCloseItemReturnDialog: PropTypes.func
+    }),
+    handleOpenUpdateDialog: PropTypes.func,
     orderListData: PropTypes.object,
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired
