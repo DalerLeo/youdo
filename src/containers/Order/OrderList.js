@@ -600,6 +600,7 @@ const OrderList = enhance((props) => {
         transactionsLoading
     }
 
+    const order = true
     return (
         <Layout {...layout}>
             <OrderGridList
@@ -621,6 +622,7 @@ const OrderList = enhance((props) => {
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
                 products={products}
+                type={order}
             />
         </Layout>
     )

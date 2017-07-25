@@ -45,7 +45,8 @@ import {
     StatFinanceList,
     StatIncomeList,
     StatOutcomeList,
-    StatDebtorsList
+    StatDebtorsList,
+    StatRemainderList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveList} from '../containers/StockReceive'
@@ -425,13 +426,19 @@ export default {
         {
             path: ROUTES.STATISTICS_LIST_URL,
             component: userIsAuth(StatSalesList),
-            childRoutes: []
+            childRoutes: [
+            ]
         },
         // Statistics/sales all
         {
             path: ROUTES.STATISTICS_SALES_URL,
             component: userIsAuth(StatSalesList),
-            childRoutes: []
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_SALES_ITEM_URL,
+                    component: userIsAuth(StatSalesList)
+                }
+            ]
         },
         // Statistics/agent
         {
@@ -520,6 +527,17 @@ export default {
                 {
                     path: ROUTES.PLAN_ITEM_URL,
                     component: userIsAuth(PlanList)
+                }
+            ]
+        },
+        // Statistics/remainder
+        {
+            path: ROUTES.STATISTICS_REMAINDER_URL,
+            component: userIsAuth(StatRemainderList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_REMAINDER_ITEM_URL,
+                    component: userIsAuth(StatRemainderList)
                 }
             ]
         },

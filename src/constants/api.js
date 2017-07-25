@@ -299,6 +299,9 @@ export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = 'stats/products/export'
 
+export const STAT_REMAINDER_LIST = `/${REMAINDER}/all_balances/`
+export const STAT_REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
+
 export const STOCK_RECEIVE = 'stock/supply'
 export const STOCK_HISTORY = 'stock/barcode_history'
 export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`
