@@ -1,14 +1,19 @@
+import _ from 'lodash'
 import React from 'react'
 import IconButton from 'material-ui/IconButton'
 import PropTypes from 'prop-types'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
+import {Link} from 'react-router'
+import sprintf from 'sprintf'
 import Tooltip from '../ToolTip'
 import Search from './PlanSearch'
 import Details from './PlanDetails'
+import PlanCreateDialog from './PlanCreateDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import CircularProgress from 'material-ui/CircularProgress'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Calendar from 'material-ui/svg-icons/action/today'
@@ -16,16 +21,14 @@ import Bike from 'material-ui/svg-icons/maps/directions-bike'
 import Man from 'material-ui/svg-icons/maps/transfer-within-a-station'
 import Van from 'material-ui/svg-icons/maps/local-shipping'
 import Money from 'material-ui/svg-icons/maps/local-atm'
+import NotFound from '../Images/not-found.png'
 
 const enhance = compose(
     injectSheet({
         loader: {
-            position: 'absolute',
             width: '100%',
-            height: '100%',
+            height: '250px',
             background: '#fff',
-            top: '0',
-            left: '0',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
@@ -69,6 +72,19 @@ const enhance = compose(
                 alignItems: 'center'
             }
         },
+        activeTab: {
+            '& svg': {
+                color: '#666 !important'
+            },
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                bottom: '0',
+                borderBottom: '6px solid #fff',
+                borderLeft: '4px solid transparent',
+                borderRight: '4px solid transparent'
+            }
+        },
         link: {
             position: 'relative',
             paddingRight: '12px',
@@ -107,7 +123,15 @@ const enhance = compose(
             alignItems: 'center',
             height: '45px',
             position: 'relative',
-            padding: '0 30px 0 45px'
+            padding: '0 30px 0 45px',
+            cursor: 'pointer',
+            '& a': {
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0'
+            }
         },
         activeAgent: {
             extend: 'agent',
@@ -150,6 +174,21 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '150px',
+            padding: '165px 0 0',
+            width: '170px',
+            margin: 'auto',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     })
 )
@@ -172,9 +211,54 @@ const iconStyle = {
 const PlanWrapper = enhance((props) => {
     const {
         filter,
+        usersList,
+        detailData,
         classes,
-        addPlan
+        addPlan,
+        handleClickTab,
+        groupId
     } = props
+
+    const detailId = _.get(detailData, 'id')
+    const agentsList = _.map(_.get(usersList, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const username = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
+
+        return (
+            <div key={id} className={(id === detailId) ? classes.activeAgent : classes.agent}>
+                <Link to={{
+                    pathname: sprintf(ROUTES.PLAN_ITEM_PATH, id),
+                    query: filter.getParams()
+                }}>
+                </Link>
+                <div className={classes.line}>
+                </div>
+                <span>{username}</span>
+                <span>70 / 100</span>
+            </div>
+        )
+    })
+
+    const listLoading = _.get(usersList, 'usersListLoading')
+
+    const buttons = [
+        {
+            group: 1,
+            icon: <Bike/>
+        },
+        {
+            group: 2,
+            icon: <Man/>
+        },
+        {
+            group: 3,
+            icon: <Van/>
+        },
+        {
+            group: 4,
+            icon: <Money/>
+        }
+    ]
 
     const leftSide = (
         <div className={classes.leftSide}>
@@ -183,153 +267,33 @@ const PlanWrapper = enhance((props) => {
                 <a className={classes.link}>21 Апр, 2017 - 27 Апр, 2017</a>
             </div>
             <div className={classes.titleTabs}>
-                <IconButton
-                    disableTouchRipple={true}
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}>
-                    <Bike/>
-                </IconButton>
-                <IconButton
-                    disableTouchRipple={true}
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}>
-                    <Man/>
-                </IconButton>
-                <IconButton
-                    disableTouchRipple={true}
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}>
-                    <Van/>
-                </IconButton>
-                <IconButton
-                    disableTouchRipple={true}
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}>
-                    <Money/>
-                </IconButton>
+                {_.map(buttons, (item) => {
+                    const group = _.get(item, 'group')
+                    const icon = _.get(item, 'icon')
+
+                    return (
+                        <IconButton
+                            key={group}
+                            disableTouchRipple={true}
+                            className={(group === groupId) && classes.activeTab}
+                            onTouchTap={() => { handleClickTab(group) }}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}>
+                            {icon}
+                        </IconButton>
+                    )
+                })}
             </div>
             <Search filter={filter}/>
             <div className={classes.agentsList}>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
+                {listLoading ? <div className={classes.loader}>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
-                <div className={classes.activeAgent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
-                <div className={classes.agent}>
-                    <div className={classes.line}>
-                    </div>
-                    <span>Бердиев Абдупахмон</span>
-                    <span>70 / 100</span>
-                </div>
+                    : (_.isEmpty(agentsList)
+                        ? <div className={classes.emptyQuery}>
+                            <div>По вашему запросу ничего не найдено</div>
+                        </div>
+                        : agentsList)}
             </div>
         </div>
     )
@@ -339,7 +303,7 @@ const PlanWrapper = enhance((props) => {
             <SubMenu url={ROUTES.PLAN_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить зону">
+                <Tooltip position="left" text="Составить план">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -351,15 +315,25 @@ const PlanWrapper = enhance((props) => {
 
             <div className={classes.wrapper}>
                 {leftSide}
-                <Details filter={filter} />
+                <Details
+                    detailData={detailData}
+                    filter={filter}/>
             </div>
+
+            <PlanCreateDialog
+                open={addPlan.openAddPlan}
+                onClose={addPlan.handleCloseAddPlan}
+                onSubmit={addPlan.handleSubmitAddPlan}
+                zonesList={addPlan.zonesList}
+                zonesLoading={addPlan.zonesLoading}
+            />
         </Container>
     )
 })
 
 PlanWrapper.PropTypes = {
     filter: PropTypes.object,
-    listData: PropTypes.object,
+    usersList: PropTypes.object,
     detailData: PropTypes.object,
     addPlan: PropTypes.shape({
         openAddPlan: PropTypes.bool.isRequired,

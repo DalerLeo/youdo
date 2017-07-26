@@ -223,5 +223,5 @@ export const CLIENT_BALANCE_ITEM_PATH = `${CLIENT_BALANCE}/%d`
 
 export const PLAN = 'plan'
 export const PLAN_LIST_URL = `${PLAN}`
-export const PLAN_ITEM_URL = `${PLAN}/:agentId`
+export const PLAN_ITEM_URL = `/${PLAN}/:agentId`
 export const PLAN_ITEM_PATH = `${PLAN}/%d`
