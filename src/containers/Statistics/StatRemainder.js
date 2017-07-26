@@ -13,10 +13,11 @@ import {
     StatRemainderGridList,
     STAT_REMAINDER_DIALOG_OPEN
 } from '../../components/Statistics'
+
+import {STAT_REMAINDER_FILTER_KEY} from '../../components/Statistics/StatRemainderGridLIst'
 import {
     statRemainderListFetchAction,
-    statRemainderItemFetchAction,
-    getDocumentAction
+    statRemainderItemFetchAction
 } from '../../actions/statRemainder'
 
 const ZERO = 0
@@ -54,31 +55,39 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const statRemainderId = _.get(nextProps, ['params', 'statRemainderId']) || ZERO
         return statRemainderId > ZERO && _.get(props, ['params', 'statRemainderId']) !== statRemainderId
-    }, ({dispatch, params, filter, filterItem}) => {
+    }, ({dispatch, params}) => {
         const statRemainderId = _.toInteger(_.get(params, 'statRemainderId'))
         if (statRemainderId > ZERO) {
-            dispatch(statRemainderItemFetchAction(filter, filterItem, statRemainderId))
+            dispatch(statRemainderItemFetchAction(statRemainderId))
         }
     }),
 
     withHandlers({
         handleOpenStatRemainderDialog: props => (id) => {
             const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTER.STATISTICS_AGENT_ITEM_PATH, id), query: filter.getParams({[STAT_REMAINDER_DIALOG_OPEN]: true})})
+            hashHistory.push({pathname: sprintf(ROUTER.STATISTICS_REMAINDER_ITEM_PATH, id), query: filter.getParams({[STAT_REMAINDER_DIALOG_OPEN]: true})})
         },
 
         handleCloseStatRemainderDialog: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.STATISTICS_AGENT_URL, query: filter.getParams({[STAT_REMAINDER_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname: ROUTER.STATISTICS_REMAINDER_URL, query: filter.getParams({[STAT_REMAINDER_DIALOG_OPEN]: false})})
         },
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParams()})
         },
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const product = _.get(filterForm, ['values', 'product', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
 
-        handleGetDocument: props => () => {
-            const {dispatch, filter} = props
-            return dispatch(getDocumentAction(filter))
+            filter.filterBy({
+                [STAT_REMAINDER_FILTER_KEY.PRODUCT]: product,
+                [STAT_REMAINDER_FILTER_KEY.TYPE]: type,
+                [STAT_REMAINDER_FILTER_KEY.STOCK]: stock
+
+            })
         }
     })
 )
@@ -93,7 +102,6 @@ const StatRemainderList = enhance((props) => {
         filter,
         layout,
         filterItem,
-        filterForm,
         params
     } = props
     const openStatRemainderDialog = toBoolean(_.get(location, ['query', STAT_REMAINDER_DIALOG_OPEN]))
@@ -107,21 +115,16 @@ const StatRemainderList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
-    const agentDetail = _.filter(_.get(list, 'results'), (item) => {
+    const rowDetail = _.filter(_.get(list, 'results'), (item) => {
         return _.get(item, 'id') === detailId
     })
-    const filterDateRange = {
-        'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']) || null,
-        'toDate': _.get(filterForm, ['values', 'date', 'toDate']) || null
-    }
     const detailData = {
         filter: filterItem,
         id: detailId,
         data: detail,
-        agentDetail,
+        rowDetail,
         detailLoading,
-        handleCloseDetail: props.handleCloseDetail,
-        filterDateRange
+        handleCloseDetail: props.handleCloseDetail
 
     }
     const getDocument = {
@@ -132,7 +135,7 @@ const StatRemainderList = enhance((props) => {
         <Layout {...layout}>
             <StatRemainderGridList
                 filter={filter}
-                handleSubmitFilterDialog={props.handleSubmitFilterDialog}
+                onSubmit={props.handleSubmitFilterDialog}
                 listData={listData}
                 detailData={detailData}
                 statRemainderDialog={statRemainderDialog}

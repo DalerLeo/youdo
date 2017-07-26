@@ -6,12 +6,14 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import * as API from '../../constants/api'
+import * as serializers from '../../serializers/Statistics/statProductSerializer'
+import getDocuments from '../../helpers/getDocument'
 
 import {StatProductGridList} from '../../components/Statistics'
 import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/StatProductGridList'
 import {
-    statProductListFetchAction,
-    getDocumentAction
+    statProductListFetchAction
 } from '../../actions/statProduct'
 
 const enhance = compose(
@@ -64,8 +66,9 @@ const enhance = compose(
             hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParams()})
         },
         handleGetDocument: props => () => {
-            const {dispatch, filter} = props
-            return dispatch(getDocumentAction(filter))
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.STAT_PRODUCT_GET_DOCUMENT, params)
         }
     })
 )

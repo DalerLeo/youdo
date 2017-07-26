@@ -19,6 +19,11 @@ import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat.js'
 
+export const STAT_REMAINDER_FILTER_KEY = {
+    STOCK: 'stock',
+    TYPE: 'type',
+    PRODUCT: 'product'
+}
 const enhance = compose(
     injectSheet({
         mainWrapper: {
@@ -176,9 +181,10 @@ const StatRemainderGridList = enhance((props) => {
         statRemainderDialog,
         listData,
         filter,
-        handleSubmitFilterDialog,
         detailData,
-        getDocument
+        getDocument,
+        handleSubmit,
+        onSubmit
     } = props
 
     const headerStyle = {
@@ -242,7 +248,7 @@ const StatRemainderGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                        <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+                        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                             <div className={classes.filter}>
                                 <Field
                                     className={classes.inputFieldCustom}
@@ -252,13 +258,13 @@ const StatRemainderGridList = enhance((props) => {
                                     fullWidth={true}/>
                                 <Field
                                     className={classes.inputFieldCustom}
-                                    name="search"
+                                    name="type"
                                     component={ProductTypeSearchField}
                                     label="Тип товаров"
                                     fullWidth={true}/>
                                 <Field
                                     className={classes.inputFieldCustom}
-                                    name="search"
+                                    name="product"
                                     component={ProductSearchField}
                                     label="Товары"
                                     fullWidth={true}/>
@@ -271,7 +277,7 @@ const StatRemainderGridList = enhance((props) => {
                                 </IconButton>
                             </div>
                             <a className={classes.excel}
-                               onTouchTap = {getDocument.handleGetDocument}>
+                               onClick = {getDocument.handleGetDocument}>
                                 <Excel color="#fff"/> <span>Excel</span>
                             </a>
                         </form>
