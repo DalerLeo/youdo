@@ -144,6 +144,7 @@ const enhance = compose(
 const OrderGridList = enhance((props) => {
     const {
         filter,
+        listPrintData,
         createDialog,
         updateDialog,
         filterDialog,

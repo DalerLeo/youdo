@@ -65,6 +65,7 @@ const rootReducer = combineReducers({
     order: combineReducers({
         create: createThunkReducer(actionTypes.ORDER_CREATE),
         list: createThunkReducer(actionTypes.ORDER_LIST),
+        listPrint: createThunkReducer(actionTypes.ORDER_LIST_PRINT),
         payment: createThunkReducer(actionTypes.ORDER_TRANSACTION),
         item: createThunkReducer(actionTypes.ORDER_ITEM),
         document: createThunkReducer(actionTypes.GET_DOCUMENT),

@@ -292,14 +292,14 @@ const TransactionGridList = enhance((props) => {
                 <div className={classes.rightSide}>
                     <div className={classes.rightTitle}>
                         <div className={classes.outerTitle}>{cashboxName}</div>
-                        { _.get(cashboxData, 'cashboxId') !== AllCashboxId && <div className={classes.outerTitle}>
+                        <div className={classes.outerTitle}>
                             <div className={classes.buttons}>
                                 <a onClick={cashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>
                                 <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
                                 <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
                                 <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
                             </div>
-                        </div>}
+                        </div>
                     </div>
 
                     <GridList

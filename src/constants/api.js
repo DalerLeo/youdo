@@ -114,6 +114,7 @@ export const ORDER_TRANSACTION = '/sales/client_transaction/'
 
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
+export const ORDER_LIST_PRINT = `/${ORDER}/print/`
 export const ORDER_CANCEL = `/${ORDER}/%d/cancel`
 export const GET_DOCUMENT = 'order_document/%d/'
 

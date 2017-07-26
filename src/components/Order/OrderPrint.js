@@ -2,11 +2,29 @@ import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import injectSheet from 'react-jss'
+import _ from 'lodash'
 import {compose} from 'recompose'
 import Close from 'material-ui/svg-icons/navigation/close'
+import CircularProgress from 'material-ui/CircularProgress'
+import numberFormat from '../../helpers/numberFormat'
+import dateFormat from '../../helpers/dateFormat'
+import paymentTypeFormat from '../../helpers/paymentTypeFormat'
+import dealTypeFormat from '../../helpers/dealTypeFormat'
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
+            textAlign: 'center',
+            display: ({loading}) => loading ? 'flex' : 'none'
+        },
         wrapper: {
             background: '#fff',
             padding: '20px 30px',
@@ -24,7 +42,13 @@ const enhance = compose(
         },
         item: {
             width: '100%',
-            marginBottom: '30px'
+            marginBottom: '30px',
+            borderBottom: 'dashed 1px',
+            '&:last-child': {
+                borderBottom: 'none',
+                marginBottom: '0'
+
+            }
         },
         title: {
             display: 'flex',
@@ -58,6 +82,7 @@ const enhance = compose(
         },
         products: {
             marginTop: '10px',
+            marginBottom: '20px',
             '& .row': {
                 padding: '10px 0',
                 borderBottom: '1px #efefef solid',
@@ -82,462 +107,105 @@ const enhance = compose(
 )
 
 const OrderPrint = enhance((props) => {
-    const {classes, printDialog} = props
-
+    const {classes, printDialog, listPrintData} = props
+    const loading = _.get(listPrintData, 'listPrintLoading')
+    if (loading) {
+        return (
+            <div className={classes.loader}>
+                <div>
+                    <CircularProgress size={40} thickness={4}/>
+                </div>
+            </div>
+        )
+    }
     return (
         <div className={classes.wrapper}>
             <IconButton onTouchTap={printDialog.handleClosePrintDialog} className={classes.closeBtn}>
                 <Close color="#666"/>
             </IconButton>
+            {_.map(_.get(listPrintData, 'data'), (item) => {
+                const id = _.get(item, 'id')
+                const marketName = _.get(item, ['market', 'name'])
+                const marketAddress = _.get(item, ['market', 'address'])
+                const marketGuide = _.get(item, ['market', 'guide'])
+                const marketPhone = _.get(item, ['market', 'phone'])
+                const agent = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
+                const totalPrice = _.get(item, ['totalPrice'])
+                const paymentDate = dateFormat(_.get(item, 'paymentDate'))
+                const createdDate = dateFormat(_.get(item, 'createdDate'))
+                const dateDelivery = dateFormat(_.get(item, 'dateDelivery'))
+                const paymentType = paymentTypeFormat(_.get(item, 'paymentType'))
+                const dealType = dealTypeFormat(_.get(item, 'dealType'))
 
-            <div className={classes.item}>
-                <div className={classes.title}>
-                    <span>Заказ №13</span>
-                    <div>Добавлено: 12 Апр 2017</div>
-                </div>
-                <div className={classes.info}>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Название магазина:</li>
-                            <li>Адрес:</li>
-                            <li>Ориентир:</li>
-                            <li>Телефон:</li>
-                            <li>Агент:</li>
-                        </ul>
-                        <ul>
-                            <li>Наименование магазина</li>
-                            <li>Адрес Магазина</li>
-                            <li>Ориентир магазина</li>
-                            <li>Телефон +99856145</li>
-                            <li>Хабибуллаев Хамидилла</li>
-                        </ul>
-                    </div>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Тип сделки:</li>
-                            <li>Дата ожидаемой оплаты:</li>
-                            <li>Дата доставки:</li>
-                            <li>Тип оплаты:</li>
-                        </ul>
-                        <ul>
-                            <li>Консигнация</li>
-                            <li>23 Апр 2017</li>
-                            <li>24 Апр 2017</li>
-                            <li>Наличными</li>
-                        </ul>
-                    </div>
-                </div>
+                return (
+                    <div key={id} className={classes.item}>
+                        <div className={classes.title}>
+                            <span>Заказ № {id}</span>
+                            <div>Добавлено: {createdDate}</div>
+                        </div>
+                        <div className={classes.info}>
+                            <div className={classes.block}>
+                                <ul>
+                                    <li>Название магазина:</li>
+                                    <li>Адрес:</li>
+                                    <li>Ориентир:</li>
+                                    <li>Телефон:</li>
+                                    <li>Агент:</li>
+                                </ul>
+                                <ul>
+                                    <li>{marketName}</li>
+                                    <li>{marketAddress}</li>
+                                    <li>{marketGuide}</li>
+                                    <li>{marketPhone}</li>
+                                    <li>{agent}</li>
+                                </ul>
+                            </div>
+                            <div className={classes.block}>
+                                <ul>
+                                    <li>Тип сделки:</li>
+                                    <li>Дата ожидаемой оплаты:</li>
+                                    <li>Дата доставки:</li>
+                                    <li>Тип оплаты:</li>
+                                </ul>
+                                <ul>
+                                    <li>{dealType}</li>
+                                    <li>{paymentDate}</li>
+                                    <li>{dateDelivery}</li>
+                                    <li>{paymentType}</li>
+                                </ul>
+                            </div>
+                        </div>
 
-                <div className={classes.products}>
-                    <Row>
-                        <Col xs={1}>№</Col>
-                        <Col xs={5}>Наименование</Col>
-                        <Col xs={2}>Цена (UZS)</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Сумма (UZS)</Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}>12</Col>
-                        <Col xs={5}>7 STICK Strawberry (КЛУБНИКА)</Col>
-                        <Col xs={2}>2900</Col>
-                        <Col xs={2}>4 шт</Col>
-                        <Col xs={2}>9 500</Col>
-                    </Row>
-                    <div className={classes.summary}>Итого: 35 000 UZS</div>
-                </div>
-            </div>
-            <div className={classes.item}>
-                <div className={classes.title}>
-                    <span>Заказ №13</span>
-                    <div>Добавлено: 12 Апр 2017</div>
-                </div>
-                <div className={classes.info}>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Название магазина:</li>
-                            <li>Адрес:</li>
-                            <li>Ориентир:</li>
-                            <li>Телефон:</li>
-                            <li>Агент:</li>
-                        </ul>
-                        <ul>
-                            <li>Наименование магазина</li>
-                            <li>Адрес Магазина</li>
-                            <li>Ориентир магазина</li>
-                            <li>Телефон +99856145</li>
-                            <li>Хабибуллаев Хамидилла</li>
-                        </ul>
+                        <div className={classes.products}>
+                            <Row>
+                                <Col xs={1}>№</Col>
+                                <Col xs={5}>Наименование</Col>
+                                <Col xs={2}>Цена (UZS)</Col>
+                                <Col xs={2}>Кол-во</Col>
+                                <Col xs={2}>Сумма (UZS)</Col>
+                            </Row>
+                            {_.map(_.get(item, 'products'), (product) => {
+                                const totalProductPrice = numberFormat(_.get(product, 'totalPrice'))
+                                const productId = _.get(product, 'id')
+                                const measurment = _.get(product, ['product', 'measurement', 'name'])
+                                const name = _.get(product, ['product', 'name'])
+                                const price = numberFormat(_.get(product, 'price'))
+                                const amount = numberFormat(_.get(product, 'amount'), measurment)
+                                return (
+                                    <Row key={productId}>
+                                        <Col xs={1}>{productId}</Col>
+                                        <Col xs={5}>{name}</Col>
+                                        <Col xs={2}>{price}</Col>
+                                        <Col xs={2}>{amount}</Col>
+                                        <Col xs={2}>{totalProductPrice}</Col>
+                                    </Row>
+                                )
+                            })}
+                            <div className={classes.summary}>Итого: {numberFormat(totalPrice)}</div>
+                        </div>
                     </div>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Тип сделки:</li>
-                            <li>Дата ожидаемой оплаты:</li>
-                            <li>Дата доставки:</li>
-                            <li>Тип оплаты:</li>
-                        </ul>
-                        <ul>
-                            <li>Консигнация</li>
-                            <li>23 Апр 2017</li>
-                            <li>24 Апр 2017</li>
-                            <li>Наличными</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className={classes.products}>
-                    <Row>
-                        <Col xs={1}>№</Col>
-                        <Col xs={5}>Наименование</Col>
-                        <Col xs={2}>Цена (UZS)</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Сумма (UZS)</Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}>12</Col>
-                        <Col xs={5}>7 STICK Strawberry (КЛУБНИКА)</Col>
-                        <Col xs={2}>2900</Col>
-                        <Col xs={2}>4 шт</Col>
-                        <Col xs={2}>9 500</Col>
-                    </Row>
-                    <div className={classes.summary}>Итого: 35 000 UZS</div>
-                </div>
-            </div>
-            <div className={classes.item}>
-                <div className={classes.title}>
-                    <span>Заказ №13</span>
-                    <div>Добавлено: 12 Апр 2017</div>
-                </div>
-                <div className={classes.info}>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Название магазина:</li>
-                            <li>Адрес:</li>
-                            <li>Ориентир:</li>
-                            <li>Телефон:</li>
-                            <li>Агент:</li>
-                        </ul>
-                        <ul>
-                            <li>Наименование магазина</li>
-                            <li>Адрес Магазина</li>
-                            <li>Ориентир магазина</li>
-                            <li>Телефон +99856145</li>
-                            <li>Хабибуллаев Хамидилла</li>
-                        </ul>
-                    </div>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Тип сделки:</li>
-                            <li>Дата ожидаемой оплаты:</li>
-                            <li>Дата доставки:</li>
-                            <li>Тип оплаты:</li>
-                        </ul>
-                        <ul>
-                            <li>Консигнация</li>
-                            <li>23 Апр 2017</li>
-                            <li>24 Апр 2017</li>
-                            <li>Наличными</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className={classes.products}>
-                    <Row>
-                        <Col xs={1}>№</Col>
-                        <Col xs={5}>Наименование</Col>
-                        <Col xs={2}>Цена (UZS)</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Сумма (UZS)</Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}>12</Col>
-                        <Col xs={5}>7 STICK Strawberry (КЛУБНИКА)</Col>
-                        <Col xs={2}>2900</Col>
-                        <Col xs={2}>4 шт</Col>
-                        <Col xs={2}>9 500</Col>
-                    </Row>
-                    <div className={classes.summary}>Итого: 35 000 UZS</div>
-                </div>
-            </div>
-            <div className={classes.item}>
-                <div className={classes.title}>
-                    <span>Заказ №13</span>
-                    <div>Добавлено: 12 Апр 2017</div>
-                </div>
-                <div className={classes.info}>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Название магазина:</li>
-                            <li>Адрес:</li>
-                            <li>Ориентир:</li>
-                            <li>Телефон:</li>
-                            <li>Агент:</li>
-                        </ul>
-                        <ul>
-                            <li>Наименование магазина</li>
-                            <li>Адрес Магазина</li>
-                            <li>Ориентир магазина</li>
-                            <li>Телефон +99856145</li>
-                            <li>Хабибуллаев Хамидилла</li>
-                        </ul>
-                    </div>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Тип сделки:</li>
-                            <li>Дата ожидаемой оплаты:</li>
-                            <li>Дата доставки:</li>
-                            <li>Тип оплаты:</li>
-                        </ul>
-                        <ul>
-                            <li>Консигнация</li>
-                            <li>23 Апр 2017</li>
-                            <li>24 Апр 2017</li>
-                            <li>Наличными</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className={classes.products}>
-                    <Row>
-                        <Col xs={1}>№</Col>
-                        <Col xs={5}>Наименование</Col>
-                        <Col xs={2}>Цена (UZS)</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Сумма (UZS)</Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}>12</Col>
-                        <Col xs={5}>7 STICK Strawberry (КЛУБНИКА)</Col>
-                        <Col xs={2}>2900</Col>
-                        <Col xs={2}>4 шт</Col>
-                        <Col xs={2}>9 500</Col>
-                    </Row>
-                    <div className={classes.summary}>Итого: 35 000 UZS</div>
-                </div>
-            </div>
-            <div className={classes.item}>
-                <div className={classes.title}>
-                    <span>Заказ №13</span>
-                    <div>Добавлено: 12 Апр 2017</div>
-                </div>
-                <div className={classes.info}>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Название магазина:</li>
-                            <li>Адрес:</li>
-                            <li>Ориентир:</li>
-                            <li>Телефон:</li>
-                            <li>Агент:</li>
-                        </ul>
-                        <ul>
-                            <li>Наименование магазина</li>
-                            <li>Адрес Магазина</li>
-                            <li>Ориентир магазина</li>
-                            <li>Телефон +99856145</li>
-                            <li>Хабибуллаев Хамидилла</li>
-                        </ul>
-                    </div>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Тип сделки:</li>
-                            <li>Дата ожидаемой оплаты:</li>
-                            <li>Дата доставки:</li>
-                            <li>Тип оплаты:</li>
-                        </ul>
-                        <ul>
-                            <li>Консигнация</li>
-                            <li>23 Апр 2017</li>
-                            <li>24 Апр 2017</li>
-                            <li>Наличными</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className={classes.products}>
-                    <Row>
-                        <Col xs={1}>№</Col>
-                        <Col xs={5}>Наименование</Col>
-                        <Col xs={2}>Цена (UZS)</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Сумма (UZS)</Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}>12</Col>
-                        <Col xs={5}>7 STICK Strawberry (КЛУБНИКА)</Col>
-                        <Col xs={2}>2900</Col>
-                        <Col xs={2}>4 шт</Col>
-                        <Col xs={2}>9 500</Col>
-                    </Row>
-                    <div className={classes.summary}>Итого: 35 000 UZS</div>
-                </div>
-            </div>
-            <div className={classes.item}>
-                <div className={classes.title}>
-                    <span>Заказ №13</span>
-                    <div>Добавлено: 12 Апр 2017</div>
-                </div>
-                <div className={classes.info}>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Название магазина:</li>
-                            <li>Адрес:</li>
-                            <li>Ориентир:</li>
-                            <li>Телефон:</li>
-                            <li>Агент:</li>
-                        </ul>
-                        <ul>
-                            <li>Наименование магазина</li>
-                            <li>Адрес Магазина</li>
-                            <li>Ориентир магазина</li>
-                            <li>Телефон +99856145</li>
-                            <li>Хабибуллаев Хамидилла</li>
-                        </ul>
-                    </div>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Тип сделки:</li>
-                            <li>Дата ожидаемой оплаты:</li>
-                            <li>Дата доставки:</li>
-                            <li>Тип оплаты:</li>
-                        </ul>
-                        <ul>
-                            <li>Консигнация</li>
-                            <li>23 Апр 2017</li>
-                            <li>24 Апр 2017</li>
-                            <li>Наличными</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className={classes.products}>
-                    <Row>
-                        <Col xs={1}>№</Col>
-                        <Col xs={5}>Наименование</Col>
-                        <Col xs={2}>Цена (UZS)</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Сумма (UZS)</Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}>12</Col>
-                        <Col xs={5}>7 STICK Strawberry (КЛУБНИКА)</Col>
-                        <Col xs={2}>2900</Col>
-                        <Col xs={2}>4 шт</Col>
-                        <Col xs={2}>9 500</Col>
-                    </Row>
-                    <div className={classes.summary}>Итого: 35 000 UZS</div>
-                </div>
-            </div>
-            <div className={classes.item}>
-                <div className={classes.title}>
-                    <span>Заказ №13</span>
-                    <div>Добавлено: 12 Апр 2017</div>
-                </div>
-                <div className={classes.info}>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Название магазина:</li>
-                            <li>Адрес:</li>
-                            <li>Ориентир:</li>
-                            <li>Телефон:</li>
-                            <li>Агент:</li>
-                        </ul>
-                        <ul>
-                            <li>Наименование магазина</li>
-                            <li>Адрес Магазина</li>
-                            <li>Ориентир магазина</li>
-                            <li>Телефон +99856145</li>
-                            <li>Хабибуллаев Хамидилла</li>
-                        </ul>
-                    </div>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Тип сделки:</li>
-                            <li>Дата ожидаемой оплаты:</li>
-                            <li>Дата доставки:</li>
-                            <li>Тип оплаты:</li>
-                        </ul>
-                        <ul>
-                            <li>Консигнация</li>
-                            <li>23 Апр 2017</li>
-                            <li>24 Апр 2017</li>
-                            <li>Наличными</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className={classes.products}>
-                    <Row>
-                        <Col xs={1}>№</Col>
-                        <Col xs={5}>Наименование</Col>
-                        <Col xs={2}>Цена (UZS)</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Сумма (UZS)</Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}>12</Col>
-                        <Col xs={5}>7 STICK Strawberry (КЛУБНИКА)</Col>
-                        <Col xs={2}>2900</Col>
-                        <Col xs={2}>4 шт</Col>
-                        <Col xs={2}>9 500</Col>
-                    </Row>
-                    <div className={classes.summary}>Итого: 35 000 UZS</div>
-                </div>
-            </div>
-            <div className={classes.item}>
-                <div className={classes.title}>
-                    <span>Заказ №13</span>
-                    <div>Добавлено: 12 Апр 2017</div>
-                </div>
-                <div className={classes.info}>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Название магазина:</li>
-                            <li>Адрес:</li>
-                            <li>Ориентир:</li>
-                            <li>Телефон:</li>
-                            <li>Агент:</li>
-                        </ul>
-                        <ul>
-                            <li>Наименование магазина</li>
-                            <li>Адрес Магазина</li>
-                            <li>Ориентир магазина</li>
-                            <li>Телефон +99856145</li>
-                            <li>Хабибуллаев Хамидилла</li>
-                        </ul>
-                    </div>
-                    <div className={classes.block}>
-                        <ul>
-                            <li>Тип сделки:</li>
-                            <li>Дата ожидаемой оплаты:</li>
-                            <li>Дата доставки:</li>
-                            <li>Тип оплаты:</li>
-                        </ul>
-                        <ul>
-                            <li>Консигнация</li>
-                            <li>23 Апр 2017</li>
-                            <li>24 Апр 2017</li>
-                            <li>Наличными</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className={classes.products}>
-                    <Row>
-                        <Col xs={1}>№</Col>
-                        <Col xs={5}>Наименование</Col>
-                        <Col xs={2}>Цена (UZS)</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Сумма (UZS)</Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}>12</Col>
-                        <Col xs={5}>7 STICK Strawberry (КЛУБНИКА)</Col>
-                        <Col xs={2}>2900</Col>
-                        <Col xs={2}>4 шт</Col>
-                        <Col xs={2}>9 500</Col>
-                    </Row>
-                    <div className={classes.summary}>Итого: 35 000 UZS</div>
-                </div>
-            </div>
+                )
+            })}
         </div>
     )
 })
