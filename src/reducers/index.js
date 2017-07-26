@@ -255,7 +255,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.ZONE_LIST),
         update: createThunkReducer(actionTypes.ZONE_UPDATE),
         item: createThunkReducer(actionTypes.ZONE_ITEM),
-        statistics: createThunkReducer(actionTypes.ZONE_STAT)
+        statistics: createThunkReducer(actionTypes.ZONE_STAT),
+        bindAgent: createThunkReducer(actionTypes.ZONE_BIND_AGENT)
     }),
     tracking: combineReducers({
         list: createThunkReducer(actionTypes.TRACKING_LIST),

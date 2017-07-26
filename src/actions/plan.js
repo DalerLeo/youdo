@@ -22,9 +22,10 @@ export const planCreateAction = (formValues) => {
     }
 }
 
-export const planListFetchAction = () => {
+export const planAgentsListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.PLAN_LIST)
+        .get(API.USERS_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -32,14 +33,14 @@ export const planListFetchAction = () => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {
-        type: actionTypes.PLAN_LIST,
+        type: actionTypes.USERS_LIST,
         payload
     }
 }
 
 export const planItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.PLAN_ITEM, id))
+        .get(sprintf(API.USERS_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -47,7 +48,22 @@ export const planItemFetchAction = (id) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {
-        type: actionTypes.PLAN_ITEM,
+        type: actionTypes.USERS_ITEM,
+        payload
+    }
+}
+
+export const planZonesListFetchAction = () => {
+    const payload = axios()
+        .get(API.ZONE_LIST)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.ZONE_LIST,
         payload
     }
 }

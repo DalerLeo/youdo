@@ -1,45 +1,86 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import PlanWrapper from '../../components/Plan/PlanWrapper'
-import {ADD_PLAN} from '../../components/Plan'
+import {ADD_PLAN, PlanWrapper, USER_GROUP} from '../../components/Plan'
 import {
     planCreateAction,
-    planListFetchAction
+    planAgentsListFetchAction,
+    planItemFetchAction,
+    planZonesListFetchAction
 } from '../../actions/plan'
 import {openSnackbarAction} from '../../actions/snackbar'
+
+const ONE = 1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const list = _.get(state, ['plan', 'list', 'data'])
-        const listLoading = _.get(state, ['plan', 'list', 'loading'])
-        const detail = _.get(state, ['plan', 'item', 'data'])
-        const detailLoading = _.get(state, ['plan', 'item', 'loading'])
+        const usersList = _.get(state, ['users', 'list', 'data'])
+        const usersListLoading = _.get(state, ['users', 'list', 'loading'])
+        const detail = _.get(state, ['users', 'item', 'data'])
+        const detailLoading = _.get(state, ['users', 'item', 'loading'])
+        const zones = _.get(state, ['zone', 'list', 'data'])
+        const zonesLoading = _.get(state, ['zone', 'list', 'loading'])
         const stat = _.get(state, ['plan', 'statistics', 'data'])
         const statLoading = _.get(state, ['plan', 'statistics', 'loading'])
         const createForm = _.get(state, ['form', 'PlanCreateForm', 'values'])
-        const filter = filterHelper(list, pathname, query)
+        const filter = filterHelper(usersList, pathname, query)
         return {
             query,
             pathname,
-            list,
-            listLoading,
+            usersList,
+            usersListLoading,
             stat,
             statLoading,
             detail,
             detailLoading,
+            zones,
+            zonesLoading,
             createForm,
             filter
         }
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const prevTab = _.get(props, ['query', 'group'])
+        const nextTab = _.get(nextProps, ['query', 'group'])
+        const prevSearch = _.get(props, ['query', 'search'])
+        const nextSearch = _.get(nextProps, ['query', 'search'])
+
+        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
+            (prevTab !== nextTab && nextTab) ||
+            (prevSearch !== nextSearch)
+    }, ({dispatch, filter}) => {
+        dispatch(planAgentsListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const agentId = _.get(nextProps, ['params', 'agentId'])
+        return agentId && _.get(props, ['params', 'agentId']) !== agentId
+    }, ({dispatch, params}) => {
+        const agentId = _.toInteger(_.get(params, 'agentId'))
+        agentId && dispatch(planItemFetchAction(agentId))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevDialog = toBoolean(_.get(props, ['query', ADD_PLAN]))
+        const nextDialog = toBoolean(_.get(nextProps, ['query', ADD_PLAN]))
+        return prevDialog !== nextDialog && nextDialog === true
+    }, ({dispatch}) => {
+        dispatch(planZonesListFetchAction())
+    }),
+
     withHandlers({
+        handleClickTab: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[USER_GROUP]: id})})
+        },
+
         handleOpenAddPlan: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ADD_PLAN]: true})})
@@ -59,7 +100,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ADD_PLAN]: false})})
-                    dispatch(planListFetchAction(filter))
+                    dispatch(planAgentsListFetchAction(filter))
                 })
         }
     })
@@ -68,31 +109,36 @@ const enhance = compose(
 const PlanList = enhance((props) => {
     const {
         filter,
-        list,
-        listLoading,
+        usersList,
+        usersListLoading,
         location,
         layout,
         params,
         stat,
         statLoading,
         detail,
-        detailLoading
+        detailLoading,
+        zones,
+        zonesLoading
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
-    const openDetail = !_.isEmpty(_.get(params, 'planId'))
-    const detailId = _.toInteger(_.get(params, 'planId'))
+    const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
+    const openDetail = !_.isEmpty(_.get(params, 'agentId'))
+    const detailId = _.toInteger(_.get(params, 'agentId'))
 
     const addPlan = {
         openAddPlan,
+        zonesList: _.get(zones, 'results'),
+        zonesLoading,
         handleOpenAddPlan: props.handleOpenAddPlan,
         handleCloseAddPlan: props.handleCloseAddPlan,
         handleSubmitAddPlan: props.handleSubmitAddPlan
     }
 
     const listData = {
-        data: _.get(list, 'results'),
-        listLoading
+        data: _.get(usersList, 'results'),
+        usersListLoading
     }
 
     const statData = {
@@ -111,9 +157,11 @@ const PlanList = enhance((props) => {
         <Layout {...layout}>
             <PlanWrapper
                 filter={filter}
-                listData={listData}
+                usersList={listData}
                 statData={statData}
                 addPlan={addPlan}
+                handleClickTab={props.handleClickTab}
+                groupId={groupId}
                 detailData={detailData}
             />
         </Layout>

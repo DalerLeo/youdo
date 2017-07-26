@@ -1,11 +1,11 @@
+import _ from 'lodash'
 import React from 'react'
-import FlatButton from 'material-ui/FlatButton'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import CircularProgress from 'material-ui/CircularProgress'
 import Person from '../Images/person.png'
-import Add from 'material-ui/svg-icons/content/add'
 import Place from 'material-ui/svg-icons/maps/place'
 import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
 import Delivery from 'material-ui/svg-icons/maps/local-shipping'
@@ -14,6 +14,7 @@ import Warning from 'material-ui/svg-icons/alert/error-outline'
 import Checked from 'material-ui/svg-icons/toggle/check-box'
 import Indeterminate from 'material-ui/svg-icons/toggle/indeterminate-check-box'
 import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
+import Agent from '../Images/agent.png'
 
 const timelineColor = '#22a6c6'
 const enhance = compose(
@@ -21,15 +22,38 @@ const enhance = compose(
         padding: {
             padding: '20px 30px'
         },
+        loader: {
+            width: '100%',
+            height: '100%',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
         wrapper: {
             background: '#f4f4f4 !important',
             width: 'calc(100% - 350px)',
             extend: 'padding',
             zIndex: '2',
-            boxShadow: '-3px -2px 12px 0px rgba(0, 0, 0, 0.07), -4px -4px 16px 0px rgba(0, 0, 0, 0.08)'
+            boxShadow: '-3px -2px 12px 0px rgba(0, 0, 0, 0.07), -4px -4px 16px 0px rgba(0, 0, 0, 0.08)',
+            '& > div': {
+                height: '100%'
+            }
         },
         agentInfo: {
             border: '1px #e9e9e9 solid',
+            position: 'relative',
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                background: 'linear-gradient(to bottom, rgba(244,244,244,1) 0%,rgba(244,244,244,0.75)' +
+                ' 50%,rgba(244,244,244,0) 100%)',
+                bottom: '-32px',
+                left: '0',
+                right: '0',
+                height: '31px',
+                zIndex: '10'
+            },
             '& > div': {
                 padding: '15px 20px'
             }
@@ -62,6 +86,16 @@ const enhance = compose(
                 marginRight: '10px'
             }
         },
+        salesSummary: {
+            '& span': {
+                display: 'inline-block',
+                lineHeight: '1.2',
+                '&:last-child': {
+                    marginLeft: '10px',
+                    textAlign: 'right'
+                }
+            }
+        },
         achieves: {
             extend: 'header',
             background: '#fff'
@@ -89,9 +123,9 @@ const enhance = compose(
             extend: 'done'
         },
         timelineWrapper: {
-            margin: '30px -30px 0',
-            padding: '0 30px',
-            height: 'calc(100% - 140px)',
+            margin: '0 -30px',
+            padding: ' 20px 30px 0',
+            height: 'calc(100% - 130px)',
             overflowY: 'auto',
             position: 'relative',
             '&:after': {
@@ -274,24 +308,47 @@ const enhance = compose(
                 fontSize: '16px !important',
                 fontWeight: 'bold'
             }
+        },
+        noAgent: {
+            backgroundSize: '150px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            textAlign: 'center',
+            color: '#999',
+            position: 'relative',
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0',
+                zIndex: '10'
+            },
+            '& img': {
+                width: '180px',
+                opacity: '0.8',
+                margin: 'auto'
+            },
+            '& span': {
+                display: 'block',
+                fontSize: '17px !important',
+                lineHeight: '1',
+                marginTop: '10px'
+            }
         }
     })
 )
 
 const PlanDetails = enhance((props) => {
-    const {classes} = props
-    const buttonStyle = {
-        button: {
-            height: '28px',
-            lineHeight: '28px'
-        },
-        icon: {
-            color: '#fff',
-            fill: '#fff',
-            width: 16,
-            height: 16
-        }
-    }
+    const {classes, detailData} = props
+    const loading = _.get(detailData, 'detailLoading')
+    const isOpenDetails = _.get(detailData, 'openDetail')
+    const firstName = _.get(detailData, ['data', 'firstName'])
+    const secondName = _.get(detailData, ['data', 'secondName'])
+
     const achieveIcon = {
         basic: {
             color: '#999',
@@ -311,156 +368,171 @@ const PlanDetails = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <div className={classes.agentInfo}>
-                <div className={classes.header}>
-                    <div className={classes.info}>
-                        <span>Агент</span>
-                        <span>Название зоны</span>
-                    </div>
-                    <div className={classes.agent}>
-                        <img src={Person} alt=""/>
-                        <div>Бердиев <br/> Абдупахмон</div>
-                    </div>
-                    <FlatButton
-                        label="Добавить задание"
-                        backgroundColor="rgb(18, 170, 235)"
-                        style={buttonStyle.button}
-                        rippleColor="#fff"
-                        hoverColor="rgba(18, 170, 235, 0.7)"
-                        labelStyle={{textTransform: 'none', color: '#fff'}}
-                        icon={<Add style={buttonStyle.icon}/>}
-                    />
+            {loading
+                ? <div className={classes.loader}>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
-                <div className={classes.achieves}>
-                    <div className={classes.done}>
-                        <div>
-                            <Place style={achieveIcon.basic}/>
-                            <div>
-                                <span>10 / 20</span>
-                                <span>посещено</span>
+                : (isOpenDetails
+                    ? <div>
+                        <div className={classes.agentInfo}>
+                            <div className={classes.header}>
+                                <div className={classes.info}>
+                                    <span>Агент</span>
+                                    <span>Название зоны</span>
+                                </div>
+                                <div className={classes.agent}>
+                                    <img src={Person} alt=""/>
+                                    <div>{secondName} <br/> {firstName}</div>
+                                </div>
+                                <div className={classes.salesSummary}>
+                                    <span>Сумма <br/> от продаж</span>
+                                    <span>1 000 000 UZS (н)<br/>500 000 UZS (б)</span>
+                                </div>
+                            </div>
+                            <div className={classes.achieves}>
+                                <div className={classes.done}>
+                                    <div>
+                                        <Place style={achieveIcon.basic}/>
+                                        <div>
+                                            <span>10 / 20</span>
+                                            <span>посещено</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Balance style={achieveIcon.basic}/>
+                                        <div>
+                                            <span>5</span>
+                                            <span>сделки</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Delivery style={achieveIcon.basic}/>
+                                        <div>
+                                            <span>3 / 3</span>
+                                            <span>доставки</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Assignment style={achieveIcon.basic}/>
+                                        <div>
+                                            <span>3 / 3</span>
+                                            <span>отчеты</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={classes.warning}>
+                                    <div>
+                                        <Warning style={achieveIcon.error}/>
+                                        <div>
+                                            <span>10</span>
+                                            <span>не выполнено</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <Balance style={achieveIcon.basic}/>
-                            <div>
-                                <span>5</span>
-                                <span>сделки</span>
+
+                        <div className={classes.timelineWrapper}>
+                            <div className={classes.timeline}>
+                                <div className={classes.timelineDate}>22 Апр, 2017</div>
+                                <div className={classes.timelineBlockWrapper}>
+                                    <div className={classes.timelineBlock}>
+                                        <div className={classes.timelineDot}>
+                                        </div>
+
+                                        <Paper className={classes.timelineContent}>
+                                            <h2>Title of section 1</h2>
+                                            <ul>
+                                                <li>Посещение магазина <Checked color="#92ce95"/></li>
+                                                <li>Заключение сделки <Checked color="#92ce95"/></li>
+                                                <li>Посещение магазина <Checked color="#92ce95"/></li>
+
+                                            </ul>
+                                            <span className={classes.date}>10:56</span>
+                                        </Paper>
+                                    </div>
+
+                                    <div className={classes.timelineBlock}>
+                                        <div className={classes.timelineDot}>
+                                        </div>
+
+                                        <Paper className={classes.timelineContent}>
+                                            <h2>Title of section 2</h2>
+                                            <ul>
+                                                <li>Посещение магазина <Checked color="#92ce95"/></li>
+                                                <li>Заключение сделки <Indeterminate color="#e57373"/></li>
+                                                <li>Посещение магазина <CheckOutline color="#999"/></li>
+                                            </ul>
+                                            <span className={classes.date}>11:42</span>
+                                        </Paper>
+                                    </div>
+
+                                    <div className={classes.timelineBlockPassive}>
+                                        <div className={classes.timelineDot}>
+                                        </div>
+
+                                        <Paper className={classes.timelineContent}>
+                                            <h2>Title of section 1</h2>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio,
+                                                dolorum provident rerum aut hic quasi placeat iure tempora
+                                                laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui
+                                                ut.</p>
+                                        </Paper>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <Delivery style={achieveIcon.basic}/>
-                            <div>
-                                <span>3 / 3</span>
-                                <span>доставки</span>
-                            </div>
-                        </div>
-                        <div>
-                            <Assignment style={achieveIcon.basic}/>
-                            <div>
-                                <span>3 / 3</span>
-                                <span>отчеты</span>
+                            <div className={classes.timeline}>
+                                <div className={classes.timelineDate}>22 Апр, 2017</div>
+                                <div className={classes.timelineBlockWrapper}>
+                                    <div className={classes.timelineBlock}>
+                                        <div className={classes.timelineDot}>
+                                        </div>
+
+                                        <Paper className={classes.timelineContent}>
+                                            <h2>Title of section 1</h2>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio,
+                                                dolorum provident rerum aut hic quasi placeat iure tempora
+                                                laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui
+                                                ut.</p>
+                                            <span className={classes.date}>10:56</span>
+                                        </Paper>
+                                    </div>
+
+                                    <div className={classes.timelineBlock}>
+                                        <div className={classes.timelineDot}>
+                                        </div>
+
+                                        <Paper className={classes.timelineContent}>
+                                            <h2>Title of section 2</h2>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio,
+                                                dolorum provident rerum aut?</p>
+                                            <span className={classes.date}>11:42</span>
+                                        </Paper>
+                                    </div>
+
+                                    <div className={classes.timelineBlockPassive}>
+                                        <div className={classes.timelineDot}>
+                                        </div>
+
+                                        <Paper className={classes.timelineContent}>
+                                            <h2>Title of section 1</h2>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio,
+                                                dolorum provident rerum aut hic quasi placeat iure tempora
+                                                laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui
+                                                ut.</p>
+                                        </Paper>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className={classes.warning}>
+                    : <div className={classes.noAgent}>
                         <div>
-                            <Warning style={achieveIcon.error}/>
-                            <div>
-                                <span>10</span>
-                                <span>не выполнено</span>
-                            </div>
+                            <img src={Agent} alt=""/>
+                            <span>Для отображения статистики <br/> выберите агента</span>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className={classes.timelineWrapper}>
-                <div className={classes.timeline}>
-                    <div className={classes.timelineDate}>22 Апр, 2017</div>
-                    <div className={classes.timelineBlockWrapper}>
-                        <div className={classes.timelineBlock}>
-                            <div className={classes.timelineDot}>
-                            </div>
-
-                            <Paper className={classes.timelineContent}>
-                                <h2>Title of section 1</h2>
-                                <ul>
-                                    <li>Посещение магазина <Checked color="#92ce95"/></li>
-                                    <li>Заключение сделки <Checked color="#92ce95"/></li>
-                                    <li>Посещение магазина <Checked color="#92ce95"/></li>
-
-                                </ul>
-                                <span className={classes.date}>10:56</span>
-                            </Paper>
-                        </div>
-
-                        <div className={classes.timelineBlock}>
-                            <div className={classes.timelineDot}>
-                            </div>
-
-                            <Paper className={classes.timelineContent}>
-                                <h2>Title of section 2</h2>
-                                <ul>
-                                    <li>Посещение магазина <Checked color="#92ce95"/></li>
-                                    <li>Заключение сделки <Indeterminate color="#e57373"/></li>
-                                    <li>Посещение магазина <CheckOutline color="#999"/></li>
-                                </ul>
-                                <span className={classes.date}>11:42</span>
-                            </Paper>
-                        </div>
-
-                        <div className={classes.timelineBlockPassive}>
-                            <div className={classes.timelineDot}>
-                            </div>
-
-                            <Paper className={classes.timelineContent}>
-                                <h2>Title of section 1</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio, dolorum provident rerum aut hic quasi placeat iure tempora
-                                    laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui ut.</p>
-                            </Paper>
-                        </div>
-                    </div>
-                </div>
-                <div className={classes.timeline}>
-                    <div className={classes.timelineDate}>22 Апр, 2017</div>
-                    <div className={classes.timelineBlockWrapper}>
-                        <div className={classes.timelineBlock}>
-                            <div className={classes.timelineDot}>
-                            </div>
-
-                            <Paper className={classes.timelineContent}>
-                                <h2>Title of section 1</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio, dolorum provident rerum aut hic quasi placeat iure tempora
-                                    laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui ut.</p>
-                                <span className={classes.date}>10:56</span>
-                            </Paper>
-                        </div>
-
-                        <div className={classes.timelineBlock}>
-                            <div className={classes.timelineDot}>
-                            </div>
-
-                            <Paper className={classes.timelineContent}>
-                                <h2>Title of section 2</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio, dolorum provident rerum aut?</p>
-                                <span className={classes.date}>11:42</span>
-                            </Paper>
-                        </div>
-
-                        <div className={classes.timelineBlockPassive}>
-                            <div className={classes.timelineDot}>
-                            </div>
-
-                            <Paper className={classes.timelineContent}>
-                                <h2>Title of section 1</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio, dolorum provident rerum aut hic quasi placeat iure tempora
-                                    laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui ut.</p>
-                            </Paper>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
+                    </div>)}
+        </div>
     )
 })
 
