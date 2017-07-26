@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
 import {reset} from 'redux-form'
 import Layout from '../../components/Layout'

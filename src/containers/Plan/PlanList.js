@@ -119,7 +119,7 @@ const PlanList = enhance((props) => {
         detail,
         detailLoading,
         zones,
-        zonesLoading,
+        zonesLoading
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
