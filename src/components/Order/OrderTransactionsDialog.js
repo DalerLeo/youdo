@@ -13,6 +13,8 @@ import MainStyles from '../Styles/MainStyles'
 import numberFormat from '../../helpers/numberFormat'
 import moment from 'moment'
 import noPayment from '../Images/noPayment.png'
+import dateFormat from '../../helpers/dateFormat'
+import getConfig from '../../helpers/getConfig'
 
 export const ORDER_TRANSACTIONS_DIALOG_OPEN = 'openTransactionsDialog'
 const enhance = compose(
@@ -51,6 +53,9 @@ const enhance = compose(
                 },
                 '& > div:nth-child(4)': {
                     textAlign: 'right !important'
+                },
+                '& > div:nth-child(5)': {
+                    textAlign: 'right !important'
                 }
             }
         },
@@ -87,7 +92,7 @@ const OrderTransactionsDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '300px'} : {width: '600px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '900px', maxWidth: 'auto'}}
             open={open}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
@@ -106,23 +111,27 @@ const OrderTransactionsDialog = enhance((props) => {
                     <div className={classes.field}>
                         {data ? <div className={classes.transactions}>
                             <Row className="dottedList">
-                                <Col xs={3}>Код оплаты</Col>
-                                <Col xs={3}>Касса</Col>
-                                <Col xs={3}>Дата оплаты</Col>
-                                <Col xs={3}>Сумма оплаты</Col>
+                                <Col xs={3}>Кто</Col>
+                                <Col xs={2}>Касса</Col>
+                                <Col xs={2}>Дата</Col>
+                                <Col xs={2}>Сумма оплаты</Col>
+                                <Col xs={3}>В внутреннем валюте</Col>
                             </Row>
-                            {_.map(_.get(paymentData, 'data'), (item, index) => {
-                                const id = _.get(item, ['transaction', 'id'])
-                                const cashbox = _.get(item, ['transaction', 'cashbox', 'name'])
-                                const payDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-                                const amount = numberFormat(_.get(item, ['transaction', 'amount']))
+                            {_.map(_.get(paymentData, ['data', 'results']), (item, index) => {
+                                const cashier = _.get(item, ['transaction', 'name']) || 'Не принято'
+                                const currency = _.get(item, ['currency', 'name'])
+
+                                const payDate = dateFormat(_.get(item, 'createdDate')) + moment(_.get(item, 'createdDate')).format(' HH:MM')
+                                const amount = numberFormat(_.get(item, ['amount']), currency)
+                                const internal = numberFormat(_.get(item, ['internal']), getConfig('PRIMARY_CURRENCY'))
 
                                 return (
                                     <Row key={index} className="dottedList">
-                                        <Col xs={3}>{id}</Col>
-                                        <Col xs={3}>{cashbox}</Col>
-                                        <Col xs={3}>{payDate}</Col>
-                                        <Col xs={3}>{amount}</Col>
+                                        <Col xs={3}>{'?'}</Col>
+                                        <Col xs={2}>{cashier}</Col>
+                                        <Col xs={2}>{payDate}</Col>
+                                        <Col xs={2}>{amount}</Col>
+                                        <Col xs={3}>{internal}</Col>
                                     </Row>
                                 )
                             })}

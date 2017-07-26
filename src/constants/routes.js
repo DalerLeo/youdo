@@ -208,8 +208,9 @@ export const STATISTICS_OUTCOME_CATEGORY_URL = `/${STATISTICS_OUTCOME_CATEGORY}`
 // ------------------------------------------------------------------------
 export const STATISTICS_STOCK_URL = `/${STATISTICS}/stock`
 
-export const STATISTICS_REMAINDER_URL = `/${STATISTICS}/remainder`
+export const STATISTICS_REMAINDER_URL = `${STATISTICS}/remainder`
 export const STATISTICS_REMAINDER_ITEM_URL = `/${STATISTICS_REMAINDER_URL}/:statRemainderId`
+export const STATISTICS_REMAINDER_ITEM_PATH = `/${STATISTICS_REMAINDER_URL}/%d`
 
 export const STOCK_RECEIVE = 'stockReceive'
 export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`

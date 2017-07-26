@@ -6,10 +6,9 @@ import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/Statistics/statRemainderSerializer'
 import fileDownload from 'react-file-download'
 
-export const statRemainderItemFetchAction = (filter, filterItem, id) => {
-    const params = serializers.itemSerializer(filter.getParams(), filterItem.getParams(), id)
+export const statRemainderItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.STAT_REMAINDER_ITEM, id), {params})
+        .get(sprintf(API.STAT_REMAINDER_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })

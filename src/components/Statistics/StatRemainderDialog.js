@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -9,10 +8,9 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
-import Person from '../Images/person.png'
 import Pagination from '../GridList/GridListNavPagination'
-import getConfig from '../../helpers/getConfig'
-import numberFormat from '../../helpers/numberFormat.js'
+import dateFormat from '../../helpers/dateFormat'
+import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({
@@ -133,30 +131,23 @@ const StatRemainderDialog = enhance((props) => {
         classes,
         detailData
     } = props
-    const loading = _.get(detailData, 'detailLoading')
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
-    const income = numberFormat(_.get(detailData, ['agentDetail', '0', 'income']), primaryCurrency)
-    const fromDate = _.get(detailData, ['filterDateRange', 'fromDate'])
-        ? _.get(detailData, ['filterDateRange', 'fromDate']).format('DD.MM.YYYY')
-        : null
-    const toDate = _.get(detailData, ['filterDateRange', 'toDate'])
-        ? _.get(detailData, ['filterDateRange', 'toDate']).format('DD.MM.YYYY')
-        : null
-    const dateRange = (fromDate && toDate) ? fromDate + ' - ' + toDate : 'Весь'
 
-    const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
-        const id = _.get(item, 'id')
-        const market = _.get(item, ['market', 'name'])
-        const totalPrice = _.get(item, 'totalPrice')
-        const createdDate = moment(_.get(item, 'createdDate')).format('LL')
+    const loading = _.get(detailData, 'detailLoading')
+    const agentName = _.get(detailData, ['rowDetail', '0', 'title'])
+    const measurement = _.get(detailData, ['rowDetail', '0', 'measurement', 'name'])
+
+    const remainderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
+        const balance = numberFormat(_.get(item, ['balance']), measurement)
+        const barcode = _.get(item, 'barcode')
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const isDefect = _.get(item, 'isDefect') ? 'Брак' : 'OK'
 
         return (
-            <Row key={id} className="dottedList">
-                <Col xs={2}>{id}</Col>
-                <Col xs={6}>{market}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}>{totalPrice} {primaryCurrency}</Col>
+            <Row key={barcode} className="dottedList">
+                <Col xs={3}>{barcode}</Col>
+                <Col xs={4}>{createdDate}</Col>
+                <Col xs={3}>{balance}</Col>
+                <Col xs={2} style={{textAlign: 'left'}}>{isDefect}</Col>
             </Row>
         )
     })
@@ -175,29 +166,20 @@ const StatRemainderDialog = enhance((props) => {
             </div>
                 : <div>
                     <div className={classes.titleContent}>
-                        <div>
-                            <div className="personImage">
-                                <img src={Person} alt=""/>
-                            </div>
-                            <div>{agentName}</div>
-                        </div>
+                        <div>{agentName}</div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon2 color="#666666"/>
                         </IconButton>
                     </div>
                     <div className={classes.content}>
-                        <div className={classes.titleSummary}>
-                            <div>Период: <strong>{dateRange}</strong></div>
-                            <div>Сумма: <strong>{income}</strong></div>
-                        </div>
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
-                                <Col xs={2}>№ заказа</Col>
-                                <Col xs={6}>Магазин</Col>
-                                <Col xs={2}>Дата</Col>
-                                <Col xs={2}>Сумма</Col>
+                                <Col xs={3}>Код</Col>
+                                <Col xs={4}>Дата приемки</Col>
+                                <Col xs={3}>Кол-во</Col>
+                                <Col xs={2} style={{textAlign: 'left'}}>Статус</Col>
                             </Row>
-                            {orderList}
+                            {remainderList}
                         </div>
                         <Pagination filter={_.get(detailData, 'filter')}/>
                     </div>

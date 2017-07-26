@@ -114,6 +114,7 @@ export const ORDER_TRANSACTION = '/sales/client_transaction/'
 
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
+export const ORDER_LIST_PRINT = `/${ORDER}/print/`
 export const ORDER_CANCEL = `/${ORDER}/%d/cancel`
 export const GET_DOCUMENT = 'order_document/%d/'
 
@@ -284,7 +285,7 @@ export const STAT_AGENT_GET_DOCUMENT = '/stats/agents/export/'
 
 export const STAT_MARKET_LIST = 'stats/markets/'
 export const STAT_MARKET_ITEM = 'sales/order/'
-export const STAT_MARKET_GET_DOCUMENT = 'stats/markets/export'
+export const STAT_MARKET_GET_DOCUMENT = '/stats/markets/export'
 
 export const STAT_INCOME_DATA = 'stats/transactions/'
 export const STAT_INCOME_LIST = 'finance/transaction/'
@@ -299,7 +300,7 @@ export const STAT_DEBTORS_ITEM = 'sales/order/'
 export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 
 export const STAT_PRODUCT_LIST = 'stats/products/'
-export const STAT_PRODUCT_GET_DOCUMENT = 'stats/products/export'
+export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
 
 export const STAT_OUTCOME_CATEGORY_LIST = 'stats/agents/'
 export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'

@@ -8,9 +8,10 @@ import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import getDocument from '../../helpers/getDocument'
+import getDocuments from '../../helpers/getDocument'
 import * as API from '../../constants/api'
 import * as serializers from '../../serializers/Statistics/statAgentSerializer'
+import moment from 'moment'
 
 import {
     StatAgentGridList,
@@ -23,7 +24,7 @@ import {
 } from '../../actions/statAgent'
 
 const ZERO = 0
-
+const ONE = 1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -98,7 +99,7 @@ const enhance = compose(
         handleGetDocument: props => () => {
             const {filter} = props
             const params = serializers.listFilterSerializer(filter.getParams())
-            getDocument(API.STAT_AGENT_GET_DOCUMENT, params)
+            getDocuments(API.STAT_AGENT_GET_DOCUMENT, params)
         }
     })
 )
@@ -131,10 +132,19 @@ const StatAgentList = enhance((props) => {
     const agentDetail = _.filter(_.get(list, 'results'), (item) => {
         return _.get(item, 'id') === detailId
     })
-    const filterDateRange = {
-        'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']) || null,
-        'toDate': _.get(filterForm, ['values', 'date', 'toDate']) || null
+    const filterDateRange = (_.get(filterForm, ['values', 'date', 'fromDate']) && _.get(filterForm, ['values', 'date', 'toDate'])) ? {
+        'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']),
+        'toDate': _.get(filterForm, ['values', 'date', 'toDate'])
+    } : {}
+
+    const defaultDate = {
+        'fromDate': moment().subtract(ONE, 'month'),
+        'toDate': moment()
     }
+    const initialValues = {
+        date: filterDateRange || defaultDate
+    }
+
     const detailData = {
         filter: filterItem,
         id: detailId,
@@ -158,6 +168,7 @@ const StatAgentList = enhance((props) => {
                 detailData={detailData}
                 statAgentDialog={statAgentDialog}
                 getDocument={getDocument}
+                initialValues={initialValues}
             />
         </Layout>
     )

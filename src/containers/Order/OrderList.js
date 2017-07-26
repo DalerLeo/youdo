@@ -37,7 +37,8 @@ import {
     orderReturnListAction,
     orderTransactionFetchAction,
     orderItemReturnFetchAction,
-    getDocumentAction
+    getDocumentAction,
+    orderListPintFetchAction
 } from '../../actions/order'
 import {
     clientCreateAction
@@ -63,6 +64,8 @@ const enhance = compose(
         const shortageLoading = _.get(state, ['order', 'create', 'loading'])
         const updateLoading = _.get(state, ['order', 'update', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
+        const listPrint = _.get(state, ['order', 'listPrint', 'data'])
+        const listPrintLoading = _.get(state, ['order', 'listPrint', 'loading'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'OrderFilterForm'])
         const createForm = _.get(state, ['form', 'OrderCreateForm'])
@@ -77,6 +80,8 @@ const enhance = compose(
             listLoading,
             detail,
             payment,
+            listPrintLoading,
+            listPrint,
             detailLoading,
             createLoading,
             createClientLoading,
@@ -147,8 +152,9 @@ const enhance = compose(
 
     withHandlers({
         handleOpenPrintDialog: props => () => {
-            const {setOpenPrint} = props
+            const {setOpenPrint, dispatch, filter} = props
             setOpenPrint(true)
+            dispatch(orderListPintFetchAction(filter))
         },
 
         handleClosePrintDialog: props => () => {
@@ -432,7 +438,9 @@ const OrderList = enhance((props) => {
         layout,
         products,
         openPrint,
-        params
+        params,
+        listPrint,
+        listPrintLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
@@ -454,7 +462,6 @@ const OrderList = enhance((props) => {
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
 
     const openCreateClientDialog = toBoolean(_.get(location, ['query', CLIENT_CREATE_DIALOG_OPEN]))
-
     const createDialog = {
         createLoading,
         openCreateDialog,
@@ -598,7 +605,10 @@ const OrderList = enhance((props) => {
         handleClearFilterDialog: props.handleClearFilterDialog,
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
-
+    const listPrintData = {
+        data: listPrint,
+        listPrintLoading
+    }
     const listData = {
         data: _.get(list, 'results'),
         listLoading
@@ -631,7 +641,10 @@ const OrderList = enhance((props) => {
 
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
-        return <OrderPrint printDialog={printDialog}/>
+
+        return <OrderPrint
+            printDialog={printDialog}
+            listPrintData={listPrintData}/>
     }
 
     document.getElementById('wrapper').style.height = '100%'

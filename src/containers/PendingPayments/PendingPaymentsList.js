@@ -7,8 +7,9 @@ import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
-import filterHelper from '../../helpers/filter'
+import {reset} from 'redux-form'
 import toBoolean from '../../helpers/toBoolean'
+import filterHelper from '../../helpers/filter'
 import {
     PENDING_PAYMENTS_UPDATE_DIALOG_OPEN,
     PENDING_PAYMENTS_FILTER_KEY,
@@ -99,11 +100,16 @@ const enhance = compose(
         },
 
         handleOpenUpdateDialog: props => (id) => {
-            const {filter} = props
+            const {filter, dispatch, detail} = props
+
             hashHistory.push({
                 pathname: sprintf(ROUTER.PENDING_PAYMENTS_ITEM_PATH, id),
                 query: filter.getParams({[PENDING_PAYMENTS_UPDATE_DIALOG_OPEN]: true})
             })
+            dispatch(reset('PendingPaymentsCreateForm'))
+            if (_.get(detail, 'id') === id) {
+                dispatch(pendingPaymentsItemFetchAction(id))
+            }
         },
 
         handleCloseUpdateDialog: props => () => {
