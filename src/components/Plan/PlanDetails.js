@@ -14,6 +14,7 @@ import Warning from 'material-ui/svg-icons/alert/error-outline'
 import Checked from 'material-ui/svg-icons/toggle/check-box'
 import Indeterminate from 'material-ui/svg-icons/toggle/indeterminate-check-box'
 import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
+import Agent from '../Images/agent.png'
 
 const timelineColor = '#22a6c6'
 const enhance = compose(
@@ -307,6 +308,36 @@ const enhance = compose(
                 fontSize: '16px !important',
                 fontWeight: 'bold'
             }
+        },
+        noAgent: {
+            backgroundSize: '150px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            textAlign: 'center',
+            color: '#999',
+            position: 'relative',
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0',
+                zIndex: '10'
+            },
+            '& img': {
+                width: '180px',
+                opacity: '0.8',
+                margin: 'auto'
+            },
+            '& span': {
+                display: 'block',
+                fontSize: '17px !important',
+                lineHeight: '1',
+                marginTop: '10px'
+            }
         }
     })
 )
@@ -495,7 +526,12 @@ const PlanDetails = enhance((props) => {
                             </div>
                         </div>
                     </div>
-                    : <div>Empty</div>)}
+                    : <div className={classes.noAgent}>
+                        <div>
+                            <img src={Agent} alt=""/>
+                            <span>Для отображения статистики <br/> выберите агента</span>
+                        </div>
+                    </div>)}
         </div>
     )
 })
