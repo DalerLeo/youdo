@@ -88,7 +88,6 @@ const enhance = compose(
 const OrderTransactionsDialog = enhance((props) => {
     const {open, loading, onClose, classes, paymentData} = props
     const orderId = _.get(paymentData, 'id')
-    console.log(paymentData)
     const data = _.get(paymentData, 'data')
     return (
         <Dialog
@@ -119,7 +118,6 @@ const OrderTransactionsDialog = enhance((props) => {
                                 <Col xs={3}>В внутреннем валюте</Col>
                             </Row>
                             {_.map(_.get(paymentData, ['data', 'results']), (item, index) => {
-                                console.log(item)
                                 const cashier = _.get(item, ['transaction', 'name']) || 'Не принято'
                                 const currency = _.get(item, ['currency', 'name'])
 

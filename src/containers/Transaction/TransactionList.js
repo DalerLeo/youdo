@@ -20,6 +20,7 @@ import {
     TRANSACTION_FILTER_KEY,
     TRANSACTION_FILTER_OPEN,
     TRANSACTION_CASH_DIALOG_OPEN,
+    TRANSACTION_MARKET_DIALOG_OPEN,
     TransactionGridList
 } from '../../components/Transaction'
 import {
@@ -35,6 +36,7 @@ import {
 import {
     cashboxListFetchAction
 } from '../../actions/cashbox'
+import {orderTransactionFetchAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -51,6 +53,8 @@ const enhance = compose(
         const listLoading = _.get(state, ['transaction', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'TransactionFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
+        const payment = _.get(state, ['order', 'payment', 'data'])
+        const paymentLoading = _.get(state, ['order', 'payment', 'loading'])
         const filter = filterHelper(list, pathname, query)
         const filterCashbox = filterHelper(cashboxList, pathname, query)
         const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
@@ -66,8 +70,10 @@ const enhance = compose(
             filter,
             filterForm,
             filterCashbox,
+            paymentLoading,
             cashboxId,
-            createForm
+            createForm,
+            payment
         }
     }),
 
@@ -278,8 +284,10 @@ const enhance = compose(
         },
 
         handleOpenCashDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: true})})
+            const transaction = 'trans'
+            dispatch(orderTransactionFetchAction(transaction))
         },
 
         handleCloseCashDialog: props => () => {
@@ -297,6 +305,17 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: false})})
                 })
+        },
+        handleOpenMarketDialog: props => () => {
+            const {location: {pathname}, filter, dispatch} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_MARKET_DIALOG_OPEN]: true})})
+            const transaction = 'trans'
+            dispatch(orderTransactionFetchAction(transaction))
+        },
+
+        handleCloseMarketDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_MARKET_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -315,7 +334,9 @@ const TransactionList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+        payment,
+        paymentLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))
@@ -326,6 +347,7 @@ const TransactionList = enhance((props) => {
     const openCreateSendDialog = toBoolean(_.get(location, ['query', TRANSACTION_CREATE_SEND_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', TRANSACTION_DELETE_DIALOG_OPEN]))
     const openCashDialog = toBoolean(_.get(location, ['query', TRANSACTION_CASH_DIALOG_OPEN]))
+    const openMarketDialog = toBoolean(_.get(location, ['query', TRANSACTION_MARKET_DIALOG_OPEN]))
 
     const categoryExpense = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
     const type = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
@@ -449,6 +471,16 @@ const TransactionList = enhance((props) => {
         detailLoading
     }
 
+    const marketDialog = {
+        openMarketDialog,
+        handleOpenMarketDialog: props.handleOpenMarketDialog,
+        handleCloseMarketDialog: props.handleCloseMarketDialog
+    }
+    const paymentData = {
+        data: payment,
+        paymentLoading
+    }
+
     return (
         <Layout {...layout}>
             <TransactionGridList
@@ -465,6 +497,8 @@ const TransactionList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 cashDialog={cashDialog}
                 filterDialog={filterDialog}
+                paymentData={paymentData}
+                marketDialog={marketDialog}
             />
         </Layout>
     )

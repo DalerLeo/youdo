@@ -14,5 +14,3 @@ export const listFilterSerializer = (data) => {
         'stock': _.get(defaultData, 'stock')
     }
 }
-
-

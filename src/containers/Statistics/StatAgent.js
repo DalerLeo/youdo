@@ -132,8 +132,6 @@ const StatAgentList = enhance((props) => {
     const agentDetail = _.filter(_.get(list, 'results'), (item) => {
         return _.get(item, 'id') === detailId
     })
-
-    // TODO INITIAL VALUES
     const filterDateRange = (_.get(filterForm, ['values', 'date', 'fromDate']) && _.get(filterForm, ['values', 'date', 'toDate'])) ? {
         'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']),
         'toDate': _.get(filterForm, ['values', 'date', 'toDate'])

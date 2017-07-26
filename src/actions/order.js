@@ -109,8 +109,9 @@ export const orderListFetchAction = (filter) => {
 }
 
 export const orderListPintFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.ORDER_LIST_PRINT)
+        .get(API.ORDER_LIST_PRINT, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -125,8 +126,20 @@ export const orderListPintFetchAction = (filter) => {
 }
 
 export const orderTransactionFetchAction = (orderId) => {
+    let params = ''
+
+    if (orderId === 'trans') {
+        params = {
+            transaction: 0
+        }
+    } else {
+        params = {
+            'order': orderId
+        }
+    }
+
     const payload = axios()
-        .get(API.ORDER_TRANSACTION, {params: {'order': orderId}})
+        .get(API.ORDER_TRANSACTION, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
