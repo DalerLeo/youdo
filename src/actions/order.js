@@ -142,7 +142,7 @@ export const orderItemReturnFetchAction = (orderId) => {
 
 export const orderItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.ORDER_ITEM, id))
+        .get(sprintf(API.ORDER_ITEM, id), {'params': {'view': true}})
         .then((response) => {
             return _.get(response, 'data')
         })

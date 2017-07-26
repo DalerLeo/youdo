@@ -25,6 +25,8 @@ import Tooltip from '../ToolTip'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import ZoneMap from './ZoneMap'
 import AddZonePopup from './AddZonePopup'
+import BindAgentDialog from './ZoneBindAgentDialog'
+import ConfirmDialog from '../ConfirmDialog'
 import ZoneDetails from './ZoneDetails'
 import NotFound from '../Images/not-found.png'
 
@@ -305,8 +307,12 @@ const ZonesWrapper = enhance((props) => {
         toggle,
         search,
         setSearch,
-        onSubmit
+        onSubmit,
+        bindAgent,
+        unbindAgent
     } = props
+
+    const ZERO = 0
     const ONE = 1
     const isOpenToggle = toggle.openToggle
     const isOpenPopup = addZone.openAddZone
@@ -320,6 +326,11 @@ const ZonesWrapper = enhance((props) => {
     const boundMarkets = _.get(statData, ['data', 'boundMarkets'])
     const passiveMarkets = _.get(statData, ['data', 'passiveMarkets'])
     const passiveAgents = _.get(statData, ['data', 'passiveAgents'])
+
+    let isOpenConfirm = false
+    if (_.get(unbindAgent, 'openConfirmDialog') > ZERO) {
+        isOpenConfirm = true
+    }
 
     const iconButton = (
         <IconButton
@@ -439,6 +450,8 @@ const ZonesWrapper = enhance((props) => {
             </div>
             : <ZoneDetails
                     detailData={detailData}
+                    bindAgent={bindAgent}
+                    unbindAgent={unbindAgent}
                     filter={filter}
                 />}
         </div>
@@ -465,6 +478,19 @@ const ZonesWrapper = enhance((props) => {
                     onClose={addZone.handleCloseAddZone}
                     onSubmit={addZone.handleSubmitAddZone}
                 />}
+                <BindAgentDialog
+                    open={bindAgent.openBindAgent}
+                    loading={bindAgent.bindAgentLoading}
+                    onClose={bindAgent.handleCloseBindAgent}
+                    onSubmit={bindAgent.handleSubmitBindAgent}
+                />
+                <ConfirmDialog
+                    open={isOpenConfirm}
+                    onClose={unbindAgent.handleCloseConfirmDialog}
+                    onSubmit={unbindAgent.handleSendConfirmDialog}
+                    message="Открепить данного агента?"
+                    type="submit"
+                />
                 {zoneInfoToggle}
             </div>
         </Container>
@@ -486,6 +512,19 @@ ZonesWrapper.PropTypes = {
         openToggle: PropTypes.bool.isRequired,
         handleExpandInfo: PropTypes.func.isRequired,
         handleCollapseInfo: PropTypes.func.isRequired
+    }).isRequired,
+    bindAgent: PropTypes.shape({
+        openBindAgent: PropTypes.bool.isRequired,
+        bindAgentLoading: PropTypes.bool.isRequired,
+        handleOpenBindAgent: PropTypes.func.isRequired,
+        handleCloseBindAgent: PropTypes.func.isRequired,
+        handleSubmitBindAgent: PropTypes.func.isRequired
+    }).isRequired,
+    unbindAgent: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

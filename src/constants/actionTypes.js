@@ -271,6 +271,7 @@ export const ZONE_UPDATE = 'ZONE_UPDATE'
 export const ZONE_CREATE = 'ZONE_CREATE'
 export const ZONE_DELETE = 'ZONE_DELETE'
 export const ZONE_STAT = 'ZONE_STAT'
+export const ZONE_BIND_AGENT = 'ZONE_BIND_AGENT'
 
 export const TRACKING_LIST = 'TRACKING_LIST'
 export const TRACKING_ITEM = 'TRACKING_ITEM'

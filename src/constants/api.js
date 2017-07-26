@@ -251,6 +251,8 @@ export const ZONE_LIST = `/${ZONE}/`
 export const ZONE_ITEM = `/${ZONE}/%d/`
 export const ZONE_DELETE = `/${ZONE}/%d/`
 export const ZONE_STAT = `/${ZONE}/statistics/`
+export const ZONE_BIND_AGENT = `${ZONE}/%d/bind_agent/`
+export const ZONE_UNBIND_AGENT = `${ZONE}/%d/unbind_agent/`
 
 export const PRICE = 'stock/products_net_costs'
 export const PRICE_CREATE = `/${PRICE}/`

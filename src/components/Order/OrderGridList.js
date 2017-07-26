@@ -100,7 +100,8 @@ const enhance = compose(
             height: '100%',
             display: 'flex',
             alignItems: 'center',
-            margin: '0 -0.5rem',
+            margin: '0 -30px',
+            padding: '0 30px',
             position: 'relative',
             '& > div': {
                 padding: '0 0.5rem',
@@ -108,6 +109,19 @@ const enhance = compose(
                 '&:last-child': {
                     padding: '0'
                 }
+            }
+        },
+        listWrapperNew: {
+            extend: 'listWrapper',
+            fontWeight: '600',
+            '&:before': {
+                content: '""',
+                position: 'absolute',
+                left: '0',
+                bottom: '0',
+                top: '0',
+                width: '3px',
+                background: '#12aaeb'
             }
         },
         dot: {
@@ -135,7 +149,6 @@ const enhance = compose(
             bottom: '0',
             right: '0',
             left: '0',
-            margin: '0 -30px',
             cursor: 'pointer'
         }
     })
@@ -220,6 +233,7 @@ const OrderGridList = enhance((props) => {
         const balanceTooltip = numberFormat(totalBalance, currentCurrency)
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
+        const isNew = _.get(item, 'isNew')
         const REQUESTED = 0
         const PAY_PENDING = (
             <div>
@@ -241,14 +255,14 @@ const OrderGridList = enhance((props) => {
         const CANCELED = 4
         const ZERO = 0
         return (
-            <div className={classes.listWrapper} key={id}>
+            <div className={isNew ? classes.listWrapperNew : classes.listWrapper} key={id}>
                 <Link className={classes.openDetails} to={{
                     pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
                 </Link>
                 <div style={{width: '10%'}}>{id}</div>
-                <div style={{width: '15%', fontWeight: '600'}}>{client}</div>
+                <div style={{width: '15%'}}>{client}</div>
                 <div style={{width: '15%'}}>{market}</div>
                 <div style={{width: '15%'}}>{user}</div>
                 <div style={{width: '15%', textAlign: 'right'}}>{totalPrice}</div>

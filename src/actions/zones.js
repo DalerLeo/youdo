@@ -81,3 +81,34 @@ export const zoneStatisticsFetchAction = () => {
         payload
     }
 }
+
+export const zoneBindAgentAction = (id, formValues) => {
+    const requestData = serializers.bindAgentSerializer(formValues)
+    const payload = axios()
+        .post(sprintf(API.ZONE_BIND_AGENT, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.ZONE_BIND_AGENT,
+        payload
+    }
+}
+
+export const zoneUnbindAgentAction = (detailId, agentId) => {
+    const payload = axios()
+        .post(sprintf(API.ZONE_UNBIND_AGENT, detailId), {'user_id': agentId})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.ZONE_BIND_AGENT,
+        payload
+    }
+}

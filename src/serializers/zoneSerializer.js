@@ -13,3 +13,11 @@ export const createSerializer = (data) => {
     }
 }
 
+export const bindAgentSerializer = (data) => {
+    const agent = _.get(data, ['user', 'value'])
+
+    return {
+        'user_id': agent
+    }
+}
+

@@ -1,19 +1,22 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import ZonesWrapper from '../../components/Zones/ZonesWrapper'
-import {ADD_ZONE, TOGGLE_INFO} from '../../components/Zones'
+import {ADD_ZONE, TOGGLE_INFO, BIND_AGENT, CONFIRM_DIALOG} from '../../components/Zones'
 import {
     zoneCreateAction,
     zoneListFetchAction,
     zoneListSearchFetchAction,
     zoneStatisticsFetchAction,
-    zoneItemFetchAction
+    zoneItemFetchAction,
+    zoneBindAgentAction,
+    zoneUnbindAgentAction
 } from '../../actions/zones'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ZERO = 0
@@ -28,6 +31,8 @@ const enhance = compose(
         const stat = _.get(state, ['zone', 'statistics', 'data'])
         const statLoading = _.get(state, ['zone', 'statistics', 'loading'])
         const createForm = _.get(state, ['form', 'ZoneCreateForm', 'values'])
+        const zoneBindForm = _.get(state, ['form', 'ZoneBindAgentForm', 'values'])
+        const bindAgentLoading = _.get(state, ['zone', 'bindAgent', 'loading'])
         const filter = filterHelper(list, pathname, query)
         return {
             query,
@@ -39,6 +44,8 @@ const enhance = compose(
             detail,
             detailLoading,
             createForm,
+            zoneBindForm,
+            bindAgentLoading,
             filter
         }
     }),
@@ -79,6 +86,30 @@ const enhance = compose(
     }),
 
     withHandlers({
+        handleOpenConfirmDialog: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CONFIRM_DIALOG]: id})})
+        },
+
+        handleCloseConfirmDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CONFIRM_DIALOG]: ZERO})})
+        },
+        handleSendConfirmDialog: props => () => {
+            const {dispatch, location, location: {pathname}, filter, params} = props
+            const detailId = _.toInteger(_.get(params, 'zoneId'))
+            const agentId = _.toInteger(_.get(location, ['query', CONFIRM_DIALOG]))
+            dispatch(zoneUnbindAgentAction(detailId, agentId))
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[CONFIRM_DIALOG]: ZERO})})
+                    dispatch(zoneItemFetchAction(detailId))
+                    return dispatch(openSnackbarAction({message: 'Агент откреплен из зоны'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка'}))
+                })
+        },
+
         handleExpandInfo: props => () => {
             const {location: {pathname}, dispatch, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TOGGLE_INFO]: true})})
@@ -112,6 +143,31 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ADD_ZONE]: false})})
                     dispatch(zoneListFetchAction(filter))
                 })
+        },
+
+        handleOpenBindAgent: props => () => {
+            const {location: {pathname}, filter, dispatch} = props
+            hashHistory.push({pathname, query: filter.getParams({[BIND_AGENT]: true})})
+            dispatch(reset('ZoneBindAgentForm'))
+        },
+
+        handleCloseBindAgent: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[BIND_AGENT]: false})})
+        },
+
+        handleSubmitBindAgent: props => () => {
+            const {location: {pathname}, dispatch, zoneBindForm, filter, params} = props
+            const zoneId = _.toInteger(_.get(params, 'zoneId'))
+
+            return dispatch(zoneBindAgentAction(zoneId, zoneBindForm))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Агент закреплен'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[BIND_AGENT]: false})})
+                    dispatch(zoneItemFetchAction(zoneId))
+                })
         }
     })
 )
@@ -127,11 +183,14 @@ const Zones = enhance((props) => {
         stat,
         statLoading,
         detail,
-        detailLoading
+        detailLoading,
+        bindAgentLoading
     } = props
 
     const openAddZone = toBoolean(_.get(location, ['query', ADD_ZONE]))
+    const openBindAgent = toBoolean(_.get(location, ['query', BIND_AGENT]))
     const openToggle = toBoolean(_.get(location, ['query', TOGGLE_INFO]))
+    const openConfirmDialog = _.toInteger(_.get(location, ['query', CONFIRM_DIALOG]) || ZERO) > ZERO
     const openDetail = !_.isEmpty(_.get(params, 'zoneId'))
     const detailId = _.toInteger(_.get(params, 'zoneId'))
 
@@ -140,6 +199,21 @@ const Zones = enhance((props) => {
         handleOpenAddZone: props.handleOpenAddZone,
         handleCloseAddZone: props.handleCloseAddZone,
         handleSubmitAddZone: props.handleSubmitAddZone
+    }
+
+    const bindAgent = {
+        openBindAgent,
+        bindAgentLoading,
+        handleOpenBindAgent: props.handleOpenBindAgent,
+        handleCloseBindAgent: props.handleCloseBindAgent,
+        handleSubmitBindAgent: props.handleSubmitBindAgent
+    }
+
+    const unbindAgent = {
+        openConfirmDialog,
+        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
+        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
+        handleSendConfirmDialog: props.handleSendConfirmDialog
     }
 
     const listData = {
@@ -174,6 +248,8 @@ const Zones = enhance((props) => {
                 addZone={addZone}
                 toggle={toggle}
                 detailData={detailData}
+                bindAgent={bindAgent}
+                unbindAgent={unbindAgent}
             />
         </Layout>
     )
