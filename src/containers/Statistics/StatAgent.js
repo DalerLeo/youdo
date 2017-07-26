@@ -8,6 +8,9 @@ import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import getDocument from '../../helpers/getDocument'
+import * as API from '../../constants/api'
+import * as serializers from '../../serializers/Statistics/statAgentSerializer'
 
 import {
     StatAgentGridList,
@@ -16,8 +19,7 @@ import {
 import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/StatAgentGridList'
 import {
     statAgentListFetchAction,
-    statAgentItemFetchAction,
-    getDocumentAction
+    statAgentItemFetchAction
 } from '../../actions/statAgent'
 
 const ZERO = 0
@@ -94,8 +96,9 @@ const enhance = compose(
             })
         },
         handleGetDocument: props => () => {
-            const {dispatch, filter} = props
-            return dispatch(getDocumentAction(filter))
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocument(API.STAT_AGENT_GET_DOCUMENT, params)
         }
     })
 )

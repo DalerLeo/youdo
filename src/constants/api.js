@@ -278,7 +278,7 @@ export const REMAINDER_DISCARD = '/stock/stock_transfer/wb_create/'
 
 export const STAT_AGENT_LIST = 'stats/agents/'
 export const STAT_AGENT_ITEM = 'sales/order/'
-export const STAT_AGENT_GET_DOCUMENT = 'stats/agents/export/'
+export const STAT_AGENT_GET_DOCUMENT = '/stats/agents/export/'
 
 export const STAT_MARKET_LIST = 'stats/markets/'
 export const STAT_MARKET_ITEM = 'sales/order/'
