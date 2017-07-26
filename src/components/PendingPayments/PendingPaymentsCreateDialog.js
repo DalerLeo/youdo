@@ -68,10 +68,11 @@ const enhance = compose(
 const PendingPaymentsCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, detailData, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
+    const ONE = 1
     const id = _.get(detailData, 'id')
     const client = _.get(detailData, ['data', 'client'])
     const marketName = _.get(detailData, ['data', 'market', 'name'])
+    const paymentType = (Number(_.get(detailData, ['data', 'paymentType'])) === ONE) ? 'банковский счет' : 'наличный'
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), getConfig('PRIMARY_CURRENCY'))
     const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), getConfig('PRIMARY_CURRENCY'))
     const clientName = _.get(client, 'name')
@@ -101,7 +102,8 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 <div className={classes.infoHeader}>
                                     <div><span className={classes.infoSummary}>Клиент:</span> {clientName}</div>
                                     <div><span className={classes.infoSummary}>Магазин:</span> {marketName}</div>
-                                    <div>Заказ №{id}</div>
+                                    <div><span className={classes.infoSummary}>Заказ №:</span> {id}</div>
+                                    <div><span className={classes.infoSummary}>Тип оплаты:</span> {paymentType}</div>
                                 </div>
                                 <div className={classes.infoSummary}>
                                     <div>Сумма заказа:<span style={{marginLeft: '10px'}}>{totalPrice}</span></div>
