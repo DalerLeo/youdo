@@ -56,7 +56,6 @@ const enhance = compose(
             marginBottom: '0',
             width: '100%',
             '& > div': {
-                width: '350px !important',
                 paddingRight: 'calc(100% - 400px)',
                 background: 'transparent !important'
             },
