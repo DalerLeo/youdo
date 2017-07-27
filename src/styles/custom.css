@@ -26,6 +26,9 @@ input:-webkit-autofill {
     width: 4px;
     height: 4px;
 }
+* {
+    box-sizing: border-box;
+}
 
 html {
     height: 100%;
@@ -226,6 +229,31 @@ hr.lineDote {
     animation: indeterminate-short 1.5s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
     -webkit-animation-delay: 1.15s;
     animation-delay: 1.15s;
+}
+.printCloseBtn {
+    position: absolute !important;
+    top: 5px;
+    right: 5px;
+}
+.printItem {
+    width: 100%;
+    padding: 20px 30px;
+    box-sizing: border-box;
+    border-top: 1px dashed #ccc;
+}
+.printItem:first-child {
+    border-top: none;
+}
+@media print {
+    .printCloseBtn {
+        display: none !important;
+    }
+    .printItem {
+        page-break-inside: avoid;
+    }
+    .printItem > div:first-child > div {
+        margin: 0;
+    }
 }
 
 @-webkit-keyframes indeterminate {

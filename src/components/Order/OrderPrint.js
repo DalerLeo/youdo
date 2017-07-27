@@ -10,24 +10,21 @@ import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import dealTypeFormat from '../../helpers/dealTypeFormat'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet({
         loader: {
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
+            width: '100vw',
+            height: '100vh',
             background: '#fff',
-            top: '0',
-            left: '0',
             alignItems: 'center',
             zIndex: '999',
-            textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            justifyContent: 'center',
+            display: 'flex'
         },
         wrapper: {
             background: '#fff',
-            padding: '20px 30px',
             width: '100%',
             height: '100%',
             zIndex: '999',
@@ -60,7 +57,8 @@ const enhance = compose(
             },
             '& div': {
                 fontSize: '11px',
-                color: '#999'
+                color: '#999',
+                marginRight: '30px'
             }
         },
         info: {
@@ -82,7 +80,6 @@ const enhance = compose(
         },
         products: {
             marginTop: '10px',
-            marginBottom: '20px',
             '& .row': {
                 padding: '10px 0',
                 borderBottom: '1px #efefef solid',
@@ -120,7 +117,7 @@ const OrderPrint = enhance((props) => {
     }
     return (
         <div className={classes.wrapper}>
-            <IconButton onTouchTap={printDialog.handleClosePrintDialog} className={classes.closeBtn}>
+            <IconButton onTouchTap={printDialog.handleClosePrintDialog} className="printCloseBtn">
                 <Close color="#666"/>
             </IconButton>
             {_.map(_.get(listPrintData, 'data'), (item) => {
@@ -136,9 +133,10 @@ const OrderPrint = enhance((props) => {
                 const dateDelivery = dateFormat(_.get(item, 'dateDelivery'))
                 const paymentType = paymentTypeFormat(_.get(item, 'paymentType'))
                 const dealType = dealTypeFormat(_.get(item, 'dealType'))
+                const currentCurrency = getConfig('PRIMARY_CURRENCY')
 
                 return (
-                    <div key={id} className={classes.item}>
+                    <div key={id} className="printItem">
                         <div className={classes.title}>
                             <span>Заказ № {id}</span>
                             <div>Добавлено: {createdDate}</div>
@@ -180,9 +178,9 @@ const OrderPrint = enhance((props) => {
                             <Row>
                                 <Col xs={1}>№</Col>
                                 <Col xs={5}>Наименование</Col>
-                                <Col xs={2}>Цена (UZS)</Col>
+                                <Col xs={2}>Цена ({currentCurrency})</Col>
                                 <Col xs={2}>Кол-во</Col>
-                                <Col xs={2}>Сумма (UZS)</Col>
+                                <Col xs={2}>Сумма ({currentCurrency})</Col>
                             </Row>
                             {_.map(_.get(item, 'products'), (product) => {
                                 const totalProductPrice = numberFormat(_.get(product, 'totalPrice'))
