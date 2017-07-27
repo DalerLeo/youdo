@@ -38,13 +38,13 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
                 </Row>}
 
                 {(selectIsEmpty && !filterIsEmpty) && <Row>
-                    <Col xs={4}>
+                    <Col xs={3}>
                         {filterDialog}
                     </Col>
                     <Col xs={4}>
                         {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>}
                     </Col>
-                    <Col xs={4} className={classes.flex}>
+                    <Col xs={5} className={classes.flex}>
                         <GridListNavPagination filter={filter}/>
                         {withInvoice &&
                         <Tooltip position="left" text={(listCount > MAX_COUNT) ? 'Превышено количество данных' : 'Распечатать накладные'}>

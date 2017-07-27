@@ -178,6 +178,7 @@ const OrderDetails = enhance((props) => {
         returnData,
         handleCloseDetail
     } = props
+
     const id = _.get(data, 'id')
     const contactName = _.get(data, ['contact', 'name'])
     const contactEmail = _.get(data, ['contact', 'email']) || 'N/A'
@@ -334,7 +335,7 @@ const OrderDetails = enhance((props) => {
                                     <span>{(paymentType === '0') ? 'Наличными' : 'Перечислением'}</span>
                                 </li>
                                 <li>
-                                    <span>Стоимост товаров</span>
+                                    <span>Стоимость товаров</span>
                                     <span>{numberFormat(productTotal, primaryCurrency)}</span>
                                 </li>
                                 <li>
