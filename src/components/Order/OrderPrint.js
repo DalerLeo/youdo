@@ -97,7 +97,7 @@ const enhance = compose(
         },
         summary: {
             fontWeight: 'bold',
-            padding: '10px 0',
+            padding: '10px 0 0',
             textAlign: 'right'
         }
     })
@@ -117,9 +117,6 @@ const OrderPrint = enhance((props) => {
     }
     return (
         <div className={classes.wrapper}>
-            <IconButton onTouchTap={printDialog.handleClosePrintDialog} className="printCloseBtn">
-                <Close color="#666"/>
-            </IconButton>
             {_.map(_.get(listPrintData, 'data'), (item) => {
                 const id = _.get(item, 'id')
                 const marketName = _.get(item, ['market', 'name'])
@@ -204,6 +201,9 @@ const OrderPrint = enhance((props) => {
                     </div>
                 )
             })}
+            <IconButton onTouchTap={printDialog.handleClosePrintDialog} className="printCloseBtn">
+                <Close color="#666"/>
+            </IconButton>
         </div>
     )
 })

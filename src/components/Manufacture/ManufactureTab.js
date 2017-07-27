@@ -21,7 +21,6 @@ const enhance = compose(
             marginBottom: '0',
             width: '100%',
             '& > div': {
-                width: '450px !important',
                 paddingRight: 'calc(100% - 450px)',
                 background: '#fff !important'
             },

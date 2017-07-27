@@ -96,7 +96,6 @@ const enhance = compose(
             marginBottom: '0px'
         },
         listWrapper: {
-            width: '100%',
             height: '100%',
             display: 'flex',
             alignItems: 'center',
