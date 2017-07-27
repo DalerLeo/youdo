@@ -155,6 +155,9 @@ const enhance = compose(
             const {setOpenPrint, dispatch, filter} = props
             setOpenPrint(true)
             dispatch(orderListPintFetchAction(filter))
+                .then(() => {
+                    window.print()
+                })
         },
 
         handleClosePrintDialog: props => () => {
