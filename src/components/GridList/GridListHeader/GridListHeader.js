@@ -52,6 +52,7 @@ const enhance = compose(
             color: '#fff !important',
             minWidth: 'auto !important',
             position: 'relative !important',
+            lineHeight: 'normal !important',
             '&:hover': {
                 backgroundColor: 'transparent !important'
             },
@@ -72,7 +73,6 @@ const enhance = compose(
         withoutRowDiv: {
             width: '100%',
             display: 'flex',
-            margin: '0 -0.5rem',
             alignItems: 'center',
             '& > div': {
                 padding: '0 0.5rem !important',
@@ -80,6 +80,9 @@ const enhance = compose(
             },
             '& div:last-child': {
                 textAlign: 'right'
+            },
+            '& button': {
+                textAlign: 'left !important'
             }
         }
     }),

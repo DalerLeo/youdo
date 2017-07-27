@@ -49,7 +49,6 @@ const enhance = compose(
             marginBottom: '0',
             width: '100%',
             '& > div': {
-                width: '300px !important',
                 paddingRight: 'calc(100% - 300px)',
                 '&:first-child': {
                     boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
