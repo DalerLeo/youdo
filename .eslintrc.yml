@@ -172,7 +172,6 @@ rules:
   # max-len: "error"
   # max-lines: "error"
   max-nested-callbacks: "error"
-  max-params: "error"
   # max-statements: "error"
   max-statements-per-line: "error"
   no-bitwise: "error"

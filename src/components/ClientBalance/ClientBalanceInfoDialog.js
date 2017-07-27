@@ -137,19 +137,19 @@ const iconStyle = {
 }
 
 const ClientBalanceCreateDialog = enhance((props) => {
-    const {open, filter, onClose, classes, detailData, name, balance} = props
+    const {open, filterItem, onClose, classes, detailData, name, balance} = props
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
 
-    const detailList = _.map(_.get(detailData, 'data'), (item) => {
+    const detailList = _.map(_.get(detailData, 'data'), (item, index) => {
         const id = _.get(item, 'order') || _.get(item, 'transaction')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const comment = _.get(item, 'comment') || 'Комментариев нет'
         const amount = _.toNumber(_.get(item, 'amount'))
 
         return (
-            <Row key={id} className='dottedList'>
+            <Row key={index} className='dottedList'>
                 <div style={{flexBasis: '5%', maxWidth: '5%'}}>
                     {(amount > ZERO) ? <ArrowUpIcon color="#92ce95"/> : <ArrowDownIcon color="#e27676"/>}
                 </div>
@@ -159,6 +159,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
                 <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}>{numberFormat(amount, currentCurrency)}</div>
             </Row>)
     })
+
     return (
         <Dialog
             modal={true}
@@ -191,7 +192,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
                                 <div className={(balance > ZERO) ? classes.green : classes.red}>{numberFormat(balance, currentCurrency)}</div>
                             </div>
                         </div>
-                        <Pagination filter={filter}/>
+                        <Pagination filter={filterItem}/>
                     </div>
                     <div className={classes.content}>
                         <Row>

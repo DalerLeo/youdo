@@ -32,7 +32,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['statRemainder', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatRemainderFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(detail, pathname, query)
+        const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
         return {
             list,
             listLoading,
@@ -54,11 +54,12 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const statRemainderId = _.get(nextProps, ['params', 'statRemainderId']) || ZERO
-        return statRemainderId > ZERO && _.get(props, ['params', 'statRemainderId']) !== statRemainderId
-    }, ({dispatch, params}) => {
+        return statRemainderId > ZERO && (_.get(props, ['params', 'statRemainderId']) !== statRemainderId ||
+            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
+    }, ({dispatch, params, filterItem}) => {
         const statRemainderId = _.toInteger(_.get(params, 'statRemainderId'))
         if (statRemainderId > ZERO) {
-            dispatch(statRemainderItemFetchAction(statRemainderId))
+            dispatch(statRemainderItemFetchAction(filterItem, statRemainderId))
         }
     }),
 
@@ -119,7 +120,6 @@ const StatRemainderList = enhance((props) => {
         return _.get(item, 'id') === detailId
     })
     const detailData = {
-        filter: filterItem,
         id: detailId,
         data: detail,
         rowDetail,
@@ -140,6 +140,7 @@ const StatRemainderList = enhance((props) => {
                 detailData={detailData}
                 statRemainderDialog={statRemainderDialog}
                 getDocument={getDocument}
+                filterItem={filterItem}
             />
         </Layout>
     )

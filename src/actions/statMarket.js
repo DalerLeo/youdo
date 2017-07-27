@@ -23,10 +23,10 @@ export const statMarketListFetchAction = (filter) => {
     }
 }
 
-export const statMarketItemFetchAction = (filter, filterItem, id) => {
-    const params = serializers.itemSerializer(filter.getParams(), filterItem.getParams(), id)
+export const statMarketItemFetchAction = (filter, id) => {
+    const params = serializers.itemSerializer(filter.getParams(), id)
     const payload = axios()
-        .get(sprintf(API.STAT_MARKET_ITEM, id), {params})
+        .get(sprintf(API.STAT_MARKET_ITEM), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
