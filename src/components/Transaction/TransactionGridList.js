@@ -151,7 +151,7 @@ const TransactionGridList = enhance((props) => {
         listData,
         detailData,
         cashDialog,
-        marketDialog,
+        cashBoxDialog,
         classes,
         paymentData
     } = props
@@ -369,7 +369,7 @@ const TransactionGridList = enhance((props) => {
                         onSubmit={cashDialog.handleSubmitCashDialog}
                         paymentData={paymentData}
                         loading={paymentData.paymentLoading}
-                        marketDialog={marketDialog}
+                        cashBoxDialog={cashBoxDialog}
                     />
                 </div>
             </div>
@@ -438,6 +438,12 @@ TransactionGridList.propTypes = {
         handleOpenCashDialog: PropTypes.func.isRequired,
         handleCloseCashDialog: PropTypes.func.isRequired,
         handleSubmitCashDialog: PropTypes.func.isRequired
+    }).isRequired,
+    cashBoxDialog: PropTypes.shape({
+        openCashBoxDialog: PropTypes.bool.isRequired,
+        handleOpenCashBoxDialog: PropTypes.func.isRequired,
+        handleCloseCashBoxDialog: PropTypes.func.isRequired,
+        handleSubmitCashBoxDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

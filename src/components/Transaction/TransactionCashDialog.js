@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
@@ -11,7 +10,8 @@ import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import Accept from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
-import TransactionMarketDialog from './TransactionMarketDialog'
+import AcceptClientTransactionDialog from './AcceptClientTransactionDialog'
+
 
 const enhance = compose(
     injectSheet({
@@ -104,17 +104,14 @@ const enhance = compose(
             }
         }
     }),
-    reduxForm({
-        form: 'OrderCreateForm',
-        enableReinitialize: true
-    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
 )
 
 const TransactionCashDialog = enhance((props) => {
-    const {open, loading, onClose, classes, paymentData, marketDialog} = props
+    const {open, loading, onClose, classes, paymentData, cashBoxDialog} = props
+
     const buttonStyle = {
         button: {
             width: 40,
@@ -173,7 +170,7 @@ const TransactionCashDialog = enhance((props) => {
                                         <IconButton
                                             style={buttonStyle.button}
                                             iconStyle={buttonStyle.icon}
-                                            onTouchTap={marketDialog.handleOpenMarketDialog}>
+                                            onTouchTap={cashBoxDialog.handleOpenCashBoxDialog(id)}>
                                             <Accept/>
                                         </IconButton>
                                     </Col>
@@ -183,9 +180,11 @@ const TransactionCashDialog = enhance((props) => {
                     </div>
                 </div>
             </div>
-            <TransactionMarketDialog
-                open={marketDialog.openMarketDialog}
-                onClose={marketDialog.handleCloseMarketDialog}/>
+            <AcceptClientTransactionDialog
+                open={cashBoxDialog.openCashBoxDialog}
+                onClose={cashBoxDialog.handleCloseCashBoxDialog}
+                onSubmit={cashBoxDialog.handleSubmitCashBoxDialog}/>
+
         </Dialog>
     )
 })
