@@ -55,7 +55,21 @@ export const transactionCreateSendAction = (formValues, cashboxId) => {
         payload
     }
 }
+export const acceptClientTransactionAction = (clientTransId, cashBoxId) => {
+    const payload = axios()
+        .get(API.ACCEPT_CLIENT_TRANSACTION, {params: {'client_transaction': clientTransId, 'cashbox': cashBoxId}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
 
+    return {
+        type: actionTypes.ACCEPT_CLIENT_TRANSACTION,
+        payload
+    }
+}
 export const transactionDeleteAction = (id) => {
     const payload = axios()
         .delete(sprintf(API.TRANSACTION_DELETE, id))
