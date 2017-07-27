@@ -56,7 +56,7 @@ const enhance = compose(
         trackingInfo: {
             background: '#fff',
             position: 'absolute',
-            width: '450px',
+            width: '350px',
             top: '0',
             bottom: '0',
             transition: 'all 0.3s ease',
@@ -200,7 +200,7 @@ const TrackingWrapper = enhance((props) => {
     }
 
     const zoneInfoToggle = (
-        <div className={classes.trackingInfo} style={isOpenToggle ? {right: '0'} : {right: '-450px'}}>
+        <div className={classes.trackingInfo} style={isOpenToggle ? {right: '0'} : {right: '-350px'}}>
             <div className={classes.toggleButton}>
                 {isOpenToggle ? <div className={classes.expanded} onClick={toggle.handleCollapseInfo}><Arrow/></div>
                     : <div className={classes.collapsed} onClick={toggle.handleExpandInfo}><Arrow/></div>}
@@ -212,7 +212,7 @@ const TrackingWrapper = enhance((props) => {
                         <div>
                             {
                                 _.map(_.get(listData, 'data'), (item) => {
-                                    const FIVE_MIN = 300000
+                                    const FIVE_MIN = 350000
                                     const dateNow = _.toInteger(moment().format('x'))
                                     const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
                                     let isOnline = false
@@ -254,7 +254,7 @@ const TrackingWrapper = enhance((props) => {
                             _.map(_.get(listData, 'data'), (item) => {
                                 const id = _.get(item, 'id')
                                 const agent = _.get(item, 'agent')
-                                const FIVE_MIN = 300000
+                                const FIVE_MIN = 350000
                                 const dateNow = _.toInteger(moment().format('x'))
                                 const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
                                 const difference = dateNow - registeredDate

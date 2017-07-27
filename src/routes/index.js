@@ -57,7 +57,7 @@ export default {
     path: '/',
     component: App,
     indexRoute: {
-        component: userIsAuth(StatStock)
+        component: userIsAuth(StatSalesList)
     },
     childRoutes: [
         {
@@ -69,7 +69,6 @@ export default {
                 }
             }
         },
-
         // Shop
         {
             path: ROUTES.SHOP_LIST_URL,
