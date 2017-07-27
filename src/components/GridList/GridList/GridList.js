@@ -42,7 +42,8 @@ const GridList = enhance((props) => {
         withoutRow,
         withInvoice,
         withoutSearch,
-        printDialog
+        printDialog,
+        refreshAction
     } = props
 
     const header = _.get(list, 'header')
@@ -79,6 +80,7 @@ const GridList = enhance((props) => {
                     withoutSearch={withoutSearch}
                     withInvoice={withInvoice}
                     printDialog={printDialog}
+                    refreshAction={refreshAction}
                 />
                 <GridListHeader
                     filter={filter}
@@ -115,13 +117,15 @@ GridList.propTypes = {
         openPrint: PropTypes.bool,
         handleOpenPrintDialog: PropTypes.func,
         handleClosePrintDialog: PropTypes.func
-    })
+    }),
+    refreshAction: PropTypes.func
 }
 
 GridList.defaultProps = {
     withoutCheckboxes: false,
     withoutSearch: false,
     withInvoice: false,
+    withRefreshBtn: false,
     actionsDialog: (<div>no</div>)
 }
 

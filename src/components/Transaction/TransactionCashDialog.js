@@ -12,7 +12,6 @@ import Accept from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
 import AcceptClientTransactionDialog from './AcceptClientTransactionDialog'
 
-
 const enhance = compose(
     injectSheet({
         loader: {

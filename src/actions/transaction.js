@@ -56,7 +56,6 @@ export const transactionCreateSendAction = (formValues, cashboxId) => {
     }
 }
 export const acceptClientTransactionAction = (cashBoxId, clientTransId) => {
-    console.log(clientTransId)
     const payload = axios()
         .post(API.ACCEPT_CLIENT_TRANSACTION, {'client_transaction': clientTransId, 'cashbox': cashBoxId})
         .then((response) => {

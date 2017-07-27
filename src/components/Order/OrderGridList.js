@@ -176,7 +176,8 @@ const OrderGridList = enhance((props) => {
         createClientDialog,
         returnDataLoading,
         printDialog,
-        type
+        type,
+        refreshAction
     } = props
 
     const orderFilterDialog = (
@@ -370,6 +371,7 @@ const OrderGridList = enhance((props) => {
                 withInvoice={true}
                 filterDialog={orderFilterDialog}
                 printDialog={printDialog}
+                refreshAction={refreshAction}
             />
 
             <OrderCreateDialog
