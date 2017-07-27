@@ -155,22 +155,22 @@ const TransactionCashDialog = enhance((props) => {
                         {_.map(_.get(paymentData, ['data', 'results']), (item) => {
                             const clientName = _.get(item, ['client', 'name'])
                             const marketName = _.get(item, ['market', 'name'])
-                            const amount = numberFormat(_.get(item, ['amount']))
+                            const currency = _.get(item, ['currency', 'name'])
+                            const amount = numberFormat(_.get(item, ['amount']), currency)
                             const order = _.get(item, ['order'])
                             const id = _.get(item, ['id'])
-
                             return (
                                 <Row key={id} className="dottedList">
                                     <Col xs={3}>Имя Фамилия Агента</Col>
                                     <Col xs={3}>{clientName}</Col>
                                     <Col xs={2}>{marketName}</Col>
                                     <Col xs={1}>{order}</Col>
-                                    <Col xs={2} style={{textAlign: 'right'}}>{amount} UZS</Col>
+                                    <Col xs={2} style={{textAlign: 'right'}}>{amount}</Col>
                                     <Col xs={1}>
                                         <IconButton
                                             style={buttonStyle.button}
                                             iconStyle={buttonStyle.icon}
-                                            onTouchTap={cashBoxDialog.handleOpenCashBoxDialog(id)}>
+                                            onTouchTap={() => { cashBoxDialog.handleOpenCashBoxDialog(id) }}>
                                             <Accept/>
                                         </IconButton>
                                     </Col>
@@ -183,7 +183,8 @@ const TransactionCashDialog = enhance((props) => {
             <AcceptClientTransactionDialog
                 open={cashBoxDialog.openCashBoxDialog}
                 onClose={cashBoxDialog.handleCloseCashBoxDialog}
-                onSubmit={cashBoxDialog.handleSubmitCashBoxDialog}/>
+                onSubmit={cashBoxDialog.handleSubmitCashBoxDialog}
+                data={paymentData.currentCashBoxDetails}/>
 
         </Dialog>
     )
@@ -192,6 +193,12 @@ TransactionCashDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    returnListData: PropTypes.object
+    returnListData: PropTypes.object,
+    cashBoxDialog: PropTypes.shape({
+        openCashBoxDialog: PropTypes.number.isRequired,
+        handleOpenCashBoxDialog: PropTypes.func.isRequired,
+        handleCloseCashBoxDialog: PropTypes.func.isRequired,
+        handleSubmitCashBoxDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 export default TransactionCashDialog

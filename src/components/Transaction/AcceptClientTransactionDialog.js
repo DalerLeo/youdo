@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
+import _ from 'lodash'
 import {reduxForm, SubmissionError, Field} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import Dialog from 'material-ui/Dialog'
@@ -10,6 +11,9 @@ import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import {CashboxSearchField} from '../ReduxForm'
 import FlatButton from 'material-ui/FlatButton'
+import numberFormat from '../../helpers/numberFormat'
+
+const ZERO = 0
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -99,7 +103,10 @@ const enhance = compose(
             maxHeight: '50vh',
             minHeight: '184px',
             padding: '0 30px',
-            color: '#333'
+            color: '#333',
+            '& span': {
+                fontWeight: '600'
+            }
         },
         bodyContent: {
             width: '100%'
@@ -153,19 +160,23 @@ const enhance = compose(
 )
 
 const AcceptClientTransactionDialog = enhance((props) => {
-    const {open, onClose, classes, loading, handleSubmit} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {open, onClose, classes, loading, handleSubmit, data, onSubmit} = props
 
+    const clientName = _.get(data, ['client', 'name'])
+    const marketName = _.get(data, ['market', 'name'])
+    const currency = _.get(data, ['currency', 'name'])
+    const amount = numberFormat(_.get(data, ['amount']), currency)
+    const order = _.get(data, ['order'])
     return (
         <Dialog
             modal={true}
             contentStyle={loading ? {width: '300px'} : {width: '400px', maxWidth: 'auto'}}
-            open={open}
+            open={open > ZERO}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Принять наличные</span>
+                <span>Принять наличные {amount}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -174,8 +185,11 @@ const AcceptClientTransactionDialog = enhance((props) => {
                 {loading && <div className={classes.loader}>
                     <CircularProgress size={40} thickness={4}/>
                 </div>}
-                <form onSubmit={onSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={classes.inContent} style={{minHeight: 'initial'}}>
+                        <div>Клиент: <span>{clientName}</span></div>
+                        <div>Заказ №: <span>{order}</span></div>
+                        <div>Магазин: <span>{marketName}</span></div>
                         <div className={classes.list}>
                             <Field
                                 name="cashBox"

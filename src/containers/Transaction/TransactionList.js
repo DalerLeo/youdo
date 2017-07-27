@@ -319,14 +319,17 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_DIALOG_OPEN]: false})})
         },
         handleSubmitCashBoxDialog: props => () => {
-            const {dispatch, acceptForm, filter, location: {pathname}} = props
-            return dispatch(acceptClientTransactionAction(_.get(acceptForm, ['values', 'cashBox', 'value'])))
+            const {dispatch, acceptForm, filter, location: {pathname, query}} = props
+            const clientTransId = _.toInteger(_.get(query, [TRANSACTION_ACCEPT_DIALOG_OPEN]))
+            console.log(clientTransId)
+            return dispatch(acceptClientTransactionAction(_.get(acceptForm, ['values', 'cashBox', 'value']), clientTransId))
 
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_DIALOG_OPEN]: false})})
                 })
         }
     })
@@ -483,6 +486,8 @@ const TransactionList = enhance((props) => {
         detailLoading
     }
 
+    const currentCashBoxDetails = _.find(_.get(payment, ['results']), {'id': openCashBoxDialog})
+
     const cashBoxDialog = {
         openCashBoxDialog,
         handleOpenCashBoxDialog: props.handleOpenCashBoxDialog,
@@ -491,7 +496,8 @@ const TransactionList = enhance((props) => {
     }
     const paymentData = {
         data: payment,
-        paymentLoading
+        paymentLoading,
+        currentCashBoxDetails
     }
 
     return (

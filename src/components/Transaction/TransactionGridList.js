@@ -440,7 +440,7 @@ TransactionGridList.propTypes = {
         handleSubmitCashDialog: PropTypes.func.isRequired
     }).isRequired,
     cashBoxDialog: PropTypes.shape({
-        openCashBoxDialog: PropTypes.bool.isRequired,
+        openCashBoxDialog: PropTypes.number.isRequired,
         handleOpenCashBoxDialog: PropTypes.func.isRequired,
         handleCloseCashBoxDialog: PropTypes.func.isRequired,
         handleSubmitCashBoxDialog: PropTypes.func.isRequired
