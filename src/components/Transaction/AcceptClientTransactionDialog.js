@@ -160,7 +160,8 @@ const enhance = compose(
 )
 
 const AcceptClientTransactionDialog = enhance((props) => {
-    const {open, onClose, classes, loading, handleSubmit, data, onSubmit} = props
+    const {open, onClose, classes, loading, handleSubmit, data} = props
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     const clientName = _.get(data, ['client', 'name'])
     const marketName = _.get(data, ['market', 'name'])
@@ -185,7 +186,7 @@ const AcceptClientTransactionDialog = enhance((props) => {
                 {loading && <div className={classes.loader}>
                     <CircularProgress size={40} thickness={4}/>
                 </div>}
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={onSubmit}>
                     <div className={classes.inContent} style={{minHeight: 'initial'}}>
                         <div>Клиент: <span>{clientName}</span></div>
                         <div>Заказ №: <span>{order}</span></div>

@@ -87,6 +87,15 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
+        const prevTransaction = _.get(props, ['location', 'query', TRANSACTION_CASH_DIALOG_OPEN])
+        const nextTransaction = _.get(nextProps, ['location', 'query', TRANSACTION_CASH_DIALOG_OPEN])
+        return prevTransaction !== nextTransaction && nextTransaction === 'true'
+    }, ({dispatch}) => {
+        const transaction = 'trans'
+        dispatch(orderTransactionFetchAction(transaction))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
         return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
             (_.get(props, ['location', 'query', 'cashboxId']) !== _.get(nextProps, ['location', 'query', 'cashboxId']))
     }, ({dispatch, filter, location}) => {
@@ -289,8 +298,6 @@ const enhance = compose(
         handleOpenCashDialog: props => () => {
             const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: true})})
-            const transaction = 'trans'
-            dispatch(orderTransactionFetchAction(transaction))
         },
 
         handleCloseCashDialog: props => () => {
@@ -321,7 +328,6 @@ const enhance = compose(
         handleSubmitCashBoxDialog: props => () => {
             const {dispatch, acceptForm, filter, location: {pathname, query}} = props
             const clientTransId = _.toInteger(_.get(query, [TRANSACTION_ACCEPT_DIALOG_OPEN]))
-            console.log(clientTransId)
             return dispatch(acceptClientTransactionAction(_.get(acceptForm, ['values', 'cashBox', 'value']), clientTransId))
 
                 .then(() => {

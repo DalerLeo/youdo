@@ -29,8 +29,7 @@ const enhance = compose(
             alignItems: 'center',
             zIndex: '999',
             textAlign: 'center',
-            justifyContent: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            justifyContent: 'center'
         },
         transactions: {
             padding: '10px 0 0',
@@ -89,6 +88,7 @@ const OrderTransactionsDialog = enhance((props) => {
     const {open, loading, onClose, classes, paymentData} = props
     const orderId = _.get(paymentData, 'id')
     const data = _.get(paymentData, 'data')
+    const test = true
     return (
         <Dialog
             modal={true}
@@ -104,9 +104,9 @@ const OrderTransactionsDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <div className={classes.loader}>
+                {test && <div className={classes.loader}>
                     <CircularProgress size={40} thickness={4}/>
-                </div>
+                </div>}
                 <div className={classes.inContent}>
                     <div className={classes.field}>
                         {data ? <div className={classes.transactions}>
