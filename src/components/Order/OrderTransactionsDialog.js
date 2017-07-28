@@ -94,7 +94,6 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxSizing: 'border-box',
             paddingTop: '25px',
             '& > div': {
                 marginTop: '140px',

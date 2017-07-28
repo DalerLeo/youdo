@@ -30,7 +30,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: 'calc(100% - 200px)',
+            height: '100%',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -262,13 +262,17 @@ const StatOutcomeCategoryGridList = enhance((props) => {
     })
 
     const page = (
-            <div className={classes.mainWrapper}>
-                <Row style={{margin: '0', height: '100%'}}>
-                    <div className={classes.leftPanel}>
-                        <StatSideMenu currentUrl={ROUTES.STATISTICS_OUTCOME_CATEGORY_URL}/>
-                    </div>
-                    <div className={classes.rightPanel}>
-                        <div className={classes.wrapper}>
+        <div className={classes.mainWrapper}>
+            <Row style={{margin: '0', height: '100%'}}>
+                <div className={classes.leftPanel}>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_OUTCOME_CATEGORY_URL}/>
+                </div>
+                <div className={classes.rightPanel}>
+                    {listLoading
+                        ? <div className={classes.loader}>
+                            <CircularProgress size={40} thickness={4}/>
+                        </div>
+                        : <div className={classes.wrapper}>
                             <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
                                 <div className={classes.filter}>
                                     <Field
@@ -287,7 +291,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                                     </IconButton>
                                 </div>
                                 <a className={classes.excel}
-                                   onClick = {getDocument.handleGetDocument}>
+                                   onClick={getDocument.handleGetDocument}>
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>
@@ -295,18 +299,14 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                             {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
                                 <div>По вашему запросу ничего не найдено</div>
                             </div>
-                            : <div className={classes.tableWrapper}>
+                                : <div className={classes.tableWrapper}>
                                     {headers}
-                                    {listLoading
-                                        ? <div className={classes.loader}>
-                                            <CircularProgress size={40} thickness={4} />
-                                        </div>
-                                        : list}
+                                    {list}
                                 </div>}
-                        </div>
-                    </div>
-                </Row>
-            </div>
+                        </div>}
+                </div>
+            </Row>
+        </div>
     )
 
     return (

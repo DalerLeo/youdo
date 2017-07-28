@@ -90,10 +90,7 @@ const enhance = compose(
         },
         content: {
             display: 'flex',
-            width: '100%',
-            '& > div': {
-                boxSizing: 'border-box'
-            }
+            width: '100%'
         },
         padding: {
             padding: '20px 30px'

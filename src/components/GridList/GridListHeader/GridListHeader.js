@@ -75,8 +75,7 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             '& > div': {
-                padding: '0 0.5rem !important',
-                boxSizing: 'border-box'
+                padding: '0 0.5rem !important'
             },
             '& div:last-child': {
                 textAlign: 'right'

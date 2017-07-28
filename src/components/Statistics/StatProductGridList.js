@@ -33,7 +33,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: 'calc(100% - 200px)',
+            height: '100%',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -250,7 +250,11 @@ const StatProductGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_PRODUCT_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    <div className={classes.wrapper}>
+                    {listLoading
+                    ? <div className={classes.loader}>
+                        <CircularProgress size={40} thickness={4} />
+                    </div>
+                    : <div className={classes.wrapper}>
                         <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
                             <div className={classes.filter}>
                                 <Field
@@ -290,13 +294,9 @@ const StatProductGridList = enhance((props) => {
                         </div>
                         : <div className={classes.tableWrapper}>
                             {headers}
-                            {listLoading
-                                ? <div className={classes.loader}>
-                                    <CircularProgress size={40} thickness={4} />
-                                </div>
-                                : list}
+                            {list}
                         </div>}
-                    </div>
+                    </div>}
                 </div>
             </Row>
         </div>

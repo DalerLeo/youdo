@@ -106,7 +106,6 @@ const enhance = compose(
         fields: {
             width: '100%',
             padding: '20px 30px',
-            boxSizing: 'border-box',
             maxHeight: '622px',
             overflowY: 'auto'
         },

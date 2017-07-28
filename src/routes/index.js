@@ -47,7 +47,8 @@ import {
     StatOutcomeList,
     StatDebtorsList,
     StatOutcomeCategoryList,
-    StatRemainderList
+    StatRemainderList,
+    StatCashboxList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveList} from '../containers/StockReceive'
@@ -544,6 +545,17 @@ export default {
                 {
                     path: ROUTES.STATISTICS_REMAINDER_ITEM_URL,
                     component: userIsAuth(StatRemainderList)
+                }
+            ]
+        },
+        // Statistics/cashbox
+        {
+            path: ROUTES.STATISTICS_CASHBOX_URL,
+            component: userIsAuth(StatCashboxList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_CASHBOX_ITEM_URL,
+                    component: userIsAuth(StatCashboxList)
                 }
             ]
         },

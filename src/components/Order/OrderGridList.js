@@ -104,7 +104,6 @@ const enhance = compose(
             position: 'relative',
             '& > div': {
                 padding: '0 0.5rem',
-                boxSizing: 'border-box',
                 '&:last-child': {
                     padding: '0'
                 }

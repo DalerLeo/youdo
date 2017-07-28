@@ -308,6 +308,8 @@ export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
 export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
 export const STAT_REMAINDER_LIST = `/${REMAINDER}/all_balances/`
 export const STAT_REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
+export const STATISTICS_CASHBOX_LIST = `/${CASHBOX}/`
+export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 
 export const STOCK_RECEIVE = 'stock/supply'
 export const STOCK_HISTORY = 'stock/barcode_history'

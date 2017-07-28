@@ -42,7 +42,6 @@ const enhance = compose(
                 margin: '1px'
             },
             height: '390px',
-            boxSizing: 'border-box',
             overflowY: 'scroll'
         },
         cursor: {

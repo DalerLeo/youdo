@@ -255,7 +255,6 @@ const enhance = compose(
             outline: '2px #f4f4f4 solid'
         },
         timelineContent: {
-            boxSizing: 'border-box',
             borderRadius: '2px',
             background: '#fff',
             color: '#666 !important',

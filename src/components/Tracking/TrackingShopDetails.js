@@ -54,8 +54,7 @@ const enhance = compose(
                     marginTop: '-3px'
                 },
                 '&:last-child': {
-                    width: '100% !important',
-                    boxSizing: 'border-box'
+                    width: '100% !important'
                 }
             },
             '& button div div': {

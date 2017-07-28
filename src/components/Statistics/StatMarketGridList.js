@@ -32,7 +32,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: 'calc(100% - 200px)',
+            height: '100%',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -252,57 +252,58 @@ const StatMarketGridList = enhance((props) => {
     })
 
     const page = (
-    <div className={classes.mainWrapper}>
-        <Row style={{margin: '0', height: '100%'}}>
-            <div className={classes.leftPanel}>
-                <StatSideMenu currentUrl={ROUTES.STATISTICS_MARKET_URL} />
-            </div>
-            <div className={classes.rightPanel}>
-                <div className={classes.wrapper}>
-                    <form className={classes.form} onSubmit={ handleSubmitFilterDialog }>
-                        <div className={classes.filter}>
-                            <Field
-                                className={classes.inputFieldCustom}
-                                name="date"
-                                component={DateToDateField}
-                                label="Диапазон дат"
-                                fullWidth={true}/>
-                            <Field
-                                className={classes.inputFieldCustom}
-                                name="search"
-                                component={TextField}
-                                label="Магазин"
-                                fullWidth={true}/>
-
-                            <IconButton
-                                className={classes.searchButton}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                type="submit">
-                                <Search/>
-                            </IconButton>
-                        </div>
-                        <a className={classes.excel}
-                           onClick={getDocument.handleGetDocument}>
-                            <Excel color="#fff"/> <span>Excel</span>
-                        </a>
-                    </form>
-                    <Pagination filter={filter}/>
-                    {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
-                        <div>По вашему запросу ничего не найдено</div>
-                    </div>
-                    : <div className={classes.tableWrapper}>
-                        {headers}
-                        {listLoading
-                            ? <div className={classes.loader}>
-                                <CircularProgress size={40} thickness={4} />
-                            </div>
-                            : list}
-                    </div>}
+        <div className={classes.mainWrapper}>
+            <Row style={{margin: '0', height: '100%'}}>
+                <div className={classes.leftPanel}>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_MARKET_URL}/>
                 </div>
-            </div>
-        </Row>
-    </div>
+                <div className={classes.rightPanel}>
+                    {listLoading
+                        ? <div className={classes.loader}>
+                            <CircularProgress size={40} thickness={4}/>
+                        </div>
+                        : <div className={classes.wrapper}>
+                            <form className={classes.form} onSubmit={ handleSubmitFilterDialog }>
+                                <div className={classes.filter}>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="date"
+                                        component={DateToDateField}
+                                        label="Диапазон дат"
+                                        fullWidth={true}/>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="search"
+                                        component={TextField}
+                                        label="Магазин"
+                                        fullWidth={true}/>
+
+                                    <IconButton
+                                        className={classes.searchButton}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        type="submit">
+                                        <Search/>
+                                    </IconButton>
+                                </div>
+                                <a className={classes.excel}
+                                   onClick={getDocument.handleGetDocument}>
+                                    <Excel color="#fff"/> <span>Excel</span>
+                                </a>
+                            </form>
+                            <Pagination filter={filter}/>
+                            {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                                <div>По вашему запросу ничего не найдено</div>
+                            </div>
+                                : <div className={classes.tableWrapper}>
+                                    {headers}
+                                    {list}
+                                </div>}
+                        </div>
+                    }
+                </div>
+            </Row>
+        </div>
     )
 
     return (
