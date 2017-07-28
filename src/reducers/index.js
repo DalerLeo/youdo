@@ -338,6 +338,10 @@ const rootReducer = combineReducers({
         dataOut: createThunkReducer(actionTypes.STAT_FINANCE_DATA_OUT),
         list: createThunkReducer(actionTypes.STAT_FINANCE_LIST)
     }),
+    activity: combineReducers({
+        orderList: createThunkReducer(actionTypes.ACTIVITY_ORDER_LIST),
+        orderItem: createThunkReducer(actionTypes.ACTIVITY_ORDER_ITEM)
+    }),
 
     snackbar: snackbarReducer(),
     error: errorReducer(),

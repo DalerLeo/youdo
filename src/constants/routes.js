@@ -232,3 +232,7 @@ export const POSITION_LIST_URL = `/${POSITION}`
 export const POSITION_ITEM_URL = `${POSITION_LIST_URL}/:positionId`
 export const POSITION_ITEM_PATH = `${POSITION}/%d`
 
+export const ACTIVITY = 'activity'
+export const ACTIVITY_LIST_URL = `${ACTIVITY}`
+export const ACTIVITY_ITEM_URL = `/${ACTIVITY}/:activityId`
+export const ACTIVITY_ITEM_PATH = `${ACTIVITY}/%d`

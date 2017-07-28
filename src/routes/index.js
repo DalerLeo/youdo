@@ -53,6 +53,7 @@ import {
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveList} from '../containers/StockReceive'
 import {PlanList} from '../containers/Plan'
+import {ActivityList} from '../containers/Activity'
 
 export default {
     path: '/',
@@ -557,6 +558,17 @@ export default {
                 {
                     path: ROUTES.POSITION_ITEM_URL,
                     component: userIsAuth(PositionList)
+                }
+            ]
+        },
+        // Activity
+        {
+            path: ROUTES.ACTIVITY_LIST_URL,
+            component: userIsAuth(ActivityList),
+            childRoutes: [
+                {
+                    path: ROUTES.ACTIVITY_ITEM_URL,
+                    component: userIsAuth(ActivityList)
                 }
             ]
         },

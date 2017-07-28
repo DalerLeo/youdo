@@ -111,6 +111,7 @@ export const ORDER_CREATE = `/${ORDER}/`
 export const ORDER_RETURN = '/sales/order_return/'
 export const ORDER_RETURN_LIST = '/sales/order_return/%d/'
 export const ORDER_TRANSACTION = '/sales/client_transaction/'
+
 export const ACCEPT_CLIENT_TRANSACTION = 'finance/accept_client_transaction'
 
 export const ORDER_LIST = `/${ORDER}/`
@@ -345,3 +346,6 @@ export const POSITION_DELETE = `/${POSITION}/%d/`
 export const POSITION_ITEM = `/${POSITION}/%d/`
 export const POSITION_PRIMARY = 'currency_primary'
 export const POSITION_RATE = 'finance/currency_rate/'
+
+export const ACTIVITY_ORDER_LIST = `${ORDER}/`
+export const ACTIVITY_ORDER_ITEM = `${ORDER}/%d`

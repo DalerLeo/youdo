@@ -1,0 +1,146 @@
+import React from 'react'
+import _ from 'lodash'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import moment from 'moment'
+import {connect} from 'react-redux'
+import Layout from '../../components/Layout'
+import {hashHistory} from 'react-router'
+import filterHelper from '../../helpers/filter'
+import {ORDER_DETAILS, ActivityWrapper, DAY, DATE} from '../../components/Activity'
+import {
+    activityOrderListFetchAction,
+    activityOrderItemFetchAction
+} from '../../actions/activity'
+
+const ZERO = 0
+const ONE = 1
+const currentDate = moment().format('YYYY-MM')
+const today = _.toInteger(moment().format('D'))
+
+const enhance = compose(
+    connect((state, props) => {
+        const query = _.get(props, ['location', 'query'])
+        const pathname = _.get(props, ['location', 'pathname'])
+        const orderList = _.get(state, ['activity', 'orderList', 'data'])
+        const orderListLoading = _.get(state, ['activity', 'orderList', 'loading'])
+        const orderItem = _.get(state, ['activity', 'orderItem', 'data'])
+        const orderItemLoading = _.get(state, ['activity', 'orderItem', 'loading'])
+        const createForm = _.get(state, ['form', 'ActivityCreateForm', 'values'])
+        const curDate = _.get(query, 'date') || currentDate
+        const filter = filterHelper(orderList, pathname, query)
+        return {
+            filter,
+            query,
+            pathname,
+            orderList,
+            orderListLoading,
+            orderItem,
+            orderItemLoading,
+            createForm,
+            curDate
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevDay = _.get(props, ['location', 'query', DAY])
+        const nextDay = _.get(nextProps, ['location', 'query', DAY])
+        return (props.curDate !== nextProps.curDate) || (prevDay !== nextDay)
+    }, ({dispatch, filter}) => {
+        dispatch(activityOrderListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevDetail = _.get(props, ['location', 'query', ORDER_DETAILS])
+        const nextDetail = _.get(nextProps, ['location', 'query', ORDER_DETAILS])
+        return prevDetail !== nextDetail && nextDetail > ZERO
+    }, ({dispatch, location}) => {
+        const orderId = _.toInteger(_.get(location, ['query', ORDER_DETAILS]))
+        if (orderId > ZERO) {
+            dispatch(activityOrderItemFetchAction(orderId))
+        }
+    }),
+
+    withHandlers({
+        handlePrevMonth: props => () => {
+            const {location: {pathname}, filter, curDate} = props
+            const prevMonth = moment(curDate).subtract(ONE, 'month')
+            const dateForURL = prevMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
+        handleNextMonth: props => () => {
+            const {location: {pathname}, filter, curDate} = props
+            const nextMonth = moment(curDate).add(ONE, 'month')
+            const dateForURL = nextMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
+        handleClickDay: props => (day) => {
+            const {location, location: {pathname}, filter} = props
+            const date = _.get(location, ['query', DATE])
+            hashHistory.push({pathname, query: filter.getParams({[DAY]: day, [DATE]: date})})
+        },
+
+        handleOpenOrderDetails: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_DETAILS]: id})})
+        },
+
+        handleCloseOrderDetails: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_DETAILS]: ZERO})})
+        }
+    })
+)
+
+const ActivityList = enhance((props) => {
+    const {
+        filter,
+        orderList,
+        orderListLoading,
+        orderItem,
+        orderItemLoading,
+        location,
+        layout
+    } = props
+
+    const openOrderDetails = _.toInteger(_.get(location, ['query', ORDER_DETAILS]) || ZERO) > ZERO
+    const orderId = _.toInteger(_.get(location, ['query', ORDER_DETAILS]))
+    const selectedDay = _.toInteger(_.get(location, ['query', DAY]) || today)
+    const selectedDate = _.get(location, ['query', DATE]) || currentDate
+
+    const orderDetails = {
+        id: orderId,
+        openOrderDetails,
+        detailLoading: orderItemLoading,
+        data: orderItem,
+        handleOpenOrderDetails: props.handleOpenOrderDetails,
+        handleCloseOrderDetails: props.handleCloseOrderDetails
+    }
+
+    const orderlistData = {
+        data: _.get(orderList, 'results'),
+        orderListLoading
+    }
+
+    const calendar = {
+        selectedDay: selectedDay,
+        selectedDate: selectedDate,
+        handlePrevMonth: props.handlePrevMonth,
+        handleNextMonth: props.handleNextMonth
+    }
+
+    return (
+        <Layout {...layout}>
+            <ActivityWrapper
+                filter={filter}
+                orderlistData={orderlistData}
+                orderDetails={orderDetails}
+                handleClickDay={props.handleClickDay}
+                calendar={calendar}
+            />
+        </Layout>
+    )
+})
+
+export default ActivityList

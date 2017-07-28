@@ -19,7 +19,8 @@ export const MenuItems = [
             {name: 'Должники', url: ROUTES.STATDEBTORS_LIST_URL},
             {name: 'Производство', url: ROUTES.STAT_MANUFACTURE_LIST_URL},
             {name: 'Финансы', url: ROUTES.STAT_CASHBOX_LIST_URL},
-            {name: 'План', url: ROUTES.PLAN_LIST_URL}
+            {name: 'План', url: ROUTES.PLAN_LIST_URL},
+            {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL}
         ]
     },
     {
