@@ -115,6 +115,10 @@ const enhance = compose(
         btnRemove: {
             color: '#e57373 !important'
         },
+        buttons: {
+            display: 'flex',
+            alignItems: 'center'
+        },
         title: {
             fontWeight: '600',
             '& span': {
@@ -297,9 +301,14 @@ const TransactionGridList = enhance((props) => {
                         <div className={classes.outerTitle}>
                             <div className={classes.buttons}>
                                 <a onClick={cashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>
-                                <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
-                                <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
-                                <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
+
+                                { _.get(cashboxData, 'cashboxId') !== AllCashboxId &&
+                                    <div>
+                                        <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
+                                        <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
+                                        <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>

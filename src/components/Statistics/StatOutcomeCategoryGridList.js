@@ -241,7 +241,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const percent = _.get(item, 'percent')
-        const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
+        const amount = numberFormat(_.get(item, 'amount'), getConfig('PRIMARY_CURRENCY'))
 
         return (
             <Row key={id} className="dottedList">
@@ -256,7 +256,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                         value={percent}
                         style={{backgroundColor: '#fff', height: '10px'}}/>
                 </Col>
-                <Col xs={3} style={{justifyContent: 'flex-end'}}>{income}</Col>
+                <Col xs={3} style={{justifyContent: 'flex-end'}}>{amount}</Col>
             </Row>
         )
     })

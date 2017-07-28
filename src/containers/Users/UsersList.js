@@ -22,10 +22,10 @@ import {
     usersUpdateAction,
     usersListFetchAction,
     usersDeleteAction,
-    usersItemFetchAction
+    usersItemFetchAction,
+    userGroupListFetchAction
 } from '../../actions/users'
 import {openSnackbarAction} from '../../actions/snackbar'
-const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -35,6 +35,8 @@ const enhance = compose(
         const createLoading = _.get(state, ['users', 'create', 'loading'])
         const updateLoading = _.get(state, ['users', 'update', 'loading'])
         const list = _.get(state, ['users', 'list', 'data'])
+        const groupList = _.get(state, ['users', 'groupList', 'data'])
+        const groupListLoading = _.get(state, ['users', 'groupList', 'loading'])
         const listLoading = _.get(state, ['users', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'UsersFilterForm'])
         const createForm = _.get(state, ['form', 'UsersCreateForm'])
@@ -49,7 +51,9 @@ const enhance = compose(
             updateLoading,
             filter,
             filterForm,
-            createForm
+            createForm,
+            groupList,
+            groupListLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -64,6 +68,17 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const usersId = _.toInteger(_.get(params, 'usersId'))
         usersId && dispatch(usersItemFetchAction(usersId))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevCreateDialog = _.get(props, ['location', 'query', USERS_CREATE_DIALOG_OPEN])
+        const nextCreateDialog = _.get(nextProps, ['location', 'query', USERS_CREATE_DIALOG_OPEN])
+        const prevUpdateDialog = _.get(props, ['location', 'query', USERS_UPDATE_DIALOG_OPEN])
+        const nextUpdateDialog = _.get(nextProps, ['location', 'query', USERS_UPDATE_DIALOG_OPEN])
+        return ((prevCreateDialog !== nextCreateDialog) || (prevUpdateDialog !== nextUpdateDialog)) &&
+            (nextCreateDialog === 'true' || nextUpdateDialog === 'true')
+    }, ({dispatch}) => {
+        dispatch(userGroupListFetchAction())
     }),
 
     withHandlers({
@@ -201,7 +216,9 @@ const UsersList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+        groupList,
+        groupListLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', USERS_FILTER_OPEN]))
@@ -224,7 +241,16 @@ const UsersList = enhance((props) => {
         show: showError
     }
 
+    const isSelectedGroups = _.map(_.get(groupList, 'results'), (obj) => {
+        return {id: obj.id, selected: false}
+    })
+
     const createDialog = {
+        initialValues: (() => {
+            return {
+                groups: isSelectedGroups
+            }
+        })(),
         createLoading,
         openCreateDialog,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
@@ -232,7 +258,6 @@ const UsersList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog,
         errorData
     }
-
     const confirmDialog = {
         confirmLoading: detailLoading,
         openConfirmDialog: openConfirmDialog,
@@ -251,9 +276,7 @@ const UsersList = enhance((props) => {
                 firstName: _.get(detail, 'firstName'),
                 secondName: _.get(detail, 'secondName'),
                 phoneNumber: _.get(detail, 'phoneNumber'),
-                group: {
-                    value: _.get(detail, ['groups', ZERO, 'id'])
-                },
+                groups: isSelectedGroups,
                 region: _.get(detail, 'region'),
                 password: _.get(detail, 'password'),
                 typeUser: _.get(detail, 'typeUser'),
@@ -288,13 +311,16 @@ const UsersList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
-
     const detailData = {
         id: detailId,
         data: detail,
         detailLoading
     }
 
+    const groupListData = {
+        data: _.get(groupList, 'results'),
+        groupListLoading
+    }
     return (
         <Layout {...layout}>
             <UsersGridList
@@ -306,6 +332,7 @@ const UsersList = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
+                groupListData={groupListData}
             />
         </Layout>
     )

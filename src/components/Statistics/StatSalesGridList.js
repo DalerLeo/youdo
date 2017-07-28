@@ -20,6 +20,8 @@ import numberFormat from '../../helpers/numberFormat'
 import StatSaleDialog from './StatSaleDialog'
 import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
+import dateFormat from '../../helpers/dateFormat'
+import getConfig from '../../helpers/getConfig'
 
 export const STAT_SALES_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -43,7 +45,6 @@ const enhance = compose(
             }
         },
         loader: {
-
             width: '100%',
             height: '150px',
             background: '#fff',
@@ -209,6 +210,7 @@ const StatSalesGridList = enhance((props) => {
         classes,
         type,
         filter,
+        graphData,
         onSubmit,
         listData,
         statSaleDialog,
@@ -217,8 +219,16 @@ const StatSalesGridList = enhance((props) => {
     } = props
 
     const loading = _.get(listData, 'listLoading')
-    const sample = 100
-    const deletion = 3
+    let sum = 0
+    const value = _.map(_.get(graphData, 'data'), (item) => {
+        sum += _.toInteger(_.get(item, 'amount'))
+        return _.toInteger(_.get(item, 'amount'))
+    })
+
+    const valueName = _.map(_.get(graphData, 'data'), (item) => {
+        return dateFormat(_.get(item, 'date'))
+    })
+
     const config = {
         chart: {
             type: 'areaspline',
@@ -237,7 +247,7 @@ const StatSalesGridList = enhance((props) => {
             enabled: false
         },
         xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            categories: valueName,
             tickmarkPlacement: 'on',
             title: {
                 text: '',
@@ -290,7 +300,7 @@ const StatSalesGridList = enhance((props) => {
                 symbol: 'circle'
             },
             name: 'Эффективность',
-            data: [sample, sample + (sample / deletion), sample, sample / deletion, sample * deletion],
+            data: value,
             color: '#6cc6de'
 
         }]
@@ -388,10 +398,15 @@ const StatSalesGridList = enhance((props) => {
                             <Row className={classes.diagram}>
                                 <Col xs={3} className={classes.salesSummary}>
                                     <div>Сумма продаж за период</div>
-                                    <div>35 000 000 UZS</div>
+                                    <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
                                 </Col>
                                 <Col xs={9}>
-                                    <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                    {_.get(graphData, 'graphLoading') && <div className={classes.loader}>
+                                        <CircularProgress size={50} thickness={4} />
+                                    </div>}
+
+                                    {!_.get(graphData, 'graphLoading') &&
+                                    <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>}
                                 </Col>
                             </Row>
                             <div className={classes.pagination}>
