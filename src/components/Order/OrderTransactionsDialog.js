@@ -121,7 +121,7 @@ const enhance = compose(
 const OrderTransactionsDialog = enhance((props) => {
     const {open, loading, onClose, classes, paymentData} = props
     const orderId = _.get(paymentData, 'id')
-    const data = _.get(paymentData, 'data')
+    const data = _.get(paymentData, ['data', 'results'])
     return (
         <Dialog
             modal={true}
@@ -149,20 +149,23 @@ const OrderTransactionsDialog = enhance((props) => {
                                     <Col xs={2}>Касса</Col>
                                     <Col xs={2}>Дата</Col>
                                     <Col xs={2}>Сумма оплаты</Col>
-                                    <Col xs={3}>В внутреннем валюте</Col>
+                                    <Col xs={3}>Во внутренней валюте</Col>
                                 </Row>
-                                {_.map(_.get(paymentData, ['data', 'results']), (item, index) => {
-                                    const cashier = _.get(item, ['transaction', 'name']) || 'Не принято'
-                                    const currency = _.get(item, ['currency', 'name'])
+                                {_.map(data, (item, index) => {
+                                    const whoFirst = _.get(item, ['clientTransaction', 'user', 'firstName'])
+                                    const whoSecond = _.get(item, ['clientTransaction', 'user', 'secondName'])
+                                    const who = whoFirst + ' ' + whoSecond
+                                    const currency = _.get(item, ['clientTransaction', 'currency', 'name'])
+                                    const cashbox = _.get(item, ['clientTransaction', 'transaction']) || 'Не принято'
 
-                                    const payDate = dateFormat(_.get(item, 'createdDate')) + moment(_.get(item, 'createdDate')).format(' HH:MM')
-                                    const amount = numberFormat(_.get(item, ['amount']), currency)
-                                    const internal = numberFormat(_.get(item, ['internal']), getConfig('PRIMARY_CURRENCY'))
+                                    const payDate = dateFormat(_.get(item, ['clientTransaction', 'createdDate'])) + moment(_.get(item, ['clientTransaction', 'createdDate'])).format(' HH:MM')
+                                    const amount = numberFormat(_.get(item, ['clientTransaction', 'amount']), currency)
+                                    const internal = numberFormat(_.get(item, ['clientTransaction', 'internal']), getConfig('PRIMARY_CURRENCY'))
 
                                     return (
                                         <Row key={index} className="dottedList">
-                                            <Col xs={3}>{'?'}</Col>
-                                            <Col xs={2}>{cashier}</Col>
+                                            <Col xs={3}>{(whoFirst && whoSecond) ? who : 'Списано со счета'}</Col>
+                                            <Col xs={2}>{cashbox}</Col>
                                             <Col xs={2}>{payDate}</Col>
                                             <Col xs={2}>{amount}</Col>
                                             <Col xs={3}>{internal}</Col>

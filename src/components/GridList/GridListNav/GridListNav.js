@@ -7,7 +7,7 @@ import GridListNavPagination from '../GridListNavPagination'
 import GridListNavSearch from '../GridListNavSearch'
 import IconButton from 'material-ui/IconButton'
 import Print from 'material-ui/svg-icons/action/print'
-import RefreshIcon from 'material-ui/svg-icons/navigation/refresh'
+import RefreshIcon from 'material-ui/svg-icons/action/cached'
 import Tooltip from '../../ToolTip'
 
 const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData, withInvoice, printDialog, refreshAction}) => {

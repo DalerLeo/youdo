@@ -234,7 +234,7 @@ const PricesCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение поставки' : 'Добавление поставки'}</span>
+                <span>{isUpdate ? 'Изменение акции' : 'Добавление акции'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -247,13 +247,12 @@ const PricesCreateDialog = enhance((props) => {
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent} style={{minHeight: '350px'}}>
                             <div className={classes.leftOrderPart}>
-                                <div className={classes.subTitleOrder}>Выбор поставщика</div>
                                 <div className={classes.selectContent}>
                                     <Field
                                         name="name"
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        label="Наименование"
+                                        label="Название акции"
                                         fullWidth={true}/>
                                     <Field
                                         name="contact"
@@ -294,7 +293,7 @@ const PricesCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Оформить заказ"
+                            label="Добавить акцию"
                             className={classes.actionButton}
                             primary={true}
                             type="submit"
