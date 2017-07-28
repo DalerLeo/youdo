@@ -91,7 +91,8 @@ export const MenuItems = [
             {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL},
             {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL},
             {name: 'Смена', url: ROUTES.SHIFT_LIST_URL},
-            {name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL}
+            {name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL},
+            {name: 'Должности', url: ROUTES.POSITION_LIST_URL}
         ]
     }
 ]

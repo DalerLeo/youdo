@@ -15,6 +15,7 @@ import {ProductTypeList} from '../containers/ProductType'
 import {ProductPriceList} from '../containers/ProductPrice'
 import {StockList} from '../containers/Stock'
 import {CurrencyList} from '../containers/Currency'
+import {PositionList} from '../containers/Position'
 import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
@@ -544,6 +545,18 @@ export default {
                 {
                     path: ROUTES.STATISTICS_REMAINDER_ITEM_URL,
                     component: userIsAuth(StatRemainderList)
+                }
+            ]
+        },
+
+        // Position
+        {
+            path: ROUTES.POSITION_LIST_URL,
+            component: userIsAuth(PositionList),
+            childRoutes: [
+                {
+                    path: ROUTES.POSITION_ITEM_URL,
+                    component: userIsAuth(PositionList)
                 }
             ]
         },

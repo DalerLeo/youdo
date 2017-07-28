@@ -303,7 +303,7 @@ export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
 
-export const STAT_OUTCOME_CATEGORY_LIST = 'stats/agents/'
+export const STAT_OUTCOME_CATEGORY_LIST = 'stats/expenses/'
 export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
 export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
 export const STAT_REMAINDER_LIST = `/${REMAINDER}/all_balances/`
@@ -331,3 +331,13 @@ export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
 
 export const PLAN_CREATE = `/${STAT_AGENT_LIST}/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
+
+
+export const POSITION = 'finance/currencies'
+export const POSITION_COURSE_CREATE = 'finance/currency_rate/'
+export const POSITION_CREATE = `/${POSITION}/`
+export const POSITION_LIST = `/${POSITION}/`
+export const POSITION_DELETE = `/${POSITION}/%d/`
+export const POSITION_ITEM = `/${POSITION}/%d/`
+export const POSITION_PRIMARY = 'currency_primary'
+export const POSITION_RATE = 'finance/currency_rate/'
