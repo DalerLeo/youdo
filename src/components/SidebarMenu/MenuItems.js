@@ -12,15 +12,11 @@ export const MenuItems = [
     {
         name: 'Метрика',
         icon: (<Statistics />),
-        url: ROUTES.STATISTICS_LIST_URL,
+        url: ROUTES.ACTIVITY_LIST_URL,
         childs: [
-            {name: 'Статистика', url: ROUTES.STATISTICS_LIST_URL},
-            {name: 'Склады', url: ROUTES.STATSTOCK_LIST_URL},
-            {name: 'Должники', url: ROUTES.STATDEBTORS_LIST_URL},
-            {name: 'Производство', url: ROUTES.STAT_MANUFACTURE_LIST_URL},
-            {name: 'Финансы', url: ROUTES.STAT_CASHBOX_LIST_URL},
+            {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL},
             {name: 'План', url: ROUTES.PLAN_LIST_URL},
-            {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL}
+            {name: 'Статистика', url: ROUTES.STATISTICS_LIST_URL}
         ]
     },
     {
@@ -30,7 +26,6 @@ export const MenuItems = [
         childs: [
             {name: 'Заказы', url: ROUTES.ORDER_LIST_URL},
             {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL},
-            {name: 'Ценообразование', url: ROUTES.PRODUCT_PRICE_LIST_URL},
             {name: 'Маркетинговые акции', url: ROUTES.PRICES_LIST_URL},
             {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL},
             {name: 'Магазины', url: ROUTES.SHOP_LIST_URL}
@@ -54,7 +49,6 @@ export const MenuItems = [
         url: ROUTES.TRANSACTION_LIST_URL,
         childs: [
             {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL},
-            {name: 'Транзакции по клиентам', url: ROUTES.CLIENT_TRANSACTION_LIST_URL},
             {name: 'Ожидаемые расходы', url: ROUTES.PENDING_EXPENSES_LIST_URL},
             {name: 'Ожидаeмые оплаты', url: ROUTES.PENDING_PAYMENTS_LIST_URL},
             {name: 'Баланс клиентов', url: ROUTES.CLIENT_BALANCE_LIST_URL}
