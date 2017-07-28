@@ -20,6 +20,7 @@ export const USERS_ITEM = 'USERS_ITEM'
 export const USERS_UPDATE = 'USERS_UPDATE'
 export const USERS_CREATE = 'USERS_CREATE'
 export const USERS_DELETE = 'USERS_DELETE'
+export const USERS_GROUP = 'USERS_GROUP'
 
 export const CASHBOX_LIST = 'CASHBOX_LIST'
 export const CASHBOX_ITEM = 'CASHBOX_ITEM'
