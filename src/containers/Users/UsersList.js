@@ -71,9 +71,12 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevTransaction = _.get(props, ['location', 'query', USERS_CREATE_DIALOG_OPEN])
-        const nextTransaction = _.get(nextProps, ['location', 'query', USERS_CREATE_DIALOG_OPEN])
-        return prevTransaction !== nextTransaction && nextTransaction === 'true'
+        const prevCreateDialog = _.get(props, ['location', 'query', USERS_CREATE_DIALOG_OPEN])
+        const nextCreateDialog = _.get(nextProps, ['location', 'query', USERS_CREATE_DIALOG_OPEN])
+        const prevUpdateDialog = _.get(props, ['location', 'query', USERS_UPDATE_DIALOG_OPEN])
+        const nextUpdateDialog = _.get(nextProps, ['location', 'query', USERS_UPDATE_DIALOG_OPEN])
+        return ((prevCreateDialog !== nextCreateDialog) || (prevUpdateDialog !== nextUpdateDialog)) &&
+            (nextCreateDialog === 'true' || nextUpdateDialog === 'true')
     }, ({dispatch}) => {
         dispatch(userGroupListFetchAction())
     }),
@@ -273,7 +276,7 @@ const UsersList = enhance((props) => {
                 firstName: _.get(detail, 'firstName'),
                 secondName: _.get(detail, 'secondName'),
                 phoneNumber: _.get(detail, 'phoneNumber'),
-                groups: _.get(detail, 'groups'),
+                groups: isSelectedGroups,
                 region: _.get(detail, 'region'),
                 password: _.get(detail, 'password'),
                 typeUser: _.get(detail, 'typeUser'),

@@ -206,7 +206,6 @@ const UsersGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 errorData={updateDialog.errorData}
-
             />
 
             {detailData.data && <ConfirmDialog
