@@ -33,7 +33,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'ClientBalanceFilterForm'])
         const createForm = _.get(state, ['form', 'ClientBalanceCreateForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(detail, pathname, query)
+        const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 
         return {
             list,
@@ -49,15 +49,16 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() &&
+            toBoolean(_.get(nextProps, ['location', 'query', CLIENT_BALANCE_INFO_DIALOG_OPEN])) === false
     }, ({dispatch, filter}) => {
         dispatch(clientBalanceListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
         const clientBalanceId = _.get(nextProps, ['params', 'clientBalanceId'])
-
-        return clientBalanceId && _.get(props, ['params', 'clientBalanceId']) !== clientBalanceId
+        return clientBalanceId && (_.get(props, ['params', 'clientBalanceId']) !== clientBalanceId ||
+            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
     }, ({dispatch, params, filterItem}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
         clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId))
@@ -103,7 +104,7 @@ const enhance = compose(
 
         handleCloseInfoDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: false, 'dPage': null, 'dPageSize': null})})
         }
     })
 )

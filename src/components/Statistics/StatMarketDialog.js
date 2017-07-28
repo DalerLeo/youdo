@@ -9,7 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
-import Pagination from '../GridList/GridListNavPagination'
+import Pagination from '../ReduxForm/Pagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 
@@ -24,6 +24,11 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        dialog: {
+            '& > div:first-child > div:first-child': {
+                transform: 'translate(0px, 0px) !important'
+            }
+        },
         popUp: {
             color: '#333 !important',
             overflowY: 'hidden !important',
@@ -31,7 +36,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            height: '100%'
+            maxHeight: 'none !important'
         },
         content: {
             width: '100%',
@@ -92,6 +97,8 @@ const enhance = compose(
         },
         tableWrapper: {
             padding: '0 30px',
+            maxHeight: '380px',
+            overflow: 'auto',
             '& .row': {
                 '&:first-child': {
                     fontWeight: '600'
@@ -111,7 +118,7 @@ const enhance = compose(
 )
 
 const StatMarketDialog = enhance((props) => {
-    const {open, onClose, classes, detailData} = props
+    const {open, onClose, classes, detailData, filterItem} = props
 
     const loading = _.get(detailData, 'detailLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -173,7 +180,7 @@ const StatMarketDialog = enhance((props) => {
                             </Row>
                             {orderList}
                         </div>
-                        <Pagination filter={_.get(detailData, 'filter')}/>
+                        <Pagination filter={filterItem}/>
                     </div>
                 </div>}
         </Dialog>

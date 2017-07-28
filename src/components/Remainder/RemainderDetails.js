@@ -65,7 +65,7 @@ const enhance = compose(
 )
 
 const RemainderDetails = enhance((props) => {
-    const {classes, filter, detailData} = props
+    const {classes, filterItem, detailData} = props
     const isLoading = _.get(detailData, 'detailLoading')
     const measurement = _.get(detailData, ['currentRow', '0', 'measurement', 'name'])
 
@@ -75,7 +75,7 @@ const RemainderDetails = enhance((props) => {
             : <div className={classes.content}>
                     <div className={classes.title}>
                         <div className={classes.titleLabel}>Парти товаров</div>
-                        <Pagination filter={filter}/>
+                        <Pagination filter={filterItem}/>
                     </div>
                     <Row className='dottedList'>
                         <Col xs={4}>Код</Col>
@@ -104,7 +104,9 @@ const RemainderDetails = enhance((props) => {
 })
 
 RemainderDetails.propTypes = {
-    filter: PropTypes.object.isRequired
+    filterItem: PropTypes.object.isRequired,
+    detailData: PropTypes.object.isRequired,
+    handleCloseDetail: PropTypes.func.isRequired
 }
 
 export default RemainderDetails

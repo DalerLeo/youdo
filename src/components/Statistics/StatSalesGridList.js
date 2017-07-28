@@ -19,6 +19,8 @@ import List from 'material-ui/svg-icons/action/list'
 import numberFormat from '../../helpers/numberFormat'
 import StatSaleDialog from './StatSaleDialog'
 import moment from 'moment'
+import CircularProgress from 'material-ui/CircularProgress'
+
 export const STAT_SALES_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
@@ -39,6 +41,16 @@ const enhance = compose(
                 marginLeft: '0',
                 marginRight: '0'
             }
+        },
+        loader: {
+
+            width: '100%',
+            height: '150px',
+            background: '#fff',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: '999',
+            display: 'flex'
         },
         pagination: {
             display: 'flex',
@@ -203,6 +215,8 @@ const StatSalesGridList = enhance((props) => {
         handleSubmit,
         detailData
     } = props
+
+    const loading = _.get(listData, 'listLoading')
     const sample = 100
     const deletion = 3
     const config = {
@@ -312,6 +326,7 @@ const StatSalesGridList = enhance((props) => {
         </Row>
     )
     const list = (
+
         _.map(_.get(listData, 'data'), (item) => {
             const marketName = _.get(item, ['market', 'name'])
             const id = _.get(item, 'id')
@@ -319,6 +334,7 @@ const StatSalesGridList = enhance((props) => {
             const firstName = _.get(item, ['user', 'firstName'])
             const secondName = _.get(item, ['user', 'secondName '])
             const totalPrice = _.get(item, 'totalPrice')
+
             return (
                 <Row key={id} className="dottedList">
                     <Col xs={2}>{id}</Col>
@@ -357,7 +373,6 @@ const StatSalesGridList = enhance((props) => {
                                         component={DateToDateField}
                                         label="Диапазон дат"
                                         fullWidth={true}/>
-
                                     <IconButton
                                         className={classes.searchButton}
                                         iconStyle={iconStyle.icon}
@@ -385,7 +400,12 @@ const StatSalesGridList = enhance((props) => {
                             </div>
                             <div className={classes.tableWrapper}>
                                 {headers}
-                                {list}
+
+                                {loading
+                                    ? <div className={classes.loader}>
+                                        <CircularProgress size={70} thickness={4} />
+                                    </div>
+                                    : list}
                             </div>
                         </div>
                     </div>

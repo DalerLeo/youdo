@@ -147,7 +147,7 @@ const ClientBlanceGridList = enhance((props) => {
                 open={infoDialog.openInfoDialog}
                 detailData={detailData}
                 onClose={infoDialog.handleCloseInfoDialog}
-                filter={filterItem}
+                filterItem={filterItem}
                 name={_.get(client, 'name')}
                 balance={_.get(client, 'balance')}
             />

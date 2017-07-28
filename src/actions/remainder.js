@@ -23,7 +23,7 @@ export const remainderListFetchAction = (filter) => {
 }
 
 export const remainderItemFetchAction = (id, filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+    const params = serializers.itemFilterSerializer(filter.getParams())
     const payload = axios()
         .get(sprintf(API.REMAINDER_ITEM, id), {params})
         .then((response) => {

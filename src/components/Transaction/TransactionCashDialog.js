@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
@@ -11,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import Accept from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
-import TransactionMarketDialog from './TransactionMarketDialog'
+import AcceptClientTransactionDialog from './AcceptClientTransactionDialog'
 
 const enhance = compose(
     injectSheet({
@@ -104,17 +103,14 @@ const enhance = compose(
             }
         }
     }),
-    reduxForm({
-        form: 'OrderCreateForm',
-        enableReinitialize: true
-    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
 )
 
 const TransactionCashDialog = enhance((props) => {
-    const {open, loading, onClose, classes, paymentData, marketDialog} = props
+    const {open, loading, onClose, classes, paymentData, cashBoxDialog} = props
+
     const buttonStyle = {
         button: {
             width: 40,
@@ -158,22 +154,22 @@ const TransactionCashDialog = enhance((props) => {
                         {_.map(_.get(paymentData, ['data', 'results']), (item) => {
                             const clientName = _.get(item, ['client', 'name'])
                             const marketName = _.get(item, ['market', 'name'])
-                            const amount = numberFormat(_.get(item, ['amount']))
+                            const currency = _.get(item, ['currency', 'name'])
+                            const amount = numberFormat(_.get(item, ['amount']), currency)
                             const order = _.get(item, ['order'])
                             const id = _.get(item, ['id'])
-
                             return (
                                 <Row key={id} className="dottedList">
                                     <Col xs={3}>Имя Фамилия Агента</Col>
                                     <Col xs={3}>{clientName}</Col>
                                     <Col xs={2}>{marketName}</Col>
                                     <Col xs={1}>{order}</Col>
-                                    <Col xs={2} style={{textAlign: 'right'}}>{amount} UZS</Col>
+                                    <Col xs={2} style={{textAlign: 'right'}}>{amount}</Col>
                                     <Col xs={1}>
                                         <IconButton
                                             style={buttonStyle.button}
                                             iconStyle={buttonStyle.icon}
-                                            onTouchTap={marketDialog.handleOpenMarketDialog}>
+                                            onTouchTap={() => { cashBoxDialog.handleOpenCashBoxDialog(id) }}>
                                             <Accept/>
                                         </IconButton>
                                     </Col>
@@ -183,9 +179,12 @@ const TransactionCashDialog = enhance((props) => {
                     </div>
                 </div>
             </div>
-            <TransactionMarketDialog
-                open={marketDialog.openMarketDialog}
-                onClose={marketDialog.handleCloseMarketDialog}/>
+            <AcceptClientTransactionDialog
+                open={cashBoxDialog.openCashBoxDialog}
+                onClose={cashBoxDialog.handleCloseCashBoxDialog}
+                onSubmit={cashBoxDialog.handleSubmitCashBoxDialog}
+                data={paymentData.currentCashBoxDetails}/>
+
         </Dialog>
     )
 })
@@ -193,6 +192,12 @@ TransactionCashDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    returnListData: PropTypes.object
+    returnListData: PropTypes.object,
+    cashBoxDialog: PropTypes.shape({
+        openCashBoxDialog: PropTypes.number.isRequired,
+        handleOpenCashBoxDialog: PropTypes.func.isRequired,
+        handleCloseCashBoxDialog: PropTypes.func.isRequired,
+        handleSubmitCashBoxDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 export default TransactionCashDialog

@@ -314,7 +314,7 @@ const StatMarketGridList = enhance((props) => {
                 detailData={detailData}
                 open={statMarketDialog.openStatMarketDialog}
                 onClose={statMarketDialog.handleCloseStatMarketDialog}
-                filter={filterItem}
+                filterItem={filterItem}
             />
         </Container>
     )

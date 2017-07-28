@@ -7,9 +7,10 @@ import GridListNavPagination from '../GridListNavPagination'
 import GridListNavSearch from '../GridListNavSearch'
 import IconButton from 'material-ui/IconButton'
 import Print from 'material-ui/svg-icons/action/print'
+import RefreshIcon from 'material-ui/svg-icons/navigation/refresh'
 import Tooltip from '../../ToolTip'
 
-const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData, withInvoice, printDialog}) => {
+const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData, withInvoice, printDialog, refreshAction}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
     const listData = _.get(customData, ['listData', 'data'])
@@ -54,6 +55,14 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
                                 <Print color="#666"/>
                             </IconButton>
                         </Tooltip>}
+                        {withInvoice &&
+                        <Tooltip position="left" text={'Обновить'}>
+                            <IconButton
+                                disabled={(listCount > MAX_COUNT) && true}
+                                onTouchTap={refreshAction}>
+                                <RefreshIcon color="#666"/>
+                            </IconButton>
+                        </Tooltip>}
                     </Col>
                 </Row>}
 
@@ -90,7 +99,8 @@ GridListNav.propTypes = {
         openPrint: PropTypes.bool,
         handleOpenPrintDialog: PropTypes.func,
         handleClosePrintDialog: PropTypes.func
-    })
+    }),
+    refreshAction: PropTypes.func
 }
 
 export default injectSheet({
@@ -130,7 +140,7 @@ export default injectSheet({
         display: 'flex',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        '& > div:last-child': {
+        '& > div:nth-child(2)': {
             marginLeft: '20px'
         }
     }

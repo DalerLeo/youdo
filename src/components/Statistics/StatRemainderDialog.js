@@ -129,7 +129,8 @@ const StatRemainderDialog = enhance((props) => {
         open,
         onClose,
         classes,
-        detailData
+        detailData,
+        filterItem
     } = props
 
     const loading = _.get(detailData, 'detailLoading')
@@ -181,7 +182,7 @@ const StatRemainderDialog = enhance((props) => {
                             </Row>
                             {remainderList}
                         </div>
-                        <Pagination filter={_.get(detailData, 'filter')}/>
+                        <Pagination filter={filterItem}/>
                     </div>
                 </div>}
         </Dialog>
@@ -189,7 +190,7 @@ const StatRemainderDialog = enhance((props) => {
 })
 
 StatRemainderDialog.propTyeps = {
-    filter: PropTypes.object.isRequired,
+    filterItem: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool

@@ -37,6 +37,7 @@ const enhance = compose(
         const transferForm = _.get(state, ['form', 'RemainderTransferForm'])
         const discardForm = _.get(state, ['form', 'RemainderDiscardForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 
         return {
             list,
@@ -47,7 +48,8 @@ const enhance = compose(
             filterForm,
             transferForm,
             discardForm,
-            searchForm
+            searchForm,
+            filterItem
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -154,7 +156,8 @@ const RemainderList = enhance((props) => {
         detailLoading,
         filter,
         layout,
-        params
+        params,
+        filterItem
     } = props
 
     const stock = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.STOCK))
@@ -224,6 +227,7 @@ const RemainderList = enhance((props) => {
                 resetFilter={props.handleResetFilter}
                 discardDialog={discardDialog}
                 searchSubmit={props.handleSubmitSearch}
+                filterItem={filterItem}
             />
         </Layout>
     )
