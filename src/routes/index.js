@@ -15,6 +15,7 @@ import {ProductTypeList} from '../containers/ProductType'
 import {ProductPriceList} from '../containers/ProductPrice'
 import {StockList} from '../containers/Stock'
 import {CurrencyList} from '../containers/Currency'
+import {PositionList} from '../containers/Position'
 import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
@@ -53,6 +54,7 @@ import {
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveList} from '../containers/StockReceive'
 import {PlanList} from '../containers/Plan'
+import {ActivityList} from '../containers/Activity'
 
 export default {
     path: '/',
@@ -556,6 +558,29 @@ export default {
                 {
                     path: ROUTES.STATISTICS_CASHBOX_ITEM_URL,
                     component: userIsAuth(StatCashboxList)
+                }
+            ]
+        },
+
+        // Position
+        {
+            path: ROUTES.POSITION_LIST_URL,
+            component: userIsAuth(PositionList),
+            childRoutes: [
+                {
+                    path: ROUTES.POSITION_ITEM_URL,
+                    component: userIsAuth(PositionList)
+                }
+            ]
+        },
+        // Activity
+        {
+            path: ROUTES.ACTIVITY_LIST_URL,
+            component: userIsAuth(ActivityList),
+            childRoutes: [
+                {
+                    path: ROUTES.ACTIVITY_ITEM_URL,
+                    component: userIsAuth(ActivityList)
                 }
             ]
         },

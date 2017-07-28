@@ -26,6 +26,15 @@ const validate = (data) => {
     })
 }
 
+const validateForm = values => {
+    const errors = {}
+    if (values.showClients && values.amount && !values.client) {
+        errors.client = 'Клиент не выбран'
+    }
+
+    return errors
+}
+
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -80,6 +89,7 @@ const enhance = compose(
     })),
     reduxForm({
         form: 'TransactionCreateForm',
+        validate: validateForm,
         enableReinitialize: true
     }),
     connect((state) => {

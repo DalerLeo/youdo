@@ -3,12 +3,29 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/Users/usersSerializer'
+import * as serializers from '../serializers/positionSerializer'
 
-export const usersCreateAction = (formValues) => {
+export const courseCreateAction = (formValues, position) => {
+    const requestData = serializers.courseSerializer(formValues, position)
+    const payload = axios()
+        .post(API.POSITION_COURSE_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.POSITION_COURSE_CREATE,
+        payload
+    }
+}
+
+export const positionCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .post(API.USERS_CREATE, requestData)
+        .post(API.POSITION_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,14 +34,14 @@ export const usersCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.USERS_CREATE,
+        type: actionTypes.POSITION_CREATE,
         payload
     }
 }
 
-export const usersDeleteAction = (id) => {
+export const positionDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.USERS_DELETE, id))
+        .delete(sprintf(API.POSITION_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,15 +50,15 @@ export const usersDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.USERS_DELETE,
+        type: actionTypes.POSITION_DELETE,
         payload
     }
 }
 
-export const usersUpdateAction = (id, formValues) => {
+export const positionUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.USERS_ITEM, id), requestData)
+        .put(sprintf(API.POSITION_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,31 +67,31 @@ export const usersUpdateAction = (id, formValues) => {
         })
 
     return {
-        type: actionTypes.USERS_UPDATE,
+        type: actionTypes.POSITION_UPDATE,
         payload
     }
 }
 
-export const usersListFetchAction = (filter) => {
+export const positionListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.USERS_LIST, {params})
+        .get(API.POSITION_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
-
     return {
-        type: actionTypes.USERS_LIST,
+        type: actionTypes.POSITION_LIST,
         payload
     }
 }
 
-export const usersItemFetchAction = (id) => {
+export const positionItemFetchAction = (filter, id) => {
+    const params = serializers.itemSerializer(filter.getParams(), id)
     const payload = axios()
-        .get(sprintf(API.USERS_ITEM, id))
+        .get(API.POSITION_RATE, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -83,23 +100,7 @@ export const usersItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.USERS_ITEM,
-        payload
-    }
-}
-
-export const userGroupListFetchAction = () => {
-    const payload = axios()
-        .get(API.USERS_GROUP)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.USERS_GROUP,
+        type: actionTypes.POSITION_ITEM,
         payload
     }
 }

@@ -11,8 +11,9 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import CloseIcon2 from '../CloseIcon2'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ImageUploadField, UsersGroupSearchField} from '../ReduxForm'
+import {TextField, ImageUploadField, CheckBox} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
+import userGroupFormat from '../../helpers/userGroupFormat'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -63,6 +64,20 @@ const enhance = compose(
                     height: '30px !important'
                 }
             }
+        },
+        groupLoader: {
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
+        inContent: {
+            '& .dottedList': {
+                padding: '5px'
+            }
         }
     })),
     reduxForm({
@@ -73,8 +88,7 @@ const enhance = compose(
 )
 
 const UsersCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData} = props
-
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData, groupListData} = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -112,12 +126,7 @@ const UsersCreateDialog = enhance((props) => {
                                     label="Фамилия"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
-                                <Field
-                                    name="group"
-                                    component={UsersGroupSearchField}
-                                    label="Тип Пользователя"
-                                    className={classes.inputFieldCustom}
-                                    fullWidth={true}/>
+                                    <div style={{padding: '30px 0 10px'}}>Тип пользователя:</div>
                             </Col>
                             <Col xs={5}>
                                 <Field
@@ -127,6 +136,25 @@ const UsersCreateDialog = enhance((props) => {
                                     fullWidth={true}
                                 />
                             </Col>
+                        </Row>
+                        <Row>
+                            {_.get(groupListData, 'groupListLoading') &&
+                            <div className={classes.groupLoader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>}
+                            {!_.get(groupListData, 'groupListLoading') &&
+                            _.map(_.get(groupListData, 'data'), (item, index) => {
+                                const id = _.get(item, 'id')
+                                const name = _.get(item, 'name')
+                                return (
+                                    <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
+                                        <Field
+                                            name={'groups[' + index + '][selected]'}
+                                            component={CheckBox}
+                                            label={userGroupFormat(name)}/>
+                                    </div>
+                                )
+                            })}
                         </Row>
                         <div className="dottedList"></div>
                         <Row className={classes.field} style={{paddingTop: '15px'}}>

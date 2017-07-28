@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
+import _ from 'lodash'
 import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -16,12 +17,15 @@ import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
 import getConfig from '../../helpers/getConfig'
-
+import dateFormat from '../../helpers/dateFormat'
+import numberFormat from '../../helpers/numberFormat'
 export const STAT_FINANCE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     USER: 'user'
 }
+
+const NEGATIVE = -1
 
 const enhance = compose(
     injectSheet({
@@ -209,15 +213,28 @@ const enhance = compose(
 
 const StatFinanceGridList = enhance((props) => {
     const {
+        graphData,
         classes,
         filter,
-        handleSubmitFilterDialog
+        handleSubmitFilterDialog,
+        listData
     } = props
 
-    const currentCurrency = getConfig('PRIMARY_CURRENCY')
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    let sumIn = 0
+    const valueIn = _.map(_.get(graphData, 'dataIn'), (item) => {
+        sumIn += _.toInteger(_.get(item, 'amount'))
+        return _.toInteger(_.get(item, 'amount'))
+    })
+    const valueInName = _.map(_.get(graphData, 'dataIn'), (item) => {
+        return dateFormat(_.get(item, 'date'))
+    })
 
-    const sample = 100
-    const deletion = 3
+    let sumOut = 0
+    const valueOut = _.map(_.get(graphData, 'dataOut'), (item) => {
+        sumOut += _.toInteger(_.get(item, 'amount')) * NEGATIVE
+        return _.toInteger(_.get(item, 'amount')) * NEGATIVE
+    })
     const config = {
         chart: {
             type: 'areaspline',
@@ -236,7 +253,7 @@ const StatFinanceGridList = enhance((props) => {
             enabled: false
         },
         xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            categories: valueInName,
             tickmarkPlacement: 'on',
             title: {
                 text: '',
@@ -270,7 +287,7 @@ const StatFinanceGridList = enhance((props) => {
         },
         tooltip: {
             shared: true,
-            valueSuffix: ' ' + currentCurrency,
+            valueSuffix: ' ' + primaryCurrency,
             backgroundColor: '#fff',
             style: {
                 color: '#666',
@@ -294,7 +311,7 @@ const StatFinanceGridList = enhance((props) => {
                 symbol: 'circle'
             },
             name: 'Доход',
-            data: [sample, sample + (sample / deletion), sample, deletion * sample / deletion, sample * deletion],
+            data: valueIn,
             color: '#6cc6de'
 
         },
@@ -304,7 +321,7 @@ const StatFinanceGridList = enhance((props) => {
                 symbol: 'circle'
             },
             name: 'Расход',
-            data: [sample, sample - (sample / deletion), sample + deletion, deletion - (sample / deletion), sample],
+            data: valueOut,
             color: '#EB9696'
 
         }]
@@ -332,20 +349,26 @@ const StatFinanceGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={2}>№ заказа</Col>
-            <Col xs={2}>Дата</Col>
-            <Col xs={5}>Клиент</Col>
+            <Col xs={3}>Дата</Col>
+            <Col xs={4}>Описания</Col>
             <Col xs={3}>Сумма</Col>
         </Row>
     )
 
-    const list = (
-        <Row className="dottedList">
-            <Col xs={2}>158</Col>
-            <Col xs={2}>22.08.2017</Col>
-            <Col xs={5}>Имя Фамилия Клиента</Col>
-            <Col xs={3} style={{justifyContent: 'flex-end'}}>3 000 000 {currentCurrency}</Col>
-        </Row>
-    )
+    const list = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const date = dateFormat(_.get(item, 'createdDate'))
+        const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
+        const comment = _.get(item, 'comment')
+        return (
+            <Row key={id} className="dottedList">
+                <Col xs={2}>{id}</Col>
+                <Col xs={3}>{date}</Col>
+                <Col xs={4}>{comment}</Col>
+                <Col xs={3} style={{justifyContent: 'flex-end'}}>{amount}</Col>
+            </Row>
+        )
+    })
 
     const page = (
             <div className={classes.mainWrapper}>
@@ -386,18 +409,18 @@ const StatFinanceGridList = enhance((props) => {
                                 <Col xs={3} className={classes.salesSummary}>
                                     <div className={classes.mainSummary}>
                                         <div className={classes.summaryTitle}>Прибыль за период</div>
-                                        <div className={classes.summaryValue}>5 000 000 {currentCurrency}</div>
+                                        <div className={classes.summaryValue}>5 000 000 {primaryCurrency}</div>
                                     </div>
                                     <div className={classes.secondarySummary}>
                                         <div className={classes.summaryTitle}>Доход</div>
-                                        <div className={classes.summaryValue}>20 000 000 {currentCurrency}</div>
+                                        <div className={classes.summaryValue}>{numberFormat(sumIn)} {primaryCurrency}</div>
 
                                         <div className={classes.summaryTitle}>Расход</div>
-                                        <div className={classes.summaryValue}>-15 000 000 {currentCurrency}</div>
+                                        <div className={classes.summaryValue}>{numberFormat(sumOut)} {primaryCurrency}</div>
                                     </div>
                                 </Col>
                                 <Col xs={9} className={classes.chart}>
-                                    <ReactHighcharts config={config}/>
+                                    <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
                                 </Col>
                             </Row>
                             <div className={classes.pagination}>

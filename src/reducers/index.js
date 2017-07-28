@@ -141,7 +141,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.USERS_CREATE),
         list: createThunkReducer(actionTypes.USERS_LIST),
         update: createThunkReducer(actionTypes.USERS_UPDATE),
-        item: createThunkReducer(actionTypes.USERS_ITEM)
+        item: createThunkReducer(actionTypes.USERS_ITEM),
+        groupList: createThunkReducer(actionTypes.USERS_GROUP)
     }),
     provider: combineReducers({
         create: createThunkReducer(actionTypes.PROVIDER_CREATE),
@@ -320,6 +321,26 @@ const rootReducer = combineReducers({
     statRemainder: combineReducers({
         list: createThunkReducer(actionTypes.STAT_REMAINDER_LIST),
         item: createThunkReducer(actionTypes.STAT_REMAINDER_ITEM)
+    }),
+    position: combineReducers({
+        create: createThunkReducer(actionTypes.POSITION_CREATE),
+        list: createThunkReducer(actionTypes.POSITION_LIST),
+        update: createThunkReducer(actionTypes.POSITION_UPDATE),
+        item: createThunkReducer(actionTypes.POSITION_ITEM),
+        primary: createThunkReducer(actionTypes.POSITION_PRIMARY),
+        primaryUpdate: createThunkReducer(actionTypes.POSITION_PRIMARY_UPDATE)
+    }),
+    statSales: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_SALES_DATA)
+    }),
+    statFinance: combineReducers({
+        dataIn: createThunkReducer(actionTypes.STAT_FINANCE_DATA_IN),
+        dataOut: createThunkReducer(actionTypes.STAT_FINANCE_DATA_OUT),
+        list: createThunkReducer(actionTypes.STAT_FINANCE_LIST)
+    }),
+    activity: combineReducers({
+        orderList: createThunkReducer(actionTypes.ACTIVITY_ORDER_LIST),
+        orderItem: createThunkReducer(actionTypes.ACTIVITY_ORDER_ITEM)
     }),
 
     snackbar: snackbarReducer(),
