@@ -16,11 +16,18 @@ import {
     orderItemFetchAction
 } from '../../actions/order'
 
+import {
+    statSalesDataFetchAction
+}
+from '../../actions/statSales'
+
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['order', 'item', 'data'])
+        const graphList = _.get(state, ['statSales', 'data', 'data'])
+        const graphLoading = _.get(state, ['statSales', 'data', 'loading'])
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
@@ -32,12 +39,16 @@ const enhance = compose(
             detail,
             detailLoading,
             filter,
-            filterForm}
+            filterForm,
+            graphList,
+            graphLoading
+        }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(orderListFetchAction(filter))
+        dispatch(statSalesDataFetchAction())
     }),
     withPropsOnChange((props, nextProps) => {
         const saleId = _.get(nextProps, ['params', 'statSaleId'])
@@ -81,7 +92,9 @@ const StatSalesList = enhance((props) => {
         filter,
         layout,
         returnData,
-        params
+        params,
+        graphList,
+        graphLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statSaleId'))
@@ -91,13 +104,11 @@ const StatSalesList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
-
     const statSaleDialog = {
         openStatSaleDialog,
         handleCloseStatSaleDialog: props.handleCloseStatSaleDialog,
         handleOpenStatSaleDialog: props.handleOpenStatSaleDialog
     }
-
     const detailData = {
         id: detailId,
         data: detail,
@@ -106,6 +117,10 @@ const StatSalesList = enhance((props) => {
         handleCloseDetail: props.handleCloseDetail
     }
 
+    const graphData = {
+        data: graphList,
+        graphLoading
+    }
     const order = false
 
     return (
@@ -117,6 +132,7 @@ const StatSalesList = enhance((props) => {
                 statSaleDialog={statSaleDialog}
                 type={order}
                 onSubmit={props.handleSubmitFilterDialog}
+                graphData={graphData}
             />
         </Layout>
     )

@@ -2,30 +2,48 @@ import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
-import {compose, withHandlers} from 'recompose'
+import {compose, withHandlers, withPropsOnChange} from 'recompose'
 import filterHelper from '../../helpers/filter'
 
 import {StatFinanceGridList} from '../../components/Statistics'
 import {STAT_FINANCE_FILTER_KEY} from '../../components/Statistics/StatFinanceGridList'
 
+import {
+    statFinanceInDataFetchAction,
+    statFinanceOutDataFetchAction,
+    statFinanceListFetchAction
+} from '../../actions/statFianace'
+
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statProduct', 'item', 'data'])
-        const detailLoading = _.get(state, ['statProduct', 'item', 'loading'])
-        const list = _.get(state, ['statProduct', 'list', 'data'])
-        const listLoading = _.get(state, ['statProduct', 'list', 'loading'])
+        const graphIn = _.get(state, ['statFinance', 'dataIn', 'data'])
+        const graphOut = _.get(state, ['statFinance', 'dataOut', 'data'])
+        const graphInLoading = _.get(state, ['statFinance', 'dataIn', 'loading'])
+        const graphOutLoading = _.get(state, ['statFinance', 'dataOut', 'loading'])
+        const list = _.get(state, ['statFinance', 'list', 'data'])
+        const listLoading = _.get(state, ['statFinance', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatFinanceFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
             listLoading,
-            detail,
-            detailLoading,
+            graphIn,
+            graphOut,
+            graphInLoading,
+            graphOutLoading,
             filter,
             filterForm
         }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+    }, ({dispatch, filter}) => {
+        dispatch(statFinanceListFetchAction(filter))
+        dispatch(statFinanceInDataFetchAction())
+        dispatch(statFinanceOutDataFetchAction())
     }),
 
     withHandlers({
@@ -51,32 +69,32 @@ const StatFinanceList = enhance((props) => {
     const {
         list,
         listLoading,
-        detail,
-        detailLoading,
         filter,
         layout,
-        params
+        graphIn,
+        graphOut,
+        graphInLoading,
+        graphOutLoading
     } = props
 
-    const detailId = _.toInteger(_.get(params, 'statProductId'))
-
+    const graphData = {
+        dataIn: graphIn,
+        dataOut: graphOut,
+        graphOutLoading,
+        graphInLoading
+    }
     const listData = {
         data: _.get(list, 'results'),
         listLoading
     }
 
-    const detailData = {
-        id: detailId,
-        data: detail,
-        detailLoading,
-        handleCloseDetail: props.handleCloseDetail
-    }
     return (
         <Layout {...layout}>
             <StatFinanceGridList
                 filter={filter}
                 listData={listData}
-                detailData={detailData}
+                graphData={graphData}
+
             />
         </Layout>
     )

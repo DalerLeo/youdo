@@ -288,6 +288,9 @@ export const STAT_MARKET_LIST = 'stats/markets/'
 export const STAT_MARKET_ITEM = 'sales/order/'
 export const STAT_MARKET_GET_DOCUMENT = '/stats/markets/export'
 
+export const STAT_FINANCE_LIST = 'finance/transaction/'
+export const STAT_FINANCE_DATA = 'stats/transactions/'
+
 export const STAT_INCOME_DATA = 'stats/transactions/'
 export const STAT_INCOME_LIST = 'finance/transaction/'
 
@@ -299,6 +302,8 @@ export const STAT_DEBTORS_DATA = 'stats/debtors_stats/'
 export const STAT_DEBTORS_LIST = 'stats/debtors/'
 export const STAT_DEBTORS_ITEM = 'sales/order/'
 export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
+
+export const STAT_SALES_DATA = '/stats/orders/'
 
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
@@ -331,7 +336,6 @@ export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
 
 export const PLAN_CREATE = `/${STAT_AGENT_LIST}/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
-
 
 export const POSITION = 'finance/currencies'
 export const POSITION_COURSE_CREATE = 'finance/currency_rate/'
