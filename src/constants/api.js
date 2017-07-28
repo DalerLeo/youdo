@@ -111,7 +111,6 @@ export const ORDER_CREATE = `/${ORDER}/`
 export const ORDER_RETURN = '/sales/order_return/'
 export const ORDER_RETURN_LIST = '/sales/order_return/%d/'
 export const ORDER_TRANSACTION = '/sales/client_transaction/'
-
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_LIST_PRINT = `/${ORDER}/print/`
@@ -330,3 +329,6 @@ export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
 
 export const PLAN_CREATE = `/${STAT_AGENT_LIST}/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
+
+export const ACTIVITY_ORDER_LIST = `${ORDER}/`
+export const ACTIVITY_ORDER_ITEM = `${ORDER}/%d`

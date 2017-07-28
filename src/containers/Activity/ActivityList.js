@@ -6,115 +6,89 @@ import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
-import toBoolean from '../../helpers/toBoolean'
-import {ADD_ACTIVITY, ActivityWrapper, DAY, MONTH} from '../../components/Activity'
+import {ORDER_DETAILS, ActivityWrapper, DAY, DATE} from '../../components/Activity'
 import {
-    activityCreateAction,
-    activityAgentsListFetchAction,
-    activityItemFetchAction,
-    activityZonesListFetchAction
+    activityOrderListFetchAction,
+    activityOrderItemFetchAction
 } from '../../actions/activity'
-import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const ONE = 1
+const currentDate = moment().format('YYYY-MM')
 const today = _.toInteger(moment().format('D'))
-let currentMonth = moment()
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const usersList = _.get(state, ['users', 'list', 'data'])
-        const usersListLoading = _.get(state, ['users', 'list', 'loading'])
-        const detail = _.get(state, ['users', 'item', 'data'])
-        const detailLoading = _.get(state, ['users', 'item', 'loading'])
-        const zones = _.get(state, ['zone', 'list', 'data'])
-        const zonesLoading = _.get(state, ['zone', 'list', 'loading'])
-        const stat = _.get(state, ['activity', 'statistics', 'data'])
-        const statLoading = _.get(state, ['activity', 'statistics', 'loading'])
+        const orderList = _.get(state, ['activity', 'orderList', 'data'])
+        const orderListLoading = _.get(state, ['activity', 'orderList', 'loading'])
+        const orderItem = _.get(state, ['activity', 'orderItem', 'data'])
+        const orderItemLoading = _.get(state, ['activity', 'orderItem', 'loading'])
         const createForm = _.get(state, ['form', 'ActivityCreateForm', 'values'])
-        const filter = filterHelper(usersList, pathname, query)
+        const curDate = _.get(query, 'date') || currentDate
+        const filter = filterHelper(orderList, pathname, query)
         return {
+            filter,
             query,
             pathname,
-            usersList,
-            usersListLoading,
-            stat,
-            statLoading,
-            detail,
-            detailLoading,
-            zones,
-            zonesLoading,
+            orderList,
+            orderListLoading,
+            orderItem,
+            orderItemLoading,
             createForm,
-            filter
+            curDate
         }
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevTab = _.get(props, ['query', 'group'])
-        const nextTab = _.get(nextProps, ['query', 'group'])
-        const prevSearch = _.get(props, ['query', 'search'])
-        const nextSearch = _.get(nextProps, ['query', 'search'])
-
-        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
-            (prevTab !== nextTab && nextTab) ||
-            (prevSearch !== nextSearch)
+        const prevDay = _.get(props, ['location', 'query', DAY])
+        const nextDay = _.get(nextProps, ['location', 'query', DAY])
+        return (props.curDate !== nextProps.curDate) || (prevDay !== nextDay)
     }, ({dispatch, filter}) => {
-        dispatch(activityAgentsListFetchAction(filter))
+        dispatch(activityOrderListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const agentId = _.get(nextProps, ['params', 'agentId'])
-        return agentId && _.get(props, ['params', 'agentId']) !== agentId
-    }, ({dispatch, params}) => {
-        const agentId = _.toInteger(_.get(params, 'agentId'))
-        agentId && dispatch(activityItemFetchAction(agentId))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const prevDialog = toBoolean(_.get(props, ['query', ADD_ACTIVITY]))
-        const nextDialog = toBoolean(_.get(nextProps, ['query', ADD_ACTIVITY]))
-        return prevDialog !== nextDialog && nextDialog === true
-    }, ({dispatch}) => {
-        dispatch(activityZonesListFetchAction())
+        const prevDetail = _.get(props, ['location', 'query', ORDER_DETAILS])
+        const nextDetail = _.get(nextProps, ['location', 'query', ORDER_DETAILS])
+        return prevDetail !== nextDetail && nextDetail > ZERO
+    }, ({dispatch, location}) => {
+        const orderId = _.toInteger(_.get(location, ['query', ORDER_DETAILS]))
+        if (orderId > ZERO) {
+            dispatch(activityOrderItemFetchAction(orderId))
+        }
     }),
 
     withHandlers({
+        handlePrevMonth: props => () => {
+            const {location: {pathname}, filter, curDate} = props
+            const prevMonth = moment(curDate).subtract(ONE, 'month')
+            const dateForURL = prevMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
+        handleNextMonth: props => () => {
+            const {location: {pathname}, filter, curDate} = props
+            const nextMonth = moment(curDate).add(ONE, 'month')
+            const dateForURL = nextMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
         handleClickDay: props => (day) => {
-            const {location: {pathname}, filter} = props
-            const curMonth = currentMonth.format('YYYY-MM-DD')
-            hashHistory.push({pathname, query: filter.getParams({[DAY]: day, [MONTH]: curMonth})})
+            const {location, location: {pathname}, filter} = props
+            const date = _.get(location, ['query', DATE])
+            hashHistory.push({pathname, query: filter.getParams({[DAY]: day, [DATE]: date})})
         },
 
-        handleNextMonth: props => (month) => {
+        handleOpenOrderDetails: props => (id) => {
             const {location: {pathname}, filter} = props
-            currentMonth = moment(month).add(ONE, 'month')
-            const monthForURL = currentMonth.format('MMMM')
-            hashHistory.push({pathname, query: filter.getParams({[MONTH]: monthForURL})})
-            console.log(currentMonth.format('MMMM'))
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_DETAILS]: id})})
         },
 
-        handleOpenAddActivity: props => () => {
+        handleCloseOrderDetails: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ADD_ACTIVITY]: true})})
-        },
-
-        handleCloseAddActivity: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ADD_ACTIVITY]: false})})
-        },
-
-        handleSubmitAddActivity: props => () => {
-            const {location: {pathname}, dispatch, createForm, filter} = props
-
-            return dispatch(activityCreateAction(createForm))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Зона успешно добавлена'}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ADD_ACTIVITY]: false})})
-                    dispatch(activityAgentsListFetchAction(filter))
-                })
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_DETAILS]: ZERO})})
         }
     })
 )
@@ -122,54 +96,37 @@ const enhance = compose(
 const ActivityList = enhance((props) => {
     const {
         filter,
-        usersList,
-        usersListLoading,
+        orderList,
+        orderListLoading,
+        orderItem,
+        orderItemLoading,
         location,
-        layout,
-        params,
-        stat,
-        statLoading,
-        detail,
-        detailLoading,
-        zones,
-        zonesLoading
+        layout
     } = props
 
-    const openAddActivity = toBoolean(_.get(location, ['query', ADD_ACTIVITY]))
+    const openOrderDetails = _.toInteger(_.get(location, ['query', ORDER_DETAILS]) || ZERO) > ZERO
+    const orderId = _.toInteger(_.get(location, ['query', ORDER_DETAILS]))
     const selectedDay = _.toInteger(_.get(location, ['query', DAY]) || today)
-    const selectedMonth = _.get(location, ['query', MONTH]) || currentMonth
-    const openDetail = !_.isEmpty(_.get(params, 'agentId'))
-    const detailId = _.toInteger(_.get(params, 'agentId'))
+    const selectedDate = _.get(location, ['query', DATE]) || currentDate
 
-    const addActivity = {
-        openAddActivity,
-        zonesList: _.get(zones, 'results'),
-        zonesLoading,
-        handleOpenAddActivity: props.handleOpenAddActivity,
-        handleCloseAddActivity: props.handleCloseAddActivity,
-        handleSubmitAddActivity: props.handleSubmitAddActivity
+    const orderDetails = {
+        id: orderId,
+        openOrderDetails,
+        detailLoading: orderItemLoading,
+        data: orderItem,
+        handleOpenOrderDetails: props.handleOpenOrderDetails,
+        handleCloseOrderDetails: props.handleCloseOrderDetails
     }
 
-    const listData = {
-        data: _.get(usersList, 'results'),
-        usersListLoading
-    }
-
-    const statData = {
-        data: stat,
-        statLoading
-    }
-
-    const detailData = {
-        openDetail,
-        id: detailId,
-        data: detail,
-        detailLoading
+    const orderlistData = {
+        data: _.get(orderList, 'results'),
+        orderListLoading
     }
 
     const calendar = {
         selectedDay: selectedDay,
-        currentMonth: currentMonth,
+        selectedDate: selectedDate,
+        handlePrevMonth: props.handlePrevMonth,
         handleNextMonth: props.handleNextMonth
     }
 
@@ -177,12 +134,10 @@ const ActivityList = enhance((props) => {
         <Layout {...layout}>
             <ActivityWrapper
                 filter={filter}
-                usersList={listData}
-                statData={statData}
-                addActivity={addActivity}
+                orderlistData={orderlistData}
+                orderDetails={orderDetails}
                 handleClickDay={props.handleClickDay}
                 calendar={calendar}
-                detailData={detailData}
             />
         </Layout>
     )

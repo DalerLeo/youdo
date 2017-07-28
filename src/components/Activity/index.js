@@ -1,11 +1,11 @@
 import ActivityWrapper from './ActivityWrapper'
-const ADD_ACTIVITY = 'openAddActivity'
+const ORDER_DETAILS = 'orderDetails'
 const DAY = 'day'
-const MONTH = 'month'
+const DATE = 'date'
 
 export {
-    ADD_ACTIVITY,
+    ORDER_DETAILS,
     DAY,
-    MONTH,
+    DATE,
     ActivityWrapper
 }

@@ -22,10 +22,10 @@ export const activityCreateAction = (formValues) => {
     }
 }
 
-export const activityAgentsListFetchAction = (filter) => {
+export const activityOrderListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.USERS_LIST, {params})
+        .get(API.ACTIVITY_ORDER_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,7 +33,23 @@ export const activityAgentsListFetchAction = (filter) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {
-        type: actionTypes.USERS_LIST,
+        type: actionTypes.ACTIVITY_ORDER_LIST,
+        payload
+    }
+}
+
+export const activityOrderItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.ACTIVITY_ORDER_ITEM, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ACTIVITY_ORDER_ITEM,
         payload
     }
 }

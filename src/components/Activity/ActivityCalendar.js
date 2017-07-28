@@ -14,7 +14,8 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            textTransform: 'capitalize'
+            textTransform: 'capitalize',
+            userSelect: 'none'
         },
         calendarNav: {
             extend: 'calendarWrapper',
@@ -90,16 +91,18 @@ const ActivityCalendar = enhance((props) => {
         return (date) ? moment(date).locale('ru').format('MMMM') : defaultText
     }
     const selectedDay = _.get(calendar, 'selectedDay')
-    const currentMonth = _.get(calendar, 'currentMonth')
+    const selectedDate = _.get(calendar, 'selectedDate')
     const handleNextMonth = _.get(calendar, 'handleNextMonth')
-    console.log(currentMonth)
+    const handlePrevMonth = _.get(calendar, 'handlePrevMonth')
+
+    const selectedYear = moment(selectedDate).format('YYYY')
 
     const getDaysArrayByMonth = () => {
-        let daysInMonth = moment(currentMonth).daysInMonth()
+        let daysInMonth = moment(selectedDate).daysInMonth()
         let arrDays = []
 
         while (daysInMonth) {
-            const current = moment(currentMonth).date(daysInMonth)
+            const current = moment(selectedDate).date(daysInMonth)
             arrDays.push(current)
             daysInMonth--
         }
@@ -108,8 +111,8 @@ const ActivityCalendar = enhance((props) => {
     }
     const currentMonthDays = getDaysArrayByMonth()
 
-    const prevMonth = monthFormat(moment(currentMonth).subtract(ONE, 'month'))
-    const nextMonth = monthFormat(moment(currentMonth).add(ONE, 'month'))
+    const prevMonth = monthFormat(moment(selectedDate).subtract(ONE, 'month'))
+    const nextMonth = monthFormat(moment(selectedDate).add(ONE, 'month'))
 
     const days = _.map(_.reverse(currentMonthDays), (item) => {
         const day = _.toInteger(item.format('D'))
@@ -125,14 +128,14 @@ const ActivityCalendar = enhance((props) => {
 
     return (
         <Paper zDepth={1} className={classes.calendarWrapper}>
-            <div className={classes.calendarNav}>
+            <div className={classes.calendarNav} onClick={() => { handlePrevMonth() }}>
                 <ChevronLeft/> <span>{prevMonth}</span>
             </div>
             <div className={classes.calendar}>
-                <div className={classes.currentMonth}>{monthFormat(currentMonth)}</div>
+                <div className={classes.currentMonth}>{monthFormat(selectedDate)} {selectedYear}</div>
                 <div className={classes.currentDays}>{days}</div>
             </div>
-            <div className={classes.calendarNav} onClick={() => { handleNextMonth(currentMonth) }}>
+            <div className={classes.calendarNav} onClick={() => { handleNextMonth() }}>
                 <span>{nextMonth}</span> <ChevronRight/>
             </div>
         </Paper>

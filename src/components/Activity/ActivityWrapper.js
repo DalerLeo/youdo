@@ -4,24 +4,24 @@ import PropTypes from 'prop-types'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
-import Tooltip from '../ToolTip'
-import ActivityCreateDialog from './ActivityCreateDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
+import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
 import NotFound from '../Images/not-found.png'
 import ActivityCalendar from './ActivityCalendar'
+import ActivityOrderDetails from '../Statistics/StatSaleDialog'
 
 const enhance = compose(
     injectSheet({
         loader: {
-            width: '100%',
-            height: '250px',
-            background: '#fff',
+            minWidth: '300px',
+            height: '300px',
+            marginRight: '30px',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
@@ -74,7 +74,12 @@ const enhance = compose(
         tube: {
             padding: '20px 15px',
             marginBottom: '10px',
-            width: '300px'
+            width: '300px',
+            cursor: 'pointer',
+            transition: 'box-shadow 125ms ease-out !important',
+            '&:hover': {
+                boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px !important'
+            }
         },
         tubeTitle: {
             fontWeight: '600',
@@ -149,12 +154,12 @@ const enhance = compose(
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
             backgroundSize: '150px',
-            padding: '165px 0 0',
-            width: '170px',
+            padding: '185px 0 20px',
+            width: '300px',
             margin: 'auto',
             textAlign: 'center',
             fontSize: '13px',
-            color: '#666',
+            color: '#999 !important',
             '& svg': {
                 width: '50px !important',
                 height: '50px !important',
@@ -164,85 +169,88 @@ const enhance = compose(
     })
 )
 
-const iconStyle = {
-    icon: {
-        color: '#fff',
-        width: 22,
-        height: 22
-    },
-    button: {
-        width: 40,
-        height: 40,
-        padding: 0,
-        display: 'flex',
-        margin: '0 10px'
-    }
+const dateFormat = (date, defaultText) => {
+    return (date) ? moment(date).locale('ru').format('DD MMM, YYYY - HH:mm') : defaultText
 }
 
 const ActivityWrapper = enhance((props) => {
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const {
-        filter,
-        usersList,
-        detailData,
+        orderlistData,
         classes,
-        addActivity,
+        orderDetails,
         calendar,
         handleClickDay
     } = props
+    const orderlistLoading = _.get(orderlistData, 'orderListLoading')
+    const orderList = _.map(_.get(orderlistData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const clientName = _.get(item, ['client', 'name'])
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const orderPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
+        const marketName = _.get(item, ['market', 'name'])
+        const paymentType = paymentTypeFormat(_.get(item, 'paymentType'))
+
+        return (
+            <Paper key={id} zDepth={1} className={classes.tube} onClick={() => { orderDetails.handleOpenOrderDetails(id) }}>
+                <div className={classes.tubeTitle}>
+                    <span>{clientName}</span>
+                    <div className={classes.statusGreen}> </div>
+                </div>
+                <div className={classes.tubeTime}>{createdDate}</div>
+                <div className={classes.tubeInfo}>Сделка №{id} с магазина "{marketName}" на сумму {orderPrice}
+                    ({paymentType})
+                </div>
+            </Paper>
+        )
+    })
 
     const tubeWrapper = (
         <div className={classes.tubeWrapper}>
             <div className={classes.horizontal}>
-                <div className={classes.block}>
-                    <div className={classes.blockTitle}>Визиты и сделки</div>
-                    <div className={classes.blockItems}>
-                        <Paper zDepth={1} className={classes.tube}>
-                            <div className={classes.tubeTitle}>
-                                <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}> </div>
-                            </div>
-                            <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
-                            <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.</div>
-                        </Paper>
-                        <Paper zDepth={1} className={classes.tube}>
-                            <div className={classes.tubeTitle}>
-                                <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}> </div>
-                            </div>
-                            <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
-                            <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.</div>
-                        </Paper>
+                {(!_.isEmpty(orderList)) ? (orderlistLoading
+                    ? <div className={classes.loader}>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
-                </div>
+                    : <div className={classes.block}>
+                        <div className={classes.blockTitle}>Визиты и сделки</div>
+                        <div className={classes.blockItems}>
+                            {orderList}
+                        </div>
+                    </div>)
+                    : ''}
                 <div className={classes.block}>
                     <div className={classes.blockTitle}>Отчеты</div>
                     <div className={classes.blockItems}>
                         <Paper zDepth={1} className={classes.tube}>
                             <div className={classes.tubeTitle}>
                                 <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusRed}> </div>
+                                <div className={classes.statusRed}></div>
                             </div>
                             <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
                             <div className={classes.tubeImg}>
-                                <div><img src="http://pulson.ru/wp-content/uploads/2012/05/headache590.jpg" alt=""/></div>
+                                <div><img src="http://pulson.ru/wp-content/uploads/2012/05/headache590.jpg" alt=""/>
+                                </div>
                             </div>
                             <div className={classes.tubeInfo}>Отчет № 121312. Комментарий от
-                                мерчендайзера</div>
+                                мерчендайзера
+                            </div>
                         </Paper>
                         <Paper zDepth={1} className={classes.tube}>
                             <div className={classes.tubeTitle}>
                                 <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusRed}> </div>
+                                <div className={classes.statusRed}></div>
                             </div>
                             <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
                             <div className={classes.tubeImgDouble}>
-                                <div><img src="http://pulson.ru/wp-content/uploads/2012/05/headache590.jpg" alt=""/></div>
-                                <div><img src="http://pulson.ru/wp-content/uploads/2012/05/headache590.jpg" alt=""/></div>
+                                <div><img src="http://pulson.ru/wp-content/uploads/2012/05/headache590.jpg" alt=""/>
+                                </div>
+                                <div><img src="http://pulson.ru/wp-content/uploads/2012/05/headache590.jpg" alt=""/>
+                                </div>
                             </div>
                             <div className={classes.tubeInfo}>Отчет № 121312. Комментарий от
-                                мерчендайзера</div>
+                                мерчендайзера
+                            </div>
                         </Paper>
                     </div>
                 </div>
@@ -252,20 +260,22 @@ const ActivityWrapper = enhance((props) => {
                         <Paper zDepth={1} className={classes.tube}>
                             <div className={classes.tubeTitle}>
                                 <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}> </div>
+                                <div className={classes.statusGreen}></div>
                             </div>
                             <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
                             <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.</div>
+                                магазина или наименование клиента.
+                            </div>
                         </Paper>
                         <Paper zDepth={1} className={classes.tube}>
                             <div className={classes.tubeTitle}>
                                 <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}> </div>
+                                <div className={classes.statusGreen}></div>
                             </div>
                             <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
                             <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.</div>
+                                магазина или наименование клиента.
+                            </div>
                         </Paper>
                     </div>
                 </div>
@@ -275,20 +285,22 @@ const ActivityWrapper = enhance((props) => {
                         <Paper zDepth={1} className={classes.tube}>
                             <div className={classes.tubeTitle}>
                                 <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}> </div>
+                                <div className={classes.statusGreen}></div>
                             </div>
                             <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
                             <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.</div>
+                                магазина или наименование клиента.
+                            </div>
                         </Paper>
                         <Paper zDepth={1} className={classes.tube}>
                             <div className={classes.tubeTitle}>
                                 <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}> </div>
+                                <div className={classes.statusGreen}></div>
                             </div>
                             <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
                             <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.</div>
+                                магазина или наименование клиента.
+                            </div>
                         </Paper>
                     </div>
                 </div>
@@ -298,20 +310,22 @@ const ActivityWrapper = enhance((props) => {
                         <Paper zDepth={1} className={classes.tube}>
                             <div className={classes.tubeTitle}>
                                 <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}> </div>
+                                <div className={classes.statusGreen}></div>
                             </div>
                             <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
                             <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.</div>
+                                магазина или наименование клиента.
+                            </div>
                         </Paper>
                         <Paper zDepth={1} className={classes.tube}>
                             <div className={classes.tubeTitle}>
                                 <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}> </div>
+                                <div className={classes.statusGreen}></div>
                             </div>
                             <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
                             <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.</div>
+                                магазина или наименование клиента.
+                            </div>
                         </Paper>
                     </div>
                 </div>
@@ -325,17 +339,6 @@ const ActivityWrapper = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.ACTIVITY_LIST_URL}/>
 
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Составить план">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={addActivity.handleOpenAddActivity}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
-
             <div className={classes.wrapper}>
                 <ActivityCalendar
                     calendar={calendar}
@@ -344,26 +347,24 @@ const ActivityWrapper = enhance((props) => {
                 {tubeWrapper}
             </div>
 
-            <ActivityCreateDialog
-                open={addActivity.openAddActivity}
-                onClose={addActivity.handleCloseAddActivity}
-                onSubmit={addActivity.handleSubmitAddActivity}
-                zonesList={addActivity.zonesList}
-                zonesLoading={addActivity.zonesLoading}
+            <ActivityOrderDetails
+                open={orderDetails.openOrderDetails}
+                loading={orderDetails.orderItemLoading}
+                onClose={orderDetails.handleCloseOrderDetails}
+                detailData={orderDetails}
             />
         </Container>
     )
 })
 
 ActivityWrapper.PropTypes = {
-    filter: PropTypes.object,
-    usersList: PropTypes.object,
-    detailData: PropTypes.object,
-    addActivity: PropTypes.shape({
-        openAddActivity: PropTypes.bool.isRequired,
-        handleOpenAddActivity: PropTypes.func.isRequired,
-        handleCloseAddActivity: PropTypes.func.isRequired,
-        handleSubmitAddActivity: PropTypes.func.isRequired
+    orderlistData: PropTypes.object,
+    orderDetails: PropTypes.shape({
+        openOrderDetails: PropTypes.bool.isRequired,
+        orderItemLoading: PropTypes.bool.isRequired,
+        handleOpenOrderDetails: PropTypes.func.isRequired,
+        handleCloseOrderDetails: PropTypes.func.isRequired,
+        data: PropTypes.object
     }).isRequired
 }
 

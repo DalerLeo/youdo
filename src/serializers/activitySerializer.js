@@ -1,15 +1,18 @@
 import _ from 'lodash'
-import {orderingSnakeCase} from '../helpers/serializer'
+import moment from 'moment'
 
 export const listFilterSerializer = (data) => {
-    const ONE = 1
-    const {...defaultData} = data
-    const ordering = _.get(data, 'ordering')
+    const TEN = 10
+    const date = _.get(data, 'date') || moment().format('YYYY-MM')
+    let day = _.get(data, 'day') || moment().format('DD')
+    if (_.toInteger(day) < TEN) {
+        day = '0' + day
+    }
+    const fullDate = date + '-' + day
 
     return {
-        'search': _.get(defaultData, 'search'),
-        'group': _.get(defaultData, 'group') || ONE,
-        'ordering': ordering && orderingSnakeCase(ordering)
+        'created_date_0': fullDate,
+        'created_date_1': fullDate
     }
 }
 
