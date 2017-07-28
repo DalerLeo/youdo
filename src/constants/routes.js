@@ -226,3 +226,8 @@ export const PLAN = 'plan'
 export const PLAN_LIST_URL = `${PLAN}`
 export const PLAN_ITEM_URL = `/${PLAN}/:agentId`
 export const PLAN_ITEM_PATH = `${PLAN}/%d`
+
+export const ACTIVITY = 'activity'
+export const ACTIVITY_LIST_URL = `${ACTIVITY}`
+export const ACTIVITY_ITEM_URL = `/${ACTIVITY}/:activityId`
+export const ACTIVITY_ITEM_PATH = `${ACTIVITY}/%d`

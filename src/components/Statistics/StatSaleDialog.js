@@ -21,6 +21,7 @@ const enhance = compose(
             display: 'flex'
         },
         dialog: {
+            overflowY: 'auto !important',
             '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
             }
@@ -42,7 +43,10 @@ const enhance = compose(
                 border: 'none',
                 padding: '0',
                 overflowY: 'auto',
-                maxHeight: '500px'
+                maxHeight: '573px',
+                '& > div > div:last-child > div > div:last-child': {
+                    padding: '0'
+                }
             }
         },
         titleSummary: {
@@ -136,7 +140,7 @@ const StatSaleDialog = enhance((props) => {
         classes,
         detailData
     } = props
-    const loading = _.get(detailData, 'detailLoading')
+    const detailLoading = _.get(detailData, 'detailLoading')
     const id = _.get(detailData, 'id')
     return (
         <Dialog
@@ -144,16 +148,16 @@ const StatSaleDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '400px'} : {width: '1000px', maxWidth: 'none'}}
+            contentStyle={detailLoading ? {width: '400px'} : {width: '1000px', maxWidth: 'none'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
-            {loading ? <div className={classes.loader}>
+            {detailLoading ? <div className={classes.loader}>
                 <CircularProgress/>
             </div>
                 : <div>
                     <div className={classes.titleContent}>
                         <div>
-                            <div>Заказ № {id}</div>
+                            <div>Заказ №{id}</div>
                         </div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon2 color="#666666"/>
@@ -161,8 +165,8 @@ const StatSaleDialog = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <OrderDetails
-                            data={_.get(detailData, 'data') || {}}
-                            loading={loading}/>
+                            data={_.get(detailData, 'data')}
+                            loading={detailLoading}/>
                     </div>
                 </div>}
         </Dialog>
@@ -173,7 +177,8 @@ StatSaleDialog.propTyeps = {
     filter: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    detailData: PropTypes.object
 }
 
 export default StatSaleDialog

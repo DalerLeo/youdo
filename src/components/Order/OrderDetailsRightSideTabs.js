@@ -119,8 +119,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             <Row className="dottedList">
                                 <Col xs={6}>Товар</Col>
                                 <Col xs={2}>Количество</Col>
-                                <Col xs={2}>Цена {primaryCurrency}</Col>
-                                <Col xs={2}>Сумма {primaryCurrency}</Col>
+                                <Col xs={2}>Цена ({primaryCurrency})</Col>
+                                <Col xs={2}>Сумма ({primaryCurrency})</Col>
                             </Row>
 
                             {_.map(products, (item, index) => {
