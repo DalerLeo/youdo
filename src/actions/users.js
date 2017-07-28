@@ -87,3 +87,19 @@ export const usersItemFetchAction = (id) => {
         payload
     }
 }
+
+export const userGroupListFetchAction = () => {
+    const payload = axios()
+        .get(API.USERS_GROUP)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.USERS_GROUP,
+        payload
+    }
+}

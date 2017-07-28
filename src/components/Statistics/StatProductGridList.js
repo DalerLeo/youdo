@@ -119,7 +119,7 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             '& > div': {
-                width: '140px !important',
+                width: '100% !important',
                 position: 'relative',
                 marginRight: '40px',
                 '&:after': {
@@ -153,6 +153,7 @@ const enhance = compose(
         },
         searchButton: {
             marginLeft: '-10px !important',
+            marginRight: '10px !important',
             '& div': {
                 display: 'flex',
                 alignItems: 'center',

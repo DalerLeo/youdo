@@ -11,8 +11,9 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import CloseIcon2 from '../CloseIcon2'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ImageUploadField, UsersGroupSearchField} from '../ReduxForm'
+import {TextField, ImageUploadField, CheckBox} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
+
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -63,6 +64,15 @@ const enhance = compose(
                     height: '30px !important'
                 }
             }
+        },
+        groupLoader: {
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
         }
     })),
     reduxForm({
@@ -73,8 +83,7 @@ const enhance = compose(
 )
 
 const UsersCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData} = props
-
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData, groupListData} = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -112,12 +121,26 @@ const UsersCreateDialog = enhance((props) => {
                                     label="Фамилия"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
-                                <Field
-                                    name="group"
-                                    component={UsersGroupSearchField}
-                                    label="Тип Пользователя"
-                                    className={classes.inputFieldCustom}
-                                    fullWidth={true}/>
+                                <Row>
+                                    <div style={{padding: '10px', flexBasis: '100%'}}>Тип пользователя:</div>
+                                    {_.get(groupListData, 'groupListLoading') &&
+                                    <div className={classes.groupLoader}>
+                                        <CircularProgress size={40} thickness={4}/>
+                                    </div>}
+                                    {!_.get(groupListData, 'groupListLoading') &&
+                                    _.map(_.get(groupListData, 'data'), (item, index) => {
+                                        const id = _.get(item, 'id')
+                                        const name = _.get(item, 'name')
+                                        return (
+                                            <div key={id} style={{flexBasis: '50%', maxWidth: '50%'}}>
+                                                <Field
+                                                name={'groups[' + index + '][selected]'}
+                                                component={CheckBox}
+                                                label={name}/>
+                                            </div>
+                                        )
+                                    })}
+                                </Row>
                             </Col>
                             <Col xs={5}>
                                 <Field

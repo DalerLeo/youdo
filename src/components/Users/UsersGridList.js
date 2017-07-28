@@ -85,6 +85,7 @@ const UsersGridList = enhance((props) => {
         filterDialog,
         actionsDialog,
         confirmDialog,
+        groupListData,
         listData,
         detailData,
         classes
@@ -188,11 +189,13 @@ const UsersGridList = enhance((props) => {
             />
 
             <UsersCreateDialog
+                initialValues={createDialog.initialValues}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 errorData={createDialog.errorData}
+                groupListData={groupListData}
             />
 
             <UsersCreateDialog
@@ -203,6 +206,7 @@ const UsersGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 errorData={updateDialog.errorData}
+
             />
 
             {detailData.data && <ConfirmDialog

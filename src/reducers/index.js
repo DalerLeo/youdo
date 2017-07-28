@@ -141,7 +141,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.USERS_CREATE),
         list: createThunkReducer(actionTypes.USERS_LIST),
         update: createThunkReducer(actionTypes.USERS_UPDATE),
-        item: createThunkReducer(actionTypes.USERS_ITEM)
+        item: createThunkReducer(actionTypes.USERS_ITEM),
+        groupList: createThunkReducer(actionTypes.USERS_GROUP)
     }),
     provider: combineReducers({
         create: createThunkReducer(actionTypes.PROVIDER_CREATE),
