@@ -22,6 +22,14 @@ export const listFilterSerializer = (data) => {
     }
 }
 
+export const itemFilterSerializer = (data) => {
+    const {...defaultData} = data
+
+    return {
+        'page': _.get(defaultData, 'dPage'),
+        'page_size': _.get(defaultData, 'dPageSize')
+    }
+}
 export const transferSerializer = (data) => {
     const fromStock = _.get(data, ['fromStock', 'value'])
     const toStock = _.get(data, ['toStock', 'value'])

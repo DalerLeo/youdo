@@ -184,6 +184,7 @@ const StatRemainderGridList = enhance((props) => {
         detailData,
         getDocument,
         handleSubmit,
+        filterItem,
         onSubmit
     } = props
 
@@ -305,7 +306,7 @@ const StatRemainderGridList = enhance((props) => {
                 detailData={detailData}
                 open={statRemainderDialog.openStatRemainderDialog}
                 onClose={statRemainderDialog.handleCloseStatRemainderDialog}
-                filter={filter}/>
+                filterItem={filterItem}/>
         </Container>
     )
 })

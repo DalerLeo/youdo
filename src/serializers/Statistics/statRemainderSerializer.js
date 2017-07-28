@@ -14,3 +14,12 @@ export const listFilterSerializer = (data) => {
         'stock': _.get(defaultData, 'stock')
     }
 }
+
+export const itemFilterSerializer = (data) => {
+    const {...defaultData} = data
+
+    return {
+        'page': _.get(defaultData, 'dPage'),
+        'page_size': _.get(defaultData, 'dPageSize')
+    }
+}

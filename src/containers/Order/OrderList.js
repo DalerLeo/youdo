@@ -53,11 +53,11 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['order', 'item', 'data'])
         const payment = _.get(state, ['order', 'payment', 'data'])
+        const paymentLoading = _.get(state, ['order', 'payment', 'loading'])
         const orderReturnList = _.get(state, ['order', 'returnList', 'data'])
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const createLoading = _.get(state, ['order', 'create', 'loading'])
         const createClientLoading = _.get(state, ['client', 'create', 'loading'])
-        const transactionsLoading = _.get(state, ['order', 'create', 'loading'])
         const returnLoading = _.get(state, ['order', 'return', 'loading'])
         const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
         const returnDialogLoading = _.get(state, ['order', 'returnList', 'loading'])
@@ -85,12 +85,12 @@ const enhance = compose(
             detailLoading,
             createLoading,
             createClientLoading,
-            transactionsLoading,
             returnLoading,
             shortageLoading,
             updateLoading,
             filter,
             filterForm,
+            paymentLoading,
             createForm,
             clientCreateForm,
             returnForm,
@@ -415,6 +415,10 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.ORDER_LIST_URL, query: filter.getParams()})
+        },
+        handleRefreshList: props => () => {
+            const {dispatch, filter} = props
+            return dispatch(orderListFetchAction(filter))
         }
     }),
 )
@@ -431,7 +435,6 @@ const OrderList = enhance((props) => {
         detailLoading,
         createLoading,
         createClientLoading,
-        transactionsLoading,
         returnLoading,
         shortageLoading,
         updateLoading,
@@ -441,6 +444,7 @@ const OrderList = enhance((props) => {
         layout,
         products,
         openPrint,
+        paymentLoading,
         params,
         listPrint,
         listPrintLoading
@@ -474,7 +478,6 @@ const OrderList = enhance((props) => {
     }
 
     const transactionsDialog = {
-        transactionsLoading,
         openTransactionsDialog,
         handleOpenTransactionsDialog: props.handleOpenTransactionsDialog,
         handleCloseTransactionsDialog: props.handleCloseTransactionsDialog
@@ -633,7 +636,7 @@ const OrderList = enhance((props) => {
     const paymentData = {
         id: detailId,
         data: payment,
-        transactionsLoading
+        paymentLoading
     }
 
     const printDialog = {
@@ -675,6 +678,7 @@ const OrderList = enhance((props) => {
                 products={products}
                 printDialog={printDialog}
                 type={order}
+                refreshAction={props.handleRefreshList}
             />
         </Layout>
     )

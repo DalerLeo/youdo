@@ -228,6 +228,7 @@ const RemainderGridList = enhance((props) => {
         transferDialog,
         discardDialog,
         handleCloseDetail,
+        filterItem,
         filterDialog,
         handleSubmit,
         searchSubmit
@@ -298,7 +299,7 @@ const RemainderGridList = enhance((props) => {
                                 </Col>
                             </Row>
                             <RemainderDetails
-                                filter={filter}
+                                filterItem={filterItem}
                                 detailData={detailData}
                                 handleCloseDetail={handleCloseDetail}
                             />
@@ -402,6 +403,7 @@ const RemainderGridList = enhance((props) => {
 
 RemainderGridList.propTypes = {
     filter: PropTypes.object.isRequired,
+    filterItem: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
     filterDialog: PropTypes.shape({

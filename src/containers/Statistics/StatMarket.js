@@ -29,8 +29,8 @@ const enhance = compose(
         const list = _.get(state, ['statMarket', 'list', 'data'])
         const listLoading = _.get(state, ['statMarket', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatMarketFilterForm'])
+        const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
         const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(detail, pathname, query)
         return {
             list,
             listLoading,
@@ -51,11 +51,12 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const statMarketId = _.get(nextProps, ['params', 'statMarketId']) || ZERO
-        return statMarketId > ZERO && _.get(props, ['params', 'statMarketId']) !== statMarketId
-    }, ({dispatch, params, filter, filterItem}) => {
+        return statMarketId > ZERO && (_.get(props, ['params', 'statMarketId']) !== statMarketId ||
+            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
+    }, ({dispatch, params, filterItem}) => {
         const statMarketId = _.toInteger(_.get(params, 'statMarketId'))
         if (statMarketId > ZERO) {
-            dispatch(statMarketItemFetchAction(filter, filterItem, statMarketId))
+            dispatch(statMarketItemFetchAction(filterItem, statMarketId))
         }
     }),
     withHandlers({
@@ -150,6 +151,7 @@ const StatMarketList = enhance((props) => {
                 statMarketDialog={statMarketDialog}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 getDocument={getDocument}
+                filterItem={filterItem}
             />
         </Layout>
     )

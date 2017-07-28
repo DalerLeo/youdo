@@ -2,12 +2,30 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm} from 'redux-form'
+import _ from 'lodash'
+import {reduxForm, SubmissionError, Field} from 'redux-form'
+import toCamelCase from '../../helpers/toCamelCase'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
+import {CashboxSearchField} from '../ReduxForm'
+import FlatButton from 'material-ui/FlatButton'
+import numberFormat from '../../helpers/numberFormat'
+
+const ZERO = 0
+
+const validate = (data) => {
+    const errors = toCamelCase(data)
+    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
+
+    throw new SubmissionError({
+        ...errors,
+        latLng,
+        _error: nonFieldErrors
+    })
+}
 
 const enhance = compose(
     injectSheet({
@@ -23,6 +41,21 @@ const enhance = compose(
             textAlign: 'center',
             justifyContent: 'center',
             display: 'flex'
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
         popUp: {
             color: '#333 !important',
@@ -50,13 +83,30 @@ const enhance = compose(
                 position: 'absolute !important'
             }
         },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
         inContent: {
-            display: 'flex',
             maxHeight: '50vh',
             minHeight: '184px',
-            overflow: 'auto',
             padding: '0 30px',
-            color: '#333'
+            color: '#333',
+            '& span': {
+                fontWeight: '600'
+            }
         },
         bodyContent: {
             width: '100%'
@@ -101,7 +151,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'OrderCreateForm',
+        form: 'AcceptClientTransactionForm',
         enableReinitialize: true
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -109,19 +159,25 @@ const enhance = compose(
     }, {open: false}),
 )
 
-const TransactionMarketDialog = enhance((props) => {
-    const {open, onClose, classes, loading} = props
+const AcceptClientTransactionDialog = enhance((props) => {
+    const {open, onClose, classes, loading, handleSubmit, data} = props
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
+    const clientName = _.get(data, ['client', 'name'])
+    const marketName = _.get(data, ['market', 'name'])
+    const currency = _.get(data, ['currency', 'name'])
+    const amount = numberFormat(_.get(data, ['amount']), currency)
+    const order = _.get(data, ['order'])
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '300px'} : {width: '900px', maxWidth: 'auto'}}
-            open={open}
+            contentStyle={loading ? {width: '300px'} : {width: '400px', maxWidth: 'auto'}}
+            open={open > ZERO}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Принять наличные</span>
+                <span>Принять наличные {amount}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -130,23 +186,35 @@ const TransactionMarketDialog = enhance((props) => {
                 {loading && <div className={classes.loader}>
                     <CircularProgress size={40} thickness={4}/>
                 </div>}
-                <div className={classes.inContent} style={{minHeight: 'initial'}}>
-                    <div className={classes.list}>
-                        <Row className="dottedList">
-                            <Col xs={3}>Агент</Col>
-                            <Col xs={3}>Клиент</Col>
-                            <Col xs={2}>Магазин</Col>
-                            <Col xs={1}>Заказ</Col>
-                            <Col xs={2}>Сумма</Col>
-                        </Row>
+                <form onSubmit={onSubmit}>
+                    <div className={classes.inContent} style={{minHeight: 'initial'}}>
+                        <div>Клиент: <span>{clientName}</span></div>
+                        <div>Заказ №: <span>{order}</span></div>
+                        <div>Магазин: <span>{marketName}</span></div>
+                        <div className={classes.list}>
+                            <Field
+                                name="cashBox"
+                                component={CashboxSearchField}
+                                className={classes.inputFieldCustom}
+                                fullWidth={true}
+                                label="Кассы"
+                            />
+                        </div>
                     </div>
-                </div>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label="Сохранить"
+                            primary={true}
+                            type="submit"
+                        />
+                    </div>
+                </form>
             </div>
         </Dialog>
     )
 })
-TransactionMarketDialog.propTyeps = {
+AcceptClientTransactionDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired
 }
-export default TransactionMarketDialog
+export default AcceptClientTransactionDialog

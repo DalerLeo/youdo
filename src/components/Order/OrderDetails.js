@@ -404,7 +404,7 @@ const OrderDetails = enhance((props) => {
             </div>
             {type && <OrderTransactionsDialog
                 open={transactionsDialog.openTransactionsDialog}
-                loading={transactionsDialog.transactionsLoading}
+                loading={paymentData.paymentLoading}
                 onClose={transactionsDialog.handleCloseTransactionsDialog}
                 paymentData={paymentData}
             />}
