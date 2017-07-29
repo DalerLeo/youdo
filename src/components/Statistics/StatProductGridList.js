@@ -238,7 +238,7 @@ const StatProductGridList = enhance((props) => {
                         value={percent}
                         style={{backgroundColor: '#fff', height: '10px'}}/>
                 </Col>
-                <Col xs={1}>{count} {measurement}</Col>
+                <Col xs={1}>{count}  {measurement}</Col>
                 <Col xs={2}>{income}</Col>
             </Row>
         )
