@@ -187,8 +187,6 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             <div>В данном заказе нет возвратов</div>
                         </div>}
                 </Tab>
-
-                <Tab label="Исполнение" value={TAB.ORDER_TAB_PERFORMANCE}>3</Tab>
             </Tabs>
         </div>
     )
