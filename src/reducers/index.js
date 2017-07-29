@@ -25,7 +25,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.CASHBOX_CREATE),
         list: createThunkReducer(actionTypes.CASHBOX_LIST),
         item: createThunkReducer(actionTypes.CASHBOX_ITEM),
-        update: createThunkReducer(actionTypes.CASHBOX_UPDATE)
+        update: createThunkReducer(actionTypes.CASHBOX_UPDATE),
+        pending: createThunkReducer(actionTypes.ORDER_TRANSACTION)
     }),
     shipment: combineReducers({
         list: createThunkReducer(actionTypes.SHIPMENT_LIST),

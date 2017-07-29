@@ -155,12 +155,13 @@ const TransactionCashDialog = enhance((props) => {
                             const clientName = _.get(item, ['client', 'name'])
                             const marketName = _.get(item, ['market', 'name'])
                             const currency = _.get(item, ['currency', 'name'])
+                            const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
                             const amount = numberFormat(_.get(item, ['amount']), currency)
                             const order = _.get(item, ['order'])
                             const id = _.get(item, ['id'])
                             return (
                                 <Row key={id} className="dottedList">
-                                    <Col xs={3}>Имя Фамилия Агента</Col>
+                                    <Col xs={3}>{user}</Col>
                                     <Col xs={3}>{clientName}</Col>
                                     <Col xs={2}>{marketName}</Col>
                                     <Col xs={1}>{order}</Col>
