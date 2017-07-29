@@ -51,8 +51,8 @@ const enhance = compose(
             width: '100%',
             '& > div': {
                 boxSizing: 'content-box',
-                width: '570px !important',
-                paddingRight: 'calc(100% - 570px)',
+                width: '75% !important',
+                paddingRight: '25%',
                 '&:first-child': {
                     boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
                     borderRadius: '2px',
@@ -130,8 +130,8 @@ const StockReceiveGridList = enhance((props) => {
                 onChange={(value) => tabData.handleTabChange(value)}>
                 <Tab label="Приемка" value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
                 <Tab label="Передача" value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
-                <Tab label="История Транзакций" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
-                <Tab label="История Передачи" value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
+                <Tab label="История транзакций" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
+                <Tab label="История передачи" value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
             </Tabs>
             {TAB.STOCK_RECEIVE_TAB_RECEIVE === tab && <TabReceive
                 filter={filter}
