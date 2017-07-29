@@ -25,7 +25,7 @@ export const transactionCreateIncomeAction = (formValues, cashboxId) => {
 export const pendingTransactionFetchAction = () => {
     const params = {
         transaction: 0,
-        type: 'out'
+        type: 'in'
     }
 
     const payload = axios()
