@@ -70,8 +70,7 @@ const enhance = compose(
                 },
                 '& > div:nth-child(4)': {
                     textAlign: 'right !important'
-                },
-
+                }
             }
         }
     })),
@@ -131,7 +130,7 @@ const OrderItemReturnDialog = enhance((props) => {
                                     <span>Причина возврата</span>
                                     <span>{comment}</span>
                                 </div>
-                                <div>Экспедитор: <span style={{fontWeight: '600'}}>{firstName} {secondName}</span></div>
+                                <div>Добавил: <span style={{fontWeight: '600'}}>{firstName} {secondName}</span></div>
                             </div>
                             <div style={{marginTop: '20px'}}>
                                 <span>Дата возврата</span>

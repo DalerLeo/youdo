@@ -11,6 +11,7 @@ import * as TAB from '../../constants/stockReceiveTab'
 import TabReceive from './StockTabReceive'
 import TabTransfer from './StockTabTransfer'
 import TabHistory from './StockTabHistory'
+import TabTransferHistory from './StockTabTransferHistory'
 
 const enhance = compose(
     injectSheet({
@@ -49,7 +50,9 @@ const enhance = compose(
             marginBottom: '0',
             width: '100%',
             '& > div': {
-                paddingRight: 'calc(100% - 300px)',
+                boxSizing: 'content-box',
+                width: '570px !important',
+                paddingRight: 'calc(100% - 570px)',
                 '&:first-child': {
                     boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
                     borderRadius: '2px',
@@ -127,7 +130,8 @@ const StockReceiveGridList = enhance((props) => {
                 onChange={(value) => tabData.handleTabChange(value)}>
                 <Tab label="Приемка" value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
                 <Tab label="Передача" value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
-                <Tab label="История" value={TAB.STOCK_RECEIVE_TAB_HISTORY}/>
+                <Tab label="История Транзакций" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
+                <Tab label="История Передачи" value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
             </Tabs>
             {TAB.STOCK_RECEIVE_TAB_RECEIVE === tab && <TabReceive
                 filter={filter}
@@ -144,9 +148,14 @@ const StockReceiveGridList = enhance((props) => {
                 handleCloseDetail={handleCloseDetail}
                 confirmDialog={confirmDialog}
             />}
-            {TAB.STOCK_RECEIVE_TAB_HISTORY === tab && <TabHistory
+            {TAB.STOCK_RECEIVE_TAB_OUT_HISTORY === tab && <TabHistory
                 filter={filter}
                 listData={historyData}
+                filterDialog={filterDialog}
+            />}
+            {TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY === tab && <TabTransferHistory
+                filter={filter}
+                listData={transferData}
                 filterDialog={filterDialog}
             />}
         </div>
