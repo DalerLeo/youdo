@@ -108,8 +108,8 @@ export const orderListFetchAction = (filter) => {
     }
 }
 
-export const orderListPintFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const orderListPintFetchAction = (filter, id) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), id)
     const payload = axios()
         .get(API.ORDER_LIST_PRINT, {params})
         .then((response) => {

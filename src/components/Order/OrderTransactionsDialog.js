@@ -125,7 +125,7 @@ const OrderTransactionsDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '500px'} : {width: '900px', maxWidth: 'auto'}}
+            contentStyle={loading ? {width: '500px'} : {width: '900px', maxWidth: 'none'}}
             open={open}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
