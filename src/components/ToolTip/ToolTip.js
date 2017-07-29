@@ -34,7 +34,8 @@ const ToolTip = enhance(({classes, text, children, position}) => {
                 id={uniqId}
                 type="dark"
                 effect="solid"
-                className={classes.tooltip}>
+                className={classes.tooltip}
+                html={true}>
                 {text}
             </ReactTooltip>
         </div>

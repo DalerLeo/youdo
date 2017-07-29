@@ -37,7 +37,6 @@ import {
     orderReturnListAction,
     orderTransactionFetchAction,
     orderItemReturnFetchAction,
-    getDocumentAction,
     orderListPintFetchAction
 } from '../../actions/order'
 import {
@@ -414,7 +413,6 @@ const enhance = compose(
                 .then(() => {
                     window.print()
                 })
-
         },
 
         handleCloseDetail: props => () => {

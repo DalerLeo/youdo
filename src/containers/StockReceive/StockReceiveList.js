@@ -102,7 +102,6 @@ const enhance = compose(
             dispatch(stockHistoryListFetchAction(filter))
         } else if (currentTab === 'transferHistory') {
             dispatch(stockTransferListFetchAction(filter))
-
         }
     }),
 

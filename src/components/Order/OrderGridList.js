@@ -234,20 +234,14 @@ const OrderGridList = enhance((props) => {
         const status = _.toInteger(_.get(item, 'status'))
         const isNew = _.get(item, 'isNew')
         const REQUESTED = 0
-        const PAY_PENDING = (
-            <div>
-                {'Оплата ожидается: ' + paymentDate.locale('ru').format('DD MMM YYYY')}
-                <br/>
-                {'Ожидаемый платеж: ' + balanceTooltip}
-            </div>
-        )
-        const PAY_DELAY = (
-            <div>
-                {'Оплата ожидалась: ' + paymentDate.locale('ru').format('DD MMM YYYY')}
-                <br/>
-                {'Долг: ' + balanceTooltip}
-            </div>
-        )
+        const PAY_PENDING = 'Оплата ожидается: ' +
+                            paymentDate.locale('ru').format('DD MMM YYYY') +
+                            '<br/>Ожидаемый платеж: ' + balanceTooltip
+
+        const PAY_DELAY = 'Оплата ожидалась: ' +
+                            paymentDate.locale('ru').format('DD MMM YYYY') +
+                            '<br/>Долг: ' + balanceTooltip
+
         const READY = 1
         const GIVEN = 2
         const DELIVERED = 3
@@ -450,7 +444,6 @@ OrderGridList.propTypes = {
         handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
     transactionsDialog: PropTypes.shape({
-        transactionsLoading: PropTypes.bool.isRequired,
         openTransactionsDialog: PropTypes.bool.isRequired,
         handleOpenTransactionsDialog: PropTypes.func.isRequired,
         handleCloseTransactionsDialog: PropTypes.func.isRequired
