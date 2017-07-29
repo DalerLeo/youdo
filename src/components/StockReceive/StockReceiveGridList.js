@@ -157,6 +157,8 @@ const StockReceiveGridList = enhance((props) => {
                 filter={filter}
                 listData={transferData}
                 filterDialog={filterDialog}
+                detailData={transferDetail}
+                handleCloseDetail={handleCloseDetail}
             />}
         </div>
     )

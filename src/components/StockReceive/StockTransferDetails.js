@@ -83,9 +83,9 @@ const enhance = compose(
 const StockTransferDetails = enhance((props) => {
     const {classes, detailData} = props
     const detailLoading = _.get(detailData, 'transferDetailLoading')
+    const detailType = _.toInteger(_.get(detailData, 'type'))
     const products = _.get(detailData, ['data', 'products'])
     const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
-
     if (_.isEmpty(products)) {
         return (
             <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden'}}>
@@ -112,13 +112,17 @@ const StockTransferDetails = enhance((props) => {
                             const name = _.get(item, ['product', 'name'])
                             const measurement = _.get(item, ['product', 'measurement', 'name'])
                             const amount = numberformat(_.get(item, 'amount'), measurement)
-                            return (
+                            const stock = _.toInteger(_.get(item, ['stock', 'id']))
+
+                            if (stock === detailType) {
+                                return (
                                 <Row key={id} className='dottedList'>
                                     <Col xs={6}>{name}</Col>
                                     <Col xs={4}>Стиральный порошек</Col>
                                     <Col xs={2}>{amount}</Col>
                                 </Row>
-                            )
+                                )
+                            }
                         })}
                     </div>
                     <div className={classes.rightSide}>

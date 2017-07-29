@@ -39,7 +39,8 @@ const enhance = compose(
             marginBottom: '5px',
             '& > a': {
                 color: 'inherit'
-            }
+            },
+            cursor: 'pointer'
         },
         expandedList: {
             margin: '20px -15px',
@@ -93,10 +94,12 @@ const StockTabTransfer = enhance((props) => {
         detailData,
         filter,
         classes,
+        handleCloseDetail,
         confirmDialog
     } = props
     const detailId = _.get(detailData, 'id')
     const listLoading = _.get(listData, 'transferListLoading')
+    const detailType = _.toInteger(_.get(detailData, 'type'))
     if (listLoading) {
         return (
             <div className={classes.loader}>
@@ -123,15 +126,16 @@ const StockTabTransfer = enhance((props) => {
                 const dateDelivery = moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY')
                 const receiver = _.get(item, ['receiver'])
                 const status = _.toInteger(_.get(item, 'status'))
+                const stock = _.toInteger(_.get(item, 'stock'))
                 const PENDING = 0
                 const IN_PROGRESS = 1
                 const COMPLETED = 2
 
-                if (id === detailId) {
+                if (id === detailId && detailType === stock) {
                     return (
                         <Paper key={index} zDepth={1} className={classes.expandedList}>
                             <div className={classes.wrapper}>
-                                <Row className={classes.semibold}>
+                                <Row className={classes.semibold} onClick={handleCloseDetail}>
                                     <Col xs={1}>{id}</Col>
                                     <Col xs={2}>{dateRequest}</Col>
                                     <Col xs={2}>Заказ</Col>
@@ -156,13 +160,13 @@ const StockTabTransfer = enhance((props) => {
                     )
                 }
                 return (
-                    <Paper key={index} zDepth={1} className={classes.list}>
-                        <Link to={{
-                            pathname: sprintf(ROUTES.STOCK_RECEIVE_ITEM_PATH, id),
-                            query: filter.getParams()
-                        }}>
+                    <Paper
+                        key={index}
+                        zDepth={1}
+                        className={classes.list}
+                        onClick={() => { listData.handleOpenDetail(id, stock) }}>
                             <div className={classes.wrapper}>
-                                <Row>
+                                <Row onClick={() => { listData.handleOpenDetail(id, stock) }}>
                                     <Col xs={1}>{id}</Col>
                                     <Col xs={2}>{dateRequest}</Col>
                                     <Col xs={2}>Заказ</Col>
@@ -175,7 +179,6 @@ const StockTabTransfer = enhance((props) => {
                                                 : (<span className={classes.error}>Отменен</span>))}</Col>
                                 </Row>
                             </div>
-                        </Link>
                     </Paper>
                 )
             })}
