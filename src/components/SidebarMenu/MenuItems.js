@@ -10,16 +10,6 @@ import Zone from 'material-ui/svg-icons/maps/place'
 
 export const MenuItems = [
     {
-        name: 'Метрика',
-        icon: (<Statistics />),
-        url: ROUTES.ACTIVITY_LIST_URL,
-        childs: [
-            {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL},
-            {name: 'План', url: ROUTES.PLAN_LIST_URL},
-            {name: 'Статистика', url: ROUTES.STATISTICS_LIST_URL}
-        ]
-    },
-    {
         name: 'Продажи',
         icon: (<AttachMoney />),
         url: ROUTES.ORDER_LIST_URL,
@@ -29,6 +19,16 @@ export const MenuItems = [
             {name: 'Маркетинговые акции', url: ROUTES.PRICES_LIST_URL},
             {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL},
             {name: 'Магазины', url: ROUTES.SHOP_LIST_URL}
+        ]
+    },
+    {
+        name: 'Метрика',
+        icon: (<Statistics />),
+        url: ROUTES.ACTIVITY_LIST_URL,
+        childs: [
+            {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL},
+            {name: 'План', url: ROUTES.PLAN_LIST_URL},
+            {name: 'Статистика', url: ROUTES.STATISTICS_LIST_URL}
         ]
     },
     {
