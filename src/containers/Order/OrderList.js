@@ -37,7 +37,6 @@ import {
     orderReturnListAction,
     orderTransactionFetchAction,
     orderItemReturnFetchAction,
-    getDocumentAction,
     orderListPintFetchAction
 } from '../../actions/order'
 import {
@@ -408,8 +407,12 @@ const enhance = compose(
         },
 
         handleGetDocument: props => (id) => {
-            const {dispatch} = props
-            return dispatch(getDocumentAction(id))
+            const {dispatch, filter, setOpenPrint} = props
+            setOpenPrint(true)
+            return dispatch(orderListPintFetchAction(filter, id))
+                .then(() => {
+                    window.print()
+                })
         },
 
         handleCloseDetail: props => () => {

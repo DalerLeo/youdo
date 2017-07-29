@@ -47,6 +47,9 @@ const enhance = compose(
             }
         },
         returnedItems: {
+            '& .dottedList': {
+                padding: '20px 0 !important'
+            },
             padding: '10px 0 0',
             '& .row': {
                 '& > div': {
@@ -84,6 +87,8 @@ const OrderItemReturnDialog = enhance((props) => {
     const {open, loading, onClose, classes, returnListData} = props
     const id = _.get(returnListData, 'id')
     const date = moment(_.get(returnListData, 'createdDate')).format('DD.MM.YYYY')
+    const firstName = _.get(returnListData, ['createdBy', 'firstName'])
+    const secondName = _.get(returnListData, ['createdBy', 'secondName'])
     const comment = _.get(returnListData, 'comment')
     const totalPrice = numberFormat(_.get(returnListData, 'totalPrice'))
     const productList = _.map(_.get(returnListData, 'returnedProducts'), (item) => {
@@ -125,7 +130,7 @@ const OrderItemReturnDialog = enhance((props) => {
                                     <span>Причина возврата</span>
                                     <span>{comment}</span>
                                 </div>
-                                <div>Экспедитор: <span style={{fontWeight: '600'}}>Егор Вячеславович</span></div>
+                                <div>Добавил: <span style={{fontWeight: '600'}}>{firstName} {secondName}</span></div>
                             </div>
                             <div style={{marginTop: '20px'}}>
                                 <span>Дата возврата</span>

@@ -5,7 +5,6 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/orderSerializer'
 import * as returnSerializers from '../serializers/orderReturnSerializer'
-import fileDownload from 'react-file-download'
 
 export const orderCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
@@ -108,8 +107,8 @@ export const orderListFetchAction = (filter) => {
     }
 }
 
-export const orderListPintFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const orderListPintFetchAction = (filter, id) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), id)
     const payload = axios()
         .get(API.ORDER_LIST_PRINT, {params})
         .then((response) => {
@@ -182,23 +181,6 @@ export const orderItemFetchAction = (id) => {
 
     return {
         type: actionTypes.ORDER_ITEM,
-        payload
-    }
-}
-
-export const getDocumentAction = (id) => {
-    const payload = axios()
-        .get(sprintf(API.GET_DOCUMENT, id))
-        .then((response) => {
-            fileDownload(response.data, 'договор.pdf')
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.GET_DOCUMENT,
         payload
     }
 }

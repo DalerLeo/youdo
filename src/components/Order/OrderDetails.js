@@ -13,7 +13,7 @@ import OrderItemReturnDialog from './OrderItemReturnDialog'
 import RightSide from './OrderDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
-import File from 'material-ui/svg-icons/editor/insert-drive-file'
+import PrintIcon from 'material-ui/svg-icons/action/print'
 import Tooltip from '../ToolTip'
 import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
@@ -239,13 +239,13 @@ const OrderDetails = enhance((props) => {
                             <Return />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Скачать договор">
+                    <Tooltip position="bottom" text="Распечатать накладную">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { getDocument.handleGetDocument(id) }}>
-                            <File />
+                            <PrintIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip position="bottom" text="Изменить">
@@ -281,8 +281,7 @@ const OrderDetails = enhance((props) => {
                                     }}>
                                     <span>Клиент:</span>
                                     <a><strong>{client}</strong></a>
-
-                                    <Paper zDepth={1} style={openInfo && {opacity: '1', zIndex: '2', top: '0'}}>
+                                    <Paper zDepth={1} style={openInfo ? {opacity: '1', zIndex: '2', top: '0'} : {}}>
                                         <li>
                                             <span>Контактное лицо:</span>
                                             <span>{contactName}</span>

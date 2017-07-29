@@ -98,8 +98,10 @@ const enhance = compose(
             dispatch(stockReceiveListFetchAction(filter))
         } else if (currentTab === 'transfer') {
             dispatch(stockTransferListFetchAction(filter))
-        } else if (currentTab === 'history') {
+        } else if (currentTab === 'outHistory') {
             dispatch(stockHistoryListFetchAction(filter))
+        } else if (currentTab === 'transferHistory') {
+            dispatch(stockTransferListFetchAction(filter))
         }
     }),
 

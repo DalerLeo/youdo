@@ -14,6 +14,7 @@ import StockTransferDetails from './StockTransferDetails'
 import Pagination from '../GridList/GridListNavPagination'
 import ConfirmDialog from '../ConfirmDialog'
 
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         loader: {
@@ -183,7 +184,7 @@ const StockTabTransfer = enhance((props) => {
                 message={'Запрос № ' + _.get(detailData, ['currentTransferDetail', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSubmitTransferAcceptDialog}
-                open={confirmDialog.openConfirmDialog}
+                open={confirmDialog.openConfirmDialog > ZERO}
             />
             <Pagination
                 filter={filter}
