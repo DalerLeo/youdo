@@ -32,6 +32,15 @@ const enhance = compose(
             height: 'calc(100% - 32px)',
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
+        loader: {
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: '999',
+            display: 'flex'
+        },
         wrapper: {
             padding: '20px 30px',
             height: 'calc(100% - 40px)',
@@ -251,7 +260,7 @@ const StatRemainderGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     {listLoading
-                    ? <div style={{textAlign: 'center'}}>
+                    ? <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4} />
                     </div>
                     : <div className={classes.wrapper}>
