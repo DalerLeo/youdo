@@ -121,7 +121,7 @@ const enhance = compose(
             } else if (stockReceiveType === 'order_return') {
                 dispatch(orderReturnListAction(stockReceiveId))
             }
-        } else if (stockReceiveId > ZERO && currentTab === 'transfer') {
+        } else if ((currentTab === 'transfer' || currentTab === 'transferHistory') && stockReceiveId > ZERO) {
             dispatch(stockTransferItemFetchAction(stockReceiveId))
         }
     }),

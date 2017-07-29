@@ -104,7 +104,10 @@ const StockTabTransferHistory = enhance((props) => {
         const receiver = _.get(item, ['receiver'])
 
         return (
-            <Row key={id}>
+            <Row key={id} style={{position: 'relative'}}>
+                <div className={classes.closeDetail}
+                     onClick={handleCloseDetail}>
+                </div>
                 <Col xs={2}><Link to={{
                     pathname: sprintf(ROUTES.STOCK_RECEIVE_ITEM_PATH, id),
                     query: filter.getParams()
