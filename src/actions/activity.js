@@ -5,25 +5,19 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/activitySerializer'
 
-export const activityCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .post(API.ACTIVITY_CREATE, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
+const VISIT = 1
+const ORDER = 2
+const REPORT = 3
+const ORDER_RETURN = 4
+const PAYMENT = 5
+const DELIVERY = 6
 
-    return {
-        type: actionTypes.ACTIVITY_CREATE,
-        payload
-    }
-}
+const thumbnailType = 'medium'
+
+// ORDER
 
 export const activityOrderListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+    const params = serializers.listFilterSerializer(filter.getParams(), ORDER)
     const payload = axios()
         .get(API.ACTIVITY_ORDER_LIST, {params})
         .then((response) => {
@@ -54,9 +48,12 @@ export const activityOrderItemFetchAction = (id) => {
     }
 }
 
-export const activityItemFetchAction = (id) => {
+// VISIT
+
+export const activityVisitListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), VISIT)
     const payload = axios()
-        .get(sprintf(API.USERS_ITEM, id))
+        .get(API.ACTIVITY_VISIT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -64,14 +61,17 @@ export const activityItemFetchAction = (id) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {
-        type: actionTypes.USERS_ITEM,
+        type: actionTypes.ACTIVITY_VISIT_LIST,
         payload
     }
 }
 
-export const activityZonesListFetchAction = () => {
+// REPORT
+
+export const activityReportListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), REPORT, thumbnailType)
     const payload = axios()
-        .get(API.ZONE_LIST)
+        .get(API.ACTIVITY_REPORT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -79,14 +79,17 @@ export const activityZonesListFetchAction = () => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {
-        type: actionTypes.ZONE_LIST,
+        type: actionTypes.ACTIVITY_REPORT_LIST,
         payload
     }
 }
 
-export const activityListSearchFetchAction = (search) => {
+// ORDER_RETURN
+
+export const activityReturnListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), ORDER_RETURN)
     const payload = axios()
-        .get(API.ACTIVITY_LIST, {params: {'search': search}})
+        .get(API.ACTIVITY_REPORT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -94,7 +97,44 @@ export const activityListSearchFetchAction = (search) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {
-        type: actionTypes.ACTIVITY_LIST,
+        type: actionTypes.ACTIVITY_ORDER_RETURN_LIST,
         payload
     }
 }
+
+// PAYMENT
+
+export const activityPaymentListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), PAYMENT)
+    const payload = axios()
+        .get(API.ACTIVITY_REPORT_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.ACTIVITY_PAYMENT_LIST,
+        payload
+    }
+}
+
+// DELIVERY
+
+export const activityDeliveryListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), DELIVERY)
+    const payload = axios()
+        .get(API.ACTIVITY_REPORT_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.ACTIVITY_DELIVERY_LIST,
+        payload
+    }
+}
+

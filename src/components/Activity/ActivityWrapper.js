@@ -6,22 +6,23 @@ import Container from '../Container'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import moment from 'moment'
-import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
-import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import NotFound from '../Images/not-found.png'
 import ActivityCalendar from './ActivityCalendar'
+import ActivityOrder from './ActivityOrder'
+import ActivityVisit from './ActivityVisit'
+import ActivityReport from './ActivityReport'
+import ActivityReturn from './ActivityReturn'
+import ActivityPayment from './ActivityPayment'
+import ActivityDelivery from './ActivityDelivery'
 import ActivityOrderDetails from '../Statistics/StatSaleDialog'
 
 const enhance = compose(
     injectSheet({
         loader: {
-            minWidth: '300px',
-            height: '300px',
-            marginRight: '30px',
+            minWidth: '100%',
+            height: 'calc(100% - 75px)',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
@@ -169,166 +170,53 @@ const enhance = compose(
     })
 )
 
-const dateFormat = (date, defaultText) => {
-    return (date) ? moment(date).locale('ru').format('DD MMM, YYYY - HH:mm') : defaultText
-}
-
 const ActivityWrapper = enhance((props) => {
-    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const {
         orderlistData,
         classes,
         orderDetails,
+        visitlistData,
+        reportlistData,
+        returnlistData,
+        paymentlistData,
+        deliverylistData,
         calendar,
         handleClickDay
     } = props
-    const orderlistLoading = _.get(orderlistData, 'orderListLoading')
-    const orderList = _.map(_.get(orderlistData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const clientName = _.get(item, ['client', 'name'])
-        const createdDate = dateFormat(_.get(item, 'createdDate'))
-        const orderPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
-        const marketName = _.get(item, ['market', 'name'])
-        const paymentType = paymentTypeFormat(_.get(item, 'paymentType'))
 
-        return (
-            <Paper key={id} zDepth={1} className={classes.tube} onClick={() => { orderDetails.handleOpenOrderDetails(id) }}>
-                <div className={classes.tubeTitle}>
-                    <span>{clientName}</span>
-                    <div className={classes.statusGreen}> </div>
-                </div>
-                <div className={classes.tubeTime}>{createdDate}</div>
-                <div className={classes.tubeInfo}>Сделка №{id} с магазина "{marketName}" на сумму {orderPrice}
-                    ({paymentType})
-                </div>
-            </Paper>
-        )
-    })
+    const orderlistLoading = _.get(orderlistData, 'orderListLoading')
+    const visitlistLoading = _.get(visitlistData, 'visitListLoading')
+    const reportlistLoading = _.get(reportlistData, 'reportListLoading')
+    const returnlistLoading = _.get(returnlistData, 'returnListLoading')
+    const paymentlistLoading = _.get(paymentlistData, 'paymentListLoading')
+    const deliverylistLoading = _.get(deliverylistData, 'deliveryListLoading')
+
+    let megaLoading = false
+    if (orderlistLoading &&
+        visitlistLoading &&
+        reportlistLoading &&
+        returnlistLoading &&
+        paymentlistLoading &&
+        deliverylistLoading) {
+        megaLoading = true
+    }
 
     const tubeWrapper = (
         <div className={classes.tubeWrapper}>
             <div className={classes.horizontal}>
-                {(!_.isEmpty(orderList)) ? (orderlistLoading
-                    ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
-                    </div>
-                    : <div className={classes.block}>
-                        <div className={classes.blockTitle}>Визиты и сделки</div>
-                        <div className={classes.blockItems}>
-                            {orderList}
-                        </div>
-                    </div>)
-                    : ''}
-                <div className={classes.block}>
-                    <div className={classes.blockTitle}>Отчеты</div>
-                    <div className={classes.blockItems}>
-                        <Paper zDepth={1} className={classes.tube}>
-                            <div className={classes.tubeTitle}>
-                                <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusRed}></div>
-                            </div>
-                            <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
-                            <div className={classes.tubeImg}>
-                                <div><img src="http://pulson.ru/wp-content/uploads/2012/05/headache590.jpg" alt=""/>
-                                </div>
-                            </div>
-                            <div className={classes.tubeInfo}>Отчет № 121312. Комментарий от
-                                мерчендайзера
-                            </div>
-                        </Paper>
-                        <Paper zDepth={1} className={classes.tube}>
-                            <div className={classes.tubeTitle}>
-                                <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusRed}></div>
-                            </div>
-                            <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
-                            <div className={classes.tubeImgDouble}>
-                                <div><img src="http://pulson.ru/wp-content/uploads/2012/05/headache590.jpg" alt=""/>
-                                </div>
-                                <div><img src="http://pulson.ru/wp-content/uploads/2012/05/headache590.jpg" alt=""/>
-                                </div>
-                            </div>
-                            <div className={classes.tubeInfo}>Отчет № 121312. Комментарий от
-                                мерчендайзера
-                            </div>
-                        </Paper>
-                    </div>
-                </div>
-                <div className={classes.block}>
-                    <div className={classes.blockTitle}>Доставка</div>
-                    <div className={classes.blockItems}>
-                        <Paper zDepth={1} className={classes.tube}>
-                            <div className={classes.tubeTitle}>
-                                <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}></div>
-                            </div>
-                            <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
-                            <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.
-                            </div>
-                        </Paper>
-                        <Paper zDepth={1} className={classes.tube}>
-                            <div className={classes.tubeTitle}>
-                                <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}></div>
-                            </div>
-                            <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
-                            <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.
-                            </div>
-                        </Paper>
-                    </div>
-                </div>
-                <div className={classes.block}>
-                    <div className={classes.blockTitle}>Сбор денег</div>
-                    <div className={classes.blockItems}>
-                        <Paper zDepth={1} className={classes.tube}>
-                            <div className={classes.tubeTitle}>
-                                <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}></div>
-                            </div>
-                            <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
-                            <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.
-                            </div>
-                        </Paper>
-                        <Paper zDepth={1} className={classes.tube}>
-                            <div className={classes.tubeTitle}>
-                                <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}></div>
-                            </div>
-                            <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
-                            <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.
-                            </div>
-                        </Paper>
-                    </div>
-                </div>
-                <div className={classes.block}>
-                    <div className={classes.blockTitle}>Визиты и сделки</div>
-                    <div className={classes.blockItems}>
-                        <Paper zDepth={1} className={classes.tube}>
-                            <div className={classes.tubeTitle}>
-                                <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}></div>
-                            </div>
-                            <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
-                            <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.
-                            </div>
-                        </Paper>
-                        <Paper zDepth={1} className={classes.tube}>
-                            <div className={classes.tubeTitle}>
-                                <span>Хабибулло Насруллоев</span>
-                                <div className={classes.statusGreen}></div>
-                            </div>
-                            <div className={classes.tubeTime}>10 Апр, 2017 - 09:10</div>
-                            <div className={classes.tubeInfo}>Заключение сделки (Z-025852) с название
-                                магазина или наименование клиента.
-                            </div>
-                        </Paper>
-                    </div>
-                </div>
+                <ActivityOrder
+                    orderlistData={orderlistData}
+                    orderDetails={orderDetails} />
+                <ActivityVisit
+                    visitlistData={visitlistData} />
+                <ActivityReport
+                    reportlistData={reportlistData} />
+                <ActivityReturn
+                    returnListData={returnlistData} />
+                <ActivityPayment
+                    paymentlistData={paymentlistData} />
+                <ActivityDelivery
+                    deliverylistData={deliverylistData} />
             </div>
             <Paper className={classes.horizontalScroll}>
             </Paper>
@@ -344,7 +232,11 @@ const ActivityWrapper = enhance((props) => {
                     calendar={calendar}
                     handleClickDay={handleClickDay}
                 />
-                {tubeWrapper}
+                {megaLoading
+                    ? <div className={classes.loader}>
+                        <CircularProgress size={40} thickness={4}/>
+                    </div>
+                    : tubeWrapper}
             </div>
 
             <ActivityOrderDetails
@@ -359,6 +251,11 @@ const ActivityWrapper = enhance((props) => {
 
 ActivityWrapper.PropTypes = {
     orderlistData: PropTypes.object,
+    visitlistData: PropTypes.object,
+    reportlistData: PropTypes.object,
+    returnlistData: PropTypes.object,
+    paymentlistData: PropTypes.object,
+    deliverylistData: PropTypes.object,
     orderDetails: PropTypes.shape({
         openOrderDetails: PropTypes.bool.isRequired,
         orderItemLoading: PropTypes.bool.isRequired,

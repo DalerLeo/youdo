@@ -56,7 +56,7 @@ const enhance = compose(
             marginBottom: '0',
             width: '100%',
             '& > div': {
-                paddingRight: 'calc(100% - 400px)',
+                paddingRight: 'calc(100% - 250px)',
                 background: 'transparent !important'
             },
             '& > div:first-child': {
@@ -187,8 +187,6 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             <div>В данном заказе нет возвратов</div>
                         </div>}
                 </Tab>
-
-                <Tab label="Исполнение" value={TAB.ORDER_TAB_PERFORMANCE}>3</Tab>
             </Tabs>
         </div>
     )
