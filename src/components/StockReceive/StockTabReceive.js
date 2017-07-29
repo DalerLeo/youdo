@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
+import {hashHistory} from 'react-router'
 import moment from 'moment'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -90,6 +91,39 @@ const enhance = compose(
     })
 )
 
+const headerItems = [
+    {
+        name: 'id',
+        sorting: true,
+        title: '№ заказа',
+        xs: 1
+    },
+    {
+        name: 'market',
+        sorting: true,
+        title: 'От кого',
+        xs: 3
+    },
+    {
+        name: 'type',
+        sorting: false,
+        title: 'Тип',
+        xs: 2
+    },
+    {
+        name: 'date',
+        sorting: false,
+        title: 'Дата приемки',
+        xs: 2
+    },
+    {
+        name: 'status',
+        sorting: false,
+        title: 'Статус',
+        xs: 2
+    }
+]
+
 const StockTabReceive = enhance((props) => {
     const {
         listData,
@@ -115,11 +149,28 @@ const StockTabReceive = enhance((props) => {
         <div className={classes.listWrapper}>
             <div className={classes.headers}>
                 <Row>
-                    <Col xs={1}>№ заказа</Col>
-                    <Col xs={3}>От кого</Col>
-                    <Col xs={2}>Тип</Col>
-                    <Col xs={2}>Дата приемки</Col>
-                    <Col xs={2}>Статус</Col>
+                    {_.map(headerItems, (item, index) => {
+                        const name = _.get(item, 'name')
+                        const title = _.get(item, 'title')
+                        const size = _.get(item, 'xs')
+                        const sorting = _.get(item, 'sorting')
+                        if (sorting) {
+                            return (
+                                <Col
+                                    key={index}
+                                    xs={size}
+                                    style={{cursor: 'pointer'}}
+                                    onClick={() => hashHistory.push(filter.sortingURL(name))}>
+                                    {title}
+                                </Col>
+                            )
+                        }
+                        return (
+                            <Col key={index} xs={size}>
+                                {title}
+                            </Col>
+                        )
+                    })}
                 </Row>
             </div>
             {_.map(_.get(listData, 'data'), (item, index) => {

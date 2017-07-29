@@ -14,11 +14,11 @@ export const listFilterSerializer = (data) => {
     return {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
-        'ordering': ordering && orderingSnakeCase(ordering),
         'type': _.get(defaultData, 'type'),
         'stock': _.get(defaultData, 'stock'),
         'status': status,
-        'searching': _.get(defaultData, 'search')
+        'searching': _.get(defaultData, 'search'),
+        'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
 
