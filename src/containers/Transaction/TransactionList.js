@@ -32,12 +32,12 @@ import {
     transactionListFetchAction,
     transactionDeleteAction,
     transactionItemFetchAction,
-    acceptClientTransactionAction
+    acceptClientTransactionAction,
+    pendingTransactionFetchAction
 } from '../../actions/transaction'
 import {
     cashboxListFetchAction
 } from '../../actions/cashbox'
-import {orderTransactionFetchAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -55,8 +55,8 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'TransactionFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const acceptForm = _.get(state, ['form', 'AcceptClientTransactionForm'])
-        const payment = _.get(state, ['order', 'payment', 'data'])
-        const paymentLoading = _.get(state, ['order', 'payment', 'loading'])
+        const payment = _.get(state, ['cashbox', 'pending', 'data'])
+        const paymentLoading = _.get(state, ['cashbox', 'pending', 'loading'])
         const filter = filterHelper(list, pathname, query)
         const filterCashbox = filterHelper(cashboxList, pathname, query)
         const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
@@ -91,8 +91,7 @@ const enhance = compose(
         const nextTransaction = _.get(nextProps, ['location', 'query', TRANSACTION_CASH_DIALOG_OPEN])
         return prevTransaction !== nextTransaction && nextTransaction === 'true'
     }, ({dispatch}) => {
-        const transaction = 'trans'
-        dispatch(orderTransactionFetchAction(transaction))
+        dispatch(pendingTransactionFetchAction())
     }),
 
     withPropsOnChange((props, nextProps) => {

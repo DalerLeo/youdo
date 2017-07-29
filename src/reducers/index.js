@@ -25,7 +25,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.CASHBOX_CREATE),
         list: createThunkReducer(actionTypes.CASHBOX_LIST),
         item: createThunkReducer(actionTypes.CASHBOX_ITEM),
-        update: createThunkReducer(actionTypes.CASHBOX_UPDATE)
+        update: createThunkReducer(actionTypes.CASHBOX_UPDATE),
+        pending: createThunkReducer(actionTypes.ORDER_TRANSACTION)
     }),
     shipment: combineReducers({
         list: createThunkReducer(actionTypes.SHIPMENT_LIST),
@@ -340,7 +341,12 @@ const rootReducer = combineReducers({
     }),
     activity: combineReducers({
         orderList: createThunkReducer(actionTypes.ACTIVITY_ORDER_LIST),
-        orderItem: createThunkReducer(actionTypes.ACTIVITY_ORDER_ITEM)
+        orderItem: createThunkReducer(actionTypes.ACTIVITY_ORDER_ITEM),
+        visitList: createThunkReducer(actionTypes.ACTIVITY_VISIT_LIST),
+        reportList: createThunkReducer(actionTypes.ACTIVITY_REPORT_LIST),
+        returnList: createThunkReducer(actionTypes.ACTIVITY_ORDER_RETURN_LIST),
+        paymentList: createThunkReducer(actionTypes.ACTIVITY_PAYMENT_LIST),
+        deliveryList: createThunkReducer(actionTypes.ACTIVITY_DELIVERY_LIST)
     }),
 
     snackbar: snackbarReducer(),

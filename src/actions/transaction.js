@@ -22,6 +22,27 @@ export const transactionCreateIncomeAction = (formValues, cashboxId) => {
     }
 }
 
+export const pendingTransactionFetchAction = () => {
+    const params = {
+        transaction: 0,
+        type: 'in'
+    }
+
+    const payload = axios()
+        .get(API.ORDER_TRANSACTION, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_TRANSACTION,
+        payload
+    }
+}
+
 export const transactionCreateExpenseAction = (formValues, cashboxId) => {
     const requestData = serializers.createExpenseSerializer(formValues, cashboxId)
     const payload = axios()

@@ -280,7 +280,7 @@ const ShopDetails = enhance((props) => {
     }
 
     const primaryImage = _.map(images, (item, index) => {
-        const src = _.get(item, 'image')
+        const src = _.get(item, 'file')
         const isPrimary = _.get(item, 'isPrimary')
         if (isPrimary) {
             return (
@@ -293,7 +293,7 @@ const ShopDetails = enhance((props) => {
     })
     let count = 0
     const otherImages = _.map(images, (item, index) => {
-        const src = _.get(item, 'image')
+        const src = _.get(item, 'file')
         const isPrimary = _.get(item, 'isPrimary')
         if (!isPrimary && (count++) < THREE) {
             return (

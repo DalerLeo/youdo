@@ -130,7 +130,7 @@ const TrackingShopDetails = enhance((props) => {
 
     const image = _.map(_.get(data, 'images'), (item) => {
         const isPrimary = _.get(item, 'isPrimary')
-        const url = _.get(item, 'image')
+        const url = _.get(item, 'file')
         const imageStyle = {
             background: 'url(' + url + ') no-repeat center center'
         }
