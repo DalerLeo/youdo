@@ -117,6 +117,7 @@ const enhance = compose(
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center',
+                boxSizing: 'content-box',
                 position: 'absolute',
                 top: '0',
                 left: '-30px',

@@ -139,7 +139,7 @@ export const orderTransactionFetchAction = (orderId) => {
     }
 
     const payload = axios()
-        .get(API.ORDER_TRANSACTION, {params})
+        .get(sprintf(API.ORDER_PAYMENTS, orderId), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -148,7 +148,7 @@ export const orderTransactionFetchAction = (orderId) => {
         })
 
     return {
-        type: actionTypes.ORDER_TRANSACTION,
+        type: actionTypes.ORDER_PAYMENTS,
         payload
     }
 }

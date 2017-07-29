@@ -46,7 +46,7 @@ const enhance = compose(
         },
         loader: {
             width: '100%',
-            height: '150px',
+            height: '100%',
             background: '#fff',
             justifyContent: 'center',
             alignItems: 'center',
@@ -374,7 +374,11 @@ const StatSalesGridList = enhance((props) => {
                         <StatSideMenu currentUrl={ROUTES.STATISTICS_SALES_URL}/>
                     </div>
                     <div className={classes.rightPanel}>
-                        <div className={classes.wrapper}>
+                        {loading
+                        ? <div className={classes.loader}>
+                            <CircularProgress size={70} thickness={4} />
+                        </div>
+                        : <div className={classes.wrapper}>
                             <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                                 <div className={classes.filter}>
                                     <Field
@@ -415,14 +419,9 @@ const StatSalesGridList = enhance((props) => {
                             </div>
                             <div className={classes.tableWrapper}>
                                 {headers}
-
-                                {loading
-                                    ? <div className={classes.loader}>
-                                        <CircularProgress size={70} thickness={4} />
-                                    </div>
-                                    : list}
+                                {list}
                             </div>
-                        </div>
+                        </div>}
                     </div>
                 </Row>
             </div>

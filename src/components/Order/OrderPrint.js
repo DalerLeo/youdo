@@ -28,8 +28,7 @@ const enhance = compose(
             width: '100%',
             height: '100%',
             zIndex: '999',
-            overflowY: 'auto',
-            boxSizing: 'border-box'
+            overflowY: 'auto'
         },
         closeBtn: {
             position: 'absolute !important',

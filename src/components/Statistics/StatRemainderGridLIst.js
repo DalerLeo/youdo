@@ -188,6 +188,8 @@ const StatRemainderGridList = enhance((props) => {
         onSubmit
     } = props
 
+    const listLoading = _.get(listData, 'listLoading')
+
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -248,7 +250,11 @@ const StatRemainderGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_REMAINDER_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    <div className={classes.wrapper}>
+                    {listLoading
+                    ? <div style={{textAlign: 'center'}}>
+                        <CircularProgress size={40} thickness={4} />
+                    </div>
+                    : <div className={classes.wrapper}>
                         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                             <div className={classes.filter}>
                                 <Field
@@ -285,13 +291,9 @@ const StatRemainderGridList = enhance((props) => {
                         <Pagination filter={filter}/>
                         <div className={classes.tableWrapper}>
                             {headers}
-                            {_.get(listData, 'listLoading')
-                                ? <div style={{textAlign: 'center'}}>
-                                    <CircularProgress size={40} thickness={4} />
-                                </div>
-                                : list}
+                            {list}
                         </div>
-                    </div>
+                    </div>}
                 </div>
             </Row>
         </div>

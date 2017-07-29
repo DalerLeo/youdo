@@ -111,6 +111,7 @@ export const ORDER_CREATE = `/${ORDER}/`
 export const ORDER_RETURN = '/sales/order_return/'
 export const ORDER_RETURN_LIST = '/sales/order_return/%d/'
 export const ORDER_TRANSACTION = '/sales/client_transaction/'
+export const ORDER_PAYMENTS = '/sales/payments_list/%d/'
 
 export const ACCEPT_CLIENT_TRANSACTION = 'finance/accept_client_transaction'
 
@@ -314,6 +315,8 @@ export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
 export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
 export const STAT_REMAINDER_LIST = `/${REMAINDER}/all_balances/`
 export const STAT_REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
+export const STATISTICS_CASHBOX_LIST = `/${CASHBOX}/`
+export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 
 export const STOCK_RECEIVE = 'stock/supply'
 export const STOCK_HISTORY = 'stock/barcode_history'

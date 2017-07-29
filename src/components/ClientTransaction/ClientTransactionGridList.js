@@ -82,7 +82,6 @@ const enhance = compose(
             display: 'flex',
             padding: '20px 30px',
             margin: '0',
-            boxSizing: 'border-box',
             cursor: 'pointer',
             justifyContent: 'space-between',
             position: 'relative'

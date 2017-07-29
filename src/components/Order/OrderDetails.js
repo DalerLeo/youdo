@@ -90,10 +90,7 @@ const enhance = compose(
         },
         content: {
             display: 'flex',
-            width: '100%',
-            '& > div': {
-                boxSizing: 'border-box'
-            }
+            width: '100%'
         },
         padding: {
             padding: '20px 30px'
@@ -204,7 +201,7 @@ const OrderDetails = enhance((props) => {
     const deliveryPrice = _.toNumber(_.get(data, 'deliveryPrice'))
     const discountPrice = _.toNumber(_.get(data, 'discountPrice'))
     const totalPrice = _.toNumber(_.get(data, 'totalPrice'))
-    const totalPaid = _.get(data, 'totalPaid')
+    const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const paymentType = _.get(data, 'paymentType')
     const totalBalance = _.get(data, 'totalBalance')
     const discount = (discountPrice / (discountPrice + totalPrice)) * percent

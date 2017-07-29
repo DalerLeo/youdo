@@ -89,6 +89,7 @@ const enhance = compose(
         },
         background: {
             background: '#f1f5f8',
+            boxSizing: 'content-box',
             fontWeight: '600',
             padding: '20px 30px',
             margin: '0 -30px',

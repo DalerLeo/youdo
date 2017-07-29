@@ -79,7 +79,6 @@ const enhance = compose(
             fontWeight: '600',
             borderBottom: '1px #efefef solid',
             margin: '0',
-            boxSizing: 'border-box',
             padding: '0 30px'
         },
         info: {
@@ -93,13 +92,11 @@ const enhance = compose(
         content: {
             width: '100%',
             padding: '0 30px 10px',
-            boxSizing: 'border-box',
             '& > .row': {
                 margin: '0',
                 padding: '15px 0',
                 '& > div': {
-                    padding: '0 0.5rem',
-                    boxSizing: 'border-box'
+                    padding: '0 0.5rem'
                 },
                 '& > div:first-child': {
                     display: 'flex',

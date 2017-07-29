@@ -74,7 +74,6 @@ const enhance = compose(
             backgroundColor: '#fff',
             color: '#333',
             padding: '20px 30px',
-            boxSizing: 'border-box',
             marginBottom: '15px',
             '&>div': {
                 marginBottom: '10px',

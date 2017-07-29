@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import {Row, Col} from 'react-flexbox-grid'
 import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
@@ -19,6 +20,7 @@ import DeleteIcon from '../DeleteIcon/index'
 import ProductTypeSearchField from './Product/ProductTypeSearchField'
 import ProductCustomSearchField from './Supply/ProductCustomSearchField'
 import TextField from './Basic/TextField'
+import Check from 'material-ui/svg-icons/navigation/check'
 
 const enhance = compose(
     injectSheet({
@@ -110,13 +112,13 @@ const enhance = compose(
         background: {
             display: 'flex',
             padding: '10px',
+            margin: '0',
             marginTop: '5px',
             backgroundColor: '#f1f5f8',
             position: 'relative',
             zIndex: '2',
             '& > div': {
                 marginTop: '-2px !important',
-                marginRight: '20px',
                 width: '30%'
             },
             '& > button > div > span': {
@@ -189,29 +191,40 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                         onTouchTap={() => dispatch({open: !state.open})}
                     />
                 </div>
-                {state.open && <div className={classes.background}>
-                    <Field
-                        label="Отфильтровать по типу товара"
-                        name="type"
-                        component={ProductTypeSearchField}
-                        className={classes.inputFieldCustom}
-                        xs={3}/>
-                    <Field
-                        label="Наименование товара"
-                        name="product"
-                        component={ProductCustomSearchField}
-                        className={classes.inputFieldCustom}
-                        xs={3}
-                    />
-                    <Field
-                        label="Кол-во"
-                        name="amount"
-                        component={TextField}
-                        className={classes.inputFieldCustom}
-                        xs={3}
-                    />
-                    <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
-                </div>}
+                {state.open && <Row className={classes.background}>
+                    <Col xs={4}>
+                        <Field
+                            label="Тип товара"
+                            name="type"
+                            component={ProductTypeSearchField}
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}
+                            />
+                    </Col>
+                    <Col xs={5}>
+                        <Field
+                            label="Наименование"
+                            name="product"
+                            component={ProductCustomSearchField}
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}
+                        />
+                    </Col>
+                    <Col xs={2}>
+                        <Field
+                            label="Кол-во"
+                            name="amount"
+                            component={TextField}
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}
+                        />
+                    </Col>
+                    <Col xs={1}>
+                        <IconButton onTouchTap={handleAdd} disableTouchRipple={true}>
+                            <Check color="#12aaeb"/>
+                        </IconButton>
+                    </Col>
+                </Row>}
             </div>
             {error && <div className={classes.error}>{error}</div>}
             {!_.isEmpty(products) ? <div className={classes.table}>

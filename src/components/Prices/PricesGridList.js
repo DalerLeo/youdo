@@ -126,7 +126,7 @@ const PricesGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const beginDate = moment(_.get(_.get(item, 'beginDate'), 'name')).format('YY:MM:DD')
         const tillDate = _.get(item, 'tillDate') || 'Не указано'
-        const discount = numberFormat(_.get(item, 'discount'), '%')
+        const discount = numberFormat(_.get(item, 'discount'))
 
         return (
             <Row key={id} style={{cursor: 'pointer'}} onTouchTap = {() => { listData.handleClickDetail(id) }}>
@@ -134,7 +134,7 @@ const PricesGridList = enhance((props) => {
                 <Col xs={5} >{name}</Col>
                 <Col xs={2}>{beginDate}</Col>
                 <Col xs={2}>{tillDate}</Col>
-                <Col xs={2}>{discount}</Col>
+                <Col xs={2}>{discount}%</Col>
             </Row>
         )
     })
@@ -150,7 +150,7 @@ const PricesGridList = enhance((props) => {
             <SubMenu url={ROUTES.PRICES_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить поставку">
+                <Tooltip position="left" text="Добавить акцию">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}

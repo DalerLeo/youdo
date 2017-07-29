@@ -132,6 +132,7 @@ const enhance = compose(
         details: {
             display: 'flex',
             justifyContent: 'space-between',
+            boxSizing: 'content-box',
             alignItems: 'center',
             width: '100%',
             background: '#f2f5f8',

@@ -38,6 +38,15 @@ const enhance = compose(
             height: 'calc(100% - 32px)',
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
+        loader: {
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
         wrapper: {
             height: 'calc(100% - 40px)',
             padding: '20px 30px',
@@ -253,6 +262,7 @@ const StatDebtorsGridList = enhance((props) => {
         handleOpenCloseDetail,
         getDocument
     } = props
+
     const iconStyle = {
         icon: {
             color: '#5d6474',
@@ -265,6 +275,8 @@ const StatDebtorsGridList = enhance((props) => {
             padding: 0
         }
     }
+
+    const listLoading = _.get(listData, 'listLoading')
 
     const headers = (
         <Row className={classes.headers}>
@@ -361,7 +373,11 @@ const StatDebtorsGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_DEBTORS_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    <div className={classes.wrapper}>
+                    {listLoading
+                    ? <div className={classes.loader}>
+                        <CircularProgress size={40} thickness={4} />
+                    </div>
+                    : <div className={classes.wrapper}>
                         <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
                             <div className={classes.filter}>
                                 <Field
@@ -380,7 +396,7 @@ const StatDebtorsGridList = enhance((props) => {
                                 </IconButton>
                             </div>
                             <a className={classes.excel}
-                               onTouchTap = {getDocument.handleGetDocument}>
+                               onClick = {getDocument.handleGetDocument}>
                                 <Excel color="#fff"/> <span>Excel</span>
                             </a>
                         </form>
@@ -404,13 +420,9 @@ const StatDebtorsGridList = enhance((props) => {
                         </div>
                         <div className={classes.tableWrapper}>
                             {headers}
-                            {_.get(listData, 'listLoading')
-                                ? <div style={{textAlign: 'center'}}>
-                                    <CircularProgress size={40} thickness={4} />
-                                </div>
-                                : list}
+                            {list}
                         </div>
-                    </div>
+                    </div>}
                 </div>
             </Row>
         </div>

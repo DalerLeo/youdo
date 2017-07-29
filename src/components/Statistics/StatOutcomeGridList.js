@@ -33,7 +33,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: 'calc(100% - 200px)',
+            height: '100%',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -372,60 +372,60 @@ const StatOutcomeGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_OUTCOME_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    <div className={classes.wrapper}>
-                        <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                            <div className={classes.filter}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="date"
-                                    component={DateToDateField}
-                                    label="Диапазон дат"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="client"
-                                    component={ClientSearchField}
-                                    label="Клиенты"
-                                    fullWidth={true}/>
+                    {listLoading
+                        ? <div className={classes.loader}>
+                            <CircularProgress size={40} thickness={4}/>
+                        </div>
+                        : <div className={classes.wrapper}>
+                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+                                <div className={classes.filter}>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="date"
+                                        component={DateToDateField}
+                                        label="Диапазон дат"
+                                        fullWidth={true}/>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="client"
+                                        component={ClientSearchField}
+                                        label="Клиенты"
+                                        fullWidth={true}/>
 
-                                <IconButton
-                                    className={classes.searchButton}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    type="submit">
-                                    <Search/>
-                                </IconButton>
-                            </div>
-                            <a className={classes.excel}>
-                                <Excel color="#fff" onTouchTap={() => { getDocument.handleGetDocument() }}/>
-                                <span>Excel</span>
-                            </a>
-                        </form>
-                        <Row className={classes.diagram}>
-                            <Col xs={3} className={classes.salesSummary}>
-                                <div>Сумма продаж за период</div>
-                                <div>{numberFormat(sum)} {primaryCurrency}</div>
-                            </Col>
-                            <Col xs={9}>
-                                <ReactHighcharts config={config}/>
-                            </Col>
-                        </Row>
-                        <div className={classes.pagination}>
-                            <div><b>История заказов</b></div>
-                            <Pagination filter={filter}/>
-                        </div>
-                        {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
-                            <div>По вашему запросу ничего не найдено</div>
-                        </div>
-                        : <div className={classes.tableWrapper}>
-                            {headers}
-                            {listLoading
-                                ? <div className={classes.loader}>
-                                    <CircularProgress size={40} thickness={4}/>
+                                    <IconButton
+                                        className={classes.searchButton}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        type="submit">
+                                        <Search/>
+                                    </IconButton>
                                 </div>
-                                : list}
+                                <a className={classes.excel}>
+                                    <Excel color="#fff" onTouchTap={() => { getDocument.handleGetDocument() }}/>
+                                    <span>Excel</span>
+                                </a>
+                            </form>
+                            <Row className={classes.diagram}>
+                                <Col xs={3} className={classes.salesSummary}>
+                                    <div>Сумма продаж за период</div>
+                                    <div>{numberFormat(sum)} {primaryCurrency}</div>
+                                </Col>
+                                <Col xs={9}>
+                                    <ReactHighcharts config={config}/>
+                                </Col>
+                            </Row>
+                            <div className={classes.pagination}>
+                                <div><b>История заказов</b></div>
+                                <Pagination filter={filter}/>
+                            </div>
+                            {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                                <div>По вашему запросу ничего не найдено</div>
+                            </div>
+                                : <div className={classes.tableWrapper}>
+                                    {headers}
+                                    {list}
+                                </div>}
                         </div>}
-                    </div>
                 </div>
             </Row>
         </div>

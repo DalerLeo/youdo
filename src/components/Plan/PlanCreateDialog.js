@@ -182,7 +182,6 @@ const enhance = compose(
         },
         agentItem: {
             background: '#fff',
-            boxSizing: 'border-box',
             height: '42px',
             width: '142px',
             display: 'flex',

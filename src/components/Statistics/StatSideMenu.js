@@ -59,7 +59,8 @@ const StatSideMenu = enhance((props) => {
                 {name: 'Доход', url: ROUTES.STATISTICS_INCOME_URL},
                 {name: 'Расход', url: ROUTES.STATISTICS_OUTCOME_URL},
                 {name: 'Задолжники', url: ROUTES.STATISTICS_DEBTORS_URL},
-                {name: 'Расходы по категориям', url: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL}
+                {name: 'Расходы по категориям', url: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL},
+                {name: 'Кассы', url: ROUTES.STATISTICS_CASHBOX_URL}
             ]
         },
         {
