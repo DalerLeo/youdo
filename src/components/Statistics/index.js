@@ -9,7 +9,7 @@ import StatOutcomeGridList from './StatOutcomeGridList'
 import StatDebtorsGridList from './StatDebtorsGridList'
 import StatOutcomeCategoryGridList from './StatOutcomeCategoryGridList'
 import StatRemainderGridList from './StatRemainderGridLIst'
-import StatCashboxGridList from './StatCashboxGridLIst'
+import StatCashboxGridList from './StatCashboxGridList'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_REMAINDER_DIALOG_OPEN = 'openStatAgentDialog'
