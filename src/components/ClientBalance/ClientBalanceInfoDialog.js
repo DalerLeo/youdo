@@ -96,7 +96,7 @@ const enhance = compose(
                 margin: '0',
                 padding: '15px 0',
                 '& > div': {
-                    padding: '0 0.5rem',
+                    padding: '0 0.5rem'
                 },
                 '& > div:first-child': {
                     display: 'flex',
