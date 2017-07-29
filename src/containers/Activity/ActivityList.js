@@ -9,7 +9,12 @@ import filterHelper from '../../helpers/filter'
 import {ORDER_DETAILS, ActivityWrapper, DAY, DATE} from '../../components/Activity'
 import {
     activityOrderListFetchAction,
-    activityOrderItemFetchAction
+    activityOrderItemFetchAction,
+    activityVisitListFetchAction,
+    activityReportListFetchAction,
+    activityReturnListFetchAction,
+    activityPaymentListFetchAction,
+    activityDeliveryListFetchAction
 } from '../../actions/activity'
 
 const ZERO = 0
@@ -23,6 +28,16 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const orderList = _.get(state, ['activity', 'orderList', 'data'])
         const orderListLoading = _.get(state, ['activity', 'orderList', 'loading'])
+        const visitList = _.get(state, ['activity', 'visitList', 'data'])
+        const visitListLoading = _.get(state, ['activity', 'visitList', 'loading'])
+        const reportList = _.get(state, ['activity', 'reportList', 'data'])
+        const reportListLoading = _.get(state, ['activity', 'reportList', 'loading'])
+        const returnList = _.get(state, ['activity', 'returnList', 'data'])
+        const returnListLoading = _.get(state, ['activity', 'returnList', 'loading'])
+        const paymentList = _.get(state, ['activity', 'paymentList', 'data'])
+        const paymentListLoading = _.get(state, ['activity', 'paymentList', 'loading'])
+        const deliveryList = _.get(state, ['activity', 'deliveryList', 'data'])
+        const deliveryListLoading = _.get(state, ['activity', 'deliveryList', 'loading'])
         const orderItem = _.get(state, ['activity', 'orderItem', 'data'])
         const orderItemLoading = _.get(state, ['activity', 'orderItem', 'loading'])
         const createForm = _.get(state, ['form', 'ActivityCreateForm', 'values'])
@@ -36,6 +51,16 @@ const enhance = compose(
             orderListLoading,
             orderItem,
             orderItemLoading,
+            visitList,
+            visitListLoading,
+            reportList,
+            reportListLoading,
+            returnList,
+            returnListLoading,
+            paymentList,
+            paymentListLoading,
+            deliveryList,
+            deliveryListLoading,
             createForm,
             curDate
         }
@@ -47,6 +72,11 @@ const enhance = compose(
         return (props.curDate !== nextProps.curDate) || (prevDay !== nextDay)
     }, ({dispatch, filter}) => {
         dispatch(activityOrderListFetchAction(filter))
+        dispatch(activityVisitListFetchAction(filter))
+        dispatch(activityReportListFetchAction(filter))
+        dispatch(activityReturnListFetchAction(filter))
+        dispatch(activityPaymentListFetchAction(filter))
+        dispatch(activityDeliveryListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -100,6 +130,16 @@ const ActivityList = enhance((props) => {
         orderListLoading,
         orderItem,
         orderItemLoading,
+        visitList,
+        visitListLoading,
+        reportList,
+        reportListLoading,
+        returnList,
+        returnListLoading,
+        paymentList,
+        paymentListLoading,
+        deliveryList,
+        deliveryListLoading,
         location,
         layout
     } = props
@@ -123,6 +163,31 @@ const ActivityList = enhance((props) => {
         orderListLoading
     }
 
+    const visitlistData = {
+        data: _.get(visitList, 'results'),
+        visitListLoading
+    }
+
+    const reportlistData = {
+        data: _.get(reportList, 'results'),
+        reportListLoading
+    }
+
+    const returnlistData = {
+        data: _.get(returnList, 'results'),
+        returnListLoading
+    }
+
+    const paymentlistData = {
+        data: _.get(paymentList, 'results'),
+        paymentListLoading
+    }
+
+    const deliverylistData = {
+        data: _.get(deliveryList, 'results'),
+        deliveryListLoading
+    }
+
     const calendar = {
         selectedDay: selectedDay,
         selectedDate: selectedDate,
@@ -136,6 +201,11 @@ const ActivityList = enhance((props) => {
                 filter={filter}
                 orderlistData={orderlistData}
                 orderDetails={orderDetails}
+                visitlistData={visitlistData}
+                reportlistData={reportlistData}
+                returnlistData={returnlistData}
+                paymentlistData={paymentlistData}
+                deliverylistData={deliverylistData}
                 handleClickDay={props.handleClickDay}
                 calendar={calendar}
             />

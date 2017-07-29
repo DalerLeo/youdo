@@ -350,5 +350,11 @@ export const POSITION_ITEM = `/${POSITION}/%d/`
 export const POSITION_PRIMARY = 'currency_primary'
 export const POSITION_RATE = 'finance/currency_rate/'
 
-export const ACTIVITY_ORDER_LIST = `${ORDER}/`
+export const ACTIVITY = 'market/plan_tasks'
+export const ACTIVITY_ORDER_LIST = `${ACTIVITY}/`
 export const ACTIVITY_ORDER_ITEM = `${ORDER}/%d`
+export const ACTIVITY_VISIT_LIST = `/${ACTIVITY}/`
+export const ACTIVITY_REPORT_LIST = `/${ACTIVITY}/`
+export const ACTIVITY_ORDER_RETURN_LIST = `/${ACTIVITY}/`
+export const ACTIVITY_PAYMENT_LIST = `/${ACTIVITY}/`
+export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
