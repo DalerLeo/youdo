@@ -281,7 +281,7 @@ const StatSalesGridList = enhance((props) => {
         },
         tooltip: {
             shared: true,
-            valueSuffix: ' %',
+            valueSuffix: ' ' + getConfig('PRIMARY_CURRENCY'),
             backgroundColor: '#363636',
             style: {
                 color: '#fff'
@@ -292,14 +292,14 @@ const StatSalesGridList = enhance((props) => {
             shadow: false,
             useHTML: true,
             crosshairs: true,
-            pointFormat: '{series.name}: <b>{point.y}</b><br/>в отношении к BoM<br/>'
+            pointFormat: '{series.name}: <b>{point.y}</b>'
         },
         series: [{
             marker: {
                 enabled: false,
                 symbol: 'circle'
             },
-            name: 'Эффективность',
+            name: 'Сумма',
             data: value,
             color: '#6cc6de'
 
