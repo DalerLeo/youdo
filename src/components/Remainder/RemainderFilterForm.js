@@ -39,6 +39,7 @@ const enhance = compose(
             display: 'flex',
             backgroundColor: '#efefef',
             position: 'absolute',
+            width: '100%',
             padding: '0 30px',
             height: '48px',
             marginLeft: '-30px',

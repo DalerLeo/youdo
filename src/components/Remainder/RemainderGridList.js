@@ -6,7 +6,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
-import {Link} from 'react-router'
+import {Link, hashHistory} from 'react-router'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -153,15 +153,17 @@ const enhance = compose(
             }
         },
         filterHolder: {
-            width: '150px',
+            width: '260px',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            position: 'relative'
         },
         sendButtonWrapper: {
             position: 'absolute',
             top: '10px',
             right: '0',
-            marginBottom: '0px'
+            marginBottom: '0px',
+            zIndex: '999'
         },
         closeDetail: {
             position: 'absolute',
@@ -219,6 +221,32 @@ const actionIconStyle = {
 
     }
 }
+
+const headerItems = [
+    {
+        name: 'product',
+        sorting: true,
+        title: 'Товар',
+        xs: 3
+    },
+    {
+        name: 'productType',
+        sorting: true,
+        title: 'Тип товара',
+        xs: 3
+    },
+    {
+        sorting: false,
+        title: 'Всего товаров',
+        xs: 3
+    },
+    {
+        sorting: false,
+        title: 'Бракованные товары',
+        xs: 2
+    }
+]
+
 const RemainderGridList = enhance((props) => {
     const {
         detailData,
@@ -236,17 +264,31 @@ const RemainderGridList = enhance((props) => {
 
     const listLoading = _.get(listData, 'listLoading')
     const detailId = _.get(detailData, 'id')
-    const listHeader = (
-        <div className={classes.headers}>
-            <Row>
-                <Col xs={3}>Товар</Col>
-                <Col xs={3}>Тип товара</Col>
-                <Col xs={3} style={{textAlign: 'left'}}>Всего товаров</Col>
-                <Col xs={2} style={{textAlign: 'left'}}>Браконный товары</Col>
-                <Col xs={1} style={{display: 'none'}}>|</Col>
-            </Row>
-        </div>
-    )
+
+    const listHeader = _.map(headerItems, (item, index) => {
+        const name = _.get(item, 'name')
+        const title = _.get(item, 'title')
+        const size = _.get(item, 'xs')
+        const sorting = _.get(item, 'sorting')
+
+        if (sorting) {
+            return (
+                <Col
+                    key={index}
+                    xs={size}
+                    style={{cursor: 'pointer'}}
+                    onClick={() => hashHistory.push(filter.sortingURL(name))}>
+                    {title}
+                </Col>
+            )
+        }
+
+        return (
+            <Col key={index} xs={size}>
+                {title}
+            </Col>
+        )
+    })
     const search = (
             <form onSubmit={handleSubmit(searchSubmit)} className={classes.search}>
                 <Field
@@ -386,7 +428,11 @@ const RemainderGridList = enhance((props) => {
                     <Pagination filter={filter}/>
                 </div>
             </Paper>
-            {listHeader}
+            <div className={classes.headers}>
+                <Row>
+                    {listHeader}
+                </Row>
+            </div>
             {listLoading ? listLoader : list }
 
             <RemainderTransferDialog
