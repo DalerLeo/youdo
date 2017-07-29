@@ -355,6 +355,7 @@ export const ACTIVITY_ORDER_LIST = `${ACTIVITY}/`
 export const ACTIVITY_ORDER_ITEM = `${ORDER}/%d`
 export const ACTIVITY_VISIT_LIST = `/${ACTIVITY}/`
 export const ACTIVITY_REPORT_LIST = `/${ACTIVITY}/`
+export const ACTIVITY_REPORT_SHOW_IMAGE = 'main/file/%d/'
 export const ACTIVITY_ORDER_RETURN_LIST = `/${ACTIVITY}/`
 export const ACTIVITY_PAYMENT_LIST = `/${ACTIVITY}/`
 export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`

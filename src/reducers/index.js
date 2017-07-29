@@ -344,6 +344,7 @@ const rootReducer = combineReducers({
         orderItem: createThunkReducer(actionTypes.ACTIVITY_ORDER_ITEM),
         visitList: createThunkReducer(actionTypes.ACTIVITY_VISIT_LIST),
         reportList: createThunkReducer(actionTypes.ACTIVITY_REPORT_LIST),
+        reportImage: createThunkReducer(actionTypes.ACTIVITY_REPORT_SHOW_IMAGE),
         returnList: createThunkReducer(actionTypes.ACTIVITY_ORDER_RETURN_LIST),
         paymentList: createThunkReducer(actionTypes.ACTIVITY_PAYMENT_LIST),
         deliveryList: createThunkReducer(actionTypes.ACTIVITY_DELIVERY_LIST)

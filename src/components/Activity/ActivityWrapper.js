@@ -10,13 +10,14 @@ import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import NotFound from '../Images/not-found.png'
 import ActivityCalendar from './ActivityCalendar'
+import ActivityOrderDetails from '../Statistics/StatSaleDialog'
+import ReportImage from '../Product/ProductShowPhotoDialog'
 import ActivityOrder from './ActivityOrder'
 import ActivityVisit from './ActivityVisit'
 import ActivityReport from './ActivityReport'
 import ActivityReturn from './ActivityReturn'
 import ActivityPayment from './ActivityPayment'
 import ActivityDelivery from './ActivityDelivery'
-import ActivityOrderDetails from '../Statistics/StatSaleDialog'
 
 const enhance = compose(
     injectSheet({
@@ -154,18 +155,13 @@ const enhance = compose(
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '150px',
-            padding: '185px 0 20px',
+            backgroundSize: '200px',
+            padding: '230px 0 50px',
             width: '300px',
             margin: 'auto',
             textAlign: 'center',
             fontSize: '13px',
-            color: '#999 !important',
-            '& svg': {
-                width: '50px !important',
-                height: '50px !important',
-                color: '#999 !important'
-            }
+            color: '#999 !important'
         }
     })
 )
@@ -177,6 +173,7 @@ const ActivityWrapper = enhance((props) => {
         orderDetails,
         visitlistData,
         reportlistData,
+        reportImageData,
         returnlistData,
         paymentlistData,
         deliverylistData,
@@ -191,6 +188,13 @@ const ActivityWrapper = enhance((props) => {
     const paymentlistLoading = _.get(paymentlistData, 'paymentListLoading')
     const deliverylistLoading = _.get(deliverylistData, 'deliveryListLoading')
 
+    const orderListEmpty = _.isEmpty(_.get(orderlistData, 'data'))
+    const visitListEmpty = _.isEmpty(_.get(visitlistData, 'data'))
+    const reportListEmpty = _.isEmpty(_.get(reportlistData, 'data'))
+    const returnListEmpty = _.isEmpty(_.get(returnlistData, 'data'))
+    const paymentListEmpty = _.isEmpty(_.get(paymentlistData, 'data'))
+    const deliveryListEmpty = _.isEmpty(_.get(deliverylistData, 'data'))
+
     let megaLoading = false
     if (orderlistLoading &&
         visitlistLoading &&
@@ -200,23 +204,28 @@ const ActivityWrapper = enhance((props) => {
         deliverylistLoading) {
         megaLoading = true
     }
+    let emptyQuery = false
+    if (orderListEmpty && visitListEmpty && reportListEmpty && returnListEmpty && paymentListEmpty && deliveryListEmpty) {
+        emptyQuery = true
+    }
 
     const tubeWrapper = (
         <div className={classes.tubeWrapper}>
             <div className={classes.horizontal}>
                 <ActivityOrder
                     orderlistData={orderlistData}
-                    orderDetails={orderDetails} />
+                    orderDetails={orderDetails}/>
                 <ActivityVisit
-                    visitlistData={visitlistData} />
+                    visitlistData={visitlistData}/>
                 <ActivityReport
-                    reportlistData={reportlistData} />
+                    reportImageData={reportImageData}
+                    reportlistData={reportlistData}/>
                 <ActivityReturn
-                    returnListData={returnlistData} />
+                    returnListData={returnlistData}/>
                 <ActivityPayment
-                    paymentlistData={paymentlistData} />
+                    paymentlistData={paymentlistData}/>
                 <ActivityDelivery
-                    deliverylistData={deliverylistData} />
+                    deliverylistData={deliverylistData}/>
             </div>
             <Paper className={classes.horizontalScroll}>
             </Paper>
@@ -236,7 +245,11 @@ const ActivityWrapper = enhance((props) => {
                     ? <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4}/>
                     </div>
-                    : tubeWrapper}
+                    : (!emptyQuery
+                        ? tubeWrapper
+                        : <div className={classes.emptyQuery}>
+                            <div>По вашему запросу ничего не найдено...</div>
+                        </div>)}
             </div>
 
             <ActivityOrderDetails
@@ -244,6 +257,12 @@ const ActivityWrapper = enhance((props) => {
                 loading={orderDetails.orderItemLoading}
                 onClose={orderDetails.handleCloseOrderDetails}
                 detailData={orderDetails}
+            />
+            <ReportImage
+                open={reportImageData.openReportImage}
+                loading={reportImageData.reportImageLoading}
+                onClose={reportImageData.handleCloseReportImage}
+                detailData={reportImageData.imageData}
             />
         </Container>
     )
@@ -262,6 +281,12 @@ ActivityWrapper.PropTypes = {
         handleOpenOrderDetails: PropTypes.func.isRequired,
         handleCloseOrderDetails: PropTypes.func.isRequired,
         data: PropTypes.object
+    }).isRequired,
+    reportImageData: PropTypes.shape({
+        imageData: PropTypes.object.isRequired,
+        openReportImage: PropTypes.bool.isRequired,
+        handleOpenReportImage: PropTypes.func.isRequired,
+        handleCloseReportImage: PropTypes.func.isRequired
     }).isRequired
 }
 

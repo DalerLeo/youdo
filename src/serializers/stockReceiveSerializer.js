@@ -1,4 +1,6 @@
 import _ from 'lodash'
+import {orderingSnakeCase} from '../helpers/serializer'
+
 const ONE = 1
 const ZERO = 0
 const TWO = 2
@@ -42,6 +44,7 @@ export const listFilterSerializer = (data) => {
     const type = (_.toInteger(_.get(defaultData, 'type')) === _.toInteger(ONE)) ? ZERO
                     : (_.toInteger(_.get(defaultData, 'type')) === _.toInteger(TWO)) ? ONE
                         : null
+    const ordering = _.get(data, 'ordering')
     return {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
@@ -52,7 +55,8 @@ export const listFilterSerializer = (data) => {
         'stock': _.get(defaultData, 'stock'),
         'from_date': _.get(defaultData, 'fromDate'),
         'to_date': _.get(defaultData, 'toDate'),
-        'product_type': _.get(defaultData, 'productType')
+        'product_type': _.get(defaultData, 'productType'),
+        'ordering': ordering && orderingSnakeCase(ordering)
 
     }
 }

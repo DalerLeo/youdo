@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
-import {ORDER_DETAILS, ActivityWrapper, DAY, DATE} from '../../components/Activity'
+import {ORDER_DETAILS, ActivityWrapper, DAY, DATE, IMAGE} from '../../components/Activity'
 import {
     activityOrderListFetchAction,
     activityOrderItemFetchAction,
@@ -14,7 +14,8 @@ import {
     activityReportListFetchAction,
     activityReturnListFetchAction,
     activityPaymentListFetchAction,
-    activityDeliveryListFetchAction
+    activityDeliveryListFetchAction,
+    activityReportShowImageAction
 } from '../../actions/activity'
 
 const ZERO = 0
@@ -32,6 +33,8 @@ const enhance = compose(
         const visitListLoading = _.get(state, ['activity', 'visitList', 'loading'])
         const reportList = _.get(state, ['activity', 'reportList', 'data'])
         const reportListLoading = _.get(state, ['activity', 'reportList', 'loading'])
+        const reportImage = _.get(state, ['activity', 'reportImage', 'data'])
+        const reportImageLoading = _.get(state, ['activity', 'reportImage', 'loading'])
         const returnList = _.get(state, ['activity', 'returnList', 'data'])
         const returnListLoading = _.get(state, ['activity', 'returnList', 'loading'])
         const paymentList = _.get(state, ['activity', 'paymentList', 'data'])
@@ -55,6 +58,8 @@ const enhance = compose(
             visitListLoading,
             reportList,
             reportListLoading,
+            reportImage,
+            reportImageLoading,
             returnList,
             returnListLoading,
             paymentList,
@@ -90,6 +95,17 @@ const enhance = compose(
         }
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const prevImage = _.get(props, ['location', 'query', IMAGE])
+        const nextImage = _.get(nextProps, ['location', 'query', IMAGE])
+        return prevImage !== nextImage && nextImage > ZERO
+    }, ({dispatch, location}) => {
+        const imageId = _.toInteger(_.get(location, ['query', IMAGE]))
+        if (imageId > ZERO) {
+            dispatch(activityReportShowImageAction(imageId))
+        }
+    }),
+
     withHandlers({
         handlePrevMonth: props => () => {
             const {location: {pathname}, filter, curDate} = props
@@ -119,6 +135,16 @@ const enhance = compose(
         handleCloseOrderDetails: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_DETAILS]: ZERO})})
+        },
+
+        handleOpenReportImage: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[IMAGE]: id})})
+        },
+
+        handleCloseReportImage: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[IMAGE]: ZERO})})
         }
     })
 )
@@ -134,6 +160,8 @@ const ActivityList = enhance((props) => {
         visitListLoading,
         reportList,
         reportListLoading,
+        reportImage,
+        reportImageLoading,
         returnList,
         returnListLoading,
         paymentList,
@@ -145,6 +173,7 @@ const ActivityList = enhance((props) => {
     } = props
 
     const openOrderDetails = _.toInteger(_.get(location, ['query', ORDER_DETAILS]) || ZERO) > ZERO
+    const openReportImage = _.toInteger(_.get(location, ['query', IMAGE]) || ZERO) > ZERO
     const orderId = _.toInteger(_.get(location, ['query', ORDER_DETAILS]))
     const selectedDay = _.toInteger(_.get(location, ['query', DAY]) || today)
     const selectedDate = _.get(location, ['query', DATE]) || currentDate
@@ -156,6 +185,16 @@ const ActivityList = enhance((props) => {
         data: orderItem,
         handleOpenOrderDetails: props.handleOpenOrderDetails,
         handleCloseOrderDetails: props.handleCloseOrderDetails
+    }
+
+    const reportImageData = {
+        imageData: {
+            data: {image: reportImage}
+        },
+        reportImageLoading,
+        openReportImage,
+        handleOpenReportImage: props.handleOpenReportImage,
+        handleCloseReportImage: props.handleCloseReportImage
     }
 
     const orderlistData = {
@@ -203,6 +242,7 @@ const ActivityList = enhance((props) => {
                 orderDetails={orderDetails}
                 visitlistData={visitlistData}
                 reportlistData={reportlistData}
+                reportImageData={reportImageData}
                 returnlistData={returnlistData}
                 paymentlistData={paymentlistData}
                 deliverylistData={deliverylistData}
