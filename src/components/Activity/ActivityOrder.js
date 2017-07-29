@@ -9,6 +9,7 @@ import getConfig from '../../helpers/getConfig'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
+import InfiniteScroll from 'react-infinite-scroller'
 
 const enhance = compose(
     injectSheet({
@@ -157,9 +158,13 @@ const ActivityOrder = enhance((props) => {
     return (
         <div className={classes.block}>
             <div className={classes.blockTitle}>Cделки</div>
-            <div className={classes.blockItems}>
+            <InfiniteScroll
+                pageStart={0}
+                loader={<div className={classes.loader}><CircularProgress size={30} thickness={3}/></div>}
+                useWindow={false}
+                className={classes.blockItems}>
                 {orderList}
-            </div>
+            </InfiniteScroll>
         </div>
     )
 })

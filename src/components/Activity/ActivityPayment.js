@@ -7,6 +7,7 @@ import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
+import InfiniteScroll from 'react-infinite-scroller'
 
 const enhance = compose(
     injectSheet({
@@ -18,6 +19,11 @@ const enhance = compose(
             zIndex: '999',
             justifyContent: 'center',
             display: 'flex'
+        },
+        infiniteLoader: {
+            extend: 'loader',
+            height: '100px',
+            marginRight: '0'
         },
         padding: {
             padding: '20px 30px'
@@ -141,12 +147,23 @@ const ActivityPayment = enhance((props) => {
             </div>
         )
     }
+    const loadMore = () => {
+        return true
+    }
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Сбор денег</div>
+            <div className={classes.blockTitle}>Визиты</div>
             <div className={classes.blockItems}>
-                {paymentList}
+                <InfiniteScroll
+                    pageStart={500}
+                    hasMore={true}
+                    loadMore={loadMore}
+                    loader={<div className={classes.infiniteLoader}><CircularProgress size={30} thickness={3}/></div>}
+                    useWindow={false}
+                    threshold={500}>
+                    {paymentList}
+                </InfiniteScroll>
             </div>
         </div>
     )
