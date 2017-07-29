@@ -48,8 +48,7 @@ const enhance = compose(
 
 const ProductShowPhotoDialog = enhance((props) => {
     const {open, loading, onClose, classes, detailData} = props
-    const items = _.get(detailData, 'data')
-    const image = _.get(items, ['image', 'file'])
+    const image = _.get(detailData, ['data', 'image', 'file'])
     return (
         <Dialog
             modal={true}

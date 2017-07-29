@@ -83,6 +83,22 @@ export const activityReportListFetchAction = (filter) => {
         payload
     }
 }
+export const activityReportShowImageAction = (id) => {
+    const params = {'thumbnail_type': 'large'}
+    const payload = axios()
+        .get(sprintf(API.ACTIVITY_REPORT_SHOW_IMAGE, id), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ACTIVITY_REPORT_SHOW_IMAGE,
+        payload
+    }
+}
 
 // ORDER_RETURN
 

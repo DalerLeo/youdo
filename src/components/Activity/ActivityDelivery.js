@@ -7,6 +7,7 @@ import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet({
@@ -112,14 +113,14 @@ const ActivityDelivery = enhance((props) => {
         deliverylistData,
         classes
     } = props
-
     const deliverylistLoading = _.get(deliverylistData, 'deliveryListLoading')
     const deliveryList = _.map(_.get(deliverylistData, 'data'), (item) => {
-        const id = _.get(item, ['clientTransaction', 'id'])
-        const currency = _.get(item, ['clientTransaction', 'currency', 'name'])
-        const amount = numberFormat(_.get(item, ['clientTransaction', 'amount']), currency)
-        const name = _.get(item, ['clientTransaction', 'user', 'firstName']) + ' ' + _.get(item, ['clientTransaction', 'user', 'secondName'])
-        const createdDate = dateFormat(_.get(item, ['clientTransaction', 'createdDate']))
+        const id = _.get(item, ['order', 'id'])
+        const currentCurrency = getConfig('PRIMARY_CURRENCY')
+        const amount = numberFormat(_.get(item, ['order', 'totalPrice']), currentCurrency)
+        const name = _.get(item, ['order', 'user', 'firstName']) + ' ' + _.get(item, ['order', 'user', 'secondName'])
+        const market = _.get(item, ['order', 'market', 'name'])
+        const createdDate = dateFormat(_.get(item, ['order', 'createdDate']))
 
         return (
             <Paper key={id} zDepth={1} className={classes.tube}>
@@ -127,7 +128,7 @@ const ActivityDelivery = enhance((props) => {
                     <span>{name}</span>
                 </div>
                 <div className={classes.tubeTime}>{createdDate}</div>
-                <div className={classes.tubeInfo}>Принято {amount} с магазина "Магазин"</div>
+                <div className={classes.tubeInfo}>Доставлено с магазина "{market}" на сумму {amount}</div>
             </Paper>
         )
     })
@@ -144,7 +145,7 @@ const ActivityDelivery = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Сбор денег</div>
+            <div className={classes.blockTitle}>Доставки</div>
             <div className={classes.blockItems}>
                 {deliveryList}
             </div>

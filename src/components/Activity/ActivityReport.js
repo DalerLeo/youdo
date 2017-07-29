@@ -109,6 +109,7 @@ const dateFormat = (date, defaultText) => {
 const ActivityReport = enhance((props) => {
     const {
         reportlistData,
+        reportImageData,
         classes
     } = props
 
@@ -119,6 +120,8 @@ const ActivityReport = enhance((props) => {
         const comment = _.get(item, ['report', 'comment'])
         const beforeImg = _.get(item, ['report', 'beforeImg', 'file'])
         const afterImg = _.get(item, ['report', 'afterImg', 'file'])
+        const beforeImgId = _.get(item, ['report', 'beforeImg', 'id'])
+        const afterImgId = _.get(item, ['report', 'afterImg', 'id'])
         const name = _.get(item, ['report', 'user', 'firstName']) + ' ' + _.get(item, ['report', 'user', 'secondName'])
         const createdDate = dateFormat(_.get(item, ['report', 'createdDate']))
 
@@ -129,9 +132,11 @@ const ActivityReport = enhance((props) => {
                 </div>
                 <div className={classes.tubeTime}>{createdDate}</div>
                 <div className={classes.tubeImgDouble}>
-                    <div><img src={beforeImg} alt=""/>
+                    <div>
+                        <img src={beforeImg} alt="" onClick={() => { reportImageData.handleOpenReportImage(beforeImgId) }}/>
                     </div>
-                    <div><img src={afterImg} alt=""/>
+                    <div>
+                        <img src={afterImg} alt="" onClick={() => { reportImageData.handleOpenReportImage(afterImgId) }}/>
                     </div>
                 </div>
                 <div className={classes.tubeInfo}>Отчет №{id}. Магазин "{market}", комментарий: {comment}</div>
@@ -160,7 +165,13 @@ const ActivityReport = enhance((props) => {
 })
 
 ActivityReport.PropTypes = {
-    reportlistData: PropTypes.object
+    reportlistData: PropTypes.object,
+    reportImageData: PropTypes.shape({
+        imageData: PropTypes.object.isRequired,
+        openReportImage: PropTypes.bool.isRequired,
+        handleOpenReportImage: PropTypes.func.isRequired,
+        handleCloseReportImage: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default ActivityReport
