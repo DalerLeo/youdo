@@ -112,6 +112,7 @@ const StockReceiveGridList = enhance((props) => {
         filterDialog,
         detailData,
         filter,
+        printDialog,
         tabData,
         classes,
         handleCloseDetail,
@@ -147,6 +148,7 @@ const StockReceiveGridList = enhance((props) => {
                 detailData={transferDetail}
                 handleCloseDetail={handleCloseDetail}
                 confirmDialog={confirmDialog}
+                printDialog={printDialog}
             />}
             {TAB.STOCK_RECEIVE_TAB_OUT_HISTORY === tab && <TabHistory
                 filter={filter}

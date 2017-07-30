@@ -1,4 +1,5 @@
 import StockReceiveGridList from './StockReceiveGridList'
+import TransferPrint from './TransferPrint'
 import {HISTORY_FILTER_KEY} from './StockHistoryFilterForm'
 const STOCK_RECEIVE_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const TAB = 'tab'
@@ -11,5 +12,6 @@ export {
     HISTORY_FILTER_OPEN,
     TAB,
     HISTORY_FILTER_KEY,
-    STOCK_CONFIRM_DIALOG_OPEN
+    STOCK_CONFIRM_DIALOG_OPEN,
+    TransferPrint
 }

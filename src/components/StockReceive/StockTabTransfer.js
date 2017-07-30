@@ -128,7 +128,8 @@ const StockTabTransfer = enhance((props) => {
         filter,
         classes,
         handleCloseDetail,
-        confirmDialog
+        confirmDialog,
+        printDialog
     } = props
     const detailId = _.get(detailData, 'id')
     const listLoading = _.get(listData, 'transferListLoading')
@@ -159,12 +160,12 @@ const StockTabTransfer = enhance((props) => {
                 const dateDelivery = moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY')
                 const receiver = _.get(item, ['receiver'])
                 const status = _.toInteger(_.get(item, 'status'))
-                const stock = _.toInteger(_.get(item, 'stock'))
+                const stockId = _.toInteger(_.get(item, ['stock', 'id']))
                 const PENDING = 0
                 const IN_PROGRESS = 1
                 const COMPLETED = 2
                 const tooltipText = 'Подтвердить Запрос № ' + id
-                if (id === detailId && detailType === stock) {
+                if (id === detailId && detailType === stockId) {
                     return (
                         <Paper key={index} zDepth={1} className={classes.expandedList}>
                             <div className={classes.wrapper}>
@@ -189,7 +190,7 @@ const StockTabTransfer = enhance((props) => {
                                                     iconStyle={iconStyle.icon}
                                                     style={iconStyle.button}
                                                     touch={true}
-                                                    >
+                                                    onTouchTap={printDialog.handleOpenPrintDialog}>
                                                     <PrintIcon />
                                                 </IconButton>
                                             </Tooltip>
@@ -221,9 +222,9 @@ const StockTabTransfer = enhance((props) => {
                         key={index}
                         zDepth={1}
                         className={classes.list}
-                        onClick={() => { listData.handleOpenDetail(id, stock) }}>
+                        onClick={() => { listData.handleOpenDetail(id, stockId) }}>
                             <div className={classes.wrapper}>
-                                <Row onClick={() => { listData.handleOpenDetail(id, stock) }}>
+                                <Row>
                                     <Col xs={1}>{id}</Col>
                                     <Col xs={2}>{dateRequest}</Col>
                                     <Col xs={2}>Заказ</Col>
