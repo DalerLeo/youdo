@@ -189,7 +189,7 @@ const StockTabTransfer = enhance((props) => {
                                                     iconStyle={iconStyle.icon}
                                                     style={iconStyle.button}
                                                     touch={true}
-                                                    /*                                    onTouchTap={() => { getDocument.handleGetDocument(id) }}*/>
+                                                    >
                                                     <PrintIcon />
                                                 </IconButton>
                                             </Tooltip>

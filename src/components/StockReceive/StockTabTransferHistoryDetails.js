@@ -132,7 +132,7 @@ const StockTransferDetails = enhance((props) => {
     const {
         classes,
         detailData,
-        handleCloseDetail,
+        handleCloseDetail
     } = props
     const detailLoading = _.get(detailData, 'transferDetailLoading')
     const products = _.get(detailData, ['data', 'products'])
@@ -173,8 +173,7 @@ const StockTransferDetails = enhance((props) => {
                                 <IconButton
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
-                                    touch={true}
-/*                                    onTouchTap={() => { getDocument.handleGetDocument(id) }}*/>
+                                    touch={true}>
                                     <PrintIcon />
                                 </IconButton>
                             </Tooltip>

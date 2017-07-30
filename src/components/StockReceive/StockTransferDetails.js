@@ -123,6 +123,7 @@ const StockTransferDetails = enhance((props) => {
                                 </Row>
                                 )
                             }
+                            return null
                         })}
                     </div>
                     <div className={classes.rightSide}>
