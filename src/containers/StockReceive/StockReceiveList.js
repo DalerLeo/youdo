@@ -9,14 +9,14 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
 import * as STOCK_TAB from '../../constants/stockReceiveTab'
+import {OrderPrint} from '../../components/Order'
 import {
     StockReceiveGridList,
     STOCK_RECEIVE_CREATE_DIALOG_OPEN,
     HISTORY_FILTER_OPEN,
     HISTORY_FILTER_KEY,
     TAB,
-    STOCK_CONFIRM_DIALOG_OPEN,
-    TransferPrint
+    STOCK_CONFIRM_DIALOG_OPEN
 } from '../../components/StockReceive'
 import {
     stockReceiveListFetchAction,
@@ -29,7 +29,12 @@ import {
     stockReceiveItemConfirmAction,
     stockReceiveItemReturnAction
 } from '../../actions/stockReceive'
-import {orderReturnListAction} from '../../actions/order'
+import {
+    orderListPintFetchAction,
+    orderReturnListAction
+}
+
+from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
@@ -61,10 +66,15 @@ const enhance = compose(
         const barcodeListLoading = _.get(state, ['stockReceive', 'barcodeList', 'loading'])
         const createLoading = _.get(state, ['stockReceive', 'create', 'loading'])
         const createForm = _.get(state, ['form', 'StockReceiveCreateForm'])
+        const printList = _.get(state, ['stockReceive', 'print', 'data'])
+        const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
         const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
         const productId = _.toNumber(_.get(state, ['form', 'StockReceiveCreateForm', 'values', 'product', 'value', 'id']))
-        const filter = filterHelper(list, pathname, query)
+        const filter = filterHelper((_.get(query, 'tab') === 'receive' || _.get(query, 'tab') === 'receiveHistory')
+                                                            ? list : (_.get(query, 'tab') === 'transfer' || _.get(query, 'tab') === 'transferHistory')
+                                                              ? transferList : (_.get(query, 'tab') === 'outHistory')
+                                                                ? historyList : list, pathname, query)
 
         return {
             list,
@@ -85,6 +95,8 @@ const enhance = compose(
             createForm,
             isDefect,
             productId,
+            printList,
+            printLoading,
             historyFilterForm
         }
     }),
@@ -97,10 +109,16 @@ const enhance = compose(
         const currentTab = _.get(location, ['query', 'tab']) || 'receive'
         if (currentTab === 'receive') {
             dispatch(stockReceiveListFetchAction(filter))
-        } else if (currentTab === 'transfer' || currentTab === 'transferHistory') {
+        } else if (currentTab === 'transfer') {
             dispatch(stockTransferListFetchAction(filter))
         } else if (currentTab === 'outHistory') {
             dispatch(stockHistoryListFetchAction(filter))
+        } else if (currentTab === 'transferHistory') {
+            const history = true
+            dispatch(stockTransferListFetchAction(filter, history))
+        } else if (currentTab === 'receiveHistory') {
+            const history = true
+            dispatch(stockReceiveListFetchAction(filter, history))
         }
     }),
 
@@ -112,7 +130,7 @@ const enhance = compose(
         const currentTab = _.get(location, ['query', 'tab']) || 'receive'
         const stockReceiveType = _.get(location, ['query', 'openType'])
         const stockReceiveId = _.toInteger(_.get(params, 'stockReceiveId'))
-        if (stockReceiveId > ZERO && currentTab === 'receive') {
+        if (stockReceiveId > ZERO && (currentTab === 'receive' || currentTab === 'receiveHistory')) {
             if (stockReceiveType === 'supply') {
                 dispatch(stockReceiveItemFetchAction(stockReceiveId))
             } else if (stockReceiveType === 'transfer') {
@@ -128,10 +146,10 @@ const enhance = compose(
     withState('openPrint', 'setOpenPrint', false),
 
     withHandlers({
-        handleOpenPrintDialog: props => () => {
+        handleOpenPrintDialog: props => (id) => {
             const {setOpenPrint, dispatch, filter} = props
             setOpenPrint(true)
-            dispatch(stockTransferListFetchAction(filter))
+            dispatch(orderListPintFetchAction(filter, id))
                 .then(() => {
                     window.print()
                 })
@@ -288,6 +306,8 @@ const StockReceiveList = enhance((props) => {
         filter,
         layout,
         openPrint,
+        printList,
+        printLoading,
         params
     } = props
     const detailType = _.get(location, ['query', TYPE])
@@ -321,7 +341,10 @@ const StockReceiveList = enhance((props) => {
         data: _.get(transferList, 'results'),
         transferListLoading
     }
-
+    const orderData = {
+        data: printList,
+        printLoading
+    }
     const currentTransferDetail = _.find(_.get(transferList, 'results'), {'id': detailId})
 
     const transferDetailData = {
@@ -406,9 +429,9 @@ const StockReceiveList = enhance((props) => {
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 
-        return <TransferPrint
+        return <OrderPrint
             printDialog={printDialog}
-            listPrintData={transferData}/>
+            listPrintData={orderData}/>
     }
 
     return (

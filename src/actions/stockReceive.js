@@ -22,8 +22,8 @@ export const stockReceiveCreateAction = (formValues, supplyId, detail) => {
     }
 }
 
-export const stockReceiveListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const stockReceiveListFetchAction = (filter, history) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), history)
     const payload = axios()
         .get((API.STOCK_RECEIVE_LIST), {params})
         .then((response) => {
@@ -72,8 +72,8 @@ export const stockHistoryListFetchAction = (filter) => {
     }
 }
 
-export const stockTransferListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const stockTransferListFetchAction = (filter, history) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), history)
     const payload = axios()
         .get((API.STOCK_TRANSFER_LIST), {params})
         .then((response) => {

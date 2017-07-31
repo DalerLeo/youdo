@@ -3,22 +3,31 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
-import {hashHistory} from 'react-router'
 import moment from 'moment'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
-import Paper from 'material-ui/Paper'
 import StockReceiveDetails from './StockReceiveDetails'
-import Pagination from '../GridList/GridListNavPagination'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
 import CreateDialog from './StockReceiveCreateDialog'
+import HistoryFilterForm from './StockHistoryFilterForm'
+import GridList from '../GridList'
+
 const ZERO = 0
 const RETURN = 3
-const APPROVE = 1
 const CANCEL = 2
 const enhance = compose(
     injectSheet({
+        wrapper: {
+            marginTop: '20px',
+            '& .row > div > svg': {
+                position: 'relative',
+                width: '16px !important',
+                height: '16px !important',
+                top: '3px',
+                marginRight: '5px'
+            }
+        },
         loader: {
             position: 'absolute',
             background: '#fff',
@@ -56,12 +65,6 @@ const enhance = compose(
             fontWeight: '600',
             cursor: 'pointer'
         },
-        wrapper: {
-            padding: '15px 30px',
-            '& .row': {
-                alignItems: 'center'
-            }
-        },
         headers: {
             color: '#666',
             fontWeight: '600',
@@ -91,7 +94,7 @@ const enhance = compose(
     })
 )
 
-const headerItems = [
+const listHeader = [
     {
         name: 'id',
         sorting: true,
@@ -132,11 +135,71 @@ const StockTabReceive = enhance((props) => {
         classes,
         confirmDialog,
         handleCloseDetail,
-        createDialog
+        createDialog,
+        filterDialog,
+        history
     } = props
-    const detailId = _.get(detailData, 'id')
-    const detailType = _.get(detailData, 'type')
+
     const listLoading = _.get(listData, 'listLoading')
+    const stockReceiveFilterDialog = (
+        <HistoryFilterForm
+            initialValues={filterDialog.initialValues}
+            filter={filter}
+            filterDialog={filterDialog}
+        />
+    )
+
+    const receiveDetails = (
+        <StockReceiveDetails
+            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
+            detailData={detailData}
+            loading={_.get(detailData, 'detailLoading')}
+            confirmDialog={confirmDialog}
+            handleCloseDetail={handleCloseDetail}
+            createDialog={createDialog}
+            history={history}
+
+        />
+    )
+
+    const stockReciveList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const by = _.get(item, ['by'])
+        const type = _.get(item, ['type'])
+        const formattedType = stockTypeFormat(type)
+        const date = _.get(item, 'date') ? moment(_.get(item, 'date')).format('DD.MM.YYYY') : 'Не указана'
+        const status = _.toInteger(_.get(item, 'status'))
+        const PENDING = 0
+        const IN_PROGRESS = 1
+        const COMPLETED = 2
+
+        return (
+            <Row
+                key={id + '_' + type}
+                onClick={() => { listData.handleOpenDetail(id, type) }}>
+                <Col xs={1}>{id}</Col>
+                <Col xs={3}>{by}</Col>
+                <Col xs={2}>
+                    {formattedType}
+                </Col>
+                <Col xs={2}>{date}</Col>
+                <Col xs={2}>
+                    {status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
+                        : ((status === IN_PROGRESS) ? (
+                            <span className={classes.begin}>В процессе</span>)
+                            : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
+                                : (<span className={classes.error}>Отменен</span>))}
+                </Col>
+            </Row>
+        )
+    })
+
+    const list = {
+        header: listHeader,
+        list: stockReciveList,
+        loading: listLoading
+    }
+
     if (listLoading) {
         return (
             <div className={classes.loader}>
@@ -146,108 +209,12 @@ const StockTabReceive = enhance((props) => {
     }
 
     return (
-        <div className={classes.listWrapper}>
-            <div className={classes.headers}>
-                <Row>
-                    {_.map(headerItems, (item, index) => {
-                        const name = _.get(item, 'name')
-                        const title = _.get(item, 'title')
-                        const size = _.get(item, 'xs')
-                        const sorting = _.get(item, 'sorting')
-                        if (sorting) {
-                            return (
-                                <Col
-                                    key={index}
-                                    xs={size}
-                                    style={{cursor: 'pointer'}}
-                                    onClick={() => hashHistory.push(filter.sortingURL(name))}>
-                                    {title}
-                                </Col>
-                            )
-                        }
-                        return (
-                            <Col key={index} xs={size}>
-                                {title}
-                            </Col>
-                        )
-                    })}
-                </Row>
-            </div>
-            {_.map(_.get(listData, 'data'), (item, index) => {
-                const id = _.get(item, 'id')
-                const by = _.get(item, ['by'])
-                const type = _.get(item, ['type'])
-                const formattedType = stockTypeFormat(type)
-                const date = _.get(item, 'date') ? moment(_.get(item, 'date')).format('DD.MM.YYYY') : 'Не указана'
-                const status = _.toInteger(_.get(item, 'status'))
-                const PENDING = 0
-                const IN_PROGRESS = 1
-                const COMPLETED = 2
-
-                if (id === detailId && type === detailType) {
-                    return (
-                        <Paper key={index} zDepth={1} className={classes.expandedList}>
-                            <div className={classes.wrapper}>
-                                <Row className={classes.semibold}>
-                                    <Col xs={1}>{id}</Col>
-                                    <Col xs={3} onClick={handleCloseDetail}>{by}</Col>
-                                    <Col xs={2}>{formattedType}</Col>
-                                    <Col xs={2}>{date}</Col>
-                                    <Col xs={2}>
-                                        {status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
-                                            : ((status === IN_PROGRESS) ? (
-                                                <span className={classes.begin}>В процессе</span>)
-                                                : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
-                                                    : (<span className={classes.error}>Отменен</span>))}
-                                    </Col>
-                                    <Col xs={2}>
-                                        {type === 'transfer'
-                                            ? <a onClick={() => { confirmDialog.handleOpenConfirmDialog(APPROVE) }}
-                                           className={classes.actionButton}>Выполнить</a>
-                                                : (type === 'order_return')
-                                                    ? <a onClick={() => { confirmDialog.handleOpenConfirmDialog(RETURN) }}
-                                                                                 className={classes.actionButton}>Выполнить</a>
-                                                        : <a onClick={createDialog.handleOpenCreateDialog}
-                                                                 className={classes.actionButton}>Выполнить</a> }
-
-                                        {type === 'transfer' && <a onClick={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
-                                                       className={classes.actionButton}>Отменить</a>}
-                                    </Col>
-                                </Row>
-                            </div>
-                            <StockReceiveDetails
-                                key={detailId}
-                                detailData={detailData}
-                            />
-                        </Paper>
-                    )
-                }
-                return (
-                    <Paper
-                        key={index}
-                        zDepth={1}
-                        className={classes.list}
-                        onClick={() => { listData.handleOpenDetail(id, type) }}>
-                            <div className={classes.wrapper}>
-                                <Row>
-                                    <Col xs={1}>{id}</Col>
-                                    <Col xs={3}>{by}</Col>
-                                    <Col xs={2}>
-                                        {formattedType}
-                                    </Col>
-                                    <Col xs={2}>{date}</Col>
-                                    <Col xs={2}>
-                                        {status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
-                                            : ((status === IN_PROGRESS) ? (
-                                                <span className={classes.begin}>В процессе</span>)
-                                                : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
-                                                    : (<span className={classes.error}>Отменен</span>))}
-                                    </Col>
-                                </Row>
-                            </div>
-                    </Paper>
-                )
-            })}
+        <div className={classes.wrapper}>
+            <GridList
+                filter={filter}
+                filterDialog={stockReceiveFilterDialog}
+                list={list}
+                detail={receiveDetails}/>
 
             <ConfirmDialog
                 type={confirmDialog.openConfirmDialog === CANCEL ? 'cancel' : 'submit' }
@@ -265,11 +232,134 @@ const StockTabReceive = enhance((props) => {
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
-            <Pagination
-                filter={filter}
-                customPagination={true}/>
         </div>
     )
+
+    // Return (
+    //     <div className={classes.listWrapper}>
+    //         <div className={classes.headers}>
+    //             <Row>
+    //                 {_.map(headerItems, (item, index) => {
+    //                     Const name = _.get(item, 'name')
+    //                     Const title = _.get(item, 'title')
+    //                     Const size = _.get(item, 'xs')
+    //                     Const sorting = _.get(item, 'sorting')
+    //                     If (sorting) {
+    //                         Return (
+    //                             <Col
+    //                                 Key={index}
+    //                                 Xs={size}
+    //                                 Style={{cursor: 'pointer'}}
+    //                                 OnClick={() => hashHistory.push(filter.sortingURL(name))}>
+    //                                 {title}
+    //                             </Col>
+    //                         )
+    //                     }
+    //                     Return (
+    //                         <Col key={index} xs={size}>
+    //                             {title}
+    //                         </Col>
+    //                     )
+    //                 })}
+    //             </Row>
+    //         </div>
+    //         {_.map(_.get(listData, 'data'), (item, index) => {
+    //             Const id = _.get(item, 'id')
+    //             Const by = _.get(item, ['by'])
+    //             Const type = _.get(item, ['type'])
+    //             Const formattedType = stockTypeFormat(type)
+    //             Const date = _.get(item, 'date') ? moment(_.get(item, 'date')).format('DD.MM.YYYY') : 'Не указана'
+    //             Const status = _.toInteger(_.get(item, 'status'))
+    //             Const PENDING = 0
+    //             Const IN_PROGRESS = 1
+    //             Const COMPLETED = 2
+    //
+    //             If (id === detailId && type === detailType) {
+    //                 Return (
+    //                     <Paper key={index} zDepth={1} className={classes.expandedList}>
+    //                         <div className={classes.wrapper}>
+    //                             <Row className={classes.semibold}>
+    //                                 <Col xs={1}>{id}</Col>
+    //                                 <Col xs={3} onClick={handleCloseDetail}>{by}</Col>
+    //                                 <Col xs={2}>{formattedType}</Col>
+    //                                 <Col xs={2}>{date}</Col>
+    //                                 <Col xs={2}>
+    //                                     {status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
+    //                                         : ((status === IN_PROGRESS) ? (
+    //                                             <span className={classes.begin}>В процессе</span>)
+    //                                             : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
+    //                                                 : (<span className={classes.error}>Отменен</span>))}
+    //                                 </Col>
+    //                                 <Col xs={2}>
+    //                                     {type === 'transfer'
+    //                                         ? <a onClick={() => { confirmDialog.handleOpenConfirmDialog(APPROVE) }}
+    //                                        ClassName={classes.actionButton}>Выполнить</a>
+    //                                             : (type === 'order_return')
+    //                                                 ? <a onClick={() => { confirmDialog.handleOpenConfirmDialog(RETURN) }}
+    //                                                                              ClassName={classes.actionButton}>Выполнить</a>
+    //                                                     : <a onClick={createDialog.handleOpenCreateDialog}
+    //                                                              ClassName={classes.actionButton}>Выполнить</a> }
+    //
+    //                                     {type === 'transfer' && <a onClick={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
+    //                                                    ClassName={classes.actionButton}>Отменить</a>}
+    //                                 </Col>
+    //                             </Row>
+    //                         </div>
+    //                         <StockReceiveDetails
+    //                             Key={detailId}
+    //                             DetailData={detailData}
+    //                         />
+    //                     </Paper>
+    //                 )
+    //             }
+    //             Return (
+    //                 <Paper
+    //                     Key={index}
+    //                     ZDepth={1}
+    //                     ClassName={classes.list}
+    //                     OnClick={() => { listData.handleOpenDetail(id, type) }}>
+    //                         <div className={classes.wrapper}>
+    //                             <Row>
+    //                                 <Col xs={1}>{id}</Col>
+    //                                 <Col xs={3}>{by}</Col>
+    //                                 <Col xs={2}>
+    //                                     {formattedType}
+    //                                 </Col>
+    //                                 <Col xs={2}>{date}</Col>
+    //                                 <Col xs={2}>
+    //                                     {status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
+    //                                         : ((status === IN_PROGRESS) ? (
+    //                                             <span className={classes.begin}>В процессе</span>)
+    //                                             : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
+    //                                                 : (<span className={classes.error}>Отменен</span>))}
+    //                                 </Col>
+    //                             </Row>
+    //                         </div>
+    //                 </Paper>
+    //             )
+    //         })}
+    //
+    //         <ConfirmDialog
+    //             Type={confirmDialog.openConfirmDialog === CANCEL ? 'cancel' : 'submit' }
+    //             Message={'Запрос № ' + _.get(detailData, ['currentDetail', 'id'])}
+    //             OnClose={confirmDialog.handleCloseConfirmDialog}
+    //             OnSubmit={confirmDialog.openConfirmDialog === RETURN ? confirmDialog.handleSubmitOrderReturnDialog : confirmDialog.handleSubmitReceiveConfirmDialog}
+    //             Open={confirmDialog.openConfirmDialog > ZERO}
+    //         />
+    //         <CreateDialog
+    //             Loading={createDialog.createLoading}
+    //             Open={createDialog.openCreateDialog}
+    //             IsDefect={createDialog.isDefect}
+    //             DetailProducts={createDialog.detailProducts}
+    //             ListLoading={createDialog.detailLoading}
+    //             OnClose={createDialog.handleCloseCreateDialog}
+    //             OnSubmit={createDialog.handleSubmitCreateDialog}
+    //         />
+    //         <Pagination
+    //             Filter={filter}
+    //             CustomPagination={true}/>
+    //     </div>
+    // )
 })
 
 StockTabReceive.propTypes = {

@@ -141,7 +141,7 @@ const StockTransferDetails = enhance((props) => {
     const dateRequest = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateRequest']))
     const dateDelivery = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateDelivery']))
     const receiver = _.get(detailData, ['currentTransferDetail', 'receiver'])
-    const detailType = _.toInteger(_.get(detailData, ['currentTransferDetail', 'stock']))
+    const detailType = _.toInteger(_.get(detailData, 'type'))
 
     if (_.isEmpty(products)) {
         return (
@@ -155,7 +155,7 @@ const StockTransferDetails = enhance((props) => {
     }
 
     return (
-        <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px'}}>
+        <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
             {detailLoading ? <LinearProgress/>
                 : <div style={{width: '100%'}}>
                   <div className={classes.header}>

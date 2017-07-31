@@ -97,8 +97,8 @@ const GridListBody = enhance((props) => {
     const {classes, filter, list, onChecked, detail, withoutCheckboxes} = props
 
     const items = _.map(list, (item, index) => {
-        const id = _.toInteger(_.get(item, 'key'))
-        const detailId = _.toInteger(_.get(detail, 'key'))
+        const id = (_.get(item, 'key'))
+        const detailId = (_.get(detail, 'key'))
         const selects = filter.getSelects()
         const checkboxChecked = _
             .chain(selects)

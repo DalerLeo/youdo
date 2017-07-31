@@ -303,6 +303,7 @@ const rootReducer = combineReducers({
     stockReceive: combineReducers({
         list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
         history: createThunkReducer(actionTypes.STOCK_HISTORY_LIST),
+        print: createThunkReducer(actionTypes.ORDER_LIST_PRINT),
         transfer: createThunkReducer(actionTypes.STOCK_TRANSFER_LIST),
         transferItem: createThunkReducer(actionTypes.STOCK_TRANSFER_ITEM),
         item: createThunkReducer(actionTypes.STOCK_RECEIVE_ITEM),
