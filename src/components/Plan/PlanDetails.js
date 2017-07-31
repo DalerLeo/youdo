@@ -151,14 +151,14 @@ const enhance = compose(
         timelineBlockWrapper: {
             '& > div:first-child': {
                 '&:before': {
-                    height: 'calc(100% + 20px)',
-                    bottom: '0'
+                    height: 'calc(100% + 43px)',
+                    bottom: '-23px',
+                    top: 'auto'
                 }
             },
             '& > div:last-child': {
                 '&:before': {
-                    height: 'calc(100% + 20px)',
-                    top: '0'
+                    height: 'calc(100% + 5px)'
                 }
             }
         },
@@ -172,6 +172,11 @@ const enhance = compose(
             textAlign: 'center',
             padding: '6px 0'
         },
+        timelineDatePassive: {
+            extend: 'timelineDate',
+            background: '#ccc',
+            color: '#fff'
+        },
         timelineBlock: {
             position: 'relative',
             marginBottom: '10px',
@@ -179,8 +184,9 @@ const enhance = compose(
                 content: '""',
                 position: 'absolute',
                 left: 'calc(50% - 2px)',
+                top: '15px',
                 width: '4px',
-                height: '100%',
+                height: 'calc(100% + 8px)',
                 background: timelineColor
             },
             '&:nth-child(even)': {
@@ -481,9 +487,9 @@ const PlanDetails = enhance((props) => {
                                 </div>
                             </div>
                             <div className={classes.timeline}>
-                                <div className={classes.timelineDate}>22 Апр, 2017</div>
+                                <div className={classes.timelineDatePassive}>22 Апр, 2017</div>
                                 <div className={classes.timelineBlockWrapper}>
-                                    <div className={classes.timelineBlock}>
+                                    <div className={classes.timelineBlockPassive}>
                                         <div className={classes.timelineDot}>
                                         </div>
 
@@ -497,7 +503,7 @@ const PlanDetails = enhance((props) => {
                                         </Paper>
                                     </div>
 
-                                    <div className={classes.timelineBlock}>
+                                    <div className={classes.timelineBlockPassive}>
                                         <div className={classes.timelineDot}>
                                         </div>
 
