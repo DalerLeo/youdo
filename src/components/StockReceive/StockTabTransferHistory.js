@@ -2,12 +2,16 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
+import {Link} from 'react-router'
+import sprintf from 'sprintf'
 import GridList from '../GridList'
+import * as ROUTES from '../../constants/routes'
 import HistoryFilterForm from './StockHistoryFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
+import Details from './StockTabTransferHistoryDetails'
 
 const listHeader = [
     {
@@ -72,6 +76,8 @@ const StockTabTransferHistory = enhance((props) => {
         filter,
         filterDialog,
         listData,
+        detailData,
+        handleCloseDetail,
         classes
     } = props
 
@@ -84,7 +90,11 @@ const StockTabTransferHistory = enhance((props) => {
     )
 
     const historyDetail = (
-        <span>a</span>
+        <Details
+            detailData={detailData || {}}
+            key={_.get(detailData, 'id')}
+            handleCloseDetail={handleCloseDetail}
+            loading={_.get(detailData, 'transferDetailLoading')}/>
     )
     const listLoading = _.get(listData, 'listLoading')
     const historyList = _.map(_.get(listData, 'data'), (item) => {
@@ -94,8 +104,14 @@ const StockTabTransferHistory = enhance((props) => {
         const receiver = _.get(item, ['receiver'])
 
         return (
-            <Row key={id}>
-                <Col xs={2}>{id}</Col>
+            <Row key={id} style={{position: 'relative'}}>
+                <div className={classes.closeDetail}
+                     onClick={handleCloseDetail}>
+                </div>
+                <Col xs={2}><Link to={{
+                    pathname: sprintf(ROUTES.STOCK_RECEIVE_ITEM_PATH, id),
+                    query: filter.getParams()
+                }}>{id}</Link></Col>
                 <Col xs={3}>{dateRequest}</Col>
                 <Col xs={2}>Заказ</Col>
                 <Col xs={3}>{receiver}</Col>

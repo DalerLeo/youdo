@@ -3,7 +3,7 @@ import _ from 'lodash'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -15,7 +15,8 @@ import {
     HISTORY_FILTER_OPEN,
     HISTORY_FILTER_KEY,
     TAB,
-    STOCK_CONFIRM_DIALOG_OPEN
+    STOCK_CONFIRM_DIALOG_OPEN,
+    TransferPrint
 } from '../../components/StockReceive'
 import {
     stockReceiveListFetchAction,
@@ -96,12 +97,10 @@ const enhance = compose(
         const currentTab = _.get(location, ['query', 'tab']) || 'receive'
         if (currentTab === 'receive') {
             dispatch(stockReceiveListFetchAction(filter))
-        } else if (currentTab === 'transfer') {
+        } else if (currentTab === 'transfer' || currentTab === 'transferHistory') {
             dispatch(stockTransferListFetchAction(filter))
         } else if (currentTab === 'outHistory') {
             dispatch(stockHistoryListFetchAction(filter))
-        } else if (currentTab === 'transferHistory') {
-            dispatch(stockTransferListFetchAction(filter))
         }
     }),
 
@@ -121,12 +120,27 @@ const enhance = compose(
             } else if (stockReceiveType === 'order_return') {
                 dispatch(orderReturnListAction(stockReceiveId))
             }
-        } else if (stockReceiveId > ZERO && currentTab === 'transfer') {
+        } else if ((currentTab === 'transfer' || currentTab === 'transferHistory') && stockReceiveId > ZERO) {
             dispatch(stockTransferItemFetchAction(stockReceiveId))
         }
     }),
 
+    withState('openPrint', 'setOpenPrint', false),
+
     withHandlers({
+        handleOpenPrintDialog: props => () => {
+            const {setOpenPrint, dispatch, filter} = props
+            setOpenPrint(true)
+            dispatch(stockTransferListFetchAction(filter))
+                .then(() => {
+                    window.print()
+                })
+        },
+
+        handleClosePrintDialog: props => () => {
+            const {setOpenPrint} = props
+            setOpenPrint(false)
+        },
         handleTabChange: props => (tab) => {
             hashHistory.push({
                 pathname: 'stockReceive',
@@ -243,7 +257,7 @@ const enhance = compose(
         },
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParamss()})
+            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams()})
         },
         handleOpenDetail: props => (id, type) => {
             const {filter} = props
@@ -273,6 +287,7 @@ const StockReceiveList = enhance((props) => {
         isDefect,
         filter,
         layout,
+        openPrint,
         params
     } = props
     const detailType = _.get(location, ['query', TYPE])
@@ -302,18 +317,22 @@ const StockReceiveList = enhance((props) => {
     }
 
     const transferData = {
+        handleOpenDetail: props.handleOpenDetail,
         data: _.get(transferList, 'results'),
         transferListLoading
     }
 
     const currentTransferDetail = _.find(_.get(transferList, 'results'), {'id': detailId})
+
     const transferDetailData = {
+        type: detailType,
         id: detailId,
         data: transferDetail,
         transferDetailLoading,
         currentTransferDetail
     }
     const currentDetail = _.find(_.get(list, 'results'), {'id': detailId})
+
     const detailData = {
         type: detailType,
         id: detailId,
@@ -378,6 +397,20 @@ const StockReceiveList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
+    const printDialog = {
+        openPrint,
+        handleOpenPrintDialog: props.handleOpenPrintDialog,
+        handleClosePrintDialog: props.handleClosePrintDialog
+    }
+
+    if (openPrint) {
+        document.getElementById('wrapper').style.height = 'auto'
+
+        return <TransferPrint
+            printDialog={printDialog}
+            listPrintData={transferData}/>
+    }
+
     return (
         <Layout {...layout}>
             <StockReceiveGridList
@@ -392,6 +425,7 @@ const StockReceiveList = enhance((props) => {
                 createDialog={createDialog}
                 handleCloseDetail={handleCloseDetail}
                 confirmDialog={confirmDialog}
+                printDialog={printDialog}
             />
         </Layout>
     )
