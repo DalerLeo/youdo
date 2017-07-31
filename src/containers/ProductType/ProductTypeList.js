@@ -196,9 +196,15 @@ const ProductTypeList = enhance((props) => {
             if (!detail || openCreateDialog) {
                 return {}
             }
+            const parentId = _.get(detail, 'parent')
+            const parentName = _.get(_.find(_.get(list, ['results']), {'id': parentId}), 'name')
 
             return {
-                name: _.get(detail, 'name')
+                name: _.get(detail, 'name'),
+                parent: {
+                    value: parentId,
+                    text: parentName
+                }
             }
         })(),
         updateLoading: detailLoading || updateLoading,

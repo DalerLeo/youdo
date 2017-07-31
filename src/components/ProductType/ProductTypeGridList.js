@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
@@ -15,6 +14,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
+import dateFormat from '../../helpers/dateFormat'
 import GridList from '../GridList'
 import Container from '../Container'
 import ProductTypeCreateDialog from './ProductTypeCreateDialog'
@@ -25,19 +25,13 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
-        name: 'id',
-        xs: 2,
-        title: 'Id'
-    },
-    {
-        sorting: true,
         name: 'name',
-        xs: 5,
-        title: 'Наименование'
+        xs: 8,
+        title: 'Категории'
     },
     {
         sorting: true,
-        xs: 4,
+        xs: 3,
         name: 'created_date',
         title: 'Дата создания'
     },
@@ -103,7 +97,7 @@ const ProductTypeGridList = enhance((props) => {
     const productTypeList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -111,9 +105,8 @@ const ProductTypeGridList = enhance((props) => {
         )
         return (
             <Row key={id}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={5}>{name}</Col>
-                <Col xs={4}>{createdDate}</Col>
+                <Col xs={8}>{name}</Col>
+                <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
                     <IconMenu
                         iconButtonElement={iconButton}
