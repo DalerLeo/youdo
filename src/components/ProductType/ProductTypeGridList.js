@@ -70,12 +70,11 @@ const enhance = compose(
         },
         subCategory: {
             width: '100%',
-            paddingLeft: '50px',
             borderTop: '1px #efefef solid',
             display: 'flex',
             alignItems: 'center',
             '& > div:first-child': {
-                paddingLeft: '0'
+                paddingLeft: '50px'
             },
             '& > div:last-child': {
                 paddingRight: '0'
@@ -153,10 +152,11 @@ const ProductTypeGridList = enhance((props) => {
                     {_.map(_.get(item, 'children'), (child) => {
                         const childName = _.get(child, 'name')
                         const childId = _.get(child, 'id')
+                        const childCreatedDate = dateFormat(_.get(child, 'createdDate'))
                         return (
                             <div key={childId} className={classes.subCategory}>
                                 <Col xs={8}>{childName}</Col>
-                                <Col xs={3}>{createdDate}</Col>
+                                <Col xs={3}>{childCreatedDate}</Col>
                                 <Col xs={1} className={classes.right}>
                                     <IconMenu
                                         iconButtonElement={iconButton}
@@ -230,6 +230,7 @@ const ProductTypeGridList = enhance((props) => {
                 list={list}
                 detail={productTypeDetail}
                 actionsDialog={actions}
+                flexibleRow={true}
             />
 
             <ProductTypeCreateDialog

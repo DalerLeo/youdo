@@ -11,7 +11,7 @@ import Paper from 'material-ui/Paper'
 const enhance = compose(
     injectSheet({
         item: {
-            minHeight: '50px',
+            height: '50px',
             padding: '0 30px',
             background: '#fff',
             boxShadow: 'rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.12) 0px 3px 4px !important',
@@ -45,6 +45,11 @@ const enhance = compose(
                 fontWeight: '600'
             }
 
+        },
+        flexibleItem: {
+            extend: 'item',
+            height: 'auto',
+            minHeight: '50px'
         },
         detail: {
             margin: '20px -15px !important',
@@ -94,7 +99,7 @@ const enhance = compose(
 )
 
 const GridListBody = enhance((props) => {
-    const {classes, filter, list, onChecked, detail, withoutCheckboxes} = props
+    const {classes, filter, list, onChecked, detail, withoutCheckboxes, flexibleRow} = props
 
     const items = _.map(list, (item, index) => {
         const id = _.toInteger(_.get(item, 'key'))
@@ -115,7 +120,7 @@ const GridListBody = enhance((props) => {
         }
 
         return (
-            <Paper zDepth={1} className={classes.item} key={index} style={{zIndex: index}}>
+            <Paper zDepth={1} className={flexibleRow ? classes.flexibleItem : classes.item} key={index} style={{zIndex: index}}>
                     <div className={classes.checkbox}>
                         {withoutCheckboxes &&
                         <Checkbox onCheck={onChecked(id)} checked={checkboxChecked}/>

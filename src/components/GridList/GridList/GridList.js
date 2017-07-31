@@ -43,6 +43,7 @@ const GridList = enhance((props) => {
         withInvoice,
         withoutSearch,
         printDialog,
+        flexibleRow,
         refreshAction
     } = props
 
@@ -64,6 +65,7 @@ const GridList = enhance((props) => {
                 filter={filter}
                 list={listItems}
                 detail={detail}
+                flexibleRow={flexibleRow}
                 withoutCheckboxes={withoutCheckboxes}
             />
         )
@@ -126,6 +128,7 @@ GridList.defaultProps = {
     withoutSearch: false,
     withInvoice: false,
     withRefreshBtn: false,
+    flexibleRow: false,
     actionsDialog: (<div>no</div>)
 }
 
