@@ -11,6 +11,7 @@ import CloseIcon2 from '../CloseIcon2'
 import Accept from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
 import AcceptClientTransactionDialog from './AcceptClientTransactionDialog'
+import MoreVert from 'material-ui/svg-icons/navigation/more-vert'
 
 const enhance = compose(
     injectSheet({
@@ -101,6 +102,38 @@ const enhance = compose(
                     textAlign: 'right'
                 }
             }
+        },
+        details: {
+            background: '#f2f5f8',
+            margin: '0 -30px',
+            padding: '0 30px',
+            boxSizing: 'content-box',
+            '& .row': {
+                margin: '0',
+                '&:first-child': {
+                    color: '#333',
+                    borderBottom: '1px #dedede solid'
+                },
+                '& > div:first-child': {
+                    paddingLeft: '0'
+                },
+                '& > div:last-child': {
+                    paddingRight: '0'
+                }
+            }
+        },
+        semibold: {
+            fontWeight: '600'
+        },
+        detailsRow: {
+            margin: '0 10px !important',
+            color: '#666 !important',
+            '&:last-child': {
+                borderBottom: 'none'
+            },
+            '& > div:last-child': {
+                textAlign: 'right'
+            }
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -118,7 +151,7 @@ const TransactionCashDialog = enhance((props) => {
             padding: 0
         },
         icon: {
-            color: '#12aaeb',
+            color: '#666',
             width: 22,
             height: 22
         }
@@ -151,27 +184,48 @@ const TransactionCashDialog = enhance((props) => {
                             <Col xs={1}>Заказ</Col>
                             <Col xs={2}>Сумма</Col>
                         </Row>
+                        <div className={classes.details}>
+                            <Row>
+                                <Col xs={6}>Фамилия Имя</Col>
+                                <Col xs={5} style={{textAlign: 'right'}}>500 000 UZS</Col>
+                                <Col xs={1}>
+                                    <IconButton
+                                        style={buttonStyle.button}
+                                        iconStyle={buttonStyle.icon}>
+                                        <MoreVert/>
+                                    </IconButton>
+                                </Col>
+                            </Row>
+                            <div>
+                                <Row className={classes.detailsRow}>
+                                    <Col xs={3}>Клиент</Col>
+                                    <Col xs={3}>Магазин</Col>
+                                    <Col xs={3}>№ заказа</Col>
+                                    <Col xs={3}>Сумма (UZS)</Col>
+                                </Row>
+                                <Row className={classes.detailsRow}>
+                                    <Col xs={3}>Ахалай Махалай</Col>
+                                    <Col xs={3}>Магазин Супер</Col>
+                                    <Col xs={3}>З-23</Col>
+                                    <Col xs={3}>60 000 000</Col>
+                                </Row>
+                            </div>
+                        </div>
                         {_.map(_.get(paymentData, ['data', 'results']), (item) => {
-                            const clientName = _.get(item, ['client', 'name'])
-                            const marketName = _.get(item, ['market', 'name'])
                             const currency = _.get(item, ['currency', 'name'])
                             const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
                             const amount = numberFormat(_.get(item, ['amount']), currency)
-                            const order = _.get(item, ['order'])
                             const id = _.get(item, ['id'])
                             return (
                                 <Row key={id} className="dottedList">
-                                    <Col xs={3}>{user}</Col>
-                                    <Col xs={3}>{clientName}</Col>
-                                    <Col xs={2}>{marketName}</Col>
-                                    <Col xs={1}>{order}</Col>
-                                    <Col xs={2} style={{textAlign: 'right'}}>{amount}</Col>
+                                    <Col xs={6}>{user}</Col>
+                                    <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
                                     <Col xs={1}>
                                         <IconButton
                                             style={buttonStyle.button}
                                             iconStyle={buttonStyle.icon}
                                             onTouchTap={() => { cashBoxDialog.handleOpenCashBoxDialog(id) }}>
-                                            <Accept/>
+                                            <MoreVert/>
                                         </IconButton>
                                     </Col>
                                 </Row>
