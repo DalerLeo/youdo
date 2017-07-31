@@ -121,7 +121,7 @@ const enhance = compose(
             } else if (stockReceiveType === 'order_return') {
                 dispatch(orderReturnListAction(stockReceiveId))
             }
-        } else if (stockReceiveId > ZERO && currentTab === 'transfer') {
+        } else if ((currentTab === 'transfer' || currentTab === 'transferHistory') && stockReceiveId > ZERO) {
             dispatch(stockTransferItemFetchAction(stockReceiveId))
         }
     }),
@@ -243,7 +243,7 @@ const enhance = compose(
         },
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParamss()})
+            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams()})
         },
         handleOpenDetail: props => (id, type) => {
             const {filter} = props
@@ -302,18 +302,22 @@ const StockReceiveList = enhance((props) => {
     }
 
     const transferData = {
+        handleOpenDetail: props.handleOpenDetail,
         data: _.get(transferList, 'results'),
         transferListLoading
     }
 
     const currentTransferDetail = _.find(_.get(transferList, 'results'), {'id': detailId})
+
     const transferDetailData = {
+        type: detailType,
         id: detailId,
         data: transferDetail,
         transferDetailLoading,
         currentTransferDetail
     }
     const currentDetail = _.find(_.get(list, 'results'), {'id': detailId})
+
     const detailData = {
         type: detailType,
         id: detailId,
