@@ -57,7 +57,7 @@ export const productTypeUpdateAction = (id, formValues) => {
 export const productTypeListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.PRODUCT_TYPE_LIST, {params})
+        .get(API.PRODUCT_TYPE_H_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -66,7 +66,7 @@ export const productTypeListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.PRODUCT_TYPE_LIST,
+        type: actionTypes.PRODUCT_TYPE_H_LIST,
         payload
     }
 }

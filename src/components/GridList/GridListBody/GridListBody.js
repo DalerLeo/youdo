@@ -11,7 +11,7 @@ import Paper from 'material-ui/Paper'
 const enhance = compose(
     injectSheet({
         item: {
-            height: '50px',
+            minHeight: '50px',
             padding: '0 30px',
             background: '#fff',
             boxShadow: 'rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.12) 0px 3px 4px !important',

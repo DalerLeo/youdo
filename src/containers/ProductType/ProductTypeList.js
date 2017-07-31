@@ -215,7 +215,7 @@ const ProductTypeList = enhance((props) => {
     }
 
     const listData = {
-        data: _.get(list, 'results'),
+        data: list,
         listLoading
     }
 

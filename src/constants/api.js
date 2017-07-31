@@ -145,6 +145,7 @@ export const PRODUCT_PRICE_DELETE = `/${PRODUCT_PRICE}/%d/`
 export const PRODUCT_TYPE = 'main/product_type'
 export const PRODUCT_TYPE_CREATE = `/${PRODUCT_TYPE}/`
 export const PRODUCT_TYPE_LIST = `/${PRODUCT_TYPE}/`
+export const PRODUCT_TYPE_H_LIST = `/${PRODUCT_TYPE}/hierarchy/`
 export const PRODUCT_TYPE_ITEM = `/${PRODUCT_TYPE}/%d/`
 export const PRODUCT_TYPE_DELETE = `/${PRODUCT_TYPE}/%d/`
 

@@ -57,11 +57,36 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         },
+        rowWithParent: {
+            flexWrap: 'wrap',
+            '& > div:first-child': {
+                fontWeight: '600'
+            }
+        },
+        rowWithoutParent: {
+            '& > div:first-child': {
+                fontWeight: '600'
+            }
+        },
+        subCategory: {
+            width: '100%',
+            paddingLeft: '50px',
+            borderTop: '1px #efefef solid',
+            display: 'flex',
+            alignItems: 'center',
+            '& > div:first-child': {
+                paddingLeft: '0'
+            },
+            '& > div:last-child': {
+                paddingRight: '0'
+            }
+        },
         marginLeft: {
             marginLeft: '20px !important'
         },
         right: {
-            textAlign: 'right'
+            textAlign: 'right',
+            paddingRight: '0'
         }
     })
 )
@@ -93,18 +118,70 @@ const ProductTypeGridList = enhance((props) => {
     const productTypeDetail = (
         <span>a</span>
     )
-
     const productTypeList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const hasChild = !_.isEmpty(_.get(item, 'children'))
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
             </IconButton>
         )
+        if (hasChild) {
+            return (
+                <Row key={id} className={classes.rowWithParent}>
+                    <Col xs={8}>{name}</Col>
+                    <Col xs={3}>{createdDate}</Col>
+                    <Col xs={1} className={classes.right}>
+                        <IconMenu
+                            iconButtonElement={iconButton}
+                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                            <MenuItem
+                                primaryText="Изменить"
+                                leftIcon={<Edit />}
+                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                            />
+                            <MenuItem
+                                primaryText="Удалить "
+                                leftIcon={<DeleteIcon />}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                            />
+                        </IconMenu>
+                    </Col>
+                    {_.map(_.get(item, 'children'), (child) => {
+                        const childName = _.get(child, 'name')
+                        const childId = _.get(child, 'id')
+                        return (
+                            <div key={childId} className={classes.subCategory}>
+                                <Col xs={8}>{childName}</Col>
+                                <Col xs={3}>{createdDate}</Col>
+                                <Col xs={1} className={classes.right}>
+                                    <IconMenu
+                                        iconButtonElement={iconButton}
+                                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                                        <MenuItem
+                                            primaryText="Изменить"
+                                            leftIcon={<Edit />}
+                                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(childId) }}
+                                        />
+                                        <MenuItem
+                                            primaryText="Удалить "
+                                            leftIcon={<DeleteIcon />}
+                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(childId) }}
+                                        />
+                                    </IconMenu>
+                                </Col>
+                            </div>
+                        )
+                    })}
+                </Row>
+            )
+        }
         return (
-            <Row key={id}>
+            <Row key={id} className={classes.rowWithoutParent}>
                 <Col xs={8}>{name}</Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
