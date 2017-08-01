@@ -18,7 +18,7 @@ const enhance = compose(
 const CashboxCurrencyField = enhance((props) => {
     const {currency, extraLoading} = props
     return (
-        <div style={{margin: '6px 0 0 10px'}}>
+        <div style={{margin: '6px 0 0 10px', display: 'flex', alignItems: 'center'}}>
             { extraLoading && <div><CircularProgress size={20} thickness={2} /></div> }
             {!extraLoading && <div>{currency}</div>}
         </div>

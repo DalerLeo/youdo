@@ -10,9 +10,9 @@ import NotFound from '../Images/not-found.png'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import dateFormat from '../../helpers/dateFormat'
 import Tooltip from '../ToolTip'
-import PrintIcon from 'material-ui/svg-icons/action/print'
 import IconButton from 'material-ui/IconButton'
-import CheckCircleIcon from 'material-ui/svg-icons/toggle/check-box'
+import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
+import RemoveCircleIcon from 'material-ui/svg-icons/content/remove-circle'
 
 const RETURN = 3
 const APPROVE = 1
@@ -87,7 +87,7 @@ const enhance = compose(
         },
         header: {
             position: 'relative',
-            lineHeight: '48px',
+            height: '48px',
             padding: '0 30px',
             width: '100%',
             '& .row': {
@@ -98,8 +98,16 @@ const enhance = compose(
             fontWeight: '600',
             cursor: 'pointer',
             position: 'relative'
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
-
     }),
     withState('openDetails', 'setOpenDetails', false)
 )
@@ -130,12 +138,10 @@ const StockReceiveDetails = enhance((props) => {
     const by = _.get(detailData, ['currentDetail', 'by'])
     const formattedType = stockTypeFormat(type)
     const date = _.get(detailData, ['currentDetail', 'date']) ? dateFormat(_.get(detailData, ['currentDetail', 'date'])) : 'Не указана'
-    const status = _.toInteger(_.get(detailData, ['currentDetail', 'status']))
-    const PENDING = 0
-    const IN_PROGRESS = 1
-    const COMPLETED = 2
+    const stockName = _.get(detailData, ['currentDetail', 'stock', 'name'])
     const id = _.get(detailData, 'id')
     const tooltipText = 'Подтвердить Запрос № ' + id
+    const tooltipCancelText = 'Отменить Запрос № ' + id
     const detailLoading = _.get(detailData, 'detailLoading')
     const products = (type === 'order_return') ? _.get(detailData, ['data', 'returnedProducts']) : _.get(detailData, ['data', 'products'])
     const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
@@ -155,19 +161,20 @@ const StockReceiveDetails = enhance((props) => {
             {detailLoading ? <LinearProgress/>
             : <div style={{width: '100%'}}>
                 <div className={classes.header}>
-                    <Row className={classes.semibold}>
-                        <Col xs={1}>{id}</Col>
-                        <Col xs={3} onClick={handleCloseDetail}>{by}</Col>
+                    <div className={classes.closeDetail}
+                         onClick={handleCloseDetail}>
+                    </div>
+                    <Row
+                        className={classes.semibold}
+                        style={history ? {lineHeight: '48px'} : {}}>
+                        <Col xs={2}>{id}</Col>
+                        <Col xs={3}>{by}</Col>
                         <Col xs={2}>{formattedType}</Col>
                         <Col xs={2}>{date}</Col>
                         <Col xs={2}>
-                            {status === PENDING ? (<span className={classes.waiting}>Ожидает</span>)
-                                : ((status === IN_PROGRESS) ? (
-                                    <span className={classes.begin}>В процессе</span>)
-                                    : (status === COMPLETED) ? (<span className={classes.success}>Принят</span>)
-                                        : (<span className={classes.error}>Отменен</span>))}
+                            {stockName}
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={1}>
                             {!history && <div className={classes.titleButtons}>
                                 {type === 'transfer'
                                     ? <Tooltip position="right" text={tooltipText}>
@@ -201,13 +208,13 @@ const StockReceiveDetails = enhance((props) => {
                                 }
 
                                 {type === 'transfer' &&
-                                    <Tooltip position="right" text="Распечатать накладную">
+                                    <Tooltip position="right" text={tooltipCancelText}>
                                         <IconButton
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}
                                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
                                             touch={true}>
-                                            <PrintIcon />
+                                            <RemoveCircleIcon />
                                         </IconButton>
                                     </Tooltip>
                             }
