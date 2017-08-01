@@ -8,6 +8,7 @@ export const createSerializer = (data) => {
     const phoneNumber = _.get(data, 'phoneNumber')
     const image = _.get(data, 'image')
     const password = _.get(data, 'password')
+    const isActive = _.get(data, 'isActive')
     const groups = _.filter(_.get(data, ['groups']), (o) => {
         return _.get(o, 'selected')
     })
@@ -22,7 +23,8 @@ export const createSerializer = (data) => {
         'phone_number': phoneNumber,
         image,
         password,
-        'groups': newGroup
+        'groups': newGroup,
+        'is_active': isActive
     }
 }
 

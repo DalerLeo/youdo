@@ -90,7 +90,7 @@ const rootReducer = combineReducers({
     }),
     productType: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_TYPE_CREATE),
-        list: createThunkReducer(actionTypes.PRODUCT_TYPE_LIST),
+        list: createThunkReducer(actionTypes.PRODUCT_TYPE_H_LIST),
         update: createThunkReducer(actionTypes.PRODUCT_TYPE_UPDATE),
         item: createThunkReducer(actionTypes.PRODUCT_TYPE_ITEM)
     }),

@@ -136,7 +136,14 @@ const TransactionCreateDialog = enhance((props) => {
                                 name="showClients"
                                 className={classes.checkbox}
                                 component={CheckBox}
-                                label="Снят с заказа"/>
+                                label="Снять со счета клиента"/>
+                            {showClients && <Field
+                                name="client"
+                                component={ClientSearchField}
+                                label="Клиент"
+                                className={classes.inputFieldCustom}
+                                fullWidth={true}/>
+                            }
                             <Field
                                 name="expanseCategory"
                                 component={ExpensiveCategorySearchField}
@@ -151,13 +158,6 @@ const TransactionCreateDialog = enhance((props) => {
                                 className={classes.checkbox}
                                 component={CheckBox}
                                 label="Оплата с клиента"/>
-                            }
-                            {showClients && <Field
-                                name="client"
-                                component={ClientSearchField}
-                                label="Клиент"
-                                className={classes.inputFieldCustom}
-                                fullWidth={true}/>
                             }
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
                                 <Field

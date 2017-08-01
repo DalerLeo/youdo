@@ -55,8 +55,8 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'createdDate',
-        title: 'Дата создания',
+        name: 'status',
+        title: 'Статус',
         xs: 1
     }
 ]
@@ -121,6 +121,7 @@ const UsersGridList = enhance((props) => {
         const secondName = _.get(item, 'secondName')
         const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
         const groups = _.get(item, ['groups', ZERO, 'name']) || 'N/A'
+        const isActive = _.get(item, 'isActive')
 
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
@@ -135,7 +136,7 @@ const UsersGridList = enhance((props) => {
                 <Col xs={2}>{username}</Col>
                 <Col xs={2}>{groups}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
-                <Col xs={2}>12.05.2016</Col>
+                <Col xs={2}>{isActive ? 'Активный' : 'Неактивный'}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}

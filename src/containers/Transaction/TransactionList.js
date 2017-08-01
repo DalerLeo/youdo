@@ -406,7 +406,8 @@ const TransactionList = enhance((props) => {
             return {
                 comment: _.get(detail, 'comment'),
                 expanseCategory: {
-                    value: _.get(detail, ['expanseCategory', 'id'])
+                    value: _.get(detail, ['expanseCategory', 'id']),
+                    text: _.get(detail, ['expanseCategory', 'name'])
                 },
                 amount: _.get(detail, 'amount')
             }
