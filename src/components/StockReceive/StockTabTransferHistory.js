@@ -2,16 +2,13 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import {Link} from 'react-router'
-import sprintf from 'sprintf'
 import GridList from '../GridList'
-import * as ROUTES from '../../constants/routes'
 import HistoryFilterForm from './StockHistoryFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
-import Details from './StockTabTransferHistoryDetails'
+import Details from './StockTransferDetails'
 
 const listHeader = [
     {
@@ -23,7 +20,7 @@ const listHeader = [
     {
         name: 'amount',
         title: 'Дата запроса',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -92,9 +89,10 @@ const StockTabTransferHistory = enhance((props) => {
     const historyDetail = (
         <Details
             detailData={detailData || {}}
-            key={_.get(detailData, 'id')}
+            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
             handleCloseDetail={handleCloseDetail}
-            loading={_.get(detailData, 'transferDetailLoading')}/>
+            loading={_.get(detailData, 'transferDetailLoading')}
+            confirm={false}/>
     )
     const listLoading = _.get(listData, 'listLoading')
     const historyList = _.map(_.get(listData, 'data'), (item) => {
@@ -102,18 +100,16 @@ const StockTabTransferHistory = enhance((props) => {
         const dateRequest = moment(_.get(item, 'dateRequest')).format('DD.MM.YYYY')
         const dateDelivery = moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY')
         const receiver = _.get(item, ['receiver'])
-
+        const stockId = _.get(item, ['stock', 'id'])
+        const stockName = _.get(item, ['stock', 'name'])
         return (
-            <Row key={id} style={{position: 'relative'}}>
+            <Row key={id + '_' + stockId} style={{position: 'relative'}}>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
-                <Col xs={2}><Link to={{
-                    pathname: sprintf(ROUTES.STOCK_RECEIVE_ITEM_PATH, id),
-                    query: filter.getParams()
-                }}>{id}</Link></Col>
+                <Col xs={2} onClick={() => { listData.handleOpenDetail(id, stockId) }}>{id}</Col>
                 <Col xs={3}>{dateRequest}</Col>
-                <Col xs={2}>Заказ</Col>
+                <Col xs={2}>{stockName}</Col>
                 <Col xs={3}>{receiver}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
             </Row>
