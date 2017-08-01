@@ -80,6 +80,7 @@ export const CASHBOX_ITEM = `/${CASHBOX}/%d/`
 export const CASHBOX_DELETE = `/${CASHBOX}/%d/`
 
 export const TRANSACTION = 'finance/transaction'
+export const TRANSACTION_ACCEPT_CASH = 'finance/accept_cash_list/'
 export const TRANSACTION_CREATE = `/${TRANSACTION}/`
 export const TRANSACTION_LIST = `/${TRANSACTION}/`
 export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
