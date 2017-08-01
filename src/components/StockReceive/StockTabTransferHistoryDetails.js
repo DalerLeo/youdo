@@ -65,6 +65,7 @@ const enhance = compose(
             position: 'relative'
         },
         header: {
+            position: 'relative',
             padding: '15px 30px',
             width: '100%',
             '& .row': {
@@ -132,7 +133,8 @@ const StockTransferDetails = enhance((props) => {
     const {
         classes,
         detailData,
-        handleCloseDetail
+        handleCloseDetail,
+        handleOpenPrint
     } = props
     const detailLoading = _.get(detailData, 'transferDetailLoading')
     const products = _.get(detailData, ['data', 'products'])
@@ -142,6 +144,8 @@ const StockTransferDetails = enhance((props) => {
     const dateDelivery = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateDelivery']))
     const receiver = _.get(detailData, ['currentTransferDetail', 'receiver'])
     const detailType = _.toInteger(_.get(detailData, 'type'))
+    const stockName = _.get(detailData, ['currentTransferDetail', 'stock', 'name'])
+
 
     if (_.isEmpty(products)) {
         return (
@@ -164,8 +168,8 @@ const StockTransferDetails = enhance((props) => {
                       </div>
                     <Row className={classes.semibold}>
                         <Col xs={2}>{id}</Col>
-                        <Col xs={3}>{dateRequest}</Col>
-                        <Col xs={2}>Заказ</Col>
+                        <Col xs={2}>{dateRequest}</Col>
+                        <Col xs={2}>{stockName}</Col>
                         <Col xs={3}>{receiver}</Col>
                         <Col xs={2}>{dateDelivery}</Col>
                         <div className={classes.printer}>
@@ -173,6 +177,7 @@ const StockTransferDetails = enhance((props) => {
                                 <IconButton
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
+                                    onTouchTap={() => {handleOpenPrint(id)}}
                                     touch={true}>
                                     <PrintIcon />
                                 </IconButton>
