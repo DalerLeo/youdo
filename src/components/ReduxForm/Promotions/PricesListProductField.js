@@ -8,19 +8,12 @@ import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import {Field} from 'redux-form'
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn
-} from 'material-ui/Table'
 import DeleteIcon from '../../DeleteIcon/index'
 import ProductTypeSearchField from '../Product/ProductTypeSearchField'
 import ProductCustomSearchField from '../Supply/ProductCustomSearchField'
 import TextField from '../Basic/TextField'
 import Check from 'material-ui/svg-icons/navigation/check'
+import numberFormat from '../../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({
@@ -48,38 +41,33 @@ const enhance = compose(
             }
         },
         table: {
-            marginTop: '20px'
-        },
-        tableTitle: {
-            fontWeight: '600',
-            color: '#333 !important',
-            textAlign: 'left'
-        },
-        tableRow: {
-            height: '40px !important',
-            border: 'none !important',
-            '& td:first-child': {
-                width: '250px'
-            },
-            '& tr': {
-                border: 'none !important'
-            },
-            '& td': {
-                height: '40px !important',
-                padding: '0 5px !important'
-            },
-            '& th:first-child': {
-                width: '250px',
-                textAlign: 'left !important',
-                fontWeight: '600 !important'
-            },
-            '& th': {
-                textAlign: 'left !important',
-                border: 'none !important',
-                height: '40px !important',
-                padding: '0 5px !important',
-                fontWeight: '600 !important'
+            marginTop: '20px',
+            '& .row': {
+                margin: '0',
+                height: '40px',
+                '&:first-child': {
+                    fontWeight: '600'
+                },
+                '&:last-child:after': {
+                    display: 'none'
+                },
+                '& > div': {
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    padding: '0 8px',
+                    overflow: 'hidden',
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0'
+                    }
+                }
             }
+        },
+        subTitle: {
+            fontWeight: 'bold',
+            marginBottom: '5px'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -198,7 +186,7 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                             component={ProductTypeSearchField}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
-                            />
+                        />
                     </Col>
                     <Col xs={5}>
                         <Field
@@ -226,43 +214,33 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                 </Row>}
             </div>
             {error && <div className={classes.error}>{error}</div>}
-            {!_.isEmpty(products) ? <div className={classes.table}>
-                <Table
-                    fixedHeader={true}
-                    fixedFooter={false}
-                    multiSelectable={false}>
-                    <TableHeader
-                        displaySelectAll={false}
-                        adjustForCheckbox={false}
-                        enableSelectAll={false}
-                        className={classes.title}>
-                        <TableRow className={classes.tableRow}>
-                            <TableHeaderColumn
-                                className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn></TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody
-                        displayRowCheckbox={false}
-                        deselectOnClickaway={false}
-                        showRowHover={false}
-                        stripedRows={false}>
-                        {_.map(products, (item, index) => (
-                            <TableRow key={index} className={classes.tableRow}>
-                                <TableRowColumn>{_.get(item, ['product', 'value', 'name'])}</TableRowColumn>
-                                <TableRowColumn>
-                                    {_.get(item, 'amount')} {_.get(item, ['product', 'value', 'measurement', 'name'])}</TableRowColumn>
-                                <TableRowColumn style={{textAlign: 'right'}}>
-                                    <IconButton onTouchTap={() => handleRemove(index)}>
-                                        <DeleteIcon color="#666666"/>
-                                    </IconButton>
-                                </TableRowColumn>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+            {!_.isEmpty(products)
+                ? <div className={classes.table}>
+                    <div className={classes.subTitle}>Список бонусных товаров</div>
+                    <div>
+                        <Row className="dottedList">
+                            <Col style={{width: '70%'}}>Бонусный товар</Col>
+                            <Col style={{width: '20%'}}>Кол-во</Col>
+                        </Row>
+                        {_.map(products, (item, index) => {
+                            const product = _.get(item, ['product', 'value', 'name'])
+                            const measurement = _.get(item, ['product', 'value', 'measurement', 'name'])
+                            const amount = numberFormat(_.get(item, 'amount'), measurement)
+
+                            return (
+                                <Row key={index} className="dottedList">
+                                    <Col style={{width: '70%'}}>{product}</Col>
+                                    <Col style={{width: '20%'}}>{amount}</Col>
+                                    <Col style={{width: '10%'}}>
+                                        <IconButton onTouchTap={() => handleRemove(index)}>
+                                            <DeleteIcon color="#666666"/>
+                                        </IconButton>
+                                    </Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
+                </div>
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>

@@ -5,7 +5,7 @@ const PromotionsRadioButton = (props) => {
     const {input} = props
     return (
         <div>
-            <RadioButtonGroup name="promotionType" onChange={input.onChange} defaultSelected="discount">
+            <RadioButtonGroup name="promotionType" onChange={input.onChange} defaultSelected="bonus">
                 <RadioButton
                     value="discount"
                     label="Скидочная акция"
