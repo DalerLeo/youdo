@@ -146,7 +146,6 @@ const StockTransferDetails = enhance((props) => {
     const detailType = _.toInteger(_.get(detailData, 'type'))
     const stockName = _.get(detailData, ['currentTransferDetail', 'stock', 'name'])
 
-
     if (_.isEmpty(products)) {
         return (
             <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden'}}>
@@ -177,7 +176,7 @@ const StockTransferDetails = enhance((props) => {
                                 <IconButton
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
-                                    onTouchTap={() => {handleOpenPrint(id)}}
+                                    onTouchTap={() => { handleOpenPrint(id) }}
                                     touch={true}>
                                     <PrintIcon />
                                 </IconButton>
