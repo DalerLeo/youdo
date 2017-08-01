@@ -62,7 +62,7 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '600',
+            fontWeight: 'bold',
             cursor: 'pointer'
         },
         titleButtons: {
@@ -167,6 +167,9 @@ const enhance = compose(
                 borderBottom: '1px #efefef solid'
             },
             '& .dottedList': {
+                '&:last-child:after': {
+                    display: 'none'
+                },
                 '&:after': {
                     left: '0.5rem',
                     right: '0.5rem'
@@ -298,7 +301,7 @@ const PricesDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>№{id} {name}</div>
+                <div className={classes.titleLabel}>№А-{id} | {name}</div>
                 <div className={classes.closeDetail}
                      onClick={() => { handleCloseDetail() }}>
                 </div>

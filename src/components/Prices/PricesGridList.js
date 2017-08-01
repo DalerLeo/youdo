@@ -130,7 +130,7 @@ const PricesGridList = enhance((props) => {
 
         return (
             <Row key={id} style={{cursor: 'pointer'}} onTouchTap = {() => { listData.handleClickDetail(id) }}>
-                <Col xs={1}>{id}</Col>
+                <Col xs={1}>А-{id}</Col>
                 <Col xs={5} >{name}</Col>
                 <Col xs={2}>{beginDate}</Col>
                 <Col xs={2}>{tillDate}</Col>
