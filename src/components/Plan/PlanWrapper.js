@@ -223,19 +223,22 @@ const PlanWrapper = enhance((props) => {
     const agentsList = _.map(_.get(usersList, 'data'), (item) => {
         const id = _.get(item, 'id')
         const username = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
+        const agentTooltip = '2 000 000 / 3 000 000 UZS'
 
         return (
-            <div key={id} className={(id === detailId) ? classes.activeAgent : classes.agent}>
-                <Link to={{
-                    pathname: sprintf(ROUTES.PLAN_ITEM_PATH, id),
-                    query: filter.getParams()
-                }}>
-                </Link>
-                <div className={classes.line}>
+            <Tooltip key={id} position="bottom" text={agentTooltip}>
+                <div className={(id === detailId) ? classes.activeAgent : classes.agent}>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.PLAN_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>
+                    </Link>
+                    <div className={classes.line}>
+                    </div>
+                    <span>{username}</span>
+                    <span>70 / 100</span>
                 </div>
-                <span>{username}</span>
-                <span>70 / 100</span>
-            </div>
+            </Tooltip>
         )
     })
 

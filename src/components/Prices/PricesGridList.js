@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -16,7 +15,7 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-import numberFormat from '../../helpers/numberFormat'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -124,9 +123,10 @@ const PricesGridList = enhance((props) => {
     const pricesList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const beginDate = moment(_.get(_.get(item, 'beginDate'), 'name')).format('YY:MM:DD')
-        const tillDate = _.get(item, 'tillDate') || 'Не указано'
-        const discount = numberFormat(_.get(item, 'discount'))
+        const beginDate = dateFormat(_.get(item, 'beginDate'))
+        const tillDate = dateFormat(_.get(item, 'tillDate'))
+        const type = _.get(item, 'type')
+        const discount = _.toNumber(_.get(item, 'discount'))
 
         return (
             <Row key={id} style={{cursor: 'pointer'}} onTouchTap = {() => { listData.handleClickDetail(id) }}>
@@ -134,7 +134,9 @@ const PricesGridList = enhance((props) => {
                 <Col xs={5} >{name}</Col>
                 <Col xs={2}>{beginDate}</Col>
                 <Col xs={2}>{tillDate}</Col>
-                <Col xs={2}>{discount}%</Col>
+                <Col xs={2}>
+                    {(type === 'bonus') ? <span>Бонус</span> : <span>Скидка - {discount}%</span>}
+                </Col>
             </Row>
         )
     })

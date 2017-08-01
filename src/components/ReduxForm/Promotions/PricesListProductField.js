@@ -100,7 +100,7 @@ const enhance = compose(
         background: {
             display: 'flex',
             padding: '10px',
-            margin: '5px -30px 0',
+            margin: '-20px -30px 0',
             backgroundColor: '#f1f5f8',
             position: 'relative',
             zIndex: '2',
@@ -169,7 +169,7 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
     return (
         <div className={classes.wrapper}>
             <div>
-                <div className={classes.headers} style={{marginTop: '-10px'}}>
+                {!state.open && <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
                     <FlatButton
                         label="+ добавить товар"
@@ -177,7 +177,7 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                         className={classes.span}
                         onTouchTap={() => dispatch({open: !state.open})}
                     />
-                </div>
+                </div>}
                 {state.open && <Row className={classes.background}>
                     <Col xs={4}>
                         <Field

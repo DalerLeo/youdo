@@ -218,7 +218,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'promotionType']) || 'bonus'
+        const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'promotionType']) || 'discount'
         return {
             type
         }
@@ -292,7 +292,7 @@ const PricesCreateDialog = enhance((props) => {
                                         floatingLabelText="Дата завершения акции"
                                         container="inline"
                                         fullWidth={true}/>
-                                    <div className={classes.halfField}>
+                                    {isDiscount && <div className={classes.halfField}>
                                         <Field
                                             name="discount"
                                             component={TextField}
@@ -301,7 +301,7 @@ const PricesCreateDialog = enhance((props) => {
                                             label="Размер скидки"
                                             hintText="10%"
                                         />
-                                    </div>
+                                    </div>}
                                 </div>
                             </div>
                             <div className={classes.rightOrderPart}>

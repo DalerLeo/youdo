@@ -7,10 +7,8 @@ import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import Person from '../Images/person.png'
 import Place from 'material-ui/svg-icons/maps/place'
-import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
-import Delivery from 'material-ui/svg-icons/maps/local-shipping'
 import Assignment from 'material-ui/svg-icons/action/assignment'
-import Warning from 'material-ui/svg-icons/alert/error-outline'
+import Money from 'material-ui/svg-icons/editor/attach-money'
 import Checked from 'material-ui/svg-icons/toggle/check-box'
 import Indeterminate from 'material-ui/svg-icons/toggle/indeterminate-check-box'
 import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
@@ -21,6 +19,10 @@ const enhance = compose(
     injectSheet({
         padding: {
             padding: '20px 30px'
+        },
+        link: {
+            fontWeight: '600',
+            borderBottom: '1px dashed'
         },
         loader: {
             width: '100%',
@@ -71,7 +73,17 @@ const enhance = compose(
         info: {
             '& > span': {
                 display: 'block',
-                lineHeight: '1.2'
+                lineHeight: '1.2',
+                '&:last-child': {
+                    fontWeight: '600'
+                }
+            }
+        },
+        infoAgent: {
+            '& > span': {
+                lineHeight: '1.2',
+                display: 'block',
+                textAlign: 'right'
             }
         },
         agent: {
@@ -109,10 +121,12 @@ const enhance = compose(
                 marginRight: '50px',
                 '& span': {
                     display: 'block',
-                    lineHeight: '1.2',
+                    lineHeight: '1',
                     color: '#666',
-                    fontSize: '14px !important',
-                    fontWeight: '600'
+                    fontWeight: '600',
+                    '&:first-child': {
+                        fontSize: '18px !important'
+                    }
                 },
                 '&:last-child': {
                     margin: '0'
@@ -120,7 +134,40 @@ const enhance = compose(
             }
         },
         warning: {
-            extend: 'done'
+            display: 'flex',
+            alignItems: 'center',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                '&:last-child': {
+                    display: 'block'
+                },
+                '& span': {
+                    display: 'block',
+                    lineHeight: '1',
+                    color: '#666',
+                    fontWeight: '600',
+                    '&:first-child': {
+                        fontWeight: 'normal !important'
+                    },
+                    '& big': {
+                        fontSize: '18px',
+                        fontWeight: '600'
+                    }
+                },
+                '& a': {
+                    lineHeight: '1'
+                }
+            }
+        },
+        slash: {
+            margin: '0 15px',
+            '& > div': {
+                width: '2px',
+                height: '35px',
+                background: '#666',
+                transform: 'rotate(15deg)'
+            }
         },
         timelineWrapper: {
             margin: '0 -30px',
@@ -382,16 +429,16 @@ const PlanDetails = enhance((props) => {
                         <div className={classes.agentInfo}>
                             <div className={classes.header}>
                                 <div className={classes.info}>
-                                    <span>Агент</span>
-                                    <span>Название зоны</span>
+                                    <span>Данные за</span>
+                                    <span>Август 2017 г.</span>
                                 </div>
                                 <div className={classes.agent}>
                                     <img src={Person} alt=""/>
                                     <div>{secondName} <br/> {firstName}</div>
                                 </div>
-                                <div className={classes.salesSummary}>
-                                    <span>Сумма <br/> от продаж</span>
-                                    <span>1 000 000 UZS (н)<br/>500 000 UZS (б)</span>
+                                <div className={classes.infoAgent}>
+                                    <span>Агент</span>
+                                    <span>Наименование зоны</span>
                                 </div>
                             </div>
                             <div className={classes.achieves}>
@@ -404,20 +451,6 @@ const PlanDetails = enhance((props) => {
                                         </div>
                                     </div>
                                     <div>
-                                        <Balance style={achieveIcon.basic}/>
-                                        <div>
-                                            <span>5</span>
-                                            <span>сделки</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <Delivery style={achieveIcon.basic}/>
-                                        <div>
-                                            <span>3 / 3</span>
-                                            <span>доставки</span>
-                                        </div>
-                                    </div>
-                                    <div>
                                         <Assignment style={achieveIcon.basic}/>
                                         <div>
                                             <span>3 / 3</span>
@@ -427,11 +460,18 @@ const PlanDetails = enhance((props) => {
                                 </div>
                                 <div className={classes.warning}>
                                     <div>
-                                        <Warning style={achieveIcon.error}/>
+                                        <Money style={achieveIcon.basic}/>
                                         <div>
-                                            <span>10</span>
-                                            <span>не выполнено</span>
+                                            <span>сумма от продаж</span>
+                                            <span><big>2 000 000</big> UZS</span>
                                         </div>
+                                    </div>
+                                    <div className={classes.slash}>
+                                        <div></div>
+                                    </div>
+                                    <div>
+                                        <span>план продаж</span>
+                                        <a className={classes.link}><big>2 000 000</big> UZS</a>
                                     </div>
                                 </div>
                             </div>
