@@ -152,6 +152,7 @@ const TransactionGridList = enhance((props) => {
         cashboxListLoading,
         confirmDialog,
         listData,
+        acceptCashDialog,
         detailData,
         cashDialog,
         cashBoxDialog,
@@ -378,6 +379,7 @@ const TransactionGridList = enhance((props) => {
                         paymentData={paymentData}
                         loading={paymentData.paymentLoading}
                         cashBoxDialog={cashBoxDialog}
+                        acceptCashDialog={acceptCashDialog}
                     />
                 </div>
             </div>

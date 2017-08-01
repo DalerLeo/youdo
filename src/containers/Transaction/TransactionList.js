@@ -33,7 +33,8 @@ import {
     transactionDeleteAction,
     transactionItemFetchAction,
     acceptClientTransactionAction,
-    acceptCashListFetchAction
+    acceptCashListFetchAction,
+    pendingTransactionFetchAction
 } from '../../actions/transaction'
 import {
     cashboxListFetchAction
@@ -56,6 +57,8 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const acceptForm = _.get(state, ['form', 'AcceptClientTransactionForm'])
         const payment = _.get(state, ['cashbox', 'pending', 'data'])
+        const acceptCashData = _.get(state, ['transaction', 'acceptCash', 'data'])
+        const acceptCashLoading = _.get(state, ['transaction', 'acceptCash', 'loading'])
         const paymentLoading = _.get(state, ['cashbox', 'pending', 'loading'])
         const filter = filterHelper(list, pathname, query)
         const filterCashbox = filterHelper(cashboxList, pathname, query)
@@ -65,6 +68,8 @@ const enhance = compose(
             cashboxList,
             cashboxListLoading,
             listLoading,
+            acceptCashData,
+            acceptCashLoading,
             detail,
             detailLoading,
             createLoading,
@@ -295,8 +300,9 @@ const enhance = compose(
         },
 
         handleOpenCashDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: true})})
+            dispatch(pendingTransactionFetchAction())
         },
 
         handleCloseCashDialog: props => () => {
@@ -335,6 +341,11 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_DIALOG_OPEN]: false})})
                 })
+        },
+        handleOpenAcceptCashDetail: props => (user, currency) => {
+            const {filter, location: {pathname}, dispatch} = props
+            hashHistory.push({pathname, query: filter.getParams({'user': user, 'currency': currency})})
+            dispatch(pendingTransactionFetchAction(user, currency))
         }
     })
 )
@@ -352,6 +363,8 @@ const TransactionList = enhance((props) => {
         createLoading,
         updateLoading,
         filter,
+        acceptCashData,
+        acceptCashLoading,
         layout,
         params,
         payment,
@@ -373,6 +386,8 @@ const TransactionList = enhance((props) => {
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'transactionId'))
+    const currencyId = _.toInteger(filter.getParam('currency'))
+    const userId = _.toInteger(filter.getParam('user'))
 
     const createExpenseDialog = {
         loading: createLoading,
@@ -390,6 +405,13 @@ const TransactionList = enhance((props) => {
         handleSubmitDialog: props.handleSubmitCreateIncomeDialog
     }
 
+    const acceptCashDialog = {
+        data: _.get(acceptCashData, 'results'),
+        loading: acceptCashLoading,
+        handleOpenAcceptCashDetail: props.handleOpenAcceptCashDetail,
+        userId,
+        currencyId
+    }
     const createSendDialog = {
         loading: createLoading,
         open: openCreateSendDialog,
@@ -500,7 +522,7 @@ const TransactionList = enhance((props) => {
         handleSubmitCashBoxDialog: props.handleSubmitCashBoxDialog
     }
     const paymentData = {
-        data: payment,
+        data: _.get(payment, 'results'),
         paymentLoading,
         currentCashBoxDetails
     }
@@ -523,6 +545,7 @@ const TransactionList = enhance((props) => {
                 filterDialog={filterDialog}
                 paymentData={paymentData}
                 cashBoxDialog={cashBoxDialog}
+                acceptCashDialog={acceptCashDialog}
             />
         </Layout>
     )

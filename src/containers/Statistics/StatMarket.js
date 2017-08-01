@@ -13,7 +13,6 @@ import * as serializers from '../../serializers/Statistics/statProductSerializer
 import getDocuments from '../../helpers/getDocument'
 import {
     statMarketListFetchAction,
-    statMarketItemFetchAction,
     statMarketDataFetchAction
 } from '../../actions/statMarket'
 
@@ -25,22 +24,16 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statMarket', 'item', 'data'])
         const graphList = _.get(state, ['statMarket', 'data', 'data'])
         const graphLoading = _.get(state, ['statMarket', 'data', 'loading'])
-        const detailLoading = _.get(state, ['statMarket', 'item', 'loading'])
         const list = _.get(state, ['statMarket', 'list', 'data'])
         const listLoading = _.get(state, ['statMarket', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatMarketFilterForm'])
-        const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
         const filter = filterHelper(list, pathname, query)
         return {
             list,
             listLoading,
-            detail,
-            detailLoading,
             filter,
-            filterItem,
             filterForm,
             graphList,
             graphLoading
@@ -106,8 +99,6 @@ const StatMarketList = enhance((props) => {
         location,
         list,
         listLoading,
-        detail,
-        detailLoading,
         filter,
         filterItem,
         filterForm,
@@ -141,7 +132,6 @@ const StatMarketList = enhance((props) => {
         filter: filterItem,
         id: detailId,
         marketDetail,
-        detailLoading,
         graphList,
         graphLoading,
         handleCloseDetail: props.handleCloseDetail,

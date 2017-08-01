@@ -55,6 +55,29 @@ export const transactionCreateExpenseAction = (formValues, cashboxId) => {
     }
 }
 
+export const pendingTransactionFetchAction = (user, currency) => {
+    const params = {
+        transaction: 0,
+        type: 'in',
+        user: user,
+        currency: currency
+    }
+
+    const payload = axios()
+        .get(API.ORDER_TRANSACTION, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_TRANSACTION,
+        payload
+    }
+}
+
 export const transactionCreateSendAction = (formValues, cashboxId) => {
     const requestData = serializers.createSendSerializer(formValues, cashboxId)
     const payload = axios()
