@@ -36,7 +36,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.TRANSACTION_CREATE),
         list: createThunkReducer(actionTypes.TRANSACTION_LIST),
         item: createThunkReducer(actionTypes.TRANSACTION_ITEM),
-        update: createThunkReducer(actionTypes.TRANSACTION_UPDATE)
+        update: createThunkReducer(actionTypes.TRANSACTION_UPDATE),
+        acceptCash: createThunkReducer(actionTypes.TRANSACTION_ACCEPT_CASH)
     }),
     clientTransaction: combineReducers({
         create: createThunkReducer(actionTypes.CLIENT_TRANSACTION_CREATE),
@@ -90,7 +91,7 @@ const rootReducer = combineReducers({
     }),
     productType: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_TYPE_CREATE),
-        list: createThunkReducer(actionTypes.PRODUCT_TYPE_LIST),
+        list: createThunkReducer(actionTypes.PRODUCT_TYPE_H_LIST),
         update: createThunkReducer(actionTypes.PRODUCT_TYPE_UPDATE),
         item: createThunkReducer(actionTypes.PRODUCT_TYPE_ITEM)
     }),
@@ -303,6 +304,7 @@ const rootReducer = combineReducers({
     stockReceive: combineReducers({
         list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
         history: createThunkReducer(actionTypes.STOCK_HISTORY_LIST),
+        print: createThunkReducer(actionTypes.ORDER_LIST_PRINT),
         transfer: createThunkReducer(actionTypes.STOCK_TRANSFER_LIST),
         transferItem: createThunkReducer(actionTypes.STOCK_TRANSFER_ITEM),
         item: createThunkReducer(actionTypes.STOCK_RECEIVE_ITEM),

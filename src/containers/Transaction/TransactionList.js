@@ -33,7 +33,7 @@ import {
     transactionDeleteAction,
     transactionItemFetchAction,
     acceptClientTransactionAction,
-    pendingTransactionFetchAction
+    acceptCashListFetchAction
 } from '../../actions/transaction'
 import {
     cashboxListFetchAction
@@ -87,11 +87,11 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevTransaction = _.get(props, ['location', 'query', TRANSACTION_CASH_DIALOG_OPEN])
-        const nextTransaction = _.get(nextProps, ['location', 'query', TRANSACTION_CASH_DIALOG_OPEN])
-        return prevTransaction !== nextTransaction && nextTransaction === 'true'
+        const prevCashList = toBoolean(_.get(props, ['location', 'query', TRANSACTION_CASH_DIALOG_OPEN]))
+        const nextCashList = toBoolean(_.get(nextProps, ['location', 'query', TRANSACTION_CASH_DIALOG_OPEN]))
+        return prevCashList !== nextCashList && nextCashList === true
     }, ({dispatch}) => {
-        dispatch(pendingTransactionFetchAction())
+        dispatch(acceptCashListFetchAction())
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -406,7 +406,8 @@ const TransactionList = enhance((props) => {
             return {
                 comment: _.get(detail, 'comment'),
                 expanseCategory: {
-                    value: _.get(detail, ['expanseCategory', 'id'])
+                    value: _.get(detail, ['expanseCategory', 'id']),
+                    text: _.get(detail, ['expanseCategory', 'name'])
                 },
                 amount: _.get(detail, 'amount')
             }

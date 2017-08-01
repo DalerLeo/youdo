@@ -22,14 +22,9 @@ export const transactionCreateIncomeAction = (formValues, cashboxId) => {
     }
 }
 
-export const pendingTransactionFetchAction = () => {
-    const params = {
-        transaction: 0,
-        type: 'in'
-    }
-
+export const acceptCashListFetchAction = () => {
     const payload = axios()
-        .get(API.ORDER_TRANSACTION, {params})
+        .get(API.TRANSACTION_ACCEPT_CASH)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -38,7 +33,7 @@ export const pendingTransactionFetchAction = () => {
         })
 
     return {
-        type: actionTypes.ORDER_TRANSACTION,
+        type: actionTypes.TRANSACTION_ACCEPT_CASH,
         payload
     }
 }

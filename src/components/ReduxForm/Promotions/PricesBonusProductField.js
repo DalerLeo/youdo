@@ -5,7 +5,7 @@ import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import Groceries from '../Images/groceries.svg'
+import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import {Field} from 'redux-form'
 import {
@@ -16,10 +16,10 @@ import {
     TableRow,
     TableRowColumn
 } from 'material-ui/Table'
-import DeleteIcon from '../DeleteIcon/index'
-import ProductTypeSearchField from './Product/ProductTypeSearchField'
-import ProductCustomSearchField from './Supply/ProductCustomSearchField'
-import TextField from './Basic/TextField'
+import DeleteIcon from '../../DeleteIcon/index'
+import ProductTypeSearchField from '../Product/ProductTypeSearchField'
+import ProductCustomSearchField from '../Supply/ProductCustomSearchField'
+import TextField from '../Basic/TextField'
 import Check from 'material-ui/svg-icons/navigation/check'
 
 const enhance = compose(
@@ -112,8 +112,7 @@ const enhance = compose(
         background: {
             display: 'flex',
             padding: '10px',
-            margin: '0',
-            marginTop: '5px',
+            margin: '5px -30px 0',
             backgroundColor: '#f1f5f8',
             position: 'relative',
             zIndex: '2',
@@ -176,7 +175,7 @@ const enhance = compose(
     })
 )
 
-const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
+const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     return (
@@ -277,4 +276,4 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
     )
 }
 
-export default enhance(PricesListProductField)
+export default enhance(PricesBonusProductField)

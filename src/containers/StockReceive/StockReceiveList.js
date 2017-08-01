@@ -3,12 +3,13 @@ import _ from 'lodash'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
 import * as STOCK_TAB from '../../constants/stockReceiveTab'
+import {OrderPrint} from '../../components/Order'
 import {
     StockReceiveGridList,
     STOCK_RECEIVE_CREATE_DIALOG_OPEN,
@@ -28,7 +29,12 @@ import {
     stockReceiveItemConfirmAction,
     stockReceiveItemReturnAction
 } from '../../actions/stockReceive'
-import {orderReturnListAction} from '../../actions/order'
+import {
+    orderListPintFetchAction,
+    orderReturnListAction
+}
+
+from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
@@ -60,10 +66,15 @@ const enhance = compose(
         const barcodeListLoading = _.get(state, ['stockReceive', 'barcodeList', 'loading'])
         const createLoading = _.get(state, ['stockReceive', 'create', 'loading'])
         const createForm = _.get(state, ['form', 'StockReceiveCreateForm'])
+        const printList = _.get(state, ['stockReceive', 'print', 'data'])
+        const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
         const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
         const productId = _.toNumber(_.get(state, ['form', 'StockReceiveCreateForm', 'values', 'product', 'value', 'id']))
-        const filter = filterHelper(list, pathname, query)
+        const filter = filterHelper((_.get(query, 'tab') === 'receive' || _.get(query, 'tab') === 'receiveHistory')
+                                                            ? list : (_.get(query, 'tab') === 'transfer' || _.get(query, 'tab') === 'transferHistory')
+                                                              ? transferList : (_.get(query, 'tab') === 'outHistory')
+                                                                ? historyList : list, pathname, query)
 
         return {
             list,
@@ -84,6 +95,8 @@ const enhance = compose(
             createForm,
             isDefect,
             productId,
+            printList,
+            printLoading,
             historyFilterForm
         }
     }),
@@ -101,7 +114,11 @@ const enhance = compose(
         } else if (currentTab === 'outHistory') {
             dispatch(stockHistoryListFetchAction(filter))
         } else if (currentTab === 'transferHistory') {
-            dispatch(stockTransferListFetchAction(filter))
+            const history = true
+            dispatch(stockTransferListFetchAction(filter, history))
+        } else if (currentTab === 'receiveHistory') {
+            const history = true
+            dispatch(stockReceiveListFetchAction(filter, history))
         }
     }),
 
@@ -113,7 +130,7 @@ const enhance = compose(
         const currentTab = _.get(location, ['query', 'tab']) || 'receive'
         const stockReceiveType = _.get(location, ['query', 'openType'])
         const stockReceiveId = _.toInteger(_.get(params, 'stockReceiveId'))
-        if (stockReceiveId > ZERO && currentTab === 'receive') {
+        if (stockReceiveId > ZERO && (currentTab === 'receive' || currentTab === 'receiveHistory')) {
             if (stockReceiveType === 'supply') {
                 dispatch(stockReceiveItemFetchAction(stockReceiveId))
             } else if (stockReceiveType === 'transfer') {
@@ -121,12 +138,27 @@ const enhance = compose(
             } else if (stockReceiveType === 'order_return') {
                 dispatch(orderReturnListAction(stockReceiveId))
             }
-        } else if (stockReceiveId > ZERO && currentTab === 'transfer') {
+        } else if ((currentTab === 'transfer' || currentTab === 'transferHistory') && stockReceiveId > ZERO) {
             dispatch(stockTransferItemFetchAction(stockReceiveId))
         }
     }),
 
+    withState('openPrint', 'setOpenPrint', false),
+
     withHandlers({
+        handleOpenPrintDialog: props => (id) => {
+            const {setOpenPrint, dispatch, filter} = props
+            setOpenPrint(true)
+            dispatch(orderListPintFetchAction(filter, id))
+                .then(() => {
+                    window.print()
+                })
+        },
+
+        handleClosePrintDialog: props => () => {
+            const {setOpenPrint} = props
+            setOpenPrint(false)
+        },
         handleTabChange: props => (tab) => {
             hashHistory.push({
                 pathname: 'stockReceive',
@@ -243,7 +275,7 @@ const enhance = compose(
         },
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParamss()})
+            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams()})
         },
         handleOpenDetail: props => (id, type) => {
             const {filter} = props
@@ -273,6 +305,9 @@ const StockReceiveList = enhance((props) => {
         isDefect,
         filter,
         layout,
+        openPrint,
+        printList,
+        printLoading,
         params
     } = props
     const detailType = _.get(location, ['query', TYPE])
@@ -302,18 +337,25 @@ const StockReceiveList = enhance((props) => {
     }
 
     const transferData = {
+        handleOpenDetail: props.handleOpenDetail,
         data: _.get(transferList, 'results'),
         transferListLoading
     }
-
+    const orderData = {
+        data: printList,
+        printLoading
+    }
     const currentTransferDetail = _.find(_.get(transferList, 'results'), {'id': detailId})
+
     const transferDetailData = {
+        type: detailType,
         id: detailId,
         data: transferDetail,
         transferDetailLoading,
         currentTransferDetail
     }
     const currentDetail = _.find(_.get(list, 'results'), {'id': detailId})
+
     const detailData = {
         type: detailType,
         id: detailId,
@@ -378,6 +420,20 @@ const StockReceiveList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
+    const printDialog = {
+        openPrint,
+        handleOpenPrintDialog: props.handleOpenPrintDialog,
+        handleClosePrintDialog: props.handleClosePrintDialog
+    }
+
+    if (openPrint) {
+        document.getElementById('wrapper').style.height = 'auto'
+
+        return <OrderPrint
+            printDialog={printDialog}
+            listPrintData={orderData}/>
+    }
+
     return (
         <Layout {...layout}>
             <StockReceiveGridList
@@ -392,6 +448,7 @@ const StockReceiveList = enhance((props) => {
                 createDialog={createDialog}
                 handleCloseDetail={handleCloseDetail}
                 confirmDialog={confirmDialog}
+                printDialog={printDialog}
             />
         </Layout>
     )

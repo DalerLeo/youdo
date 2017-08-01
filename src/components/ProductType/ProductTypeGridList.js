@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
@@ -15,6 +14,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
+import dateFormat from '../../helpers/dateFormat'
 import GridList from '../GridList'
 import Container from '../Container'
 import ProductTypeCreateDialog from './ProductTypeCreateDialog'
@@ -25,19 +25,13 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         sorting: true,
-        name: 'id',
-        xs: 2,
-        title: 'Id'
-    },
-    {
-        sorting: true,
         name: 'name',
-        xs: 5,
-        title: 'Наименование'
+        xs: 8,
+        title: 'Категории'
     },
     {
         sorting: true,
-        xs: 4,
+        xs: 3,
         name: 'created_date',
         title: 'Дата создания'
     },
@@ -63,11 +57,35 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         },
+        rowWithParent: {
+            flexWrap: 'wrap',
+            '& > div:first-child': {
+                fontWeight: '600'
+            }
+        },
+        rowWithoutParent: {
+            '& > div:first-child': {
+                fontWeight: '600'
+            }
+        },
+        subCategory: {
+            width: '100%',
+            borderTop: '1px #efefef solid',
+            display: 'flex',
+            alignItems: 'center',
+            '& > div:first-child': {
+                paddingLeft: '50px'
+            },
+            '& > div:last-child': {
+                paddingRight: '0'
+            }
+        },
         marginLeft: {
             marginLeft: '20px !important'
         },
         right: {
-            textAlign: 'right'
+            textAlign: 'right',
+            paddingRight: '0'
         }
     })
 )
@@ -99,21 +117,73 @@ const ProductTypeGridList = enhance((props) => {
     const productTypeDetail = (
         <span>a</span>
     )
-
     const productTypeList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const hasChild = !_.isEmpty(_.get(item, 'children'))
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
             </IconButton>
         )
+        if (hasChild) {
+            return (
+                <Row key={id} className={classes.rowWithParent}>
+                    <Col xs={8}>{name}</Col>
+                    <Col xs={3}>{createdDate}</Col>
+                    <Col xs={1} className={classes.right}>
+                        <IconMenu
+                            iconButtonElement={iconButton}
+                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                            <MenuItem
+                                primaryText="Изменить"
+                                leftIcon={<Edit />}
+                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                            />
+                            <MenuItem
+                                primaryText="Удалить "
+                                leftIcon={<DeleteIcon />}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                            />
+                        </IconMenu>
+                    </Col>
+                    {_.map(_.get(item, 'children'), (child) => {
+                        const childName = _.get(child, 'name')
+                        const childId = _.get(child, 'id')
+                        const childCreatedDate = dateFormat(_.get(child, 'createdDate'))
+                        return (
+                            <div key={childId} className={classes.subCategory}>
+                                <Col xs={8}>{childName}</Col>
+                                <Col xs={3}>{childCreatedDate}</Col>
+                                <Col xs={1} className={classes.right}>
+                                    <IconMenu
+                                        iconButtonElement={iconButton}
+                                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                                        <MenuItem
+                                            primaryText="Изменить"
+                                            leftIcon={<Edit />}
+                                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(childId) }}
+                                        />
+                                        <MenuItem
+                                            primaryText="Удалить "
+                                            leftIcon={<DeleteIcon />}
+                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(childId) }}
+                                        />
+                                    </IconMenu>
+                                </Col>
+                            </div>
+                        )
+                    })}
+                </Row>
+            )
+        }
         return (
-            <Row key={id}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={5}>{name}</Col>
-                <Col xs={4}>{createdDate}</Col>
+            <Row key={id} className={classes.rowWithoutParent}>
+                <Col xs={8}>{name}</Col>
+                <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -160,6 +230,7 @@ const ProductTypeGridList = enhance((props) => {
                 list={list}
                 detail={productTypeDetail}
                 actionsDialog={actions}
+                flexibleRow={true}
             />
 
             <ProductTypeCreateDialog

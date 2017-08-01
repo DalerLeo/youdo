@@ -8,6 +8,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
+import Details from './StockTransferDetails'
 
 const listHeader = [
     {
@@ -19,7 +20,7 @@ const listHeader = [
     {
         name: 'amount',
         title: 'Дата запроса',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -72,6 +73,8 @@ const StockTabTransferHistory = enhance((props) => {
         filter,
         filterDialog,
         listData,
+        detailData,
+        handleCloseDetail,
         classes
     } = props
 
@@ -84,7 +87,12 @@ const StockTabTransferHistory = enhance((props) => {
     )
 
     const historyDetail = (
-        <span>a</span>
+        <Details
+            detailData={detailData || {}}
+            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
+            handleCloseDetail={handleCloseDetail}
+            loading={_.get(detailData, 'transferDetailLoading')}
+            confirm={false}/>
     )
     const listLoading = _.get(listData, 'listLoading')
     const historyList = _.map(_.get(listData, 'data'), (item) => {
@@ -92,12 +100,16 @@ const StockTabTransferHistory = enhance((props) => {
         const dateRequest = moment(_.get(item, 'dateRequest')).format('DD.MM.YYYY')
         const dateDelivery = moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY')
         const receiver = _.get(item, ['receiver'])
-
+        const stockId = _.get(item, ['stock', 'id'])
+        const stockName = _.get(item, ['stock', 'name'])
         return (
-            <Row key={id}>
-                <Col xs={2}>{id}</Col>
+            <Row key={id + '_' + stockId} style={{position: 'relative'}}>
+                <div className={classes.closeDetail}
+                     onClick={handleCloseDetail}>
+                </div>
+                <Col xs={2} onClick={() => { listData.handleOpenDetail(id, stockId) }}>{id}</Col>
                 <Col xs={3}>{dateRequest}</Col>
-                <Col xs={2}>Заказ</Col>
+                <Col xs={2}>{stockName}</Col>
                 <Col xs={3}>{receiver}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
             </Row>

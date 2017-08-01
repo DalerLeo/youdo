@@ -39,7 +39,7 @@ export const createSerializer = (data, detail) => {
     }
 }
 
-export const listFilterSerializer = (data) => {
+export const listFilterSerializer = (data, history) => {
     const {...defaultData} = data
     const type = (_.toInteger(_.get(defaultData, 'type')) === _.toInteger(ONE)) ? ZERO
                     : (_.toInteger(_.get(defaultData, 'type')) === _.toInteger(TWO)) ? ONE
@@ -56,7 +56,8 @@ export const listFilterSerializer = (data) => {
         'from_date': _.get(defaultData, 'fromDate'),
         'to_date': _.get(defaultData, 'toDate'),
         'product_type': _.get(defaultData, 'productType'),
-        'ordering': ordering && orderingSnakeCase(ordering)
+        'ordering': ordering && orderingSnakeCase(ordering),
+        history
 
     }
 }

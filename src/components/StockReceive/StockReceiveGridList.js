@@ -112,6 +112,7 @@ const StockReceiveGridList = enhance((props) => {
         filterDialog,
         detailData,
         filter,
+        printDialog,
         tabData,
         classes,
         handleCloseDetail,
@@ -130,8 +131,9 @@ const StockReceiveGridList = enhance((props) => {
                 onChange={(value) => tabData.handleTabChange(value)}>
                 <Tab label="Приемка" value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
                 <Tab label="Передача" value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
-                <Tab label="История транзакций" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
-                <Tab label="История передачи" value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
+                <Tab label="Транзакция" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
+                <Tab label="История Приемки" value={TAB.STOCK_RECEIVE_TAB_HISTORY}/>
+                <Tab label="История Передачи" value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
             </Tabs>
             {TAB.STOCK_RECEIVE_TAB_RECEIVE === tab && <TabReceive
                 filter={filter}
@@ -140,6 +142,9 @@ const StockReceiveGridList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 handleCloseDetail={handleCloseDetail}
                 createDialog={createDialog}
+                filterDialog={filterDialog}
+                history={false}
+
             />}
             {TAB.STOCK_RECEIVE_TAB_TRANSFER === tab && <TabTransfer
                 filter={filter}
@@ -147,6 +152,8 @@ const StockReceiveGridList = enhance((props) => {
                 detailData={transferDetail}
                 handleCloseDetail={handleCloseDetail}
                 confirmDialog={confirmDialog}
+                filterDialog={filterDialog}
+                printDialog={printDialog}
             />}
             {TAB.STOCK_RECEIVE_TAB_OUT_HISTORY === tab && <TabHistory
                 filter={filter}
@@ -157,7 +164,22 @@ const StockReceiveGridList = enhance((props) => {
                 filter={filter}
                 listData={transferData}
                 filterDialog={filterDialog}
+                detailData={transferDetail}
+                handleCloseDetail={handleCloseDetail}
+                printDialog={printDialog}
             />}
+            {TAB.STOCK_RECEIVE_TAB_HISTORY === tab && <TabReceive
+                filter={filter}
+                listData={listData}
+                detailData={detailData}
+                confirmDialog={confirmDialog}
+                handleCloseDetail={handleCloseDetail}
+                createDialog={createDialog}
+                filterDialog={filterDialog}
+                history={true}
+
+            />}
+
         </div>
     )
 

@@ -9,10 +9,14 @@ export const createSerializer = (data) => {
     const comment = _.get(data, ['comment'])
     const contact = _.get(data, ['contact'])
     const products = _.map(_.get(data, ['products']), (item) => {
+        const amount = _.get(item, 'amount')
+        const itemCost = _.get(item, 'cost')
+        const summary = _.toInteger(amount) * _.toInteger(itemCost)
+        const product = _.get(item, ['product', 'value', 'id'])
         return {
-            amount: item.amount,
-            cost: item.cost,
-            product: item.product.value.id
+            amount: amount,
+            cost: summary,
+            product: product
         }
     })
 

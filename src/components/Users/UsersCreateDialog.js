@@ -53,9 +53,6 @@ const enhance = compose(
         },
         dialogAddUser: {
             overflowY: 'auto !important',
-            '& div:first-child div:first-child': {
-                transform: 'translate(0px, 0px) !important'
-            },
             '& .imageDropZone': {
                 width: '150px !important',
                 height: '145px !important',
@@ -77,6 +74,21 @@ const enhance = compose(
         inContent: {
             '& .dottedList': {
                 padding: '5px'
+            }
+        },
+        bottomButtonUsers: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '59px',
+            borderTop: '1px #efefef solid',
+            padding: '0 10px 0 30px',
+            zIndex: '999',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
             }
         }
     })),
@@ -191,7 +203,13 @@ const UsersCreateDialog = enhance((props) => {
                             </Col>
                         </Row>
                     </div>
-                    <div className={classes.bottomButton}>
+                    <div className={classes.bottomButtonUsers}>
+                        <div>
+                            <Field
+                                name="isActive"
+                                component={CheckBox}
+                                label="Активный"/>
+                        </div>
                         <FlatButton
                             label="Сохранить"
                             className={classes.actionButton}

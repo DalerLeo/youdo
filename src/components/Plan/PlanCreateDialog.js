@@ -1,14 +1,14 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer} from 'recompose'
+import {compose, withReducer, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
+import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
-import Group from 'material-ui/svg-icons/social/group'
 import Person from 'material-ui/svg-icons/social/person'
 import toCamelCase from '../../helpers/toCamelCase'
 import DateToDate from '../ReduxForm/Basic/DateToDateFieldCustom'
@@ -106,7 +106,8 @@ const enhance = compose(
             width: '300px',
             borderRight: '1px #efefef solid',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            zIndex: '10'
         },
         dateBlock: {
             padding: '20px 30px'
@@ -174,31 +175,67 @@ const enhance = compose(
         agents: {
             display: 'flex',
             justifyContent: 'center',
+            alignItems: 'center',
             position: 'absolute',
+            top: '0',
             bottom: '0',
             left: '0',
             right: '0',
-            zIndex: '10'
+            zIndex: '8',
+            transition: 'all 300ms ease-out'
+        },
+        agentsActive: {
+            extend: 'agents',
+            top: 'calc(100% - 66px)',
+            '& > div': {
+                minWidth: '100%',
+                maxWidth: '100%'
+            }
+        },
+        agentsWrapper: {
+            display: 'flex',
+            padding: '0 40px',
+            lineHeight: '1.2',
+            alignItems: 'center',
+            height: '66px',
+            transition: 'all 300ms ease-out !important',
+            minWidth: '0'
+        },
+        chooseAgent: {
+            fontWeight: 'bold',
+            paddingRight: '15px',
+            borderRight: '1px #efefef solid'
         },
         agentItem: {
             background: '#fff',
-            height: '42px',
-            width: '142px',
+            height: '45px',
             display: 'flex',
             alignItems: 'center',
-            borderLeft: '8px solid',
-            padding: '0 10px',
-            margin: '0 10px',
-            opacity: '0.8',
+            margin: '0 15px',
+            cursor: 'pointer',
             '& span': {
-                color: '#333 !important',
-                lineHeight: '1.2'
+                color: '#333',
+                display: 'block',
+                lineHeight: '1.2',
+                '&:first-child': {
+                    fontWeight: '600'
+                },
+                '&:last-child': {
+                    color: '#666'
+                }
+            },
+            '& > div': {
+                zIndex: '8',
+                display: 'flex',
+                borderBottom: '3px solid',
+                padding: '8px 0'
             }
         },
         imgPlace: {
             display: 'flex',
             alignItems: 'center',
             width: '30px',
+            minWidth: '30px',
             height: '30px',
             borderRadius: '50%',
             background: '#9aa6b3',
@@ -210,7 +247,26 @@ const enhance = compose(
         },
         agentItemActive: {
             extend: 'agentItem',
-            opacity: '1'
+            position: 'relative',
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                top: '-11px',
+                bottom: '-10px',
+                left: '-15px',
+                right: '-15px',
+                background: '#f3f6f9',
+                zIndex: '2'
+            }
+        },
+        map: {
+            height: '100%',
+            filter: 'blur(0px)',
+            transition: 'all 200ms ease'
+        },
+        mapBlurred: {
+            extend: 'map',
+            filter: 'blur(3px)'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -253,6 +309,7 @@ const enhance = compose(
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
+    withState('isActiveAgent', 'setActiveAgent', false)
 )
 
 const customContentStyle = {
@@ -260,12 +317,18 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const PlanCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, isUpdate, zonesList, zonesLoading} = props
+    const {
+        open,
+        handleSubmit,
+        onClose,
+        classes,
+        isUpdate,
+        zonesList,
+        zonesLoading,
+        isActiveAgent,
+        setActiveAgent
+    } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const mapCenter = {
-        lat: 55.40718864159901,
-        lng: 10.34912109375
-    }
     const agentIcon = {
         color: '#fff',
         width: 20,
@@ -294,7 +357,7 @@ const PlanCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                     <div className={classes.inContent}>
-                        <div className={classes.leftSide}>
+                        <Paper zDepth={2} className={classes.leftSide}>
                             <div className={classes.titleContent}>
                                 <span>{isUpdate ? 'Изменение плана' : 'Составление плана'}</span>
                                 <IconButton onTouchTap={onClose}>
@@ -328,23 +391,40 @@ const PlanCreateDialog = enhance((props) => {
                                         : zones}
                                 </div>
                             </div>
-                        </div>
+                        </Paper>
                         <div className={classes.rightSide}>
-                            <div className={classes.agents}>
-                                <div className={classes.agentItem} style={{color: '#ebe8de'}}>
-                                    <div className={classes.imgPlace}>
-                                        <Group style={agentIcon}/>
+                            <div onClick={() => { isActiveAgent ? setActiveAgent(false) : setActiveAgent(true) }} className={isActiveAgent ? classes.agentsActive : classes.agents}>
+                                <Paper zDepth={2} className={classes.agentsWrapper}>
+                                    <div className={classes.chooseAgent}>
+                                        <span>Выберите <br/>агента</span>
                                     </div>
-                                    <span>Все <br/> агенты</span>
-                                </div>
-                                <div className={classes.agentItemActive} style={{color: '#035f87'}}>
-                                    <div className={classes.imgPlace}>
-                                        <Person style={agentIcon}/>
+                                    <div className={classes.agentItem} style={{color: '#62d6a0'}}>
+                                        <div>
+                                            <div className={classes.imgPlace}>
+                                                <Person style={agentIcon}/>
+                                            </div>
+                                            <div>
+                                                <span>Бекзод Азизжанов</span>
+                                                <span>15 магазинов</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <span>Бекзод <br/> Азизжанов</span>
-                                </div>
+                                    <div className={classes.agentItemActive} style={{color: '#eeab21'}}>
+                                        <div>
+                                            <div className={classes.imgPlace}>
+                                                <Person style={agentIcon}/>
+                                            </div>
+                                            <div>
+                                                <span>Бекзод Азизжанов</span>
+                                                <span>15 магазинов</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Paper>
                             </div>
-                            <GoogleMap center={mapCenter}/>
+                            <div className={isActiveAgent ? classes.map : classes.mapBlurred}>
+                                <GoogleMap/>
+                            </div>
                         </div>
                     </div>
                 </form>

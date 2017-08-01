@@ -9,12 +9,14 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
+import {connect} from 'react-redux'
 import {
-    ProviderContactsField,
     PricesListProductField,
+    PricesBonusProductField,
     TextField,
     DateField
 } from '../ReduxForm'
+import PromotionsRadioButton from '../ReduxForm/Promotions/PromotionsRadioButton'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const PRICES_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -42,21 +44,7 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         podlojkaScroll: {
-            overflowY: 'auto !important',
-            padding: '0 !important',
-            '& > div:first-child > div:first-child': {
-                transform: 'translate(0px, 0px) !important'
-            },
-            '& > div': {
-                height: '100% !important',
-                '& > div': {
-                    height: '100% !important',
-                    padding: '50px 0',
-                    '& > div': {
-                        height: '100%'
-                    }
-                }
-            }
+            overflowY: 'auto !important'
         },
         popUp: {
             background: '#fff',
@@ -66,7 +54,6 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            minHeight: '700px',
             maxHeight: 'inherit !important'
         },
         titleContent: {
@@ -89,8 +76,7 @@ const enhance = compose(
         inContent: {
             display: 'flex',
             color: '#333',
-            height: '100%',
-            padding: '0 30px'
+            height: '100%'
         },
         innerWrap: {
             height: 'calc(100% - 57px)'
@@ -115,7 +101,7 @@ const enhance = compose(
             alignItems: 'center',
             marginBottom: '5px !important',
             justifyContent: 'space-between',
-            fontWeight: '600',
+            fontWeight: 'bold',
             padding: '0 !important',
             '& span': {
                 fontWeight: '600 !important'
@@ -123,8 +109,20 @@ const enhance = compose(
         },
         radioButton: {
             marginTop: '10px',
-            '&>div': {
-                marginBottom: '10px'
+            '& > div > div > div': {
+                marginBottom: '5px',
+                '& svg': {
+                    width: '22px !important',
+                    height: '22px !important',
+                    '&:first-child': {
+                        color: '#999 !important',
+                        fill: '#999 !important'
+                    },
+                    '&:last-child': {
+                        color: '#666 !important',
+                        fill: '#666 !important'
+                    }
+                }
             }
         },
         condition: {
@@ -158,16 +156,21 @@ const enhance = compose(
             margin: '0 !important'
         },
         leftOrderPart: {
-            flexBasis: '35%',
-            padding: '20px 30px 20px 0',
+            flexBasis: '30%',
+            maxWidth: '30%',
+            padding: '20px 30px',
             borderRight: '1px #efefef solid'
         },
         rightOrderPart: {
-            flexBasis: '65%',
-            maxWidth: '65%',
-            padding: '20px 1px 20px 30px',
+            flexBasis: '70%',
+            maxWidth: '70%',
+            padding: '20px 30px',
             maxHeight: '694px',
+            minHeight: '500px',
             overflow: 'auto'
+        },
+        halfField: {
+            width: '50%'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -213,16 +216,27 @@ const enhance = compose(
     reduxForm({
         form: 'PricesCreateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'promotionType']) || 'discount'
+        return {
+            type
+        }
     })
 )
 
 const customContentStyle = {
-    width: '1000px',
+    width: '930px',
     maxWidth: 'none'
 }
 const PricesCreateDialog = enhance((props) => {
-    const {openDialog, handleSubmit, onClose, classes, isUpdate} = props
+    const {openDialog, handleSubmit, onClose, classes, isUpdate, type} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+
+    let isDiscount = false
+    if (type === 'discount') {
+        isDiscount = true
+    }
 
     return (
         <Dialog
@@ -234,7 +248,7 @@ const PricesCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение акции' : 'Добавление акции'}</span>
+                <span>{isUpdate ? 'Изменение акции' : 'Новая акция'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -252,15 +266,18 @@ const PricesCreateDialog = enhance((props) => {
                                         name="name"
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        label="Название акции"
+                                        label="Название новой акции"
                                         fullWidth={true}/>
-                                    <Field
-                                        name="contact"
-                                        component={ProviderContactsField}
-                                    />
+                                    <div className={classes.radioButton}>
+                                        <Field
+                                            name="promotionType"
+                                            style={{marginTop: '10px'}}
+                                            component={PromotionsRadioButton}
+                                        />
+                                    </div>
                                 </div>
                                 <div className={classes.condition}>
-                                    <div className={classes.subTitleOrder}>Условия акции </div>
+                                    <div className={classes.subTitleOrder}>Условия акции</div>
                                     <Field
                                         name="beginDate"
                                         component={DateField}
@@ -275,29 +292,44 @@ const PricesCreateDialog = enhance((props) => {
                                         floatingLabelText="Дата завершения акции"
                                         container="inline"
                                         fullWidth={true}/>
-                                    <Field
-                                        name="discount"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Размер акции"
-                                        /> %
+                                    <div className={classes.halfField}>
+                                        <Field
+                                            name="discount"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}
+                                            label="Размер скидки"
+                                            hintText="10%"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div className={classes.rightOrderPart}>
-                                <Fields
-                                    names={['products', 'product', 'amount']}
-                                    component={PricesListProductField}
-                                />
+                                {isDiscount
+                                    ? <Fields
+                                        names={['products', 'product', 'amount']}
+                                        component={PricesListProductField}/>
+                                    : <Fields
+                                        names={['products', 'product', 'amount']}
+                                        component={PricesBonusProductField}/>
+                                    }
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                        <FlatButton
-                            label="Добавить акцию"
-                            className={classes.actionButton}
-                            primary={true}
-                            type="submit"
-                        />
+                        {isDiscount
+                            ? <FlatButton
+                                label="Оформить заказ"
+                                className={classes.actionButton}
+                                primary={true}
+                                type="submit"
+                            />
+                            : <FlatButton
+                                label="Добавить акции"
+                                className={classes.actionButton}
+                                primary={true}
+                                type="submit"
+                            />}
                     </div>
                 </form>
             </div>
