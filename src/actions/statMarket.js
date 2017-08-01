@@ -57,3 +57,18 @@ export const getDocumentAction = (filter) => {
         payload
     }
 }
+export const statMarketDataFetchAction = (market) => {
+    const payload = axios()
+        .get(sprintf(API.STAT_MARKET_DATA), {'params': {'market': market}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_MARKET_DATA,
+        payload
+    }
+}

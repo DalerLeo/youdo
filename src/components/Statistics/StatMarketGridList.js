@@ -12,6 +12,7 @@ import TextField from '../ReduxForm/Basic/TextField'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from './StatSideMenu'
 import SubMenu from '../SubMenu'
+import LinearLoading from '../LinearProgress'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -21,7 +22,9 @@ import Pagination from '../GridList/GridListNavPagination'
 import StatMarketDialog from './StatMarketDialog'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import ReactHighcharts from 'react-highcharts'
 import NotFound from '../Images/not-found.png'
+import dateFormat from '../../helpers/dateFormat'
 
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
@@ -58,7 +61,7 @@ const enhance = compose(
             }
         },
         tableWrapper: {
-            height: 'calc(100% - 118px)',
+            height: 'calc(100% - 140px)',
             overflowY: 'auto',
             overflowX: 'hidden',
             '& .row': {
@@ -173,6 +176,24 @@ const enhance = compose(
                 height: '50px !important',
                 color: '#999 !important'
             }
+        },
+        summary: {
+            padding: '14px 0',
+            color: '#666',
+            '& > div': {
+                fontSize: '24px',
+                color: '#333',
+                fontWeigh: '600'
+
+            }
+        },
+        pagination: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            '& div:first-child': {
+                fontWeight: '600'
+            }
         }
     }),
     reduxForm({
@@ -194,11 +215,98 @@ const StatMarketGridList = enhance((props) => {
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
-
+    const graphLoading = _.get(detailData, ['graphLoading'])
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
         color: '#666'
+    }
+
+    let sum = 0
+    const value = _.map(_.get(detailData, ['graphList']), (item) => {
+        sum += _.toInteger(_.get(item, 'amount'))
+        return _.toInteger(_.get(item, 'amount'))
+    })
+
+    const valueName = _.map(_.get(detailData, ['graphList']), (item) => {
+        return dateFormat(_.get(item, 'date'))
+    })
+
+    const config = {
+        chart: {
+            type: 'column',
+            height: 145
+        },
+        title: {
+            text: '',
+            style: {
+                display: 'none'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            categories: valueName,
+            tickmarkPlacement: 'on',
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            },
+            gridLineColor: '#efefef',
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        plotOptions: {
+            series: {
+                lineWidth: 0,
+                pointPlacement: 'on'
+            },
+            column: {
+                fillOpacity: 0.7
+            }
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: ' ' + getConfig('PRIMARY_CURRENCY'),
+            backgroundColor: '#363636',
+            style: {
+                color: '#fff'
+            },
+            borderRadius: 2,
+            borderWidth: 0,
+            enabled: true,
+            shadow: false,
+            useHTML: true,
+            crosshairs: true,
+            pointFormat: '{series.name}: <b>{point.y}</b>'
+        },
+        series: [{
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
+            name: 'Сумма',
+            data: value,
+            color: '#378ca2'
+
+        }]
     }
     const iconStyle = {
         icon: {
@@ -216,7 +324,8 @@ const StatMarketGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={3}>Магазины</Col>
-            <Col xs={6}>Продажи</Col>
+            <Col xs={3}>Клиент</Col>
+            <Col xs={3}>Продажи</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
         </Row>
     )
@@ -225,7 +334,42 @@ const StatMarketGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const percent = _.get(item, 'percent')
+        const clientName = _.get(item, 'clientName')
         const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
+
+        if (id === _.get(detailData, 'id')) {
+            return (
+                <div key={id}>
+                    <Row>
+                        <Col xs={3}>
+                            <img src="http://www.shop-script.su/images/internet-biznes/market-store-icon.jpg" alt=""/>
+                            <span>{name}</span>
+                        </Col>
+                        <Col xs={3}>{clientName}</Col>
+                        <Col xs={3}>
+                            <LinearProgress
+                                color="#58bed9"
+                                mode="determinate"
+                                value={percent}
+                                style={{backgroundColor: '#fff', height: '10px'}}/>
+                        </Col>
+                        <Col xs={2} style={{justifyContent: 'flex-end'}}>{income}</Col>
+                        <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
+                            <IconButton
+                                onTouchTap={() => { detailData.handleCloseDetail() }}>
+                                <List color="#12aaeb"/>
+                            </IconButton>
+                        </Col>
+                    </Row>
+                    {graphLoading ? <div style={{position: 'relative'}}><LinearLoading/></div>
+                        : <ReactHighcharts
+                        config={config}
+                        neverReflow={true}
+                        isPureConfig={true}
+                        />}
+                </div>
+            )
+        }
 
         return (
             <Row key={id} className="dottedList">
@@ -233,7 +377,8 @@ const StatMarketGridList = enhance((props) => {
                     <img src="http://www.shop-script.su/images/internet-biznes/market-store-icon.jpg" alt=""/>
                     <span>{name}</span>
                 </Col>
-                <Col xs={6}>
+                <Col xs={3}>{clientName}</Col>
+                <Col xs={3}>
                     <LinearProgress
                         color="#58bed9"
                         mode="determinate"
@@ -243,7 +388,7 @@ const StatMarketGridList = enhance((props) => {
                 <Col xs={2} style={{justifyContent: 'flex-end'}}>{income}</Col>
                 <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
                     <IconButton
-                        onTouchTap={() => { statMarketDialog.handleOpenStatMarketDialog(id) }}>
+                        onTouchTap={() => { detailData.handleOpenDetail(id) }}>
                         <List color="#12aaeb"/>
                     </IconButton>
                 </Col>
@@ -291,7 +436,15 @@ const StatMarketGridList = enhance((props) => {
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>
-                            <Pagination filter={filter}/>
+                            <div className={classes.summary}>Сумма от продаж
+                                <div>
+                                    {numberFormat(sum, 'SUM')}
+                                </div>
+                            </div>
+                            <div className={classes.pagination}>
+                                <div>Продажи по магазинам в зоне</div>
+                                <Pagination filter={filter}/>
+                            </div>
                             {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
                                 <div>По вашему запросу ничего не найдено</div>
                             </div>

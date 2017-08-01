@@ -283,7 +283,8 @@ const rootReducer = combineReducers({
     }),
     statMarket: combineReducers({
         list: createThunkReducer(actionTypes.STAT_MARKET_LIST),
-        item: createThunkReducer(actionTypes.STAT_MARKET_ITEM)
+        item: createThunkReducer(actionTypes.STAT_MARKET_ITEM),
+        data: createThunkReducer(actionTypes.STAT_MARKET_DATA)
     }),
     statIncome: combineReducers({
         data: createThunkReducer(actionTypes.STAT_INCOME_DATA),
