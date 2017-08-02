@@ -9,6 +9,7 @@ const TRANSACTION_CREATE_SEND_DIALOG_OPEN = 'openSendDialog'
 const TRANSACTION_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const TRANSACTION_CASH_DIALOG_OPEN = 'openAcceptCashDialog'
 const TRANSACTION_ACCEPT_DIALOG_OPEN = 'openAcceptTransactionDialog'
+const TRANSACTION_ACCEPT_CASH_DETAIL_OPEN = 'openAcceptCashDetail'
 
 export {
 
@@ -22,5 +23,6 @@ export {
     TRANSACTION_FILTER_OPEN,
     TRANSACTION_CASH_DIALOG_OPEN,
     TRANSACTION_ACCEPT_DIALOG_OPEN,
-    TransactionGridList
+    TransactionGridList,
+    TRANSACTION_ACCEPT_CASH_DETAIL_OPEN
 }

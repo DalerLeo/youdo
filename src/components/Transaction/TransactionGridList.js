@@ -154,7 +154,6 @@ const TransactionGridList = enhance((props) => {
         listData,
         acceptCashDialog,
         detailData,
-        cashDialog,
         cashBoxDialog,
         classes,
         paymentData
@@ -300,7 +299,7 @@ const TransactionGridList = enhance((props) => {
                         <div className={classes.outerTitle}>{cashboxName}</div>
                         <div className={classes.outerTitle}>
                             <div className={classes.buttons}>
-                                <a onClick={cashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>
+                                <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>
 
                                 { _.get(cashboxData, 'cashboxId') !== AllCashboxId &&
                                     <div>
@@ -373,11 +372,10 @@ const TransactionGridList = enhance((props) => {
                     />}
 
                     <TransactionCashDialog
-                        open={cashDialog.open}
-                        onClose={cashDialog.handleCloseCashDialog}
-                        onSubmit={cashDialog.handleSubmitCashDialog}
+                        open={acceptCashDialog.open}
+                        onClose={acceptCashDialog.handleCloseCashDialog}
                         paymentData={paymentData}
-                        loading={paymentData.paymentLoading}
+                        loading={acceptCashDialog.loading}
                         cashBoxDialog={cashBoxDialog}
                         acceptCashDialog={acceptCashDialog}
                     />
@@ -443,17 +441,17 @@ TransactionGridList.propTypes = {
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired,
-    cashDialog: PropTypes.shape({
+    cashBoxDialog: PropTypes.shape({
+        openCashBoxDialog: PropTypes.bool.isRequired,
+        handleOpenCashBoxDialog: PropTypes.func.isRequired,
+        handleCloseCashBoxDialog: PropTypes.func.isRequired,
+        handleSubmitCashBoxDialog: PropTypes.func.isRequired
+    }).isRequired,
+    acceptCashDialog: PropTypes.shape({
         open: PropTypes.bool.isRequired,
         handleOpenCashDialog: PropTypes.func.isRequired,
         handleCloseCashDialog: PropTypes.func.isRequired,
         handleSubmitCashDialog: PropTypes.func.isRequired
-    }).isRequired,
-    cashBoxDialog: PropTypes.shape({
-        openCashBoxDialog: PropTypes.number.isRequired,
-        handleOpenCashBoxDialog: PropTypes.func.isRequired,
-        handleCloseCashBoxDialog: PropTypes.func.isRequired,
-        handleSubmitCashBoxDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
