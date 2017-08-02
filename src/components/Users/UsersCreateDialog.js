@@ -143,14 +143,13 @@ const UsersCreateDialog = enhance((props) => {
                             <Col xs={5}>
                                 <Field
                                     name="image"
-                                    className={classes.imageUpload}
                                     component={ImageUploadField}
                                     fullWidth={true}
                                 />
                             </Col>
                         </Row>
                         <Row>
-                            {_.get(groupListData, 'groupListLoading') &&
+                            {(!loading) && _.get(groupListData, 'groupListLoading') &&
                             <div className={classes.groupLoader}>
                                 <CircularProgress size={40} thickness={4}/>
                             </div>}
@@ -189,7 +188,7 @@ const UsersCreateDialog = enhance((props) => {
                                     name="password"
                                     component={TextField}
                                     type="password"
-                                    label="Пароль"
+                                    label={isUpdate ? 'Изменить пароль' : 'Пароль'}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field

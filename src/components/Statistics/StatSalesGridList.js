@@ -232,7 +232,7 @@ const StatSalesGridList = enhance((props) => {
     const config = {
         chart: {
             type: 'areaspline',
-            height: 145
+            height: 100
         },
         title: {
             text: '',
@@ -246,16 +246,6 @@ const StatSalesGridList = enhance((props) => {
         credits: {
             enabled: false
         },
-        xAxis: {
-            categories: valueName,
-            tickmarkPlacement: 'on',
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            }
-        },
         yAxis: {
             title: {
                 text: '',
@@ -263,12 +253,31 @@ const StatSalesGridList = enhance((props) => {
                     display: 'none'
                 }
             },
-            gridLineColor: '#efefef',
+            gridLineColor: '#fff',
             plotLines: [{
                 value: 0,
                 width: 1,
-                color: '#808080'
-            }]
+                color: 'transparent'
+            }],
+            labels: {
+                enabled: false
+            },
+            lineWidth: 0,
+            minorGridLineWidth: 0,
+            lineColor: 'transparent',
+            minorTickLength: 0,
+            tickLength: 0
+        },
+        xAxis: {
+            categories: valueName,
+            lineWidth: 0,
+            minorGridLineWidth: 0,
+            lineColor: 'transparent',
+            minorTickLength: 0,
+            tickLength: 0,
+            labels: {
+                enabled: false
+            }
         },
         plotOptions: {
             series: {
@@ -291,7 +300,7 @@ const StatSalesGridList = enhance((props) => {
             enabled: true,
             shadow: false,
             useHTML: true,
-            crosshairs: true,
+            crosshairs: false,
             pointFormat: '{series.name}: <b>{point.y}</b>'
         },
         series: [{

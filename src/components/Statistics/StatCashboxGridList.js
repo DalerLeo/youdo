@@ -62,13 +62,12 @@ const enhance = compose(
         },
         cashboxWrapper: {
             display: 'flex',
-            justifyContent: 'space-between',
             flexWrap: 'wrap',
             marginTop: '45px'
         },
         cashbox: {
             marginRight: '45px',
-            width: 'calc((100% / 3) - 45px)',
+            width: 'calc((100% / 3) - 30px)',
             '&:nth-child(3n+3)': {
                 margin: '0'
             }
@@ -466,6 +465,7 @@ const StatCashboxGridList = enhance((props) => {
                     {openDetails && <CashboxDetails
                         filter={filter}
                         detailData={detailData}
+                        listData={listData}
                         handleSubmitFilterDialog={handleSubmitFilterDialog}
                         getDocument={getDocument}
                     />}

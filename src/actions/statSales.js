@@ -2,10 +2,12 @@ import _ from 'lodash'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
+import * as serializers from '../serializers/Statistics/statSalesSerializer'
 
-export const statSalesDataFetchAction = () => {
+export const statSalesDataFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.STAT_SALES_DATA)
+        .get(API.STAT_SALES_DATA, {params})
         .then((response) => {
             return _.get(response, 'data')
         })

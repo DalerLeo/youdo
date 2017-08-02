@@ -16,6 +16,7 @@ import {
     statCashboxListFetchAction,
     statCashboxItemFetchAction
 } from '../../actions/statisticsCashboxt'
+import {transactionListFetchAction} from '../../actions/transaction'
 
 const ZERO = 0
 const enhance = compose(
@@ -28,11 +29,15 @@ const enhance = compose(
         const listLoading = _.get(state, ['cashbox', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatCashboxFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const transactionsList = _.get(state, ['transaction', 'list', 'data'])
+        const transactionsLoading = _.get(state, ['transaction', 'list', 'loading'])
         return {
             list,
             listLoading,
             detail,
             detailLoading,
+            transactionsList,
+            transactionsLoading,
             filter,
             filterForm
         }
@@ -46,10 +51,11 @@ const enhance = compose(
         const prevId = _.toInteger(_.get(props, ['params', 'cashboxId']))
         const nextId = _.toInteger(_.get(nextProps, ['params', 'cashboxId']))
         return prevId !== nextId && nextId > ZERO
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, filter}) => {
         const id = _.toInteger(_.get(params, 'cashboxId'))
         if (id > ZERO) {
             dispatch(statCashboxItemFetchAction(id))
+            dispatch(transactionListFetchAction(filter, id))
         }
     }),
 
@@ -91,6 +97,8 @@ const StatCashboxList = enhance((props) => {
         detailLoading,
         filter,
         layout,
+        transactionsList,
+        transactionsLoading,
         params
     } = props
 
@@ -106,7 +114,9 @@ const StatCashboxList = enhance((props) => {
     const detailData = {
         id: detailId,
         data: detail,
+        transactionData: _.get(transactionsList, 'results'),
         detailLoading,
+        transactionsLoading,
         handleCloseDetail: props.handleCloseDetail
     }
     const getDocument = {

@@ -46,6 +46,10 @@ export const listFilterSerializer = (data, id) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const dept = _.toInteger(_.get(defaultData, 'dept'))
+
+    const firstDayOfMonth = moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
     if (id) {
         return {
             'id': id
@@ -62,8 +66,8 @@ export const listFilterSerializer = (data, id) => {
         'totalCost': _.get(defaultData, 'totalCost'),
         'totalBalance': _.get(defaultData, 'totalBalance'),
         'orderStatus': _.get(defaultData, 'orderStatus'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate'),
+        'created_date_0': _.get(defaultData, 'fromDate') || firstDayOfMonth,
+        'created_date_1': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
         'delivery_date_1': _.get(defaultData, 'deliveryToDate'),
         'search': _.get(defaultData, 'search'),
