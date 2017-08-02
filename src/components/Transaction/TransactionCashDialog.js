@@ -8,9 +8,11 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
+import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import AcceptClientTransactionDialog from './AcceptClientTransactionDialog'
-import MoreVert from 'material-ui/svg-icons/navigation/more-vert'
+import PaymentIcon from 'material-ui/svg-icons/action/payment'
+import Tooltip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -133,6 +135,15 @@ const enhance = compose(
             '& > div:last-child': {
                 textAlign: 'right'
             }
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -141,21 +152,36 @@ const enhance = compose(
 )
 
 const TransactionCashDialog = enhance((props) => {
-    const {open, loading, onClose, classes, paymentData, cashBoxDialog} = props
+    const {
+        open,
+        loading,
+        onClose,
+        classes,
+        paymentData,
+        cashBoxDialog,
+        acceptCashDialog
+    } = props
 
-    const buttonStyle = {
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        },
-        icon: {
-            color: '#666',
-            width: 22,
-            height: 22
-        }
-    }
+    const detailRow = (
+        _.get(paymentData, 'paymentLoading') ? <LinearProgress/>
+            : _.map(_.get(paymentData, 'data'), (item) => {
+                const clientName = _.get(item, ['client', 'name'])
+                const marketName = _.get(item, ['market', 'name'])
+                const currency = _.get(item, ['currency', 'name'])
+                const order = _.get(item, ['order'])
+                const amount = numberFormat(_.get(item, ['amount']), currency)
+                return (
+                <Row key={_.get(item, 'id')} className={classes.detailsRow}>
+                    <Col xs={3}>{clientName}</Col>
+                    <Col xs={3}>{marketName}</Col>
+                    <Col xs={3}>{order}</Col>
+                    <Col xs={3}>{amount}</Col>
+                </Row>
 
+                )
+            })
+
+    )
     return (
         <Dialog
             modal={true}
@@ -183,49 +209,63 @@ const TransactionCashDialog = enhance((props) => {
                             <Col xs={1}>Заказ</Col>
                             <Col xs={2}>Сумма</Col>
                         </Row>
-                        <div className={classes.details}>
-                            <Row>
-                                <Col xs={6}>Фамилия Имя</Col>
-                                <Col xs={5} style={{textAlign: 'right'}}>500 000 UZS</Col>
-                                <Col xs={1}>
-                                    <IconButton
-                                        style={buttonStyle.button}
-                                        iconStyle={buttonStyle.icon}>
-                                        <MoreVert/>
-                                    </IconButton>
-                                </Col>
-                            </Row>
-                            <div>
-                                <Row className={classes.detailsRow}>
-                                    <Col xs={3}>Клиент</Col>
-                                    <Col xs={3}>Магазин</Col>
-                                    <Col xs={3}>№ заказа</Col>
-                                    <Col xs={3}>Сумма (UZS)</Col>
-                                </Row>
-                                <Row className={classes.detailsRow}>
-                                    <Col xs={3}>Ахалай Махалай</Col>
-                                    <Col xs={3}>Магазин Супер</Col>
-                                    <Col xs={3}>З-23</Col>
-                                    <Col xs={3}>60 000 000</Col>
-                                </Row>
-                            </div>
-                        </div>
-                        {_.map(_.get(paymentData, ['data', 'results']), (item) => {
+                        {_.map(_.get(acceptCashDialog, ['data']), (item, index) => {
                             const currency = _.get(item, ['currency', 'name'])
-                            const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
-                            const amount = numberFormat(_.get(item, ['amount']), currency)
-                            const id = _.get(item, ['id'])
+                            const user = _.get(item, ['user', 'name'])
+                            const amount = numberFormat(_.get(item, ['sum']), currency)
+                            const userId = _.toNumber(_.get(item, ['user', 'id']))
+                            const currencyId = _.toNumber(_.get(item, ['currency', 'id']))
+                            if (acceptCashDialog.openAcceptCashDetail === userId + '_' + currencyId) {
+                                return (
+                                    <div key={index} className={classes.details}>
+                                        <Row style={{position: 'relative'}}>
+                                            <div
+                                                className={classes.closeDetail}
+                                                onClick={() => { acceptCashDialog.handleCloseAcceptCashDetail() }}>
+                                            </div>
+                                            <Col xs={6}>{user}</Col>
+                                            <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
+                                            <Col xs={1}>
+                                                <div style={{marginRight: '-4px'}}>
+                                                    <Tooltip position="bottom" text="Оплатить">
+                                                        <IconButton
+                                                            onTouchTap={() => { cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId) }}>
+                                                            <PaymentIcon color="#666666"/>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                        <div>
+                                            <Row className={classes.detailsRow}>
+                                                <Col xs={3}>Клиент</Col>
+                                                <Col xs={3}>Магазин</Col>
+                                                <Col xs={3}>№ заказа</Col>
+                                                <Col xs={3}>Сумма</Col>
+                                            </Row>
+                                            {detailRow}
+                                        </div>
+                                    </div>
+                                )
+                            }
                             return (
-                                <Row key={id} className="dottedList">
+                                <Row
+                                    key={index}
+                                    className="dottedList"
+                                    style={{position: 'relative'}}>
+                                    <div
+                                        className={classes.closeDetail}
+                                        onClick={() => { acceptCashDialog.handleOpenAcceptCashDetail(userId, currencyId) }}>
+                                    </div>
                                     <Col xs={6}>{user}</Col>
                                     <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
                                     <Col xs={1}>
-                                        <IconButton
-                                            style={buttonStyle.button}
-                                            iconStyle={buttonStyle.icon}
-                                            onTouchTap={() => { cashBoxDialog.handleOpenCashBoxDialog(id) }}>
-                                            <MoreVert/>
-                                        </IconButton>
+                                        <Tooltip position="bottom" text="Оплатить">
+                                            <IconButton
+                                                onTouchTap={() => { cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId) }}>
+                                                <PaymentIcon color="#666666"/>
+                                            </IconButton>
+                                        </Tooltip>
                                     </Col>
                                 </Row>
                             )
@@ -237,7 +277,8 @@ const TransactionCashDialog = enhance((props) => {
                 open={cashBoxDialog.openCashBoxDialog}
                 onClose={cashBoxDialog.handleCloseCashBoxDialog}
                 onSubmit={cashBoxDialog.handleSubmitCashBoxDialog}
-                data={paymentData.currentCashBoxDetails}/>
+                data={paymentData.currentCashBoxDetails}
+                loading={paymentData.paymentLoading}/>
 
         </Dialog>
     )

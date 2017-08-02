@@ -23,23 +23,6 @@ export const statMarketListFetchAction = (filter) => {
     }
 }
 
-export const statMarketItemFetchAction = (filter, id) => {
-    const params = serializers.itemSerializer(filter.getParams(), id)
-    const payload = axios()
-        .get(sprintf(API.STAT_MARKET_ITEM), {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STAT_MARKET_ITEM,
-        payload
-    }
-}
-
 export const getDocumentAction = (filter) => {
     const params = serializers.csvFilterSerializer(filter.getParams())
     const payload = axios()
@@ -54,6 +37,21 @@ export const getDocumentAction = (filter) => {
 
     return {
         type: actionTypes.STAT_MARKET_GET_DOCUMENT,
+        payload
+    }
+}
+export const statMarketDataFetchAction = (market) => {
+    const payload = axios()
+        .get(sprintf(API.STAT_MARKET_DATA), {'params': {'market': market}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_MARKET_DATA,
         payload
     }
 }
