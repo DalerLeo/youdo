@@ -11,7 +11,7 @@ import Dot from '../Images/dot.png'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import Tooltip from '../ToolTip'
-import moment from 'moment'
+import dateFormat from '../../helpers/dateFormat'
 
 const colorBlue = '#12aaeb'
 const enhance = compose(
@@ -140,7 +140,11 @@ const enhance = compose(
         },
         dateInfo: {
             textAlign: 'right',
-            display: 'flex'
+            display: 'flex',
+            '& span': {
+                fontWeight: 'bold',
+                color: '#999'
+            }
         },
         data: {
             width: '100%',
@@ -200,6 +204,15 @@ const enhance = compose(
                 },
                 '& .row': {
                     alignItems: 'center'
+                }
+            },
+            '& .dataInfo': {
+                height: '50px',
+                padding: '0',
+                '& > div': {
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
                 }
             },
             '& .comment': {
@@ -284,9 +297,10 @@ const PricesDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const products = _.get(data, 'products')
-    const beginDate = moment(_.get(data, 'beginDate')).format('YY:MM:DD')
-    const tillDate = moment(_.get(data, 'tillDate')).format('YY:MM:DD')
-    const discount = _.get(data, 'discount')
+    const beginDate = dateFormat(_.get(data, 'beginDate'))
+    const tillDate = dateFormat(_.get(data, 'tillDate'))
+    const discount = _.toNumber(_.get(data, 'discount'))
+    const type = _.get(data, 'type')
 
     if (loading) {
         return (
@@ -329,42 +343,88 @@ const PricesDetails = enhance((props) => {
 
             <div className={classes.details}>
                 <div className={classes.storeInfo}>
-                    <div className={classes.store}>Размер <b>акции - {discount} %</b></div>
+                    <div className={classes.store}>
+                        {(type === 'discount') ? <span>Размер <b>акции - {discount}%</b></span>
+                            : <span><b>Бонусная акция</b></span>}
+                    </div>
                 </div>
                 <div className={classes.dateInfo}>
-                    <div>Начало акции: <span style={{fontWeight: '600', marginRight: '30px'}}>{beginDate}</span></div>
-                    <div>Завершение акции: <span style={{fontWeight: '600'}}>{tillDate}</span></div>
+                    <div>Начало акции: <span style={{marginRight: '30px'}}>{beginDate}</span></div>
+                    <div>Завершение акции: <span>{tillDate}</span></div>
                 </div>
             </div>
 
-            <div className={classes.data}>
-                <div className="dataHeader">
-                    <Row>
-                        <Col xs={3}>Товар</Col>
-                        <Col xs={3}>Кол-во</Col>
-                        <Col xs={3}>Реальная стоимость</Col>
-                        <Col xs={3}>Стоимость по акции</Col>
-                    </Row>
+            {(type === 'bonus')
+                ? <div className={classes.data}>
+                    <div className="dataHeader">
+                        <Row>
+                            <Col xs={4}>Товар</Col>
+                            <Col xs={1}>Кол-во</Col>
+                            <Col xs={4}>Подарок</Col>
+                            <Col xs={1}>Кол-во</Col>
+                        </Row>
+                    </div>
+                    <div>
+                        {_.map(products, (item, index) => {
+                            const product = _.get(item, ['product', 'name'])
+                            const productMeasurement = _.get(item, ['product', 'measurement', 'name'])
+                            const amount = _.toNumber(_.get(item, 'amount'))
+                            const bonusProduct = _.get(item, ['bonusProduct', 'name']) || 'Не выбран'
+                            const bonusProductMeasurement = _.get(item, ['bonusProduct', 'measurement', 'name'])
+                            const bonusAmount = _.toNumber(_.get(item, 'bonusAmount'))
+                            return (
+                                <Row className="dataInfo dottedList" key={index}>
+                                    <Col xs={4}>{product}</Col>
+                                    <Col xs={1}>{amount ? numberFormat(amount, productMeasurement) : 'Не определено'}</Col>
+                                    <Col xs={4}>{bonusProduct}</Col>
+                                    <Col xs={1}>{bonusAmount ? numberFormat(bonusAmount, bonusProductMeasurement) : 'Не определено'}</Col>
+                                    <Col xs={2} style={{textAlign: 'right'}}>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            touch={true}>
+                                            <Delete />
+                                        </IconButton>
+                                    </Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
                 </div>
-                <div>
-                    {_.map(products, (item) => {
-                        const product = _.get(item, 'product')
-                        const productId = _.get(product, 'id')
-                        const productName = _.get(product, 'name')
-                        const amount = _.get(product, 'id')
-                        const realCost = 1000
-                        const priceCost = 900
-                        return (
-                            <Row className="dataInfo dottedList" key={productId}>
-                                <Col xs={3}>{productName}</Col>
-                                <Col xs={3}>{numberFormat(amount)}</Col>
-                                <Col xs={3}>{numberFormat(realCost)} {currency}</Col>
-                                <Col xs={3}>{numberFormat(priceCost)} {currency}</Col>
-                            </Row>
-                        )
-                    })}
-                </div>
-            </div>
+                : <div className={classes.data}>
+                    <div className="dataHeader">
+                        <Row>
+                            <Col xs={5}>Товар</Col>
+                            <Col xs={2}>Кол-во</Col>
+                            <Col xs={2}>Реальная стоимость</Col>
+                            <Col xs={2}>Стоимость по акции</Col>
+                        </Row>
+                    </div>
+                    <div>
+                        {_.map(products, (item) => {
+                            const productId = _.get(item, ['product', 'id'])
+                            const productName = _.get(item, ['product', 'name'])
+                            const amount = _.get(item, 'amount')
+                            const measurement = _.get(item, ['product', 'measurement', 'name'])
+                            return (
+                                <Row className="dataInfo dottedList" key={productId}>
+                                    <Col xs={5}>{productName}</Col>
+                                    <Col xs={2}>{numberFormat(amount, measurement)}</Col>
+                                    <Col xs={2}>10 000 / 20 000 {currency}</Col>
+                                    <Col xs={2}>7 000 / 14 000 {currency}</Col>
+                                    <Col xs={1} style={{textAlign: 'right'}}>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            touch={true}>
+                                            <Delete />
+                                        </IconButton>
+                                    </Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
+                </div>}
         </div>
     )
 })

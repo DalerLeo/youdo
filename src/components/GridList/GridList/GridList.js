@@ -44,6 +44,7 @@ const GridList = enhance((props) => {
         withoutSearch,
         printDialog,
         flexibleRow,
+        withoutPagination,
         refreshAction
     } = props
 
@@ -82,6 +83,7 @@ const GridList = enhance((props) => {
                     withoutSearch={withoutSearch}
                     withInvoice={withInvoice}
                     printDialog={printDialog}
+                    withoutPagination={withoutPagination}
                     refreshAction={refreshAction}
                 />
                 <GridListHeader
@@ -129,6 +131,7 @@ GridList.defaultProps = {
     withInvoice: false,
     withRefreshBtn: false,
     flexibleRow: false,
+    withoutPagination: false,
     actionsDialog: (<div>no</div>)
 }
 

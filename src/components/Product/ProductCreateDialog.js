@@ -3,12 +3,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import {connect} from 'react-redux'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ProductTypeSearchField, BrandSearchField, MeasurementSearchField, ImageUploadField} from '../ReduxForm'
+import {
+    TextField,
+    ProductTypeParentSearchField,
+    ProductTypeChildSearchField,
+    BrandSearchField,
+    MeasurementSearchField,
+    ImageUploadField
+} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -44,11 +52,17 @@ const enhance = compose(
     reduxForm({
         form: 'ProductCreateForm',
         enableReinitialize: true
-    })
+    }),
+    connect((state) => {
+        const type = _.get(state, ['form', 'ProductCreateForm', 'values', 'productTypeParent', 'value'])
+        return {
+            type
+        }
+    }),
 )
 
 const ProductCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, type} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -81,12 +95,20 @@ const ProductCreateDialog = enhance((props) => {
                                 fullWidth={true}
                             />
                             <Field
-                                name="type"
+                                name="productTypeParent"
                                 className={classes.inputFieldCustom}
-                                component={ProductTypeSearchField}
+                                component={ProductTypeParentSearchField}
                                 label="Тип продукта"
                                 fullWidth={true}
                             />
+                            {type && <Field
+                                name="type"
+                                className={classes.inputFieldCustom}
+                                component={ProductTypeChildSearchField}
+                                parentType={type}
+                                label="Подкатегория"
+                                fullWidth={true}
+                            />}
                             <Field
                                 name="brand"
                                 className={classes.inputFieldCustom}

@@ -104,6 +104,9 @@ const enhance = compose(
             minHeight: '184px',
             padding: '0 30px',
             color: '#333',
+            '& > div:first-child': {
+                padding: '20px 0 10px'
+            },
             '& span': {
                 fontWeight: '600'
             }
@@ -126,28 +129,6 @@ const enhance = compose(
             '& > div:first-child': {
                 maxWidth: '60%'
             }
-        },
-        list: {
-            width: '100%',
-            padding: '10px 0',
-            '& .row': {
-                padding: '0',
-                height: '45px',
-                alignItems: 'center',
-                '&:after': {
-                    left: '0.5rem',
-                    right: '0.5rem'
-                },
-                '&:first-child': {
-                    fontWeight: '600'
-                },
-                '&:last-child:after': {
-                    display: 'none'
-                },
-                '& > div:last-child': {
-                    textAlign: 'right'
-                }
-            }
         }
     }),
     reduxForm({
@@ -161,17 +142,14 @@ const enhance = compose(
 
 const AcceptClientTransactionDialog = enhance((props) => {
     const {open, onClose, classes, loading, handleSubmit, data} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
-    const clientName = _.get(data, ['client', 'name'])
-    const marketName = _.get(data, ['market', 'name'])
+    const onSubmit = handleSubmit(() => props.onSubmit(_.get(data, ['sum'])).catch(validate))
+    const user = _.get(data, ['user', 'name'])
     const currency = _.get(data, ['currency', 'name'])
-    const amount = numberFormat(_.get(data, ['amount']), currency)
-    const order = _.get(data, ['order'])
+    const amount = numberFormat(_.get(data, ['sum']), currency)
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '300px'} : {width: '400px', maxWidth: 'auto'}}
+            contentStyle={loading ? {width: '200px'} : {width: '400px', maxWidth: 'auto'}}
             open={open > ZERO}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
@@ -183,32 +161,32 @@ const AcceptClientTransactionDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                {loading && <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
-                </div>}
-                <form onSubmit={onSubmit}>
-                    <div className={classes.inContent} style={{minHeight: 'initial'}}>
-                        <div>Клиент: <span>{clientName}</span></div>
-                        <div>Заказ №: <span>{order}</span></div>
-                        <div>Магазин: <span>{marketName}</span></div>
-                        <div className={classes.list}>
-                            <Field
-                                name="cashBox"
-                                component={CashboxSearchField}
-                                className={classes.inputFieldCustom}
-                                fullWidth={true}
-                                label="Кассы"
+                {loading
+                    ? <div className={classes.loader}>
+                        <CircularProgress size={40} thickness={4}/>
+                      </div>
+                    : <form onSubmit={onSubmit}>
+                        <div className={classes.inContent} style={{minHeight: 'initial'}}>
+                            <div>Агент: <span>{user}</span></div>
+                            <div className={classes.list}>
+                                <Field
+                                    name="cashBox"
+                                    component={CashboxSearchField}
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}
+                                    label="Кассы"
+                                />
+                            </div>
+                        </div>
+                        <div className={classes.bottomButton}>
+                            <FlatButton
+                                label="Сохранить"
+                                primary={true}
+                                type="submit"
                             />
                         </div>
-                    </div>
-                    <div className={classes.bottomButton}>
-                        <FlatButton
-                            label="Сохранить"
-                            primary={true}
-                            type="submit"
-                        />
-                    </div>
-                </form>
+                      </form>
+                }
             </div>
         </Dialog>
     )

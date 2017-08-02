@@ -20,7 +20,6 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'currency': _.get(defaultData, 'currency'),
         'name': _.get(defaultData, 'name'),
         'cashier': _.get(defaultData, 'cashier'),
         'type': _.get(defaultData, 'type'),

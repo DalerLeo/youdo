@@ -23,18 +23,6 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const itemSerializer = (data, id) => {
-    const {...defaultData} = data
-
-    return {
-        'market': id,
-        'page': _.get(defaultData, 'dPage'),
-        'page_size': _.get(defaultData, 'dPageSize'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate')
-    }
-}
-
 export const csvFilterSerializer = (data) => {
     const {...defaultData} = listFilterSerializer(data)
 

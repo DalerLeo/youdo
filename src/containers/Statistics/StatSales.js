@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import sprintf from 'sprintf'
 import {hashHistory} from 'react-router'
@@ -48,7 +49,7 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(orderListFetchAction(filter))
-        dispatch(statSalesDataFetchAction())
+        dispatch(statSalesDataFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
         const saleId = _.get(nextProps, ['params', 'statSaleId'])
@@ -99,6 +100,9 @@ const StatSalesList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'statSaleId'))
     const openStatSaleDialog = toBoolean(_.get(location, ['query', STAT_SALES_DIALOG_OPEN]))
+    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
 
     const listData = {
         data: _.get(list, 'results'),
@@ -117,6 +121,15 @@ const StatSalesList = enhance((props) => {
         handleCloseDetail: props.handleCloseDetail
     }
 
+    const filterForm = {
+        initialValues: {
+            date: {
+                fromDate: moment(firstDayOfMonth),
+                toDate: moment(lastDayOfMonth)
+            }
+        }
+    }
+
     const graphData = {
         data: graphList,
         graphLoading
@@ -131,6 +144,8 @@ const StatSalesList = enhance((props) => {
                 detailData={detailData}
                 statSaleDialog={statSaleDialog}
                 type={order}
+                initialValues={filterForm.initialValues}
+                filterForm={filterForm}
                 onSubmit={props.handleSubmitFilterDialog}
                 graphData={graphData}
             />

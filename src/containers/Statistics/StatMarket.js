@@ -13,7 +13,7 @@ import * as serializers from '../../serializers/Statistics/statProductSerializer
 import getDocuments from '../../helpers/getDocument'
 import {
     statMarketListFetchAction,
-    statMarketItemFetchAction
+    statMarketDataFetchAction
 } from '../../actions/statMarket'
 
 import {StatMarketGridList, STAT_MARKET_DIALOG_OPEN} from '../../components/Statistics'
@@ -24,39 +24,34 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statMarket', 'item', 'data'])
-        const detailLoading = _.get(state, ['statMarket', 'item', 'loading'])
+        const graphList = _.get(state, ['statMarket', 'data', 'data'])
+        const graphLoading = _.get(state, ['statMarket', 'data', 'loading'])
         const list = _.get(state, ['statMarket', 'list', 'data'])
         const listLoading = _.get(state, ['statMarket', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatMarketFilterForm'])
-        const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
         const filter = filterHelper(list, pathname, query)
         return {
             list,
             listLoading,
-            detail,
-            detailLoading,
             filter,
-            filterItem,
-            filterForm
+            filterForm,
+            graphList,
+            graphLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) &&
-            (!_.get(props, ['params', 'statMarketId'])) &&
-            (!_.get(nextProps, ['params', 'statMarketId']))
+        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest())
     }, ({dispatch, filter}) => {
         dispatch(statMarketListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
         const statMarketId = _.get(nextProps, ['params', 'statMarketId']) || ZERO
-        return statMarketId > ZERO && (_.get(props, ['params', 'statMarketId']) !== statMarketId ||
-            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
-    }, ({dispatch, params, filterItem}) => {
+        return statMarketId > ZERO && (_.get(props, ['params', 'statMarketId']) !== statMarketId)
+    }, ({dispatch, params}) => {
         const statMarketId = _.toInteger(_.get(params, 'statMarketId'))
         if (statMarketId > ZERO) {
-            dispatch(statMarketItemFetchAction(filterItem, statMarketId))
+            dispatch(statMarketDataFetchAction(statMarketId))
         }
     }),
     withHandlers({
@@ -83,9 +78,13 @@ const enhance = compose(
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STATISTICS_MARKET_URL, query: filter.getParams({[STAT_MARKET_DIALOG_OPEN]: false})})
         },
+        handleOpenDetail: props => (id) => {
+            const {filter} = props
+            hashHistory.push({pathname: sprintf(ROUTER.STATISTICS_MARKET_ITEM_PATH, id), query: filter.getParams()})
+        },
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParams()})
+            hashHistory.push({pathname: ROUTER.STATISTICS_MARKET_URL, query: filter.getParams()})
         },
         handleGetDocument: props => () => {
             const {filter} = props
@@ -100,13 +99,13 @@ const StatMarketList = enhance((props) => {
         location,
         list,
         listLoading,
-        detail,
-        detailLoading,
         filter,
         filterItem,
         filterForm,
         layout,
-        params
+        params,
+        graphList,
+        graphLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statMarketId'))
@@ -132,10 +131,11 @@ const StatMarketList = enhance((props) => {
     const detailData = {
         filter: filterItem,
         id: detailId,
-        data: detail,
         marketDetail,
-        detailLoading,
+        graphList,
+        graphLoading,
         handleCloseDetail: props.handleCloseDetail,
+        handleOpenDetail: props.handleOpenDetail,
         filterDateRange
 
     }

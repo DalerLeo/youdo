@@ -6,6 +6,7 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import {Field} from 'redux-form'
 import Dot from '../../Images/dot.png'
+import {connect} from 'react-redux'
 import {
     Table,
     TableBody,
@@ -180,6 +181,12 @@ const enhance = compose(
             }
         }
     }),
+    connect((state) => {
+        const measurement = _.get(state, ['form', 'RemainderTransferForm', 'values', 'product', 'value', 'measurement', 'name'])
+        return {
+            measurement
+        }
+    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
@@ -222,7 +229,7 @@ const enhance = compose(
     })
 )
 
-const RemainderListProductField = ({classes, handleAdd, handleRemove, ...defaultProps}) => {
+const RemainderListProductField = ({classes, handleAdd, handleRemove, measurement, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     return (
@@ -246,6 +253,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, ...default
                         label="Кол-во"
                         {..._.get(defaultProps, 'amount')}
                     />
+                    <span style={{margin: '0 10px 0 -10px'}}>{measurement}</span>
                     <FlatButton label="Добавить" onTouchTap={handleAdd} style={{color: '#12aaeb', textTransform: 'uppercase'}}/>
                 </div>
             </div>

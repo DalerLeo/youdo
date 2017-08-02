@@ -10,7 +10,7 @@ import Print from 'material-ui/svg-icons/action/print'
 import RefreshIcon from 'material-ui/svg-icons/action/cached'
 import Tooltip from '../../ToolTip'
 
-const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData, withInvoice, printDialog, refreshAction}) => {
+const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData, withInvoice, printDialog, refreshAction, withoutPagination}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
     const listData = _.get(customData, ['listData', 'data'])
@@ -23,7 +23,7 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
         <div className={classes.wrapper}>
             <div style={{padding: '0 30px'}}>
                 {(selectIsEmpty && filterIsEmpty) && <Row>
-                    <Col xs={6} style={{display: 'flex', alignItems: 'center'}}>
+                    <Col xs={6} style={withoutPagination ? {} : {display: 'flex', alignItems: 'center'}}>
                         {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>}
                         {withoutSearch &&
                         <div className={classes.currencyName}>
@@ -33,9 +33,9 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
                             }} className={classes.link}>Установить курс</a>
                         </div>}
                     </Col>
-                    <Col xs={6}>
-                        <GridListNavPagination filter={filter}/>
-                    </Col>
+                    {!withoutPagination && <Col xs={6}>
+                         <GridListNavPagination filter={filter}/>
+                    </Col>}
                 </Row>}
 
                 {(selectIsEmpty && !filterIsEmpty) && <Row>
@@ -46,7 +46,7 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
                         {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>}
                     </Col>
                     <Col xs={5} className={classes.flex}>
-                        <GridListNavPagination filter={filter}/>
+                        {!withoutPagination && <GridListNavPagination filter={filter}/>}
                         {withInvoice &&
                         <Tooltip position="left" text={(listCount > MAX_COUNT) ? 'Превышено количество данных' : 'Распечатать накладные'}>
                             <IconButton
@@ -83,6 +83,7 @@ GridListNav.propTypes = {
     filter: PropTypes.object.isRequired,
     actions: PropTypes.node,
     withoutSearch: PropTypes.bool.isRequired,
+    withoutPagination: PropTypes.bool,
     withInvoice: PropTypes.bool,
     customData: PropTypes.shape({
         dialog: PropTypes.node.isRequired,

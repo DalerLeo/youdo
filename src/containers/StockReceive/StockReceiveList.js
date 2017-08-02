@@ -222,10 +222,10 @@ const enhance = compose(
                 })
         },
         handleSubmitTransferAcceptDialog: props => () => {
-            const {dispatch, filter, location: {pathname}, params, transferList} = props
+            const {dispatch, filter, location: {pathname, query}, params} = props
             const id = _.toInteger(_.get(params, 'stockReceiveId'))
-            const currentDetail = _.find(_.get(transferList, 'results'), {'id': id})
-            return dispatch(stockTransferItemAcceptAction(_.get(currentDetail, 'id'), _.get(currentDetail, 'stock')))
+            const stockId = Number(_.get(query, TYPE))
+            return dispatch(stockTransferItemAcceptAction(id, stockId))
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockTransferListFetchAction(filter))
@@ -345,7 +345,9 @@ const StockReceiveList = enhance((props) => {
         data: printList,
         printLoading
     }
-    const currentTransferDetail = _.find(_.get(transferList, 'results'), {'id': detailId})
+    const currentTransferDetail = _.find(_.get(transferList, 'results'), (obj) => {
+        return _.get(obj, 'id') === detailId && Number(_.get(obj, ['stock', 'id'])) === Number(detailType)
+    })
 
     const transferDetailData = {
         type: detailType,
@@ -354,7 +356,9 @@ const StockReceiveList = enhance((props) => {
         transferDetailLoading,
         currentTransferDetail
     }
-    const currentDetail = _.find(_.get(list, 'results'), {'id': detailId})
+    const currentDetail = _.find(_.get(list, 'results'), (obj) => {
+        return _.get(obj, 'id') === detailId && _.get(obj, 'type') === detailType
+    })
 
     const detailData = {
         type: detailType,

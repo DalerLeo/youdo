@@ -101,7 +101,7 @@ export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
 export const SUPPLY_CANCEL = `/${SUPPLY}/cancel`
 
-export const PRICES = 'market/discount'
+export const PRICES = 'market/promotion'
 export const PRICES_CREATE = `/${PRICES}/`
 export const PRICES_LIST = `/${PRICES}/`
 export const PRICES_ITEM = `/${PRICES}/%d/`
@@ -291,6 +291,7 @@ export const STAT_AGENT_GET_DOCUMENT = '/stats/agents/export/'
 export const STAT_MARKET_LIST = 'stats/markets/'
 export const STAT_MARKET_ITEM = 'sales/order/'
 export const STAT_MARKET_GET_DOCUMENT = '/stats/markets/export'
+export const STAT_MARKET_DATA = '/stats/orders/'
 
 export const STAT_FINANCE_LIST = 'finance/transaction/'
 export const STAT_FINANCE_DATA = 'stats/transactions/'
