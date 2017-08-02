@@ -129,24 +129,19 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const price = _.get(item, 'price')
                                 const productTotal = _.get(item, 'totalPrice')
                                 const amount = _.get(item, 'amount')
+                                const isBonus = _.get(item, 'isBonus')
                                 const measurement = _.get(product, ['measurement', 'name'])
                                 totalProductPrice += _.toNumber(productTotal)
 
                                 return (
                                     <Row className="dottedList" key={index}>
-                                        <Col xs={6}>{productName}</Col>
+                                        <Col xs={6}>{productName} {isBonus && <strong className="greenFont">(бонус)</strong>}</Col>
                                         <Col xs={2}>{numberFormat(amount)} {measurement}</Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
                                         <Col xs={2}>{numberFormat(productTotal)}</Col>
                                     </Row>
                                 )
                             })}
-                            <Row className="dottedList">
-                                <Col xs={6}>Название бонусного продукта <strong className="greenFont">(бонус)</strong></Col>
-                                <Col xs={2}>40 шт</Col>
-                                <Col xs={2}>0</Col>
-                                <Col xs={2}>0</Col>
-                            </Row>
                         </div>
                         <div className={classes.summary}>ОБЩАЯ СУММА ТОВАРОВ: {numberFormat(totalProductPrice)} {primaryCurrency}</div>
                     </div>
