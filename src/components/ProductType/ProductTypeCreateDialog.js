@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ProductTypeSearchField} from '../ReduxForm'
+import {TextField, ProductTypeParentSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -76,7 +76,7 @@ const ProductTypeCreateDialog = enhance((props) => {
                         <div className={classes.field}>
                             <Field
                                 name="parent"
-                                component={ProductTypeSearchField}
+                                component={ProductTypeParentSearchField}
                                 className={classes.inputFieldCustom}
                                 label="Родительская категория"
                                 fullWidth={true}

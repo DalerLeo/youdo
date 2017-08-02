@@ -14,6 +14,7 @@ import Back from 'material-ui/svg-icons/content/reply'
 import Pagination from '../GridList/GridListNavPagination'
 import NotFound from '../Images/not-found.png'
 import Person from '../Images/person.png'
+import numberFormat from '../../helpers/numberFormat'
 
 export const STAT_CASHBOX_FILTER_KEY = {
     CASHBOX: 'cashbox',
@@ -207,6 +208,7 @@ const enhance = compose(
 
 const StatCashboxDetails = enhance((props) => {
     const {
+        listData,
         detailData,
         classes,
         filter,
@@ -216,6 +218,7 @@ const StatCashboxDetails = enhance((props) => {
 
     const listLoading = _.get(detailData, 'detailLoading')
     const handleCloseDetail = _.get(detailData, 'handleCloseDetail')
+    const currency = _.get(_.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')}), ['currency', 'name'])
 
     const headerStyle = {
         backgroundColor: '#fff',
@@ -243,15 +246,17 @@ const StatCashboxDetails = enhance((props) => {
             <Col xs={3}>Сумма</Col>
         </Row>
     )
-    const list = _.map(_.get(detailData, 'data'), (item) => {
+    const list = _.map(_.get(detailData, 'transactionData'), (item) => {
         const id = _.get(item, 'id')
+        const comment = _.get(item, 'comment') || '-'
+        const amount = numberFormat(_.get(item, 'amount'), currency)
 
         return (
             <Row key={id} className="dottedList">
                 <Col xs={2}>{id}</Col>
                 <Col xs={3}>Категория</Col>
-                <Col xs={4}>Описание</Col>
-                <Col xs={3}>Сумма</Col>
+                <Col xs={4}>{comment}</Col>
+                <Col xs={3}>{amount}</Col>
             </Row>
         )
     })

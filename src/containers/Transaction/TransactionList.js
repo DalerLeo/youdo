@@ -178,7 +178,7 @@ const enhance = compose(
         },
 
         handleSubmitCreateExpenseDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, cashboxId} = props
+            const {dispatch, createForm, filter, location: {pathname}, cashboxId, filterCashbox} = props
             return dispatch(transactionCreateExpenseAction(_.get(createForm, ['values']), cashboxId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
@@ -186,6 +186,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN]: false})})
                     dispatch(transactionListFetchAction(filter, cashboxId))
+                    dispatch(cashboxListFetchAction(filterCashbox))
                 })
         },
 
@@ -201,7 +202,7 @@ const enhance = compose(
         },
 
         handleSubmitCreateIncomeDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, cashboxId} = props
+            const {dispatch, createForm, filter, location: {pathname}, cashboxId, filterCashbox} = props
             return dispatch(transactionCreateIncomeAction(_.get(createForm, ['values']), cashboxId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
@@ -209,6 +210,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_INCOME_DIALOG_OPEN]: false})})
                     dispatch(transactionListFetchAction(filter, cashboxId))
+                    dispatch(cashboxListFetchAction(filterCashbox))
                 })
         },
 
@@ -224,7 +226,7 @@ const enhance = compose(
         },
 
         handleSubmitCreateSendDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}} = props
+            const {dispatch, createForm, filter, location: {pathname}, filterCashbox} = props
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
             return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId))
                 .then(() => {
@@ -233,7 +235,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})})
                     dispatch(transactionListFetchAction(filter, cashboxId))
-                    dispatch(cashboxListFetchAction(filter))
+                    dispatch(cashboxListFetchAction(filterCashbox))
                 })
         },
 

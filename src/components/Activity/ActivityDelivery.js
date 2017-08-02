@@ -105,7 +105,7 @@ const enhance = compose(
 )
 
 const dateFormat = (date, defaultText) => {
-    return (date) ? moment(date).locale('ru').format('DD MMM, YYYY - HH:mm') : defaultText
+    return (date) ? moment(date).locale('ru').format('DD MMM YYYY - HH:mm') : defaultText
 }
 
 const ActivityDelivery = enhance((props) => {

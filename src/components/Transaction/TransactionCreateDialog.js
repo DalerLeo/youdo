@@ -94,14 +94,16 @@ const enhance = compose(
     }),
     connect((state) => {
         const showClients = _.get(state, ['form', 'TransactionCreateForm', 'values', 'showClients'])
+        const showIncomeClients = _.get(state, ['form', 'TransactionCreateForm', 'values', 'showIncomeClients'])
         return {
-            showClients
+            showClients,
+            showIncomeClients
         }
     })
 )
 
 const TransactionCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData, isExpense, showClients} = props
+    const {open, loading, handleSubmit, onClose, classes, cashboxData, isExpense, showClients, showIncomeClients} = props
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
@@ -152,12 +154,18 @@ const TransactionCreateDialog = enhance((props) => {
                                 fullWidth={true}/>
                             </div>
                             }
-
                             {!isExpense && <Field
-                                name="showClients"
+                                name="showIncomeClients"
                                 className={classes.checkbox}
                                 component={CheckBox}
                                 label="Оплата с клиента"/>
+                            }
+                            {showIncomeClients && <Field
+                                name="client"
+                                component={ClientSearchField}
+                                label="Клиент"
+                                className={classes.inputFieldCustom}
+                                fullWidth={true}/>
                             }
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
                                 <Field

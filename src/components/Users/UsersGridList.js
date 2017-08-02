@@ -120,7 +120,13 @@ const UsersGridList = enhance((props) => {
         const firstName = _.get(item, 'firstName')
         const secondName = _.get(item, 'secondName')
         const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
-        const groups = _.get(item, ['groups', ZERO, 'name']) || 'N/A'
+        const groups = _.map(_.get(item, 'groups'), (val, index) => {
+            const grName = _.get(val, 'name')
+            if (index === ZERO) {
+                return grName
+            }
+            return ', ' + grName
+        })
         const isActive = _.get(item, 'isActive')
 
         const iconButton = (
@@ -134,7 +140,7 @@ const UsersGridList = enhance((props) => {
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{firstName} {secondName}</Col>
                 <Col xs={2}>{username}</Col>
-                <Col xs={2}>{groups}</Col>
+                <Col xs={2}>{(!_.isEmpty(groups)) ? groups : 'N/A'}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
                 <Col xs={2}>{isActive ? 'Активный' : 'Неактивный'}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
@@ -206,6 +212,7 @@ const UsersGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+                groupListData={groupListData}
                 errorData={updateDialog.errorData}
             />
 

@@ -230,6 +230,7 @@ const ProductTypeGridList = enhance((props) => {
                 list={list}
                 detail={productTypeDetail}
                 actionsDialog={actions}
+                withoutPagination={true}
                 flexibleRow={true}
             />
 

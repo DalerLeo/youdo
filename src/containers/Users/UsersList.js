@@ -242,6 +242,11 @@ const UsersList = enhance((props) => {
     }
 
     const isSelectedGroups = _.map(_.get(groupList, 'results'), (obj) => {
+        const userSelectedGroups = _.find(_.get(detail, 'groups'), {'id': obj.id})
+        const userSelectedGrId = _.get(userSelectedGroups, 'id')
+        if (userSelectedGrId === obj.id) {
+            return {id: obj.id, selected: true}
+        }
         return {id: obj.id, selected: false}
     })
 
