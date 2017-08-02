@@ -141,6 +141,12 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                     </Row>
                                 )
                             })}
+                            <Row className="dottedList">
+                                <Col xs={6}>Название бонусного продукта <strong className="greenFont">(бонус)</strong></Col>
+                                <Col xs={2}>40 шт</Col>
+                                <Col xs={2}>0</Col>
+                                <Col xs={2}>0</Col>
+                            </Row>
                         </div>
                         <div className={classes.summary}>ОБЩАЯ СУММА ТОВАРОВ: {numberFormat(totalProductPrice)} {primaryCurrency}</div>
                     </div>

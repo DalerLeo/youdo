@@ -8,19 +8,11 @@ import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import {Field} from 'redux-form'
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn
-} from 'material-ui/Table'
 import DeleteIcon from '../../DeleteIcon/index'
 import ProductTypeSearchField from '../Product/ProductTypeSearchField'
 import ProductCustomSearchField from '../Supply/ProductCustomSearchField'
 import TextField from '../Basic/TextField'
-import Check from 'material-ui/svg-icons/navigation/check'
+import numberFormat from '../../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({
@@ -48,37 +40,28 @@ const enhance = compose(
             }
         },
         table: {
-            marginTop: '20px'
-        },
-        tableTitle: {
-            fontWeight: '600',
-            color: '#333 !important',
-            textAlign: 'left'
-        },
-        tableRow: {
-            height: '40px !important',
-            border: 'none !important',
-            '& td:first-child': {
-                width: '250px'
-            },
-            '& tr': {
-                border: 'none !important'
-            },
-            '& td': {
-                height: '40px !important',
-                padding: '0 5px !important'
-            },
-            '& th:first-child': {
-                width: '250px',
-                textAlign: 'left !important',
-                fontWeight: '600 !important'
-            },
-            '& th': {
-                textAlign: 'left !important',
-                border: 'none !important',
-                height: '40px !important',
-                padding: '0 5px !important',
-                fontWeight: '600 !important'
+            marginTop: '20px',
+            '& .row': {
+                margin: '0',
+                height: '40px',
+                '&:first-child': {
+                    fontWeight: '600'
+                },
+                '&:last-child:after': {
+                    display: 'none'
+                },
+                '& > div': {
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    padding: '0 8px',
+                    overflow: 'hidden',
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0'
+                    }
+                }
             }
         },
         inputFieldCustom: {
@@ -111,24 +94,31 @@ const enhance = compose(
         },
         background: {
             display: 'flex',
-            padding: '10px',
-            margin: '5px -30px 0',
+            padding: '20px 0',
+            margin: '-20px -30px 0',
             backgroundColor: '#f1f5f8',
             position: 'relative',
-            zIndex: '2',
-            '& > div': {
-                marginTop: '-2px !important',
-                width: '30%'
-            },
-            '& > button > div > span': {
-                padding: '0 !important'
-            },
             '& > div:last-child': {
-                width: '100% !important'
-            },
-            '& button': {
-                marginTop: '10px !important'
+                alignSelf: 'center',
+                textAlign: 'center',
+                width: '20%'
             }
+        },
+        bonusProduct: {
+            borderRight: '1px #ccc solid',
+            padding: '0 30px',
+            width: '40%'
+        },
+        giftProduct: {
+            extend: 'bonusProduct'
+        },
+        subTitle: {
+            fontWeight: 'bold',
+            marginBottom: '5px'
+        },
+        productAmount: {
+            display: 'flex',
+            justifyContent: 'space-between'
         }
     }),
     connect((state) => {
@@ -143,45 +133,47 @@ const enhance = compose(
 
     withHandlers({
         handleAdd: props => () => {
-            const product = _.get(props, ['product', 'input', 'value'])
-            const amount = _.get(props, ['amount', 'input', 'value'])
-            const currency = _.get(props, ['currency'])
-            const onChange = _.get(props, ['products', 'input', 'onChange'])
-            const products = _.get(props, ['products', 'input', 'value'])
+            const bonusProduct = _.get(props, ['bonusProduct', 'input', 'value'])
+            const bonusAmount = _.get(props, ['bonusAmount', 'input', 'value'])
+            const giftProduct = _.get(props, ['giftProduct', 'input', 'value'])
+            const giftAmount = _.get(props, ['giftAmount', 'input', 'value'])
+            const onChange = _.get(props, ['bonusProducts', 'input', 'onChange'])
+            const bonusProducts = _.get(props, ['bonusProducts', 'input', 'value'])
 
-            if (!_.isEmpty(product) && amount) {
+            if (!_.isEmpty(bonusProduct) && bonusAmount) {
                 let has = false
-                _.map(products, (item) => {
-                    if (_.get(item, 'product') === product) {
-                        item.amount = _.toInteger(item.amount) + _.toInteger(amount)
+                _.map(bonusProducts, (item) => {
+                    if (_.get(item, 'bonusProduct') === bonusProduct && _.get(item, 'giftProduct') === giftProduct) {
+                        item.bonusAmount = _.toInteger(item.bonusAmount) + _.toInteger(bonusAmount)
+                        item.giftAmount = _.toInteger(item.giftAmount) + _.toInteger(giftAmount)
                         has = true
                     }
                 })
                 if (!has) {
-                    onChange(_.union(products, [{product, amount, currency}]))
+                    onChange(_.union(bonusProducts, [{bonusProduct, bonusAmount, giftProduct, giftAmount}]))
                     has = false
                 }
             }
         },
 
         handleRemove: props => (listIndex) => {
-            const onChange = _.get(props, ['products', 'input', 'onChange'])
-            const products = _(props)
-                .get(['products', 'input', 'value'])
+            const onChange = _.get(props, ['bonusProducts', 'input', 'onChange'])
+            const bonusProducts = _(props)
+                .get(['bonusProducts', 'input', 'value'])
                 .filter((item, index) => index !== listIndex)
 
-            onChange(products)
+            onChange(bonusProducts)
         }
     })
 )
 
 const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
-    const products = _.get(defaultProps, ['products', 'input', 'value']) || []
-    const error = _.get(defaultProps, ['products', 'meta', 'error'])
+    const bonusProducts = _.get(defaultProps, ['bonusProducts', 'input', 'value']) || []
+    const error = _.get(defaultProps, ['bonusProducts', 'meta', 'error'])
     return (
         <div className={classes.wrapper}>
             <div>
-                <div className={classes.headers} style={{marginTop: '-10px'}}>
+                {!state.open && <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
                     <FlatButton
                         label="+ добавить товар"
@@ -189,80 +181,111 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                         className={classes.span}
                         onTouchTap={() => dispatch({open: !state.open})}
                     />
-                </div>
+                </div>}
                 {state.open && <Row className={classes.background}>
-                    <Col xs={4}>
+                    <div className={classes.bonusProduct}>
+                        <div className={classes.subTitle}>Бонусный товар</div>
                         <Field
                             label="Тип товара"
-                            name="type"
+                            name="bonusProductType"
                             component={ProductTypeSearchField}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
-                            />
-                    </Col>
-                    <Col xs={5}>
+                        />
+                        <div className={classes.productAmount}>
+                            <div style={{width: '70%'}}>
+                                <Field
+                                    label="Наименование"
+                                    name="bonusProduct"
+                                    component={ProductCustomSearchField}
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}
+                                />
+                            </div>
+                            <div style={{width: '25%'}}>
+                                <Field
+                                    label="Кол-во"
+                                    name="bonusAmount"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className={classes.giftProduct}>
+                        <div className={classes.subTitle}>Товар в подарок</div>
                         <Field
-                            label="Наименование"
-                            name="product"
-                            component={ProductCustomSearchField}
+                            label="Тип товара"
+                            name="giftProductType"
+                            component={ProductTypeSearchField}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                         />
-                    </Col>
-                    <Col xs={2}>
-                        <Field
-                            label="Кол-во"
-                            name="amount"
-                            component={TextField}
-                            className={classes.inputFieldCustom}
-                            fullWidth={true}
-                        />
-                    </Col>
-                    <Col xs={1}>
-                        <IconButton onTouchTap={handleAdd} disableTouchRipple={true}>
-                            <Check color="#12aaeb"/>
-                        </IconButton>
-                    </Col>
+                        <div className={classes.productAmount}>
+                            <div style={{width: '70%'}}>
+                                <Field
+                                    label="Наименование"
+                                    name="giftProduct"
+                                    component={ProductCustomSearchField}
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}
+                                />
+                            </div>
+                            <div style={{width: '25%'}}>
+                                <Field
+                                    label="Кол-во"
+                                    name="giftAmount"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <FlatButton
+                            label="Добавить"
+                            labelStyle={{color: '#12aaeb'}}
+                            onTouchTap={handleAdd}/>
+                    </div>
                 </Row>}
             </div>
             {error && <div className={classes.error}>{error}</div>}
-            {!_.isEmpty(products) ? <div className={classes.table}>
-                <Table
-                    fixedHeader={true}
-                    fixedFooter={false}
-                    multiSelectable={false}>
-                    <TableHeader
-                        displaySelectAll={false}
-                        adjustForCheckbox={false}
-                        enableSelectAll={false}
-                        className={classes.title}>
-                        <TableRow className={classes.tableRow}>
-                            <TableHeaderColumn
-                                className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn></TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody
-                        displayRowCheckbox={false}
-                        deselectOnClickaway={false}
-                        showRowHover={false}
-                        stripedRows={false}>
-                        {_.map(products, (item, index) => (
-                            <TableRow key={index} className={classes.tableRow}>
-                                <TableRowColumn>{_.get(item, ['product', 'value', 'name'])}</TableRowColumn>
-                                <TableRowColumn>
-                                    {_.get(item, 'amount')} {_.get(item, ['product', 'value', 'measurement', 'name'])}</TableRowColumn>
-                                <TableRowColumn style={{textAlign: 'right'}}>
-                                    <IconButton onTouchTap={() => handleRemove(index)}>
-                                        <DeleteIcon color="#666666"/>
-                                    </IconButton>
-                                </TableRowColumn>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+            {!_.isEmpty(bonusProducts)
+                ? <div className={classes.table}>
+                    <div className={classes.subTitle}>Список бонусных товаров</div>
+                    <div>
+                        <Row className="dottedList">
+                            <Col style={{width: '34%'}}>Бонусный товар</Col>
+                            <Col style={{width: '11%'}}>Кол-во</Col>
+                            <Col style={{width: '34%'}}>Подарок</Col>
+                            <Col style={{width: '11%'}}>Кол-во</Col>
+                        </Row>
+                        {_.map(bonusProducts, (item, index) => {
+                            const bonusProduct = _.get(item, ['bonusProduct', 'value', 'name'])
+                            const bonusMeasurement = _.get(_.get(item, ['bonusProduct', 'value', 'measurement', 'name']))
+                            const bonusAmount = numberFormat(_.get(item, 'bonusAmount'), bonusMeasurement)
+                            const giftProduct = _.get(item, ['giftProduct', 'value', 'name'])
+                            const giftMeasurement = _.get(_.get(item, ['giftProduct', 'value', 'measurement', 'name']))
+                            const giftAmount = numberFormat(_.get(item, 'giftAmount'), giftMeasurement)
+
+                            return (
+                                <Row key={index} className="dottedList">
+                                    <Col style={{width: '34%'}}>{bonusProduct}</Col>
+                                    <Col style={{width: '11%'}}>{bonusAmount}</Col>
+                                    <Col style={{width: '34%'}}>{giftProduct}</Col>
+                                    <Col style={{width: '11%'}}>{giftAmount}</Col>
+                                    <Col style={{width: '10%'}}>
+                                        <IconButton onTouchTap={() => handleRemove(index)}>
+                                            <DeleteIcon color="#666666"/>
+                                        </IconButton>
+                                    </Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
+                </div>
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>

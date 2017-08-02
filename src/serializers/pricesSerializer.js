@@ -7,10 +7,17 @@ export const createSerializer = (data) => {
     const tillDate = moment(_.get(data, 'tillDate')).format('YYYY-MM-DD')
     const name = _.get(data, 'name')
     const discount = _.get(data, ['discount'])
-    const products = _.map(_.get(data, ['products']), (item) => {
+    const type = _.get(data, 'promotionType')
+    const products = _.map(_.get(data, ['bonusProducts']), (item) => {
+        const product = _.get(item, ['bonusProduct', 'value', 'id'])
+        const amount = _.get(item, 'bonusAmount')
+        const bonusProduct = _.get(item, ['giftProduct', 'value', 'id'])
+        const bonusAmount = _.get(item, 'giftAmount')
         return {
-            product: item.product.value.id,
-            amount: item.amount
+            product,
+            amount,
+            'bonus_product': bonusProduct,
+            'bonus_amount': bonusAmount
         }
     })
 
@@ -19,7 +26,8 @@ export const createSerializer = (data) => {
         'till_date': tillDate,
         name,
         discount,
-        products
+        products,
+        type
     }
 }
 
