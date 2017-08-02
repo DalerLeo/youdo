@@ -120,6 +120,10 @@ const StatAgentList = enhance((props) => {
 
     const openStatAgentDialog = toBoolean(_.get(location, ['query', STAT_AGENT_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'statAgentId'))
+    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+
     const statAgentDialog = {
         openStatAgentDialog,
         handleCloseStatAgentDialog: props.handleCloseStatAgentDialog,
@@ -141,9 +145,6 @@ const StatAgentList = enhance((props) => {
         'fromDate': moment().subtract(ONE, 'month'),
         'toDate': moment()
     }
-    const initialValues = {
-        date: filterDateRange || defaultDate
-    }
 
     const detailData = {
         filter: filterItem,
@@ -157,6 +158,13 @@ const StatAgentList = enhance((props) => {
     }
     const getDocument = {
         handleGetDocument: props.handleGetDocument
+    }
+    const initialValues = {
+        date: {
+            date: filterDateRange || defaultDate,
+            fromDate: moment(firstDayOfMonth),
+            toDate: moment(lastDayOfMonth)
+        }
     }
 
     return (

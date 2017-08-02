@@ -263,9 +263,6 @@ const ProductList = enhance((props) => {
                 type: {
                     value: _.get(detail, ['type', 'id'])
                 },
-                brand: {
-                    value: _.get(detail, ['brand', 'id'])
-                },
                 measurement: {
                     value: _.get(detail, ['measurement', 'id'])
                 },

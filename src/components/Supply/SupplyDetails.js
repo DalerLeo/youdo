@@ -37,7 +37,6 @@ const enhance = compose(
             fontWeight: '600'
         },
         defect: {
-            extend: 'link',
             color: '#e57373 !important'
         },
         loader: {
@@ -286,7 +285,6 @@ const SupplyDetails = enhance((props) => {
         openDetails,
         handleSupplyExpenseOpenCreateDialog,
         supplyListData,
-        defectDialog,
         updateDialog,
         confirmDialog,
         confirmExpenseDialog,
@@ -410,7 +408,6 @@ const SupplyDetails = enhance((props) => {
                     {_.map(products, (item) => {
                         const ZERO = 0
                         const product = _.get(item, 'product')
-                        const defId = _.get(item, 'id')
                         const productId = _.get(product, 'id')
                         const productName = _.get(product, 'name')
                         const cost = _.toInteger(_.get(item, 'cost'))
@@ -426,8 +423,7 @@ const SupplyDetails = enhance((props) => {
                                 <Col xs={1}>{numberFormat(amount, measurement)}</Col>
                                 <Col xs={1}>{numberFormat(postedAmount, measurement)}</Col>
                                 <Col xs={1}>
-                                    {(defectAmount > ZERO) ? <a onClick={ () => { defectDialog.handleOpenDefectDialog(defId) } }
-                                                                className={classes.defect}>{numberFormat(defectAmount, measurement)}</a>
+                                    {(defectAmount > ZERO) ? <span className={classes.defect}>{numberFormat(defectAmount, measurement)}</span>
                                     : <span>{numberFormat(defectAmount, measurement)}</span>}
                                     </Col>
                                 <Col xs={1}>{notAccepted}</Col>

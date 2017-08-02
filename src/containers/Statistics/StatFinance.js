@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {compose, withHandlers, withPropsOnChange} from 'recompose'
@@ -74,8 +75,12 @@ const StatFinanceList = enhance((props) => {
         graphIn,
         graphOut,
         graphInLoading,
-        graphOutLoading
+        graphOutLoading,
+        location
     } = props
+    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
 
     const graphData = {
         dataIn: graphIn,
@@ -87,6 +92,14 @@ const StatFinanceList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
+    const filterForm = {
+        initialValues: {
+            date: {
+                fromDate: moment(firstDayOfMonth),
+                toDate: moment(lastDayOfMonth)
+            }
+        }
+    }
 
     return (
         <Layout {...layout}>
@@ -94,6 +107,8 @@ const StatFinanceList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 graphData={graphData}
+                initialValues={filterForm.initialValues}
+                filterForm={filterForm}
 
             />
         </Layout>
