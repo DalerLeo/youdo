@@ -264,10 +264,10 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                         </Row>
                         {_.map(bonusProducts, (item, index) => {
                             const bonusProduct = _.get(item, ['bonusProduct', 'value', 'name'])
-                            const bonusMeasurement = _.get(_.get(item, ['bonusProduct', 'value', 'measurement', 'name']))
+                            const bonusMeasurement = _.get(item, ['bonusProduct', 'value', 'measurement', 'name'])
                             const bonusAmount = numberFormat(_.get(item, 'bonusAmount'), bonusMeasurement)
                             const giftProduct = _.get(item, ['giftProduct', 'value', 'name'])
-                            const giftMeasurement = _.get(_.get(item, ['giftProduct', 'value', 'measurement', 'name']))
+                            const giftMeasurement = _.get(item, ['giftProduct', 'value', 'measurement', 'name'])
                             const giftAmount = numberFormat(_.get(item, 'giftAmount'), giftMeasurement)
 
                             return (

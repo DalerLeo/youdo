@@ -272,6 +272,7 @@ const PricesCreateDialog = enhance((props) => {
                                         <Field
                                             name="promotionType"
                                             style={{marginTop: '10px'}}
+                                            selectedType={type}
                                             component={PromotionsRadioButton}
                                         />
                                     </div>

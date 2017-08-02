@@ -23,7 +23,6 @@ import {
     pricesCreateAction,
     pricesUpdateAction,
     pricesListFetchAction,
-    pricesCSVFetchAction,
     pricesDeleteAction,
     pricesItemFetchAction
 } from '../../actions/prices'
@@ -40,8 +39,6 @@ const enhance = compose(
         const updateLoading = _.get(state, ['prices', 'update', 'loading'])
         const list = _.get(state, ['prices', 'list', 'data'])
         const listLoading = _.get(state, ['prices', 'list', 'loading'])
-        const csvData = _.get(state, ['prices', 'csv', 'data'])
-        const csvLoading = _.get(state, ['prices', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'PricesFilterForm'])
         const createForm = _.get(state, ['form', 'PricesCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -53,8 +50,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
             createForm
@@ -75,18 +70,6 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(pricesCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
         handleOpenConfirmDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICES_DELETE_DIALOG_OPEN]: true})})
@@ -240,6 +223,7 @@ const PricesList = enhance((props) => {
     const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
         return {
             product: {
+                text: _.get(item, ['product', 'name']),
                 value: {
                     id: _.get(item, ['product', 'id']),
                     name: _.get(item, ['product', 'name']),
@@ -249,8 +233,31 @@ const PricesList = enhance((props) => {
             amount: _.get(item, 'amount')
         }
     })
+    const forUpdateBonus = _.map(_.get(detail, 'products'), (item) => {
+        return {
+            bonusProduct: {
+                text: _.get(item, ['product', 'name']),
+                value: {
+                    id: _.get(item, ['product', 'id']),
+                    name: _.get(item, ['product', 'name']),
+                    measurement: _.get(item, ['product', 'measurement'])
+                }
+            },
+            bonusAmount: _.get(item, 'amount'),
+            giftProduct: {
+                text: _.get(item, ['bonusProduct', 'name']),
+                value: {
+                    id: _.get(item, ['bonusProduct', 'id']),
+                    name: _.get(item, ['bonusProduct', 'name']),
+                    measurement: _.get(item, ['bonusProduct', 'measurement'])
+                }
+            },
+            giftAmount: _.get(item, 'bonusAmount')
+        }
+    })
     const updateDialog = {
         initialValues: (() => {
+            const promotionType = _.get(detail, 'type')
             if (!detail || openCreateDialog) {
                 return {}
             }
@@ -259,10 +266,12 @@ const PricesList = enhance((props) => {
                 discount: _.get(detail, 'discount'),
                 beginDate: moment(_.get(detail, ['beginDate'])).toDate(),
                 tillDate: moment(_.get(detail, ['tillDate'])).toDate(),
-                products: forUpdateProducts
+                products: forUpdateProducts,
+                bonusProducts: forUpdateBonus && forUpdateBonus,
+                promotionType: promotionType
             }
         })(),
-        updateLoading: updateLoading,
+        updateLoading,
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
@@ -288,14 +297,6 @@ const PricesList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading,
@@ -318,7 +319,6 @@ const PricesList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

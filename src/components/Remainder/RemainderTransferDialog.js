@@ -76,7 +76,6 @@ const enhance = compose(
         leftSide: {
             flexBasis: '25%',
             maxWidth: '25%',
-            height: '280px',
             borderRight: '1px #efefef solid',
             padding: '20px 30px',
             '&  > div > div:first-child': {
@@ -207,7 +206,7 @@ const RemainderTransferDialog = enhance((props) => {
                         label="Оставить комментарий..."
 
                         multiLine={true}
-                        rows={4}
+                        rows={1}
                         rowsMax={6}
                         fullWidth={true}/>
                 </div>
@@ -220,7 +219,7 @@ const RemainderTransferDialog = enhance((props) => {
             </div>
             <div className={classes.bottomButton}>
                 <FlatButton
-                    label="ПЕРЕДАТЬ"
+                    label="Передать"
                     className={classes.actionButton}
                     primary={true}
                     type="submit"

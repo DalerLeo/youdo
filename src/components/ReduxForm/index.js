@@ -6,6 +6,8 @@ import LocationField from './Basic/LocationField'
 import CategorySearchField from './CategorySearchField'
 import UsersSearchField from './Users/UsersSearchField'
 import ProductTypeSearchField from './Product/ProductTypeSearchField'
+import ProductTypeParentSearchField from './Product/ProductTypeParentSearchField'
+import ProductTypeChildSearchField from './Product/ProductTypeChildSearchField'
 import BrandSearchField from './BrandSearchField'
 import MeasurementSearchField from './MeasurementSearchField'
 import CurrencySearchField from './CurrencySearchField'
@@ -99,5 +101,7 @@ export {
     DeptSearchField,
     StockReceiveProductSearchField,
     FrequencySearchField,
-    PricesBonusProductField
+    PricesBonusProductField,
+    ProductTypeParentSearchField,
+    ProductTypeChildSearchField
 }
