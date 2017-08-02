@@ -115,13 +115,13 @@ const listHeader = [
     },
     {
         name: 'date',
-        sorting: false,
+        sorting: true,
         title: 'Дата приемки',
         xs: 2
     },
     {
         name: 'stock',
-        sorting: false,
+        sorting: true,
         title: 'Склад',
         xs: 2
     }

@@ -50,6 +50,7 @@ import PriceMainRadioButton from './PriceMainRadioButton'
 import normalizeDiscount from './normalizers/normalizeDiscount'
 import normalizeNumber from './normalizers/normalizeNumber'
 import ZoneSearchField from './ZoneSearchField'
+import InOutTypeSearchFiled from './InOutTypeSearchFiled'
 
 export {
     ZoneSearchField,
@@ -103,5 +104,6 @@ export {
     FrequencySearchField,
     PricesBonusProductField,
     ProductTypeParentSearchField,
-    ProductTypeChildSearchField
+    ProductTypeChildSearchField,
+    InOutTypeSearchFiled
 }

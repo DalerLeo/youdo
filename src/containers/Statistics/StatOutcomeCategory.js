@@ -1,10 +1,10 @@
 import React from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
-
 import {StatOutcomeCategoryGridList} from '../../components/Statistics'
 import {STAT_OUTCOME_CATEGORY_FILTER_KEY} from '../../components/Statistics/StatOutcomeCategoryGridList'
 import {
@@ -85,10 +85,14 @@ const StatOutcomeCategoryList = enhance((props) => {
         layout,
         filterItem,
         filterForm,
+        location,
         params
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statOutcomeCategoryId'))
+    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
 
     const listData = {
         data: _.get(list, 'results'),
@@ -114,6 +118,12 @@ const StatOutcomeCategoryList = enhance((props) => {
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
+    const initialValues = {
+        date: {
+            fromDate: moment(firstDayOfMonth),
+            toDate: moment(lastDayOfMonth)
+        }
+    }
 
     return (
         <Layout {...layout}>
@@ -123,6 +133,8 @@ const StatOutcomeCategoryList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 getDocument={getDocument}
+                initialValues={initialValues}
+                filterForm={filterForm}
             />
         </Layout>
     )

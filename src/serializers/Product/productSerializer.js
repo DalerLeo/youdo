@@ -3,7 +3,7 @@ import {orderingSnakeCase} from '../../helpers/serializer'
 
 export const createSerializer = (data) => {
     const name = _.get(data, ['name'])
-    const brand = _.get(data, ['brand', 'value'])
+    const code = _.get(data, 'code')
     const type = _.get(data, ['type', 'value']) || _.get(data, ['productTypeParent', 'value'])
     const measurement = _.get(data, ['measurement', 'value'])
     const image = _.get(data, 'image')
@@ -11,7 +11,7 @@ export const createSerializer = (data) => {
 
     return {
         name,
-        brand,
+        code,
         type,
         measurement,
         image: imageId

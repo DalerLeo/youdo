@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import sprintf from 'sprintf'
 import React from 'react'
 import {connect} from 'react-redux'
@@ -71,12 +72,18 @@ const enhance = compose(
 
         handleOpenStatMarketDialog: props => (id) => {
             const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTER.STATISTICS_MARKET_ITEM_PATH, id), query: filter.getParams({[STAT_MARKET_DIALOG_OPEN]: true})})
+            hashHistory.push({
+                pathname: sprintf(ROUTER.STATISTICS_MARKET_ITEM_PATH, id),
+                query: filter.getParams({[STAT_MARKET_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseStatMarketDialog: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.STATISTICS_MARKET_URL, query: filter.getParams({[STAT_MARKET_DIALOG_OPEN]: false})})
+            hashHistory.push({
+                pathname: ROUTER.STATISTICS_MARKET_URL,
+                query: filter.getParams({[STAT_MARKET_DIALOG_OPEN]: false})
+            })
         },
         handleOpenDetail: props => (id) => {
             const {filter} = props
@@ -110,6 +117,9 @@ const StatMarketList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'statMarketId'))
     const openStatMarketDialog = toBoolean(_.get(location, ['query', STAT_MARKET_DIALOG_OPEN]))
+    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
 
     const statMarketDialog = {
         openStatMarketDialog,
@@ -142,6 +152,12 @@ const StatMarketList = enhance((props) => {
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
+    const initialValues = {
+        date: {
+            fromDate: moment(firstDayOfMonth),
+            toDate: moment(lastDayOfMonth)
+        }
+    }
     return (
         <Layout {...layout}>
             <StatMarketGridList
@@ -152,6 +168,8 @@ const StatMarketList = enhance((props) => {
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 getDocument={getDocument}
                 filterItem={filterItem}
+                initialValues={initialValues}
+                filterForm={filterForm}
             />
         </Layout>
     )

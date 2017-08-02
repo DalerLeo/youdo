@@ -9,20 +9,19 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import MarketTypeField from '../ReduxForm/Shop/MarketTypeSearchField'
-import {ClientSearchField, ShopStatusSearchField, FrequencySearchField, UsersSearchField, ZoneSearchField} from '../ReduxForm'
+import {
+    DateToDateField,
+    InOutTypeSearchFiled,
+    StockSearchField
+} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const SHOP_FILTER_OPEN = 'openFilterDialog'
-
-export const SHOP_FILTER_KEY = {
-    CLIENT: 'client',
-    MARKET_TYPE: 'marketType',
-    STATUS: 'isActive',
-    FREQUENCY: 'frequency',
-    ZONE: 'zone',
-    CREATED_BY: 'createdBy'
+export const TAB_TRANSFER_FILTER_KEY = {
+    TYPE: 'type',
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate',
+    STOCK: 'stock'
 }
 
 const enhance = compose(
@@ -100,15 +99,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ShopFilterForm',
+        form: 'TabTransferFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(SHOP_FILTER_KEY)
+            return _(TAB_TRANSFER_FILTER_KEY)
                 .values()
-                .filter(item => item !== SHOP_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== TAB_TRANSFER_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -116,8 +115,8 @@ const enhance = compose(
     })
 )
 
-const ShopFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+const TabTransferFilterForm = enhance((props) => {
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -157,38 +156,31 @@ const ShopFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
-                    <Field
-                        className={classes.inputFieldCustom}
-                        name="marketType"
-                        component={MarketTypeField}
-                        label="Тип магазина"
-                        fullWidth={true}/>
-                    <Field
-                        className={classes.inputFieldCustom}
-                        name="isActive"
-                        component={ShopStatusSearchField}
-                        label="Статус"
-                        fullWidth={true}/>
-                    <Field
-                        className={classes.inputFieldCustom}
-                        name="createdBy"
-                        component={UsersSearchField}
-                        label="Создал"/>
-                    <Field
-                        className={classes.inputFieldCustom}
-                        name="client"
-                        component={ClientSearchField}
-                        label="Клиент"/>
-                    <Field className={classes.inputFieldCustom}
-                           name="zone"
-                           component={ZoneSearchField}
-                           label="Зона"/>
-                    <Field
-                        className={classes.inputFieldCustom}
-                        name="frequency"
-                        component={FrequencySearchField}
-                        label="Частота посещений"/>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="stock"
+                            component={StockSearchField}
+                            label="Склад"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="type"
+                            component={InOutTypeSearchFiled}
+                            label="Тип"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="date"
+                            component={DateToDateField}
+                            label="Дата приемки"
+                            fullWidth={true}/>
+                    </div>
 
                     <RaisedButton
                         type="submit"
@@ -203,7 +195,7 @@ const ShopFilterForm = enhance((props) => {
     )
 })
 
-ShopFilterForm.propTypes = {
+TabTransferFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -214,4 +206,4 @@ ShopFilterForm.propTypes = {
     })
 }
 
-export default ShopFilterForm
+export default TabTransferFilterForm

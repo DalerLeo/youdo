@@ -1,5 +1,6 @@
 import StockReceiveGridList from './StockReceiveGridList'
 import {HISTORY_FILTER_KEY} from './StockHistoryFilterForm'
+import {TAB_RECEIVE_FILTER_KEY} from './TabReceiveFilterForm'
 const STOCK_RECEIVE_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const TAB = 'tab'
 const HISTORY_FILTER_OPEN = 'openFilterDialog'
@@ -11,5 +12,6 @@ export {
     HISTORY_FILTER_OPEN,
     TAB,
     HISTORY_FILTER_KEY,
-    STOCK_CONFIRM_DIALOG_OPEN
+    STOCK_CONFIRM_DIALOG_OPEN,
+    TAB_RECEIVE_FILTER_KEY
 }

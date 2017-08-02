@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -99,10 +100,15 @@ const StatCashboxList = enhance((props) => {
         layout,
         transactionsList,
         transactionsLoading,
-        params
+        params,
+        location
     } = props
 
     const detailId = _.toInteger(_.get(params, 'cashboxId'))
+    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+
     const openDetails = detailId > ZERO
 
     const listData = {
@@ -122,6 +128,14 @@ const StatCashboxList = enhance((props) => {
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
+    const filterForm = {
+        initialValues: {
+            date: {
+                fromDate: moment(firstDayOfMonth),
+                toDate: moment(lastDayOfMonth)
+            }
+        }
+    }
 
     return (
         <Layout {...layout}>
@@ -131,6 +145,8 @@ const StatCashboxList = enhance((props) => {
                 detailData={detailData}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 getDocument={getDocument}
+                initialValues={filterForm.initialValues}
+                filterForm={filterForm}
             />
         </Layout>
     )
