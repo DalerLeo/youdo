@@ -69,6 +69,8 @@ const enhance = compose(
         const printList = _.get(state, ['stockReceive', 'print', 'data'])
         const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
         const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
+        const tabTransferFilterForm = _.get(state, ['form', 'TabTransferFilterForm'])
+        const tabReceiveFilterForm = _.get(state, ['form', 'TabReceiveFilterForm'])
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
         const productId = _.toNumber(_.get(state, ['form', 'StockReceiveCreateForm', 'values', 'product', 'value', 'id']))
         const filter = filterHelper((_.get(query, 'tab') === 'receive' || _.get(query, 'tab') === 'receiveHistory')
@@ -97,7 +99,9 @@ const enhance = compose(
             productId,
             printList,
             printLoading,
-            historyFilterForm
+            historyFilterForm,
+            tabTransferFilterForm,
+            tabReceiveFilterForm
         }
     }),
 
@@ -183,20 +187,46 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, historyFilterForm} = props
-            const brand = _.get(historyFilterForm, ['values', 'brand', 'value']) || null
             const stock = _.get(historyFilterForm, ['values', 'stock', 'value']) || null
             const type = _.get(historyFilterForm, ['values', 'type', 'value']) || null
-            const productType = _.get(historyFilterForm, ['values', 'productType', 'value']) || null
-            const product = _.get(historyFilterForm, ['values', 'product', 'value']) || null
             const fromDate = _.get(historyFilterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(historyFilterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
-                [HISTORY_FILTER_KEY.BRAND]: brand,
                 [HISTORY_FILTER_KEY.STOCK]: stock,
                 [HISTORY_FILTER_KEY.TYPE]: type,
-                [HISTORY_FILTER_KEY.PRODUCT_TYPE]: productType,
-                [HISTORY_FILTER_KEY.PRODUCT]: product,
+                [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [HISTORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+
+            })
+        },
+
+        handleSubmitTabReciveFilterDialog: props => () => {
+            const {filter, tabReceiveFilterForm} = props
+            const stock = _.get(tabReceiveFilterForm, ['values', 'stock', 'value']) || null
+            const type = _.get(tabReceiveFilterForm, ['values', 'type', 'value']) || null
+            const fromDate = _.get(tabReceiveFilterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(tabReceiveFilterForm, ['values', 'date', 'toDate']) || null
+            filter.filterBy({
+                [HISTORY_FILTER_OPEN]: false,
+                [HISTORY_FILTER_KEY.STOCK]: stock,
+                [HISTORY_FILTER_KEY.TYPE]: type,
+                [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [HISTORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+
+            })
+        },
+
+        handleSubmitTabTransferFilterDialog: props => () => {
+            const {filter, tabTransferFilterForm} = props
+            const stock = _.get(tabTransferFilterForm, ['values', 'stock', 'value']) || null
+            const type = _.get(tabTransferFilterForm, ['values', 'type', 'value']) || null
+            const fromDate = _.get(tabTransferFilterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(tabTransferFilterForm, ['values', 'date', 'toDate']) || null
+            filter.filterBy({
+                [HISTORY_FILTER_OPEN]: false,
+                [HISTORY_FILTER_KEY.STOCK]: stock,
+                [HISTORY_FILTER_KEY.TYPE]: type,
                 [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [HISTORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 

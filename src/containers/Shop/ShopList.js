@@ -190,6 +190,7 @@ const enhance = compose(
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const createdBy = _.get(filterForm, ['values', 'createdBy', 'value']) || null
             const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
+            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const isActive = _.get(filterForm, ['values', 'isActive', 'value'])
             const frequency = _.get(filterForm, ['values', 'frequency', 'value']) || null
 
@@ -199,7 +200,8 @@ const enhance = compose(
                 [SHOP_FILTER_KEY.CREATED_BY]: createdBy,
                 [SHOP_FILTER_KEY.MARKET_TYPE]: marketType,
                 [SHOP_FILTER_KEY.STATUS]: isActive,
-                [SHOP_FILTER_KEY.FREQUENCY]: frequency
+                [SHOP_FILTER_KEY.FREQUENCY]: frequency,
+                [SHOP_FILTER_KEY.ZONE]: zone
             })
         },
         handleOpenCreateDialog: props => () => {

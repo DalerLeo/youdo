@@ -13,7 +13,6 @@ import {
     TextField,
     ProductTypeParentSearchField,
     ProductTypeChildSearchField,
-    BrandSearchField,
     MeasurementSearchField,
     ImageUploadField
 } from '../ReduxForm'
@@ -95,6 +94,13 @@ const ProductCreateDialog = enhance((props) => {
                                 fullWidth={true}
                             />
                             <Field
+                                name="code"
+                                className={classes.inputFieldCustom}
+                                component={TextField}
+                                label="Код товара"
+                                fullWidth={true}
+                            />
+                            <Field
                                 name="productTypeParent"
                                 className={classes.inputFieldCustom}
                                 component={ProductTypeParentSearchField}
@@ -109,13 +115,6 @@ const ProductCreateDialog = enhance((props) => {
                                 label="Подкатегория"
                                 fullWidth={true}
                             />}
-                            <Field
-                                name="brand"
-                                className={classes.inputFieldCustom}
-                                component={BrandSearchField}
-                                label="Бренд"
-                                fullWidth={true}
-                            />
                             <Field
                                 name="measurement"
                                 className={classes.inputFieldCustom}

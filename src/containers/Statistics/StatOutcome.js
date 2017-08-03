@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -78,6 +79,10 @@ const StatOutcomeList = enhance((props) => {
     } = props
 
     const openStatOutcomeDialog = toBoolean(_.get(location, ['query', STAT_OUTCOME_DIALOG_OPEN]))
+    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+
     const statOutcomeDialog = {
         openStatOutcomeDialog,
         handleCloseStatOutcomeDialog: props.handleCloseStatOutcomeDialog,
@@ -91,6 +96,14 @@ const StatOutcomeList = enhance((props) => {
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
+    const filterForm = {
+        initialValues: {
+            date: {
+                fromDate: moment(firstDayOfMonth),
+                toDate: moment(lastDayOfMonth)
+            }
+        }
+    }
 
     return (
         <Layout {...layout}>
@@ -100,6 +113,8 @@ const StatOutcomeList = enhance((props) => {
                 listData={listData}
                 statOutcomeDialog={statOutcomeDialog}
                 getDocument={getDocument}
+                initialValues={filterForm.initialValues}
+                filterForm={filterForm}
             />
         </Layout>
     )

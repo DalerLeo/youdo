@@ -33,14 +33,14 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'type',
-        title: 'Тип товара',
+        name: 'code',
+        title: 'Код товара',
         xs: 2
     },
     {
         sorting: true,
-        name: 'brand',
-        title: 'Бренд',
+        name: 'type',
+        title: 'Тип товара',
         xs: 2
     },
     {
@@ -113,8 +113,8 @@ const ProductGridList = enhance((props) => {
     const productList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const codeProduct = _.get(item, 'code') || 'не установлено'
         const type = _.get(item, ['type', 'name']) || 'N/A'
-        const brand = _.get(item, ['brand', 'name']) || 'N/A'
         const image = _.get(item, ['image', 'file'])
         const measurement = _.get(item, ['measurement', 'name']) || ''
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
@@ -132,8 +132,8 @@ const ProductGridList = enhance((props) => {
                     </div>
                     <div style={{display: 'inline-block'}}>{name}</div>
                 </Col>
+                <Col xs={2}>{codeProduct}</Col>
                 <Col xs={2}>{type}</Col>
-                <Col xs={2}>{brand}</Col>
                 <Col xs={2}>{measurement}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
