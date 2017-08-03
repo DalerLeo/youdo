@@ -10,6 +10,7 @@ import errorReducer from './errorReducer'
 
 const rootReducer = combineReducers({
     signIn: createThunkReducer(actionTypes.SIGN_IN),
+    authConfirm: createThunkReducer(actionTypes.AUTH_CONFIRM),
     config: combineReducers({
         primaryCurrency: createThunkReducer(actionTypes.CONFIG)
     }),

@@ -7,6 +7,7 @@ export const API_URL = (API_HOST === 'apistick.wienerdeming.com')
 
 export const USER = 'main/user'
 export const SIGN_IN = `/${USER}/auth/`
+export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
 export const CONFIG = 'config/'
 

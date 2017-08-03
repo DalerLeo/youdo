@@ -318,7 +318,6 @@ const SupplyDetails = enhance((props) => {
             </div>
         )
     }
-    console.log(id)
 
     return (
         <div className={classes.wrapper}>

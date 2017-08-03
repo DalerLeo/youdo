@@ -126,7 +126,6 @@ const ProductCreateDialog = enhance((props) => {
                         <div className={classes.field} style={{maxWidth: '224px'}}>
                             <Field
                                 name="image"
-                                className={classes.imageUpload}
                                 component={ImageUploadField}
                                 label="Изображения"
                                 fullWidth={true}

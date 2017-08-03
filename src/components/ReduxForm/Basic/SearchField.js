@@ -100,6 +100,11 @@ const SearchField = enhance((props) => {
                 onNewRequest={value => input.onChange(value)}
                 openOnFocus={true}
                 filter={() => true}
+                maxSearchResults={20}
+                style={{position: 'relative'}}
+                menuStyle={{maxHeight: '300px', overflowY: 'auto'}}
+                listStyle={{}}
+                className="autocomplete"
                 {...inputAutoComplete}
                 {...autoCompleteProps}
             />

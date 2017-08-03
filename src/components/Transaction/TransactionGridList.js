@@ -282,7 +282,7 @@ const TransactionGridList = enhance((props) => {
                                  style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                                 <div className={classes.title}>
                                     Общий объем
-                                    <span>во всех классах</span>
+                                    <span>во всех кассах</span>
                                 </div>
                             </div>
                             {cashboxListLoading
