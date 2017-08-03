@@ -30,9 +30,8 @@ const enhance = compose(
 const SideBarMenu = enhance((props) => {
     const {classes, handleSignOut, handleOpenNotificationBar, count} = props
     const items = _.map(MenuItems, (item, index) => {
-        const atBottom = _.get(item, 'bottom')
         return (
-            <Link to={item.url} key={index} style={atBottom && {position: 'absolute', bottom: '60px'}}>
+            <Link to={item.url} key={index}>
                 <ToolTip position="right" text={item.name}>
                     <FlatButton
                         rippleColor="#fff"
@@ -108,11 +107,6 @@ export default injectSheet({
         '& img': {
             width: '100%'
         }
-    },
-
-    notifications: {
-        position: 'absolute',
-        bottom: '120px'
     },
 
     items: {
