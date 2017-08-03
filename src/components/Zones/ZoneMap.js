@@ -15,6 +15,7 @@ const GoogleMapWrapper = enhance(({onMapLoad, ...props}) => {
     return (
         <DefaultGoogleMap ref={onMapLoad} {...props}>
             <DrawingManager
+                deftest="a"
                 defaultDrawingMode={google.maps.drawing.OverlayType.POLYGON}
                 defaultOptions={{
                     drawingControl: true,
