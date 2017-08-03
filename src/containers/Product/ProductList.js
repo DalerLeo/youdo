@@ -261,6 +261,9 @@ const ProductList = enhance((props) => {
             return {
                 name: _.get(detail, 'name'),
                 code: _.get(detail, 'code'),
+                productTypeParent: {
+                    value: _.get(detail, ['type', 'parent'])
+                },
                 type: {
                     text: _.get(detail, ['type', 'name']),
                     value: _.get(detail, ['type', 'id'])
