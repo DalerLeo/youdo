@@ -89,7 +89,6 @@ export const positionListFetchAction = (filter) => {
 }
 
 export const positionItemFetchAction = (filter, id) => {
-    const params = serializers.itemSerializer(filter.getParams(), id)
     const payload = axios()
         .get(sprintf(API.POSITION_RATE, id))
         .then((response) => {

@@ -1,6 +1,6 @@
 const stockTypeFormat = (type) => {
     if (type === 'supply') {
-        return 'Постака'
+        return 'Поставка'
     } else if (type === 'transfer' || type === 'stock_transfer') {
         return 'Передача'
     } else if (type === 'order transfer product') {

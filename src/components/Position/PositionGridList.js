@@ -14,15 +14,11 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import PositionCreateDialog from './PositionCreateDialog'
-
-import AddCourseDialog from './AddPositionDialog'
 import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Tooltip from '../ToolTip'
 import Container from '../Container'
-import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 import {CheckBox} from '../ReduxForm'
 import {Field, reduxForm} from 'redux-form'
 
@@ -148,7 +144,7 @@ const enhance = compose(
 
     reduxForm({
         form: 'PositionPermissionForm'
-})
+    })
 )
 const MINUS_ONE = -1
 
@@ -162,7 +158,6 @@ const PositionGridList = enhance((props) => {
         detailData,
         classes,
         detailId,
-        courseDialog,
         detailFilter
     } = props
 

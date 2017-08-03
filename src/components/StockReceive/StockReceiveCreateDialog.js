@@ -177,7 +177,8 @@ const OrderCreateDialog = enhance((props) => {
         onClose,
         classes,
         detailProducts,
-        listLoading
+        listLoading,
+        isUpdate
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const supplyId = _.get(detailProducts, 'id')
@@ -191,7 +192,7 @@ const OrderCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>ПРИЕМКА ТОВАРА (Заказ №{supplyId})</span>
+                <span>{isUpdate ? `ИЗМЕНИТЬ ПРИЕМКА ТОВАРА (Заказ № ${supplyId})` : `ПРИЕМКА ТОВАРА (Заказ № ${supplyId})`}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -266,7 +267,6 @@ const OrderCreateDialog = enhance((props) => {
 OrderCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    isDefect: PropTypes.bool,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     detailProducts: PropTypes.object,

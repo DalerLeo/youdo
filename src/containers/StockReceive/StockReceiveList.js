@@ -14,6 +14,7 @@ import {OrderPrint} from '../../components/Order'
 import {
     StockReceiveGridList,
     STOCK_RECEIVE_CREATE_DIALOG_OPEN,
+    STOCK_RECEIVE_UPDATE_DIALOG_OPEN,
     HISTORY_FILTER_OPEN,
     HISTORY_FILTER_KEY,
     TAB,
@@ -303,15 +304,40 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    dispatch(stockReceiveItemFetchAction(supplyId))
+                    dispatch(stockReceiveListFetchAction(filter))
                 })
                 .catch((error) => {
                     const comment = _.map(error, (item) => {
-                        return _.get(item, 'amount')
+                        return (<p>{_.get(item, 'amount')}</p>)
                     })
-                    return dispatch(openErrorAction({message: comment}))
+                    return dispatch(openErrorAction({message: {comment}}))
                 })
         },
+        handleOpenUpdateDialog: props => () => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: false})})
+        },
+
+       /* HandleSubmitUpdateDialog: props => () => {
+            const {dispatch, createForm, filter} = props
+            const stockId = _.toInteger(_.get(props, ['params', 'stockId']))
+            return dispatch(stockUpdateAction(stockId, _.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(stockItemFetchAction(stockId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(stockReceiveListFetchAction(filter))
+                })
+        }, */
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams()})
@@ -354,6 +380,7 @@ const StockReceiveList = enhance((props) => {
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_CREATE_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_UPDATE_DIALOG_OPEN]))
     const brand = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.BRAND))
     const stock = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.STOCK))
     const type = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.TYPE))
@@ -425,7 +452,26 @@ const StockReceiveList = enhance((props) => {
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
-
+    const updateDialog = {
+        detailProducts,
+        updateLoading: detailLoading,
+        openUpdateDialog,
+        handleOpenUpdateDialog: props.handleOpenUpdateDialog,
+        handleCloseUpdateDialog: props.handleCloseUpdateDialog,
+        initialValues: (() => {
+            if (!detail || openCreateDialog) {
+                return {}
+            }
+            return {
+                product: _.map(_.get(detail, 'products'), (item) => {
+                    return {
+                        accepted: _.get(item, 'postedAmount'),
+                        defected: _.get(item, 'defectAmount')
+                    }
+                })
+            }
+        })()
+    }
     const tabData = {
         tab,
         handleTabChange: props.handleTabChange
@@ -491,6 +537,7 @@ const StockReceiveList = enhance((props) => {
                 handleCloseDetail={handleCloseDetail}
                 confirmDialog={confirmDialog}
                 printDialog={printDialog}
+                updateDialog={updateDialog}
             />
         </Layout>
     )
