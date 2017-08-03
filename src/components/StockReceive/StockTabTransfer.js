@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import GridList from '../GridList'
-import HistoryFilterForm from './StockHistoryFilterForm'
+import ReceiveFilterForm from './TabReceiveFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
@@ -84,7 +84,7 @@ const StockTabTransfer = enhance((props) => {
     } = props
 
     const usersFilterDialog = (
-        <HistoryFilterForm
+        <ReceiveFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
@@ -131,7 +131,7 @@ const StockTabTransfer = enhance((props) => {
     const list = {
         header: listHeader,
         list: historyList,
-        loading: _.get(listData, 'historyListLoading')
+        loading: _.get(listData, 'transferListLoading')
     }
 
     if (listLoading) {

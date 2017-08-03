@@ -10,7 +10,7 @@ import StockReceiveDetails from './StockReceiveDetails'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
 import CreateDialog from './StockReceiveCreateDialog'
-import HistoryFilterForm from './StockHistoryFilterForm'
+import ReceiveFilterForm from './TabReceiveFilterForm'
 import GridList from '../GridList'
 
 const ZERO = 0
@@ -142,7 +142,7 @@ const StockTabReceive = enhance((props) => {
 
     const listLoading = _.get(listData, 'listLoading')
     const stockReceiveFilterDialog = (
-        <HistoryFilterForm
+        <ReceiveFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}

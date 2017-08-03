@@ -16,7 +16,8 @@ import {
     HISTORY_FILTER_OPEN,
     HISTORY_FILTER_KEY,
     TAB,
-    STOCK_CONFIRM_DIALOG_OPEN
+    STOCK_CONFIRM_DIALOG_OPEN,
+    TAB_RECEIVE_FILTER_KEY
 } from '../../components/StockReceive'
 import {
     stockReceiveListFetchAction,
@@ -184,24 +185,30 @@ const enhance = compose(
             const {location: {pathname}} = props
             hashHistory.push({pathname, query: {[TAB]: 'history'}})
         },
-
         handleSubmitFilterDialog: props => () => {
             const {filter, historyFilterForm} = props
+            const brand = _.get(historyFilterForm, ['values', 'brand', 'value']) || null
             const stock = _.get(historyFilterForm, ['values', 'stock', 'value']) || null
             const type = _.get(historyFilterForm, ['values', 'type', 'value']) || null
+            const productType = _.get(historyFilterForm, ['values', 'productType', 'value']) || null
+            const product = _.get(historyFilterForm, ['values', 'product', 'value']) || null
             const fromDate = _.get(historyFilterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(historyFilterForm, ['values', 'date', 'toDate']) || null
+
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
+                [HISTORY_FILTER_KEY.BRAND]: brand,
                 [HISTORY_FILTER_KEY.STOCK]: stock,
                 [HISTORY_FILTER_KEY.TYPE]: type,
+                [HISTORY_FILTER_KEY.PRODUCT_TYPE]: productType,
+                [HISTORY_FILTER_KEY.PRODUCT]: product,
                 [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [HISTORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
         },
 
-        handleSubmitTabReciveFilterDialog: props => () => {
+        handleSubmitTabReceiveFilterDialog: props => () => {
             const {filter, tabReceiveFilterForm} = props
             const stock = _.get(tabReceiveFilterForm, ['values', 'stock', 'value']) || null
             const type = _.get(tabReceiveFilterForm, ['values', 'type', 'value']) || null
@@ -209,10 +216,10 @@ const enhance = compose(
             const toDate = _.get(tabReceiveFilterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
-                [HISTORY_FILTER_KEY.STOCK]: stock,
-                [HISTORY_FILTER_KEY.TYPE]: type,
-                [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [HISTORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [TAB_RECEIVE_FILTER_KEY.STOCK]: stock,
+                [TAB_RECEIVE_FILTER_KEY.TYPE]: type,
+                [TAB_RECEIVE_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [TAB_RECEIVE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
         },
@@ -451,7 +458,8 @@ const StockReceiveList = enhance((props) => {
         handleOpenFilterDialog: props.handleOpenFilterDialog,
         handleCloseFilterDialog: props.handleCloseFilterDialog,
         handleClearFilterDialog: props.handleClearFilterDialog,
-        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog,
+        handleSubmitTabReceiveFilterDialog: props.handleSubmitTabReceiveFilterDialog
     }
 
     const printDialog = {
