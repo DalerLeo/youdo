@@ -8,6 +8,7 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
+import moment from 'moment'
 import * as STOCK_TAB from '../../constants/stockReceiveTab'
 import {OrderPrint} from '../../components/Order'
 import {
@@ -182,8 +183,9 @@ const enhance = compose(
         },
 
         handleClearFilterDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {[TAB]: 'history'}})
+            const {location: {pathname, query}} = props
+            const currentTab = _.get(query, 'tab') || 'receive'
+            hashHistory.push({pathname, query: {[TAB]: currentTab}})
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, historyFilterForm} = props
@@ -202,8 +204,8 @@ const enhance = compose(
                 [HISTORY_FILTER_KEY.TYPE]: type,
                 [HISTORY_FILTER_KEY.PRODUCT_TYPE]: productType,
                 [HISTORY_FILTER_KEY.PRODUCT]: product,
-                [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [HISTORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
+                [HISTORY_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
             })
         },
@@ -218,8 +220,8 @@ const enhance = compose(
                 [HISTORY_FILTER_OPEN]: false,
                 [TAB_RECEIVE_FILTER_KEY.STOCK]: stock,
                 [TAB_RECEIVE_FILTER_KEY.TYPE]: type,
-                [TAB_RECEIVE_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [TAB_RECEIVE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [TAB_RECEIVE_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
+                [TAB_RECEIVE_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
             })
         },
@@ -357,8 +359,8 @@ const StockReceiveList = enhance((props) => {
     const type = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.TYPE))
     const productType = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.PRODUCT_TYPE))
     const product = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.PRODUCT))
-    const fromDate = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.FROM_DATE))
-    const toDate = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.TO_DATE))
+    const fromDate = filter.getParam(HISTORY_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(HISTORY_FILTER_KEY.TO_DATE)
     const tab = _.get(location, ['query', TAB]) || STOCK_TAB.STOCK_RECEIVE_DEFAULT_TAB
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
@@ -440,11 +442,9 @@ const StockReceiveList = enhance((props) => {
             product: {
                 value: product
             },
-            fromDate: {
-                value: fromDate
-            },
-            toDate: {
-                value: toDate
+            date: {
+                fromDate: fromDate && moment(fromDate),
+                toDate: toDate && moment(toDate)
             },
             productType: {
                 value: productType

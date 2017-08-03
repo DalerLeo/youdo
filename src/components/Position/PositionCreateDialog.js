@@ -56,7 +56,7 @@ const PositionCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить валюту' : 'Добавить валюту'}</span>
+                <span>{isUpdate ? 'Изменить группу' : 'Добавить группу'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -75,21 +75,6 @@ const PositionCreateDialog = enhance((props) => {
                                 label="Наименование"
                                 fullWidth={true}
                             />
-                            {isUpdate
-                                ? <Field
-                                    name="rate"
-                                    disabled={true}
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label="Курс"
-                                    fullWidth={true}/>
-                                : <Field
-                                        name="rate"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Курс"
-                                        fullWidth={true}/>
-                            }
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

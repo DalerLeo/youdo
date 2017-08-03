@@ -283,7 +283,7 @@ export const REMAINDER = 'stock/stock'
 export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
 export const REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
 export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
-export const REMAINDER_DISCARD = '/stock/stock_transfer/wb_create/'
+export const REMAINDER_DISCARD = '/stock/writeoff/'
 
 export const STAT_AGENT_LIST = 'stats/agents/'
 export const STAT_AGENT_ITEM = 'sales/order/'
@@ -345,14 +345,14 @@ export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
 export const PLAN_CREATE = `/${STAT_AGENT_LIST}/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
 
-export const POSITION = 'finance/currencies'
+export const POSITION = 'main/group/gcrud'
 export const POSITION_COURSE_CREATE = 'finance/currency_rate/'
 export const POSITION_CREATE = `/${POSITION}/`
 export const POSITION_LIST = `/${POSITION}/`
 export const POSITION_DELETE = `/${POSITION}/%d/`
 export const POSITION_ITEM = `/${POSITION}/%d/`
 export const POSITION_PRIMARY = 'currency_primary'
-export const POSITION_RATE = 'finance/currency_rate/'
+export const POSITION_RATE = `/${POSITION}/%d/permissions/`
 
 export const ACTIVITY = 'market/plan_tasks'
 export const ACTIVITY_ORDER_LIST = `${ACTIVITY}/`

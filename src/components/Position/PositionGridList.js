@@ -14,6 +14,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import PositionCreateDialog from './PositionCreateDialog'
+
 import AddCourseDialog from './AddPositionDialog'
 import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
@@ -22,13 +23,15 @@ import Tooltip from '../ToolTip'
 import Container from '../Container'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import {CheckBox} from '../ReduxForm'
+import {Field, reduxForm} from 'redux-form'
 
 const listHeader = [
     {
         sorting: true,
         name: 'name',
         xs: 2,
-        title: '№'
+        title: ''
     },
     {
         sorting: true,
@@ -141,7 +144,11 @@ const enhance = compose(
             float: 'right',
             textAlign: 'right'
         }
-    })
+    }),
+
+    reduxForm({
+        form: 'PositionPermissionForm'
+})
 )
 const MINUS_ONE = -1
 
@@ -174,47 +181,41 @@ const PositionGridList = enhance((props) => {
     const positionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const rate = numberFormat(_.get(item, 'rate'))
-        const currentPosition = getConfig('PRIMARY_CURRENCY')
-        const createdDate = moment(_.get(_.find(_.get(detailData, ['data', 'results']), {'position': id}), 'createdDate')).format('DD.MM.YYYY')
         const isActive = _.get(detailData, 'id') === id
 
-        if (name !== currentPosition) {
+        if (name) {
             return (
                 <div key={id} className={classes.list}
                      style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
                          : {backgroundColor: '#f2f5f8', display: 'relative'}}
                      onClick={() => { listData.handlePositionClick(id) }}>
                     <div className={classes.title}>{name}</div>
-                    <div className={classes.balance}>
-                        <div>Курс: {rate}</div>
-                        <div>{createdDate}</div>
-                    </div>
                 </div>
             )
         }
-        return false
+        return null
     })
-    const position = _.get(_.find(_.get(listData, 'data'), (o) => {
-        return o.id === _.toInteger(_.get(detailData, 'id'))
-    }), 'name')
-    const currentPosition = getConfig('PRIMARY_CURRENCY')
-    const historyList = _.map(_.get(detailData, ['data', 'results']), (item) => {
-        const id = _.get(item, 'id')
+    const permissionList = _.map(_.get(detailData, ['data']), (item, index) => {
+        const name = _.get(item, 'name')
+        const codename = _.get(item, 'codename')
+
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const rate = numberFormat(_.get(item, 'rate')) || 'N/A'
         return (
-            <Row key={id}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={4}>1 {position} = {rate} {currentPosition}</Col>
-                <Col xs={4}>{createdDate}</Col>
+            <Row key={index}>
+                <Col xs={2}>
+                    <Field
+                    component={CheckBox}
+                    name={codename}/>
+                </Col>
+                <Col xs={4}>{name}</Col>
+                <Col xs={6}>{createdDate}</Col>
             </Row>
         )
     })
 
     const list = {
         header: listHeader,
-        list: historyList,
+        list: permissionList,
         loading: _.get(detailData, 'detailLoading')
     }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
@@ -226,7 +227,7 @@ const PositionGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.POSITION_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить валюту">
+                <Tooltip position="left" text="Добавить группу">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -235,16 +236,10 @@ const PositionGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
-            <Paper zDepth={1}>
-                <div className={classes.editContent}>
-                    <div className={classes.semibold}>Основная валюта: <b>{currentPosition}</b><i style={{fontWeight: '400', color: '#999'}}>
-                        &nbsp;(используется при формировании стоимости продукта / заказа)</i></div>
-                </div>
-            </Paper>
             <div className={classes.wrap}>
                 <div className={classes.leftSide}>
                     <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
-                        <div>Валюты</div>
+                        <div>Группы</div>
                     </div>
                     <Paper zDepth={1} style={{height: 'calc(100% - 18px)'}}>
                         {listLoading
@@ -259,12 +254,11 @@ const PositionGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightSide}>
                     <div className={classes.rightTitle}>
-                        <div className={classes.outerTitle}>История</div>
+                        <div className={classes.outerTitle}>Доступы</div>
                         <div className={classes.outerTitle}>
                             <div className={classes.buttons}>
-                                <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить валюту</a>
-                                <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить валюту</a>
-                                <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить курс</a>
+                                <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить группу</a>
+                                <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить группу</a>
                             </div>
                         </div>
                     </div>
@@ -272,6 +266,7 @@ const PositionGridList = enhance((props) => {
                         filter={detailFilter}
                         list={list}
                         detail={detail}
+                        withoutPagination={true}
                         actionsDialog={actions}
                     />
 
@@ -291,14 +286,6 @@ const PositionGridList = enhance((props) => {
                         onClose={updateDialog.handleCloseUpdateDialog}
                         onSubmit={updateDialog.handleSubmitUpdateDialog}
                     />
-
-                    <AddCourseDialog
-                        initialValues={courseDialog.initialValues}
-                        open={courseDialog.openCourseDialog}
-                        onClose={courseDialog.handleCloseCourseDialog}
-                        onSubmit={courseDialog.handleSubmitCourseDialog}
-                    />
-
                     {detailId !== MINUS_ONE && <ConfirmDialog
                         type="delete"
                         message={confirmMessage}
@@ -342,12 +329,6 @@ PositionGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    courseDialog: PropTypes.shape({
-        openCourseDialog: PropTypes.bool.isRequired,
-        handleOpenCourseDialog: PropTypes.func.isRequired,
-        handleCloseCourseDialog: PropTypes.func.isRequired,
-        handleSubmitCourseDialog: PropTypes.func.isRequired
     }).isRequired,
     actionsDialog: PropTypes.shape({
         handleActionEdit: PropTypes.func.isRequired,

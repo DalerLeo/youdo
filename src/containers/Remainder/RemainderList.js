@@ -9,6 +9,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {reset} from 'redux-form'
 import {openSnackbarAction} from '../../actions/snackbar'
+import {openErrorAction} from '../../actions/error'
 
 import {
     RemainderGridList,
@@ -114,6 +115,19 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: false})})
                     dispatch(remainderListFetchAction(filter))
+                })
+                .catch((error) => {
+                    const amountError = _.map(error, (item) => {
+                        const amount = _.get(item, ['non_field_errors', '0'])
+                        if (amount) {
+                            return (
+                                <div style={{marginTop: '10px'}}>{amount}</div>)
+                        }
+                        return null
+                    })
+                    dispatch(openErrorAction({
+                        message: <div>{amountError}</div>
+                    }))
                 })
         },
         handleOpenDiscardDialog: props => () => {
