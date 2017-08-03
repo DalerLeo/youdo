@@ -467,6 +467,7 @@ const StockReceiveList = enhance((props) => {
             printDialog={printDialog}
             listPrintData={orderData}/>
     }
+    document.getElementById('wrapper').style.height = '100%'
 
     return (
         <Layout {...layout}>
