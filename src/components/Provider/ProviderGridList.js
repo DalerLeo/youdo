@@ -58,7 +58,6 @@ const enhance = compose(
         listRow: {
             position: 'relative',
             '& > a': {
-                width: '100%',
                 display: 'flex',
                 alignItems: 'center',
                 position: 'absolute',
@@ -68,10 +67,13 @@ const enhance = compose(
                 bottom: '0',
                 padding: '0 30px',
                 '& > div:first-child': {
-                    fontWeight: '600'
+                    paddingLeft: '0'
+                },
+                '& > div:last-child': {
+                    paddingRight: '0'
                 },
                 '& > div': {
-                    fontWeight: '500'
+                    fontWeight: '600'
                 }
             }
         }

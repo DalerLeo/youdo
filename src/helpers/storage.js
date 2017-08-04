@@ -1,4 +1,5 @@
-import {TOKEN_KEY, USER_DATA} from '../constants/storage'
+import {TOKEN_KEY, USER_GROUPS} from '../constants/storage'
+import _ from 'lodash'
 
 export const getStorage = (local) => {
     return local ? localStorage : sessionStorage
@@ -14,14 +15,16 @@ export const setToken = (token, local = false) => {
     storage.setItem(TOKEN_KEY, token)
 }
 
-export const setUser = (token, local = false) => {
+export const setUser = (userData, local = false) => {
     const storage = getStorage(local)
-
-    storage.setItem(USER_DATA, token)
+    const groups = _.map(_.get(userData, 'groups'), (item) => {
+        return _.get(item, 'id')
+    })
+    storage.setItem(USER_GROUPS, groups)
 }
 
-export const getUser = () => {
-    return localStorage.getItem(USER_DATA) || sessionStorage.getItem(USER_DATA)
+export const getGroups = () => {
+    return _.split(localStorage.getItem(USER_GROUPS) || sessionStorage.getItem(USER_GROUPS), ',')
 }
 
 export const removeToken = () => {

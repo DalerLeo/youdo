@@ -90,6 +90,22 @@ const enhance = compose(
                 color: '#129fdd',
                 verticalAlign: 'inherit !important'
             }
+        },
+        stocksCheckList: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            marginBottom: '10px',
+            '& > div': {
+                flexBasis: 'calc(100% / 3)',
+                maxWidth: 'calc(100% / 3)',
+                overflowX: 'hidden !important',
+                '& label': {
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    maxWidth: 'calc(100% - 60px)'
+                }
+            }
         }
     })),
     reduxForm({
@@ -100,7 +116,7 @@ const enhance = compose(
 )
 
 const UsersCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData, groupListData} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData, groupListData, stockListData} = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -123,7 +139,7 @@ const UsersCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4}/>
                     </div>
-                    <div className={classes.inContent} style={{display: 'block', minHeight: '350px'}}>
+                    <div className={classes.inContent} style={{display: 'block', minHeight: '350px', maxHeight: 'none'}}>
                         <Row className={classes.field}>
                             <Col xs={7} style={{paddingTop: '15px'}}>
                                 <Field
@@ -138,7 +154,7 @@ const UsersCreateDialog = enhance((props) => {
                                     label="Фамилия"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
-                                    <div style={{padding: '30px 0 10px'}}>Тип пользователя:</div>
+                                    <div style={{marginTop: '30px'}}><strong>Тип пользователя:</strong></div>
                             </Col>
                             <Col xs={5}>
                                 <Field
@@ -201,6 +217,22 @@ const UsersCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </Col>
                         </Row>
+                        <div className={classes.subTitle} style={{marginTop: '15px'}}>Связанные склады</div>
+                        {(!loading) && _.get(stockListData, 'stockListLoading')
+                        ? <div className={classes.groupLoader}>
+                            <CircularProgress size={40} thickness={4}/>
+                        </div>
+                        : <div className={classes.stocksCheckList}>
+                            {_.map(_.get(stockListData, 'data'), (item, index) => {
+                                const name = _.get(item, 'name')
+                                return (
+                                    <Field
+                                        name={'stock[' + index + '][selected]'}
+                                        component={CheckBox}
+                                        label={name}/>
+                                )
+                            })}
+                        </div>}
                     </div>
                     <div className={classes.bottomButtonUsers}>
                         <div>

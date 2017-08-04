@@ -12,7 +12,6 @@ import ReactHighcharts from 'react-highcharts'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import TextField from '../ReduxForm/Basic/TextField'
 import StatSideMenu from './StatSideMenu'
-import SubMenu from '../SubMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
@@ -43,7 +42,7 @@ const enhance = compose(
         mainWrapper: {
             background: '#fff',
             margin: '0 -28px',
-            height: 'calc(100% - 32px)',
+            height: 'calc(100% + 28px)',
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
@@ -425,7 +424,6 @@ const StatIncomeGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.STATISTICS_LIST_URL}/>
             {page}
             <StatIncomeDialog
                 loading={statIncomeDialog.loading}
