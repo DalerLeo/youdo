@@ -104,6 +104,7 @@ const enhance = compose(
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
+            width: '100% !important',
             marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
@@ -113,7 +114,8 @@ const enhance = compose(
                 lineHeight: '5px !important'
             },
             '& input': {
-                marginTop: '0 !important'
+                marginTop: '0 !important',
+                width: '100% !important'
             }
         }
     }),
@@ -136,8 +138,16 @@ const enhance = compose(
             const products = _.get(props, ['returned_products', 'input', 'value'])
 
             if (!_.isEmpty(product) && amount) {
+                let has = false
+                _.map(products, (item) => {
+                    if (_.get(item, 'product') === product) {
+                        has = true
+                    }
+                })
                 const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(amount)
-                onChange(_.union(products, [{product, amount, cost}]))
+                if (!has) {
+                    onChange(_.union(products, [{product, amount, cost}]))
+                }
             }
         },
 

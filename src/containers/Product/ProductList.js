@@ -119,13 +119,15 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
+            const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
             const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
             const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
 
             filter.filterBy({
                 [PRODUCT_FILTER_OPEN]: false,
-                [PRODUCT_FILTER_KEY.TYPE]: type,
+                [PRODUCT_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [PRODUCT_FILTER_KEY.TYPE_CHILD]: typeChild,
                 [PRODUCT_FILTER_KEY.MEASUREMENT]: measurement,
                 [PRODUCT_FILTER_KEY.BRAND]: brand
             })
@@ -218,7 +220,8 @@ const ProductList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', PRODUCT_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', PRODUCT_DELETE_DIALOG_OPEN]))
     const brand = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.BRAND))
-    const type = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.TYPE))
+    const typeParent = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.TYPE_PARENT))
+    const typeChild = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.TYPE_CHILD))
     const measurement = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.MEASUREMENT))
     const detailId = _.toInteger(_.get(params, 'productId'))
 
@@ -287,7 +290,8 @@ const ProductList = enhance((props) => {
     const filterDialog = {
         initialValues: {
             brand: {value: brand},
-            type: {value: type},
+            typeParent: {value: typeParent},
+            typeChild: {value: typeChild},
             measurement: {value: measurement}
         },
         filterLoading: false,

@@ -11,6 +11,18 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/orderTab'
 import NotFound from '../Images/not-found.png'
 import getConfig from '../../helpers/getConfig'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import InProcess from 'material-ui/svg-icons/action/cached'
+import IconButton from 'material-ui/IconButton'
+import DoneIcon from 'material-ui/svg-icons/action/done-all'
+import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
+
+import Tooltip from '../ToolTip'
+
+const PENDING = 0
+const IN_PROGRESS = 1
+const COMPLETED = 2
+const CANCELLED = 3
 
 const enhance = compose(
     injectSheet({
@@ -89,6 +101,10 @@ const enhance = compose(
             padding: '215px 0 0',
             textAlign: 'center',
             color: '#999'
+        },
+        buttons: {
+            display: 'flex',
+            justifyContent: 'space-around'
         }
     })
 )
@@ -99,14 +115,29 @@ const OrderDetailsRightSideTabs = enhance((props) => {
         returnDataLoading,
         itemReturnDialog,
         tabData,
-        returnData
+        returnData,
+        cancelOrderReturnOpen
     } = props
 
+    const iconStyle = {
+        icon: {
+            color: '#666',
+            width: 20,
+            height: 20
+        },
+        button: {
+            width: 30,
+            height: 30,
+            padding: 0,
+            zIndex: 0
+        }
+    }
     const tab = _.get(tabData, 'tab')
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     let totalProductPrice = _.toNumber('0')
+    let totalDiscount = _.toNumber('0')
     return (
         <div className={classes.rightSide}>
             <Tabs
@@ -117,10 +148,11 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                     <div className={classes.tabContent}>
                         <div className={classes.tabWrapper}>
                             <Row className="dottedList">
-                                <Col xs={6}>Товар</Col>
+                                <Col xs={4}>Товар</Col>
                                 <Col xs={2}>Количество</Col>
                                 <Col xs={2}>Цена ({primaryCurrency})</Col>
                                 <Col xs={2}>Сумма ({primaryCurrency})</Col>
+                                <Col xs={2}>Скидка ({primaryCurrency})</Col>
                             </Row>
 
                             {_.map(products, (item, index) => {
@@ -131,19 +163,27 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const amount = _.get(item, 'amount')
                                 const isBonus = _.get(item, 'isBonus')
                                 const measurement = _.get(product, ['measurement', 'name'])
+                                const discount = numberFormat(_.get(product, 'discountPrice'))
                                 totalProductPrice += _.toNumber(productTotal)
+                                totalDiscount += _.toNumber(discount)
 
                                 return (
                                     <Row className="dottedList" key={index}>
-                                        <Col xs={6}>{productName} {isBonus && <strong className="greenFont">(бонус)</strong>}</Col>
+                                        <Col xs={4}>{productName} {isBonus && <strong className="greenFont">(бонус)</strong>}</Col>
                                         <Col xs={2}>{numberFormat(amount)} {measurement}</Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
                                         <Col xs={2}>{numberFormat(productTotal)}</Col>
+                                        <Col xs={2}>{discount}</Col>
                                     </Row>
                                 )
                             })}
                         </div>
-                        <div className={classes.summary}>ОБЩАЯ СУММА ТОВАРОВ: {numberFormat(totalProductPrice)} {primaryCurrency}</div>
+                        <Row className={classes.summary}>
+                            <Col xs={4}>ОБЩАЯ СУММА (SUM):</Col>
+                            <Col xs={4}> </Col>
+                            <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
+                            <Col xs={2}>{numberFormat(totalDiscount)}</Col>
+                        </Row>
                     </div>
                 </Tab>
 
@@ -152,19 +192,21 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                     ? <div className={classes.tabContent}>
                         {!returnDataLoading ? <div className={classes.tabWrapper}>
                             <Row className="dottedList">
-                                <Col xs={2}>Код</Col>
+                                <Col xs={1}>Код</Col>
                                 <Col xs={6} style={{textAlign: 'left'}}>Причина возврата</Col>
                                 <Col xs={2}>Дата возврата</Col>
                                 <Col xs={2}>Сумма {primaryCurrency}</Col>
+
                             </Row>
                             {_.map(returnData, (item, index) => {
                                 const returnId = _.get(item, 'id')
                                 const comment = _.get(item, 'comment')
+                                const status = _.toNumber(_.get(item, 'status'))
                                 const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
                                 const totalSum = numberFormat(_.get(item, 'totalPrice'))
                                 return (
                                     <Row className="dottedList" key={index}>
-                                        <Col xs={2}><a
+                                        <Col xs={1}><a
                                             onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(returnId) }}
                                             className={classes.link}>
                                             {returnId}
@@ -173,6 +215,53 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                         <Col style={{textAlign: 'left'}} xs={6}>{comment}</Col>
                                         <Col xs={2}>{dateReturn}</Col>
                                         <Col xs={2}>{totalSum}</Col>
+                                        <Col xs={1}>
+                                            <div className={classes.buttons}>
+                                                {(status === PENDING || status === IN_PROGRESS)
+                                                    ? <div className={classes.buttons}>
+                                                        <Tooltip position="bottom" text="Ожидаеть">
+                                                            <IconButton
+                                                                disableTouchRipple={true}
+                                                                iconStyle={iconStyle.icon}
+                                                                style={iconStyle.button}
+                                                                touch={true}>
+                                                                <InProcess color="#f0ad4e"/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        <Tooltip position="bottom" text="отменит">
+                                                            <IconButton
+                                                                disableTouchRipple={true}
+                                                                iconStyle={iconStyle.icon}
+                                                                style={iconStyle.button}
+                                                                touch={true}
+                                                                onClick={() => { cancelOrderReturnOpen(returnId) }} >
+                                                                <DeleteIcon/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        </div>
+                                                        : (status === COMPLETED)
+                                                            ? <Tooltip position="bottom" text="В процессе">
+                                                                <IconButton
+                                                                    disableTouchRipple={true}
+                                                                    iconStyle={iconStyle.icon}
+                                                                    style={iconStyle.button}
+                                                                    touch={true}>
+                                                                    <DoneIcon color="#81c784"/>
+                                                                </IconButton>
+                                                              </Tooltip>
+                                                        : (status === CANCELLED)
+                                                            ? <Tooltip position="bottom" text="Отменено">
+                                                                <IconButton
+                                                                    disableTouchRipple={true}
+                                                                    iconStyle={iconStyle.icon}
+                                                                    style={iconStyle.button}
+                                                                    touch={true}>
+                                                                    <Canceled color='#e57373'/>
+                                                                </IconButton>
+                                                              </Tooltip> : null}
+                                            </div>
+                                        </Col>
+
                                     </Row>
                                 )
                             })}
@@ -207,7 +296,8 @@ OrderDetailsRightSideTabs.propTypes = {
         handleOpenItemReturnDialog: PropTypes.func.isRequired,
         handleCloseItemReturnDialog: PropTypes.func.isRequired
     }).isRequired,
-    returnDataLoading: PropTypes.bool
+    returnDataLoading: PropTypes.bool,
+    cancelOrderReturnOpen: PropTypes.func.isRequired
 }
 
 export default OrderDetailsRightSideTabs

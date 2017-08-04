@@ -143,6 +143,7 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openFilterDialog: null,
             openCreateDialog: null,
             openStatSalesDialog: null,
+            openCancelConfirmDialog: null,
             openSendDialog: null,
             openDefectDialog: null,
             openAcceptMarketDialog: null,

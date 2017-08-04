@@ -115,13 +115,14 @@ export const ORDER_RETURN = '/sales/order_return/'
 export const ORDER_RETURN_LIST = '/sales/order_return/%d/'
 export const ORDER_TRANSACTION = '/sales/client_transaction/'
 export const ORDER_PAYMENTS = '/sales/payments_list/%d/'
+export const ORDER_RETURN_CANCEL = '/sales/order_return/%d/cancel/'
 
 export const ACCEPT_CLIENT_TRANSACTION = 'finance/accept_client_transaction'
 
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_LIST_PRINT = `/${ORDER}/print/`
-export const ORDER_CANCEL = `/${ORDER}/%d/cancel`
+export const ORDER_CANCEL = `/${ORDER}/%d/cancel/`
 export const GET_DOCUMENT = 'order_document/%d/'
 
 export const SUPPLY_EXPENSE = 'stock/supply_expanse'

@@ -9,7 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
-import {TextField, OrderListReturnField} from '../ReduxForm'
+import {TextField, OrderListReturnField, StockSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import OrderReturnTotalSum from '../ReduxForm/Order/OrderReturnTotalSum'
 
@@ -44,7 +44,7 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            minHeight: '641px'
+            minHeight: '600px'
         },
         titleContent: {
             background: '#fff',
@@ -65,8 +65,7 @@ const enhance = compose(
         },
         inContent: {
             display: 'flex',
-            color: '#333',
-            padding: '15px 30px'
+            color: '#333'
         },
         innerWrap: {
             overflow: 'auto'
@@ -79,10 +78,12 @@ const enhance = compose(
             position: 'relative'
         },
         field: {
-            width: '100%'
+            maxWidth: '70%',
+            flexBasis: '30%'
+
         },
         left: {
-            flexBasis: '35%',
+            flexBasis: '30%',
             padding: '15px 30px',
             borderRight: '1px #efefef solid'
         },
@@ -100,6 +101,7 @@ const enhance = compose(
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
+            width: '100%',
             marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
@@ -164,6 +166,16 @@ const enhance = compose(
         podlojkaScroll: {
             overflowY: 'auto !important',
             padding: '0 !important'
+        },
+        rightOrderPart: {
+            flexBasis: '70%',
+            maxWidth: '70%',
+            padding: '20px 30px'
+        },
+        leftOrderPart: {
+            flexBasis: '30%',
+            padding: '20px 30px',
+            borderRight: '1px #efefef solid'
         }
     }),
     reduxForm({
@@ -183,7 +195,7 @@ const OrderReturnDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '500px'} : {width: '800px'}}
+            contentStyle={loading ? {width: '500px'} : {width: '900px', maxWidth: 'unset'}}
             className={classes.podlojkaScroll}
             open={open}
             onRequestClose={onClose}
@@ -202,25 +214,31 @@ const OrderReturnDialog = enhance((props) => {
                     </div>
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent}>
-                            <div className={classes.field}>
+                            <div className={classes.leftOrderPart}>
+                                <Field
+                                    component={StockSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Cклад"
+                                    fullWidth={true}
+                                    name="stock"/>
+                                <Field
+                                    name="comment"
+                                    component={TextField}
+                                    className={classes.returnComment}
+                                    label="Комментарий к возврату"
+                                    fullWidth={true}
+                                    multiLine={true}
+                                    rows={2}
+                                    rowsMax={3}/>
+                            </div>
+                            <div className={classes.rightOrderPart}>
                                 <Fields
                                     names={['returned_products', 'product', 'amount', 'cost']}
                                     component={OrderListReturnField}
                                     orderData={orderData}
                                 />
+                                <div>Общая сумма возврата: <OrderReturnTotalSum/></div>
                             </div>
-                        </div>
-                        <div className={classes.commentField}>
-                            <Field
-                                name="comment"
-                                component={TextField}
-                                className={classes.returnComment}
-                                label="Комментарий к возврату"
-                                fullWidth={true}
-                                multiLine={true}
-                                rows={2}
-                                rowsMax={3}/>
-                            <div>Общая сумма возврата: <OrderReturnTotalSum/></div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
