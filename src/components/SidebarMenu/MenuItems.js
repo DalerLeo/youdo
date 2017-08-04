@@ -6,7 +6,6 @@ import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-w
 import Map from 'material-ui/svg-icons/maps/map'
 import Settings from 'material-ui/svg-icons/action/settings'
 import Statistics from 'material-ui/svg-icons/action/trending-up'
-import Zone from 'material-ui/svg-icons/maps/place'
 
 export const MenuItems = [
     {
@@ -18,17 +17,8 @@ export const MenuItems = [
             {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL},
             {name: 'Маркетинговые акции', url: ROUTES.PRICES_LIST_URL},
             {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL},
-            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL}
-        ]
-    },
-    {
-        name: 'Метрика',
-        icon: (<Statistics />),
-        url: ROUTES.ACTIVITY_LIST_URL,
-        childs: [
-            {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL},
-            {name: 'План', url: ROUTES.PLAN_LIST_URL},
-            {name: 'Статистика', url: ROUTES.STATISTICS_LIST_URL}
+            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL},
+            {name: 'Отслеживание агентов', url: ROUTES.TRACKING_LIST_URL}
         ]
     },
     {
@@ -44,7 +34,7 @@ export const MenuItems = [
         url: ROUTES.PRODUCT_LIST_URL
     },
     {
-        name: 'Бухгалтерия',
+        name: 'Финансы',
         icon: (<AccountBalanceWallet />),
         url: ROUTES.TRANSACTION_LIST_URL,
         childs: [
@@ -63,20 +53,22 @@ export const MenuItems = [
         ]
     },
     {
-        name: 'Зоны',
-        icon: (<Zone />),
-        url: ROUTES.ZONES_LIST_URL,
+        name: 'Статистика',
+        icon: (<Statistics />),
+        url: ROUTES.ACTIVITY_LIST_URL,
         childs: [
-            {name: 'Зоны', url: ROUTES.ZONES_LIST_URL},
-            {name: 'Отслеживание', url: ROUTES.TRACKING_LIST_URL}
+            {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL},
+            {name: 'План', url: ROUTES.PLAN_LIST_URL},
+            {name: 'Статистика', url: ROUTES.STATISTICS_LIST_URL}
         ]
     },
     {
         name: 'Настройки',
         icon: (<Settings />),
         url: ROUTES.STOCK_LIST_URL,
+        bottom: true,
         childs: [
-            {name: 'Склады', url: ROUTES.STOCK_LIST_URL},
+            {id: 1, name: 'Склады', url: ROUTES.STOCK_LIST_URL},
             {name: 'Валюты', url: ROUTES.CURRENCY_LIST_URL},
             {name: 'Кассы', url: ROUTES.CASHBOX_LIST_URL},
             {name: 'Категории расходов', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL},
@@ -87,7 +79,8 @@ export const MenuItems = [
             {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL},
             {name: 'Смена', url: ROUTES.SHIFT_LIST_URL},
             {name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL},
-            {name: 'Должности', url: ROUTES.POSITION_LIST_URL}
+            {name: 'Должности', url: ROUTES.POSITION_LIST_URL},
+            {name: 'Зоны', url: ROUTES.ZONES_LIST_URL}
         ]
     }
 ]

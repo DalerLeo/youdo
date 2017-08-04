@@ -49,32 +49,34 @@ const SideBarMenu = enhance((props) => {
                 <div className={classes.logo}>
                     <img src={Logo}/>
                 </div>
-                {count ? <Badge
-                    className={classes.badge}
-                    badgeContent={count}
-                    badgeStyle={{top: 8, right: 10}}>
-                    <ToolTip position="right" text="Уведомления">
-                        <FlatButton
-                            rippleColor="#fff"
-                            style={style.style}
-                            onTouchTap={() => {
-                                handleOpenNotificationBar(true)
-                            }}>
-                            <Notification />
-                        </FlatButton>
-                    </ToolTip>
-                </Badge>
-                    : <ToolTip position="right" text="Уведомления">
-                        <FlatButton
-                            rippleColor="#fff"
-                            style={style.style}
-                            onTouchTap={() => {
-                                handleOpenNotificationBar(true)
-                            }}>
-                            <Notification />
-                        </FlatButton>
-                    </ToolTip>
-                }
+                <div className={classes.notifications}>
+                    {count ? <Badge
+                        className={classes.badge}
+                        badgeContent={count}
+                        badgeStyle={{top: 8, right: 10}}>
+                        <ToolTip position="right" text="Уведомления">
+                            <FlatButton
+                                rippleColor="#fff"
+                                style={style.style}
+                                onTouchTap={() => {
+                                    handleOpenNotificationBar(true)
+                                }}>
+                                <Notification />
+                            </FlatButton>
+                        </ToolTip>
+                    </Badge>
+                        : <ToolTip position="right" text="Уведомления">
+                            <FlatButton
+                                rippleColor="#fff"
+                                style={style.style}
+                                onTouchTap={() => {
+                                    handleOpenNotificationBar(true)
+                                }}>
+                                <Notification />
+                            </FlatButton>
+                        </ToolTip>
+                    }
+                </div>
                 {items}
 
                 <div className={classes.logout}>

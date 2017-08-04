@@ -72,9 +72,10 @@ const enhance = compose(
         },
         productImg: {
             width: '30px',
+            minWidth: '30px',
             height: '30px',
             overflow: 'hidden',
-            marginRight: '5px',
+            marginRight: '15px',
             display: 'inline-block',
             borderRadius: '4px',
             textAlign: 'center',
