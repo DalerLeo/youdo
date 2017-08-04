@@ -14,11 +14,15 @@ import RightSide from './OrderDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import PrintIcon from 'material-ui/svg-icons/action/print'
+import ConfirmDialog from '../ConfirmDialog'
 import Tooltip from '../ToolTip'
 import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import StatRightSide from './OrderStatDetailsRightSide'
+
+const ZERO = 0
+
 const enhance = compose(
     injectSheet({
         dottedList: {
@@ -166,6 +170,7 @@ const OrderDetails = enhance((props) => {
         returnListData,
         returnDataLoading,
         itemReturnDialog,
+        cancelOrderReturnDialog,
         confirmDialog,
         handleOpenUpdateDialog,
         type,
@@ -189,6 +194,7 @@ const OrderDetails = enhance((props) => {
     const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
     const createdDate = moment(_.get(data, 'createdDate')).format('DD.MM.YYYY')
     const paymentDate = moment(_.get(data, 'paymentDate')).format('DD.MM.YYYY')
+    const returnAmount = _.toInteger(_.get(data, 'returnAmount'))
 
     const REQUESTED = 0
     const READY = 1
@@ -196,15 +202,12 @@ const OrderDetails = enhance((props) => {
     const DELIVERED = 3
     const status = _.toInteger(_.get(data, 'status'))
 
-    const percent = 100
     const zero = 0
     const deliveryPrice = _.toNumber(_.get(data, 'deliveryPrice'))
-    const discountPrice = _.toNumber(_.get(data, 'discountPrice'))
     const totalPrice = _.toNumber(_.get(data, 'totalPrice'))
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const paymentType = _.get(data, 'paymentType')
     const totalBalance = _.get(data, 'totalBalance')
-    const discount = (discountPrice / (discountPrice + totalPrice)) * percent
 
     let productTotal = _.toNumber(zero)
     _.map(_.get(data, 'products'), (item) => {
@@ -339,12 +342,12 @@ const OrderDetails = enhance((props) => {
                                     <span>{numberFormat(deliveryPrice)} {primaryCurrency}</span>
                                 </li>
                                 <li>
-                                    <span>Скидка({discount}%):</span>
-                                    <span>{numberFormat(discountPrice)} {primaryCurrency}</span>
-                                </li>
-                                <li>
                                     <span>ИТОГО</span>
                                     <span>{numberFormat(totalPrice, primaryCurrency)}</span>
+                                </li>
+                                <li>
+                                    <span>Стоимость возвратов:</span>
+                                    <span>- {returnAmount && numberFormat(returnAmount, primaryCurrency)}</span>
                                 </li>
                                 <li>
                                     <span>Оплачено:</span>
@@ -393,6 +396,7 @@ const OrderDetails = enhance((props) => {
                     itemReturnDialog={itemReturnDialog}
                     returnData={returnData}
                     returnDataLoading={returnDataLoading}
+                    cancelOrderReturnOpen={cancelOrderReturnDialog.handleOpenCancelOrderReturnDialog}
                 />}
                 {!type &&
                 <StatRightSide
@@ -417,6 +421,13 @@ const OrderDetails = enhance((props) => {
                 loading={itemReturnDialog.returnDialogLoading}
                 onClose={itemReturnDialog.handleCloseItemReturnDialog}
             />}
+            {type && <ConfirmDialog
+                type="cancel"
+                message={'Возврат № ' + cancelOrderReturnDialog.openCancelOrderReturnDialog}
+                onClose={cancelOrderReturnDialog.handleCloseCancelOrderReturnDialog}
+                onSubmit={cancelOrderReturnDialog.handleSubmitCancelOrderReturnDialog}
+                open={cancelOrderReturnDialog.openCancelOrderReturnDialog > ZERO}/>
+            }
         </div>
     )
 })
@@ -448,7 +459,13 @@ OrderDetails.propTypes = {
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired
     }),
-    returnDataLoading: PropTypes.bool
+    returnDataLoading: PropTypes.bool,
+    cancelOrderReturnDialog: PropTypes.shape({
+        handleOpenCancelOrderReturnDialog: PropTypes.func.isRequired,
+        handleCloseCancelOrderReturnDialog: PropTypes.func.isRequired,
+        handleSubmitCancelOrderReturnDialog: PropTypes.func.isRequired,
+        openCancelOrderReturnDialog: PropTypes.number.isRequired
+    }).isRequired
 }
 
 export default OrderDetails

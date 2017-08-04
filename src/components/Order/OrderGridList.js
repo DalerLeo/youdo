@@ -175,6 +175,7 @@ const OrderGridList = enhance((props) => {
         returnDataLoading,
         printDialog,
         type,
+        cancelOrderReturnDialog,
         refreshAction
     } = props
 
@@ -215,6 +216,7 @@ const OrderGridList = enhance((props) => {
             returnDataLoading={returnDataLoading}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+            cancelOrderReturnDialog={cancelOrderReturnDialog}
             type={type}
         />
     )
@@ -489,6 +491,12 @@ OrderGridList.propTypes = {
         openPrint: PropTypes.bool.isRequired,
         handleOpenPrintDialog: PropTypes.func.isRequired,
         handleClosePrintDialog: PropTypes.func.isRequired
+    }).isRequired,
+    cancelOrderReturnDialog: PropTypes.shape({
+        handleOpenCancelOrderReturnDialog: PropTypes.func.isRequired,
+        handleCloseCancelOrderReturnDialog: PropTypes.func.isRequired,
+        handleSubmitCancelOrderReturnDialog: PropTypes.func.isRequired,
+        openCancelOrderReturnDialog: PropTypes.number.isRequired
     }).isRequired
 }
 

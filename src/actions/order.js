@@ -24,6 +24,22 @@ export const orderCreateAction = (formValues) => {
     }
 }
 
+export const orderReturnCancelAction = (id) => {
+    const payload = axios()
+        .post(sprintf(API.ORDER_RETURN_CANCEL, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_RETURN_CANCEL,
+        payload
+    }
+}
+
 export const orderReturnAction = (formValues, detail) => {
     const requestData = returnSerializers.createSerializer(formValues, detail)
     const payload = axios()

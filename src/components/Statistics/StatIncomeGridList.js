@@ -407,7 +407,7 @@ const StatIncomeGridList = enhance((props) => {
                                 </Col>
                             </Row>
                             <div className={classes.pagination}>
-                                <div><b>История заказов</b></div>
+                                <div><b>История доходов</b></div>
                                 <Pagination filter={filter}/>
                             </div>
                             {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>

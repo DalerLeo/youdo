@@ -27,6 +27,7 @@ import {
     OrderPrint
 } from '../../components/Order'
 const CLIENT_CREATE_DIALOG_OPEN = 'openClientCreate'
+const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
 import {
     orderCreateAction,
     orderUpdateAction,
@@ -37,7 +38,8 @@ import {
     orderReturnListAction,
     orderTransactionFetchAction,
     orderItemReturnFetchAction,
-    orderListPintFetchAction
+    orderListPintFetchAction,
+    orderReturnCancelAction
 } from '../../actions/order'
 import {
     clientCreateAction
@@ -116,9 +118,11 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
+        const prevOrderId = _.get(props, ['params', 'orderId'])
+        const nextOrderId = _.get(nextProps, ['params', 'orderId'])
         const prevTab = _.get(props, ['location', 'query', 'tab'])
         const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
-        return prevTab !== nextTab && nextTab === 'return'
+        return (prevOrderId !== nextOrderId || prevTab !== nextTab) && nextTab === 'return'
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         if (orderId > ZERO) {
@@ -318,6 +322,29 @@ const enhance = compose(
                     }))
                 })
         },
+        handleOpenCancelOrderReturnDialog: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CANCEL_ORDER_RETURN_DIALOG_OPEN]: id})})
+        },
+
+        handleCloseCancelOrderReturnDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CANCEL_ORDER_RETURN_DIALOG_OPEN]: false})})
+        },
+        handleSubmitCancelOrderReturnDialog: props => () => {
+            const {dispatch, filter, params, location: {pathname, query}} = props
+            const orderReturnId = _.toInteger(_.get(query, CANCEL_ORDER_RETURN_DIALOG_OPEN))
+            const orderId = _.toInteger(_.get(params, 'orderId'))
+            return dispatch(orderReturnCancelAction(orderReturnId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно отменена'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[CANCEL_ORDER_RETURN_DIALOG_OPEN]: false})})
+                    dispatch(orderItemReturnFetchAction(orderId))
+                    dispatch(orderItemFetchAction(orderId))
+                })
+        },
 
         handleOpenShortageDialog: props => () => {
             const {location: {pathname}, filter} = props
@@ -460,7 +487,7 @@ const OrderList = enhance((props) => {
     const openReturnDialog = toBoolean(_.get(location, ['query', ORDER_RETURN_DIALOG_OPEN]))
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
-
+    const openCancelOrderReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_ORDER_RETURN_DIALOG_OPEN]))
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
     const zone = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ZONE))
     const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ORDERSTATUS))
@@ -486,6 +513,12 @@ const OrderList = enhance((props) => {
         handleCloseTransactionsDialog: props.handleCloseTransactionsDialog
     }
 
+    const cancelOrderReturnDialog = {
+        openCancelOrderReturnDialog,
+        handleOpenCancelOrderReturnDialog: props.handleOpenCancelOrderReturnDialog,
+        handleCloseCancelOrderReturnDialog: props.handleCloseCancelOrderReturnDialog,
+        handleSubmitCancelOrderReturnDialog: props.handleSubmitCancelOrderReturnDialog
+    }
     const itemReturnDialog = {
         returnDialogLoading,
         openOrderItemReturnDialog,
@@ -691,6 +724,7 @@ const OrderList = enhance((props) => {
                 printDialog={printDialog}
                 type={order}
                 refreshAction={props.handleRefreshList}
+                cancelOrderReturnDialog={cancelOrderReturnDialog}
             />
         </Layout>
     )

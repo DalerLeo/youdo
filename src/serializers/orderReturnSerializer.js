@@ -18,6 +18,7 @@ export const createSerializer = (data, detail) => {
         order,
         comment,
         'dealType': dealType,
-        'returned_products': returnedProducts
+        'returned_products': returnedProducts,
+        stock: 2
     }
 }
