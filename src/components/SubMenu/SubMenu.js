@@ -21,18 +21,20 @@ const enhance = compose(
         },
         item: {
             color: '#44637e',
-            marginRight: '15px',
+            fontWeight: 'bold',
+            marginRight: '25px',
             '&:hover': {
                 cursor: 'pointer'
             }
         },
         active: {
+            color: '#12aaeb !important',
             extend: 'item',
-            borderBottom: '1px dashed #44637e',
-            fontWeight: '600'
+            borderBottom: '1px solid',
+            fontWeight: 'bold'
         },
         subParentIco: {
-            paddingTop: '3px',
+            display: 'flex',
             paddingRight: '10px',
             paddingLeft: '2px',
             '& svg path': {

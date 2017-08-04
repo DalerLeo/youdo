@@ -21,6 +21,7 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Tooltip from '../ToolTip'
+import userGroupFormat from '../../helpers/userGroupFormat'
 const ZERO = 0
 const listHeader = [
     {
@@ -86,6 +87,7 @@ const UsersGridList = enhance((props) => {
         actionsDialog,
         confirmDialog,
         groupListData,
+        stockListData,
         listData,
         detailData,
         classes
@@ -121,11 +123,11 @@ const UsersGridList = enhance((props) => {
         const secondName = _.get(item, 'secondName')
         const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
         const groups = _.map(_.get(item, 'groups'), (val, index) => {
-            const grName = _.get(val, 'name')
+            const group = _.get(val, 'name')
             if (index === ZERO) {
-                return grName
+                return userGroupFormat(group)
             }
-            return ', ' + grName
+            return ', ' + userGroupFormat(group)
         })
         const isActive = _.get(item, 'isActive')
 
@@ -203,6 +205,7 @@ const UsersGridList = enhance((props) => {
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 errorData={createDialog.errorData}
                 groupListData={groupListData}
+                stockListData={stockListData}
             />
 
             <UsersCreateDialog
@@ -213,6 +216,7 @@ const UsersGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 groupListData={groupListData}
+                stockListData={stockListData}
                 errorData={updateDialog.errorData}
             />
 

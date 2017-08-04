@@ -3,7 +3,9 @@ const groups = {
     'delivery': 'Доставщик',
     'agent': 'Агент',
     'merch': 'Мерчендайзер',
-    'collector': 'Инкасатор'
+    'collector': 'Инкасатор',
+    'cashier': 'Кассир',
+    'supervisor': 'Супервайзер'
 }
 
 const userGroupFormat = (key) => {

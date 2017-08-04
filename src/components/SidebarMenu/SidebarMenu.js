@@ -30,6 +30,27 @@ const enhance = compose(
 const SideBarMenu = enhance((props) => {
     const {classes, handleSignOut, handleOpenNotificationBar, count} = props
     const items = _.map(MenuItems, (item, index) => {
+        const atBottom = _.get(item, 'bottom')
+        if (atBottom) {
+            return false
+        }
+        return (
+            <Link to={item.url} key={index}>
+                <ToolTip position="right" text={item.name}>
+                    <FlatButton
+                        rippleColor="#fff"
+                        style={style.style}>
+                        {item.icon}
+                    </FlatButton>
+                </ToolTip>
+            </Link>
+        )
+    })
+    const bottomItems = _.map(MenuItems, (item, index) => {
+        const atBottom = _.get(item, 'bottom')
+        if (!atBottom) {
+            return false
+        }
         return (
             <Link to={item.url} key={index}>
                 <ToolTip position="right" text={item.name}>
@@ -78,6 +99,9 @@ const SideBarMenu = enhance((props) => {
                     }
                 </div>
                 {items}
+                <div className={classes.bottom}>
+                    {bottomItems}
+                </div>
 
                 <div className={classes.logout}>
                     <ToolTip position="right" text="Выйти">
@@ -129,6 +153,22 @@ export default injectSheet({
             color: '#fff !important',
             width: '25px !important',
             height: '25px !important'
+        }
+    },
+
+    bottom: {
+        marginTop: '10px',
+        paddingTop: '10px',
+        borderTop: '1px rgba(255,255,255, 0.1) solid',
+        position: 'relative',
+        '&:before': {
+            background: 'rgba(0,0,0, 0.25)',
+            content: '""',
+            position: 'absolute',
+            height: '1px',
+            top: '-2px',
+            left: '0',
+            right: '0'
         }
     },
 

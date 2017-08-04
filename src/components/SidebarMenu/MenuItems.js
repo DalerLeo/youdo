@@ -1,11 +1,16 @@
+import _ from 'lodash'
 import React from 'react'
 import * as ROUTES from '../../constants/routes'
 import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
-import Home from 'material-ui/svg-icons/action/home'
-import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
+import Finance from 'material-ui/svg-icons/action/account-balance-wallet'
 import Map from 'material-ui/svg-icons/maps/map'
 import Settings from 'material-ui/svg-icons/action/settings'
-import Statistics from 'material-ui/svg-icons/action/trending-up'
+import Statistics from 'material-ui/svg-icons/action/timeline'
+import Store from 'material-ui/svg-icons/action/store'
+import Person from 'material-ui/svg-icons/social/group'
+import Supply from 'material-ui/svg-icons/action/swap-horiz'
+import Products from 'material-ui/svg-icons/device/widgets'
+import {getGroups} from '../../helpers/storage'
 
 export const MenuItems = [
     {
@@ -14,28 +19,51 @@ export const MenuItems = [
         url: ROUTES.ORDER_LIST_URL,
         childs: [
             {name: 'Заказы', url: ROUTES.ORDER_LIST_URL},
-            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL},
+            {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL},
+            {name: 'План', url: ROUTES.PLAN_LIST_URL},
             {name: 'Маркетинговые акции', url: ROUTES.PRICES_LIST_URL},
             {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL},
-            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL},
             {name: 'Отслеживание агентов', url: ROUTES.TRACKING_LIST_URL}
         ]
     },
     {
-        name: 'Склад',
-        icon: (<Home />),
+        name: 'Клиенты',
+        icon: (<Person />),
+        url: ROUTES.CLIENT_LIST_URL,
         childs: [
-            {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL},
-            {name: 'Поставщики', url: ROUTES.PROVIDER_LIST_URL},
-            {name: 'Поставки', url: ROUTES.SUPPLY_LIST_URL},
+            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL},
+            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL}
+        ]
+    },
+    {
+        name: 'Продукты',
+        icon: (<Products />),
+        url: ROUTES.PRODUCT_LIST_URL,
+        childs: [
+            {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL}
+        ]
+    },
+    {
+        name: 'Склад',
+        icon: (<Store />),
+        url: ROUTES.REMAINDER_LIST_URL,
+        childs: [
             {name: 'Остаток', url: ROUTES.REMAINDER_LIST_URL},
             {name: 'Приемка / Передача', url: ROUTES.STOCK_RECEIVE_LIST_URL}
-        ],
-        url: ROUTES.PRODUCT_LIST_URL
+        ]
+    },
+    {
+        name: 'Поставки',
+        icon: (<Supply />),
+        url: ROUTES.PROVIDER_LIST_URL,
+        childs: [
+            {name: 'Поставщики', url: ROUTES.PROVIDER_LIST_URL},
+            {name: 'Поставки', url: ROUTES.SUPPLY_LIST_URL}
+        ]
     },
     {
         name: 'Финансы',
-        icon: (<AccountBalanceWallet />),
+        icon: (<Finance />),
         url: ROUTES.TRANSACTION_LIST_URL,
         childs: [
             {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL},
@@ -55,10 +83,8 @@ export const MenuItems = [
     {
         name: 'Статистика',
         icon: (<Statistics />),
-        url: ROUTES.ACTIVITY_LIST_URL,
+        url: ROUTES.STATISTICS_LIST_URL,
         childs: [
-            {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL},
-            {name: 'План', url: ROUTES.PLAN_LIST_URL},
             {name: 'Статистика', url: ROUTES.STATISTICS_LIST_URL}
         ]
     },
@@ -68,7 +94,7 @@ export const MenuItems = [
         url: ROUTES.STOCK_LIST_URL,
         bottom: true,
         childs: [
-            {id: 1, name: 'Склады', url: ROUTES.STOCK_LIST_URL},
+            {name: 'Склады', url: ROUTES.STOCK_LIST_URL},
             {name: 'Валюты', url: ROUTES.CURRENCY_LIST_URL},
             {name: 'Кассы', url: ROUTES.CASHBOX_LIST_URL},
             {name: 'Категории расходов', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL},
@@ -84,3 +110,59 @@ export const MenuItems = [
         ]
     }
 ]
+
+const groups = [
+    {
+        id: 1,
+        name: 'SupDir',
+        urls: [
+            ROUTES.REMAINDER_LIST_URL,
+            ROUTES.STOCK_RECEIVE_LIST_URL
+        ]
+    },
+    {
+        id: 2,
+        name: 'delivery',
+        urls: []
+    },
+    {
+        id: 3,
+        name: 'agent',
+        urls: []
+    },
+    {
+        id: 4,
+        name: 'merch',
+        urls: []
+    },
+    {
+        id: 5,
+        name: 'collector'
+    },
+    {
+        id: 6,
+        name: 'cashier',
+        urls: [
+            ROUTES.TRANSACTION_LIST_URL,
+            ROUTES.PENDING_EXPENSES_LIST_URL,
+            ROUTES.PENDING_PAYMENTS_LIST_URL,
+            ROUTES.CLIENT_BALANCE_LIST_URL
+        ]
+    },
+    {
+        id: 7,
+        name: 'supervisor'
+    }
+]
+
+const sessionGroups = getGroups()
+let menus = []
+const getLinksByGroup = (groupId) => {
+    return _.get(_.find(groups, {'id': _.toInteger(groupId)}), 'urls')
+}
+_.map(sessionGroups, (item) => {
+    const links = getLinksByGroup(item)
+    _.map(links, (link) => {
+        menus.push(link)
+    })
+})
