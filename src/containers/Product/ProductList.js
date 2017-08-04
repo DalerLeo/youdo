@@ -257,16 +257,24 @@ const ProductList = enhance((props) => {
             if (!detail || openCreateDialog) {
                 return {}
             }
+            const childType = _.get(detail, ['type', 'id'])
+            const parentType = _.get(detail, ['type', 'parent'])
 
             return {
                 name: _.get(detail, 'name'),
+                code: _.get(detail, 'code'),
+                productTypeParent: {
+                    value: parentType || childType
+                },
                 type: {
-                    value: _.get(detail, ['type', 'id'])
+                    text: _.get(detail, ['type', 'name']),
+                    value: parentType && childType
                 },
                 measurement: {
+                    text: _.get(detail, ['measurement', 'name']),
                     value: _.get(detail, ['measurement', 'id'])
                 },
-                image: _.get(detail, 'image')
+                image: _.get(detail, ['image'])
             }
         })(),
         updateLoading: detailLoading || updateLoading,

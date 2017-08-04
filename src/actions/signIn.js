@@ -54,3 +54,15 @@ export const signOutAction = () => {
         payload
     }
 }
+
+export const authConfirmAction = () => {
+    const payload = axios().get(API.AUTH_CONFIRM)
+        .then((response) => {
+            const userData = _.get(response, 'data')
+            storageHelper.setUser(userData)
+        })
+    return {
+        type: actionTypes.AUTH_CONFIRM,
+        payload
+    }
+}

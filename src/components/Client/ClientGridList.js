@@ -133,7 +133,6 @@ const enhance = compose(
         listRow: {
             position: 'relative',
             '& > a': {
-                width: '100%',
                 display: 'flex',
                 alignItems: 'center',
                 position: 'absolute',
@@ -142,11 +141,13 @@ const enhance = compose(
                 right: '-30px',
                 bottom: '0',
                 padding: '0 30px',
-                '& > div:first-child': {
-                    fontWeight: '600'
-                },
                 '& > div': {
-                    fontWeight: '500'
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0'
+                    }
                 }
             }
         }
@@ -184,7 +185,7 @@ const ClientGridList = enhance((props) => {
                     query: filter.getParams()
                 }}>
                     <Col xs={2}>{id}</Col>
-                    <Col xs={7}>{name}</Col>
+                    <Col xs={6}>{name}</Col>
                     <Col xs={3}>{createdDate}</Col>
             </Link>
             </Row>

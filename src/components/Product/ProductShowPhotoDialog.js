@@ -21,17 +21,12 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
-        imagePopup: {
-            '& > div > div': {
-                maxWidth: '500px !important'
-            }
-        },
         imgPopup: {
             padding: '0 !important',
-            maxHeight: '500px !important'
+            maxHeight: '500px !important',
+            height: '500px'
         },
         imgWrapper: {
-            width: '500px',
             height: '500px',
             '& img': {
                 height: '100%',

@@ -1,13 +1,14 @@
 export const API_HOST = process.env.API_HOST
 export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
-export const API_VTEST = 'v1'
+
 export const API_URL = (API_HOST === 'apistick.wienerdeming.com')
     ? `https://apistick.wienerdeming.com/${API_ROOT}/${API_VERSION}`
-: `http://${API_HOST}/${API_ROOT}/${API_VERSION}`
+    : `http://${API_HOST}/${API_ROOT}/${API_VERSION}`
 
 export const USER = 'main/user'
 export const SIGN_IN = `/${USER}/auth/`
+export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
 export const CONFIG = 'config/'
 

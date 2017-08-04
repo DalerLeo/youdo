@@ -37,7 +37,7 @@ const listHeader = [
     {
         xs: 2,
         sorting: true,
-        name: 'marketType',
+        name: 'market_type',
         title: 'Тип'
     },
     {
@@ -49,7 +49,7 @@ const listHeader = [
     {
         xs: 2,
         sorting: true,
-        name: 'isActive',
+        name: 'is_active',
         title: 'Статус'
     }
 ]
@@ -69,7 +69,6 @@ const enhance = compose(
         listRow: {
             position: 'relative',
             '& > a': {
-                width: '100%',
                 display: 'flex',
                 alignItems: 'center',
                 position: 'absolute',
@@ -78,11 +77,14 @@ const enhance = compose(
                 right: '-30px',
                 bottom: '0',
                 padding: '0 30px',
-                '& > div:first-child': {
-                    fontWeight: '600'
-                },
                 '& > div': {
-                    fontWeight: '500'
+                    fontWeight: '600',
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0'
+                    }
                 }
             }
         }

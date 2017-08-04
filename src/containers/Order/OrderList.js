@@ -559,6 +559,11 @@ const OrderList = enhance((props) => {
             if (deliveryType === ZERO) {
                 deliveryTypeText = 'Самовывоз'
             }
+            const dealType = _.toInteger(_.get(detail, 'dealType'))
+            let dealTypeText = 'Консигнация'
+            if (dealType === ZERO) {
+                deliveryTypeText = 'Стандартная'
+            }
             return {
                 client: {
                     value: _.toInteger(_.get(detail, ['client', 'id']))
@@ -572,6 +577,10 @@ const OrderList = enhance((props) => {
                 deliveryType: {
                     value: deliveryType,
                     text: deliveryTypeText
+                },
+                dealType: {
+                    value: dealType,
+                    text: dealTypeText
                 },
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
