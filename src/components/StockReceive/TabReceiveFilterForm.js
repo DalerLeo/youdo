@@ -156,7 +156,7 @@ const TabReceiveFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitTabReceiveFilterDialog)}>
                     <div>
                         <Field
                             className={classes.inputFieldCustom}

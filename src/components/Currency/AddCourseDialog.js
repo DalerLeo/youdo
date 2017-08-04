@@ -95,7 +95,6 @@ const PrimaryCurrencyDialog = enhance((props) => {
 PrimaryCurrencyDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired
 }
 

@@ -53,6 +53,7 @@ export const transferSerializer = (data) => {
 
 export const discardSerializer = (data) => {
     const comment = _.get(data, ['comment'])
+    const stock = _.get(data, ['fromStock', 'value'])
     const products = _.map(_.get(data, 'products'), (item) => {
         return {
             amount: item.amount,
@@ -62,7 +63,8 @@ export const discardSerializer = (data) => {
 
     return {
         products,
-        comment
+        comment,
+        stock
     }
 }
 

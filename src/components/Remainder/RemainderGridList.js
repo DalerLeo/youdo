@@ -27,6 +27,7 @@ import Search from 'material-ui/svg-icons/action/search'
 import Tooltip from '../ToolTip'
 import Pagination from '../GridList/GridListNavPagination'
 import {reduxForm, Field} from 'redux-form'
+import NotFound from '../Images/not-found.png'
 
 const enhance = compose(
     injectSheet({
@@ -107,7 +108,7 @@ const enhance = compose(
         },
         loader: {
             display: 'flex',
-            height: '400px',
+            height: '328px',
             alignItems: 'center',
             justifyContent: 'center'
         },
@@ -175,6 +176,14 @@ const enhance = compose(
             zIndex: '1',
             margin: '0 -22px',
             borderBottom: 'solid 1px #efefef'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '225px',
+            padding: '260px 0 50px',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666'
         }
     }),
     reduxForm({
@@ -433,7 +442,10 @@ const RemainderGridList = enhance((props) => {
                     {listHeader}
                 </Row>
             </div>
-            {listLoading ? listLoader : list }
+            {listLoading ? listLoader
+                : (_.isEmpty(_.get(listData, 'data')) && !listLoading) ? <Paper className={classes.emptyQuery}>
+                    <div>По вашему запросу ничего не найдено</div>
+                </Paper> : list}
 
             <RemainderTransferDialog
                 open={transferDialog.openTransferDialog}

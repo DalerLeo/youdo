@@ -3,11 +3,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import GridList from '../GridList'
-import HistoryFilterForm from './StockHistoryFilterForm'
+import ReceiveFilterForm from './TabReceiveFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
-import CircularProgress from 'material-ui/CircularProgress'
 import Details from './StockTransferDetails'
 import ConfirmDialog from '../ConfirmDialog'
 
@@ -84,7 +83,7 @@ const StockTabTransfer = enhance((props) => {
     } = props
 
     const usersFilterDialog = (
-        <HistoryFilterForm
+        <ReceiveFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
@@ -103,7 +102,6 @@ const StockTabTransfer = enhance((props) => {
         />
 
     )
-    const listLoading = _.get(listData, 'listLoading')
     const historyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const dateRequest = moment(_.get(item, 'dateRequest')).format('DD.MM.YYYY')
@@ -131,15 +129,7 @@ const StockTabTransfer = enhance((props) => {
     const list = {
         header: listHeader,
         list: historyList,
-        loading: _.get(listData, 'historyListLoading')
-    }
-
-    if (listLoading) {
-        return (
-            <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
-            </div>
-        )
+        loading: _.get(listData, 'transferListLoading')
     }
 
     return (
