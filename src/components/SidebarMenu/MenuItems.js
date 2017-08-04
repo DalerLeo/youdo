@@ -2,10 +2,11 @@ import React from 'react'
 import * as ROUTES from '../../constants/routes'
 import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
 import Home from 'material-ui/svg-icons/action/home'
-import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
+import Finance from 'material-ui/svg-icons/action/account-balance-wallet'
 import Map from 'material-ui/svg-icons/maps/map'
 import Settings from 'material-ui/svg-icons/action/settings'
 import Statistics from 'material-ui/svg-icons/action/trending-up'
+import {getUser} from '../../helpers/storage'
 
 export const MenuItems = [
     {
@@ -35,7 +36,7 @@ export const MenuItems = [
     },
     {
         name: 'Финансы',
-        icon: (<AccountBalanceWallet />),
+        icon: (<Finance />),
         url: ROUTES.TRANSACTION_LIST_URL,
         childs: [
             {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL},
@@ -68,7 +69,7 @@ export const MenuItems = [
         url: ROUTES.STOCK_LIST_URL,
         bottom: true,
         childs: [
-            {id: 1, name: 'Склады', url: ROUTES.STOCK_LIST_URL},
+            {name: 'Склады', url: ROUTES.STOCK_LIST_URL},
             {name: 'Валюты', url: ROUTES.CURRENCY_LIST_URL},
             {name: 'Кассы', url: ROUTES.CASHBOX_LIST_URL},
             {name: 'Категории расходов', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL},
@@ -84,3 +85,12 @@ export const MenuItems = [
         ]
     }
 ]
+
+const permissions = {
+    role: 1,
+    menus: [ROUTES.STOCK_LIST_URL, ROUTES.STOCK_LIST_URL, ROUTES.STOCK_LIST_URL]
+}
+
+const someFunction = () => {
+    return getUser()
+}
