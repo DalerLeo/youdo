@@ -5,12 +5,11 @@ import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import moment from 'moment'
 import {compose} from 'recompose'
-import CircularProgress from 'material-ui/CircularProgress'
 import StockReceiveDetails from './StockReceiveDetails'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
 import CreateDialog from './StockReceiveCreateDialog'
-import HistoryFilterForm from './StockHistoryFilterForm'
+import ReceiveFilterForm from './TabReceiveFilterForm'
 import GridList from '../GridList'
 
 const ZERO = 0
@@ -134,6 +133,7 @@ const StockTabReceive = enhance((props) => {
         filter,
         classes,
         confirmDialog,
+        updateDialog,
         handleCloseDetail,
         createDialog,
         filterDialog,
@@ -142,7 +142,7 @@ const StockTabReceive = enhance((props) => {
 
     const listLoading = _.get(listData, 'listLoading')
     const stockReceiveFilterDialog = (
-        <HistoryFilterForm
+        <ReceiveFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
@@ -158,11 +158,11 @@ const StockTabReceive = enhance((props) => {
             handleCloseDetail={handleCloseDetail}
             createDialog={createDialog}
             history={history}
-
-        />
+            updateDialog={updateDialog}
+    />
     )
 
-    const stockReciveList = _.map(_.get(listData, 'data'), (item) => {
+    const stockReceiveList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const by = _.get(item, ['by'])
         const type = _.get(item, ['type'])
@@ -190,16 +190,8 @@ const StockTabReceive = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: stockReciveList,
+        list: stockReceiveList,
         loading: listLoading
-    }
-
-    if (listLoading) {
-        return (
-            <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
-            </div>
-        )
     }
 
     return (
@@ -220,11 +212,20 @@ const StockTabReceive = enhance((props) => {
             <CreateDialog
                 loading={createDialog.createLoading}
                 open={createDialog.openCreateDialog}
-                isDefect={createDialog.isDefect}
                 detailProducts={createDialog.detailProducts}
                 listLoading={createDialog.detailLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
+            />
+            <CreateDialog
+                loading={updateDialog.updateLoading}
+                open={updateDialog.openUpdateDialog}
+                detailProducts={updateDialog.detailProducts}
+                listLoading={updateDialog.detailLoading}
+                onClose={updateDialog.handleCloseUpdateDialog}
+                onSubmit={updateDialog.handleSubmitCreateDialog}
+                isUpdate={true}
+                initialValues={updateDialog.initialValues}
             />
         </div>
     )
@@ -245,7 +246,6 @@ StockTabReceive.propTypes = {
     createDialog: PropTypes.shape({
         createLoading: PropTypes.bool.isRequired,
         openCreateDialog: PropTypes.bool.isRequired,
-        isDefect: PropTypes.bool,
         detailProducts: PropTypes.object,
         detailLoading: PropTypes.bool,
         handleOpenCreateDialog: PropTypes.func.isRequired,

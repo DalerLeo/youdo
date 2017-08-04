@@ -110,6 +110,7 @@ const StockReceiveGridList = enhance((props) => {
         transferDetail,
         filterDialog,
         detailData,
+        updateDialog,
         filter,
         printDialog,
         tabData,
@@ -140,6 +141,7 @@ const StockReceiveGridList = enhance((props) => {
                 detailData={detailData}
                 confirmDialog={confirmDialog}
                 handleCloseDetail={handleCloseDetail}
+                updateDialog={updateDialog}
                 createDialog={createDialog}
                 filterDialog={filterDialog}
                 history={false}
@@ -172,6 +174,7 @@ const StockReceiveGridList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 confirmDialog={confirmDialog}
+                updateDialog={updateDialog}
                 handleCloseDetail={handleCloseDetail}
                 createDialog={createDialog}
                 filterDialog={filterDialog}
@@ -227,6 +230,12 @@ StockReceiveGridList.propTypes = {
         handleSubmitTransferAcceptDialog: PropTypes.func.isRequired,
         handleSubmitReceiveConfirmDialog: PropTypes.func.isRequired,
         handleSubmitOrderReturnDialog: PropTypes.func.isRequired
+    }).isRequired,
+    updateDialog: PropTypes.shape({
+        updateLoading: PropTypes.bool.isRequired,
+        openUpdateDialog: PropTypes.bool.isRequired,
+        handleOpenUpdateDialog: PropTypes.func.isRequired,
+        handleCloseUpdateDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

@@ -9,19 +9,28 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
+
 import {
+    ProductSearchField,
+    BrandSearchField,
     DateToDateField,
-    InOutTypeSearchFiled,
+    ProductTypeSearchField,
+    StockStatusSearchField,
     StockSearchField
 } from '../ReduxForm'
+
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const HISTORY_FILTER_KEY = {
+    PRODUCT: 'product',
     TYPE: 'type',
+    PRODUCT_TYPE: 'productType',
+    BRAND: 'brand',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     STOCK: 'stock'
+
 }
 
 const enhance = compose(
@@ -160,6 +169,30 @@ const HistoryFilterForm = enhance((props) => {
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
+                            name="brand"
+                            component={BrandSearchField}
+                            label="Бренд"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="productType"
+                            component={ProductTypeSearchField}
+                            label="Тип товара"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="product"
+                            component={ProductSearchField}
+                            label="Товар"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
                             name="stock"
                             component={StockSearchField}
                             label="Склад"
@@ -169,8 +202,8 @@ const HistoryFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="type"
-                            component={InOutTypeSearchFiled}
-                            label="Тип"
+                            component={StockStatusSearchField}
+                            label="Статус"
                             fullWidth={true}/>
                     </div>
                     <div>
@@ -178,10 +211,9 @@ const HistoryFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="date"
                             component={DateToDateField}
-                            label="Дата приемки"
+                            label="Период"
                             fullWidth={true}/>
                     </div>
-
                     <RaisedButton
                         type="submit"
                         primary={true}

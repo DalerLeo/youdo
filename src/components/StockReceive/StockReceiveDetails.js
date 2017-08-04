@@ -13,6 +13,7 @@ import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
 import RemoveCircleIcon from 'material-ui/svg-icons/content/remove-circle'
+import EditIcon from 'material-ui/svg-icons/image/edit'
 
 const RETURN = 3
 const APPROVE = 1
@@ -132,6 +133,7 @@ const StockReceiveDetails = enhance((props) => {
         handleCloseDetail,
         confirmDialog,
         createDialog,
+        updateDialog,
         history
     } = props
     const type = _.get(detailData, 'type')
@@ -142,6 +144,7 @@ const StockReceiveDetails = enhance((props) => {
     const id = _.get(detailData, 'id')
     const tooltipText = 'Подтвердить Запрос № ' + id
     const tooltipCancelText = 'Отменить Запрос № ' + id
+    const tooltipUpdateText = 'Изменить Запрос № ' + id
     const detailLoading = _.get(detailData, 'detailLoading')
     const products = (type === 'order_return') ? _.get(detailData, ['data', 'returnedProducts']) : _.get(detailData, ['data', 'products'])
     const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
@@ -175,8 +178,8 @@ const StockReceiveDetails = enhance((props) => {
                             {stockName}
                         </Col>
                         <Col xs={1}>
-                            {!history && <div className={classes.titleButtons}>
-                                {type === 'transfer'
+                            <div className={classes.titleButtons}>
+                                {!history && type === 'transfer'
                                     ? <Tooltip position="right" text={tooltipText}>
                                             <IconButton
                                                 iconStyle={iconStyle.icon}
@@ -186,7 +189,7 @@ const StockReceiveDetails = enhance((props) => {
                                                 <CheckCircleIcon />
                                             </IconButton>
                                         </Tooltip>
-                                        : (type === 'order_return')
+                                        : (!history && type === 'order_return')
                                             ? <Tooltip position="right" text={tooltipText}>
                                                 <IconButton
                                                     iconStyle={iconStyle.icon}
@@ -196,18 +199,30 @@ const StockReceiveDetails = enhance((props) => {
                                                     <CheckCircleIcon />
                                                 </IconButton>
                                             </Tooltip>
-                                        : <Tooltip position="right" text={tooltipText}>
-                                            <IconButton
-                                                iconStyle={iconStyle.icon}
-                                                style={iconStyle.button}
-                                                touch={true}
-                                                onTouchTap={() => { createDialog.handleOpenCreateDialog() }}>
-                                                <CheckCircleIcon />
-                                            </IconButton>
-                                        </Tooltip>
+                                        : (type === 'supply')
+                                            ? (!history
+                                                ? <Tooltip position="right" text={tooltipText}>
+                                                    <IconButton
+                                                        iconStyle={iconStyle.icon}
+                                                        style={iconStyle.button}
+                                                        touch={true}
+                                                        onTouchTap={() => { createDialog.handleOpenCreateDialog() }}>
+                                                        <CheckCircleIcon />
+                                                    </IconButton>
+                                                  </Tooltip>
+                                                : <Tooltip position="right" text={tooltipUpdateText}>
+                                                    <IconButton
+                                                        iconStyle={iconStyle.icon}
+                                                        style={iconStyle.button}
+                                                        touch={true}
+                                                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                  </Tooltip>)
+                                            : null
                                 }
 
-                                {type === 'transfer' &&
+                                {!history && type === 'transfer' &&
                                     <Tooltip position="right" text={tooltipCancelText}>
                                         <IconButton
                                             iconStyle={iconStyle.icon}
@@ -217,8 +232,8 @@ const StockReceiveDetails = enhance((props) => {
                                             <RemoveCircleIcon />
                                         </IconButton>
                                     </Tooltip>
-                            }
-                            </div>}
+                                }
+                            </div>
                         </Col>
                     </Row>
                 </div>

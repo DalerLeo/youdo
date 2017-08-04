@@ -7,7 +7,6 @@ import HistoryFilterForm from './StockHistoryFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
-import CircularProgress from 'material-ui/CircularProgress'
 import numberFormat from '../../helpers/numberFormat'
 import ArrowUp from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-downward'
@@ -90,7 +89,6 @@ const StockTabHistory = enhance((props) => {
     const historyDetail = (
         <span>a</span>
     )
-    const listLoading = _.get(listData, 'listLoading')
     const historyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const product = _.get(item, ['product', 'name'])
@@ -117,14 +115,6 @@ const StockTabHistory = enhance((props) => {
         header: listHeader,
         list: historyList,
         loading: _.get(listData, 'historyListLoading')
-    }
-
-    if (listLoading) {
-        return (
-            <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
-            </div>
-        )
     }
 
     return (
