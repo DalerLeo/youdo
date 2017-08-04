@@ -38,7 +38,8 @@ export const transferSerializer = (data) => {
     const products = _.map(_.get(data, 'products'), (item) => {
         return {
             amount: item.amount,
-            product: item.product.value.id
+            product: item.product.value.id,
+            isDefect: _.get(item, ['isDefect', 'id']) === ONE
         }
     })
 
@@ -57,7 +58,8 @@ export const discardSerializer = (data) => {
     const products = _.map(_.get(data, 'products'), (item) => {
         return {
             amount: item.amount,
-            product: item.product.value.id
+            product: item.product.value.id,
+            isDefect: _.get(item, ['isDefect', 'id']) === ONE
         }
     })
 
