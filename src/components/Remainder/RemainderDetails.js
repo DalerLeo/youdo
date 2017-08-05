@@ -6,8 +6,8 @@ import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat'
-import moment from 'moment'
 import LinearProgress from '../LinearProgress'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 
 const enhance = compose(
     injectSheet({
@@ -86,7 +86,7 @@ const RemainderDetails = enhance((props) => {
                     {_.map(_.get(detailData, ['data', 'results']), (item) => {
                         const barcode = _.get(item, 'barcode')
                         const balance = numberFormat(_.get(item, 'balance'), measurement)
-                        const createdDate = moment(_.get(item, 'createdDate')).format(('DD.MM.YYYY'))
+                        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
                         const isDefect = _.get(item, 'isDefect') ? 'Брак' : 'OK'
                         return (
                             <Row key={barcode} className='dottedList'>

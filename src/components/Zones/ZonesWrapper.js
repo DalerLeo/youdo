@@ -303,6 +303,8 @@ const ZonesWrapper = enhance((props) => {
         statData,
         classes,
         addZone,
+        updateZone,
+        deleteZone,
         detailData,
         toggle,
         search,
@@ -315,7 +317,8 @@ const ZonesWrapper = enhance((props) => {
     const ZERO = 0
     const ONE = 1
     const isOpenToggle = toggle.openToggle
-    const isOpenPopup = addZone.openAddZone
+    const isOpenAddZone = addZone.openAddZone
+    const isOpenUpdateZone = updateZone.openUpdateZone
     const isLoadingList = _.get(listData, 'listLoading')
     const isListEmpty = _.isEmpty(_.get(listData, 'data'))
 
@@ -330,6 +333,11 @@ const ZonesWrapper = enhance((props) => {
     let isOpenConfirm = false
     if (_.get(unbindAgent, 'openConfirmDialog') > ZERO) {
         isOpenConfirm = true
+    }
+
+    let isOpenDeleteZone = false
+    if (_.get(deleteZone, 'openDeleteZone') > ZERO) {
+        isOpenDeleteZone = true
     }
 
     const iconButton = (
@@ -416,10 +424,12 @@ const ZonesWrapper = enhance((props) => {
                                             targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                                             <MenuItem
                                                 primaryText="Изменить"
+                                                onTouchTap={() => { updateZone.handleOpenUpdateZone(id) }}
                                                 leftIcon={<Edit />}
                                             />
                                             <MenuItem
-                                                primaryText="Удалить "
+                                                primaryText="Удалить"
+                                                onTouchTap={() => { deleteZone.handleOpenDeleteZone(id) }}
                                                 leftIcon={<DeleteIcon />}
                                             />
                                         </IconMenu>
@@ -461,7 +471,7 @@ const ZonesWrapper = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.ZONES_LIST_URL}/>
 
-            <div className={classes.addButtonWrapper}>
+            {(!isOpenAddZone && !isOpenUpdateZone) && <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить зону">
                     <FloatingActionButton
                         mini={true}
@@ -470,13 +480,18 @@ const ZonesWrapper = enhance((props) => {
                         <ContentAdd />
                     </FloatingActionButton>
                 </Tooltip>
-            </div>
+            </div>}
 
             <div className={classes.zonesWrapper}>
                 <ZoneMap />
-                {isOpenPopup && <AddZonePopup
+                {isOpenAddZone && <AddZonePopup
                     onClose={addZone.handleCloseAddZone}
                     onSubmit={addZone.handleSubmitAddZone}
+                />}
+                {isOpenUpdateZone && <AddZonePopup
+                    initialValues={updateZone.initialValues}
+                    onClose={updateZone.handleCloseUpdateZone}
+                    onSubmit={updateZone.handleSubmitUpdateZone}
                 />}
                 <BindAgentDialog
                     open={bindAgent.openBindAgent}
@@ -489,6 +504,13 @@ const ZonesWrapper = enhance((props) => {
                     onClose={unbindAgent.handleCloseConfirmDialog}
                     onSubmit={unbindAgent.handleSendConfirmDialog}
                     message="Открепить данного агента?"
+                    type="submit"
+                />
+                <ConfirmDialog
+                    open={isOpenDeleteZone}
+                    onClose={deleteZone.handleCloseDeleteZone}
+                    onSubmit={deleteZone.handleSendDeleteZone}
+                    message="Удалить выбранную зону?"
                     type="submit"
                 />
                 {zoneInfoToggle}
@@ -504,9 +526,23 @@ ZonesWrapper.PropTypes = {
     statData: PropTypes.object,
     addZone: PropTypes.shape({
         openAddZone: PropTypes.bool.isRequired,
+        createLoading: PropTypes.bool.isRequired,
         handleOpenAddZone: PropTypes.func.isRequired,
         handleCloseAddZone: PropTypes.func.isRequired,
         handleSubmitAddZone: PropTypes.func.isRequired
+    }).isRequired,
+    updateZone: PropTypes.shape({
+        openUpdateZone: PropTypes.bool.isRequired,
+        updateLoading: PropTypes.bool.isRequired,
+        handleOpenUpdateZone: PropTypes.func.isRequired,
+        handleCloseUpdateZone: PropTypes.func.isRequired,
+        handleSubmitUpdateZone: PropTypes.func.isRequired
+    }).isRequired,
+    deleteZone: PropTypes.shape({
+        openDeleteZone: PropTypes.bool.isRequired,
+        handleOpenDeleteZone: PropTypes.func.isRequired,
+        handleCloseDeleteZone: PropTypes.func.isRequired,
+        handleSendDeleteZone: PropTypes.func.isRequired
     }).isRequired,
     toggle: PropTypes.shape({
         openToggle: PropTypes.bool.isRequired,

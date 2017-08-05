@@ -26,7 +26,7 @@ import OrderListProductField from './Order/OrderListProductField'
 import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
 import PaymentTypeSearchField from './PaymentTypeSearchField'
 import StockTypeSearchField from './Stock/StockTypeSearchField'
-import CashboxSearchField from './CashboxSearchField'
+import CashboxSearchField from './Cashbox/CashboxSearchField'
 import DeliveryTypeSearchField from './DeliveryTypeSearchField'
 import ManufactureSearchField from './Manufacture/ManufactureSearchField'
 import ManufactureListMaterialField from './Manufacture/ManufactureListMaterialField'
@@ -37,6 +37,8 @@ import TransactionTypeSearchField from './TransactionTypeSearchField'
 import ProductMeasurementField from './Product/ProductMeasurementField'
 import ShiftSearchField from './ShiftSearchField'
 import CashboxCustomField from './PendingPayments/CashboxCustomField'
+import CashboxCashCustomField from './PendingPayments/CashboxCashCustomField'
+import CashboxBankCustomField from './PendingPayments/CashboxBankCustomField'
 import VisitFrequencySearchField from './Shop/VisitFrequencySearchField'
 import ShopStatusSearchField from './Shop/ShopStatusSearchField'
 import DealTypeSearchField from './DealTypeSearchField'
@@ -93,6 +95,8 @@ export {
     StockTypeSearchField,
     CashboxSearchField,
     CashboxCustomField,
+    CashboxCashCustomField,
+    CashboxBankCustomField,
     VisitFrequencySearchField,
     PricesListProductField,
     ShopStatusSearchField,

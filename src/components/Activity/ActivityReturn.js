@@ -108,17 +108,17 @@ const dateFormat = (date, defaultText) => {
 
 const ActivityReturn = enhance((props) => {
     const {
-        returnlistData,
+        returnListData,
         classes
     } = props
 
-    const returnlistLoading = _.get(returnlistData, 'returnListLoading')
-    const returnList = _.map(_.get(returnlistData, 'data'), (item) => {
-        const id = _.get(item, ['return', 'id'])
-        const market = _.get(item, ['return', 'market', 'name'])
-        const comment = _.get(item, ['return', 'comment'])
-        const name = _.get(item, ['return', 'user', 'firstName']) + ' ' + _.get(item, ['return', 'user', 'secondName'])
-        const createdDate = dateFormat(_.get(item, ['return', 'createdDate']))
+    const returnlistLoading = _.get(returnListData, 'returnListLoading')
+    const returnList = _.map(_.get(returnListData, 'data'), (item) => {
+        const id = _.get(item, ['orderReturn', 'id'])
+        const market = _.get(item, ['orderReturn', 'market', 'name'])
+        const comment = _.get(item, ['orderReturn', 'comment'])
+        const name = _.get(item, ['orderReturn', 'createdBy', 'firstName']) + ' ' + _.get(item, ['orderReturn', 'createdBy', 'secondName'])
+        const createdDate = dateFormat(_.get(item, ['orderReturn', 'createdDate']))
 
         return (
             <Paper key={id} zDepth={1} className={classes.tube}>
@@ -152,7 +152,7 @@ const ActivityReturn = enhance((props) => {
 })
 
 ActivityReturn.PropTypes = {
-    returnlistData: PropTypes.object
+    returnListData: PropTypes.object
 }
 
 export default ActivityReturn

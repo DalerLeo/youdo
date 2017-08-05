@@ -153,7 +153,7 @@ const ActivityPayment = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Визиты</div>
+            <div className={classes.blockTitle}>Сбор денег</div>
             <div className={classes.blockItems}>
                 <InfiniteScroll
                     pageStart={500}
@@ -170,7 +170,7 @@ const ActivityPayment = enhance((props) => {
 })
 
 ActivityPayment.PropTypes = {
-    returnlistData: PropTypes.object
+    paymentlistData: PropTypes.object
 }
 
 export default ActivityPayment

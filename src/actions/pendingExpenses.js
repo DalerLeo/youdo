@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/pendingExpensesSerializer'
 
-export const pendingExpensesUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues, id)
+export const pendingExpensesUpdateAction = (detail, formValues) => {
+    const requestData = serializers.createSerializer(formValues, detail)
     const payload = axios()
         .post(API.PENDING_EXPENSES_UPDATE, requestData)
         .then((response) => {

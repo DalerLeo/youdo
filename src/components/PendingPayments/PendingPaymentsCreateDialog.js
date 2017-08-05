@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxCustomField, normalizeNumber} from '../ReduxForm'
+import {TextField, CashboxCashCustomField, CashboxBankCustomField, normalizeNumber} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -72,7 +72,8 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const id = _.get(detailData, 'id')
     const client = _.get(detailData, ['data', 'client'])
     const marketName = _.get(detailData, ['data', 'market', 'name'])
-    const paymentType = (Number(_.get(detailData, ['data', 'paymentType'])) === ONE) ? 'банковский счет' : 'наличный'
+    const paymentType = _.toInteger(_.get(detailData, ['data', 'paymentType']))
+    const paymentTypeOutput = (Number(_.get(detailData, ['data', 'paymentType'])) === ONE) ? 'банковский счет' : 'наличный'
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), getConfig('PRIMARY_CURRENCY'))
     const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), getConfig('PRIMARY_CURRENCY'))
     const clientName = _.get(client, 'name')
@@ -103,7 +104,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     <div><span className={classes.infoSummary}>Клиент:</span> {clientName}</div>
                                     <div><span className={classes.infoSummary}>Магазин:</span> {marketName}</div>
                                     <div><span className={classes.infoSummary}>Заказ №:</span> {id}</div>
-                                    <div><span className={classes.infoSummary}>Тип оплаты:</span> {paymentType}</div>
+                                    <div><span className={classes.infoSummary}>Тип оплаты:</span> {paymentTypeOutput}</div>
                                 </div>
                                 <div className={classes.infoSummary}>
                                     <div>Сумма заказа:<span style={{marginLeft: '10px'}}>{totalPrice}</span></div>
@@ -111,13 +112,21 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 </div>
                             </div>
                             <div className={classes.cashbox}>
-                                <Field
+                                {(paymentType === ONE)
+                                ? <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
-                                    component={CashboxCustomField}
+                                    component={CashboxBankCustomField}
                                     label="Касса получатель"
                                     fullWidth={true}
                                 />
+                                : <Field
+                                        name="cashbox"
+                                        className={classes.inputFieldCustom}
+                                        component={CashboxCashCustomField}
+                                        label="Касса получатель"
+                                        fullWidth={true}
+                                    />}
                                 <div className={classes.flex}>
                                     <Field
                                         name="amount"
