@@ -167,6 +167,12 @@ const enhance = compose(
             alignItems: 'baseline',
             position: 'relative',
             zIndex: '2',
+            '& > .wrapper:last-child': {
+                width: '100px !important',
+                '& > div > div': {
+                    width: '100% !important'
+                }
+            },
             '& > div:first-child': {
                 marginTop: '-7px !important',
                 width: '200px !important',
@@ -194,7 +200,7 @@ const enhance = compose(
 
                 }
             },
-            '& > div:nth-child(5)': {
+            '& > div:nth-child(4)': {
                 marginTop: '-7px !important',
                 width: '100px !important',
                 marginRight: '20px',
@@ -213,7 +219,7 @@ const enhance = compose(
         }
     }),
     connect((state) => {
-        const measurement = _.get(state, ['form', 'RemainderTransferForm', 'values', 'product', 'value', 'measurement', 'name'])
+        const measurement = _.get(state, ['form', 'RemainderDiscardForm', 'values', 'product', 'value', 'measurement', 'name'])
         return {
             measurement
         }
@@ -271,7 +277,6 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                     <Field
                         label="Отфильтровать по типу"
                         name="productType"
-                        fullWidth={true}
                         className={classes.inputFieldCustom}
                         component={ProductTypeSearchField}
                         {..._.get(defaultProps, 'productType')}
@@ -279,7 +284,6 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
 
                     <ProductCustomSearchField
                         label="Наименование товара"
-                        fullWidth={true}
                         className={classes.inputFieldCustom}
                         {..._.get(defaultProps, 'product')}
                     />
@@ -294,7 +298,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                         name="isDefect"
                         className={classes.inputFieldCustom}
                         fullWidth={true}
-                    component={RemainderStatusSearchField}
+                        component={RemainderStatusSearchField}
                         {..._.get(defaultProps, 'isDefect')}
                     />
                     <IconButton

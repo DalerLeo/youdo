@@ -10,7 +10,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import TextField from '../ReduxForm/Basic/TextField'
-import RemainderListProductField from '../ReduxForm/Remainder/RemainderListProductField'
+import RemainderListProductField from '../ReduxForm/Remainder/RemainderDiscardProductListField'
 import {StockSearchField} from '../ReduxForm'
 
 export const REMAINDER_DISCARD_DIALOG_OPEN = 'openDiscardDialog'
