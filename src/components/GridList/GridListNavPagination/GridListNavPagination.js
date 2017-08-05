@@ -72,7 +72,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter, customPaginat
             <div className={classes.count}>
                 <SelectField
                     value={filter.getPageRange()}
-                    style={{width: '60px', marginTop: '10px'}}
+                    style={{width: '52px', marginTop: '10px'}}
                     underlineStyle={{border: '0px solid'}}
                     onChange={onChange}>
                     <MenuItem value={10} primaryText="10" />
