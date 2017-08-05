@@ -1,14 +1,17 @@
+const types = {
+    supply: 'Поставка',
+    transfer: 'Передача',
+    stock_transfer: 'Передача',
+    'order transfer product': 'По заказу',
+    order_return: 'Возврат',
+    writeoff: 'Cписание',
+    delivery_return: 'Отсрочка доставки',
+    'order return accept': 'Возврат'
+
+}
+
 const stockTypeFormat = (type) => {
-    if (type === 'supply') {
-        return 'Поставка'
-    } else if (type === 'transfer' || type === 'stock_transfer') {
-        return 'Передача'
-    } else if (type === 'order transfer product') {
-        return 'По заказу'
-    } else if (type === 'order_return') {
-        return 'Возврат'
-    }
-    return type
+    return types[type]
 }
 
 export default stockTypeFormat
