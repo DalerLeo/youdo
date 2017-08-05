@@ -3,7 +3,7 @@ import React from 'react'
 import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
-import FlatButton from 'material-ui/FlatButton'
+import Check from 'material-ui/svg-icons/navigation/check'
 import {Field} from 'redux-form'
 import Dot from '../../Images/dot.png'
 import {connect} from 'react-redux'
@@ -17,7 +17,7 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../../DeleteIcon/index'
 import ProductCustomSearchField from './ProductCustomSearchField'
-
+import RemainderStatusSearchField from '../../ReduxForm/Remainder/RemainderStatusSearchField'
 import ProductTypeSearchField from '../Product/ProductTypeSearchField'
 import TextField from '../Basic/TextField'
 
@@ -195,24 +195,25 @@ const enhance = compose(
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
+            const isDefect = _.get(props, ['isDefect', 'input', 'value'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
 
-            if (!_.isEmpty(product) && amount) {
+            if (!_.isEmpty(product) && amount && isDefect) {
                 let has = false
                 _.map(products, (item) => {
-                    if (_.get(item, 'product') === product) {
+                    if (_.get(item, 'product') === product && _.get(item, 'isDefect') === isDefect) {
                         item.amount = _.toInteger(item.amount) + _.toInteger(amount)
                         has = true
                     }
                 })
-                const fields = ['productType', 'product', 'amount']
+                const fields = ['productType', 'product', 'isDefect', 'amount']
                 for (let i = 0; i < fields.length; i++) {
                     let newChange = _.get(props, [fields[i], 'input', 'onChange'])
                     props.dispatch(newChange(null))
                 }
                 if (!has) {
-                    onChange(_.union(products, [{product, amount}]))
+                    onChange(_.union(products, [{product, isDefect, amount}]))
                     has = false
                 }
             }
@@ -237,6 +238,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
             <div>
                 <div className={classes.background}>
                     <Field
+                        style={{width: '50px'}}
                         label="Отфильтровать по типу"
                         name="productType"
                         className={classes.inputFieldCustom}
@@ -245,21 +247,36 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                     />
 
                     <ProductCustomSearchField
+                        style={{width: '50px'}}
                         label="Наименование товара"
                         className={classes.inputFieldCustom}
                         {..._.get(defaultProps, 'product')}
                     />
                     <TextField
+                        style={{width: '50px'}}
                         label="Кол-во"
                         {..._.get(defaultProps, 'amount')}
                     />
                     <span style={{margin: '0 10px 0 -10px'}}>{measurement}</span>
-                    <FlatButton label="Добавить" onTouchTap={handleAdd} style={{color: '#12aaeb', textTransform: 'uppercase'}}/>
+
+                    <Field
+                        label="Статус"
+                        name="isDefect"
+                        style={{width: '50px'}}
+                        className={classes.inputFieldCustom}
+                        component={RemainderStatusSearchField}
+                        {..._.get(defaultProps, 'isDefect')}
+                    />
+                    <IconButton
+                        label="Применить"
+                        onTouchTap={handleAdd}>
+                        <Check color="#12aaeb"/>
+                    </IconButton>
                 </div>
             </div>
             {error && <div className={classes.error}>{error}</div>}
             <div className={classes.table}>
-                 {!_.isEmpty(products) && <Table
+                {!_.isEmpty(products) && <Table
                     fixedHeader={true}
                     fixedFooter={false}
                     multiSelectable={false}>
@@ -271,6 +288,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                         <TableRow className={classes.tableRowHead}>
                             <TableHeaderColumn
                                 className={classes.tableTitle}>Наименование</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle}>Статус</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
                             <TableHeaderColumn style={{display: 'none'}}>.</TableHeaderColumn>
                         </TableRow>
@@ -280,19 +298,23 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                         deselectOnClickaway={false}
                         showRowHover={false}
                         stripedRows={false}>
-                        {_.map(products, (item, index) => (
-                            <TableRow key={index} className={classes.tableRow}>
-                                <TableRowColumn>{_.get(item, ['product', 'value', 'name'])}</TableRowColumn>
-                                <TableRowColumn>
-                                    {_.get(item, 'amount')} {_.get(item, ['product', 'value', 'measurement', 'name'])}
-                                </TableRowColumn>
-                                <TableRowColumn style={{textAlign: 'right'}}>
-                                    <IconButton onTouchTap={() => handleRemove(index)}>
-                                        <DeleteIcon color="#666666"/>
-                                    </IconButton>
-                                </TableRowColumn>
-                            </TableRow>
-                        ))}
+                        {_.map(products, (item, index) => {
+                            return (
+                                <TableRow key={index} className={classes.tableRow}>
+                                    <TableRowColumn>{_.get(item, ['product', 'value', 'name'])}</TableRowColumn>
+                                    <TableRowColumn>
+                                        {_.get(item, ['isDefect', 'text'])}
+                                    </TableRowColumn>
+                                    <TableRowColumn>
+                                        {_.get(item, 'amount')} {_.get(item, ['product', 'value', 'measurement', 'name'])}
+                                    </TableRowColumn>
+                                    <TableRowColumn style={{textAlign: 'right'}}>
+                                        <IconButton onTouchTap={() => handleRemove(index)}>
+                                            <DeleteIcon color="#666666"/>
+                                        </IconButton>
+                                    </TableRowColumn>
+                                </TableRow>)
+                        })}
                     </TableBody>
                 </Table>}
             </div>

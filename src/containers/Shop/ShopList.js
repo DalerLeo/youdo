@@ -456,10 +456,7 @@ const ShopList = enhance((props) => {
             return {
                 name: _.get(detail, 'name'),
                 address: _.get(detail, 'address'),
-                client: {
-                    value: _.get(detail, ['client', 'id']),
-                    text: _.get(detail, ['client', 'name'])
-                },
+                client: _.get(detail, ['client', 'name']),
                 contactName: _.get(detail, 'contactName'),
                 frequency: {
                     value: _.toNumber(_.get(detail, 'visitFrequency'))

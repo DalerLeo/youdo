@@ -254,21 +254,28 @@ const ShopCreateDialog = enhance((props) => {
                     <div className={classes.inContent}>
                         <div className={classes.leftSide}>
                             <div className={classes.divider}>
-                                {!openClient ? <Field
+                                {!isUpdate ? (!openClient ? <Field
                                     name="client"
                                     component={ClientSearchField}
                                     className={classes.inputFieldCustom}
                                     label="Клиент"
                                     fullWidth={true}/>
-                                : <Field
-                                    name="newClientName"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label="Имя клиента"
-                                    fullWidth={true}/>
-                                }
+                                    : <Field
+                                        name="newClientName"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Имя клиента"
+                                        fullWidth={true}/>)
+                                    : <Field
+                                        name="client"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Имя клиента"
+                                        fullWidth={true}/>}
                                 <div className={classes.add}>
-                                    {!openClient && <a onClick={() => { setOpenClient(true) }}>+ добавить клиента</a>}
+                                    {!openClient && !isUpdate && <a onClick={() => {
+                                        setOpenClient(true)
+                                    }}>+ добавить клиента</a>}
                                 </div>
                             </div>
                             <div className={classes.divider}>
@@ -323,8 +330,10 @@ const ShopCreateDialog = enhance((props) => {
                                     label="Ориентир"
                                     fullWidth={true}/>
                                 <div className={classes.addPlace}>
-                                    {!(lat && lng) ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/> отметить местоположение на карте</a>
-                                    : <div className={classes.flex}>
+                                    {!(lat && lng)
+                                        ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/> отметить
+                                            местоположение на карте</a>
+                                        : <div className={classes.flex}>
                                             <div>
                                                 <Place color="#999"/> <span>{lat}</span> <span>{lng}</span>
                                             </div>

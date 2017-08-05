@@ -36,6 +36,40 @@ export const createSerializer = (data, location, image) => {
     }
 }
 
+export const updateSerializer = (data, location, image) => {
+    const name = _.get(data, 'name')
+    const client = _.get(data, 'client')
+    const marketType = _.get(data, ['marketType', 'value'])
+    const address = _.get(data, 'address')
+    const guide = _.get(data, 'guide')
+    const frequency = _.get(data, ['frequency', 'value'])
+    const phone = _.get(data, 'phone')
+    const status = _.get(data, ['status', 'value'])
+    const lat = _.get(location, 'lat')
+    const lon = _.get(location, 'lng')
+    const contactName = _.get(data, ['contactName'])
+    let isActive = false
+    if (status === ONE) {
+        isActive = true
+    }
+
+    return {
+        name,
+        client,
+        'market_type': marketType,
+        address,
+        guide,
+        'visit_frequency': frequency,
+        phone,
+        'contact_name': contactName,
+        'location': {
+            'lat': lat,
+            'lon': lon
+        },
+        'is_active': isActive
+    }
+}
+
 export const imageSerializer = (image) => {
     return {
         'image': image,
