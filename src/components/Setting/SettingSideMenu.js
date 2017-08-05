@@ -15,7 +15,7 @@ const enhance = compose(
 
         },
         wrapper: {
-            padding: '50px 30px 20px',
+            padding: '30px 30px 20px',
             '& ul': {
                 fontWeight: 'bold',
                 marginBottom: '20px'

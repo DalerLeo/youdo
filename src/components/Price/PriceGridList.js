@@ -119,7 +119,6 @@ const enhance = compose(
         listRow: {
             position: 'relative',
             '& > a': {
-                width: '100%',
                 display: 'flex',
                 alignItems: 'center',
                 position: 'absolute',

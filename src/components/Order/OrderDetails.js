@@ -347,10 +347,6 @@ const OrderDetails = enhance((props) => {
                                     <span>{numberFormat(totalPrice, primaryCurrency)}</span>
                                 </li>
                                 <li>
-                                    <span>Стоимость возвратов:</span>
-                                    <span>- {returnAmount && numberFormat(returnAmount, primaryCurrency)}</span>
-                                </li>
-                                <li>
                                     <span>Оплачено:</span>
                                     {(totalPaid !== zero && type) ? <span>
                                         <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {primaryCurrency}</a>

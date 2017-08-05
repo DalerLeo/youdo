@@ -11,7 +11,7 @@ const PriceMainRadionButton = enhance((props) => {
     const {input, mergedList} = props
 
     return (
-        <RadioButtonGroup name="isPrimary" onChange={input.onChange} defaultSelected={true}>
+        <RadioButtonGroup name="isPrimary" onChange={input.onChange} defaultSelected={input.value}>
             {_.map(mergedList, (item, index) => {
                 return (
                     <RadioButton

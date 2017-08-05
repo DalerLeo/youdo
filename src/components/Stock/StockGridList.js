@@ -83,7 +83,7 @@ const enhance = compose(
             background: '#fff',
             flexBasis: 'calc(100% - 225px)',
             maxWidth: 'calc(100% - 225px)',
-            paddingTop: '30px',
+            paddingTop: '10px',
             overflowY: 'auto',
             overflowX: 'hidden',
             '& > div > div:first-child': {
