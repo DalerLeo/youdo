@@ -219,11 +219,12 @@ const PriceDetails = enhance((props) => {
                                 const amount = _.get(item, 'amount')
                                 const netCost = _.get(item, 'netCost')
                                 const id = _.get(item, 'id')
+                                const supplyId = _.get(item, 'supplyId')
                                 return (
                                     <Row key={id} className="dottedList">
                                         <Col xs={2}>
                                             <a onClick={ () => { priceSupplyDialog.handleOpenSupplyDialog(id) }} className={classes.link}>
-                                                {id}
+                                                {supplyId}
                                             </a>
                                         </Col>
                                         <Col style={{textAlign: 'left'}} xs={3}>23 апр, 2017</Col>
