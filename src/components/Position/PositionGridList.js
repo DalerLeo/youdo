@@ -14,11 +14,11 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import PositionCreateDialog from './PositionCreateDialog'
-import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Tooltip from '../ToolTip'
 import Container from '../Container'
+import SettingSideMenu from '../Setting/SettingSideMenu'
 import {CheckBox} from '../ReduxForm'
 import {Field, reduxForm} from 'redux-form'
 
@@ -139,6 +139,18 @@ const enhance = compose(
         buttons: {
             float: 'right',
             textAlign: 'right'
+        },
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '250px',
+            maxWidth: '250px'
+
+        },
+        rightPanel: {
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)',
+            overflowY: 'auto',
+            overflowX: 'hidden'
         }
     }),
 
@@ -220,7 +232,6 @@ const PositionGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.POSITION_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить группу">
                     <FloatingActionButton
@@ -231,65 +242,73 @@ const PositionGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
-            <div className={classes.wrap}>
-                <div className={classes.leftSide}>
-                    <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
-                        <div>Группы</div>
-                    </div>
-                    <Paper zDepth={1} style={{height: 'calc(100% - 18px)'}}>
-                        {listLoading
-                            ? <div className={classes.loader}>
-                                <CircularProgress size={40} thickness={4}/>
-                            </div>
-                            : <div className={classes.listWrapper}>
-                            {positionList}
-                        </div>
-                        }
-                    </Paper>
+            <Row>
+                <div className={classes.leftPanel}>
+                    <SettingSideMenu currentUrl={ROUTES.POSITION_LIST_URL}/>
                 </div>
-                <div className={classes.rightSide}>
-                    <div className={classes.rightTitle}>
-                        <div className={classes.outerTitle}>Доступы</div>
-                        <div className={classes.outerTitle}>
-                            <div className={classes.buttons}>
-                                <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить группу</a>
-                                <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить группу</a>
+                <div className={classes.rightPanel}>
+                    <div className={classes.wrap}>
+                        <div className={classes.leftSide}>
+                            <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
+                                <div>Группы</div>
                             </div>
+                            <Paper zDepth={1} style={{height: 'calc(100% - 18px)'}}>
+                                {listLoading
+                                    ? <div className={classes.loader}>
+                                        <CircularProgress size={40} thickness={4}/>
+                                    </div>
+                                    : <div className={classes.listWrapper}>
+                                        {positionList}
+                                    </div>
+                                }
+                            </Paper>
+                        </div>
+                        <div className={classes.rightSide}>
+                            <div className={classes.rightTitle}>
+                                <div className={classes.outerTitle}>Доступы</div>
+                                <div className={classes.outerTitle}>
+                                    <div className={classes.buttons}>
+                                        <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить группу</a>
+                                        <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить группу</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <GridList
+                                filter={detailFilter}
+                                list={list}
+                                detail={detail}
+                                withoutPagination={true}
+                                actionsDialog={actions}
+                            />
+
+                            <PositionCreateDialog
+                                initialValues={createDialog.initialValues}
+                                open={createDialog.openCreateDialog}
+                                loading={createDialog.createLoading}
+                                onClose={createDialog.handleCloseCreateDialog}
+                                onSubmit={createDialog.handleSubmitCreateDialog}
+                            />
+
+                            <PositionCreateDialog
+                                isUpdate={true}
+                                initialValues={updateDialog.initialValues}
+                                open={updateDialog.openUpdateDialog}
+                                loading={updateDialog.updateLoading}
+                                onClose={updateDialog.handleCloseUpdateDialog}
+                                onSubmit={updateDialog.handleSubmitUpdateDialog}
+                            />
+                            {detailId !== MINUS_ONE && <ConfirmDialog
+                                type="delete"
+                                message={confirmMessage}
+                                onClose={confirmDialog.handleCloseConfirmDialog}
+                                onSubmit={confirmDialog.handleSendConfirmDialog}
+                                open={confirmDialog.openConfirmDialog}
+                            />}
                         </div>
                     </div>
-                    <GridList
-                        filter={detailFilter}
-                        list={list}
-                        detail={detail}
-                        withoutPagination={true}
-                        actionsDialog={actions}
-                    />
-
-                    <PositionCreateDialog
-                        initialValues={createDialog.initialValues}
-                        open={createDialog.openCreateDialog}
-                        loading={createDialog.createLoading}
-                        onClose={createDialog.handleCloseCreateDialog}
-                        onSubmit={createDialog.handleSubmitCreateDialog}
-                    />
-
-                    <PositionCreateDialog
-                        isUpdate={true}
-                        initialValues={updateDialog.initialValues}
-                        open={updateDialog.openUpdateDialog}
-                        loading={updateDialog.updateLoading}
-                        onClose={updateDialog.handleCloseUpdateDialog}
-                        onSubmit={updateDialog.handleSubmitUpdateDialog}
-                    />
-                    {detailId !== MINUS_ONE && <ConfirmDialog
-                        type="delete"
-                        message={confirmMessage}
-                        onClose={confirmDialog.handleCloseConfirmDialog}
-                        onSubmit={confirmDialog.handleSendConfirmDialog}
-                        open={confirmDialog.openConfirmDialog}
-                    />}
                 </div>
-            </div>
+            </Row>
         </Container>
     )
 })

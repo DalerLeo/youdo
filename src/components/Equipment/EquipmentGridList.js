@@ -9,12 +9,12 @@ import GridList from '../GridList'
 import Container from '../Container'
 import EquipmentCreateDialog from './EquipmentCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import SettingSideMenu from '../Setting/SettingSideMenu'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
@@ -59,6 +59,18 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '250px',
+            maxWidth: '250px'
+
+        },
+        rightPanel: {
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)',
+            overflowY: 'auto',
+            overflowX: 'hidden'
         }
     })
 )
@@ -125,7 +137,6 @@ const EquipmentGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.EQUIPMENT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить оборудование">
                     <FloatingActionButton
@@ -136,13 +147,20 @@ const EquipmentGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
+            <Row>
+                <div className={classes.leftPanel}>
+                    <SettingSideMenu currentUrl={ROUTES.EQUIPMENT_LIST_URL}/>
+                </div>
+                <div className={classes.rightPanel}>
+                    <GridList
+                        filter={filter}
+                        list={list}
+                        detail={equipmentDetail}
+                        actionsDialog={actions}
+                    />
+                </div>
+            </Row>
 
-            <GridList
-                filter={filter}
-                list={list}
-                detail={equipmentDetail}
-                actionsDialog={actions}
-            />
             <EquipmentCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}

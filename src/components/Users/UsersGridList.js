@@ -11,7 +11,6 @@ import Container from '../Container'
 import UsersFilterForm from './UsersFilterForm'
 import UsersCreateDialog from './UsersCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
@@ -21,6 +20,7 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Tooltip from '../ToolTip'
+import SettingSideMenu from '../Setting/SettingSideMenu'
 import userGroupFormat from '../../helpers/userGroupFormat'
 const ZERO = 0
 const listHeader = [
@@ -74,6 +74,18 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '250px',
+            maxWidth: '250px'
+
+        },
+        rightPanel: {
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)',
+            overflowY: 'auto',
+            overflowX: 'hidden'
         }
     })
 )
@@ -176,8 +188,6 @@ const UsersGridList = enhance((props) => {
     const currentName = _.get(currentDetail, 'firstName') + ' ' + _.get(currentDetail, 'secondName')
     return (
         <Container>
-            <SubMenu url={ROUTES.USERS_LIST_URL}/>
-
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить пользователя">
                     <FloatingActionButton
@@ -188,14 +198,20 @@ const UsersGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
-
-            <GridList
-                filter={filter}
-                list={list}
-                detail={usersDetail}
-                actionsDialog={actions}
-                filterDialog={usersFilterDialog}
-            />
+            <Row>
+                <div className={classes.leftPanel}>
+                    <SettingSideMenu currentUrl={ROUTES.USERS_LIST_URL}/>
+                </div>
+                <div className={classes.rightPanel}>
+                    <GridList
+                        filter={filter}
+                        list={list}
+                        detail={usersDetail}
+                        actionsDialog={actions}
+                        filterDialog={usersFilterDialog}
+                    />
+                </div>
+            </Row>
 
             <UsersCreateDialog
                 initialValues={createDialog.initialValues}

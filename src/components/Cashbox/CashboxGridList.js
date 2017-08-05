@@ -12,7 +12,6 @@ import GridList from '../GridList'
 import Container from '../Container'
 import CashboxCreateDialog from './CashboxCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
@@ -20,6 +19,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import SettingSideMenu from '../Setting/SettingSideMenu'
 
 const listHeader = [
     {
@@ -72,6 +72,18 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '250px',
+            maxWidth: '250px'
+
+        },
+        rightPanel: {
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)',
+            overflowY: 'auto',
+            overflowX: 'hidden'
         }
     }),
 )
@@ -151,8 +163,6 @@ const CashboxGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.CASHBOX_LIST_URL}/>
-
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить кассу">
                     <FloatingActionButton
@@ -163,12 +173,19 @@ const CashboxGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
-            <GridList
-                filter={filter}
-                list={list}
-                detail={cashboxDetail}
-                actionsDialog={actions}
-            />
+            <Row>
+                <div className={classes.leftPanel}>
+                    <SettingSideMenu currentUrl={ROUTES.CASHBOX_LIST_URL}/>
+                </div>
+                <div className={classes.rightPanel}>
+                    <GridList
+                        filter={filter}
+                        list={list}
+                        detail={cashboxDetail}
+                        actionsDialog={actions}
+                    />
+                </div>
+            </Row>
 
             <CashboxCreateDialog
                 open={createDialog.openCreateDialog}
