@@ -249,12 +249,13 @@ const StatCashboxDetails = enhance((props) => {
     const list = _.map(_.get(detailData, 'transactionData'), (item) => {
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment') || '-'
+        const expanseCategory = _.get(item, ['expanseCategory', 'name'])
         const amount = numberFormat(_.get(item, 'amount'), currency)
 
         return (
             <Row key={id} className="dottedList">
                 <Col xs={2}>{id}</Col>
-                <Col xs={3}>Категория</Col>
+                <Col xs={3}>{expanseCategory}</Col>
                 <Col xs={4}>{comment}</Col>
                 <Col xs={3}>{amount}</Col>
             </Row>

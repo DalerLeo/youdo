@@ -163,7 +163,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const amount = _.get(item, 'amount')
                                 const isBonus = _.get(item, 'isBonus')
                                 const measurement = _.get(product, ['measurement', 'name'])
-                                const discount = numberFormat(_.get(product, 'discountPrice'))
+                                const discount = numberFormat(_.toInteger(_.get(item, 'discountPrice')) * _.toInteger(amount))
                                 totalProductPrice += _.toNumber(productTotal)
                                 totalDiscount += _.toNumber(discount)
 
