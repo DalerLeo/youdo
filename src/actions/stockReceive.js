@@ -138,6 +138,22 @@ export const stockReceiveItemConfirmAction = (id, status) => {
     }
 }
 
+export const stockReceiveDeliveryConfirmAction = (id, status) => {
+    const payload = axios()
+        .post(API.STOCK_RECEIVE_DELIVERY_RETURN, {delivery_return: id, status: status})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_DELIVERY_RETURN,
+        payload
+    }
+}
+
 export const stockReceiveItemReturnAction = (id) => {
     const payload = axios()
         .post(API.STOCK_RECEIVE_ACCEPT_ORDER_RETURN, {order_return: id})

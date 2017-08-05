@@ -30,7 +30,8 @@ import {
     stockTransferItemFetchAction,
     stockTransferItemAcceptAction,
     stockReceiveItemConfirmAction,
-    stockReceiveItemReturnAction
+    stockReceiveItemReturnAction,
+    stockReceiveDeliveryConfirmAction
 } from '../../actions/stockReceive'
 import {
     orderListPintFetchAction,
@@ -49,7 +50,7 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const stockReceiveType = _.get(props, ['location', 'query', 'openType'])
         const detail = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'data'])
-                        : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
+                        : (stockReceiveType === 'transfer' || stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
                             : _.get(state, ['order', 'returnList', 'data'])
 
         const detailProducts = _.get(state, ['stockReceive', 'item', 'data'])
@@ -140,7 +141,7 @@ const enhance = compose(
         if (stockReceiveId > ZERO && (currentTab === 'receive' || currentTab === 'receiveHistory')) {
             if (stockReceiveType === 'supply') {
                 dispatch(stockReceiveItemFetchAction(stockReceiveId))
-            } else if (stockReceiveType === 'transfer') {
+            } else if (stockReceiveType === 'transfer' || stockReceiveType === 'delivery_return') {
                 dispatch(stockTransferItemFetchAction(stockReceiveId))
             } else if (stockReceiveType === 'order_return') {
                 dispatch(orderReturnListAction(stockReceiveId))
@@ -276,7 +277,18 @@ const enhance = compose(
             const {dispatch, filter, location: {pathname, query}, params} = props
             const id = _.toInteger(_.get(params, 'stockReceiveId'))
             const status = _.get(query, STOCK_CONFIRM_DIALOG_OPEN)
+
             return dispatch(stockReceiveItemConfirmAction(id, status))
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
+                    dispatch(stockReceiveListFetchAction(filter))
+                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                })
+        },
+        handleSubmitReceiveDeliveryConfirmDialog: props => () => {
+            const {dispatch, filter, location: {pathname}, params} = props
+            const id = _.toInteger(_.get(params, 'stockReceiveId'))
+            return dispatch(stockReceiveDeliveryConfirmAction(id, 'accept'))
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
@@ -440,7 +452,8 @@ const StockReceiveList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSubmitTransferAcceptDialog: props.handleSubmitTransferAcceptDialog,
         handleSubmitReceiveConfirmDialog: props.handleSubmitReceiveConfirmDialog,
-        handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog
+        handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog,
+        handleSubmitReceiveDeliveryConfirmDialog: props.handleSubmitReceiveDeliveryConfirmDialog
     }
     const createDialog = {
         createLoading,

@@ -15,6 +15,7 @@ import GridList from '../GridList'
 const ZERO = 0
 const RETURN = 3
 const CANCEL = 2
+const DELIVERY = 4
 const enhance = compose(
     injectSheet({
         wrapper: {
@@ -139,7 +140,6 @@ const StockTabReceive = enhance((props) => {
         filterDialog,
         history
     } = props
-
     const listLoading = _.get(listData, 'listLoading')
     const stockReceiveFilterDialog = (
         <ReceiveFilterForm
@@ -164,18 +164,20 @@ const StockTabReceive = enhance((props) => {
 
     const stockReceiveList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
+        const orderId = _.get(item, 'orderId')
         const by = _.get(item, ['by'])
         const type = _.get(item, ['type'])
         const formattedType = stockTypeFormat(type)
         const date = _.get(item, 'date') ? moment(_.get(item, 'date')).format('DD.MM.YYYY') : 'Не указана'
         const stockName = _.get(item, ['stock', 'name'])
+        const key = (type === 'delivery_return') ? orderId : id
 
         return (
             <Row
-                key={id + '_' + type}
-                onClick={() => { listData.handleOpenDetail(id, type) }}
+                key={key + '_' + type}
+                onClick={() => { listData.handleOpenDetail(key, type) }}
                 style={{cursor: 'pointer'}}>
-                <Col xs={2}>{id}</Col>
+                <Col xs={2}>{key}</Col>
                 <Col xs={3}>{by}</Col>
                 <Col xs={2}>
                     {formattedType}
@@ -204,9 +206,13 @@ const StockTabReceive = enhance((props) => {
 
             <ConfirmDialog
                 type={confirmDialog.openConfirmDialog === CANCEL ? 'cancel' : 'submit' }
-                message={'Запрос № ' + _.get(detailData, ['currentDetail', 'id'])}
+                message={'Запрос № ' + _.get(detailData, 'id')}
                 onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.openConfirmDialog === RETURN ? confirmDialog.handleSubmitOrderReturnDialog : confirmDialog.handleSubmitReceiveConfirmDialog}
+                onSubmit={confirmDialog.openConfirmDialog === RETURN
+                            ? confirmDialog.handleSubmitOrderReturnDialog
+                                : (confirmDialog.openConfirmDialog === DELIVERY)
+                                    ? confirmDialog.handleSubmitReceiveDeliveryConfirmDialog
+                                        : confirmDialog.handleSubmitReceiveConfirmDialog}
                 open={confirmDialog.openConfirmDialog > ZERO}
             />
             <CreateDialog
