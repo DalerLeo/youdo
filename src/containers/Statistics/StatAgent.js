@@ -85,12 +85,12 @@ const enhance = compose(
             const {filter, filterForm} = props
 
             const search = _.get(filterForm, ['values', 'search']) || null
-            const user = _.get(filterForm, ['values', 'user', 'value']) || null
+            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [STAT_AGENT_FILTER_KEY.SEARCH]: search,
-                [STAT_AGENT_FILTER_KEY.USER]: user,
+                [STAT_AGENT_FILTER_KEY.ZONE]: zone,
                 [STAT_AGENT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
