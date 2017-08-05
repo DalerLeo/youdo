@@ -19,8 +19,8 @@ import GridList from '../GridList'
 import Container from '../Container'
 import MarketTypeCreateDialog from './MarketTypeCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
+import SettingSideMenu from '../Setting/SettingSideMenu'
 
 const listHeader = [
     {
@@ -68,6 +68,18 @@ const enhance = compose(
         },
         right: {
             textAlign: 'right'
+        },
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '250px',
+            maxWidth: '250px'
+
+        },
+        rightPanel: {
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)',
+            overflowY: 'auto',
+            overflowX: 'hidden'
         }
     })
 )
@@ -143,7 +155,6 @@ const MarketTypeGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.MARKET_TYPE_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить тип магазина">
                     <FloatingActionButton
@@ -155,12 +166,19 @@ const MarketTypeGridList = enhance((props) => {
                 </Tooltip>
             </div>
 
-            <GridList
-                filter={filter}
-                list={list}
-                detail={marketTypeDetail}
-                actionsDialog={actions}
-            />
+            <Row>
+                <div className={classes.leftPanel}>
+                    <SettingSideMenu currentUrl={ROUTES.MARKET_TYPE_LIST_URL}/>
+                </div>
+                <div className={classes.rightPanel}>
+                    <GridList
+                        filter={filter}
+                        list={list}
+                        detail={marketTypeDetail}
+                        actionsDialog={actions}
+                    />
+                </div>
+            </Row>
 
             <MarketTypeCreateDialog
                 open={createDialog.openCreateDialog}

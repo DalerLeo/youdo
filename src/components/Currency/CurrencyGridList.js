@@ -15,12 +15,12 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
 import AddCourseDialog from './AddCourseDialog'
-import SubMenu from '../SubMenu'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Tooltip from '../ToolTip'
 import Container from '../Container'
 import numberFormat from '../../helpers/numberFormat'
+import SettingSideMenu from '../Setting/SettingSideMenu'
 import getConfig from '../../helpers/getConfig'
 
 const listHeader = [
@@ -139,6 +139,18 @@ const enhance = compose(
         buttons: {
             float: 'right',
             textAlign: 'right'
+        },
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '250px',
+            maxWidth: '250px'
+
+        },
+        rightPanel: {
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)',
+            overflowY: 'auto',
+            overflowX: 'hidden'
         }
     })
 )
@@ -223,90 +235,96 @@ const CurrencyGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.CURRENCY_LIST_URL}/>
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить валюту">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
-            <Paper zDepth={1}>
-                <div className={classes.editContent}>
-                    <div className={classes.semibold}>Основная валюта: <b>{currentCurrency}</b><i style={{fontWeight: '400', color: '#999'}}>
-                        &nbsp;(используется при формировании стоимости продукта / заказа)</i></div>
+            <Row>
+                <div className={classes.leftPanel}>
+                    <SettingSideMenu currentUrl={ROUTES.CURRENCY_LIST_URL}/>
                 </div>
-            </Paper>
-            <div className={classes.wrap}>
-                <div className={classes.leftSide}>
-                    <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
-                        <div>Валюты</div>
+                <div className={classes.rightPanel}>
+                    <div className={classes.addButtonWrapper}>
+                        <Tooltip position="left" text="Добавить валюту">
+                            <FloatingActionButton
+                                mini={true}
+                                className={classes.addButton}
+                                onTouchTap={createDialog.handleOpenCreateDialog}>
+                                <ContentAdd />
+                            </FloatingActionButton>
+                        </Tooltip>
                     </div>
-                    <Paper zDepth={1} style={{height: 'calc(100% - 18px)'}}>
-                        {listLoading
-                            ? <div className={classes.loader}>
-                                <CircularProgress size={40} thickness={4}/>
-                            </div>
-                            : <div className={classes.listWrapper}>
-                            {currencyList}
+                    <Paper zDepth={1}>
+                        <div className={classes.editContent}>
+                            <div className={classes.semibold}>Основная валюта: <b>{currentCurrency}</b><i style={{fontWeight: '400', color: '#999'}}>
+                                &nbsp;(используется при формировании стоимости продукта / заказа)</i></div>
                         </div>
-                        }
                     </Paper>
-                </div>
-                <div className={classes.rightSide}>
-                    <div className={classes.rightTitle}>
-                        <div className={classes.outerTitle}>История</div>
-                        <div className={classes.outerTitle}>
-                            <div className={classes.buttons}>
-                                <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить валюту</a>
-                                <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить валюту</a>
-                                <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить курс</a>
+                    <div className={classes.wrap}>
+                        <div className={classes.leftSide}>
+                            <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
+                                <div>Валюты</div>
                             </div>
+                            <Paper zDepth={1} style={{height: 'calc(100% - 18px)'}}>
+                                {listLoading
+                                    ? <div className={classes.loader}>
+                                        <CircularProgress size={40} thickness={4}/>
+                                    </div>
+                                    : <div className={classes.listWrapper}>
+                                        {currencyList}
+                                    </div>
+                                }
+                            </Paper>
+                        </div>
+                        <div className={classes.rightSide}>
+                            <div className={classes.rightTitle}>
+                                <div className={classes.outerTitle}>История</div>
+                                <div className={classes.outerTitle}>
+                                    <div className={classes.buttons}>
+                                        <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить валюту</a>
+                                        <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить валюту</a>
+                                        <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить курс</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <GridList
+                                filter={detailFilter}
+                                list={list}
+                                detail={detail}
+                                actionsDialog={actions}
+                            />
+
+                            <CurrencyCreateDialog
+                                initialValues={createDialog.initialValues}
+                                open={createDialog.openCreateDialog}
+                                loading={createDialog.createLoading}
+                                onClose={createDialog.handleCloseCreateDialog}
+                                onSubmit={createDialog.handleSubmitCreateDialog}
+                            />
+
+                            <CurrencyCreateDialog
+                                isUpdate={true}
+                                initialValues={updateDialog.initialValues}
+                                open={updateDialog.openUpdateDialog}
+                                loading={updateDialog.updateLoading}
+                                onClose={updateDialog.handleCloseUpdateDialog}
+                                onSubmit={updateDialog.handleSubmitUpdateDialog}
+                            />
+
+                            <AddCourseDialog
+                                initialValues={courseDialog.initialValues}
+                                open={courseDialog.openCourseDialog}
+                                onClose={courseDialog.handleCloseCourseDialog}
+                                onSubmit={courseDialog.handleSubmitCourseDialog}
+                            />
+
+                            {detailId !== MINUS_ONE && <ConfirmDialog
+                                type="delete"
+                                message={confirmMessage}
+                                onClose={confirmDialog.handleCloseConfirmDialog}
+                                onSubmit={confirmDialog.handleSendConfirmDialog}
+                                open={confirmDialog.openConfirmDialog}
+                            />}
                         </div>
                     </div>
-                    <GridList
-                        filter={detailFilter}
-                        list={list}
-                        detail={detail}
-                        actionsDialog={actions}
-                    />
-
-                    <CurrencyCreateDialog
-                        initialValues={createDialog.initialValues}
-                        open={createDialog.openCreateDialog}
-                        loading={createDialog.createLoading}
-                        onClose={createDialog.handleCloseCreateDialog}
-                        onSubmit={createDialog.handleSubmitCreateDialog}
-                    />
-
-                    <CurrencyCreateDialog
-                        isUpdate={true}
-                        initialValues={updateDialog.initialValues}
-                        open={updateDialog.openUpdateDialog}
-                        loading={updateDialog.updateLoading}
-                        onClose={updateDialog.handleCloseUpdateDialog}
-                        onSubmit={updateDialog.handleSubmitUpdateDialog}
-                    />
-
-                    <AddCourseDialog
-                        initialValues={courseDialog.initialValues}
-                        open={courseDialog.openCourseDialog}
-                        onClose={courseDialog.handleCloseCourseDialog}
-                        onSubmit={courseDialog.handleSubmitCourseDialog}
-                    />
-
-                    {detailId !== MINUS_ONE && <ConfirmDialog
-                        type="delete"
-                        message={confirmMessage}
-                        onClose={confirmDialog.handleCloseConfirmDialog}
-                        onSubmit={confirmDialog.handleSendConfirmDialog}
-                        open={confirmDialog.openConfirmDialog}
-                    />}
                 </div>
-            </div>
+            </Row>
         </Container>
     )
 })

@@ -11,7 +11,7 @@ import GridList from '../GridList'
 import Container from '../Container'
 import StockCreateDialog from './StockCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
+import SettingSideMenu from '../Setting/SettingSideMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
@@ -73,6 +73,18 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '250px',
+            maxWidth: '250px'
+
+        },
+        rightPanel: {
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)',
+            overflowY: 'auto',
+            overflowX: 'hidden'
         }
     })
 )
@@ -158,7 +170,6 @@ const StockGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.STOCK_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить склад">
                     <FloatingActionButton
@@ -169,13 +180,19 @@ const StockGridList = enhance((props) => {
                     </FloatingActionButton>
                 </Tooltip>
             </div>
-
-            <GridList
-                filter={filter}
-                list={list}
-                detail={stockDetail}
-                actionsDialog={actions}
-            />
+            <Row>
+                <div className={classes.leftPanel}>
+                    <SettingSideMenu currentUrl={ROUTES.STOCK_LIST_URL}/>
+                </div>
+                <div className={classes.rightPanel}>
+                    <GridList
+                        filter={filter}
+                        list={list}
+                        detail={stockDetail}
+                        actionsDialog={actions}
+                    />
+                </div>
+            </Row>
 
             <StockCreateDialog
                 open={createDialog.openCreateDialog}
