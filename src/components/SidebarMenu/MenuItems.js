@@ -21,9 +21,10 @@ export const MenuItems = [
             {name: 'Заказы', url: ROUTES.ORDER_LIST_URL},
             {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL},
             {name: 'План', url: ROUTES.PLAN_LIST_URL},
-            {name: 'Маркетинговые акции', url: ROUTES.PRICES_LIST_URL},
             {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL},
-            {name: 'Отслеживание агентов', url: ROUTES.TRACKING_LIST_URL}
+            {name: 'Отслеживание агентов', url: ROUTES.TRACKING_LIST_URL},
+            {name: 'Маркетинговые акции', url: ROUTES.PRICES_LIST_URL},
+            {name: 'Зоны', url: ROUTES.ZONES_LIST_URL}
         ]
     },
     {
@@ -98,15 +99,13 @@ export const MenuItems = [
             {name: 'Валюты', url: ROUTES.CURRENCY_LIST_URL},
             {name: 'Кассы', url: ROUTES.CASHBOX_LIST_URL},
             {name: 'Категории расходов', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL},
-            {name: 'Бренды', url: ROUTES.BRAND_LIST_URL},
             {name: 'Типы продуктов', url: ROUTES.PRODUCT_TYPE_LIST_URL},
             {name: 'Пользователи', url: ROUTES.USERS_LIST_URL},
             {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL},
             {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL},
             {name: 'Смена', url: ROUTES.SHIFT_LIST_URL},
             {name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL},
-            {name: 'Должности', url: ROUTES.POSITION_LIST_URL},
-            {name: 'Зоны', url: ROUTES.ZONES_LIST_URL}
+            {name: 'Должности', url: ROUTES.POSITION_LIST_URL}
         ]
     }
 ]
