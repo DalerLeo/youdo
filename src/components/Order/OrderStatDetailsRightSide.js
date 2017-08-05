@@ -94,15 +94,18 @@ const OrderStatDetailsRightSide = enhance((props) => {
     const products = _.get(data, 'products')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     let totalProductPrice = _.toNumber('0')
+    let totalDiscount = _.toNumber('0')
     return (
         <div className={classes.rightSide}>
             <div className={classes.tabContent}>
                 <div className={classes.tabWrapper}>
                     <Row className="dottedList">
-                        <Col xs={6}>Товар</Col>
+                        <Col xs={4}>Товар</Col>
                         <Col xs={2}>Количество</Col>
                         <Col xs={2}>Цена {primaryCurrency}</Col>
                         <Col xs={2}>Сумма {primaryCurrency}</Col>
+                        <Col xs={2}>Скидка ({primaryCurrency})</Col>
+
                     </Row>
 
                     {_.map(products, (item, index) => {
@@ -113,18 +116,27 @@ const OrderStatDetailsRightSide = enhance((props) => {
                         const amount = _.get(item, 'amount')
                         const measurement = _.get(product, ['measurement', 'name'])
                         totalProductPrice += _.toNumber(productTotal)
+                        const discount = numberFormat(_.get(item, 'discountPrice'))
+                        totalDiscount += _.toNumber(discount)
 
                         return (
                             <Row className="dottedList" key={index}>
-                                <Col xs={6}>{productName}</Col>
+                                <Col xs={4}>{productName}</Col>
                                 <Col xs={2}>{numberFormat(amount)} {measurement}</Col>
                                 <Col xs={2}>{numberFormat(price)}</Col>
                                 <Col xs={2}>{numberFormat(productTotal)}</Col>
+                                <Col xs={2}>{numberFormat(totalDiscount)}</Col>
+
                             </Row>
                         )
                     })}
                 </div>
-                <div className={classes.summary}>ОБЩАЯ СУММА ТОВАРОВ: {numberFormat(totalProductPrice)} {primaryCurrency}</div>
+                <Row className={classes.summary}>
+                    <Col xs={4}>ОБЩАЯ СУММА (SUM):</Col>
+                    <Col xs={4}> </Col>
+                    <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
+                    <Col xs={2}>{numberFormat(totalDiscount)}</Col>
+                </Row>
             </div>
         </div>
     )

@@ -73,10 +73,11 @@ const enhance = compose(
                 border: 'none !important',
                 height: '40px !important',
                 fontWeight: '600 !important',
-                fontSize: '13px!important'
+                fontSize: '13px!important',
+                width: '11%'
             },
             '& th:first-child': {
-                width: '80%',
+                width: '70%',
                 textAlign: 'left !important',
                 fontWeight: '600 !important'
             }
@@ -102,14 +103,15 @@ const enhance = compose(
                 backgroundImage: 'none'
             },
             '& td:first-child': {
-                width: '80%'
+                width: '70%'
             },
             '& tr': {
                 border: 'none !important'
             },
             '& td': {
                 height: '40px !important',
-                padding: '0 !important'
+                padding: '0 !important',
+                width: '11%'
             },
             '& th:first-child': {
                 width: '80%',
@@ -165,7 +167,7 @@ const enhance = compose(
             alignItems: 'baseline',
             position: 'relative',
             zIndex: '2',
-            '& > div': {
+            '& > div:first-child': {
                 marginTop: '-7px !important',
                 width: '200px !important',
                 marginRight: '20px',
@@ -173,6 +175,35 @@ const enhance = compose(
                     width: '200px !important'
                 }
             },
+            '& > div:nth-child(2)': {
+                marginTop: '-7px !important',
+                width: '200px !important',
+                marginRight: '20px',
+                '& > div > div': {
+                    width: '200px !important'
+                }
+            },
+            '& > div:nth-child(3)': {
+                marginTop: '-7px !important',
+                width: '70px !important',
+                minWidth: '50px !important',
+                marginRight: '20px',
+                '& > div > div': {
+                    width: '70px !important',
+                    minWidth: '50px !important'
+
+                }
+            },
+            '& > div:nth-child(5)': {
+                marginTop: '-7px !important',
+                width: '100px !important',
+                marginRight: '20px',
+                '& > div > div': {
+                    width: '100px !important'
+
+                }
+            },
+
             '& > button > div > span': {
                 padding: '0 !important'
             },
@@ -238,33 +269,32 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
             <div>
                 <div className={classes.background}>
                     <Field
-                        style={{width: '50px'}}
                         label="Отфильтровать по типу"
                         name="productType"
+                        fullWidth={true}
                         className={classes.inputFieldCustom}
                         component={ProductTypeSearchField}
                         {..._.get(defaultProps, 'productType')}
                     />
 
                     <ProductCustomSearchField
-                        style={{width: '50px'}}
                         label="Наименование товара"
+                        fullWidth={true}
                         className={classes.inputFieldCustom}
                         {..._.get(defaultProps, 'product')}
                     />
                     <TextField
-                        style={{width: '50px'}}
                         label="Кол-во"
                         {..._.get(defaultProps, 'amount')}
                     />
-                    <span style={{margin: '0 10px 0 -10px'}}>{measurement}</span>
+                    <span style={{margin: '0 20px 0 -10px'}}>{measurement}</span>
 
                     <Field
                         label="Статус"
                         name="isDefect"
-                        style={{width: '50px'}}
                         className={classes.inputFieldCustom}
-                        component={RemainderStatusSearchField}
+                        fullWidth={true}
+                    component={RemainderStatusSearchField}
                         {..._.get(defaultProps, 'isDefect')}
                     />
                     <IconButton
