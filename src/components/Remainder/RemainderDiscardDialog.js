@@ -225,7 +225,7 @@ const RemainderDiscardDialog = enhance((props) => {
                             label="Оставить комментарий..."
 
                             multiLine={true}
-                            rows={4}
+                            rows={1}
                             rowsMax={6}
                             fullWidth={true}/>
                     </div>
@@ -238,7 +238,7 @@ const RemainderDiscardDialog = enhance((props) => {
                 </div>
                 <div className={classes.bottomButton}>
                     <FlatButton
-                        label="СПИСАТЬ"
+                        label="Списать"
                         className={classes.actionButton}
                         primary={true}
                         type="submit"
