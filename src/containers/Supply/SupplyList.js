@@ -121,15 +121,17 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, params, setOpenConfirmDialog, filter} = props
-            const detailId = _.get(params, 'supplyId')
+            const detailId = _.toInteger(_.get(params, 'supplyId'))
             dispatch(supplyDeleteAction(detailId))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                 })
                 .then(() => {
                     setOpenConfirmDialog(false)
-                    dispatch(supplyItemFetchAction(detailId))
-                    dispatch(supplyListFetchAction(filter))
+                    return dispatch(supplyItemFetchAction(detailId))
+                })
+                .then(() => {
+                    return dispatch(supplyListFetchAction(filter))
                 })
         },
 
