@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
-import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 export const createSerializer = (data, productId) => {
     const prices = _.get(data, 'prices')

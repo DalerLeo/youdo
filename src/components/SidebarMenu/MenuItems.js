@@ -92,7 +92,7 @@ export const MenuItems = [
     {
         name: 'Настройки',
         icon: (<Settings />),
-        url: ROUTES.STOCK_LIST_URL,
+        url: ROUTES.USERS_LIST_URL,
         bottom: true,
         childs: [
             {name: 'Склады', url: ROUTES.STOCK_LIST_URL},

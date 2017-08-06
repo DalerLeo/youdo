@@ -11,9 +11,8 @@ import EquipmentCreateDialog from './EquipmentCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
+import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
@@ -49,16 +48,22 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
+        wrapper: {
+            display: 'flex',
+            margin: '0 -28px',
+            height: 'calc(100% + 28px)'
+        },
         addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
             }
         },
         addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '-18px'
         },
         leftPanel: {
             backgroundColor: '#f2f5f8',
@@ -67,10 +72,18 @@ const enhance = compose(
 
         },
         rightPanel: {
-            flexBasis: 'calc(100% - 250px)',
-            maxWidth: 'calc(100% - 250px)',
+            background: '#fff',
+            flexBasis: 'calc(100% - 225px)',
+            maxWidth: 'calc(100% - 225px)',
+            paddingTop: '10px',
             overflowY: 'auto',
-            overflowX: 'hidden'
+            overflowX: 'hidden',
+            '& > div > div:first-child': {
+                boxShadow: 'none !important'
+            },
+            '& > div > div:last-child > div > div': {
+                boxShadow: 'none !important'
+            }
         }
     })
 )
@@ -100,7 +113,7 @@ const EquipmentGridList = enhance((props) => {
         const manufacture = _.get(item, ['manufacture', 'name'])
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
+                <MoreVertIcon/>
             </IconButton>
         )
         return (
@@ -115,13 +128,17 @@ const EquipmentGridList = enhance((props) => {
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem
                             primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
+                            leftIcon={<Edit/>}
+                            onTouchTap={() => {
+                                updateDialog.handleOpenUpdateDialog(id)
+                            }}
                         />
                         <MenuItem
                             primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                            leftIcon={<DeleteIcon/>}
+                            onTouchTap={() => {
+                                confirmDialog.handleOpenConfirmDialog(id)
+                            }}
                         />
                     </IconMenu>
                 </Col>
@@ -135,31 +152,33 @@ const EquipmentGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const addButton = (
+        <div className={classes.addButtonWrapper}>
+            <FlatButton
+                backgroundColor="#fff"
+                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                className={classes.addButton}
+                label="добавить оборудование"
+                onTouchTap={createDialog.handleOpenCreateDialog}
+                icon={<ContentAdd color="#12aaeb"/>}>
+            </FlatButton>
+        </div>
+    )
+
     return (
         <Container>
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить оборудование">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
-            <Row>
-                <div className={classes.leftPanel}>
-                    <SettingSideMenu currentUrl={ROUTES.EQUIPMENT_LIST_URL}/>
-                </div>
+            <div className={classes.wrapper}>
+                <SettingSideMenu currentUrl={ROUTES.EQUIPMENT_LIST_URL}/>
                 <div className={classes.rightPanel}>
                     <GridList
                         filter={filter}
                         list={list}
                         detail={equipmentDetail}
                         actionsDialog={actions}
+                        addButton={addButton}
                     />
                 </div>
-            </Row>
+            </div>
 
             <EquipmentCreateDialog
                 isUpdate={true}

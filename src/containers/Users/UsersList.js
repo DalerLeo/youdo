@@ -26,6 +26,7 @@ import {
     userGroupListFetchAction
 } from '../../actions/users'
 import {stockListFetchAction} from '../../actions/stock'
+import {marketTypeListFetchAction} from '../../actions/marketType'
 import {openSnackbarAction} from '../../actions/snackbar'
 const enhance = compose(
     connect((state, props) => {
@@ -40,6 +41,8 @@ const enhance = compose(
         const groupListLoading = _.get(state, ['users', 'groupList', 'loading'])
         const stockList = _.get(state, ['stock', 'list', 'data'])
         const stockListLoading = _.get(state, ['stock', 'list', 'loading'])
+        const marketList = _.get(state, ['marketType', 'list', 'data'])
+        const marketListLoading = _.get(state, ['marketType', 'list', 'loading'])
         const listLoading = _.get(state, ['users', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'UsersFilterForm'])
         const createForm = _.get(state, ['form', 'UsersCreateForm'])
@@ -58,7 +61,9 @@ const enhance = compose(
             groupList,
             groupListLoading,
             stockList,
-            stockListLoading
+            stockListLoading,
+            marketList,
+            marketListLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -85,6 +90,7 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(userGroupListFetchAction())
         dispatch(stockListFetchAction(filter))
+        dispatch(marketTypeListFetchAction(filter))
     }),
 
     withHandlers({
@@ -226,7 +232,9 @@ const UsersList = enhance((props) => {
         groupList,
         groupListLoading,
         stockList,
-        stockListLoading
+        stockListLoading,
+        marketList,
+        marketListLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', USERS_FILTER_OPEN]))
@@ -258,10 +266,28 @@ const UsersList = enhance((props) => {
         return {id: obj.id, selected: false}
     })
 
+    const isSelectedStocks = _.map(_.get(stockList, 'results'), (obj) => {
+        const userSelectedStock = _.find(_.get(detail, 'stock'), {'id': obj.id})
+        if (_.get(userSelectedStock, 'id') === obj.id) {
+            return {id: obj.id, selected: true}
+        }
+        return {id: obj.id, selected: false}
+    })
+
+    const isSelectedMarkets = _.map(_.get(marketList, 'results'), (obj) => {
+        const userSelectedMarkets = _.find(_.get(detail, 'market'), {'id': obj.id})
+        if (_.get(userSelectedMarkets, 'id') === obj.id) {
+            return {id: obj.id, selected: true}
+        }
+        return {id: obj.id, selected: false}
+    })
+
     const createDialog = {
         initialValues: (() => {
             return {
-                groups: isSelectedGroups
+                groups: isSelectedGroups,
+                stocks: isSelectedStocks,
+                markets: isSelectedMarkets
             }
         })(),
         createLoading,
@@ -290,6 +316,8 @@ const UsersList = enhance((props) => {
                 secondName: _.get(detail, 'secondName'),
                 phoneNumber: _.get(detail, 'phoneNumber'),
                 groups: isSelectedGroups,
+                stocks: isSelectedStocks,
+                markets: isSelectedMarkets,
                 region: _.get(detail, 'region'),
                 password: _.get(detail, 'password'),
                 typeUser: _.get(detail, 'typeUser'),
@@ -338,6 +366,10 @@ const UsersList = enhance((props) => {
         data: _.get(stockList, 'results'),
         stockListLoading
     }
+    const marketTypeData = {
+        data: _.get(marketList, 'results'),
+        marketListLoading
+    }
 
     return (
         <Layout {...layout}>
@@ -352,6 +384,7 @@ const UsersList = enhance((props) => {
                 filterDialog={filterDialog}
                 groupListData={groupListData}
                 stockListData={stockListData}
+                marketTypeData={marketTypeData}
             />
         </Layout>
     )

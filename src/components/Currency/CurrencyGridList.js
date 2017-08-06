@@ -10,14 +10,13 @@ import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Paper from 'material-ui/Paper'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
+import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
 import AddCourseDialog from './AddCourseDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
-import Tooltip from '../ToolTip'
 import Container from '../Container'
 import numberFormat from '../../helpers/numberFormat'
 import SettingSideMenu from '../Setting/SettingSideMenu'
@@ -46,6 +45,18 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
+        wrapper: {
+            display: 'flex',
+            margin: '0 -28px',
+            height: 'calc(100% + 28px)'
+        },
+        addButtonWrapper: {
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            position: 'absolute',
+            right: '0'
+        },
         loader: {
             width: '100%',
             height: '100%',
@@ -56,17 +67,14 @@ const enhance = compose(
             display: 'flex'
         },
         addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
             }
         },
-        addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
-        },
         semibold: {
+            display: 'flex',
+            position: 'relative',
             fontWeight: '600'
         },
         editContent: {
@@ -84,8 +92,6 @@ const enhance = compose(
         },
         wrap: {
             display: 'flex',
-            margin: '0 -28px',
-            padding: '0 28px 0 0',
             minHeight: 'calc(100% - 120px)'
         },
         leftSide: {
@@ -140,13 +146,8 @@ const enhance = compose(
             float: 'right',
             textAlign: 'right'
         },
-        leftPanel: {
-            backgroundColor: '#f2f5f8',
-            flexBasis: '250px',
-            maxWidth: '250px'
-
-        },
         rightPanel: {
+            paddingTop: '10px',
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
             overflowY: 'auto',
@@ -173,11 +174,11 @@ const CurrencyGridList = enhance((props) => {
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
+                <ModEditorIcon/>
             </IconButton>
 
             <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <Delete />
+                <Delete/>
             </IconButton>
         </div>
     )
@@ -195,7 +196,9 @@ const CurrencyGridList = enhance((props) => {
                 <div key={id} className={classes.list}
                      style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
                          : {backgroundColor: '#f2f5f8', display: 'relative'}}
-                     onClick={() => { listData.handleCurrencyClick(id) }}>
+                     onClick={() => {
+                         listData.handleCurrencyClick(id)
+                     }}>
                     <div className={classes.title}>{name}</div>
                     <div className={classes.balance}>
                         <div>Курс: {rate}</div>
@@ -233,27 +236,31 @@ const CurrencyGridList = enhance((props) => {
     const listLoading = _.get(listData, 'listLoading')
     const detail = <div>a</div>
 
+    const addButton = (
+        <div className={classes.addButtonWrapper}>
+            <FlatButton
+                backgroundColor="#fff"
+                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                className={classes.addButton}
+                label="добавить валюта"
+                onTouchTap={createDialog.handleOpenCreateDialog}
+                icon={<ContentAdd color="#12aaeb"/>}>
+            </FlatButton>
+        </div>
+    )
+
     return (
         <Container>
-            <Row>
-                <div className={classes.leftPanel}>
-                    <SettingSideMenu currentUrl={ROUTES.CURRENCY_LIST_URL}/>
-                </div>
+            <div className={classes.wrapper}>
+                <SettingSideMenu currentUrl={ROUTES.CURRENCY_LIST_URL}/>
                 <div className={classes.rightPanel}>
-                    <div className={classes.addButtonWrapper}>
-                        <Tooltip position="left" text="Добавить валюту">
-                            <FloatingActionButton
-                                mini={true}
-                                className={classes.addButton}
-                                onTouchTap={createDialog.handleOpenCreateDialog}>
-                                <ContentAdd />
-                            </FloatingActionButton>
-                        </Tooltip>
-                    </div>
                     <Paper zDepth={1}>
                         <div className={classes.editContent}>
-                            <div className={classes.semibold}>Основная валюта: <b>{currentCurrency}</b><i style={{fontWeight: '400', color: '#999'}}>
-                                &nbsp;(используется при формировании стоимости продукта / заказа)</i></div>
+                            <div className={classes.semibold}>Основная валюта: <b>{currentCurrency}</b><i
+                                style={{fontWeight: '400', color: '#999'}}>
+                                &nbsp;(используется при формировании стоимости продукта / заказа)</i>
+                                {addButton}
+                            </div>
                         </div>
                     </Paper>
                     <div className={classes.wrap}>
@@ -277,9 +284,12 @@ const CurrencyGridList = enhance((props) => {
                                 <div className={classes.outerTitle}>История</div>
                                 <div className={classes.outerTitle}>
                                     <div className={classes.buttons}>
-                                        <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить валюту</a>
-                                        <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить валюту</a>
-                                        <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить курс</a>
+                                        <a onClick={confirmDialog.handleOpenConfirmDialog}
+                                           className={classes.btnRemove}>Удалить валюту</a>
+                                        <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить
+                                            валюту</a>
+                                        <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить
+                                            курс</a>
                                     </div>
                                 </div>
                             </div>
@@ -324,7 +334,7 @@ const CurrencyGridList = enhance((props) => {
                         </div>
                     </div>
                 </div>
-            </Row>
+            </div>
         </Container>
     )
 })

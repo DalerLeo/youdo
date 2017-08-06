@@ -13,13 +13,12 @@ import UsersCreateDialog from './UsersCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
+import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Tooltip from '../ToolTip'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 import userGroupFormat from '../../helpers/userGroupFormat'
 const ZERO = 0
@@ -64,16 +63,22 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
+        wrapper: {
+            display: 'flex',
+            margin: '0 -28px',
+            height: 'calc(100% + 28px)'
+        },
         addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
             }
         },
         addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '-18px'
         },
         leftPanel: {
             backgroundColor: '#f2f5f8',
@@ -82,10 +87,18 @@ const enhance = compose(
 
         },
         rightPanel: {
-            flexBasis: 'calc(100% - 250px)',
-            maxWidth: 'calc(100% - 250px)',
+            background: '#fff',
+            flexBasis: 'calc(100% - 225px)',
+            maxWidth: 'calc(100% - 225px)',
+            paddingTop: '10px',
             overflowY: 'auto',
-            overflowX: 'hidden'
+            overflowX: 'hidden',
+            '& > div > div:first-child': {
+                boxShadow: 'none !important'
+            },
+            '& > div > div:last-child > div > div': {
+                boxShadow: 'none !important'
+            }
         }
     })
 )
@@ -100,6 +113,7 @@ const UsersGridList = enhance((props) => {
         confirmDialog,
         groupListData,
         stockListData,
+        marketTypeData,
         listData,
         detailData,
         classes
@@ -115,14 +129,6 @@ const UsersGridList = enhance((props) => {
                 <DeleteIcon />
             </IconButton>
         </div>
-    )
-
-    const usersFilterDialog = (
-        <UsersFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
     )
 
     const usersDetail = (
@@ -142,7 +148,6 @@ const UsersGridList = enhance((props) => {
             return ', ' + userGroupFormat(group)
         })
         const isActive = _.get(item, 'isActive')
-
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -184,34 +189,45 @@ const UsersGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const addButton = (
+        <div className={classes.addButtonWrapper}>
+            <FlatButton
+                backgroundColor="#fff"
+                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                className={classes.addButton}
+                label="добавить пользователь"
+                onTouchTap={createDialog.handleOpenCreateDialog}
+                icon={<ContentAdd color="#12aaeb"/>}>
+            </FlatButton>
+        </div>
+    )
+
+    const usersFilterDialog = (
+        <UsersFilterForm
+            initialValues={filterDialog.initialValues}
+            filter={filter}
+            filterDialog={filterDialog}
+            addButton={addButton}
+        />
+    )
+
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
     const currentName = _.get(currentDetail, 'firstName') + ' ' + _.get(currentDetail, 'secondName')
     return (
         <Container>
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить пользователя">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
-            <Row>
-                <div className={classes.leftPanel}>
-                    <SettingSideMenu currentUrl={ROUTES.USERS_LIST_URL}/>
-                </div>
-                <div className={classes.rightPanel}>
+            <div className={classes.wrapper}>
+                <SettingSideMenu currentUrl={ROUTES.USERS_LIST_URL}/>
+                <div className={classes.rightPanel}
+                     usersFilterDialog={usersFilterDialog}>
                     <GridList
                         filter={filter}
                         list={list}
                         detail={usersDetail}
                         actionsDialog={actions}
-                        filterDialog={usersFilterDialog}
+                        addButton={addButton}
                     />
                 </div>
-            </Row>
+            </div>
 
             <UsersCreateDialog
                 initialValues={createDialog.initialValues}
@@ -222,6 +238,7 @@ const UsersGridList = enhance((props) => {
                 errorData={createDialog.errorData}
                 groupListData={groupListData}
                 stockListData={stockListData}
+                marketTypeData={marketTypeData}
             />
 
             <UsersCreateDialog

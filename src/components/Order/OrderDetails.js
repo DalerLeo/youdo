@@ -194,7 +194,6 @@ const OrderDetails = enhance((props) => {
     const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
     const createdDate = moment(_.get(data, 'createdDate')).format('DD.MM.YYYY')
     const paymentDate = moment(_.get(data, 'paymentDate')).format('DD.MM.YYYY')
-    const returnAmount = _.toInteger(_.get(data, 'returnAmount'))
 
     const REQUESTED = 0
     const READY = 1
