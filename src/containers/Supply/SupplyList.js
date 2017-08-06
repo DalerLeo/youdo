@@ -128,6 +128,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     setOpenConfirmDialog(false)
+                    dispatch(supplyItemFetchAction(detailId))
                     dispatch(supplyListFetchAction(filter))
                 })
         },

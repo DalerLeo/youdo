@@ -359,9 +359,9 @@ const PricesDetails = enhance((props) => {
                     <div className="dataHeader">
                         <Row>
                             <Col xs={4}>Товар</Col>
-                            <Col xs={1}>Кол-во</Col>
+                            <Col xs={2}>Кол-во</Col>
                             <Col xs={4}>Подарок</Col>
-                            <Col xs={1}>Кол-во</Col>
+                            <Col xs={2}>Кол-во</Col>
                         </Row>
                     </div>
                     <div>
@@ -375,17 +375,9 @@ const PricesDetails = enhance((props) => {
                             return (
                                 <Row className="dataInfo dottedList" key={index}>
                                     <Col xs={4}>{product}</Col>
-                                    <Col xs={1}>{amount ? numberFormat(amount, productMeasurement) : 'Не определено'}</Col>
+                                    <Col xs={2}>{amount ? numberFormat(amount, productMeasurement) : 'Не определено'}</Col>
                                     <Col xs={4}>{bonusProduct}</Col>
-                                    <Col xs={1}>{bonusAmount ? numberFormat(bonusAmount, bonusProductMeasurement) : 'Не определено'}</Col>
-                                    <Col xs={2} style={{textAlign: 'right'}}>
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            touch={true}>
-                                            <Delete />
-                                        </IconButton>
-                                    </Col>
+                                    <Col xs={2}>{bonusAmount ? numberFormat(bonusAmount, bonusProductMeasurement) : 'Не определено'}</Col>
                                 </Row>
                             )
                         })}
@@ -395,7 +387,7 @@ const PricesDetails = enhance((props) => {
                     <div className="dataHeader">
                         <Row>
                             <Col xs={5}>Товар</Col>
-                            <Col xs={2}>Кол-во</Col>
+                            <Col xs={3}>Кол-во</Col>
                             <Col xs={2}>Реальная стоимость</Col>
                             <Col xs={2}>Стоимость по акции</Col>
                         </Row>
@@ -409,17 +401,9 @@ const PricesDetails = enhance((props) => {
                             return (
                                 <Row className="dataInfo dottedList" key={productId}>
                                     <Col xs={5}>{productName}</Col>
-                                    <Col xs={2}>{numberFormat(amount, measurement)}</Col>
+                                    <Col xs={3}>{numberFormat(amount, measurement)}</Col>
                                     <Col xs={2}>10 000 / 20 000 {currency}</Col>
                                     <Col xs={2}>7 000 / 14 000 {currency}</Col>
-                                    <Col xs={1} style={{textAlign: 'right'}}>
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            touch={true}>
-                                            <Delete />
-                                        </IconButton>
-                                    </Col>
                                 </Row>
                             )
                         })}

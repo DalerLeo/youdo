@@ -304,7 +304,8 @@ const SupplyDetails = enhance((props) => {
     const finishedTime = (_.get(data, 'finishedTime')) ? moment(_.get(data, 'finishedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не закончилась'
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
-    const isFinished = !_.isEmpty(_.get(data, 'finishedTime'))
+    const CANCELLED = 4
+    const isFinished = !_.isEmpty(_.get(data, 'finishedTime')) || _.toInteger(_.get(data, 'status')) === CANCELLED
 
     const supplyExpenseList = _.get(supplyListData, 'data')
     const supplyExpenseListLoading = _.get(supplyListData, 'supplyExpenseListLoading')
@@ -410,12 +411,12 @@ const SupplyDetails = enhance((props) => {
                         const product = _.get(item, 'product')
                         const productId = _.get(product, 'id')
                         const productName = _.get(product, 'name')
-                        const cost = _.toInteger(_.get(item, 'cost'))
-                        const amount = _.toInteger(_.get(item, 'amount'))
+                        const cost = _.toNumber(_.get(item, 'cost'))
+                        const amount = _.toNumber(_.get(item, 'amount'))
                         const itemPrice = cost / amount
                         const postedAmount = _.get(item, 'postedAmount')
                         const measurement = _.get(product, ['measurement', 'name'])
-                        const defectAmount = _.toInteger(_.get(item, 'defectAmount'))
+                        const defectAmount = _.toNumber(_.get(item, 'defectAmount'))
                         const notAccepted = postedAmount + defectAmount < amount ? numberFormat(amount - defectAmount - postedAmount, measurement) : numberFormat(ZERO, measurement)
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
