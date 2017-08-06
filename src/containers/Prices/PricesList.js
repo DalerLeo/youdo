@@ -82,12 +82,15 @@ const enhance = compose(
             const {dispatch, location: {pathname}, filter, params} = props
             const detailId = _.toNumber(_.get(params, 'pricesId'))
             dispatch(pricesDeleteAction(detailId))
-                .catch(() => {
+                .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[PRICES_DELETE_DIALOG_OPEN]: false})})
                     dispatch(pricesListFetchAction(filter))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
