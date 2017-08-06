@@ -28,10 +28,12 @@ export const createSerializer = (data, productId) => {
 export const listFilterSerializer = (data, manufacture) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
+    const type = _.get(defaultData, 'typeChild') || _.get(defaultData, 'typeParent')
+
     return {
         'manufacture': manufacture,
         'brand': _.get(defaultData, 'brand'),
-        'type': _.get(defaultData, 'type'),
+        type,
         'measurement': _.get(defaultData, 'measurement'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),

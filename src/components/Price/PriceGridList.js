@@ -39,7 +39,13 @@ const listHeader = [
         sorting: true,
         name: 'name',
         title: 'Названия',
-        xs: 5
+        xs: 3
+    },
+    {
+        sorting: true,
+        name: 'code',
+        title: 'Код товара',
+        xs: 2
     },
     {
         sorting: true,
@@ -218,6 +224,7 @@ const PriceGridList = enhance((props) => {
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const codeProduct = _.get(item, 'code') || 'не установлено'
         const netCost = _.get(item, 'netCost') ? numberFormat(_.get(item, 'netCost'), getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
         const minPrice = _.get(item, 'minPrice')
         const maxPrice = _.get(item, 'maxPrice')
@@ -229,7 +236,8 @@ const PriceGridList = enhance((props) => {
                     pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
-                    <Col xs={5}>{name}</Col>
+                    <Col xs={3}>{name}</Col>
+                    <Col xs={2}>{codeProduct}</Col>
                     <Col xs={2}>{netCost}</Col>
                     <Col xs={3}>{price}</Col>
                     <Col xs={2}>{priceUpdate}</Col>
