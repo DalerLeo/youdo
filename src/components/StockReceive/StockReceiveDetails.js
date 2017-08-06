@@ -18,6 +18,7 @@ import EditIcon from 'material-ui/svg-icons/image/edit'
 const RETURN = 3
 const APPROVE = 1
 const CANCEL = 2
+const DELIVERY = 4
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -179,7 +180,7 @@ const StockReceiveDetails = enhance((props) => {
                         </Col>
                         <Col xs={1}>
                             <div className={classes.titleButtons}>
-                                {!history && type === 'transfer'
+                                {!history && (type === 'transfer')
                                     ? <Tooltip position="right" text={tooltipText}>
                                             <IconButton
                                                 iconStyle={iconStyle.icon}
@@ -189,6 +190,16 @@ const StockReceiveDetails = enhance((props) => {
                                                 <CheckCircleIcon />
                                             </IconButton>
                                         </Tooltip>
+                                        : (!history && type === 'delivery_return')
+                                            ? <Tooltip position="right" text={tooltipText}>
+                                                <IconButton
+                                                    iconStyle={iconStyle.icon}
+                                                    style={iconStyle.button}
+                                                    touch={true}
+                                                    onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(DELIVERY) }}>
+                                                    <CheckCircleIcon />
+                                                </IconButton>
+                                            </Tooltip>
                                         : (!history && type === 'order_return')
                                             ? <Tooltip position="right" text={tooltipText}>
                                                 <IconButton

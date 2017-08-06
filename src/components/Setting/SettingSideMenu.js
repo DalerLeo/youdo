@@ -8,14 +8,14 @@ import PropTypes from 'prop-types'
 
 const enhance = compose(
     injectSheet({
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '225px',
+            maxWidth: '225px'
+
+        },
         wrapper: {
-            padding: '20px 30px',
-            '& .row': {
-                margin: '0rem !important',
-                '& div': {
-                    lineHeight: '55px'
-                }
-            },
+            padding: '30px 30px 20px',
             '& ul': {
                 fontWeight: 'bold',
                 marginBottom: '20px'
@@ -42,7 +42,7 @@ const SettingSideMenu = enhance((props) => {
     const {classes, currentUrl} = props
     const statMenus = [
         {
-            section: 'Оборудование',
+            section: 'Производство',
             url: ROUTES.EQUIPMENT_LIST_URL,
             childs: [
                 {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL},
@@ -73,25 +73,27 @@ const SettingSideMenu = enhance((props) => {
     ]
 
     return (
-        <div className={classes.wrapper}>
-            {_.map(statMenus, (item, index) => {
-                return (
-                    <ul key={index}>
-                        {item.section}
-                        {_.map(item.childs, (object, i) => {
-                            return (
-                                <li key={i}>
-                                    <Link to={object.url}>
-                                         <span className={object.url === currentUrl ? classes.active : classes.simple}>
-                                             {object.name}
-                                         </span>
-                                    </Link>
-                                </li>
-                            )
-                        })}
-                    </ul>
-                )
-            })}
+        <div className={classes.leftPanel}>
+            <div className={classes.wrapper}>
+                {_.map(statMenus, (item, index) => {
+                    return (
+                        <ul key={index}>
+                            {item.section}
+                            {_.map(item.childs, (object, i) => {
+                                return (
+                                    <li key={i}>
+                                        <Link to={object.url}>
+                                             <span className={object.url === currentUrl ? classes.active : classes.simple}>
+                                                 {object.name}
+                                             </span>
+                                        </Link>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    )
+                })}
+            </div>
         </div>
     )
 })

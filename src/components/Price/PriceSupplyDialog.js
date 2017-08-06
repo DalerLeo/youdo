@@ -107,6 +107,8 @@ const PriceSupplyDialog = enhance((props) => {
     const dateDelivery = _.get(list, 'dateDelivery')
     const product = _.get(list, 'product')
     const provider = _.get(list, 'provider')
+    const supplyId = _.get(list, 'supplyId')
+
     let price = ZERO
     return (
         <Dialog
@@ -117,7 +119,7 @@ const PriceSupplyDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <div>Поставка №{open}</div>
+                <div>Поставка № {supplyId}</div>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>

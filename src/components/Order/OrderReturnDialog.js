@@ -170,12 +170,17 @@ const enhance = compose(
         rightOrderPart: {
             flexBasis: '70%',
             maxWidth: '70%',
-            padding: '20px 30px'
+            padding: '20px 30px',
+            minHeight: '485px'
         },
         leftOrderPart: {
             flexBasis: '30%',
             padding: '20px 30px',
             borderRight: '1px #efefef solid'
+        },
+        summary: {
+            textAlign: 'right',
+            paddingTop: '20px'
         }
     }),
     reduxForm({
@@ -237,7 +242,7 @@ const OrderReturnDialog = enhance((props) => {
                                     component={OrderListReturnField}
                                     orderData={orderData}
                                 />
-                                <div>Общая сумма возврата: <OrderReturnTotalSum/></div>
+                                <div className={classes.summary}>Общая сумма возврата: <OrderReturnTotalSum/></div>
                             </div>
                         </div>
                     </div>

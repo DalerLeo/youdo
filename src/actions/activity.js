@@ -105,7 +105,7 @@ export const activityReportShowImageAction = (id) => {
 export const activityReturnListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams(), ORDER_RETURN)
     const payload = axios()
-        .get(API.ACTIVITY_REPORT_LIST, {params})
+        .get(API.ACTIVITY_ORDER_RETURN_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })

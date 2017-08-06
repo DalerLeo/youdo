@@ -253,6 +253,7 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
+                            disabled={true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -344,10 +345,6 @@ const OrderDetails = enhance((props) => {
                                 <li>
                                     <span>ИТОГО</span>
                                     <span>{numberFormat(totalPrice, primaryCurrency)}</span>
-                                </li>
-                                <li>
-                                    <span>Стоимость возвратов:</span>
-                                    <span>- {returnAmount && numberFormat(returnAmount, primaryCurrency)}</span>
                                 </li>
                                 <li>
                                     <span>Оплачено:</span>

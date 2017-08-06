@@ -29,9 +29,8 @@ const enhance = compose(
         wrapper: {
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '360px',
-            position: 'relative',
-            height: '100%'
+            minHeight: '407px',
+            position: 'relative'
         },
         imagePlaceholder: {
             width: '100%',
@@ -46,7 +45,9 @@ const enhance = compose(
         },
         table: {
             marginTop: '20px',
-            overflow: 'auto'
+            overflowY: 'auto',
+            overflowX: 'hiddent',
+            maxHeight: '270px'
         },
         tableTitle: {
             fontWeight: '600',

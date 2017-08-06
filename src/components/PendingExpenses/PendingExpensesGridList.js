@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -14,19 +13,20 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 
 const listHeader = [
     {
         sorting: true,
         name: 'supply',
-        title: '№ заказа',
+        title: '№ поставки',
         xs: 2
     },
     {
         sorting: true,
         name: 'type',
         title: 'Описание',
-        xs: 4
+        xs: 5
     },
     {
         sorting: true,
@@ -39,7 +39,7 @@ const listHeader = [
         name: 'measurement',
         alignRight: true,
         title: 'Сумма',
-        xs: 3
+        xs: 2
     }
 ]
 
@@ -97,15 +97,15 @@ const PendingExpensesGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const supplyNo = _.get(item, 'supply')
         const comment = _.get(item, 'comment')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         const summary = numberFormat(_.get(item, 'amount'))
         const currency = _.get(item, ['currency', 'name'])
         return (
             <Row key={id}>
                 <Col xs={2}>{supplyNo}</Col>
-                <Col xs={4}>{comment}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={3} style={{textAlign: 'right'}}>{summary} {currency}</Col>
+                <Col xs={5}>{comment}</Col>
+                <Col xs={2} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{summary} {currency}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
                         iconStyle={iconStyle.icon}

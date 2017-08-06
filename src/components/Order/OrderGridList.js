@@ -346,7 +346,7 @@ const OrderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
 
-            <div className={classes.addButtonWrapper}>
+            {false && <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить заказ">
                     <FloatingActionButton
                         mini={true}
@@ -355,7 +355,7 @@ const OrderGridList = enhance((props) => {
                         <ContentAdd />
                     </FloatingActionButton>
                 </Tooltip>
-            </div>
+            </div>}
 
             <GridList
                 filter={filter}

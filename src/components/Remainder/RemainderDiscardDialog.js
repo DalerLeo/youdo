@@ -10,7 +10,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import TextField from '../ReduxForm/Basic/TextField'
-import RemainderListProductField from '../ReduxForm/Remainder/RemainderListProductField'
+import RemainderListProductField from '../ReduxForm/Remainder/RemainderDiscardProductListField'
 import {StockSearchField} from '../ReduxForm'
 
 export const REMAINDER_DISCARD_DIALOG_OPEN = 'openDiscardDialog'
@@ -225,7 +225,7 @@ const RemainderDiscardDialog = enhance((props) => {
                             label="Оставить комментарий..."
 
                             multiLine={true}
-                            rows={4}
+                            rows={1}
                             rowsMax={6}
                             fullWidth={true}/>
                     </div>
@@ -238,7 +238,7 @@ const RemainderDiscardDialog = enhance((props) => {
                 </div>
                 <div className={classes.bottomButton}>
                     <FlatButton
-                        label="СПИСАТЬ"
+                        label="Списать"
                         className={classes.actionButton}
                         primary={true}
                         type="submit"

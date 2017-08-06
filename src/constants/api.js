@@ -191,7 +191,7 @@ export const USER_SHIFT_ITEM = `/${USER_SHIFT}/%d/`
 export const USER_SHIFT_DELETE = `/${USER_SHIFT}/%d/`
 
 export const PENDING_EXPENSES = 'stock/supply_expanse'
-export const PENDING_EXPENSES_UPDATE = '/transactions/expanse_cashbox/'
+export const PENDING_EXPENSES_UPDATE = '/finance/expanse_cashbox/'
 export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`
 export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`
 
@@ -256,6 +256,7 @@ export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`
 
 export const ZONE = 'market/border'
 export const ZONE_CREATE = `/${ZONE}/`
+export const ZONE_UPDATE = `/${ZONE}/%d/`
 export const ZONE_LIST = `/${ZONE}/`
 export const ZONE_ITEM = `/${ZONE}/%d/`
 export const ZONE_DELETE = `/${ZONE}/%d/`
@@ -334,6 +335,7 @@ export const STOCK_TRANSFER_ACCEPT = '/stock/accept_outcome/'
 export const STOCK_RECEIVE_LIST = '/stock/income_tasks/'
 export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
 export const STOCK_RECEIVE_TRANSFER_CHANGE_STATUS = 'stock/stock_transfer/%d/change_status/'
+export const STOCK_RECEIVE_DELIVERY_RETURN = 'stock/delivery_return_status'
 export const STOCK_RECEIVE_ACCEPT_ORDER_RETURN = 'stock/accept_order_return/'
 
 export const STOCK_RECEIVE_CREATE = '/stock/supply/%d/accept_products/'

@@ -7,9 +7,9 @@ export const createSerializer = (data, productId) => {
     const isPrimary = _.get(data, 'isPrimary')
     const newPrices = _.map(prices, (val) => {
         let obj = {
-            'cash_price': numberWithoutSpaces(_.get(val, 'cash_price')),
+            'cash_price': _.replace(_.trim(_.get(val, 'cash_price')), ',', '.'),
             'market_type': _.get(val, 'market_type'),
-            'transfer_price': numberWithoutSpaces(_.get(val, 'transfer_price')),
+            'transfer_price': _.replace(_.trim(_.get(val, 'transfer_price')), ',', '.'),
             'currency': _.get(val, ['currency', 'value'])
         }
 
