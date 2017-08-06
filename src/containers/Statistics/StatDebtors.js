@@ -20,7 +20,7 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detailOrder = _.get(state, ['order', 'item', 'data'])
+        const detailOrder = _.get(state, ['order', 'item'])
         const detailOrderLoading = _.get(state, ['order', 'item', 'loading'])
         const detail = _.get(state, ['statisticsDebtors', 'item', 'data'])
         const detailLoading = _.get(state, ['statisticsDebtors', 'item', 'loading'])
@@ -62,7 +62,7 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const detailId = _.toInteger(_.get(props, ['location', 'query', 'detailId']))
-        return detailId && _.toInteger(_.get(nextProps, ['location', 'query', 'detailId'])) !== detailId &&
+        return _.toInteger(_.get(nextProps, ['location', 'query', 'detailId'])) !== detailId &&
             _.toInteger(_.get(nextProps, ['location', 'query', 'detailId'])) !== ZERO
     }, ({dispatch, location}) => {
         const id = _.toInteger(_.get(location, ['query', 'detailId']))

@@ -8,7 +8,7 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import ClientSearchField from '../ReduxForm/Client/ClientSearchField'
+import TextField from '../ReduxForm/Basic/TextField'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
@@ -17,9 +17,9 @@ import List from 'material-ui/svg-icons/action/list'
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down-circle'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
-import StatDebtorsDialog from './StatDebtorsDialog'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import StatSaleDialog from './StatSaleDialog'
 
 export const STAT_DEBTORS_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -363,7 +363,7 @@ const StatDebtorsGridList = enhance((props) => {
     })
 
     const countDebtors = _.get(listData, ['statData', 'debtors'])
-    const deptSum = numberFormat(_.get(listData, ['statData', 'debSum']), getConfig('PRIMARY_CURRENCY'))
+    const deptSum = numberFormat(_.get(listData, ['statData', 'debtsSum']), getConfig('PRIMARY_CURRENCY'))
     const expectSum = numberFormat(_.get(listData, ['statData', 'expectSum']), getConfig('PRIMARY_CURRENCY'))
     const page = (
         <div className={classes.mainWrapper}>
@@ -381,9 +381,9 @@ const StatDebtorsGridList = enhance((props) => {
                             <div className={classes.filter}>
                                 <Field
                                     className={classes.inputFieldCustom}
-                                    name="debtors"
-                                    component={ClientSearchField}
-                                    label="Задолжники"
+                                    name="search"
+                                    component={TextField}
+                                    label="Имя клиента"
                                     fullWidth={true}/>
 
                                 <IconButton
@@ -426,16 +426,20 @@ const StatDebtorsGridList = enhance((props) => {
             </Row>
         </div>
     )
-
+    const data = {
+        data: _.get(detailData, ['detailOrder', 'data']),
+        id: _.get(detailData, 'openDetailId')
+    }
     return (
         <Container>
             {page}
-            <StatDebtorsDialog
+            <StatSaleDialog
+                loading={_.get(detailData, 'detailOrderLoading')}
+                detailData={data}
                 open={_.get(statDebtorsDialog, 'openStatDebtorsDialog') !== ZERO}
                 onClose={statDebtorsDialog.handleCloseStatDebtorsDialog}
-                data={_.get(detailData, 'detailOrder')}
-                loading={_.get(detailData, 'detailOrderLoading')}
-            />
+                filter={filter}
+                type={false}/>
         </Container>
     )
 })

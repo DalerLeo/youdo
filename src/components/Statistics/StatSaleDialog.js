@@ -138,9 +138,9 @@ const StatSaleDialog = enhance((props) => {
         open,
         onClose,
         classes,
-        detailData
+        detailData,
+        loading
     } = props
-    const detailLoading = _.get(detailData, 'detailLoading')
     const id = _.get(detailData, 'id')
     return (
         <Dialog
@@ -148,10 +148,10 @@ const StatSaleDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={detailLoading ? {width: '400px'} : {width: '1000px', maxWidth: 'none'}}
+            contentStyle={loading ? {width: '400px'} : {width: '1000px', maxWidth: 'none'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
-            {detailLoading ? <div className={classes.loader}>
+            {loading ? <div className={classes.loader}>
                 <CircularProgress/>
             </div>
                 : <div>
@@ -166,7 +166,7 @@ const StatSaleDialog = enhance((props) => {
                     <div className={classes.content}>
                         <OrderDetails
                             data={_.get(detailData, 'data')}
-                            loading={detailLoading}/>
+                            loading={loading}/>
                     </div>
                 </div>}
         </Dialog>
