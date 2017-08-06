@@ -15,6 +15,21 @@ export const createSerializer = (data) => {
     const newGroup = _.map(groups, (val) => {
         return val.id
     })
+    const stocks = _.filter(_.get(data, ['stocks']), (o) => {
+        return _.get(o, 'selected')
+    })
+
+    const newStock = _.map(stocks, (val) => {
+        return val.id
+    })
+
+    const markets = _.filter(_.get(data, ['markets']), (o) => {
+        return _.get(o, 'selected')
+    })
+
+    const newMarket = _.map(markets, (val) => {
+        return val.id
+    })
 
     return {
         username,
@@ -24,7 +39,9 @@ export const createSerializer = (data) => {
         image,
         password,
         'groups': newGroup,
-        'is_active': isActive
+        'is_active': isActive,
+        'stocks': newStock,
+        'marketTypes': newMarket
     }
 }
 

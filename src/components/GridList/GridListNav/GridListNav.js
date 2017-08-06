@@ -10,9 +10,10 @@ import Print from 'material-ui/svg-icons/action/print'
 import RefreshIcon from 'material-ui/svg-icons/action/cached'
 import Tooltip from '../../ToolTip'
 
-const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, customData, withInvoice, printDialog, refreshAction, withoutPagination}) => {
+const GridListNav = ({classes, filter, filterDialog, addButton, actions, withoutSearch, customData, withInvoice, printDialog, refreshAction, withoutPagination}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
+    const addButtonIsEmpty = _.isEmpty(addButton)
     const listData = _.get(customData, ['listData', 'data'])
     const handleUpdateDialog = _.get(customData, ['dialog', 'handleOpenSetCurrencyDialog'])
     const gridDataId = _.get(customData, 'id')
@@ -22,9 +23,9 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
     return (
         <div className={classes.wrapper}>
             <div style={{padding: '0 30px'}}>
-                {(selectIsEmpty && filterIsEmpty) && <Row>
+                {(selectIsEmpty && filterIsEmpty && addButtonIsEmpty) && <Row>
                     <Col xs={6} style={withoutPagination ? {} : {display: 'flex', alignItems: 'center'}}>
-                        {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>}
+                        {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty || addButtonIsEmpty}/>}
                         {withoutSearch &&
                         <div className={classes.currencyName}>
                             <span>{currentCurrency}</span>
@@ -38,12 +39,12 @@ const GridListNav = ({classes, filter, filterDialog, actions, withoutSearch, cus
                     </Col>}
                 </Row>}
 
-                {(selectIsEmpty && !filterIsEmpty) && <Row>
+                {(selectIsEmpty && (!filterIsEmpty || !addButtonIsEmpty)) && <Row>
                     <Col xs={3}>
-                        {filterDialog}
+                        {filterIsEmpty ? addButton : filterDialog}
                     </Col>
                     <Col xs={4}>
-                        {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty}/>}
+                        {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty || addButtonIsEmpty}/>}
                     </Col>
                     <Col xs={5} className={classes.flex}>
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}

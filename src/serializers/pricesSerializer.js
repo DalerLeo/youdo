@@ -16,8 +16,8 @@ export const createSerializer = (data) => {
             amount
         }
     }) : _.map(_.get(data, ['bonusProducts']), (item) => {
-        const product = _.get(item, ['product', 'value', 'id'])
-        const amount = _.get(item, 'amount')
+        const product = _.get(item, ['bonusProduct', 'value', 'id'])
+        const amount = _.get(item, 'bonusAmount')
         const bonusProduct = _.get(item, ['giftProduct', 'value', 'id'])
         const bonusAmount = _.get(item, 'giftAmount')
         return {
@@ -27,7 +27,6 @@ export const createSerializer = (data) => {
             'bonus_amount': bonusAmount
         }
     })
-
     return {
         'begin_date': beginDate,
         'till_date': tillDate,

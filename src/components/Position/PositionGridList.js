@@ -10,13 +10,11 @@ import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Paper from 'material-ui/Paper'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import PositionCreateDialog from './PositionCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
-import Tooltip from '../ToolTip'
 import Container from '../Container'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 import {CheckBox} from '../ReduxForm'
@@ -55,15 +53,21 @@ const enhance = compose(
             display: 'flex'
         },
         addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
             }
         },
+        wrapper: {
+            display: 'flex',
+            margin: '0 -28px',
+            height: 'calc(100% + 28px)'
+        },
         addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '-18px'
         },
         semibold: {
             fontWeight: '600'
@@ -176,11 +180,11 @@ const PositionGridList = enhance((props) => {
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
+                <ModEditorIcon/>
             </IconButton>
 
             <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <Delete />
+                <Delete/>
             </IconButton>
         </div>
     )
@@ -195,7 +199,9 @@ const PositionGridList = enhance((props) => {
                 <div key={id} className={classes.list}
                      style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
                          : {backgroundColor: '#f2f5f8', display: 'relative'}}
-                     onClick={() => { listData.handlePositionClick(id) }}>
+                     onClick={() => {
+                         listData.handlePositionClick(id)
+                     }}>
                     <div className={classes.title}>{name}</div>
                 </div>
             )
@@ -211,8 +217,8 @@ const PositionGridList = enhance((props) => {
             <Row key={index}>
                 <Col xs={2}>
                     <Field
-                    component={CheckBox}
-                    name={codename}/>
+                        component={CheckBox}
+                        name={codename}/>
                 </Col>
                 <Col xs={4}>{name}</Col>
                 <Col xs={6}>{createdDate}</Col>
@@ -232,20 +238,8 @@ const PositionGridList = enhance((props) => {
 
     return (
         <Container>
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить группу">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
-            <Row>
-                <div className={classes.leftPanel}>
-                    <SettingSideMenu currentUrl={ROUTES.POSITION_LIST_URL}/>
-                </div>
+            <div className={classes.wrapper}>
+                <SettingSideMenu currentUrl={ROUTES.POSITION_LIST_URL}/>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrap}>
                         <div className={classes.leftSide}>
@@ -268,8 +262,13 @@ const PositionGridList = enhance((props) => {
                                 <div className={classes.outerTitle}>Доступы</div>
                                 <div className={classes.outerTitle}>
                                     <div className={classes.buttons}>
-                                        <a onClick={confirmDialog.handleOpenConfirmDialog} className={classes.btnRemove}>Удалить группу</a>
-                                        <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить группу</a>
+                                        <a onClick={confirmDialog.handleOpenConfirmDialog}
+                                           className={classes.btnAdd}><ContentAdd color="#12aaeb"/>добавить должност</a>
+                                        <a onClick={confirmDialog.handleOpenConfirmDialog}
+                                           className={classes.btnRemove}>Удалить
+                                            группу</a>
+                                        <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить
+                                            группу</a>
                                     </div>
                                 </div>
                             </div>
@@ -308,7 +307,7 @@ const PositionGridList = enhance((props) => {
                         </div>
                     </div>
                 </div>
-            </Row>
+            </div>
         </Container>
     )
 })

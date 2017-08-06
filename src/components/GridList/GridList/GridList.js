@@ -37,6 +37,7 @@ const GridList = enhance((props) => {
         detail,
         filter,
         filterDialog,
+        addButton,
         actionsDialog,
         withoutCheckboxes,
         withoutRow,
@@ -79,6 +80,7 @@ const GridList = enhance((props) => {
                     filter={filter}
                     customData={customData}
                     filterDialog={filterDialog}
+                    addButton={addButton}
                     actions={actionsDialog}
                     withoutSearch={withoutSearch}
                     withInvoice={withInvoice}
@@ -117,6 +119,7 @@ GridList.propTypes = {
     detail: PropTypes.node.isRequired,
     actionsDialog: PropTypes.node,
     filterDialog: PropTypes.node,
+    addButton: PropTypes.node,
     printDialog: PropTypes.shape({
         openPrint: PropTypes.bool,
         handleOpenPrintDialog: PropTypes.func,

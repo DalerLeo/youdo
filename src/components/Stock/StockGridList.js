@@ -210,7 +210,7 @@ const StockGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
-    const addButtom = (
+    const addButton = (
         <div className={classes.addButtonWrapper}>
             <FlatButton
                 backgroundColor="#fff"
@@ -232,7 +232,7 @@ const StockGridList = enhance((props) => {
                         filter={filter}
                         list={list}
                         detail={stockDetail}
-                        filterDialog={addButtom}
+                        addButton={addButton}
                         actionsDialog={actions}
                     />
                 </div>

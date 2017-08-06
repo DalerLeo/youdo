@@ -42,14 +42,11 @@ const SettingSideMenu = enhance((props) => {
     const {classes, currentUrl} = props
     const statMenus = [
         {
-            section: 'Производство',
-            url: ROUTES.EQUIPMENT_LIST_URL,
+            section: 'Персонал',
+            url: ROUTES.USERS_LIST_URL,
             childs: [
-                {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL},
-                {name: 'Смена', url: ROUTES.SHIFT_LIST_URL},
                 {name: 'Пользователи', url: ROUTES.USERS_LIST_URL},
-                {name: 'Должности', url: ROUTES.POSITION_LIST_URL},
-                {name: 'Склады', url: ROUTES.STOCK_LIST_URL}
+                {name: 'Смена', url: ROUTES.SHIFT_LIST_URL}
             ]
         },
         {
@@ -66,8 +63,16 @@ const SettingSideMenu = enhance((props) => {
             url: ROUTES.PRODUCT_TYPE_LIST_URL,
             childs: [
                 {name: 'Типы продуктов', url: ROUTES.PRODUCT_TYPE_LIST_URL},
-                {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL},
-                {name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL}
+                {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL}
+            ]
+        },
+        {
+            section: 'Другие',
+            url: ROUTES.MARKET_TYPE_LIST_URL,
+            childs: [
+                {name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL},
+                {name: 'Склады', url: ROUTES.STOCK_LIST_URL},
+                {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL}
             ]
         }
     ]

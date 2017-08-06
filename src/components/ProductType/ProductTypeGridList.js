@@ -7,7 +7,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
+import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
@@ -19,7 +19,6 @@ import GridList from '../GridList'
 import Container from '../Container'
 import ProductTypeCreateDialog from './ProductTypeCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import Tooltip from '../ToolTip'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 
 const listHeader = [
@@ -47,15 +46,21 @@ const listHeader = [
 const enhance = compose(
     injectSheet({
         addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
             }
         },
+        wrapper: {
+            display: 'flex',
+            margin: '0 -28px',
+            height: 'calc(100% + 28px)'
+        },
         addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '-18px'
         },
         rowWithParent: {
             flexWrap: 'wrap',
@@ -94,10 +99,18 @@ const enhance = compose(
 
         },
         rightPanel: {
-            flexBasis: 'calc(100% - 250px)',
-            maxWidth: 'calc(100% - 250px)',
+            background: '#fff',
+            flexBasis: 'calc(100% - 225px)',
+            maxWidth: 'calc(100% - 225px)',
+            paddingTop: '10px',
             overflowY: 'auto',
-            overflowX: 'hidden'
+            overflowX: 'hidden',
+            '& > div > div:first-child': {
+                boxShadow: 'none !important'
+            },
+            '& > div > div:last-child > div > div': {
+                boxShadow: 'none !important'
+            }
         }
     })
 )
@@ -222,23 +235,22 @@ const ProductTypeGridList = enhance((props) => {
         list: productTypeList,
         loading: _.get(listData, 'listLoading')
     }
-
+    const addButton = (
+        <div className={classes.addButtonWrapper}>
+            <FlatButton
+                backgroundColor="#fff"
+                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                className={classes.addButton}
+                label="добавить тип продукта"
+                onTouchTap={createDialog.handleOpenCreateDialog}
+                icon={<ContentAdd color="#12aaeb"/>}>
+            </FlatButton>
+        </div>
+    )
     return (
         <Container>
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить тип продукта">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
-            </div>
-            <Row>
-                <div className={classes.leftPanel}>
-                    <SettingSideMenu currentUrl={ROUTES.PRODUCT_TYPE_LIST_URL}/>
-                </div>
+            <div className={classes.wrapper}>
+                <SettingSideMenu currentUrl={ROUTES.PRODUCT_TYPE_LIST_URL}/>
                 <div className={classes.rightPanel}>
                     <GridList
                         filter={filter}
@@ -247,9 +259,10 @@ const ProductTypeGridList = enhance((props) => {
                         actionsDialog={actions}
                         withoutPagination={true}
                         flexibleRow={true}
+                        addButton={addButton}
                     />
                 </div>
-            </Row>
+            </div>
 
             <ProductTypeCreateDialog
                 open={createDialog.openCreateDialog}

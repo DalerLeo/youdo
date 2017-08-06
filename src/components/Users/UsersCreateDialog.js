@@ -116,7 +116,7 @@ const enhance = compose(
 )
 
 const UsersCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData, groupListData, stockListData} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData, groupListData, stockListData, marketTypeData} = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -225,14 +225,36 @@ const UsersCreateDialog = enhance((props) => {
                         : <div className={classes.stocksCheckList}>
                             {_.map(_.get(stockListData, 'data'), (item, index) => {
                                 const name = _.get(item, 'name')
+                                const id = _.get(item, 'id')
                                 return (
                                     <Field
-                                        name={'stock[' + index + '][selected]'}
+                                        key={id}
+                                        name={'stocks[' + index + '][selected]'}
                                         component={CheckBox}
                                         label={name}/>
                                 )
                             })}
                         </div>}
+                        <div className={classes.subTitle} style={{marginTop: '15px'}}>Поддерживаемый типа магазинов</div>
+                        <Row>
+                            {(!loading) && _.get(marketTypeData, 'marketTypeLoading') &&
+                            <div className={classes.groupLoader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>}
+                            {!_.get(marketTypeData, 'marketTypeLoading') &&
+                            _.map(_.get(marketTypeData, 'data'), (item, index) => {
+                                const id = _.get(item, 'id')
+                                const name = _.get(item, 'name')
+                                return (
+                                    <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
+                                        <Field
+                                            name={'markets[' + index + '][selected]'}
+                                            component={CheckBox}
+                                            label={name}/>
+                                    </div>
+                                )
+                            })}
+                        </Row>
                     </div>
                     <div className={classes.bottomButtonUsers}>
                         <div>
