@@ -92,16 +92,44 @@ const enhance = compose(
             maxWidth: 'calc(100% - 225px)',
             paddingTop: '10px',
             overflowY: 'auto',
-            overflowX: 'hidden',
-            '& > div > div:first-child': {
-                boxShadow: 'none !important'
-            },
-            '& > div > div:last-child > div > div': {
-                boxShadow: 'none !important'
+            overflowX: 'hidden'
+        },
+        verticalButton: {
+            border: '2px #dfdfdf solid !important',
+            borderRadius: '50%',
+            opacity: '0',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
+        },
+        listRow: {
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '&:hover button': {
+                opacity: '1'
             }
         }
     })
 )
+
+const vertMenuStyle = {
+    button: {
+        padding: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 30,
+        height: 30
+    },
+    icon: {
+        color: '#666',
+        width: 18,
+        height: 18
+    }
+}
 
 const UsersGridList = enhance((props) => {
     const {
@@ -149,13 +177,16 @@ const UsersGridList = enhance((props) => {
         })
         const isActive = _.get(item, 'isActive')
         const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
+            <IconButton
+                disableTouchRipple={true}
+                className={classes.verticalButton}
+                style={vertMenuStyle.button}>
                 <MoreVertIcon />
             </IconButton>
         )
 
         return (
-            <Row key={id}>
+            <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{firstName} {secondName}</Col>
                 <Col xs={2}>{username}</Col>
@@ -165,6 +196,7 @@ const UsersGridList = enhance((props) => {
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
+                        iconStyle={vertMenuStyle.icon}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem
@@ -195,7 +227,7 @@ const UsersGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
                 className={classes.addButton}
-                label="добавить пользователь"
+                label="добавить пользователя"
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>
@@ -216,12 +248,12 @@ const UsersGridList = enhance((props) => {
     return (
         <Container>
             <div className={classes.wrapper}>
-                <SettingSideMenu currentUrl={ROUTES.USERS_LIST_URL}/>
-                <div className={classes.rightPanel}
-                     usersFilterDialog={usersFilterDialog}>
+                <SettingSideMenu currentUrl={ROUTES.USERS_LIST_URL} usersFilterDialog={usersFilterDialog}/>
+                <div className={classes.rightPanel}>
                     <GridList
                         filter={filter}
                         list={list}
+                        listShadow={false}
                         detail={usersDetail}
                         actionsDialog={actions}
                         addButton={addButton}

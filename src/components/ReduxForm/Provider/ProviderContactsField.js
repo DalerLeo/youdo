@@ -47,9 +47,9 @@ const ProviderContactsField = enhance((props) => {
             { contactsLoading && <div>Загрузка ...</div> }
             {error && <div className={classes.error}>{error}</div>}
             {!contactsLoading && <RadioButtonGroup name="contact" className={classes.radioButton}
-                                                   onChange={input.onChange} defaultSelected={input.value}>
+                                                   onChange={input.onChange} defaultSelected={_.toInteger(input.value)}>
                 {_.map(contacts, (item) => {
-                    const id = _.get(item, 'id')
+                    const id = _.toInteger(_.get(item, 'id'))
                     const forLabel = _.get(item, 'name') + ' ' + _.get(item, 'phone') + ' ' + _.get(item, 'email')
                     return (
                         <RadioButton key={id}

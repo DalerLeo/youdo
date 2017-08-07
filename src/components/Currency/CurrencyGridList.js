@@ -242,7 +242,7 @@ const CurrencyGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
                 className={classes.addButton}
-                label="добавить валюта"
+                label="добавить валюту"
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>
@@ -256,7 +256,7 @@ const CurrencyGridList = enhance((props) => {
                 <div className={classes.rightPanel}>
                     <Paper zDepth={1}>
                         <div className={classes.editContent}>
-                            <div className={classes.semibold}>Основная валюта: <b>{currentCurrency}</b><i
+                            <div className={classes.semibold}>Основная валюта: <b>&nbsp;{currentCurrency}</b><i
                                 style={{fontWeight: '400', color: '#999'}}>
                                 &nbsp;(используется при формировании стоимости продукта / заказа)</i>
                                 {addButton}

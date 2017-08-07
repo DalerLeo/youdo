@@ -2,6 +2,7 @@ import TextField from './Basic/TextField'
 import CheckBox from './Basic/CheckBox'
 import DateToDateField from './Basic/DateToDateField'
 import SearchField from './Basic/SearchField'
+import SearchFieldCustom from './Basic/SearchFieldCustom'
 import LocationField from './Basic/LocationField'
 import CategorySearchField from './CategorySearchField'
 import UsersSearchField from './Users/UsersSearchField'
@@ -78,6 +79,7 @@ export {
     DateToDateField,
     LocationField,
     SearchField,
+    SearchFieldCustom,
     CategorySearchField,
     UsersSearchField,
     ProductTypeSearchField,
