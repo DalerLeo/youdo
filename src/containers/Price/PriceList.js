@@ -27,6 +27,7 @@ import {
 import {marketTypeGetAllAction} from '../../actions/marketType'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ZERO = 0
+const USD = 3
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -135,9 +136,10 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
         },
         handleSubmitPriceSetForm: props => () => {
-            const {dispatch, createForm, detail, params: {priceId}, location: {pathname}, filter} = props
+            const {dispatch, createForm, detail, priceListItemsList, params: {priceId}, location: {pathname}, filter} = props
             const detailId = _.get(detail, 'id')
-            return dispatch(priceCreateAction(_.get(createForm, ['values']), priceId))
+
+            return dispatch(priceCreateAction(_.get(createForm, ['values']), priceId, priceListItemsList))
                 .then(() => {
                     dispatch(priceListFetchAction(filter))
                     dispatch(priceItemFetchAction(detailId))
@@ -204,6 +206,12 @@ const PriceList = enhance((props) => {
         const price = _.find(_.get(priceListItemsList, ['results']), (item) => {
             return item.marketType.id === marketTypeId
         })
+
+        if (fieldName === 'isPrimary') {
+            const val = _.get(price, 'isPrimary')
+            return toBoolean(val)
+        }
+
         if (fieldName === 'cash') {
             const val = _.get(price, 'cashPrice') || ZERO
             return numberFormat(val)
@@ -234,6 +242,7 @@ const PriceList = enhance((props) => {
                     'currency': getCurrencyByParams(marketTypeId),
                     'transfer_price': getPriceByParams(marketTypeId, 'transfer'),
                     'marketTypeId': marketTypeId,
+                    'isPrimary': toBoolean(getPriceByParams(marketTypeId, 'isPrimary')),
                     marketTypeName
                 }
             })
@@ -246,10 +255,8 @@ const PriceList = enhance((props) => {
         initialValues: (() => {
             const priceList = _.map(detailData.mergedList(), (item) => {
                 return {
-                    'cash_price': _.get(item, 'cash_price'),
-                    'transfer_price': _.get(item, 'transfer_price'),
                     'market_type': _.get(item, 'marketTypeId'),
-                    'currency': {value: _.get(item, ['currency', 'id'])}
+                    'currency': {value: _.get(item, ['currency', 'id']) || USD}
                 }
             })
             return {'prices': priceList}
