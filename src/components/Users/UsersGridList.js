@@ -250,6 +250,7 @@ const UsersGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 groupListData={groupListData}
                 stockListData={stockListData}
+                marketTypeData={marketTypeData}
                 errorData={updateDialog.errorData}
             />
 
