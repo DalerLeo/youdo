@@ -371,6 +371,7 @@ const SupplyList = enhance((props) => {
     const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
         return {
             amount: _.get(item, 'amount'),
+            id: _.get(item, 'id'),
             cost: _.get(item, 'cost'),
             product: {
                 value: {
