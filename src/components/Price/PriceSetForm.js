@@ -196,6 +196,8 @@ const PriceSetForm = enhance((props) => {
                     </Row>
                         {_.map(mergedList, (item, index) => {
                             const marketName = _.get(item, 'marketTypeName')
+                            const cashPrice = _.get(item, 'cash_price')
+                            const transferPrice = _.get(item, 'transfer_price')
                             return (
                                 <Row className='dottedList' key={index}>
                                     <Col xs={6}> {marketName}</Col>
@@ -204,6 +206,7 @@ const PriceSetForm = enhance((props) => {
                                             name={'prices[' + index + '][cash_price]'}
                                             className={classes.inputFieldCustom}
                                             component={TextField}
+                                            placeholder={cashPrice}
                                             fullWidth={true}
                                         />
                                     </Col>
@@ -212,6 +215,7 @@ const PriceSetForm = enhance((props) => {
                                             name={'prices[' + index + '][transfer_price]'}
                                             className={classes.inputFieldCustom}
                                             component={TextField}
+                                            placeholder={transferPrice}
                                             fullWidth={true}
                                         />
                                     </Col>

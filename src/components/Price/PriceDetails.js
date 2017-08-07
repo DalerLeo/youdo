@@ -253,6 +253,7 @@ const PriceDetails = enhance((props) => {
                             onSubmit={priceSetForm.handleSubmitPriceSetForm}
                             mergedList={mergedList}
                             priceUpdatedDate={priceUpdated}
+                            priceHolder={priceSetForm.initialValues}
                         />
                     }
                     {(!marketTypeIsLoading && !priceListItemsIsLoading && !priceSetForm.openPriceSetForm) && <div>

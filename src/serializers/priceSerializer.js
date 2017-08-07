@@ -1,17 +1,37 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
-export const createSerializer = (data, productId) => {
+const ZERO = 0
+
+export const createSerializer = (data, productId, priceList) => {
     const prices = _.get(data, 'prices')
     const isPrimary = _.get(data, 'isPrimary')
+    const getPriceByType = (marketTypeId, type) => {
+        const price = _.find(_.get(priceList, ['results']), (item) => {
+            return item.marketType.id === marketTypeId
+        })
+        if (type === 'cash') {
+            const val = _.get(price, 'cashPrice') || ZERO
+            return _.toNumber(val)
+        }
+        const val = _.get(price, 'transferPrice') || ZERO
+        return _.toNumber(val)
+    }
+    const getNum = (firstVal, byDefault) => {
+        const first = _.replace(_.replace(firstVal, ',', '.'), / /g, '')
+        if (_.isEmpty(first)) {
+            return byDefault
+        }
+        return _.toNumber(first)
+    }
+
     const newPrices = _.map(prices, (val) => {
         let obj = {
-            'cash_price': _.replace(_.trim(_.get(val, 'cash_price')), ',', '.'),
+            'cash_price': getNum(_.get(val, 'cash_price'), getPriceByType(_.get(val, 'market_type'), 'cash')),
             'market_type': _.get(val, 'market_type'),
-            'transfer_price': _.replace(_.trim(_.get(val, 'transfer_price')), ',', '.'),
+            'transfer_price': getNum(_.get(val, 'transfer_price'), getPriceByType(_.get(val, 'market_type'), 'transfer')),
             'currency': _.get(val, ['currency', 'value'])
         }
-
         if (Number(isPrimary) === Number(obj.market_type)) {
             obj.is_primary = true
         }
