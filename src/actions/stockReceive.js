@@ -22,6 +22,23 @@ export const stockReceiveCreateAction = (formValues, supplyId, detail) => {
     }
 }
 
+export const stockReceiveUpdateAction = (formValues, supplyId, detail) => {
+    const requestData = serializers.updateSerializer(formValues, detail)
+    const payload = axios()
+        .post(sprintf(API.STOCK_RECEIVE_UPDATE, supplyId), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_UPDATE,
+        payload
+    }
+}
+
 export const stockReceiveListFetchAction = (filter, history) => {
     const params = serializers.listFilterSerializer(filter.getParams(), history)
     const payload = axios()

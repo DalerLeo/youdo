@@ -353,7 +353,10 @@ const rootReducer = combineReducers({
         paymentList: createThunkReducer(actionTypes.ACTIVITY_PAYMENT_LIST),
         deliveryList: createThunkReducer(actionTypes.ACTIVITY_DELIVERY_LIST)
     }),
-
+    statProductMove: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_LIST),
+        item: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_ITEM)
+    }),
     snackbar: snackbarReducer(),
     error: errorReducer(),
     form: formReducer,

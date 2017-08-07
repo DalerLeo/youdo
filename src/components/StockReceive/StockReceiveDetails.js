@@ -259,11 +259,12 @@ const StockReceiveDetails = enhance((props) => {
                             const productId = _.get(item, 'id')
                             const name = (type === 'order_return') ? _.get(item, ['product']) : _.get(item, ['product', 'name'])
                             const measurement = _.get(item, ['product', 'measurement', 'name'])
+                            const productType = _.get(item, ['product', 'type', 'name'])
                             const amount = numberFormat(_.get(item, 'amount'), measurement)
                             return (
                                 <Row key={productId} className='dottedList'>
                                     <Col xs={6}>{name}</Col>
-                                    <Col xs={4}>Стиральный порошек</Col>
+                                    <Col xs={4}>{productType}</Col>
                                     <Col xs={2}>{amount}</Col>
                                 </Row>
                             )

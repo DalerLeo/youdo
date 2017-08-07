@@ -240,3 +240,8 @@ export const ACTIVITY = 'activity'
 export const ACTIVITY_LIST_URL = `${ACTIVITY}`
 export const ACTIVITY_ITEM_URL = `/${ACTIVITY}/:activityId`
 export const ACTIVITY_ITEM_PATH = `${ACTIVITY}/%d`
+
+export const STATISTICS_PRODUCT_MOVE = 'statistics/productMove'
+export const STATISTICS_PRODUCT_MOVE_URL = `/${STATISTICS_PRODUCT_MOVE}`
+export const STATISTICS_PRODUCT_MOVE_ITEM_URL = `/${STATISTICS_PRODUCT_MOVE}/:statProductMoveId`
+export const STATISTICS_PRODUCT_MOVE_ITEM_PATH = `/${STATISTICS_PRODUCT_MOVE}/%d`

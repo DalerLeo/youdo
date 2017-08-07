@@ -67,7 +67,8 @@ const StatSideMenu = enhance((props) => {
             section: 'Склад',
             url: ROUTES.STATISTICS_STOCK_URL,
             childs: [
-                {name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL}
+                {name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL},
+                {name: 'Движения товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL}
             ]
         }
     ]
