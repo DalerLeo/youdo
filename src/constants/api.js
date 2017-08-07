@@ -337,6 +337,8 @@ export const STOCK_RECEIVE_DELIVERY_RETURN = 'stock/delivery_return_status'
 export const STOCK_RECEIVE_ACCEPT_ORDER_RETURN = 'stock/accept_order_return/'
 
 export const STOCK_RECEIVE_CREATE = '/stock/supply/%d/accept_products/'
+export const STOCK_RECEIVE_UPDATE = '/stock/supply/%d/update_accept/'
+
 export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE
 
 export const CLIENT_BALANCE = 'sales/client_balances'

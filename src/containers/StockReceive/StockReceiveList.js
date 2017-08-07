@@ -31,7 +31,8 @@ import {
     stockTransferItemAcceptAction,
     stockReceiveItemConfirmAction,
     stockReceiveItemReturnAction,
-    stockReceiveDeliveryConfirmAction
+    stockReceiveDeliveryConfirmAction,
+    stockReceiveUpdateAction
 } from '../../actions/stockReceive'
 import {
     orderListPintFetchAction,
@@ -335,21 +336,26 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: false})})
         },
 
-       /* HandleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-            const stockId = _.toInteger(_.get(props, ['params', 'stockId']))
-            return dispatch(stockUpdateAction(stockId, _.get(createForm, ['values'])))
+        handleSubmitUpdateDialog: props => () => {
+            const {dispatch, createForm, filter, location: {pathname}, params, detail} = props
+            const formValues = _.get(createForm, ['values'])
+            const supplyId = _.toInteger(_.get(params, 'stockReceiveId'))
+            const history = true
+            return dispatch(stockReceiveUpdateAction(formValues, supplyId, detail))
                 .then(() => {
-                    return dispatch(stockItemFetchAction(stockId))
-                })
-                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: false})})
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: false}))
-                    dispatch(stockReceiveListFetchAction(filter))
+                    dispatch(stockReceiveListFetchAction(filter, history))
                 })
-        }, */
+                .catch((error) => {
+                    const comment = _.map(error, (item) => {
+                        return (<p>{_.get(item, 'amount')}</p>)
+                    })
+                    return dispatch(openErrorAction({message: comment}))
+                })
+        },
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams()})
@@ -471,6 +477,7 @@ const StockReceiveList = enhance((props) => {
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
+        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog,
         initialValues: (() => {
             if (!detail || openCreateDialog) {
                 return {}
