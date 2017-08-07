@@ -9,15 +9,23 @@ const enhance = compose(
 
 const PriceMainRadionButton = enhance((props) => {
     const {input, mergedList} = props
-
+    const getVal = (first, list) => {
+        let primary = first
+        _.map(list, (obj) => {
+            if (_.get(obj, 'isPrimary')) {
+                primary = _.get(obj, 'marketTypeId')
+            }
+        })
+        return _.toInteger(primary)
+    }
     return (
-        <RadioButtonGroup name="isPrimary" onChange={input.onChange} defaultSelected={input.value}>
+        <RadioButtonGroup name="isPrimary" onChange={input.onChange} defaultSelected={getVal(input.value, mergedList)}>
             {_.map(mergedList, (item, index) => {
                 return (
                     <RadioButton
                         className='dottedList'
                         key={index}
-                        value={_.get(item, 'marketTypeId')}/>
+                        value={_.toInteger(_.get(item, 'marketTypeId'))}/>
                 )
             })}
         </RadioButtonGroup>

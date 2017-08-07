@@ -19,7 +19,7 @@ import {
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const PRODUCT_FILTER_OPEN = 'openFilterDialog'
+export const PRICE_FILTER_OPEN = 'openFilterDialog'
 
 export const PRICE_FILTER_KEY = {
     BRAND: 'brand',

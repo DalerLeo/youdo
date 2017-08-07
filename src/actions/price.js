@@ -4,8 +4,8 @@ import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/priceSerializer'
-export const priceCreateAction = (formValues, productId) => {
-    const requestData = serializers.createSerializer(formValues, productId)
+export const priceCreateAction = (formValues, productId, priceList) => {
+    const requestData = serializers.createSerializer(formValues, productId, priceList)
     const payload = axios()
         .post(API.PRICE_LIST_ITEM_ADD, requestData)
         .then((response) => {
