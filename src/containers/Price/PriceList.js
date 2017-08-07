@@ -251,6 +251,15 @@ const PriceList = enhance((props) => {
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
+    const getVal = (listD) => {
+        let primary = null
+        _.map(listD, (obj) => {
+            if (_.get(obj, 'isPrimary')) {
+                primary = _.get(obj, 'marketTypeId')
+            }
+        })
+        return _.toInteger(primary)
+    }
     const priceSetForm = {
         initialValues: (() => {
             const priceList = _.map(detailData.mergedList(), (item) => {
@@ -259,7 +268,7 @@ const PriceList = enhance((props) => {
                     'currency': {value: _.get(item, ['currency', 'id']) || USD}
                 }
             })
-            return {'prices': priceList}
+            return {'prices': priceList, 'isPrimary': getVal(detailData.mergedList())}
         })(),
         openPriceSetForm,
         handleOpenPriceSetForm: props.handleOpenPriceSetForm,
