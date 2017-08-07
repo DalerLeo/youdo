@@ -121,7 +121,7 @@ const enhance = compose(
         },
         background: {
             display: 'flex',
-            alignItems: 'flex-end',
+            alignItems: 'flex-start',
             padding: '10px',
             margin: '5px -30px 0',
             backgroundColor: '#f1f5f8',
@@ -271,7 +271,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                             {..._.get(defaultProps, 'amount')}
                         />
                     </Col>
-                    <Col xs={1}>
+                    <Col xs={1} style={{alignSelf: 'flex-end'}}>
                         <div style={{paddingBottom: '15px'}}>
                             {measurement}
                         </div>
