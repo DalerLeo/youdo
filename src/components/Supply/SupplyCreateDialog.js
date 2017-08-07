@@ -92,8 +92,7 @@ const enhance = compose(
         inContent: {
             display: 'flex',
             color: '#333',
-            height: '100%',
-            padding: '0 30px'
+            height: '100%'
         },
         innerWrap: {
             height: 'calc(100% - 57px)'
@@ -161,14 +160,15 @@ const enhance = compose(
             margin: '0 !important'
         },
         leftOrderPart: {
-            flexBasis: '35%',
-            padding: '20px 30px 20px 0',
+            flexBasis: '30%',
+            maxWidth: '30%',
+            padding: '20px 30px',
             borderRight: '1px #efefef solid'
         },
         rightOrderPart: {
-            flexBasis: '65%',
-            maxWidth: '65%',
-            padding: '20px 1px 20px 30px',
+            flexBasis: '70%',
+            maxWidth: '70%',
+            padding: '20px 30px',
             maxHeight: '694px',
             overflow: 'auto'
         },
@@ -297,7 +297,7 @@ const SupplyCreateDialog = enhance((props) => {
                                             label="Оставить комментарий..."
 
                                             multiLine={true}
-                                            rows={4}
+                                            rows={1}
                                             rowsMax={6}
                                             fullWidth={true}/>
                                     </div>
@@ -305,7 +305,7 @@ const SupplyCreateDialog = enhance((props) => {
                             </div>
                             <div className={classes.rightOrderPart}>
                                 <Fields
-                                    names={['products', 'product', 'amount', 'cost']}
+                                    names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost']}
                                     component={SupplyListProductField}
                                 />
                             </div>
