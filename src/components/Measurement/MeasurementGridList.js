@@ -66,16 +66,44 @@ const enhance = compose(
             maxWidth: 'calc(100% - 225px)',
             paddingTop: '10px',
             overflowY: 'auto',
-            overflowX: 'hidden',
-            '& > div > div:first-child': {
-                boxShadow: 'none !important'
-            },
-            '& > div > div:last-child > div > div': {
-                boxShadow: 'none !important'
+            overflowX: 'hidden'
+        },
+        verticalButton: {
+            border: '2px #dfdfdf solid !important',
+            borderRadius: '50%',
+            opacity: '0',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
+        },
+        listRow: {
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '&:hover button': {
+                opacity: '1'
             }
         }
     })
 )
+
+const vertMenuStyle = {
+    button: {
+        padding: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 30,
+        height: 30
+    },
+    icon: {
+        color: '#666',
+        width: 18,
+        height: 18
+    }
+}
 
 const MeasurementGridList = enhance((props) => {
     const {
@@ -109,17 +137,21 @@ const MeasurementGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
+            <IconButton
+                disableTouchRipple={true}
+                className={classes.verticalButton}
+                style={vertMenuStyle.button}>
                 <MoreVertIcon />
             </IconButton>
         )
         return (
-            <Row key={id}>
+            <Row key={id} className={classes.listRow}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={9}>{name}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
+                        iconStyle={vertMenuStyle.icon}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem
@@ -150,7 +182,7 @@ const MeasurementGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
                 className={classes.addButton}
-                label="добавить измерения"
+                label="добавить измерение"
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>
@@ -168,6 +200,7 @@ const MeasurementGridList = enhance((props) => {
                         detail={measurementDetail}
                         actionsDialog={actions}
                         addButton={addButton}
+                        listShadow={false}
                     />
                 </div>
             </div>

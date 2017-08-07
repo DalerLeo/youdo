@@ -46,7 +46,8 @@ const GridList = enhance((props) => {
         printDialog,
         flexibleRow,
         withoutPagination,
-        refreshAction
+        refreshAction,
+        listShadow
     } = props
 
     const header = _.get(list, 'header')
@@ -56,7 +57,7 @@ const GridList = enhance((props) => {
     const loaderOrList = (listLoading) => {
         if (listLoading) {
             return (
-                <Paper zDepth={1} className={classes.loader}>
+                <Paper zDepth={1} className={classes.loader} style={!listShadow && {boxShadow: 'none'}}>
                     <CircularProgress size={40} thickness={4} />
                 </Paper>
             )
@@ -69,13 +70,14 @@ const GridList = enhance((props) => {
                 detail={detail}
                 flexibleRow={flexibleRow}
                 withoutCheckboxes={withoutCheckboxes}
+                listShadow={listShadow}
             />
         )
     }
 
     return (
         <div className={classes.wrapper}>
-            <Paper zDepth={1} className={classes.header}>
+            <Paper zDepth={1} className={classes.header} style={!listShadow && {boxShadow: 'none'}}>
                 <GridListNav
                     filter={filter}
                     customData={customData}
@@ -94,6 +96,7 @@ const GridList = enhance((props) => {
                     withoutCheckboxes={withoutCheckboxes}
                     withoutRow={withoutRow}
                     column={header}
+                    listShadow={listShadow}
                 />
             </Paper>
             {loaderOrList(loading)}
@@ -135,6 +138,7 @@ GridList.defaultProps = {
     withRefreshBtn: false,
     flexibleRow: false,
     withoutPagination: false,
+    listShadow: true,
     actionsDialog: (<div>no</div>)
 }
 

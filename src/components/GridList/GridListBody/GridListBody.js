@@ -14,7 +14,6 @@ const enhance = compose(
             height: '50px',
             padding: '0 30px',
             background: '#fff',
-            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.12) 0px 3px 4px !important',
             '& .row': {
                 width: '100%',
                 alignItems: 'center',
@@ -99,7 +98,7 @@ const enhance = compose(
 )
 
 const GridListBody = enhance((props) => {
-    const {classes, filter, list, onChecked, detail, withoutCheckboxes, flexibleRow} = props
+    const {classes, filter, list, onChecked, detail, withoutCheckboxes, flexibleRow, listShadow} = props
 
     const items = _.map(list, (item, index) => {
         const id = (_.get(item, 'key'))
@@ -120,7 +119,11 @@ const GridListBody = enhance((props) => {
         }
 
         return (
-            <Paper zDepth={1} className={flexibleRow ? classes.flexibleItem : classes.item} key={index} style={{zIndex: index}}>
+            <Paper
+                zDepth={1}
+                className={flexibleRow ? classes.flexibleItem : classes.item}
+                key={index}
+                style={!listShadow ? {boxShadow: 'none'} : {boxShadow: 'rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.12) 0px 3px 4px'}}>
                     <div className={classes.checkbox}>
                         {withoutCheckboxes &&
                         <Checkbox onCheck={onChecked(id)} checked={checkboxChecked}/>
@@ -134,7 +137,7 @@ const GridListBody = enhance((props) => {
         <div>
             {!_.isEmpty(items)
                 ? <div>{items}</div>
-                : <Paper zDepth={1} className={classes.emptyQuery}>
+                : <Paper zDepth={1} className={classes.emptyQuery} style={!listShadow && {boxShadow: 'none'}}>
                     <div>По вашему запросу ничего не найдено</div>
                   </Paper>}
         </div>

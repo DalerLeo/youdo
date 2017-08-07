@@ -2,7 +2,7 @@ import sprintf from 'sprintf'
 import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
-import SearchField from '../Basic/SearchField'
+import SearchFieldCustom from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -10,7 +10,7 @@ import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
 const getOptions = (search, type) => {
-    return axios().get(`${PATH.PRODUCT_LIST}?type=${type || ''}&search=${search || ''}`)
+    return axios().get(`${PATH.PRODUCT_LIST}?type=${type || ''}&page_size=1000&search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -48,9 +48,9 @@ const ProductCustomSearchField = enhance((props) => {
     const test = (id) => {
         return getItem(id, dispatch)
     }
-    const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'type', 'value'])
+    const type = _.get(state, ['form', 'SupplyCreateForm', 'values', 'type', 'value'])
     return (
-        <SearchField
+        <SearchFieldCustom
             getValue={(value) => {
                 return value
             }}
@@ -62,6 +62,7 @@ const ProductCustomSearchField = enhance((props) => {
             getItemText={(value) => {
                 return _.get(value, ['name'])
             }}
+            type={type}
             {...defaultProps}
         />
     )

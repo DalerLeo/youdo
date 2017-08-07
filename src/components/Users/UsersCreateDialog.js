@@ -154,7 +154,6 @@ const UsersCreateDialog = enhance((props) => {
                                     label="Фамилия"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
-                                    <div style={{marginTop: '30px'}}><strong>Тип пользователя:</strong></div>
                             </Col>
                             <Col xs={5}>
                                 <Field
@@ -164,6 +163,7 @@ const UsersCreateDialog = enhance((props) => {
                                 />
                             </Col>
                         </Row>
+                        <div style={{marginTop: '10px'}}><strong>Тип пользователя:</strong></div>
                         <Row>
                             {(!loading) && _.get(groupListData, 'groupListLoading') &&
                             <div className={classes.groupLoader}>

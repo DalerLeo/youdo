@@ -74,6 +74,10 @@ strong {
     font-weight: 600;
 }
 
+body > div object {
+    display: none;
+}
+
 .dottedList {
     display: flex;
     align-items: center;

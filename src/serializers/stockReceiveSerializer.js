@@ -35,6 +35,19 @@ export const createSerializer = (data, detail) => {
     }
 }
 
+export const updateSerializer = (data, detail) => {
+    const products = _.map(_.get(detail, 'products'), (item, index) => {
+        const supplyProduct = _.get(item, 'id')
+
+        return {
+            'amount': _.get(data, ['product', index, 'accepted']),
+            'defect_amount': _.get(data, ['product', index, 'defected']),
+            'supply_product': supplyProduct,
+            comment: '1'
+        }
+    })
+    return products
+}
 export const listFilterSerializer = (data, history) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')

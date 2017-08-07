@@ -55,7 +55,7 @@ export const supplyDeleteAction = (id) => {
 }
 
 export const supplyUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+    const requestData = serializers.updateSerializer(formValues, id)
     const payload = axios()
         .put(sprintf(API.SUPPLY_ITEM, id), requestData)
         .then((response) => {

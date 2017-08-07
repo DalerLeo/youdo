@@ -337,6 +337,8 @@ export const STOCK_RECEIVE_DELIVERY_RETURN = 'stock/delivery_return_status'
 export const STOCK_RECEIVE_ACCEPT_ORDER_RETURN = 'stock/accept_order_return/'
 
 export const STOCK_RECEIVE_CREATE = '/stock/supply/%d/accept_products/'
+export const STOCK_RECEIVE_UPDATE = '/stock/supply/%d/update_accept/'
+
 export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE
 
 export const CLIENT_BALANCE = 'sales/client_balances'
@@ -365,3 +367,7 @@ export const ACTIVITY_REPORT_SHOW_IMAGE = 'main/file/%d/'
 export const ACTIVITY_ORDER_RETURN_LIST = `/${ACTIVITY}/`
 export const ACTIVITY_PAYMENT_LIST = `/${ACTIVITY}/`
 export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
+
+export const STAT_PRODUCT_MOVE_LIST = 'stats/agents/'
+export const STAT_PRODUCT_MOVE_ITEM = 'sales/order/'
+export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/agents/export/'

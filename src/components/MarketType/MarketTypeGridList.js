@@ -87,9 +87,43 @@ const enhance = compose(
             '& > div > div:last-child > div > div': {
                 boxShadow: 'none !important'
             }
+        },
+        verticalButton: {
+            border: '2px #dfdfdf solid !important',
+            borderRadius: '50%',
+            opacity: '0',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
+        },
+        listRow: {
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '&:hover button': {
+                opacity: '1'
+            }
         }
     })
 )
+
+const vertMenuStyle = {
+    button: {
+        padding: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 30,
+        height: 30
+    },
+    icon: {
+        color: '#666',
+        width: 18,
+        height: 18
+    }
+}
 
 const MarketTypeGridList = enhance((props) => {
     const {
@@ -124,18 +158,22 @@ const MarketTypeGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
+            <IconButton
+                disableTouchRipple={true}
+                className={classes.verticalButton}
+                style={vertMenuStyle.button}>
                 <MoreVertIcon />
             </IconButton>
         )
         return (
-            <Row key={id}>
+            <Row key={id} className={classes.listRow}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={5}>{name}</Col>
                 <Col xs={4}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
                     <IconMenu
                         iconButtonElement={iconButton}
+                        iconStyle={vertMenuStyle.icon}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem
@@ -183,6 +221,7 @@ const MarketTypeGridList = enhance((props) => {
                         detail={marketTypeDetail}
                         actionsDialog={actions}
                         addButton={addButton}
+                        listShadow={false}
                     />
                 </div>
             </div>

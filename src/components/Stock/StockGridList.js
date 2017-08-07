@@ -85,13 +85,7 @@ const enhance = compose(
             maxWidth: 'calc(100% - 225px)',
             paddingTop: '10px',
             overflowY: 'auto',
-            overflowX: 'hidden',
-            '& > div > div:first-child': {
-                boxShadow: 'none !important'
-            },
-            '& > div > div:last-child > div > div': {
-                boxShadow: 'none !important'
-            }
+            overflowX: 'hidden'
         },
         verticalButton: {
             border: '2px #dfdfdf solid !important',
@@ -167,7 +161,10 @@ const StockGridList = enhance((props) => {
         const stockType = _.toInteger(_.get(item, 'stockType')) === main ? 'Производственный' : 'Основной'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const iconButton = (
-            <IconButton disableTouchRipple={true} className={classes.verticalButton} style={vertMenuStyle.button}>
+            <IconButton
+                disableTouchRipple={true}
+                className={classes.verticalButton}
+                style={vertMenuStyle.button}>
                 <MoreVertIcon />
             </IconButton>
         )
@@ -234,6 +231,7 @@ const StockGridList = enhance((props) => {
                         detail={stockDetail}
                         addButton={addButton}
                         actionsDialog={actions}
+                        listShadow={false}
                     />
                 </div>
             </div>

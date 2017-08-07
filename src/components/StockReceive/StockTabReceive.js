@@ -229,7 +229,7 @@ const StockTabReceive = enhance((props) => {
                 detailProducts={updateDialog.detailProducts}
                 listLoading={updateDialog.detailLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitCreateDialog}
+                onSubmit={updateDialog.handleSubmitUpdateDialog}
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
             />
