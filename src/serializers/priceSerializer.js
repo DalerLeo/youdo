@@ -2,6 +2,7 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 const ZERO = 0
+
 export const createSerializer = (data, productId, priceList) => {
     const prices = _.get(data, 'prices')
     const isPrimary = _.get(data, 'isPrimary')
@@ -31,7 +32,6 @@ export const createSerializer = (data, productId, priceList) => {
             'transfer_price': getNum(_.get(val, 'transfer_price'), getPriceByType(_.get(val, 'market_type'), 'transfer')),
             'currency': _.get(val, ['currency', 'value'])
         }
-
         if (Number(isPrimary) === Number(obj.market_type)) {
             obj.is_primary = true
         }
