@@ -367,3 +367,7 @@ export const ACTIVITY_REPORT_SHOW_IMAGE = 'main/file/%d/'
 export const ACTIVITY_ORDER_RETURN_LIST = `/${ACTIVITY}/`
 export const ACTIVITY_PAYMENT_LIST = `/${ACTIVITY}/`
 export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
+
+export const STAT_PRODUCT_MOVE_LIST = 'stats/agents/'
+export const STAT_PRODUCT_MOVE_ITEM = 'sales/order/'
+export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/agents/export/'

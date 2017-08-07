@@ -10,6 +10,7 @@ import StatDebtorsGridList from './StatDebtorsGridList'
 import StatOutcomeCategoryGridList from './StatOutcomeCategoryGridList'
 import StatRemainderGridList from './StatRemainderGridLIst'
 import StatCashboxGridList from './StatCashboxGridList'
+import StatProductMoveGridList from './StatProductMoveGridList'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_REMAINDER_DIALOG_OPEN = 'openStatAgentDialog'
@@ -19,6 +20,7 @@ const STAT_FINANCE_DIALOG_OPEN = 'openStatFinanceDialog'
 const STAT_INCOME_DIALOG_OPEN = 'openStatIncomeDialog'
 const STAT_DEBTORS_DIALOG_OPEN = 'openStatDebtorsDialog'
 const STAT_OUTCOME_DIALOG_OPEN = 'openStatOutcomeDialog'
+const STAT_PRODUCT_MOVE_DIALOG_OPEN = 'openStatProductMoveDialog'
 
 export {
     StatSideMenu,
@@ -33,6 +35,7 @@ export {
     StatOutcomeCategoryGridList,
     StatRemainderGridList,
     StatCashboxGridList,
+    StatProductMoveGridList,
     STAT_AGENT_DIALOG_OPEN,
     STAT_MARKET_DIALOG_OPEN,
     STAT_FINANCE_DIALOG_OPEN,
@@ -40,5 +43,6 @@ export {
     STAT_DEBTORS_DIALOG_OPEN,
     STAT_OUTCOME_DIALOG_OPEN,
     STAT_SALES_DIALOG_OPEN,
-    STAT_REMAINDER_DIALOG_OPEN
+    STAT_REMAINDER_DIALOG_OPEN,
+    STAT_PRODUCT_MOVE_DIALOG_OPEN
 }
