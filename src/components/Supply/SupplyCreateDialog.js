@@ -187,6 +187,13 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
+        searchFieldCustom: {
+            extend: 'inputFieldCustom',
+            position: 'initial !important',
+            '& label': {
+                lineHeight: 'auto !important'
+            }
+        },
         inputDateCustom: {
             fontSize: '13px !important',
             height: '45px !important',
@@ -257,7 +264,7 @@ const SupplyCreateDialog = enhance((props) => {
                                     <Field
                                         name="provider"
                                         component={ProviderSearchField}
-                                        className={classes.inputFieldCustom}
+                                        className={classes.searchFieldCustom}
                                         label="Поставщик"
                                         fullWidth={true}/>
                                     <Field
@@ -277,13 +284,13 @@ const SupplyCreateDialog = enhance((props) => {
                                     <Field
                                         name="stock"
                                         component={StockSearchField}
-                                        className={classes.inputFieldCustom}
+                                        className={classes.searchFieldCustom}
                                         label="Склад назначения"
                                         fullWidth={true}/>
                                     <Field
                                         name="currency"
                                         component={CurrencySearchField}
-                                        className={classes.inputFieldCustom}
+                                        className={classes.searchFieldCustom}
                                         label="Валюта оплаты"
                                         fullWidth={true}/>
                                 </div>
@@ -305,7 +312,7 @@ const SupplyCreateDialog = enhance((props) => {
                             </div>
                             <div className={classes.rightOrderPart}>
                                 <Fields
-                                    names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost']}
+                                    names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost', 'type']}
                                     component={SupplyListProductField}
                                 />
                             </div>

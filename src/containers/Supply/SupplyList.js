@@ -397,9 +397,7 @@ const SupplyList = enhance((props) => {
                 currency: {
                     value: _.get(detail, ['currency', 'id'])
                 },
-                contact: {
-                    value: _.get(detail, ['contact', 'id']) + ' ' + _.get(detail, ['contact', 'phone']) + ' ' + _.get(detail, ['contact', 'email'])
-                },
+                contact: _.get(detail, ['contact', 'id']),
                 date_delivery: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 products: forUpdateProducts,
                 comment: _.get(detail, 'comment')

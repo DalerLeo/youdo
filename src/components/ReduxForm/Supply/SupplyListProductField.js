@@ -21,7 +21,8 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import normalizeNumber from '../normalizers/normalizeNumber'
 import ProductCustomSearchField from '../Supply/ProductCustomSearchField'
-import {TextField, ProductTypeSearchField} from '../../ReduxForm'
+import {TextField} from '../../ReduxForm'
+import SupplyProductTypeSearchField from '../../ReduxForm/Supply/SupplyProductTypeSearchField'
 import Check from 'material-ui/svg-icons/navigation/check'
 
 const enhance = compose(
@@ -98,6 +99,13 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
+        searchFieldCustom: {
+            extend: 'inputFieldCustom',
+            position: 'initial !important',
+            '& label': {
+                lineHeight: 'auto !important'
+            }
+        },
         title: {
             fontWeight: '600',
             border: 'none !important'
@@ -127,6 +135,9 @@ const enhance = compose(
             },
             '& button': {
                 alignSelf: 'center'
+            },
+            '& > div > div > div:first-child': {
+                overflow: 'hidden'
             }
         }
     }),
@@ -237,8 +248,8 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                     <Col xs={3}>
                         <Field
                             label="Тип товара"
-                            component={ProductTypeSearchField}
-                            className={classes.inputFieldCustom}
+                            component={SupplyProductTypeSearchField}
+                            className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(defaultProps, 'type')}
                         />
@@ -246,13 +257,14 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                     <Col xs={3}>
                         <ProductCustomSearchField
                             label="Наименование"
-                            className={classes.inputFieldCustom}
+                            className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(defaultProps, 'product')}
                         />
                     </Col>
                     <Col xs={2}>
-                        <TextField
+                        <Field
+                            component={TextField}
                             label="Кол-во"
                             className={classes.inputFieldCustom}
                             fullWidth={true}
@@ -265,7 +277,8 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                         </div>
                     </Col>
                     <Col xs={2}>
-                        <TextField
+                        <Field
+                            component={TextField}
                             label="Сумма за ед"
                             className={classes.inputFieldCustom}
                             fullWidth={true}
@@ -322,19 +335,17 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                                         </TableRowColumn>
                                         <TableRowColumn>
                                             <TextField
-                                                label="Кол-во"
+                                                label={amount}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}
-                                                hintText={amount}
                                                 {..._.get(defaultProps, 'editAmount')}
                                             />
                                         </TableRowColumn>
                                         <TableRowColumn>
                                             <TextField
-                                                label="Сумма за ед"
+                                                label={cost}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}
-                                                hintText={cost}
                                                 normalize={normalizeNumber}
                                                 {..._.get(defaultProps, 'editCost')}
                                             />
