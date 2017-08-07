@@ -322,7 +322,7 @@ const enhance = compose(
                     const comment = _.map(error, (item) => {
                         return (<p>{_.get(item, 'amount')}</p>)
                     })
-                    return dispatch(openErrorAction({message: {comment}}))
+                    return dispatch(openErrorAction({message: comment}))
                 })
         },
         handleOpenUpdateDialog: props => () => {
