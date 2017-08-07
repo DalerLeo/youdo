@@ -25,6 +25,7 @@ import {TextField} from '../../ReduxForm'
 import SupplyProductTypeSearchField from '../../ReduxForm/Supply/SupplyProductTypeSearchField'
 import Check from 'material-ui/svg-icons/navigation/check'
 
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         wrapper: {
@@ -168,8 +169,8 @@ const enhance = compose(
                 let has = false
                 _.map(products, (item) => {
                     if (_.get(item, 'product') === product) {
-                        item.amount = _.toInteger(amount)
-                        item.cost = _.toInteger(cost)
+                        item.amount = _.toNumber(amount)
+                        item.cost = _.toNumber(cost)
                         has = true
                     }
                 })
@@ -193,8 +194,12 @@ const enhance = compose(
             const cost = _.get(props, ['editCost', 'input', 'value'])
             _.map(products, (item, index) => {
                 if (index === listIndex) {
-                    item.amount = _.toInteger(amount)
-                    item.cost = _.toInteger(cost)
+                    if (_.toNumber(amount) > ZERO) {
+                        item.amount = _.toNumber(amount)
+                    }
+                    if (_.toNumber(cost) > ZERO) {
+                        item.cost = _.toNumber(cost)
+                    }
                 }
             })
             const fields = ['editAmount', 'editCost']

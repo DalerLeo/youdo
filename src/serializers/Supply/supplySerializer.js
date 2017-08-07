@@ -11,7 +11,8 @@ export const createSerializer = (data) => {
     const products = _.map(_.get(data, ['products']), (item) => {
         const amount = _.get(item, 'amount')
         const itemCost = _.get(item, 'cost')
-        const summary = _.toNumber(amount) * _.toNumber(itemCost)
+        const SECOND = 2
+        const summary = (_.toNumber(amount) * _.toNumber(itemCost)).toFixed(SECOND)
         const product = _.get(item, ['product', 'value', 'id'])
         return {
             amount: amount,
