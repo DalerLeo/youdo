@@ -110,9 +110,6 @@ const enhance = compose(
                 alignSelf: 'center',
                 textAlign: 'center',
                 width: '20%'
-            },
-            '& > div > div > div:first-child': {
-                overflow: 'hidden'
             }
         },
         bonusProduct: {
@@ -239,7 +236,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                                     label="Наименование"
                                     name="giftProduct"
                                     component={ProductCustomGiftSearchField}
-                                    className={classes.searchFieldCustom}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}
                                 />
                             </div>
@@ -300,7 +297,8 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?
+                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
+                            товар?
                         </div>
                     </div>
                 </div>
