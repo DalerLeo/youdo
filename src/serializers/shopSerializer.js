@@ -36,9 +36,9 @@ export const createSerializer = (data, location, image) => {
     }
 }
 
-export const updateSerializer = (data, location, image) => {
+export const updateSerializer = (data, location) => {
     const name = _.get(data, 'name')
-    const client = _.get(data, 'client')
+    const client = _.get(data, ['client', 'value'])
     const marketType = _.get(data, ['marketType', 'value'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
@@ -55,7 +55,7 @@ export const updateSerializer = (data, location, image) => {
 
     return {
         name,
-        client,
+        'new_client_name': client,
         'market_type': marketType,
         address,
         guide,

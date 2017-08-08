@@ -224,7 +224,7 @@ const PriceGridList = enhance((props) => {
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const codeProduct = _.get(item, 'code') || 'не установлено'
+        const codeProduct = _.get(item, 'code') || 'не установлен'
         const netCost = _.get(item, 'netCost') ? numberFormat(_.get(item, 'netCost'), getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
         const minPrice = _.get(item, 'minPrice')
         const maxPrice = _.get(item, 'maxPrice')

@@ -132,8 +132,6 @@ const ShopMapDialog = enhance((props) => {
                             name="latLng"
                             component={LocationField}
                             className={classes.map}
-                            location={{lat: 41.3076492,
-                                lng: 70.2705497}}
                             fullWidth={true}
                         />
                     </div>

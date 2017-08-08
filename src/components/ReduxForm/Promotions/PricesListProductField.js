@@ -9,8 +9,8 @@ import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import {Field} from 'redux-form'
 import DeleteIcon from '../../DeleteIcon/index'
-import ProductTypeSearchField from '../Product/ProductTypeSearchField'
-import ProductCustomSearchField from '../Supply/ProductCustomSearchField'
+import ProductTypeSearchField from '../Promotions/ProductTypeSearchField'
+import ProductCustomSearchField from '../Promotions/ProductCustomSearchField'
 import TextField from '../Basic/TextField'
 import Check from 'material-ui/svg-icons/navigation/check'
 import numberFormat from '../../../helpers/numberFormat'
@@ -84,6 +84,13 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
+        searchFieldCustom: {
+            extend: 'inputFieldCustom',
+            position: 'initial !important',
+            '& label': {
+                lineHeight: 'auto !important'
+            }
+        },
         title: {
             fontWeight: '600',
             border: 'none !important'
@@ -116,6 +123,9 @@ const enhance = compose(
             },
             '& button': {
                 marginTop: '10px !important'
+            },
+            '& > div > div > div:first-child': {
+                overflow: 'hidden'
             }
         }
     }),
@@ -184,7 +194,7 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                             label="Тип товара"
                             name="type"
                             component={ProductTypeSearchField}
-                            className={classes.inputFieldCustom}
+                            className={classes.searchFieldCustom}
                             fullWidth={true}
                         />
                     </Col>
@@ -193,7 +203,7 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                             label="Наименование"
                             name="product"
                             component={ProductCustomSearchField}
-                            className={classes.inputFieldCustom}
+                            className={classes.searchFieldCustom}
                             fullWidth={true}
                         />
                     </Col>
@@ -244,8 +254,7 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
-                            товар?
+                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?
                         </div>
                     </div>
                 </div>

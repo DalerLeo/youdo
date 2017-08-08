@@ -41,7 +41,8 @@ const enhance = compose(
             height: '65px',
             margin: '0 -30px',
             padding: '0 30px',
-            position: 'relative'
+            position: 'relative',
+            boxSizing: 'content-box'
         },
         titleLabel: {
             fontSize: '18px',
@@ -68,6 +69,7 @@ const enhance = compose(
             color: '#fff',
             fontWeight: '600',
             padding: '20px 17px',
+            height: '65px',
             lineHeight: '1',
             textAlign: 'center'
         },
@@ -253,7 +255,12 @@ const ShopDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'name'])
-    const createdBy = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
+    const firstName = _.get(data, ['createdBy', 'firstName'])
+    const secondName = _.get(data, ['createdBy', 'secondName'])
+    let createdBy = firstName + ' ' + secondName
+    if (!firstName && !secondName) {
+        createdBy = 'Неизвестно'
+    }
     const shopType = _.get(data, ['marketType', 'name'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')

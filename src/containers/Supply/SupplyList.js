@@ -369,10 +369,13 @@ const SupplyList = enhance((props) => {
         handleSendConfirmExpenseDialog: props.handleSendConfirmExpenseDialog
     }
     const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const cost = _.toNumber(_.get(item, 'cost'))
+        const summary = cost / amount
         return {
-            amount: _.get(item, 'amount'),
+            amount: amount,
             id: _.get(item, 'id'),
-            cost: _.get(item, 'cost'),
+            cost: summary,
             product: {
                 value: {
                     id: _.get(item, ['product', 'id']),
