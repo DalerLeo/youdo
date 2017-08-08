@@ -214,7 +214,7 @@ const PositionGridList = enhance((props) => {
 
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
-            <Row key={index}>
+            <Row key={index} className="dottedList">
                 <Col xs={2}>
                     <Field
                         component={CheckBox}
