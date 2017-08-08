@@ -319,19 +319,12 @@ const PricesCreateDialog = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                        {isDiscount
-                            ? <FlatButton
-                                label="Оформить заказ"
-                                className={classes.actionButton}
-                                primary={true}
-                                type="submit"
-                            />
-                            : <FlatButton
-                                label="Добавить акции"
-                                className={classes.actionButton}
-                                primary={true}
-                                type="submit"
-                            />}
+                        <FlatButton
+                            label="Применить акцию"
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
+                        />
                     </div>
                 </form>
             </div>
