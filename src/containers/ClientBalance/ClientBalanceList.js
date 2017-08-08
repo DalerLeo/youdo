@@ -59,9 +59,10 @@ const enhance = compose(
         const clientBalanceId = _.get(nextProps, ['params', 'clientBalanceId'])
         return clientBalanceId && (_.get(props, ['params', 'clientBalanceId']) !== clientBalanceId ||
             props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
-    }, ({dispatch, params, filterItem}) => {
+    }, ({dispatch, params, filterItem, location}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
-        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId))
+        const type = _.get(location, ['query', 'type'])
+        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, type))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -94,11 +95,11 @@ const enhance = compose(
             })
         },
 
-        handleOpenInfoDialog: props => (id) => {
+        handleOpenInfoDialog: props => (id, type) => {
             const {filter} = props
             hashHistory.push({
                 pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
-                query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: true})
+                query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: true, 'type': type})
             })
         },
 
@@ -124,6 +125,7 @@ const ClientBalanceList = enhance((props) => {
 
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
     const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
+    const type = _.toNumber(_.get(location, ['query', 'type']))
     const fromDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
@@ -131,6 +133,7 @@ const ClientBalanceList = enhance((props) => {
     const infoDialog = {
         updateLoading: detailLoading,
         openInfoDialog,
+        type: type,
         handleOpenInfoDialog: props.handleOpenInfoDialog,
         handleCloseInfoDialog: props.handleCloseInfoDialog
     }
