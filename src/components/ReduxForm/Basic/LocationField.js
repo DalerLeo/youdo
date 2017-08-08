@@ -34,10 +34,9 @@ const enhance = compose(
 const LocationField = (props) => {
     const {classes, location, setLocation, input, meta: {error}} = props
     let value = _.get(input, 'value')
-    if (!value) {
+    if (!value.lat && !value.lng) {
         value = location
     }
-    console.log(value)
     const handleClick = (pointer) => {
         input.onChange({lat: pointer.latLng.lat(), lng: pointer.latLng.lng()})
         setLocation({lat: pointer.latLng.lat(), lng: pointer.latLng.lng()})

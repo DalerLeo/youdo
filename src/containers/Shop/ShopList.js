@@ -325,10 +325,10 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter, mapLocation} = props
+            const {dispatch, createForm, filter, mapLocation, detail} = props
             const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
 
-            return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values']), mapLocation))
+            return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values']), mapLocation, detail))
                 .then(() => {
                     return dispatch(shopItemFetchAction(shopId))
                 })

@@ -14,12 +14,9 @@ import ArrowRight from 'material-ui/svg-icons/navigation/chevron-right'
 const enhance = compose(
     injectSheet({
         loader: {
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
+            width: '900px',
+            height: '900px',
             background: '#fff',
-            top: '0',
-            left: '0',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
@@ -55,25 +52,12 @@ const enhance = compose(
         },
         inContent: {
             display: 'flex',
-            width: '500px',
-            height: '500px',
             position: 'relative',
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
             zIndex: '1',
-            '&:after': {
-                content: '""',
-                backgroundColor: 'transparent',
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                right: '0',
-                bottom: '0',
-                zIndex: '2'
-            },
             '& img': {
-                width: '100%',
-                height: '100%'
+
             }
         },
         bodyContent: {
@@ -110,6 +94,7 @@ const iconStyle = {
 const SlideShowDialog = enhance((props) => {
     const {loading, open, onClose, classes, image, images, prevBtn, nextBtn, handleSetPrimaryImage} = props
     const imgURL = _.get(image, 'file')
+    const imgId = 'slide' + _.get(image, 'id')
     const lastIndex = _.get(images, 'length')
     const currentIndex = _.findIndex(images, (o) => {
         const fileId = _.get(o, 'fileId')
@@ -121,7 +106,7 @@ const SlideShowDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={{width: '500px'}}
+            contentStyle={{width: '100%', maxWidth: '900px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -134,7 +119,7 @@ const SlideShowDialog = enhance((props) => {
                 {loading ? <div className={classes.loader}>
                     <CircularProgress size={40} thickness={4}/>
                 </div>
-                : <img src={imgURL} alt=""/>}
+                : <img id={imgId} src={imgURL} alt=""/>}
                 <div className={classes.navLeft}>
                     <IconButton
                         iconStyle={iconStyle.icon}
