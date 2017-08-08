@@ -232,7 +232,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                                     label="Наименование"
                                     name="giftProduct"
                                     component={ProductCustomGiftSearchField}
-                                    className={classes.searchFieldCustom}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}
                                 />
                             </div>
