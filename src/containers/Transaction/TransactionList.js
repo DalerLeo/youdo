@@ -42,6 +42,7 @@ import {
 } from '../../actions/cashbox'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -331,7 +332,7 @@ const enhance = compose(
 
         handleCloseCashBoxDialog: props => () => {
             const {location: {pathname}, filter, dispatch} = props
-            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_DIALOG_OPEN]: false, 'openUser': ZERO, 'openCurrency': ZERO})})
             dispatch(reset('AcceptClientTransactionForm'))
         },
         handleSubmitCashBoxDialog: props => (amount) => {
