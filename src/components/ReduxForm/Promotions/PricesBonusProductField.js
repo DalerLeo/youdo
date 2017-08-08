@@ -9,8 +9,9 @@ import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import {Field} from 'redux-form'
 import DeleteIcon from '../../DeleteIcon/index'
-import ProductTypeSearchField from '../Product/ProductTypeSearchField'
-import ProductCustomSearchField from '../Supply/ProductCustomSearchField'
+import ProductTypeSearchField from '../Promotions/ProductTypeSearchField'
+import ProductCustomGiftSearchField from '../Promotions/ProductCustomGiftSearchField'
+import ProductCustomBonusSearchField from '../Promotions/ProductCustomBonusSearchField'
 import TextField from '../Basic/TextField'
 import numberFormat from '../../../helpers/numberFormat'
 
@@ -79,6 +80,13 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
+        searchFieldCustom: {
+            extend: 'inputFieldCustom',
+            position: 'initial !important',
+            '& label': {
+                lineHeight: 'auto !important'
+            }
+        },
         title: {
             fontWeight: '600',
             border: 'none !important'
@@ -102,6 +110,9 @@ const enhance = compose(
                 alignSelf: 'center',
                 textAlign: 'center',
                 width: '20%'
+            },
+            '& > div > div > div:first-child': {
+                overflow: 'hidden'
             }
         },
         bonusProduct: {
@@ -187,9 +198,9 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                         <div className={classes.subTitle}>Бонусный товар</div>
                         <Field
                             label="Тип товара"
-                            name="bonusProductType"
+                            name="bonusType"
                             component={ProductTypeSearchField}
-                            className={classes.inputFieldCustom}
+                            className={classes.searchFieldCustom}
                             fullWidth={true}
                         />
                         <div className={classes.productAmount}>
@@ -197,8 +208,8 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                                 <Field
                                     label="Наименование"
                                     name="bonusProduct"
-                                    component={ProductCustomSearchField}
-                                    className={classes.inputFieldCustom}
+                                    component={ProductCustomBonusSearchField}
+                                    className={classes.searchFieldCustom}
                                     fullWidth={true}
                                 />
                             </div>
@@ -217,9 +228,9 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                         <div className={classes.subTitle}>Товар в подарок</div>
                         <Field
                             label="Тип товара"
-                            name="giftProductType"
+                            name="giftType"
                             component={ProductTypeSearchField}
-                            className={classes.inputFieldCustom}
+                            className={classes.searchFieldCustom}
                             fullWidth={true}
                         />
                         <div className={classes.productAmount}>
@@ -227,8 +238,8 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                                 <Field
                                     label="Наименование"
                                     name="giftProduct"
-                                    component={ProductCustomSearchField}
-                                    className={classes.inputFieldCustom}
+                                    component={ProductCustomGiftSearchField}
+                                    className={classes.searchFieldCustom}
                                     fullWidth={true}
                                 />
                             </div>
@@ -289,8 +300,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
-                            товар?
+                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?
                         </div>
                     </div>
                 </div>

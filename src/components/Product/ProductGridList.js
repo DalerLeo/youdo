@@ -114,7 +114,7 @@ const ProductGridList = enhance((props) => {
     const productList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const codeProduct = _.get(item, 'code') || 'не установлено'
+        const codeProduct = _.get(item, 'code') || 'не установлен'
         const type = _.get(item, ['type', 'name']) || 'N/A'
         const image = _.get(item, ['image', 'file'])
         const measurement = _.get(item, ['measurement', 'name']) || ''

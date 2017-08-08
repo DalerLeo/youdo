@@ -195,10 +195,10 @@ const enhance = compose(
             const cost = numberWithoutSpaces(_.get(props, ['editCost', 'input', 'value']))
             _.map(products, (item, index) => {
                 if (index === listIndex) {
-                    if (numberWithoutSpaces(amount) > ZERO) {
+                    if (!_.isEmpty(amount)) {
                         item.amount = numberWithoutSpaces(amount)
                     }
-                    if (numberWithoutSpaces(cost) > ZERO) {
+                    if (!_.isEmpty(cost)) {
                         item.cost = numberWithoutSpaces(cost)
                     }
                 }

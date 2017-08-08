@@ -165,9 +165,10 @@ const enhance = compose(
             flexBasis: '70%',
             maxWidth: '70%',
             padding: '20px 30px',
-            maxHeight: '694px',
+            maxHeight: '600px',
             minHeight: '500px',
-            overflow: 'auto'
+            overflowY: 'auto',
+            overflowX: 'hidden'
         },
         halfField: {
             width: '50%'
@@ -308,10 +309,10 @@ const PricesCreateDialog = enhance((props) => {
                             <div className={classes.rightOrderPart}>
                                 {isDiscount
                                     ? <Fields
-                                        names={['products', 'product', 'amount']}
+                                        names={['products', 'product', 'amount', 'type']}
                                         component={PricesListProductField}/>
                                     : <Fields
-                                        names={['bonusProducts', 'bonusProduct', 'bonusAmount', 'giftProduct', 'giftAmount']}
+                                        names={['bonusProducts', 'bonusProduct', 'bonusAmount', 'giftProduct', 'giftAmount', 'bonusType', 'giftType']}
                                         component={PricesBonusProductField}/>
                                     }
                             </div>
