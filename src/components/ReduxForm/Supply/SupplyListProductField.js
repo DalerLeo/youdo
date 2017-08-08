@@ -9,6 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import numberFormat from '../../../helpers/numberFormat'
+import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
 import {
     Table,
     TableBody,
@@ -158,8 +159,8 @@ const enhance = compose(
     withHandlers({
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
-            const amount = _.get(props, ['amount', 'input', 'value'])
-            const cost = _.get(props, ['cost', 'input', 'value'])
+            const amount = numberWithoutSpaces(_.get(props, ['amount', 'input', 'value']))
+            const cost = numberWithoutSpaces(_.get(props, ['cost', 'input', 'value']))
             const currency = _.get(props, ['currency'])
             const measurement = _.get(props, ['measurement'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
@@ -169,8 +170,8 @@ const enhance = compose(
                 let has = false
                 _.map(products, (item) => {
                     if (_.get(item, 'product') === product) {
-                        item.amount = _.toNumber(amount)
-                        item.cost = _.toNumber(cost)
+                        item.amount = numberWithoutSpaces(amount)
+                        item.cost = numberWithoutSpaces(cost)
                         has = true
                     }
                 })
@@ -190,15 +191,15 @@ const enhance = compose(
         handleEdit: props => (listIndex) => {
             const {setEditItem} = props
             const products = _.get(props, ['products', 'input', 'value'])
-            const amount = _.get(props, ['editAmount', 'input', 'value'])
-            const cost = _.get(props, ['editCost', 'input', 'value'])
+            const amount = numberWithoutSpaces(_.get(props, ['editAmount', 'input', 'value']))
+            const cost = numberWithoutSpaces(_.get(props, ['editCost', 'input', 'value']))
             _.map(products, (item, index) => {
                 if (index === listIndex) {
-                    if (_.toNumber(amount) > ZERO) {
-                        item.amount = _.toNumber(amount)
+                    if (numberWithoutSpaces(amount) > ZERO) {
+                        item.amount = numberWithoutSpaces(amount)
                     }
-                    if (_.toNumber(cost) > ZERO) {
-                        item.cost = _.toNumber(cost)
+                    if (numberWithoutSpaces(cost) > ZERO) {
+                        item.cost = numberWithoutSpaces(cost)
                     }
                 }
             })

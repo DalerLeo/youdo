@@ -8,7 +8,7 @@ export const createSerializer = (data) => {
     const phoneNumber = _.get(data, 'phoneNumber')
     const image = _.get(data, 'image')
     const password = _.get(data, 'password')
-    const isActive = _.get(data, 'isActive')
+    const isActive = !_.isUndefined(_.get(data, 'isActive'))
     const groups = _.filter(_.get(data, ['groups']), (o) => {
         return _.get(o, 'selected')
     })
@@ -23,7 +23,7 @@ export const createSerializer = (data) => {
         return val.id
     })
 
-    const markets = _.filter(_.get(data, ['markets']), (o) => {
+    const markets = _.filter(_.get(data, ['types']), (o) => {
         return _.get(o, 'selected')
     })
 
@@ -41,7 +41,7 @@ export const createSerializer = (data) => {
         'groups': newGroup,
         'is_active': isActive,
         'stocks': newStock,
-        'marketTypes': newMarket
+        'types': newMarket
     }
 }
 

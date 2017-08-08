@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import moment from 'moment'
 
 export const createSerializer = (data) => {
@@ -9,10 +10,9 @@ export const createSerializer = (data) => {
     const comment = _.get(data, ['comment'])
     const contact = _.get(data, ['contact'])
     const products = _.map(_.get(data, ['products']), (item) => {
-        const amount = _.get(item, 'amount')
-        const itemCost = _.get(item, 'cost')
-        const SECOND = 2
-        const summary = (_.toNumber(amount) * _.toNumber(itemCost)).toFixed(SECOND)
+        const amount = numberWithoutSpaces(_.get(item, 'amount'))
+        const itemCost = numberWithoutSpaces(_.get(item, 'cost'))
+        const summary = numberWithoutSpaces(_.toNumber(amount) * _.toNumber(itemCost))
         const product = _.get(item, ['product', 'value', 'id'])
         return {
             amount: amount,
@@ -40,9 +40,9 @@ export const updateSerializer = (data, id) => {
     const contact = _.get(data, ['contact'])
     const products = _.map(_.get(data, ['products']), (item) => {
         const spId = _.get(item, 'id')
-        const amount = _.get(item, 'amount')
-        const itemCost = _.get(item, 'cost')
-        const summary = _.toNumber(amount) * _.toNumber(itemCost)
+        const amount = numberWithoutSpaces(_.get(item, 'amount'))
+        const itemCost = numberWithoutSpaces(_.get(item, 'cost'))
+        const summary = numberWithoutSpaces(_.toNumber(amount) * _.toNumber(itemCost))
         const product = _.get(item, ['product', 'value', 'id'])
         return {
             id: spId,

@@ -260,23 +260,23 @@ const UsersList = enhance((props) => {
     const isSelectedGroups = _.map(_.get(groupList, 'results'), (obj) => {
         const userSelectedGroups = _.find(_.get(detail, 'groups'), {'id': obj.id})
         const userSelectedGrId = _.get(userSelectedGroups, 'id')
-        if (userSelectedGrId === obj.id) {
+        if (!openCreateDialog && userSelectedGrId === obj.id) {
             return {id: obj.id, selected: true}
         }
         return {id: obj.id, selected: false}
     })
 
     const isSelectedStocks = _.map(_.get(stockList, 'results'), (obj) => {
-        const userSelectedStock = _.find(_.get(detail, 'stock'), {'id': obj.id})
-        if (_.get(userSelectedStock, 'id') === obj.id) {
+        const userSelectedStock = _.find(_.get(detail, 'stocks'), {'id': obj.id})
+        if (!openCreateDialog && _.get(userSelectedStock, 'id') === obj.id) {
             return {id: obj.id, selected: true}
         }
         return {id: obj.id, selected: false}
     })
 
     const isSelectedMarkets = _.map(_.get(marketList, 'results'), (obj) => {
-        const userSelectedMarkets = _.find(_.get(detail, 'market'), {'id': obj.id})
-        if (_.get(userSelectedMarkets, 'id') === obj.id) {
+        const userSelectedMarkets = _.find(_.get(detail, 'types'), {'id': obj.id})
+        if (!openCreateDialog && _.get(userSelectedMarkets, 'id') === obj.id) {
             return {id: obj.id, selected: true}
         }
         return {id: obj.id, selected: false}
@@ -287,7 +287,7 @@ const UsersList = enhance((props) => {
             return {
                 groups: isSelectedGroups,
                 stocks: isSelectedStocks,
-                markets: isSelectedMarkets
+                types: isSelectedMarkets
             }
         })(),
         createLoading,
@@ -307,7 +307,11 @@ const UsersList = enhance((props) => {
     const updateDialog = {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
-                return {}
+                return {
+                    groups: isSelectedGroups,
+                    stocks: isSelectedStocks,
+                    types: isSelectedMarkets
+                }
             }
 
             return {
@@ -317,7 +321,7 @@ const UsersList = enhance((props) => {
                 phoneNumber: _.get(detail, 'phoneNumber'),
                 groups: isSelectedGroups,
                 stocks: isSelectedStocks,
-                markets: isSelectedMarkets,
+                types: isSelectedMarkets,
                 region: _.get(detail, 'region'),
                 password: _.get(detail, 'password'),
                 typeUser: _.get(detail, 'typeUser'),

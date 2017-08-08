@@ -248,7 +248,7 @@ const UsersCreateDialog = enhance((props) => {
                                 return (
                                     <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
                                         <Field
-                                            name={'markets[' + index + '][selected]'}
+                                            name={'types[' + index + '][selected]'}
                                             component={CheckBox}
                                             label={name}/>
                                     </div>
