@@ -82,8 +82,8 @@ export const shopDeleteAction = (id) => {
     }
 }
 
-export const shopUpdateAction = (id, formValues, location) => {
-    const requestData = serializers.updateSerializer(formValues, location)
+export const shopUpdateAction = (id, formValues, location, detail) => {
+    const requestData = serializers.updateSerializer(formValues, location, detail)
     const payload = axios()
         .put(sprintf(API.SHOP_ITEM, id), requestData)
         .then((response) => {

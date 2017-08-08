@@ -26,7 +26,6 @@ import {TextField} from '../../ReduxForm'
 import SupplyProductTypeSearchField from '../../ReduxForm/Supply/SupplyProductTypeSearchField'
 import Check from 'material-ui/svg-icons/navigation/check'
 
-const ZERO = 0
 const enhance = compose(
     injectSheet({
         wrapper: {
