@@ -36,15 +36,15 @@ const listHeader = [
     {
         sorting: true,
         alignRight: true,
-        name: 'transferBalance',
-        title: 'Денежных баланс',
+        name: 'cashBalance',
+        title: 'Баланс нал',
         xs: 2
     },
     {
         sorting: true,
         alignRight: true,
-        name: 'cashBalance',
-        title: 'Баланс переноса',
+        name: 'transferBalance',
+        title: 'Баланс переч',
         xs: 2
     }
 ]
@@ -53,6 +53,14 @@ const enhance = compose(
     injectSheet({
         rightAlign: {
             textAlign: 'right'
+        },
+        red: {
+            color: '#e27676',
+            cursor: 'pointer'
+        },
+        green: {
+            color: '#92ce95',
+            cursor: 'pointer'
         }
     })
 )
@@ -96,16 +104,20 @@ const ClientBlanceGridList = enhance((props) => {
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={2}>{orders}</Col>
                 <Col xs={2}
-                     className={classes.rightAlign}
-                     style={{color: '#92ce95'}}
-                     onTouchTap={() => { infoDialog.handleOpenInfoDialog(id, ZERO) }}>
-                    {numberFormat(cashBalance)} {currentCurrency}
+                     className={classes.rightAlign}>
+                    <span
+                        className={cashBalance >= ZERO ? classes.green : classes.red}
+                        onClick={() => { infoDialog.handleOpenInfoDialog(id, ZERO) }}>
+                        {numberFormat(cashBalance, currentCurrency)}
+                    </span>
                 </Col>
                 <Col xs={2}
-                     className={classes.rightAlign}
-                     style={{color: '#e27676'}}
-                     onTouchTap={() => { infoDialog.handleOpenInfoDialog(id, ONE) }}>
-                    {numberFormat(transferBalance)} {currentCurrency}
+                     className={classes.rightAlign}>
+                    <span
+                        className={transferBalance >= ZERO ? classes.green : classes.red}
+                        onClick={() => { infoDialog.handleOpenInfoDialog(id, ONE) }}>
+                        {numberFormat(transferBalance, currentCurrency)}
+                    </span>
                 </Col>
             </Row>
         )
