@@ -20,14 +20,6 @@ import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat.js'
 import getConfig from '../../helpers/getConfig'
 import NotFound from '../Images/not-found.png'
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn
-} from 'material-ui/Table'
 
 export const STAT_PRODUCT_MOVE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -58,8 +50,7 @@ const enhance = compose(
             height: 'calc(100% - 40px)',
             '& > div:nth-child(3)': {
                 marginTop: '10px',
-                borderTop: '1px #efefef solid',
-                borderBottom: '1px #efefef solid'
+                borderTop: '1px #efefef solid'
             },
             '& .row': {
                 margin: '0 !important'
@@ -67,6 +58,8 @@ const enhance = compose(
         },
         tableWrapper: {
             display: 'flex',
+            margin: '0 -30px',
+            paddingLeft: '30px',
             '& > div:first-child': {
                 zIndex: '20',
                 boxShadow: '5px 0 8px -3px #CCC',
@@ -204,52 +197,53 @@ const enhance = compose(
                 fontWeight: '600'
             }
         },
-        tableTitle: {
-            fontWeight: '600',
-            color: '#333 !important',
-            textAlign: 'left',
-            borderRight: 'solid 1px #efefef',
-            minWidth: '265px !important',
-            maxWidth: '400px !important'
-        },
-        tableIDTitle: {
-            extend: 'tableTitle',
-            minWidth: '120px !important',
-            maxWidth: '200px !important',
-            width: '120px'
-
-        },
-        tableRowHead: {},
-        tableDoubleRowHead: {
-            height: '38px !important',
-            '& th': {
-                height: '38px !important'
-            }
-        },
         borderRight: {
             borderRight: 'solid 1px #efefef'
-        },
-        detailTables: {
-            display: 'flex',
-            '& > div:nth-child(1)': {
-                extend: 'borderRight',
-                minWidth: '120px',
-                maxWidth: '200px'
-            }
-        },
-        title: {
-            color: 'red'
         },
         tableBody: {
             '& > tr > td:first-child': {
                 width: '120px'
+            },
+            '& tr:first-child > td:first-child': {
+                verticalAlign: 'bottom',
+                paddingBottom: '15px'
             }
         },
         mainTable: {
             width: '100%',
+            color: '#666',
             borderCollapse: 'collapse',
             '& tr, td': {
-                border: '1px #efefef solid'
+                border: '1px #efefef solid',
+                height: '40px'
+            },
+            '& td': {
+                padding: '0 30px'
+            }
+        },
+        title: {
+            fontWeight: '600'
+        },
+        leftTable: {
+            display: 'table',
+            width: '100%',
+            '& > div': {
+                display: 'table-row',
+                height: '40px',
+                '&:first-child': {
+                    height: '81px',
+                    verticalAlign: 'bottom',
+                    '& span': {
+                        verticalAlign: 'bottom',
+                        padding: '15px 0',
+                        borderTop: '1px #efefef solid',
+                        borderBottom: '1px #efefef solid'
+                    }
+                },
+                '& span': {
+                    display: 'table-cell',
+                    verticalAlign: 'middle'
+                }
             }
         }
 
@@ -287,61 +281,36 @@ const StatProductMoveGridList = enhance((props) => {
     }
 
     const tableLeft = (
-        <Table
-            height={'300px'}
-            fixedHeader={true}
-            fixedFooter={false}
-            multiSelectable={false}>
-            <TableHeader
-                displaySelectAll={false}
-                adjustForCheckbox={false}
-                enableSelectAll={false}
-                className={classes.title}>
-                <TableRow className={classes.tableRowHead}>
-                    <TableHeaderColumn
-                        className={classes.tableTitle}>Товар</TableHeaderColumn>
-                </TableRow>
-            </TableHeader>
-            <TableBody
-                displayRowCheckbox={false}
-                deselectOnClickaway={false}
-                showRowHover={false}
-                stripedRows={true}>
-                <TableRow className={classes.tableRow}>
-                    <TableRowColumn>1</TableRowColumn>
-                </TableRow>
-                <TableRow className={classes.tableRow}>
-                    <TableRowColumn>2</TableRowColumn>
-                </TableRow>
-                <TableRow className={classes.tableRow}>
-                    <TableRowColumn>3</TableRowColumn>
-                </TableRow>
-            </TableBody>
-        </Table>
+        <div className={classes.leftTable}>
+            <div><span>Товар</span></div>
+            <div><span>Наименование товара</span></div>
+            <div><span>Наименование товара</span></div>
+        </div>
     )
 
     const tableList = (
-        <table height='300px' className={classes.mainTable}>
+        <table className={classes.mainTable}>
             <tbody className={classes.tableBody}>
             <tr className={classes.title}>
-                <td rowSpan={2} className={classes.tableIDTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
+                <td rowSpan={2}>Ostatok</td>
+                <td colSpan={2}>Ostatok</td>
+                <td colSpan={2}>Ostatok</td>
+                <td colSpan={2}>Ostatok</td>
+                <td colSpan={2}>Ostatok</td>
+
             </tr>
-            <tr>
-                <td className={classes.tableTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
-                <td className={classes.tableTitle}>Ostatok</td>
+            <tr className={classes.title}>
+                <td>Ostatok</td>
+                <td>Ostatok</td>
+                <td>Ostatok</td>
+                <td>Ostatok</td>
+                <td>Ostatok</td>
+                <td>Ostatok</td>
+                <td>Ostatok</td>
+                <td>Ostatok</td>
             </tr>
             <tr className={classes.tableRow}>
-                <td colSpan={2}>1</td>
+                <td>1</td>
                 <td>3USD</td>
                 <td>4</td>
                 <td>4</td>
@@ -352,7 +321,7 @@ const StatProductMoveGridList = enhance((props) => {
                 <td>4</td>
             </tr>
             <tr className={classes.tableRow}>
-                <td colSpan={2}>1</td>
+                <td>1</td>
                 <td>3USD</td>
                 <td>4</td>
                 <td>4</td>
@@ -466,9 +435,7 @@ const StatProductMoveGridList = enhance((props) => {
                                 <Pagination filter={filter}/>
                             </div>
                             <div className={classes.tableWrapper}>
-                                <div>
-                                    {tableLeft}
-                                </div>
+                                {tableLeft}
                                 <div>{tableList}</div>
                             </div>
 
