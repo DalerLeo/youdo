@@ -228,22 +228,6 @@ const enhance = compose(
 
             })
         },
-
-        handleSubmitTabTransferFilterDialog: props => () => {
-            const {filter, tabTransferFilterForm} = props
-            const stock = _.get(tabTransferFilterForm, ['values', 'stock', 'value']) || null
-            const type = _.get(tabTransferFilterForm, ['values', 'type', 'value']) || null
-            const fromDate = _.get(tabTransferFilterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(tabTransferFilterForm, ['values', 'date', 'toDate']) || null
-            filter.filterBy({
-                [HISTORY_FILTER_OPEN]: false,
-                [HISTORY_FILTER_KEY.STOCK]: stock,
-                [HISTORY_FILTER_KEY.TYPE]: type,
-                [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [HISTORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
-
-            })
-        },
         handleOpenConfirmDialog: props => (status) => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: status})})
