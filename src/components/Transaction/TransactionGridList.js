@@ -1,11 +1,11 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
+import Tooltip from '../ToolTip'
 import GridList from '../GridList'
 import Container from '../Container'
 import TransactionFilterForm from './TransactionFilterForm'
@@ -25,7 +25,7 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import numberFormat from '../../helpers/numberFormat'
-
+import dateFormat from '../../helpers/dateFormat'
 const listHeader = [
     {
         sorting: true,
@@ -35,9 +35,15 @@ const listHeader = [
     },
     {
         sorting: true,
+        name: 'client',
+        title: 'Клиент',
+        xs: 2
+    },
+    {
+        sorting: true,
         name: 'comment',
         title: 'Описание',
-        xs: 5
+        xs: 4
     },
     {
         sorting: true,
@@ -50,7 +56,7 @@ const listHeader = [
         name: 'amount',
         alignRight: true,
         title: 'Сумма',
-        xs: 3
+        xs: 2
     }
 ]
 
@@ -135,6 +141,13 @@ const enhance = compose(
         },
         red: {
             color: '#e57373 !important'
+        },
+        label: {
+            fontWeight: '600'
+        },
+        actionButtons: {
+            pointerEvents: 'none',
+            opacity: '0.4'
         }
     }),
 )
@@ -178,8 +191,10 @@ const TransactionGridList = enhance((props) => {
         const type = _.get(item, 'amount') || 'N/A'
         const cashbox = _.get(item, 'cashbox') || 'N/A'
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
+        const client = _.get(item, ['client', 'name'])
+        const expanseCategory = _.get(item, 'expanseCategory')
 
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
@@ -189,9 +204,17 @@ const TransactionGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={5}>{comment}</Col>
+                <Col xs={2}>{client}</Col>
+                <Col xs={4}>
+                    {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : null}
+                    <div>{comment}</div>
+                </Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col style={{textAlign: 'right'}} className={type >= zero ? classes.green : classes.red} xs={3}>{amount} {currentCurrency}</Col>
+                <Col xs={2}
+                     style={{textAlign: 'right'}}
+                     className={type >= zero ? classes.green : classes.red}>
+                    {amount} {currentCurrency}
+                </Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -301,6 +324,15 @@ const TransactionGridList = enhance((props) => {
                             <div className={classes.buttons}>
                                 <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>
 
+                                { _.get(cashboxData, 'cashboxId') === AllCashboxId &&
+                                    <Tooltip position="bottom" text="Пожалуйста выберите кассу">
+                                        <div className={classes.actionButtons}>
+                                        <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
+                                        <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
+                                        <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
+                                        </div>
+                                    </Tooltip>
+                                }
                                 { _.get(cashboxData, 'cashboxId') !== AllCashboxId &&
                                     <div>
                                         <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>

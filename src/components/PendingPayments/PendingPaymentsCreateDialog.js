@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
+import {connect} from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
@@ -18,7 +19,7 @@ import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
 import getConfig from '../../helpers/getConfig'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
-
+const INDIVIDUAL = 3
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -45,7 +46,10 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         info: {
-            padding: '20px 0'
+            padding: '20px 0',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline'
         },
         infoHeader: {
             fontWeight: '600',
@@ -57,16 +61,31 @@ const enhance = compose(
         },
         inContent: {
             maxHeight: '52vh'
+        },
+        cashbox: {
+            position: 'relative'
+        },
+        customCurrency: {
+            position: 'absolute',
+            bottom: '8px',
+            right: '32px'
         }
     })),
     reduxForm({
         form: 'PendingPaymentsCreateForm',
         enableReinitialize: true
-    })
+    }),
+    connect((state) => {
+        const currencyRate = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'now'])
+
+        return {
+            currencyRate
+        }
+    }),
 )
 
 const PendingPaymentsCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, detailData, classes} = props
+    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ONE = 1
     const id = _.get(detailData, 'id')
@@ -83,7 +102,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '350px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '450px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -104,11 +123,11 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     <div><span className={classes.infoSummary}>Клиент:</span> {clientName}</div>
                                     <div><span className={classes.infoSummary}>Магазин:</span> {marketName}</div>
                                     <div><span className={classes.infoSummary}>Заказ №:</span> {id}</div>
-                                    <div><span className={classes.infoSummary}>Тип оплаты:</span> {paymentTypeOutput}</div>
                                 </div>
-                                <div className={classes.infoSummary}>
-                                    <div>Сумма заказа:<span style={{marginLeft: '10px'}}>{totalPrice}</span></div>
-                                    <div>Остаток:<span style={{marginLeft: '10px'}}>{totalBalance}</span></div>
+                                <div className={classes.infoHeader}>
+                                    <div><span className={classes.infoSummary}>Тип оплаты:</span> {paymentTypeOutput}</div>
+                                    <div><span className={classes.infoSummary}>Сумма заказа:</span> {totalPrice}</div>
+                                    <div><span className={classes.infoSummary}>Остаток: </span> {totalBalance} </div>
                                 </div>
                             </div>
                             <div className={classes.cashbox}>
@@ -139,12 +158,24 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     />
                                     <CashboxCurrencyField/>
                                 </div>
+
                                 <Field
                                     name="now"
                                     style={{marginTop: '10px'}}
                                     component={PendingPaymentRadioButton}
                                     label="Текущий курс"
                                 />
+                                {_.toInteger(currencyRate) === INDIVIDUAL
+                                    ? <div className={classes.customCurrency}>
+                                        <Field
+                                            component={TextField}
+                                            label="Введите курс"
+                                            normalize={normalizeNumber}
+                                            fullWidth={true}
+                                            className={classes.inputFieldCustom}
+                                            name="custom"/>
+                                    </div> : null}
+
                             </div>
                         </div>
                     </div>

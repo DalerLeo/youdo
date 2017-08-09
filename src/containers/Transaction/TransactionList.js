@@ -156,11 +156,13 @@ const enhance = compose(
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const categoryExpense = _.get(filterForm, ['values', 'categoryExpense', 'value']) || null
 
             filter.filterBy({
                 [TRANSACTION_FILTER_OPEN]: false,
                 [TRANSACTION_FILTER_KEY.TYPE]: type,
+                [TRANSACTION_FILTER_KEY.CLIENT]: client,
                 [TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: categoryExpense,
                 [TRANSACTION_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [TRANSACTION_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')

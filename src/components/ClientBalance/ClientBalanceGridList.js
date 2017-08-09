@@ -44,7 +44,7 @@ const listHeader = [
         sorting: true,
         alignRight: true,
         name: 'transferBalance',
-        title: 'Баланс переч',
+        title: 'Баланс переч.',
         xs: 2
     }
 ]
@@ -75,7 +75,6 @@ const ClientBlanceGridList = enhance((props) => {
         listData,
         detailData
     } = props
-
     const ZERO = 0
     const ONE = 1
     const clientBalanceFilterDialog = (
@@ -131,6 +130,7 @@ const ClientBlanceGridList = enhance((props) => {
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
     const balance = _.get(infoDialog, 'type') === ZERO ? _.get(client, 'cashBalance') : _.get(client, 'transferBalance')
+    const paymentType = _.get(infoDialog, 'type') === ZERO ? 'Нал' : 'Переч.'
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
@@ -150,6 +150,7 @@ const ClientBlanceGridList = enhance((props) => {
                 filterItem={filterItem}
                 name={_.get(client, 'name')}
                 balance={balance}
+                paymentType={paymentType}
             />
         </Container>
     )
