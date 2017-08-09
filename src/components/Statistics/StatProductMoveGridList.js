@@ -70,7 +70,7 @@ const enhance = compose(
             '& > div:first-child': {
                 flexBasis: '20%',
                 zIndex: '20',
-                boxShadow: '8px 4px 17px #CCC'
+                boxShadow: '10px 0 5px -2px #CCC'
             },
             '& > div:last-child': {
                 flexBasis: '80%'
