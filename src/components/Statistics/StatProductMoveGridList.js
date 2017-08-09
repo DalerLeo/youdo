@@ -70,10 +70,12 @@ const enhance = compose(
             '& > div:first-child': {
                 flexBasis: '20%',
                 zIndex: '20',
-                boxShadow: '10px 0 5px -2px #CCC'
+                boxShadow: '5px 0 8px -3px #CCC'
             },
             '& > div:last-child': {
-                flexBasis: '80%'
+                flexBasis: '80%',
+                overflowX: 'auto',
+                overflowY: 'hidden'
             }
         },
         balanceInfo: {
@@ -206,12 +208,61 @@ const enhance = compose(
             fontWeight: '600',
             color: '#333 !important',
             textAlign: 'left',
-            padding: '0 !important'
+            borderRight: 'solid 1px #efefef',
+            minWidth: '265px !important',
+            maxWidth: '400px !important'
+        },
+        tableIDTitle: {
+            extend: 'tableTitle',
+            minWidth: '120px !important',
+            maxWidth: '200px !important',
+            width: '120px'
+
         },
         tableRowHead: {
+            height: '76px !important',
             '& th:first-child': {
 
             }
+        },
+        tableDoubleRowHead: {
+            height: '38px !important',
+            '& th': {
+                height: '38px !important'
+            }
+        },
+        borderRight: {
+            borderRight: 'solid 1px #efefef'
+        },
+        detailTables: {
+            display: 'flex',
+            '& > div:nth-child(1)': {
+                extend: 'borderRight',
+                minWidth: '120px',
+                maxWidth: '200px'
+            },
+            '& > div:nth-child(2)': {
+                extend: 'borderRight',
+                minWidth: '265px',
+                maxWidth: '400px'
+            },
+            '& > div:nth-child(3)': {
+                extend: 'borderRight',
+                minWidth: '265px',
+                maxWidth: '400px'
+            },
+            '& > div:nth-child(4)': {
+                extend: 'borderRight',
+                minWidth: '265px',
+                maxWidth: '400px'
+            },
+            '& > div:nth-child(5)': {
+                minWidth: '265px',
+                maxWidth: '400px'
+            }
+        },
+        title: {
+            color: 'red'
         }
 
     }),
@@ -280,7 +331,8 @@ const StatProductMoveGridList = enhance((props) => {
             </TableBody>
         </Table>
     )
-    const tableList = (
+
+    const tableId = (
         <Table
             height={'300px'}
             fixedHeader={true}
@@ -293,10 +345,7 @@ const StatProductMoveGridList = enhance((props) => {
                 className={classes.title}>
                 <TableRow className={classes.tableRowHead}>
                     <TableHeaderColumn
-                        className={classes.tableTitle}>Товар</TableHeaderColumn>
-                    <TableHeaderColumn className={classes.tableTitle}>ID товара</TableHeaderColumn>
-                    <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                    <TableHeaderColumn className={classes.tableTitle}>Стоимост</TableHeaderColumn>
+                        className={classes.tableTitle}>ID</TableHeaderColumn>
                 </TableRow>
             </TableHeader>
             <TableBody
@@ -306,39 +355,113 @@ const StatProductMoveGridList = enhance((props) => {
                 stripedRows={true}>
                 <TableRow className={classes.tableRow}>
                     <TableRowColumn>1</TableRowColumn>
-                    <TableRowColumn>
-                        2
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        3 USD
-                    </TableRowColumn>
-                    <TableRowColumn style={{textAlign: 'right'}}>
-                        4
-                    </TableRowColumn>
                 </TableRow>
                 <TableRow className={classes.tableRow}>
-                    <TableRowColumn>1</TableRowColumn>
-                    <TableRowColumn>
-                        2
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        3 USD
-                    </TableRowColumn>
-                    <TableRowColumn style={{textAlign: 'right'}}>
-                        4
-                    </TableRowColumn>
+                    <TableRowColumn>2</TableRowColumn>
                 </TableRow>
                 <TableRow className={classes.tableRow}>
+                    <TableRowColumn>3</TableRowColumn>
+                </TableRow>
+            </TableBody>
+        </Table>
+    )
+
+    const tableRemainder = (
+        <Table
+            height={'300px'}
+            fixedHeader={true}
+            fixedFooter={false}
+            selectable={false}>
+            <TableHeader
+                displaySelectAll={false}
+                adjustForCheckbox={false}
+                enableSelectAll={false}
+                className={classes.title}>
+                <TableRow className={classes.tableDoubleRowHead}>
+                    <TableHeaderColumn colSpan={2} className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                </TableRow>
+                <TableRow className={classes.tableDoubleRowHead}>
+                    <TableHeaderColumn
+                        className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn
+                        className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                </TableRow>
+            </TableHeader>
+            <TableBody
+                displayRowCheckbox={false}
+                deselectOnClickaway={false}
+                showRowHover={false}
+                stripedRows={true}>
+                <TableRow className={classes.tableRow}>
                     <TableRowColumn>1</TableRowColumn>
-                    <TableRowColumn>
-                        2
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        3 USD
-                    </TableRowColumn>
-                    <TableRowColumn style={{textAlign: 'right'}}>
-                        4
-                    </TableRowColumn>
+                    <TableRowColumn>1</TableRowColumn>
+                </TableRow>
+                <TableRow className={classes.tableRow}>
+                    <TableRowColumn>2</TableRowColumn>
+                    <TableRowColumn>2</TableRowColumn>
+                </TableRow>
+                <TableRow className={classes.tableRow}>
+                    <TableRowColumn>3</TableRowColumn>
+                    <TableRowColumn>3</TableRowColumn>
+                </TableRow>
+            </TableBody>
+        </Table>
+    )
+    const tableList = (
+        <Table
+            height={'300px'}
+            fixedHeader={true}
+            fixedFooter={false}
+            multiSelectable={false}>
+            <TableHeader
+                displaySelectAll={false}
+                adjustForCheckbox={false}
+                enableSelectAll={false}
+                className={classes.title}>
+                <TableRow>
+                    <TableHeaderColumn colSpan={2} rowSpan={2} className={classes.tableIDTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn colSpan={2} className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn colSpan={2} className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn colSpan={2} className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn colSpan={2} className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                </TableRow>
+                <TableRow>
+                    <TableHeaderColumn className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                    <TableHeaderColumn className={classes.tableTitle}>Ostatok</TableHeaderColumn>
+                </TableRow>
+            </TableHeader>
+            <TableBody
+                displayRowCheckbox={false}
+                deselectOnClickaway={false}
+                showRowHover={false}
+                stripedRows={true}>
+                <TableRow className={classes.tableRow}>
+                    <TableRowColumn colSpan={2}>1</TableRowColumn>
+                    <TableRowColumn>3USD</TableRowColumn>
+                    <TableRowColumn>4</TableRowColumn>
+                    <TableRowColumn>4</TableRowColumn>
+                    <TableRowColumn>1</TableRowColumn>
+                    <TableRowColumn>2</TableRowColumn>
+                    <TableRowColumn>3USD</TableRowColumn>
+                    <TableRowColumn>4</TableRowColumn>
+                    <TableRowColumn>4</TableRowColumn>
+                </TableRow>
+                <TableRow className={classes.tableRow}>
+                    <TableRowColumn colSpan={2}>1</TableRowColumn>
+                    <TableRowColumn>3USD</TableRowColumn>
+                    <TableRowColumn>4</TableRowColumn>
+                    <TableRowColumn>4</TableRowColumn>
+                    <TableRowColumn>1</TableRowColumn>
+                    <TableRowColumn>2</TableRowColumn>
+                    <TableRowColumn>3USD</TableRowColumn>
+                    <TableRowColumn>4</TableRowColumn>
+                    <TableRowColumn>4</TableRowColumn>
                 </TableRow>
             </TableBody>
         </Table>
@@ -434,13 +557,16 @@ const StatProductMoveGridList = enhance((props) => {
                                 <Pagination filter={filter}/>
                             </div>
                             <div className={classes.tableWrapper}>
-                                <div>
+                                <div style={{minWidth: '255px'}}>
                                     {tableLeft}
                                 </div>
-                                <div>
-                                    {tableList}
+                                <div className={classes.detailTables}>
+                                    <div>{tableId}</div>
+
                                 </div>
                             </div>
+                            {tableRemainder}
+                            {tableList}
                             {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
                                 <div>По вашему запросу ничего не найдено</div>
                             </div>

@@ -9,7 +9,7 @@ import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
-import {CashboxSearchField} from '../ReduxForm'
+import AcceptClientTransactionCashBoxSearchField from '../ReduxForm/Cashbox/AcceptClientTransactionCashBoxSearchField'
 import FlatButton from 'material-ui/FlatButton'
 import numberFormat from '../../helpers/numberFormat'
 
@@ -144,8 +144,9 @@ const AcceptClientTransactionDialog = enhance((props) => {
     const {open, onClose, classes, loading, handleSubmit, data} = props
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(data, ['sum'])).catch(validate))
     const user = _.get(data, ['user', 'name'])
-    const currency = _.get(data, ['currency', 'name'])
-    const amount = numberFormat(_.get(data, ['sum']), currency)
+    const currencyName = _.get(data, ['currency', 'name'])
+    const currencyId = _.get(data, ['currency', 'id'])
+    const amount = numberFormat(_.get(data, ['sum']), currencyName)
     return (
         <Dialog
             modal={true}
@@ -171,7 +172,8 @@ const AcceptClientTransactionDialog = enhance((props) => {
                             <div className={classes.list}>
                                 <Field
                                     name="cashBox"
-                                    component={CashboxSearchField}
+                                    component={AcceptClientTransactionCashBoxSearchField}
+                                    currency={currencyId}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}
                                     label="Кассы"
