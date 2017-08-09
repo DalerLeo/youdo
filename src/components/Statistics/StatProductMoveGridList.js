@@ -253,7 +253,7 @@ const enhance = compose(
             }
         },
         tableRow: {
-            '&:nth-child(even)':{
+            '&:nth-child(even)': {
                 backgroundColor: '#f9f9f9'
             }
         }
