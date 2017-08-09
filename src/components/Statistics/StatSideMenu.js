@@ -18,7 +18,11 @@ const enhance = compose(
             },
             '& ul': {
                 fontWeight: 'bold',
-                marginBottom: '20px'
+                marginBottom: '20px',
+                '& > a': {
+                    fontWeight: 'bold',
+                    color: '#333'
+                }
             },
             '& li': {
                 paddingLeft: '20px',
@@ -30,10 +34,10 @@ const enhance = compose(
             }
         },
         active: {
-            color: '#12aaeb'
+            color: '#12aaeb !important'
         },
         simple: {
-            color: '#333'
+            color: '#333 !important'
         }
     }),
 )
@@ -45,7 +49,6 @@ const StatSideMenu = enhance((props) => {
             section: 'Продажи',
             url: ROUTES.STATISTICS_SALES_URL,
             childs: [
-                {name: 'Общее', url: ROUTES.STATISTICS_SALES_URL},
                 {name: 'Агенты', url: ROUTES.STATISTICS_AGENT_URL},
                 {name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL},
                 {name: 'Магазины', url: ROUTES.STATISTICS_MARKET_URL}
@@ -55,7 +58,6 @@ const StatSideMenu = enhance((props) => {
             section: 'Финансы',
             url: ROUTES.STATISTICS_FINANCE_URL,
             childs: [
-                {name: 'Общее', url: ROUTES.STATISTICS_FINANCE_URL},
                 {name: 'Доход', url: ROUTES.STATISTICS_INCOME_URL},
                 {name: 'Расход', url: ROUTES.STATISTICS_OUTCOME_URL},
                 {name: 'Задолжники', url: ROUTES.STATISTICS_DEBTORS_URL},
@@ -68,8 +70,13 @@ const StatSideMenu = enhance((props) => {
             url: ROUTES.STATISTICS_STOCK_URL,
             childs: [
                 {name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL},
-                {name: 'Движения товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL}
+                {name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL}
             ]
+        },
+        {
+            section: 'Генеральный отчет',
+            url: ROUTES.STATISTICS_REPORT_URL,
+            childs: []
         }
     ]
 
@@ -78,7 +85,7 @@ const StatSideMenu = enhance((props) => {
             {_.map(statMenus, (item, index) => {
                 return (
                     <ul key={index}>
-                        {item.section}
+                        <Link to={item.url} className={(item.url === currentUrl) && classes.active}>{item.section}</Link>
                         {_.map(item.childs, (object, i) => {
                             return (
                                 <li key={i}>

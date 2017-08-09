@@ -71,10 +71,9 @@ export const statDebtorsOrderItemFetchAction = (id) => {
         payload
     }
 }
-export const getDocumentAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
+export const getDocumentAction = () => {
     const payload = axios()
-        .get(sprintf(API.STAT_DEBTORS_GET_DOCUMENT), {params})
+        .get(sprintf(API.STAT_DEBTORS_GET_DOCUMENT))
         .then((response) => {
             fileDownload(response.data, 'договор.xls')
             return _.get(response, 'data')

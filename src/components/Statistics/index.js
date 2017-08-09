@@ -11,6 +11,7 @@ import StatOutcomeCategoryGridList from './StatOutcomeCategoryGridList'
 import StatRemainderGridList from './StatRemainderGridLIst'
 import StatCashboxGridList from './StatCashboxGridList'
 import StatProductMoveGridList from './StatProductMoveGridList'
+import StatReportGridList from './StatReportGridLIst'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_REMAINDER_DIALOG_OPEN = 'openStatAgentDialog'
@@ -36,6 +37,8 @@ export {
     StatRemainderGridList,
     StatCashboxGridList,
     StatProductMoveGridList,
+    StatReportGridList,
+
     STAT_AGENT_DIALOG_OPEN,
     STAT_MARKET_DIALOG_OPEN,
     STAT_FINANCE_DIALOG_OPEN,

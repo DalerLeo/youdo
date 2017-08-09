@@ -32,11 +32,3 @@ export const itemSerializer = (data, filterItem, id) => {
         'created_date_1': _.get(defaultData, 'toDate')
     }
 }
-
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData
-    }
-}

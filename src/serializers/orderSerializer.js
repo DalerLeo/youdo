@@ -78,11 +78,3 @@ export const listFilterSerializer = (data, id) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

@@ -2,11 +2,13 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
+import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, PriceMainRadioButton, CurrencySearchField} from '../ReduxForm'
+import getConfig from '../../helpers/getConfig'
+import {TextField, PriceMainRadioButton, CurrencySearchField, CheckBox} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
@@ -23,7 +25,6 @@ const validate = (data) => {
     })
 }
 const enhance = compose(
-
     injectSheet({
         loader: {
             position: 'absolute',
@@ -77,8 +78,8 @@ const enhance = compose(
                     }
                 }
             },
-            overflowY: 'hidden',
-            overflowX: 'hidden'
+            overflow: 'hidden',
+            width: 'calc(100% - 86px)'
         },
         actionButton: {
             display: 'flex',
@@ -97,10 +98,37 @@ const enhance = compose(
                 verticalAlign: 'inherit !important'
             }
         },
-        inputFieldCustom: {
+        inputField: {
             fontSize: '13px !important',
             marginTop: '0px!important',
             height: '40px!important'
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        agentTableContent: {
+            width: '100%',
+            '& .row': {
+                fontWeight: 'normal !important'
+            }
+        },
+        agentPrices: {
+            position: 'relative'
+        },
+        checkbox: {
+            width: '100%',
+            left: '0'
         },
         priceRow: {
             display: 'flex',
@@ -123,6 +151,12 @@ const enhance = compose(
     reduxForm({
         form: 'PriceCreateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const agentCan = _.get(state, ['form', 'PriceCreateForm', 'values', 'agentCanChange']) || false
+        return {
+            agentCan
+        }
     })
 )
 const PriceSetForm = enhance((props) => {
@@ -131,9 +165,12 @@ const PriceSetForm = enhance((props) => {
         classes,
         mergedList,
         onClose,
-        priceUpdatedDate
+        priceUpdatedDate,
+        agentCan
     } = props
+
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const iconStyle = {
         icon: {
             color: '#666',
@@ -175,7 +212,47 @@ const PriceSetForm = enhance((props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div style={{display: 'flex'}} >
+                <div className={classes.agentPrices}>
+                    <div className={classes.checkbox}>
+                        <Field
+                            name="agentCanChange"
+                            label="Агент может устанавливать цены"
+                            component={CheckBox}
+                        />
+                    </div>
+                    {agentCan && <div className={classes.agentTableContent}>
+                        <Row>
+                            <Col xs={4}>
+                                <Field
+                                    name="minPrice"
+                                    className={classes.inputFieldCustom}
+                                    component={TextField}
+                                    label="Мин"
+                                    fullWidth={true}
+                                />
+                            </Col>
+                            <Col xs={4}>
+                                <Field
+                                    name="maxPrice"
+                                    className={classes.inputFieldCustom}
+                                    component={TextField}
+                                    label="Макс"
+                                    fullWidth={true}
+                                />
+                            </Col>
+                            <Col xs={4}>
+                                <Field
+                                    name="priceCurrency"
+                                    className={classes.inputFieldCustom}
+                                    component={CurrencySearchField}
+                                    label="Валюта"
+                                    hintText={currentCurrency}
+                                    fullWidth={true}/>
+                            </Col>
+                        </Row>
+                    </div>}
+                </div>
+                <div style={{display: 'flex'}}>
                     <div className={classes.radios}>
                         <div>Основной</div>
                         <div>
@@ -187,13 +264,13 @@ const PriceSetForm = enhance((props) => {
                             </Field>
                         </div>
                     </div>
-                <div className={classes.tableContent}>
-                    <Row className={classes.priceRow}>
-                        <Col xs={6}>Тип обьекта</Col>
-                        <Col style={{textAlign: 'left'}} xs={2}>Нал</Col>
-                        <Col style={{textAlign: 'left'}} xs={2}>Безнал</Col>
-                        <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
-                    </Row>
+                    <div className={classes.tableContent}>
+                        <Row className={classes.priceRow}>
+                            <Col xs={6}>Тип обьекта</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>Нал</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>Безнал</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
+                        </Row>
                         {_.map(mergedList, (item, index) => {
                             const marketName = _.get(item, 'marketTypeName')
                             const cashPrice = _.get(item, 'cash_price')
@@ -204,7 +281,7 @@ const PriceSetForm = enhance((props) => {
                                     <Col style={{textAlign: 'left'}} xs={2}>
                                         <Field
                                             name={'prices[' + index + '][cash_price]'}
-                                            className={classes.inputFieldCustom}
+                                            className={classes.inputField}
                                             component={TextField}
                                             placeholder={cashPrice}
                                             fullWidth={true}
@@ -213,7 +290,7 @@ const PriceSetForm = enhance((props) => {
                                     <Col style={{textAlign: 'left'}} xs={2}>
                                         <Field
                                             name={'prices[' + index + '][transfer_price]'}
-                                            className={classes.inputFieldCustom}
+                                            className={classes.inputField}
                                             component={TextField}
                                             placeholder={transferPrice}
                                             fullWidth={true}
@@ -222,14 +299,14 @@ const PriceSetForm = enhance((props) => {
                                     <Col xs={2}>
                                         <Field
                                             name={'prices[' + index + '][currency]'}
-                                            className={classes.inputFieldCustom}
+                                            className={classes.inputField}
                                             component={CurrencySearchField}
                                             fullWidth={true}/>
                                     </Col>
                                 </Row>
                             )
                         })}
-                </div>
+                    </div>
                 </div>
             </form>
         </div>
