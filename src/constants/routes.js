@@ -245,3 +245,6 @@ export const STATISTICS_PRODUCT_MOVE = 'statistics/productMove'
 export const STATISTICS_PRODUCT_MOVE_URL = `/${STATISTICS_PRODUCT_MOVE}`
 export const STATISTICS_PRODUCT_MOVE_ITEM_URL = `/${STATISTICS_PRODUCT_MOVE}/:statProductMoveId`
 export const STATISTICS_PRODUCT_MOVE_ITEM_PATH = `/${STATISTICS_PRODUCT_MOVE}/%d`
+
+export const STATISTICS_REPORT = 'statistics/report'
+export const STATISTICS_REPORT_URL = `/${STATISTICS_REPORT}`

@@ -371,3 +371,7 @@ export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
 export const STAT_PRODUCT_MOVE_LIST = 'stats/agents/'
 export const STAT_PRODUCT_MOVE_ITEM = 'sales/order/'
 export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/agents/export/'
+
+export const STAT_REPORT_LIST = 'stats/agents/'
+export const STAT_REPORT_ITEM = 'sales/order/'
+export const STAT_REPORT_GET_DOCUMENT = '/stats/agents/export/'

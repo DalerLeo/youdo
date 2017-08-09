@@ -6,19 +6,20 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate')
+        'type': _.get(defaultData, 'type'),
+        'product': _.get(defaultData, 'product'),
+        'stock': _.get(defaultData, 'stock')
     }
 }
 
-export const itemSerializer = (id) => {
+export const itemFilterSerializer = (data) => {
+    const {...defaultData} = data
+
     return {
-        'client': id,
-        'dept': true
+        'page': _.get(defaultData, 'dPage'),
+        'page_size': _.get(defaultData, 'dPageSize')
     }
 }
-

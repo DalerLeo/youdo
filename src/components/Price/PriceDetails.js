@@ -115,6 +115,12 @@ const enhance = compose(
             overflowY: 'auto',
             overflowX: 'hidden'
         },
+        agentCanSet: {
+            margin: '-10px -30px 10px',
+            padding: '10px 30px',
+            background: '#f2f5f8',
+            fontWeight: '600'
+        },
         average: {
             fontWeight: '600',
             marginTop: '20px',
@@ -268,18 +274,18 @@ const PriceDetails = enhance((props) => {
                                         style={iconStyle.button}
                                         touch={true}
                                         disableTouchRipple={true}
-                                        onTouchTap={priceSetForm.handleOpenPriceSetForm}
-                                    >
+                                        onTouchTap={priceSetForm.handleOpenPriceSetForm}>
                                         <Edit />
                                     </IconButton>
                                 </Tooltip>
                             </div>
                         </div>
+                        <div className={classes.agentCanSet}>Агент может устанавливать цены. <br/> Минимальная / максимальная стоимость: 4 000 / 6 000 SUM</div>
                         <div className={classes.tableContent}>
                             <Row className="dottedList">
                                 <Col xs={6}>Тип обьекта</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>Нал</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>Безнал</Col>
+                                <Col xs={3}>Нал</Col>
+                                <Col xs={3}>Безнал</Col>
                             </Row>
                             {_.map(mergedList, (item) => {
                                 const id = _.get(item, 'marketTypeId')
@@ -290,8 +296,8 @@ const PriceDetails = enhance((props) => {
                                 return (
                                     <Row className="dottedList" key={id}>
                                         <Col xs={6}> {marketName}</Col>
-                                        <Col style={{textAlign: 'left'}} xs={3}>{cashPrice}</Col>
-                                        <Col style={{textAlign: 'left'}} xs={3}>{transferPrice}</Col>
+                                        <Col xs={3}>{cashPrice}</Col>
+                                        <Col xs={3}>{transferPrice}</Col>
                                     </Row>
                                 )
                             })}

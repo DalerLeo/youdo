@@ -32,10 +32,3 @@ export const itemSerializer = (data, filterItem, id) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData
-    }
-}
