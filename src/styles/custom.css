@@ -242,9 +242,9 @@ hr.lineDote {
 }
 .printItem {
     width: 100%;
-    padding: 20px 30px;
+    padding: 20px 30px 40px;
     box-sizing: border-box;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #212121;
 }
 @media print {
     .printCloseBtn {
