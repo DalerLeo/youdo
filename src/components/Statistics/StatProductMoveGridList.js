@@ -224,11 +224,11 @@ const enhance = compose(
             '& th:first-child': {
 
             }
-        }
+        },
         tableDoubleRowHead: {
             height: '38px !important',
             '& th': {
-                height: '38px !important',
+                height: '38px !important'
             }
         },
         borderRight: {
