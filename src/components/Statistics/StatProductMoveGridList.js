@@ -214,7 +214,6 @@ const enhance = compose(
             color: '#666',
             borderCollapse: 'collapse',
             '& tr, td': {
-                border: '1px #efefef solid',
                 height: '40px'
             },
             '& td': {
@@ -222,15 +221,22 @@ const enhance = compose(
             }
         },
         title: {
-            fontWeight: '600'
+            fontWeight: '600',
+            '& tr, td': {
+                border: '1px #efefef solid'
+            }
         },
         leftTable: {
             display: 'table',
             width: '100%',
             '& > div': {
+                '&:nth-child(odd)': {
+                    backgroundColor: '#f9f9f9'
+                },
                 display: 'table-row',
                 height: '40px',
                 '&:first-child': {
+                    backgroundColor: 'white',
                     height: '81px',
                     verticalAlign: 'bottom',
                     '& span': {
@@ -244,6 +250,11 @@ const enhance = compose(
                     display: 'table-cell',
                     verticalAlign: 'middle'
                 }
+            }
+        },
+        tableRow: {
+            '&:nth-child(even)':{
+                backgroundColor: '#f9f9f9'
             }
         }
 
@@ -292,22 +303,22 @@ const StatProductMoveGridList = enhance((props) => {
         <table className={classes.mainTable}>
             <tbody className={classes.tableBody}>
             <tr className={classes.title}>
-                <td rowSpan={2}>Ostatok</td>
-                <td colSpan={2}>Ostatok</td>
-                <td colSpan={2}>Ostatok</td>
-                <td colSpan={2}>Ostatok</td>
-                <td colSpan={2}>Ostatok</td>
+                <td rowSpan={2}>ID товара</td>
+                <td colSpan={2}>Остаток на начало периода</td>
+                <td colSpan={2}>Поступивший товара за период</td>
+                <td colSpan={2}>Выданный товара за период</td>
+                <td colSpan={2}>Остаток на конец</td>
 
             </tr>
             <tr className={classes.title}>
-                <td>Ostatok</td>
-                <td>Ostatok</td>
-                <td>Ostatok</td>
-                <td>Ostatok</td>
-                <td>Ostatok</td>
-                <td>Ostatok</td>
-                <td>Ostatok</td>
-                <td>Ostatok</td>
+                <td>Кол-во</td>
+                <td>Стоимость</td>
+                <td>Кол-во</td>
+                <td>Стоимость</td>
+                <td>Кол-во</td>
+                <td>Стоимость</td>
+                <td>Кол-во</td>
+                <td>Стоимость</td>
             </tr>
             <tr className={classes.tableRow}>
                 <td>1</td>
