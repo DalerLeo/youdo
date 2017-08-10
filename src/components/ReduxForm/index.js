@@ -56,6 +56,7 @@ import normalizeNumber from './normalizers/normalizeNumber'
 import ZoneSearchField from './ZoneSearchField'
 import InOutTypeSearchFiled from './InOutTypeSearchFiled'
 import RemainderProductTypeSearchField from './Remainder/RemainderProductTypeSearchField'
+import Pagination from './Pagination'
 
 export {
     ZoneSearchField,
@@ -115,5 +116,6 @@ export {
     ProductTypeParentSearchField,
     ProductTypeChildSearchField,
     InOutTypeSearchFiled,
-    RemainderProductTypeSearchField
+    RemainderProductTypeSearchField,
+    Pagination
 }

@@ -104,7 +104,8 @@ const enhance = compose(
                 backgroundImage: 'none'
             },
             '& td:first-child': {
-                width: '404px'
+                width: '404px',
+                padding: '0 !important'
             },
             '& tr': {
                 border: 'none !important'
@@ -214,6 +215,13 @@ const enhance = compose(
             '& button': {
                 marginTop: '10px !important'
             }
+        },
+        searchFieldCustom: {
+            extend: 'inputFieldCustom',
+            position: 'initial !important',
+            '& label': {
+                lineHeight: 'auto !important'
+            }
         }
     }),
     connect((state) => {
@@ -297,17 +305,19 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
             <div>
                 <div className={classes.background}>
                     <Field
+                        name="productType"
                         label="Отфильтровать по типу"
                         fullWidth={true}
-                        className={classes.inputFieldCustom}
+                        className={classes.searchFieldCustom}
                         component={RemainderProductTypeSearchField}
                         {..._.get(defaultProps, 'productType')}
                     />
 
                     <ProductCustomSearchField
+                        name="product"
                         label="Наименование товара"
                         fullWidth={true}
-                        className={classes.inputFieldCustom}
+                        className={classes.searchFieldCustom}
                         {..._.get(defaultProps, 'product')}
                     />
                     <TextField
@@ -378,6 +388,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                                         </TableRowColumn>
                                         <TableRowColumn>
                                             <TextField
+                                                name="editAmount"
                                                 label={amount}
                                                 fullWidth={true}
                                                 className={classes.inputFieldCustom}

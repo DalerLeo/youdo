@@ -231,7 +231,7 @@ const RemainderDiscardDialog = enhance((props) => {
                     </div>
                     <div className={classes.rightSide}>
                         <Fields
-                            names={['products', 'productType', 'product', 'isDefect', 'amount']}
+                            names={['products', 'productType', 'product', 'isDefect', 'amount', 'editIsDefect', 'editAmount']}
                             component={RemainderListProductField}
                         />
                     </div>

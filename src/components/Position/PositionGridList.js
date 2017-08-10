@@ -1,45 +1,22 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import Delete from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import Paper from 'material-ui/Paper'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import CircularProgress from 'material-ui/CircularProgress'
+import FlatButton from 'material-ui/FlatButton'
+import Search from 'material-ui/svg-icons/action/search'
 import PositionCreateDialog from './PositionCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import GridList from '../GridList'
 import Container from '../Container'
+import Tooltip from '../ToolTip'
+import {Pagination, TextField} from '../ReduxForm'
 import SettingSideMenu from '../Setting/SettingSideMenu'
-import {CheckBox} from '../ReduxForm'
+import EditIcon from 'material-ui/svg-icons/image/edit'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import {Field, reduxForm} from 'redux-form'
-
-const listHeader = [
-    {
-        sorting: true,
-        name: 'name',
-        xs: 2,
-        title: ''
-    },
-    {
-        sorting: true,
-        name: 'name',
-        xs: 4,
-        title: 'Курс'
-    },
-    {
-        sorting: true,
-        xs: 4,
-        name: 'created_date',
-        title: 'Дата обновления'
-    }
-]
 
 const enhance = compose(
     injectSheet({
@@ -86,38 +63,6 @@ const enhance = compose(
                 }
             }
         },
-        wrap: {
-            display: 'flex',
-            margin: '0 -28px',
-            padding: '0 28px 0 0',
-            minHeight: 'calc(100% - 120px)'
-        },
-        leftSide: {
-            flexBasis: '25%'
-        },
-        list: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '15px 30px',
-            borderBottom: '1px #efefef solid',
-            cursor: 'pointer',
-            '& > div:first-child': {
-                fontWeight: '600'
-            },
-            '& > div:last-child': {
-                textAlign: 'right'
-            }
-        },
-        rightSide: {
-            flexBasis: '75%',
-            marginLeft: '28px'
-        },
-        rightTitle: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-        },
         btnSend: {
             color: '#12aaeb !important'
         },
@@ -127,34 +72,66 @@ const enhance = compose(
         btnRemove: {
             color: '#e57373 !important'
         },
-        outerTitle: {
-            extend: 'flex',
+        rightPanel: {
+            flexBasis: 'calc(100% - 226px)',
+            maxWidth: 'calc(100% - 226px)',
+            background: '#fff',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            padding: '20px 30px'
+        },
+        nav: {
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'space-between',
-            fontWeight: '600',
-            paddingBottom: '10px',
-            paddingTop: '5px',
-            '& a': {
-                padding: '2px 10px',
-                border: '1px solid',
-                borderRadius: '2px',
-                marginLeft: '12px'
+            borderBottom: 'solid 1px #efefef'
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '40px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
             }
         },
-        buttons: {
-            float: 'right',
-            textAlign: 'right'
+        search: {
+            display: 'flex',
+            alignItems: 'center',
+            width: '220px'
         },
-        leftPanel: {
-            backgroundColor: '#f2f5f8',
-            flexBasis: '250px',
-            maxWidth: '250px'
-
+        headers: {
+            fontWeight: '600',
+            '& > div': {
+                padding: '15px 0',
+                '&:after': {
+                    margin: '0 8px'
+                }
+            }
         },
-        rightPanel: {
-            flexBasis: 'calc(100% - 250px)',
-            maxWidth: 'calc(100% - 250px)',
-            overflowY: 'auto',
-            overflowX: 'hidden'
+        permission: {
+            '& span': {
+                padding: '5px 10px',
+                backgroundColor: '#e9ecef',
+                margin: '0 5px'
+            }
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0'
+        },
+        list: {
+            '& .dottedList': {
+                '&:hover > div:last-child > div': {
+                    opacity: '1'
+                }
+            }
         }
     }),
 
@@ -164,32 +141,44 @@ const enhance = compose(
 )
 const MINUS_ONE = -1
 
+const iconSearchStyle = {
+    icon: {
+        color: '#333',
+        width: 25,
+        height: 25
+    },
+    button: {
+        width: 40,
+        height: 40,
+        padding: 0
+    }
+}
+
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 25,
+        height: 25
+    },
+    button: {
+        width: 25,
+        height: 25,
+        padding: 0
+    }
+}
+
 const PositionGridList = enhance((props) => {
     const {
         createDialog,
         updateDialog,
-        actionsDialog,
         confirmDialog,
         listData,
-        detailData,
         classes,
         detailId,
-        detailFilter
+        filter
     } = props
 
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon/>
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <Delete/>
-            </IconButton>
-        </div>
-    )
-
-    const positionList = _.map(_.get(listData, 'data'), (item) => {
+/*    Const positionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const isActive = _.get(detailData, 'id') === id
@@ -207,106 +196,176 @@ const PositionGridList = enhance((props) => {
             )
         }
         return null
-    })
-    const permissionList = _.map(_.get(detailData, ['data']), (item, index) => {
-        const name = _.get(item, 'name')
-        const codename = _.get(item, 'codename')
+    }) */
 
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+    const role = {
+        data: [
+            {
+                name: 'naimenivaniya1',
+                id: 1,
+                codeName: 'naimen',
+                createdDate: '21-08-2017',
+                permissions: [
+                    {
+                        name: 'sup'
+                    },
+                    {
+                        name: 'merch'
+                    },
+                    {
+                        name: 'supDir'
+                    }
+                ]
+            },
+
+            {
+                name: 'naimenivaniya2',
+                codeName: 'naimen',
+                id: 2,
+                createdDate: '22-08-2017',
+                permissions: [
+                    {
+                        name: 'merch'
+                    },
+                    {
+                        name: 'supDir'
+                    }
+                ]
+            },
+            {
+                name: 'naimenivaniya3',
+                codeName: 'naimen',
+                id: 3,
+                createdDate: '23-08-2017',
+                permissions: [
+                    {
+                        name: 'sup'
+                    },
+                    {
+                        name: 'merch'
+                    }
+                ]
+            }
+
+        ]
+
+    }
+
+    const headers = (
+        <Row className="dottedList">
+            <Col xs={2}>Должность</Col>
+            <Col xs={9}>Права доступа</Col>
+            <Col xs={1}></Col>
+        </Row>
+    )
+    const permissionList = _.map(_.get(role, ['data']), (item, index) => {
+        const name = _.get(item, 'name')
+        const id = _.get(item, 'id')
         return (
             <Row key={index} className="dottedList">
                 <Col xs={2}>
-                    <Field
-                        component={CheckBox}
-                        name={codename}/>
+                    {name}
                 </Col>
-                <Col xs={4}>{name}</Col>
-                <Col xs={6}>{createdDate}</Col>
+                <Col xs={9}>
+                    <div className={classes.permission}>
+                    {_.map(_.get(item, ['permissions']), (perm) => {
+                        const permName = _.get(perm, 'name')
+
+                        return (
+                            <span key={permName}>{permName}</span>
+                        )
+                    })}
+                    </div>
+                </Col>
+                <Col xs={1}>
+                    <div className={classes.iconBtn}>
+                        <Tooltip position="bottom" text="Распечатать накладную">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                touch={true}
+                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                <EditIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                disableTouchRipple={true}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                </Col>
             </Row>
         )
     })
 
-    const list = {
-        header: listHeader,
-        list: permissionList,
-        loading: _.get(detailData, 'detailLoading')
-    }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
     const confirmMessage = 'Валюта: ' + _.get(currentDetail, 'name')
-    const listLoading = _.get(listData, 'listLoading')
-    const detail = <div>a</div>
 
+    const search = (
+        <form className={classes.search}>
+            <Field
+                className={classes.inputFieldCustom}
+                name="search"
+                fullWidth={true}
+                component={TextField}
+                hintText="Товар"/>
+            <IconButton
+                iconStyle={iconSearchStyle.icon}
+                style={iconSearchStyle.button}
+                type="submit">
+                <Search/>
+            </IconButton>
+        </form>
+    )
     return (
         <Container>
             <div className={classes.wrapper}>
                 <SettingSideMenu currentUrl={ROUTES.POSITION_LIST_URL}/>
                 <div className={classes.rightPanel}>
-                    <div className={classes.wrap}>
-                        <div className={classes.leftSide}>
-                            <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
-                                <div>Группы</div>
-                            </div>
-                            <Paper zDepth={1} style={{height: 'calc(100% - 18px)'}}>
-                                {listLoading
-                                    ? <div className={classes.loader}>
-                                        <CircularProgress size={40} thickness={4}/>
-                                    </div>
-                                    : <div className={classes.listWrapper}>
-                                        {positionList}
-                                    </div>
-                                }
-                            </Paper>
+                    <div className={classes.nav}>
+                        <div>
+                            <FlatButton
+                            label="+ создать должность"
+                            className={classes.btnSend}
+                            primary={true}
+                            />
                         </div>
-                        <div className={classes.rightSide}>
-                            <div className={classes.rightTitle}>
-                                <div className={classes.outerTitle}>Доступы</div>
-                                <div className={classes.outerTitle}>
-                                    <div className={classes.buttons}>
-                                        <a onClick={confirmDialog.handleOpenConfirmDialog}
-                                           className={classes.btnAdd}><ContentAdd color="#12aaeb"/>добавить должност</a>
-                                        <a onClick={confirmDialog.handleOpenConfirmDialog}
-                                           className={classes.btnRemove}>Удалить
-                                            группу</a>
-                                        <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить
-                                            группу</a>
-                                    </div>
-                                </div>
-                            </div>
+                        <div>{search}</div>
+                        <Pagination filter={filter}/>
 
-                            <GridList
-                                filter={detailFilter}
-                                list={list}
-                                detail={detail}
-                                withoutPagination={true}
-                                actionsDialog={actions}
-                            />
-
-                            <PositionCreateDialog
-                                initialValues={createDialog.initialValues}
-                                open={createDialog.openCreateDialog}
-                                loading={createDialog.createLoading}
-                                onClose={createDialog.handleCloseCreateDialog}
-                                onSubmit={createDialog.handleSubmitCreateDialog}
-                            />
-
-                            <PositionCreateDialog
-                                isUpdate={true}
-                                initialValues={updateDialog.initialValues}
-                                open={updateDialog.openUpdateDialog}
-                                loading={updateDialog.updateLoading}
-                                onClose={updateDialog.handleCloseUpdateDialog}
-                                onSubmit={updateDialog.handleSubmitUpdateDialog}
-                            />
-                            {detailId !== MINUS_ONE && <ConfirmDialog
-                                type="delete"
-                                message={confirmMessage}
-                                onClose={confirmDialog.handleCloseConfirmDialog}
-                                onSubmit={confirmDialog.handleSendConfirmDialog}
-                                open={confirmDialog.openConfirmDialog}
-                            />}
-                        </div>
                     </div>
+                    <div className={classes.headers}>{headers}</div>
+                    <div className={classes.list}>{permissionList}</div>
                 </div>
+                <PositionCreateDialog
+                    initialValues={createDialog.initialValues}
+                    open={createDialog.openCreateDialog}
+                    loading={createDialog.createLoading}
+                    onClose={createDialog.handleCloseCreateDialog}
+                    onSubmit={createDialog.handleSubmitCreateDialog}
+                />
+
+                <PositionCreateDialog
+                    isUpdate={true}
+                    initialValues={updateDialog.initialValues}
+                    open={updateDialog.openUpdateDialog}
+                    loading={updateDialog.updateLoading}
+                    onClose={updateDialog.handleCloseUpdateDialog}
+                    onSubmit={updateDialog.handleSubmitUpdateDialog}
+                />
+                {detailId !== MINUS_ONE && <ConfirmDialog
+                    type="delete"
+                    message={confirmMessage}
+                    onClose={confirmDialog.handleCloseConfirmDialog}
+                    onSubmit={confirmDialog.handleSendConfirmDialog}
+                    open={confirmDialog.openConfirmDialog}
+                />}
             </div>
         </Container>
     )
