@@ -1,6 +1,7 @@
 import TextField from './Basic/TextField'
 import CheckBox from './Basic/CheckBox'
 import DateToDateField from './Basic/DateToDateField'
+import DateToDateFieldCustom from './Basic/DateToDateFieldCustom'
 import SearchField from './Basic/SearchField'
 import SearchFieldCustom from './Basic/SearchFieldCustom'
 import LocationField from './Basic/LocationField'
@@ -77,6 +78,7 @@ export {
     CheckBox,
     TextField,
     DateToDateField,
+    DateToDateFieldCustom,
     LocationField,
     SearchField,
     SearchFieldCustom,

@@ -72,23 +72,6 @@ export const remainderStockListFetchAction = (filter, id) => {
     }
 }
 
-export const remainderStockCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.REMAINDER_STOCK_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.REMAINDER_STOCK_LIST_CSV,
-        payload
-    }
-}
-
 export const remainderStockItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.REMAINDER_STOCK_ITEM, id))

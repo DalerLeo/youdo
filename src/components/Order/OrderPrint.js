@@ -25,6 +25,7 @@ const enhance = compose(
         },
         wrapper: {
             background: '#fff',
+            fontSize: '14px',
             width: '100%',
             height: '100%',
             zIndex: '999',
@@ -55,8 +56,9 @@ const enhance = compose(
                 marginBottom: '10px'
             },
             '& div': {
-                fontSize: '11px',
-                color: '#999',
+                fontSize: '12px',
+                color: '#777',
+                fontWeight: '600',
                 marginRight: '30px'
             }
         },
@@ -66,11 +68,12 @@ const enhance = compose(
         },
         block: {
             display: 'flex',
+            fontWeight: '600',
             '& ul': {
                 marginLeft: '40px',
                 '&:first-child': {
                     marginLeft: '0',
-                    fontWeight: '600'
+                    fontWeight: 'bold'
                 },
                 '& li': {
                     lineHeight: '25px'
@@ -79,11 +82,21 @@ const enhance = compose(
         },
         products: {
             marginTop: '10px',
+            width: '100%',
+            display: 'table',
+            borderCollapse: 'collapse',
+            position: 'relative',
             '& .row': {
-                padding: '10px 0',
-                borderBottom: '1px #efefef solid',
+                height: '25px',
+                border: '1px #555 solid',
+                display: 'table-row',
                 '&:first-child': {
-                    fontWeight: '600'
+                    fontWeight: 'bold'
+                },
+                '& > div': {
+                    verticalAlign: 'middle',
+                    display: 'table-cell',
+                    border: '1px #555 solid'
                 },
                 '& > div:last-child': {
                     textAlign: 'right'
@@ -97,7 +110,9 @@ const enhance = compose(
         summary: {
             fontWeight: 'bold',
             padding: '10px 0 0',
-            textAlign: 'right'
+            textAlign: 'right',
+            position: 'absolute',
+            right: '0'
         }
     })
 )
@@ -173,7 +188,8 @@ const OrderPrint = enhance((props) => {
                         <div className={classes.products}>
                             <Row>
                                 <Col xs={1}>№</Col>
-                                <Col xs={5}>Наименование</Col>
+                                <Col xs={1}>Код</Col>
+                                <Col xs={4}>Наименование</Col>
                                 <Col xs={2}>Цена ({currentCurrency})</Col>
                                 <Col xs={2}>Кол-во</Col>
                                 <Col xs={2}>Сумма ({currentCurrency})</Col>
@@ -181,6 +197,7 @@ const OrderPrint = enhance((props) => {
                             {_.map(_.get(item, 'products'), (product) => {
                                 const totalProductPrice = numberFormat(_.get(product, 'totalPrice'))
                                 const productId = _.get(product, 'id')
+                                const code = _.get(product, ['product', 'code'])
                                 const measurment = _.get(product, ['product', 'measurement', 'name'])
                                 const name = _.get(product, ['product', 'name'])
                                 const price = numberFormat(_.get(product, 'price'))
@@ -188,6 +205,7 @@ const OrderPrint = enhance((props) => {
                                 return (
                                     <Row key={productId}>
                                         <Col xs={1}>{productId}</Col>
+                                        <Col xs={1}>{code}</Col>
                                         <Col xs={5}>{name}</Col>
                                         <Col xs={2}>{price}</Col>
                                         <Col xs={2}>{amount}</Col>

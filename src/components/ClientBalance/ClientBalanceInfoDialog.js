@@ -141,11 +141,10 @@ const iconStyle = {
 }
 
 const ClientBalanceCreateDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, balance} = props
+    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType} = props
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
-
     const detailList = _.map(_.get(detailData, 'data'), (item, index) => {
         const id = _.get(item, 'order') || _.get(item, 'transaction')
         const createdDate = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:MM')
@@ -203,8 +202,8 @@ const ClientBalanceCreateDialog = enhance((props) => {
                                 <div>{name}</div>
                             </div>
                             <div>
-                                <span>Баланс</span>
-                                <div className={(balance > ZERO) ? classes.green : classes.red}>{numberFormat(balance, currentCurrency)}</div>
+                                <span>Баланс {paymentType}</span>
+                                <div className={(balance >= ZERO) ? classes.green : classes.red}>{numberFormat(balance, currentCurrency)}</div>
                             </div>
                         </div>
                         <Pagination filter={filterItem}/>
@@ -219,7 +218,8 @@ const ClientBalanceCreateDialog = enhance((props) => {
                             <div style={{flexBasis: '40%', maxWidth: '40%'}}>Описание</div>
                             <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Сумма</div>
                         </Row>
-                        {detailList}
+
+                        {balance ? detailList : <div style={{padding: '20px 30px', textAlign: 'center'}}>Пока транзакции нет</div>}
                     </div>
                 </div>
             }

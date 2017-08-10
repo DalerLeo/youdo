@@ -28,6 +28,7 @@ import {
     stockHistoryListFetchAction,
     stockTransferListFetchAction,
     stockTransferItemFetchAction,
+    stockReceiveOrderItemFetchAction,
     stockTransferItemAcceptAction,
     stockReceiveItemConfirmAction,
     stockReceiveItemReturnAction,
@@ -143,7 +144,7 @@ const enhance = compose(
             if (stockReceiveType === 'supply') {
                 dispatch(stockReceiveItemFetchAction(stockReceiveId))
             } else if (stockReceiveType === 'transfer' || stockReceiveType === 'delivery_return') {
-                dispatch(stockTransferItemFetchAction(stockReceiveId))
+                dispatch(stockReceiveOrderItemFetchAction(stockReceiveId))
             } else if (stockReceiveType === 'order_return') {
                 dispatch(orderReturnListAction(stockReceiveId))
             }
@@ -225,22 +226,6 @@ const enhance = compose(
                 [TAB_RECEIVE_FILTER_KEY.TYPE]: type,
                 [TAB_RECEIVE_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_RECEIVE_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
-
-            })
-        },
-
-        handleSubmitTabTransferFilterDialog: props => () => {
-            const {filter, tabTransferFilterForm} = props
-            const stock = _.get(tabTransferFilterForm, ['values', 'stock', 'value']) || null
-            const type = _.get(tabTransferFilterForm, ['values', 'type', 'value']) || null
-            const fromDate = _.get(tabTransferFilterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(tabTransferFilterForm, ['values', 'date', 'toDate']) || null
-            filter.filterBy({
-                [HISTORY_FILTER_OPEN]: false,
-                [HISTORY_FILTER_KEY.STOCK]: stock,
-                [HISTORY_FILTER_KEY.TYPE]: type,
-                [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [HISTORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
         },

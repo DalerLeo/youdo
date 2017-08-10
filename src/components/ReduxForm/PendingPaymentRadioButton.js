@@ -14,15 +14,14 @@ const enhance = compose(
     }),
     withState('course', 'setCourse', false)
 )
-
+const INDIVIDUAL = 3
 const PendingPaymentRadioButton = enhance((props) => {
     const {input, currency} = props
     if (currency === getConfig('PRIMARY_CURRENCY') || !currency) {
         return null
     }
     return (
-        <div>
-            <div>Использовать</div>
+        <div style={{width: '205px'}}>
         <RadioButtonGroup name="now" onChange={input.onChange} defaultSelected={true}>
             <RadioButton
                 value={true}
@@ -31,6 +30,10 @@ const PendingPaymentRadioButton = enhance((props) => {
             <RadioButton
                 value={false}
                 label="Курс при оформлении"
+            />
+            <RadioButton
+                value={INDIVIDUAL}
+                label="индивидуальный"
             />
         </RadioButtonGroup>
         </div>

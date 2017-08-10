@@ -335,6 +335,7 @@ export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
 export const STOCK_RECEIVE_TRANSFER_CHANGE_STATUS = 'stock/stock_transfer/%d/change_status/'
 export const STOCK_RECEIVE_DELIVERY_RETURN = 'stock/delivery_return_status'
 export const STOCK_RECEIVE_ACCEPT_ORDER_RETURN = 'stock/accept_order_return/'
+export const STOCK_RECEIVE_ORDER_ITEM = '/stock/stock_transfer/%d/'
 
 export const STOCK_RECEIVE_CREATE = '/stock/supply/%d/accept_products/'
 export const STOCK_RECEIVE_UPDATE = '/stock/supply/%d/update_accept/'
@@ -371,3 +372,7 @@ export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
 export const STAT_PRODUCT_MOVE_LIST = 'stats/agents/'
 export const STAT_PRODUCT_MOVE_ITEM = 'sales/order/'
 export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/agents/export/'
+
+export const STAT_REPORT_LIST = 'stats/agents/'
+export const STAT_REPORT_ITEM = 'sales/order/'
+export const STAT_REPORT_GET_DOCUMENT = '/stats/agents/export/'

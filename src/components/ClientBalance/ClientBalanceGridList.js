@@ -3,7 +3,6 @@ import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -12,7 +11,6 @@ import ClientBalanceCreateDialog from './ClientBalanceInfoDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import List from 'material-ui/svg-icons/action/list'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 
@@ -21,7 +19,7 @@ const listHeader = [
         sorting: true,
         name: 'client',
         title: 'Клиент',
-        xs: 4
+        xs: 3
     },
     {
         sorting: true,
@@ -38,8 +36,15 @@ const listHeader = [
     {
         sorting: true,
         alignRight: true,
-        name: 'balance',
-        title: 'Баланс',
+        name: 'cashBalance',
+        title: 'Баланс нал',
+        xs: 2
+    },
+    {
+        sorting: true,
+        alignRight: true,
+        name: 'transferBalance',
+        title: 'Баланс переч.',
         xs: 2
     }
 ]
@@ -48,25 +53,19 @@ const enhance = compose(
     injectSheet({
         rightAlign: {
             textAlign: 'right'
+        },
+        red: {
+            color: '#e27676',
+            cursor: 'pointer'
+        },
+        green: {
+            color: '#92ce95',
+            cursor: 'pointer'
         }
     })
 )
 
-const iconStyle = {
-    icon: {
-        color: '#12aaeb',
-        width: 24,
-        height: 24
-    },
-    button: {
-        width: 48,
-        height: 48,
-        padding: 0
-    }
-}
-
 const ClientBlanceGridList = enhance((props) => {
-    const ZERO = 0
     const {
         classes,
         filter,
@@ -76,7 +75,8 @@ const ClientBlanceGridList = enhance((props) => {
         listData,
         detailData
     } = props
-
+    const ZERO = 0
+    const ONE = 1
     const clientBalanceFilterDialog = (
         <ClientBalanceFilterForm
             initialValues={filterDialog.initialValues}
@@ -91,33 +91,32 @@ const ClientBlanceGridList = enhance((props) => {
     const clientBalanceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const balance = _.toNumber(_.get(item, 'balance'))
+        const transferBalance = _.toNumber(_.get(item, 'transferBalance'))
+        const cashBalance = _.toNumber(_.get(item, 'cashBalance'))
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const orders = numberFormat(_.get(item, 'orders'))
         const clientName = _.get(item, 'name')
-        const balanceStyle = {
-            color: '#333'
-        }
-        if (balance > ZERO) {
-            balanceStyle.color = '#92ce95'
-        } else if (balance < ZERO) {
-            balanceStyle.color = '#e27676'
-        }
+
         return (
             <Row key={id}>
-                <Col xs={4}>{clientName}</Col>
+                <Col xs={3}>{clientName}</Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={2}>{orders}</Col>
-                <Col xs={2} className={classes.rightAlign} style={balanceStyle}>{numberFormat(balance)} {currentCurrency}</Col>
-                <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
-                    <IconButton
-                        disabled={(balance === ZERO) && true}
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        onTouchTap={() => { infoDialog.handleOpenInfoDialog(id) }}>
-                        <List />
-                    </IconButton>
+                <Col xs={2}
+                     className={classes.rightAlign}>
+                    <span
+                        className={cashBalance >= ZERO ? classes.green : classes.red}
+                        onClick={() => { infoDialog.handleOpenInfoDialog(id, ZERO) }}>
+                        {numberFormat(cashBalance, currentCurrency)}
+                    </span>
+                </Col>
+                <Col xs={2}
+                     className={classes.rightAlign}>
+                    <span
+                        className={transferBalance >= ZERO ? classes.green : classes.red}
+                        onClick={() => { infoDialog.handleOpenInfoDialog(id, ONE) }}>
+                        {numberFormat(transferBalance, currentCurrency)}
+                    </span>
                 </Col>
             </Row>
         )
@@ -130,7 +129,8 @@ const ClientBlanceGridList = enhance((props) => {
     }
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-
+    const balance = _.get(infoDialog, 'type') === ZERO ? _.get(client, 'cashBalance') : _.get(client, 'transferBalance')
+    const paymentType = _.get(infoDialog, 'type') === ZERO ? 'Нал' : 'Переч.'
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
@@ -149,7 +149,8 @@ const ClientBlanceGridList = enhance((props) => {
                 onClose={infoDialog.handleCloseInfoDialog}
                 filterItem={filterItem}
                 name={_.get(client, 'name')}
-                balance={_.get(client, 'balance')}
+                balance={balance}
+                paymentType={paymentType}
             />
         </Container>
     )

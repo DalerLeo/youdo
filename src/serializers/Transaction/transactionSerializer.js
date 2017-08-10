@@ -60,17 +60,10 @@ export const listFilterSerializer = (data, cashbox) => {
         'cashbox': newCashbox,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
+        'client': _.get(defaultData, 'client'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
         'expanse_category': _.get(data, 'categoryExpense')
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

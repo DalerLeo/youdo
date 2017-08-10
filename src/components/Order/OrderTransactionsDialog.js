@@ -148,27 +148,30 @@ const OrderTransactionsDialog = enhance((props) => {
                                     <Col xs={3}>Кто</Col>
                                     <Col xs={2}>Касса</Col>
                                     <Col xs={2}>Дата</Col>
-                                    <Col xs={2}>Сумма оплаты</Col>
-                                    <Col xs={3}>Во внутренней валюте</Col>
+                                    <Col xs={3}>Сумма оплаты</Col>
+                                    <Col xs={2}>На заказ</Col>
                                 </Row>
                                 {_.map(data, (item, index) => {
                                     const whoFirst = _.get(item, ['clientTransaction', 'user', 'firstName'])
                                     const whoSecond = _.get(item, ['clientTransaction', 'user', 'secondName'])
                                     const who = whoFirst + ' ' + whoSecond
                                     const currency = _.get(item, ['clientTransaction', 'currency', 'name'])
+                                    const currentCurrency = getConfig('PRIMARY_CURRENCY')
                                     const cashbox = _.get(item, ['clientTransaction', 'transaction']) || 'Не принято'
 
                                     const payDate = dateFormat(_.get(item, ['clientTransaction', 'createdDate'])) + moment(_.get(item, ['clientTransaction', 'createdDate'])).format(' HH:MM')
-                                    const amount = numberFormat(_.get(item, ['clientTransaction', 'amount']), currency)
-                                    const internal = numberFormat(_.get(item, ['clientTransaction', 'internal']), getConfig('PRIMARY_CURRENCY'))
+                                    const amount = _.toNumber(_.get(item, ['clientTransaction', 'amount']))
+                                    const orderSum = numberFormat(_.get(item, 'amount'), currentCurrency)
+                                    const internal = _.toNumber(_.get(item, ['clientTransaction', 'internal']))
+                                    const pp = '(' + numberFormat(internal, currentCurrency) + ')'
 
                                     return (
                                         <Row key={index} className="dottedList">
                                             <Col xs={3}>{(whoFirst && whoSecond) ? who : 'Списано со счета'}</Col>
                                             <Col xs={2}>{cashbox}</Col>
                                             <Col xs={2}>{payDate}</Col>
-                                            <Col xs={2}>{amount}</Col>
-                                            <Col xs={3}>{internal}</Col>
+                                            <Col xs={3}>{numberFormat(amount, currency)} {!(amount === internal) && pp}</Col>
+                                            <Col xs={2}>{orderSum}</Col>
                                         </Row>
                                     )
                                 })}

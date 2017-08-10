@@ -24,12 +24,14 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-export const itemFilterSerializer = (data, id) => {
+export const itemFilterSerializer = (data, id, type) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
     return {
         'client': id,
+        // 'type': _.toNumber(type) === ZERO ? 'in' : 'out',
+        'payment_type': type,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'dPage'),
         'page_size': _.get(defaultData, 'dPageSize'),
@@ -37,11 +39,3 @@ export const itemFilterSerializer = (data, id) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

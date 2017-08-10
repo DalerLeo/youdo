@@ -6,6 +6,10 @@ const ZERO = 0
 export const createSerializer = (data, productId, priceList) => {
     const prices = _.get(data, 'prices')
     const isPrimary = _.get(data, 'isPrimary')
+    const isCustomPrice = _.get(data, 'agentCanChange')
+    const minPrice = _.get(data, 'minPrice')
+    const maxPrice = _.get(data, 'maxPrice')
+    const customCurrency = _.get(data, ['priceCurrency', 'value'])
     const getPriceByType = (marketTypeId, type) => {
         const price = _.find(_.get(priceList, ['results']), (item) => {
             return item.marketType.id === marketTypeId
@@ -40,7 +44,11 @@ export const createSerializer = (data, productId, priceList) => {
 
     return {
         'product': productId,
-        'prices': newPrices
+        'prices': newPrices,
+        'custom_price': isCustomPrice,
+        'min_price': minPrice,
+        'max_price': maxPrice,
+        'currency': customCurrency
     }
 }
 
@@ -61,11 +69,3 @@ export const listFilterSerializer = (data, manufacture) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

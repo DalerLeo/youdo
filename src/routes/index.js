@@ -50,7 +50,8 @@ import {
     StatOutcomeCategoryList,
     StatRemainderList,
     StatCashboxList,
-    StatProductMoveList
+    StatProductMoveList,
+    StatReportList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveList} from '../containers/StockReceive'
@@ -595,6 +596,11 @@ export default {
                     component: userIsAuth(StatProductMoveList)
                 }
             ]
+        },
+        {
+            path: ROUTES.STATISTICS_REPORT_URL,
+            component: userIsAuth(StatReportList),
+            childRoutes: []
         },
         {
             path: '*',
