@@ -265,7 +265,7 @@ export const ZONE_UNBIND_AGENT = `${ZONE}/%d/unbind_agent/`
 export const PRICE = 'stock/products_net_costs'
 export const PRICE_CREATE = `/${PRICE}/`
 export const PRICE_LIST = `/${PRICE}/`
-export const PRICE_ITEM = `/${PRODUCT}/%d/`
+export const PRICE_ITEM = 'main/product_mobile/%d/get_custom_price/'
 export const PRICE_DELETE = `/${PRICE}/%d/`
 
 export const PRICE_LIST_ITEM = 'sales/price_list_item'
