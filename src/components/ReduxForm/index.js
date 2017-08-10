@@ -55,6 +55,7 @@ import normalizeDiscount from './normalizers/normalizeDiscount'
 import normalizeNumber from './normalizers/normalizeNumber'
 import ZoneSearchField from './ZoneSearchField'
 import InOutTypeSearchFiled from './InOutTypeSearchFiled'
+import RemainderProductTypeSearchField from './Remainder/RemainderProductTypeSearchField'
 
 export {
     ZoneSearchField,
@@ -113,5 +114,6 @@ export {
     PricesBonusProductField,
     ProductTypeParentSearchField,
     ProductTypeChildSearchField,
-    InOutTypeSearchFiled
+    InOutTypeSearchFiled,
+    RemainderProductTypeSearchField
 }

@@ -212,7 +212,7 @@ const RemainderTransferDialog = enhance((props) => {
                 </div>
                 <div className={classes.rightSide}>
                     <Fields
-                        names={['products', 'productType', 'product', 'amount', 'isDefect']}
+                        names={['products', 'productType', 'product', 'amount', 'isDefect', 'editIsDefect', 'editAmount']}
                         component={RemainderListProductField}
                     />
                 </div>
