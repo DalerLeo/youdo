@@ -246,6 +246,9 @@ const enhance = compose(
                 },
                 display: 'table-row',
                 height: '40px',
+                '&:nth-child(2)': {
+                    height: '39px'
+                },
                 '&:first-child': {
                     backgroundColor: 'white',
                     height: '81px',
@@ -310,6 +313,10 @@ const StatProductMoveGridList = enhance((props) => {
             <div><span>Товар</span></div>
             <div><span>Наименование товара</span></div>
             <div><span>Наименование товара</span></div>
+            <div><span>Наименование товара</span></div>
+            <div><span>Наименование товара</span></div>
+            <div><span>Наименование товара</span></div>
+            <div><span>Наименование товара</span></div>
         </div>
     )
 
@@ -333,6 +340,50 @@ const StatProductMoveGridList = enhance((props) => {
                 <td>Стоимость</td>
                 <td>Кол-во</td>
                 <td>Стоимость</td>
+            </tr>
+            <tr className={classes.tableRow}>
+                <td>1</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+            </tr>
+            <tr className={classes.tableRow}>
+                <td>1</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+            </tr>
+            <tr className={classes.tableRow}>
+                <td>1</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+            </tr>
+            <tr className={classes.tableRow}>
+                <td>1</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
             </tr>
             <tr className={classes.tableRow}>
                 <td>1</td>
