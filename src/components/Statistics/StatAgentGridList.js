@@ -241,7 +241,7 @@ const StatAgentGridList = enhance((props) => {
             <Col xs={2}>Зона</Col>
             <Col xs={2}>План</Col>
             <Col xs={2}>Продано</Col>
-            <Col xs={2}>Орлачено</Col>
+            <Col xs={2}>Оплачено</Col>
             <Col xs={2}>Баланс</Col>
         </Row>
     )
@@ -258,7 +258,7 @@ const StatAgentGridList = enhance((props) => {
         return (
             <Row key={id} className="dottedList">
                 <Col xs={2}>
-                    <div className={classes.pointer} onTouchTap={() => { statAgentDialog.handleOpenStatAgentDialog(id) }}>{name}</div>
+                    <div className={classes.pointer} onClick={() => { statAgentDialog.handleOpenStatAgentDialog(id) }}>{name}</div>
                 </Col>
                 <Col xs={2}>
                     <div>{zone}</div>

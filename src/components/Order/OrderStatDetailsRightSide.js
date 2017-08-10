@@ -87,9 +87,7 @@ const enhance = compose(
 )
 
 const OrderStatDetailsRightSide = enhance((props) => {
-    const {classes,
-        data
-    } = props
+    const {classes, data} = props
 
     const products = _.get(data, 'products')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -132,7 +130,7 @@ const OrderStatDetailsRightSide = enhance((props) => {
                     })}
                 </div>
                 <Row className={classes.summary}>
-                    <Col xs={4}>ОБЩАЯ СУММА (SUM):</Col>
+                    <Col xs={4}>ОБЩАЯ СУММА ({primaryCurrency}):</Col>
                     <Col xs={4}> </Col>
                     <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
                     <Col xs={2}>{numberFormat(totalDiscount)}</Col>

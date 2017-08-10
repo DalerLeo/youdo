@@ -179,7 +179,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             })}
                         </div>
                         <Row className={classes.summary}>
-                            <Col xs={4}>ОБЩАЯ СУММА (SUM):</Col>
+                            <Col xs={4}>ОБЩАЯ СУММА ({primaryCurrency}):</Col>
                             <Col xs={4}> </Col>
                             <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
                             <Col xs={2}>{numberFormat(totalDiscount)}</Col>
