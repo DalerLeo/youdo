@@ -52,13 +52,15 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const stockReceiveType = _.get(props, ['location', 'query', 'openType'])
         const detail = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'data'])
-                        : (stockReceiveType === 'transfer' || stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
-                            : _.get(state, ['order', 'returnList', 'data'])
+                        : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'data'])
+                            : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
+                                : _.get(state, ['order', 'returnList', 'data'])
 
         const detailProducts = _.get(state, ['stockReceive', 'item', 'data'])
         const detailLoading = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'loading'])
-                                : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'transferItem', 'loading'])
-                                    : _.get(state, ['order', 'returnList', 'loading'])
+                                : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'loading'])
+                                    : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'loading'])
+                                        : _.get(state, ['order', 'returnList', 'loading'])
 
         const list = _.get(state, ['stockReceive', 'list', 'data'])
         const listLoading = _.get(state, ['stockReceive', 'list', 'loading'])
@@ -143,10 +145,12 @@ const enhance = compose(
         if (stockReceiveId > ZERO && (currentTab === 'receive' || currentTab === 'receiveHistory')) {
             if (stockReceiveType === 'supply') {
                 dispatch(stockReceiveItemFetchAction(stockReceiveId))
-            } else if (stockReceiveType === 'transfer' || stockReceiveType === 'delivery_return') {
+            } else if (stockReceiveType === 'transfer') {
                 dispatch(stockReceiveOrderItemFetchAction(stockReceiveId))
             } else if (stockReceiveType === 'order_return') {
                 dispatch(orderReturnListAction(stockReceiveId))
+            } else if (stockReceiveType === 'delivery_return') {
+                dispatch(stockTransferItemFetchAction(stockReceiveId))
             }
         } else if ((currentTab === 'transfer' || currentTab === 'transferHistory') && stockReceiveId > ZERO) {
             dispatch(stockTransferItemFetchAction(stockReceiveId))
@@ -417,7 +421,6 @@ const StockReceiveList = enhance((props) => {
     const currentTransferDetail = _.find(_.get(transferList, 'results'), (obj) => {
         return _.get(obj, 'id') === detailId && Number(_.get(obj, ['stock', 'id'])) === Number(detailType)
     })
-
     const transferDetailData = {
         type: detailType,
         id: detailId,

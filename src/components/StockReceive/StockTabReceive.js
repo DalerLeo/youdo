@@ -148,7 +148,6 @@ const StockTabReceive = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
-
     const receiveDetails = (
         <StockReceiveDetails
             key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
