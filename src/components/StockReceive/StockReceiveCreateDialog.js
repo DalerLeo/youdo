@@ -36,6 +36,9 @@ const enhance = compose(
             justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        podlojkaScroll: {
+            overflowY: 'auto !important'
+        },
         listLoader: {
             extend: 'loader',
             display: 'flex'
@@ -47,7 +50,8 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            maxHeight: 'inherit !important'
+            maxHeight: 'inherit !important',
+            marginBottom: '50px'
         },
         titleContent: {
             background: '#fff',
