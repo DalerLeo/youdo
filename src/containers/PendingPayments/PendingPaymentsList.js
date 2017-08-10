@@ -120,7 +120,7 @@ const enhance = compose(
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
             const pendingPaymentsId = _.toInteger(_.get(props, ['params', 'pendingPaymentsId']))
-
+            console.warn(_.get(createForm, 'values'))
             return dispatch(pendingPaymentsUpdateAction(_.get(createForm, ['values']), pendingPaymentsId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
