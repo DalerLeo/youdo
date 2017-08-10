@@ -28,6 +28,7 @@ import {
     stockHistoryListFetchAction,
     stockTransferListFetchAction,
     stockTransferItemFetchAction,
+    stockReceiveOrderItemFetchAction,
     stockTransferItemAcceptAction,
     stockReceiveItemConfirmAction,
     stockReceiveItemReturnAction,
@@ -143,7 +144,7 @@ const enhance = compose(
             if (stockReceiveType === 'supply') {
                 dispatch(stockReceiveItemFetchAction(stockReceiveId))
             } else if (stockReceiveType === 'transfer' || stockReceiveType === 'delivery_return') {
-                dispatch(stockTransferItemFetchAction(stockReceiveId))
+                dispatch(stockReceiveOrderItemFetchAction(stockReceiveId))
             } else if (stockReceiveType === 'order_return') {
                 dispatch(orderReturnListAction(stockReceiveId))
             }
