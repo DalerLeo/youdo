@@ -106,6 +106,22 @@ export const stockTransferListFetchAction = (filter, history) => {
     }
 }
 
+export const stockReceiveOrderItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.STOCK_RECEIVE_ORDER_ITEM, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_ORDER_ITEM,
+        payload
+    }
+}
+
 export const stockTransferItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.STOCK_TRANSFER_ITEM, id))
