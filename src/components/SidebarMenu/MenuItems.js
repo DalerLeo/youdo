@@ -10,9 +10,16 @@ import Store from 'material-ui/svg-icons/action/store'
 import Person from 'material-ui/svg-icons/social/group'
 import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
-import {getGroups} from '../../helpers/storage'
+import {getGroups, getValue} from '../../helpers/storage'
+import toBoolean from '../../helpers/toBoolean'
+import {IS_SUPERUSER} from '../../constants/storage'
 
-export const MenuItems = [
+const sessionGroups = getGroups()
+const isSuperUser = toBoolean(getValue(IS_SUPERUSER))
+
+const NOT_FOUND = -1
+
+const defaultMenu = [
     {
         name: 'Продажи',
         icon: (<AttachMoney />),
@@ -154,7 +161,6 @@ const groups = [
     }
 ]
 
-const sessionGroups = getGroups()
 let menus = []
 const getLinksByGroup = (groupId) => {
     return _.get(_.find(groups, {'id': _.toInteger(groupId)}), 'urls')
@@ -162,6 +168,35 @@ const getLinksByGroup = (groupId) => {
 _.map(sessionGroups, (item) => {
     const links = getLinksByGroup(item)
     _.map(links, (link) => {
-        menus.push(link)
+        const parent = _
+            .chain(defaultMenu)
+            .find((obj) => {
+                return (_.findIndex(obj.childs,
+                    (ch) => ch.url === link) > NOT_FOUND)
+            })
+            .value()
+        let hasIn = false
+        _.map(menus, (menu) => {
+            if (menu.url === link) {
+                hasIn = true
+            }
+            _.map(menu.childs, (child) => {
+                if (child.url === link) {
+                    hasIn = true
+                }
+            })
+        })
+        if (!hasIn) {
+            menus.push(parent)
+        }
     })
 })
+
+const getMenus = () => {
+    if (isSuperUser) {
+        return defaultMenu
+    }
+    return menus
+}
+export const MenuItems = getMenus()
+

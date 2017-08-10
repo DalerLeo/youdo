@@ -22,8 +22,7 @@ const style = {
 
 const enhance = compose(
     connect((state) => {
-        const count = _.get(state, ['notifications', 'timeInterval', 'data'])
-        return count
+        return _.get(state, ['notifications', 'timeInterval', 'data'])
     })
 )
 
@@ -99,9 +98,9 @@ const SideBarMenu = enhance((props) => {
                     }
                 </div>
                 {items}
-                <div className={classes.bottom}>
+                {!_.isEmpty(bottomItems) && <div className={classes.bottom}>
                     {bottomItems}
-                </div>
+                </div>}
 
                 <div className={classes.logout}>
                     <ToolTip position="right" text="Выйти">

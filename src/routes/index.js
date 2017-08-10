@@ -3,6 +3,7 @@ import {userIsAuth} from '../permissions'
 import {getToken} from '../helpers/storage'
 import * as ROUTES from '../constants/routes'
 import App from '../containers/App'
+import {AccessList} from '../containers/Access'
 import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
 import {CashboxList} from '../containers/Cashbox'
@@ -73,6 +74,12 @@ export default {
                     hashHistory.push(ROUTES.DASHBOARD_URL)
                 }
             }
+        },
+        // Access Denied
+        {
+            path: ROUTES.ACCESS_DENIED_URL,
+            component: userIsAuth(AccessList),
+            childRoutes: []
         },
         // Shop
         {
