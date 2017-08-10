@@ -439,7 +439,7 @@ const StatSalesGridList = enhance((props) => {
         <Container>
             {page}
             <StatSaleDialog
-                loading={_.get(detailData.detailLoading)}
+                loading={_.get(detailData, 'detailLoading')}
                 detailData={detailData}
                 open={statSaleDialog.openStatSaleDialog}
                 onClose={statSaleDialog.handleCloseStatSaleDialog}

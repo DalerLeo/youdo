@@ -457,11 +457,11 @@ OrderDetails.propTypes = {
     }),
     returnDataLoading: PropTypes.bool,
     cancelOrderReturnDialog: PropTypes.shape({
-        handleOpenCancelOrderReturnDialog: PropTypes.func.isRequired,
-        handleCloseCancelOrderReturnDialog: PropTypes.func.isRequired,
-        handleSubmitCancelOrderReturnDialog: PropTypes.func.isRequired,
-        openCancelOrderReturnDialog: PropTypes.number.isRequired
-    }).isRequired
+        handleOpenCancelOrderReturnDialog: PropTypes.func,
+        handleCloseCancelOrderReturnDialog: PropTypes.func,
+        handleSubmitCancelOrderReturnDialog: PropTypes.func,
+        openCancelOrderReturnDialog: PropTypes.number
+    })
 }
 
 export default OrderDetails

@@ -162,6 +162,11 @@ const PriceDetails = enhance((props) => {
     const priceUpdated = _.get(listDetailData, ['0', 'priceUpdated']) ? moment(_.get(listDetailData, ['0', 'priceUpdated'])).format('DD.MM.YYYY') : 'Не установлено'
     const averageCost = _.get(listDetailData, ['0', 'netCost'])
 
+    const minPrice = numberFormat(_.get(detailData, ['data', 'minPrice']))
+    const maxPrice = numberFormat(_.get(detailData, ['data', 'maxPrice']))
+    const customPrice = _.get(detailData, ['data', 'customPrice'])
+    const currencyName = _.get(detailData, ['data', 'currencyName'])
+
     const iconStyle = {
         icon: {
             color: '#666',
@@ -280,7 +285,7 @@ const PriceDetails = enhance((props) => {
                                 </Tooltip>
                             </div>
                         </div>
-                        <div className={classes.agentCanSet}>Агент может устанавливать цены. <br/> Минимальная / максимальная стоимость: 4 000 / 6 000 SUM</div>
+                        {customPrice && <div className={classes.agentCanSet}>Агент может устанавливать цены. <br/> Минимальная / максимальная стоимость: {minPrice} / {maxPrice} {currencyName}</div>}
                         <div className={classes.tableContent}>
                             <Row className="dottedList">
                                 <Col xs={6}>Тип обьекта</Col>
