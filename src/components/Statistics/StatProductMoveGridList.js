@@ -201,29 +201,40 @@ const enhance = compose(
             borderRight: 'solid 1px #efefef'
         },
         tableBody: {
-            '& > tr > td:first-child': {
-                width: '120px'
+            '& > tr:first-child > td:first-child': {
+                width: '125px'
             },
             '& tr:first-child > td:first-child': {
                 verticalAlign: 'bottom',
-                paddingBottom: '15px'
+                padding: '0 30px 15px'
             }
         },
         mainTable: {
             width: '100%',
+            minWidth: '1200px',
             color: '#666',
             borderCollapse: 'collapse',
             '& tr, td': {
                 height: '40px'
             },
             '& td': {
-                padding: '0 30px'
+                padding: '0 20px'
             }
         },
         title: {
             fontWeight: '600',
             '& tr, td': {
                 border: '1px #efefef solid'
+            }
+        },
+        subTitle: {
+            extend: 'title',
+            '& td:nth-child(odd)': {
+                borderRight: 'none'
+            },
+            '& td:nth-child(even)': {
+                borderLeft: 'none',
+                textAlign: 'right'
             }
         },
         leftTable: {
@@ -253,6 +264,9 @@ const enhance = compose(
             }
         },
         tableRow: {
+            '& td:nth-child(odd)': {
+                borderRight: '1px #efefef solid'
+            },
             '&:nth-child(even)': {
                 backgroundColor: '#f9f9f9'
             }
@@ -310,7 +324,7 @@ const StatProductMoveGridList = enhance((props) => {
                 <td colSpan={2}>Остаток на конец</td>
 
             </tr>
-            <tr className={classes.title}>
+            <tr className={classes.subTitle}>
                 <td>Кол-во</td>
                 <td>Стоимость</td>
                 <td>Кол-во</td>
@@ -322,25 +336,25 @@ const StatProductMoveGridList = enhance((props) => {
             </tr>
             <tr className={classes.tableRow}>
                 <td>1</td>
-                <td>3USD</td>
-                <td>4</td>
-                <td>4</td>
-                <td>1</td>
-                <td>2</td>
-                <td>3USD</td>
-                <td>4</td>
-                <td>4</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
             </tr>
             <tr className={classes.tableRow}>
                 <td>1</td>
-                <td>3USD</td>
-                <td>4</td>
-                <td>4</td>
-                <td>1</td>
-                <td>2</td>
-                <td>3USD</td>
-                <td>4</td>
-                <td>4</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
             </tr>
             </tbody>
         </table>
