@@ -260,6 +260,7 @@ const PriceList = enhance((props) => {
         })
         return _.toInteger(primary)
     }
+
     const priceSetForm = {
         initialValues: (() => {
             const priceList = _.map(detailData.mergedList(), (item) => {
@@ -268,13 +269,21 @@ const PriceList = enhance((props) => {
                     'currency': {value: _.get(item, ['currency', 'id']) || USD}
                 }
             })
-            return {'prices': priceList, 'isPrimary': getVal(detailData.mergedList())}
+            return {
+                'prices': priceList,
+                'isPrimary': getVal(detailData.mergedList()),
+                'agentCanChange': _.get(detail, 'customPrice'),
+                'minPrice': _.get(detail, 'minPrice'),
+                'maxPrice': _.get(detail, 'maxPrice'),
+                'priceCurrency': {value: _.get(detail, ['currencyId'])}
+            }
         })(),
         openPriceSetForm,
         handleOpenPriceSetForm: props.handleOpenPriceSetForm,
         handleClosePriceSetForm: props.handleClosePriceSetForm,
         handleSubmitPriceSetForm: props.handleSubmitPriceSetForm
     }
+
     return (
         <Layout {...layout}>
             <PriceGridList
