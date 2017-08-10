@@ -3,7 +3,6 @@ import React from 'react'
 import {Row} from 'react-flexbox-grid'
 import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
-import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
@@ -42,13 +41,25 @@ const enhance = compose(
         },
         table: {
             display: 'flex',
-            margin: '0 -30px'
+            margin: '0 -30px',
+            '& .dottedList': {
+                '& svg': {
+                    position: 'absolute',
+                    right: '-10px',
+                    width: '22px !important',
+                    opacity: '0',
+                    cursor: 'pointer'
+                },
+                '&:hover svg': {
+                    opacity: '1'
+                }
+            }
         },
         halfTable: {
             width: '50%',
             padding: '20px 30px',
             '& .dottedList': {
-                margin: '5px 0',
+                margin: '10px 0',
                 padding: '0',
                 '&:after': {
                     display: 'none'
@@ -108,8 +119,8 @@ const enhance = compose(
         bonusProduct: {
             borderRight: '1px #ccc solid'
         },
-        giftProduct: {
-            extend: 'bonusProduct'
+        addProduct: {
+            marginTop: '10px'
         },
         subTitle: {
             textAlign: 'left',
@@ -132,44 +143,73 @@ const enhance = compose(
     }, {open: false}),
 
     withHandlers({
-        handleAdd: props => () => {
+        handleAddBonus: props => () => {
             const bonusProduct = _.get(props, ['bonusProduct', 'input', 'value'])
             const bonusAmount = _.get(props, ['bonusAmount', 'input', 'value'])
-            const giftProduct = _.get(props, ['giftProduct', 'input', 'value'])
-            const giftAmount = _.get(props, ['giftAmount', 'input', 'value'])
             const onChange = _.get(props, ['bonusProducts', 'input', 'onChange'])
             const bonusProducts = _.get(props, ['bonusProducts', 'input', 'value'])
 
             if (!_.isEmpty(bonusProduct) && bonusAmount) {
                 let has = false
                 _.map(bonusProducts, (item) => {
-                    if (_.get(item, 'bonusProduct') === bonusProduct && _.get(item, 'giftProduct') === giftProduct) {
+                    if (_.get(item, 'bonusProduct') === bonusProduct) {
                         item.bonusAmount = _.toInteger(item.bonusAmount) + _.toInteger(bonusAmount)
-                        item.giftAmount = _.toInteger(item.giftAmount) + _.toInteger(giftAmount)
+                        item.giftAmount = _.toInteger(item.giftAmount)
                         has = true
                     }
                 })
                 if (!has) {
-                    onChange(_.union(bonusProducts, [{bonusProduct, bonusAmount, giftProduct, giftAmount}]))
+                    onChange(_.union(bonusProducts, [{bonusProduct, bonusAmount}]))
                     has = false
                 }
             }
         },
 
-        handleRemove: props => (listIndex) => {
+        handleAddGift: props => () => {
+            const giftProduct = _.get(props, ['giftProduct', 'input', 'value'])
+            const giftAmount = _.get(props, ['giftAmount', 'input', 'value'])
+            const onChange = _.get(props, ['giftProducts', 'input', 'onChange'])
+            const giftProducts = _.get(props, ['giftProducts', 'input', 'value'])
+
+            if (!_.isEmpty(giftProduct) && giftAmount) {
+                let has = false
+                _.map(giftProducts, (item) => {
+                    if (_.get(item, 'giftProduct') === giftProduct) {
+                        item.giftAmount = _.toInteger(item.giftAmount) + _.toInteger(giftAmount)
+                        item.giftAmount = _.toInteger(item.giftAmount)
+                        has = true
+                    }
+                })
+                if (!has) {
+                    onChange(_.union(giftProducts, [{giftProduct, giftAmount}]))
+                    has = false
+                }
+            }
+        },
+
+        handleRemoveBonus: props => (listIndex) => {
             const onChange = _.get(props, ['bonusProducts', 'input', 'onChange'])
             const bonusProducts = _(props)
                 .get(['bonusProducts', 'input', 'value'])
                 .filter((item, index) => index !== listIndex)
 
             onChange(bonusProducts)
+        },
+
+        handleRemoveGift: props => (listIndex) => {
+            const onChange = _.get(props, ['giftProducts', 'input', 'onChange'])
+            const giftProducts = _(props)
+                .get(['giftProducts', 'input', 'value'])
+                .filter((item, index) => index !== listIndex)
+
+            onChange(giftProducts)
         }
     })
 )
 
-const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRemove, ...defaultProps}) => {
+const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, handleAddGift, handleRemoveBonus, handleRemoveGift, ...defaultProps}) => {
     const bonusProducts = _.get(defaultProps, ['bonusProducts', 'input', 'value']) || []
-    const error = _.get(defaultProps, ['bonusProducts', 'meta', 'error'])
+    const giftProducts = _.get(defaultProps, ['giftProducts', 'input', 'value']) || []
     return (
         <div className={classes.wrapper}>
             <div>
@@ -212,10 +252,9 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                                 />
                             </div>
                         </div>
-                        <FlatButton
-                            label="Добавить"
-                            labelStyle={{color: '#12aaeb'}}
-                            onTouchTap={handleAdd}/>
+                        <div className={classes.addProduct}>
+                            <a onClick={handleAddBonus}>Добавить</a>
+                        </div>
                     </div>
                     <div className={classes.giftProduct}>
                         <div className={classes.subTitle}>Товар в подарок</div>
@@ -246,64 +285,51 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                                 />
                             </div>
                         </div>
-                        <FlatButton
-                            label="Добавить"
-                            labelStyle={{color: '#12aaeb'}}
-                            onTouchTap={handleAdd}/>
+                        <div className={classes.addProduct}>
+                            <a onClick={handleAddGift}>Добавить</a>
+                        </div>
                     </div>
                 </Row>}
             </div>
-            {error && <div className={classes.error}>{error}</div>}
-            {!_.isEmpty(bonusProducts)
-                ? <div className={classes.table}>
-                    <div className={classes.halfTable}>
+            {(!_.isEmpty(bonusProducts) || !_.isEmpty(giftProducts))
+            ? <div className={classes.table}>
+                    {(!_.isEmpty(bonusProducts)) && <div className={classes.halfTable}>
                         <div className={classes.subTitle}>При покупке:</div>
                         {_.map(bonusProducts, (item, index) => {
                             const bonusProduct = _.get(item, ['bonusProduct', 'value', 'name'])
                             const bonusMeasurement = _.get(item, ['bonusProduct', 'value', 'measurement', 'name'])
                             const bonusAmount = numberFormat(_.get(item, 'bonusAmount'), bonusMeasurement)
-                            if (_.isEmpty(bonusProduct)) {
-                                return false
-                            }
                             return (
                                 <div key={index} className="dottedList">
                                     <div>{bonusProduct} - {bonusAmount}</div>
-                                    <IconButton onTouchTap={() => handleRemove(index)}>
-                                        <DeleteIcon color="#666666"/>
-                                    </IconButton>
+                                    <DeleteIcon color="#666666" onClick={() => { handleRemoveBonus(index) }}/>
                                 </div>
                             )
                         })}
-                    </div>
-                    <div className={classes.halfTable}>
+                    </div>}
+                    {(!_.isEmpty(giftProducts)) && <div className={classes.halfTable}>
                         <div className={classes.subTitle}>Клиент получает в подарок:</div>
-                        {_.map(bonusProducts, (item, index) => {
+                        {_.map(giftProducts, (item, index) => {
                             const giftProduct = _.get(item, ['giftProduct', 'value', 'name'])
                             const giftMeasurement = _.get(item, ['giftProduct', 'value', 'measurement', 'name'])
                             const giftAmount = numberFormat(_.get(item, 'giftAmount'), giftMeasurement)
-                            if (_.isEmpty(giftProduct)) {
-                                return false
-                            }
                             return (
                                 <div key={index} className="dottedList">
                                     <div>{giftProduct} - {giftAmount}</div>
-                                    <IconButton onTouchTap={() => handleRemove(index)}>
-                                        <DeleteIcon color="#666666"/>
-                                    </IconButton>
+                                    <DeleteIcon color="#666666" onClick={() => { handleRemoveGift(index) }}/>
                                 </div>
                             )
                         })}
-                    </div>
+                    </div>}
                 </div>
-                : <div className={classes.imagePlaceholder}>
+            : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
                         <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
                             товар?
                         </div>
                     </div>
-                </div>
-            }
+                </div>}
         </div>
     )
 }
