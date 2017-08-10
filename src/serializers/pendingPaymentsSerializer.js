@@ -2,15 +2,17 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
+const DEFAULT = 0
 export const createSerializer = (data, order) => {
     const amount = _.get(data, 'amount')
     const cashbox = _.get(data, ['cashbox', 'value', 'id'])
-    const now = _.get(data, 'now') || true
+    const currencyRate = _.get(data, 'currencyRate') || DEFAULT
     return {
         order,
         'amount': numberWithoutSpaces(amount),
         cashbox,
-        now
+        'rate_type': currencyRate,
+        'custom_rate': numberWithoutSpaces(_.get(data, 'customRate'))
     }
 }
 

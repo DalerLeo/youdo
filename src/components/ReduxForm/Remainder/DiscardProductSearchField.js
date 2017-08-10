@@ -9,8 +9,8 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
-const getOptions = (search, type, stock) => {
-    return axios().get(`${PATH.PRODUCT_LIST}?type=${type || ''}&page_size=1000&stock=${stock || ''}&search=${search || ''}`)
+const getOptions = (search, type) => {
+    return axios().get(`${PATH.PRODUCT_LIST}?type=${type || ''}&page_size=1000&search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -43,13 +43,12 @@ const enhance = compose(
     })
 )
 
-const ProductCustomSearchField = enhance((props) => {
+const DiscardProductSearchField = enhance((props) => {
     const {dispatch, state, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
-    const type = _.get(state, ['form', 'RemainderTransferForm', 'values', 'productType', 'value'])
-    const stock = _.get(state, ['form', 'RemainderTransferForm', 'values', 'fromStock', 'value'])
+    const type = _.get(state, ['form', 'RemainderDiscardForm', 'values', 'productType', 'value'])
     return (
         <SearchFieldCustom
             getValue={(value) => {
@@ -58,7 +57,7 @@ const ProductCustomSearchField = enhance((props) => {
             getText={(value) => {
                 return _.get(value, ['name'])
             }}
-            getOptions={ (search) => { return getOptions(search, type, stock) }}
+            getOptions={ (search) => { return getOptions(search, type) }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])
@@ -69,4 +68,4 @@ const ProductCustomSearchField = enhance((props) => {
     )
 })
 
-export default ProductCustomSearchField
+export default DiscardProductSearchField

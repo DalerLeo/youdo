@@ -239,6 +239,7 @@ const enhance = compose(
         },
         leftTable: {
             display: 'table',
+            marginLeft: '-30px',
             width: '100%',
             '& > div': {
                 '&:nth-child(odd)': {
@@ -255,20 +256,25 @@ const enhance = compose(
                     verticalAlign: 'bottom',
                     '& span': {
                         verticalAlign: 'bottom',
-                        padding: '15px 0',
+                        padding: '15px 30px',
                         borderTop: '1px #efefef solid',
                         borderBottom: '1px #efefef solid'
                     }
                 },
                 '& span': {
                     display: 'table-cell',
-                    verticalAlign: 'middle'
+                    verticalAlign: 'middle',
+                    padding: '0 30px'
                 }
             }
         },
         tableRow: {
             '& td:nth-child(odd)': {
-                borderRight: '1px #efefef solid'
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
+            },
+            '& td:nth-child(1)': {
+                textAlign: 'left'
             },
             '&:nth-child(even)': {
                 backgroundColor: '#f9f9f9'

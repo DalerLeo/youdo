@@ -309,6 +309,7 @@ const rootReducer = combineReducers({
         print: createThunkReducer(actionTypes.ORDER_LIST_PRINT),
         transfer: createThunkReducer(actionTypes.STOCK_TRANSFER_LIST),
         transferItem: createThunkReducer(actionTypes.STOCK_TRANSFER_ITEM),
+        stockTransfer: createThunkReducer(actionTypes.STOCK_RECEIVE_ORDER_ITEM),
         item: createThunkReducer(actionTypes.STOCK_RECEIVE_ITEM),
         create: createThunkReducer(actionTypes.STOCK_RECEIVE_CREATE),
         barcodeList: createThunkReducer(actionTypes.STOCK_BARCODE_LIST)

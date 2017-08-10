@@ -19,7 +19,7 @@ import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
 import getConfig from '../../helpers/getConfig'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
-const INDIVIDUAL = 3
+const INDIVIDUAL = 2
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -76,7 +76,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const currencyRate = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'now'])
+        const currencyRate = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'currencyRate'])
 
         return {
             currencyRate
@@ -160,12 +160,12 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 </div>
 
                                 <Field
-                                    name="now"
+                                    name="currencyRate"
                                     style={{marginTop: '10px'}}
                                     component={PendingPaymentRadioButton}
                                     label="Текущий курс"
                                 />
-                                {_.toInteger(currencyRate) === INDIVIDUAL
+                                {_.toInteger(currencyRate) === _.toInteger(INDIVIDUAL)
                                     ? <div className={classes.customCurrency}>
                                         <Field
                                             component={TextField}
@@ -173,7 +173,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                             normalize={normalizeNumber}
                                             fullWidth={true}
                                             className={classes.inputFieldCustom}
-                                            name="custom"/>
+                                            name="customRate"/>
                                     </div> : null}
 
                             </div>

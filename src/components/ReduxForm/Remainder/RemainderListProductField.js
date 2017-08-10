@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withReducer, withHandlers} from 'recompose'
+import {compose, withReducer, withHandlers, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import Check from 'material-ui/svg-icons/navigation/check'
@@ -17,9 +17,10 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from '../../DeleteIcon/index'
 import ProductCustomSearchField from './ProductCustomSearchField'
-import RemainderStatusSearchField from '../../ReduxForm/Remainder/RemainderStatusSearchField'
-import ProductTypeSearchField from '../Product/ProductTypeSearchField'
+import RemainderStatusSearchField from './RemainderStatusSearchField'
+import {RemainderProductTypeSearchField} from '../index'
 import TextField from '../Basic/TextField'
+import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 
 const enhance = compose(
     injectSheet({
@@ -74,10 +75,10 @@ const enhance = compose(
                 height: '40px !important',
                 fontWeight: '600 !important',
                 fontSize: '13px!important',
-                width: '11%'
+                width: '80px'
             },
             '& th:first-child': {
-                width: '70%',
+                width: '404px',
                 textAlign: 'left !important',
                 fontWeight: '600 !important'
             }
@@ -103,15 +104,16 @@ const enhance = compose(
                 backgroundImage: 'none'
             },
             '& td:first-child': {
-                width: '70%'
+                width: '404px',
+                padding: '0 !important'
             },
             '& tr': {
                 border: 'none !important'
             },
             '& td': {
                 height: '40px !important',
-                padding: '0 !important',
-                width: '11%'
+                padding: '0 10px !important',
+                width: '85px'
             },
             '& th:first-child': {
                 width: '80%',
@@ -130,7 +132,10 @@ const enhance = compose(
             fontWeight: '600',
             color: '#333 !important',
             textAlign: 'left',
-            padding: '0 !important'
+            '&:first-child': {
+                padding: '0 !important'
+            },
+            padding: '0 10px !important'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -210,6 +215,13 @@ const enhance = compose(
             '& button': {
                 marginTop: '10px !important'
             }
+        },
+        searchFieldCustom: {
+            extend: 'inputFieldCustom',
+            position: 'initial !important',
+            '& label': {
+                lineHeight: 'auto !important'
+            }
         }
     }),
     connect((state) => {
@@ -221,6 +233,7 @@ const enhance = compose(
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
+    withState('editItem', 'setEditItem', null),
 
     withHandlers({
         handleAdd: props => () => {
@@ -250,6 +263,29 @@ const enhance = compose(
             }
         },
 
+        handleEdit: props => (listIndex) => {
+            const {setEditItem} = props
+            const products = _.get(props, ['products', 'input', 'value'])
+            const amount = (_.get(props, ['editAmount', 'input', 'value']))
+            const isDefect = (_.get(props, ['editIsDefect', 'input', 'value']))
+            _.map(products, (item, index) => {
+                if (index === listIndex) {
+                    if (!_.isEmpty(amount)) {
+                        item.amount = amount
+                    }
+                    if (!_.isEmpty(isDefect)) {
+                        item.isDefect = isDefect
+                    }
+                }
+            })
+            const fields = ['editAmount', 'editIsDefect']
+            for (let i = 0; i < fields.length; i++) {
+                let newChange = _.get(props, [fields[i], 'input', 'onChange'])
+                props.dispatch(newChange(null))
+            }
+            setEditItem(null)
+        },
+
         handleRemove: props => (listIndex) => {
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _(props)
@@ -261,7 +297,7 @@ const enhance = compose(
     })
 )
 
-const RemainderListProductField = ({classes, handleAdd, handleRemove, measurement, ...defaultProps}) => {
+const RemainderListProductField = ({classes, handleAdd, handleRemove, measurement, handleEdit, editItem, setEditItem, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     return (
@@ -269,18 +305,19 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
             <div>
                 <div className={classes.background}>
                     <Field
-                        label="Отфильтровать по типу"
                         name="productType"
+                        label="Отфильтровать по типу"
                         fullWidth={true}
-                        className={classes.inputFieldCustom}
-                        component={ProductTypeSearchField}
+                        className={classes.searchFieldCustom}
+                        component={RemainderProductTypeSearchField}
                         {..._.get(defaultProps, 'productType')}
                     />
 
                     <ProductCustomSearchField
+                        name="product"
                         label="Наименование товара"
                         fullWidth={true}
-                        className={classes.inputFieldCustom}
+                        className={classes.searchFieldCustom}
                         {..._.get(defaultProps, 'product')}
                     />
                     <TextField
@@ -309,7 +346,8 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                 {!_.isEmpty(products) && <Table
                     fixedHeader={true}
                     fixedFooter={false}
-                    multiSelectable={false}>
+                    multiSelectable={false}
+                    selectable={false}>
                     <TableHeader
                         displaySelectAll={false}
                         adjustForCheckbox={false}
@@ -329,16 +367,55 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                         showRowHover={false}
                         stripedRows={false}>
                         {_.map(products, (item, index) => {
+                            const product = _.get(item, ['product', 'value', 'name'])
+                            const isDefect = _.get(item, ['isDefect', 'text'])
+                            const amount = _.get(item, 'amount')
+                            const proMeasurement = _.get(item, ['product', 'value', 'measurement', 'name'])
+
+                            if (editItem === index) {
+                                return (
+                                    <TableRow key={index} className={classes.tableRow}>
+                                        <TableRowColumn>{product}</TableRowColumn>
+                                        <TableRowColumn>
+                                            <Field
+                                                label="Статус"
+                                                name="editIsDefect"
+                                                className={classes.inputFieldCustom}
+                                                fullWidth={true}
+                                                component={RemainderStatusSearchField}
+                                                {..._.get(defaultProps, 'editIsDefect')}
+                                            />
+                                        </TableRowColumn>
+                                        <TableRowColumn>
+                                            <TextField
+                                                name="editAmount"
+                                                label={amount}
+                                                fullWidth={true}
+                                                className={classes.inputFieldCustom}
+                                                {..._.get(defaultProps, 'editAmount')}
+                                            />
+                                        </TableRowColumn>
+                                        <TableRowColumn style={{textAlign: 'right', width: '118px'}}>
+                                            <IconButton
+                                                onTouchTap={() => { handleEdit(index) }}>
+                                                <Check color="#12aaeb"/>
+                                            </IconButton>
+                                        </TableRowColumn>
+                                    </TableRow>
+                                )
+                            }
                             return (
                                 <TableRow key={index} className={classes.tableRow}>
-                                    <TableRowColumn>{_.get(item, ['product', 'value', 'name'])}</TableRowColumn>
+                                    <TableRowColumn>{product}</TableRowColumn>
+                                    <TableRowColumn>{isDefect}</TableRowColumn>
                                     <TableRowColumn>
-                                        {_.get(item, ['isDefect', 'text'])}
-                                    </TableRowColumn>
-                                    <TableRowColumn>
-                                        {_.get(item, 'amount')} {_.get(item, ['product', 'value', 'measurement', 'name'])}
+                                        {amount} {proMeasurement}
                                     </TableRowColumn>
                                     <TableRowColumn style={{textAlign: 'right'}}>
+                                        <IconButton
+                                            onTouchTap={() => setEditItem(index)}>
+                                            <EditIcon color="#666666"/>
+                                        </IconButton>
                                         <IconButton onTouchTap={() => handleRemove(index)}>
                                             <DeleteIcon color="#666666"/>
                                         </IconButton>
