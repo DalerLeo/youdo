@@ -12,11 +12,15 @@ export const courseSerializer = (data, currency) => {
 
 export const createSerializer = (data) => {
     const name = _.get(data, 'name')
-    const rate = _.get(data, 'rate')
-
+    const groups = _.map(_.get(data, 'groups'), (item, index) => {
+        return item ? index : null
+    })
+    const filteredArr = _.filter(groups, (item) => {
+        return item
+    })
     return {
         name,
-        rate
+        'groups': filteredArr
     }
 }
 

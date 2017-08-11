@@ -21,11 +21,11 @@ import {
     positionUpdateAction,
     positionListFetchAction,
     positionDeleteAction,
-    positionItemFetchAction
+    positionItemFetchAction,
+    positionPermissionListFetchAction
 } from '../../actions/position'
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -35,6 +35,8 @@ const enhance = compose(
         const createLoading = _.get(state, ['position', 'create', 'loading'])
         const updateLoading = _.get(state, ['position', 'update', 'loading'])
         const list = _.get(state, ['position', 'list', 'data'])
+        const permissionList = _.get(state, ['position', 'permission', 'data'])
+        const permissionLoading = _.get(state, ['position', 'permission', 'loading'])
         const listLoading = _.get(state, ['position', 'list', 'loading'])
         const createForm = _.get(state, ['form', 'PositionCreateForm'])
         const courseForm = _.get(state, ['form', 'AddCourseForm'])
@@ -54,7 +56,9 @@ const enhance = compose(
             createForm,
             courseForm,
             detailId,
-            detailFilter
+            detailFilter,
+            permissionList,
+            permissionLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -64,9 +68,24 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
+        const prevCreateDialog = toBoolean(_.get(props, ['location', 'query', POSITION_CREATE_DIALOG_OPEN]))
+        const nextCreateDialog = toBoolean(_.get(nextProps, ['location', 'query', POSITION_CREATE_DIALOG_OPEN]))
+        const prevUpdateDialog = toBoolean(_.get(props, ['location', 'query', POSITION_UPDATE_DIALOG_OPEN]))
+        const nextUpdateDialog = toBoolean(_.get(nextProps, ['location', 'query', POSITION_UPDATE_DIALOG_OPEN]))
+        return (prevCreateDialog !== nextCreateDialog || prevUpdateDialog !== nextUpdateDialog) &&
+               (nextUpdateDialog === true || nextCreateDialog === true)
+    }, ({dispatch, filter, location}) => {
+        const createDialogDialog = toBoolean(_.get(location, ['query', POSITION_CREATE_DIALOG_OPEN]))
+        const updateDialogDialog = toBoolean(_.get(location, ['query', POSITION_UPDATE_DIALOG_OPEN]))
+
+        if (createDialogDialog || updateDialogDialog) {
+            dispatch(positionPermissionListFetchAction(filter))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
         const positionId = _.get(nextProps, ['params', 'positionId'])
-        return (positionId && _.get(props, ['params', 'positionId']) !== positionId) ||
-            props.detailFilter.filterRequest() !== nextProps.detailFilter.filterRequest()
+        return (positionId && _.get(props, ['params', 'positionId']) !== positionId)
     }, ({dispatch, params, detailFilter}) => {
         const positionId = _.toInteger(_.get(params, 'positionId'))
         positionId && dispatch(positionItemFetchAction(detailFilter, positionId))
@@ -162,12 +181,11 @@ const enhance = compose(
         },
 
         handleOpenUpdateDialog: props => (id) => {
-            const {dispatch, filter, location: {pathname}} = props
+            const {filter} = props
             hashHistory.push({
-                pathname,
+                pathname: sprintf(ROUTER.POSITION_ITEM_PATH, _.toNumber(id)),
                 query: filter.getParams({[POSITION_UPDATE_DIALOG_OPEN]: true})
             })
-            dispatch(positionItemFetchAction(id))
         },
 
         handleCloseUpdateDialog: props => () => {
@@ -177,10 +195,8 @@ const enhance = compose(
                 query: filter.getParams({[POSITION_UPDATE_DIALOG_OPEN]: false})
             })
         },
-
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter, detailId} = props
-
             return dispatch(positionUpdateAction(detailId, _.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
@@ -212,18 +228,14 @@ const PositionList = enhance((props) => {
         layout,
         params,
         detailId,
-        detailFilter
+        detailFilter,
+        permissionLoading,
+        permissionList
     } = props
 
     const openCreateDialog = toBoolean(_.get(location, ['query', POSITION_CREATE_DIALOG_OPEN]))
     const openCourseDialog = toBoolean(_.get(location, ['query', ADD_COURSE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', POSITION_UPDATE_DIALOG_OPEN]))
-
-    if (_.get(list, ['results']) && !_.get(params, 'positionId')) {
-        const positionMiniId = _.get(_.nth(_.get(list, ['results']), ZERO), 'id')
-        props.handlePositionClick(positionMiniId)
-    }
-
     const positionDetailId = _.toInteger(_.get(params, 'positionId'))
 
     const actionsDialog = {
@@ -235,6 +247,8 @@ const PositionList = enhance((props) => {
         initialValues: (() => {
             return {}
         })(),
+        permissionList,
+        permissionLoading,
         createLoading,
         openCreateDialog,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
@@ -260,14 +274,18 @@ const PositionList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            const positionName = _.get(_.find((_.get(list, 'results')), {'id': detailId}), 'name')
-            const positionRate = _.get(_.find((_.get(list, 'results')), {'id': detailId}), 'rate')
-            if (!positionName || openCreateDialog) {
+            const name = _.get(detail, 'name')
+            let group = []
+            const groups = _.get(detail, 'groups')
+            _.each(groups, (item) => {
+                group[item] = true
+            })
+            if (!name || openCreateDialog) {
                 return {}
             }
             return {
-                name: positionName,
-                rate: positionRate
+                name: name,
+                groups: group
             }
         })(),
         updateLoading: detailLoading || updateLoading,

@@ -90,7 +90,7 @@ export const positionListFetchAction = (filter) => {
 
 export const positionItemFetchAction = (filter, id) => {
     const payload = axios()
-        .get(sprintf(API.POSITION_RATE, id))
+        .get(sprintf(API.POSITION_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -100,6 +100,22 @@ export const positionItemFetchAction = (filter, id) => {
 
     return {
         type: actionTypes.POSITION_ITEM,
+        payload
+    }
+}
+
+export const positionPermissionListFetchAction = (filter) => {
+    const payload = axios()
+        .get(API.POSITION_PERMISSION)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.POSITION_PERMISSION,
         payload
     }
 }

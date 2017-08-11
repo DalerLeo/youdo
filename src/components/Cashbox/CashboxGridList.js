@@ -5,17 +5,15 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import CashboxCreateDialog from './CashboxCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
+import Tooltip from '../ToolTip'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import SettingSideMenu from '../Setting/SettingSideMenu'
@@ -100,26 +98,28 @@ const enhance = compose(
             margin: '0 -30px !important',
             width: 'auto !important',
             padding: '0 30px',
-            '&:hover button': {
+            '&:hover > div:last-child > div ': {
                 opacity: '1'
             }
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0',
+            justifyContent: 'flex-end'
         }
     }),
 )
 
-const vertMenuStyle = {
-    button: {
-        padding: 0,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 30,
-        height: 30
-    },
+const iconStyle = {
     icon: {
         color: '#666',
-        width: 18,
-        height: 18
+        width: 25,
+        height: 25
+    },
+    button: {
+        width: 25,
+        height: 25,
+        padding: 0
     }
 }
 
@@ -157,14 +157,6 @@ const CashboxGridList = enhance((props) => {
         const currency = _.get(item, ['currency', 'name']) || 'N/A'
         const cashier = _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName'])
         const type = _.toInteger(_.get(item, 'type')) === bank ? 'банковский счет' : 'наличный'
-        const iconButton = (
-            <IconButton
-                disableTouchRipple={true}
-                className={classes.verticalButton}
-                style={vertMenuStyle.button}>
-                <MoreVertIcon />
-            </IconButton>
-        )
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={2}>{id}</Col>
@@ -173,22 +165,28 @@ const CashboxGridList = enhance((props) => {
                 <Col xs={2}>{cashier}</Col>
                 <Col xs={2}>{type}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        iconStyle={vertMenuStyle.icon}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        />
-                    </IconMenu>
+                    <div className={classes.iconBtn}>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                touch={true}
+                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Удалить">
+                            <IconButton
+                                disableTouchRipple={true}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                touch={true}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </Col>
             </Row>
         )

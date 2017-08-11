@@ -350,7 +350,7 @@ export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
 export const PLAN_CREATE = `/${STAT_AGENT_LIST}/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
 
-export const POSITION = 'main/group/gcrud'
+export const POSITION = 'main/position'
 export const POSITION_COURSE_CREATE = 'finance/currency_rate/'
 export const POSITION_CREATE = `/${POSITION}/`
 export const POSITION_LIST = `/${POSITION}/`
@@ -358,6 +358,7 @@ export const POSITION_DELETE = `/${POSITION}/%d/`
 export const POSITION_ITEM = `/${POSITION}/%d/`
 export const POSITION_PRIMARY = 'currency_primary'
 export const POSITION_RATE = `/${POSITION}/%d/permissions/`
+export const POSITION_PERMISSION = 'main/group/gcrud'
 
 export const ACTIVITY = 'market/plan_tasks'
 export const ACTIVITY_ORDER_LIST = `${ACTIVITY}/`
