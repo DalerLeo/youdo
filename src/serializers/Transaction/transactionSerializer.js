@@ -14,7 +14,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
         'amount': numberWithoutSpaces(amount),
         comment,
         'cashbox': cashboxId,
-        'client_id': clientId
+        'client': clientId
     }
 }
 
@@ -31,7 +31,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
         comment,
         'cashbox': cashboxId,
         'expanse_category': objectId,
-        'client_id': clientId
+        'client': clientId
     }
 }
 

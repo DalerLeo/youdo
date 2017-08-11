@@ -107,11 +107,6 @@ const enhance = compose(
             margin: '-20px -30px 0',
             backgroundColor: '#f1f5f8',
             position: 'relative',
-            '& > div:last-child': {
-                alignSelf: 'center',
-                textAlign: 'center',
-                width: '20%'
-            },
             '& > div': {
                 textAlign: 'right',
                 width: '50%',
@@ -238,21 +233,12 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                             fullWidth={true}
                         />
                         <div className={classes.productAmount}>
-                            <div style={{width: '70%'}}>
+                            <div style={{width: '100%'}}>
                                 <Field
                                     label="Наименование"
                                     name="bonusProduct"
                                     component={ProductCustomBonusSearchField}
                                     className={classes.searchFieldCustom}
-                                    fullWidth={true}
-                                />
-                            </div>
-                            <div style={{width: '25%'}}>
-                                <Field
-                                    label="Кол-во"
-                                    name="bonusAmount"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
                                     fullWidth={true}
                                 />
                             </div>
@@ -271,12 +257,21 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                             fullWidth={true}
                         />
                         <div className={classes.productAmount}>
-                            <div style={{width: '100%'}}>
+                            <div style={{width: '70%'}}>
                                 <Field
                                     label="Наименование"
                                     name="giftProduct"
                                     component={ProductCustomGiftSearchField}
                                     className={classes.searchFieldCustom}
+                                    fullWidth={true}
+                                />
+                            </div>
+                            <div style={{width: '25%'}}>
+                                <Field
+                                    label="Кол-во"
+                                    name="giftAmount"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
                                     fullWidth={true}
                                 />
                             </div>

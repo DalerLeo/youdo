@@ -2,7 +2,7 @@ import _ from 'lodash'
 import axios from '../helpers/axios'
 import * as storageHelper from '../helpers/storage'
 import * as API from '../constants/api'
-import {TOKEN_KEY} from '../constants/storage'
+import {TOKEN_KEY, USER_GROUPS, IS_SUPERUSER} from '../constants/storage'
 import * as actionTypes from '../constants/actionTypes'
 
 export const setTokenAction = () => {
@@ -43,6 +43,10 @@ export const signOutAction = () => {
         .then(() => {
             localStorage.removeItem(TOKEN_KEY)
             sessionStorage.removeItem(TOKEN_KEY)
+            localStorage.removeItem(USER_GROUPS)
+            sessionStorage.removeItem(USER_GROUPS)
+            localStorage.removeItem(IS_SUPERUSER)
+            sessionStorage.removeItem(IS_SUPERUSER)
         })
         .catch((error) => {
             const errorData = _.get(error, ['response', 'data'])

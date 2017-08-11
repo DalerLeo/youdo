@@ -305,7 +305,7 @@ const PricesCreateDialog = enhance((props) => {
                                             hintText="10%"
                                         />
                                         : <Field
-                                                name="giftAmount"
+                                                name="amount"
                                                 component={TextField}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}
@@ -319,11 +319,9 @@ const PricesCreateDialog = enhance((props) => {
                                     ? <Fields
                                         names={['products', 'product', 'amount', 'type']}
                                         component={PricesListProductField}/>
-                                    : <div className={classes.background}>
-                                        <Fields
-                                            names={['bonusProducts', 'bonusProduct', 'bonusAmount', 'bonusType', 'giftProducts', 'giftProduct', 'giftAmount', 'giftType']}
-                                            component={PricesBonusProductField}/>
-                                    </div>
+                                    : <Fields
+                                        names={['bonusProducts', 'bonusProduct', 'bonusType', 'giftProducts', 'giftProduct', 'giftAmount', 'giftType']}
+                                        component={PricesBonusProductField}/>
                                     }
                             </div>
                         </div>
