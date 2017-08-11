@@ -12,15 +12,18 @@ import {compose} from 'recompose'
 import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import Edit from 'material-ui/svg-icons/image/edit'
 import CircularProgress from 'material-ui/CircularProgress'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
 import AddCourseDialog from './AddCourseDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Container from '../Container'
+import Tooltip from '../ToolTip'
+import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import SettingSideMenu from '../Setting/SettingSideMenu'
-import getConfig from '../../helpers/getConfig'
 
 const listHeader = [
     {
@@ -54,8 +57,7 @@ const enhance = compose(
             height: '100%',
             display: 'flex',
             alignItems: 'center',
-            position: 'absolute',
-            right: '0'
+            marginLeft: '-18px'
         },
         loader: {
             width: '100%',
@@ -111,9 +113,8 @@ const enhance = compose(
                 textAlign: 'right'
             }
         },
-        rightSide: {
-            flexBasis: '75%',
-            marginLeft: '28px'
+        cursor: {
+            cursor: 'pointer'
         },
         rightTitle: {
             display: 'flex',
@@ -124,7 +125,9 @@ const enhance = compose(
             color: '#12aaeb !important'
         },
         btnAdd: {
-            color: '#8acb8d !important'
+            right: '0',
+            color: '#8acb8d !important',
+            position: 'absolute'
         },
         btnRemove: {
             color: '#e57373 !important'
@@ -147,14 +150,39 @@ const enhance = compose(
             textAlign: 'right'
         },
         rightPanel: {
+            background: '#fff',
+            flexBasis: 'calc(100% - 225px)',
+            maxWidth: 'calc(100% - 225px)',
             paddingTop: '10px',
-            flexBasis: 'calc(100% - 250px)',
-            maxWidth: 'calc(100% - 250px)',
-            overflowY: 'auto',
+            overflowY: 'hidden',
             overflowX: 'hidden'
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0'
+        },
+        listRow: {
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            }
         }
     })
 )
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 30,
+        height: 25,
+        padding: 0
+    }
+}
 const MINUS_ONE = -1
 
 const CurrencyGridList = enhance((props) => {
@@ -189,21 +217,40 @@ const CurrencyGridList = enhance((props) => {
         const rate = numberFormat(_.get(item, 'rate'))
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const createdDate = moment(_.get(_.find(_.get(detailData, ['data', 'results']), {'currency': id}), 'createdDate')).format('DD.MM.YYYY')
-        const isActive = _.get(detailData, 'id') === id
 
         if (name !== currentCurrency) {
             return (
-                <div key={id} className={classes.list}
-                     style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
-                         : {backgroundColor: '#f2f5f8', display: 'relative'}}
-                     onClick={() => {
-                         listData.handleCurrencyClick(id)
-                     }}>
-                    <div className={classes.title}>{name}</div>
-                    <div className={classes.balance}>
-                        <div>Курс: {rate}</div>
-                        <div>{createdDate}</div>
-                    </div>
+                <div className={classes.cursor} onClick={() => { listData.handleCurrencyClick(id) }}>
+                    <Row key={id} className={classes.listRow}>
+                        <Col xs={1}>{id}</Col>
+                        <Col xs={3}>{name}</Col>
+                        <Col xs={3}>Курс: {rate}</Col>
+                        <Col xs={4}>{createdDate}</Col>
+                        <Col xs={1} style={{textAlign: 'right'}}>
+                            <div className={classes.iconBtn}>
+                                <Tooltip position="bottom" text="Изменить">
+                                    <IconButton
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        disableTouchRipple={true}
+                                        touch={true}
+                                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                        <Edit />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip position="bottom" text="Удалить">
+                                    <IconButton
+                                        disableTouchRipple={true}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                        touch={true}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        </Col>
+                    </Row>
                 </div>
             )
         }
@@ -230,7 +277,7 @@ const CurrencyGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: historyList,
+        list: currencyList,
         loading: _.get(detailData, 'detailLoading')
     }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
@@ -244,7 +291,7 @@ const CurrencyGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
                 className={classes.addButton}
-                label="добавить валюту"
+                label="добавить пользователя"
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>
@@ -261,81 +308,52 @@ const CurrencyGridList = enhance((props) => {
                             <div className={classes.semibold}>Основная валюта: <b>&nbsp;{currentCurrency}</b><i
                                 style={{fontWeight: '400', color: '#999'}}>
                                 &nbsp;(используется при формировании стоимости продукта / заказа)</i>
-                                {addButton}
+                                <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить курс</a>
                             </div>
                         </div>
                     </Paper>
-                    <div className={classes.wrap}>
-                        <div className={classes.leftSide}>
-                            <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
-                                <div>Валюты</div>
-                            </div>
-                            <Paper zDepth={1} style={{height: 'calc(100% - 18px)'}}>
-                                {listLoading
-                                    ? <div className={classes.loader}>
-                                        <CircularProgress size={40} thickness={4}/>
-                                    </div>
-                                    : <div className={classes.listWrapper}>
-                                        {currencyList}
-                                    </div>
-                                }
-                            </Paper>
-                        </div>
-                        <div className={classes.rightSide}>
-                            <div className={classes.rightTitle}>
-                                <div className={classes.outerTitle}>История</div>
-                                <div className={classes.outerTitle}>
-                                    <div className={classes.buttons}>
-                                        <a onClick={confirmDialog.handleOpenConfirmDialog}
-                                           className={classes.btnRemove}>Удалить валюту</a>
-                                        <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить
-                                            валюту</a>
-                                        <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить
-                                            курс</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <GridList
-                                filter={detailFilter}
-                                list={list}
-                                detail={detail}
-                                actionsDialog={actions}
-                            />
-
-                            <CurrencyCreateDialog
-                                initialValues={createDialog.initialValues}
-                                open={createDialog.openCreateDialog}
-                                loading={createDialog.createLoading}
-                                onClose={createDialog.handleCloseCreateDialog}
-                                onSubmit={createDialog.handleSubmitCreateDialog}
-                            />
-
-                            <CurrencyCreateDialog
-                                isUpdate={true}
-                                initialValues={updateDialog.initialValues}
-                                open={updateDialog.openUpdateDialog}
-                                loading={updateDialog.updateLoading}
-                                onClose={updateDialog.handleCloseUpdateDialog}
-                                onSubmit={updateDialog.handleSubmitUpdateDialog}
-                            />
-
-                            <AddCourseDialog
-                                initialValues={courseDialog.initialValues}
-                                open={courseDialog.openCourseDialog}
-                                onClose={courseDialog.handleCloseCourseDialog}
-                                onSubmit={courseDialog.handleSubmitCourseDialog}
-                            />
-
-                            {detailId !== MINUS_ONE && <ConfirmDialog
-                                type="delete"
-                                message={confirmMessage}
-                                onClose={confirmDialog.handleCloseConfirmDialog}
-                                onSubmit={confirmDialog.handleSendConfirmDialog}
-                                open={confirmDialog.openConfirmDialog}
-                            />}
-                        </div>
+                    <div>
+                        <GridList
+                            filter={detailFilter}
+                            list={list}
+                            actionsDialog={actions}
+                            loading={listLoading}
+                            addButton={addButton}
+                        />
                     </div>
                 </div>
+
+                <CurrencyCreateDialog
+                    initialValues={createDialog.initialValues}
+                    open={createDialog.openCreateDialog}
+                    loading={createDialog.createLoading}
+                    onClose={createDialog.handleCloseCreateDialog}
+                    onSubmit={createDialog.handleSubmitCreateDialog}
+                />
+
+                <CurrencyCreateDialog
+                    isUpdate={true}
+                    initialValues={updateDialog.initialValues}
+                    open={updateDialog.openUpdateDialog}
+                    loading={updateDialog.updateLoading}
+                    onClose={updateDialog.handleCloseUpdateDialog}
+                    onSubmit={updateDialog.handleSubmitUpdateDialog}
+                />
+
+                <AddCourseDialog
+                    initialValues={courseDialog.initialValues}
+                    open={courseDialog.openCourseDialog}
+                    onClose={courseDialog.handleCloseCourseDialog}
+                    onSubmit={courseDialog.handleSubmitCourseDialog}
+                />
+
+                {detailId !== MINUS_ONE && <ConfirmDialog
+                    type="delete"
+                    message={confirmMessage}
+                    onClose={confirmDialog.handleCloseConfirmDialog}
+                    onSubmit={confirmDialog.handleSendConfirmDialog}
+                    open={confirmDialog.openConfirmDialog}
+                />}
             </div>
         </Container>
     )
