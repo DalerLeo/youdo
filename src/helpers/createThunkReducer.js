@@ -9,7 +9,6 @@ const defaultState = {
 }
 
 const createThunkReducer = (actionName) => {
-    console.warn(actionName)
     return createReducer(defaultState, {
         [`${actionName}_PENDING`] (state, action) {
             return {
