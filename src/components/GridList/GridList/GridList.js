@@ -57,7 +57,7 @@ const GridList = enhance((props) => {
     const loaderOrList = (listLoading) => {
         if (listLoading) {
             return (
-                <Paper zDepth={1} className={classes.loader} style={!listShadow && {boxShadow: 'none'}}>
+                <Paper zDepth={1} className={classes.loader} style={!listShadow ? {boxShadow: 'none'} : {} }>
                     <CircularProgress size={40} thickness={4} />
                 </Paper>
             )
@@ -77,7 +77,7 @@ const GridList = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <Paper zDepth={1} className={classes.header} style={!listShadow && {boxShadow: 'none'}}>
+            <Paper zDepth={1} className={classes.header} style={!listShadow ? {boxShadow: 'none'} : {}}>
                 <GridListNav
                     filter={filter}
                     customData={customData}
