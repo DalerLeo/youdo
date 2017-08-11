@@ -212,7 +212,9 @@ const CurrencyGridList = enhance((props) => {
     const currency = _.get(_.find(_.get(listData, 'data'), (o) => {
         return o.id === _.toInteger(_.get(detailData, 'id'))
     }), 'name')
+
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
+    const reversedRate = getConfig('REVERSED_CURRENCY_RATE')
     const historyList = _.map(_.get(detailData, ['data', 'results']), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
@@ -220,7 +222,7 @@ const CurrencyGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={4}>1 {currency} = {rate} {currentCurrency}</Col>
+                <Col xs={4}>1 {reversedRate ? currency : currentCurrency} = {rate} {reversedRate ? currentCurrency : currency}</Col>
                 <Col xs={4}>{createdDate}</Col>
             </Row>
         )

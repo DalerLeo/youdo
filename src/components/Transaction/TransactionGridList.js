@@ -195,7 +195,9 @@ const TransactionGridList = enhance((props) => {
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
-        const client = _.get(item, ['client', 'name']) || 'Не указан'
+        const client = _.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан'
+        const market = _.get(item, ['market', 'name'])
+        const order = _.get(item, 'order')
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
 
         const iconButton = (
@@ -209,6 +211,8 @@ const TransactionGridList = enhance((props) => {
                 <Col xs={2}>{client}</Col>
                 <Col xs={4}>
                     {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : null}
+                    {market ? <div><span className={classes.label}>Магазин : </span> {market}</div> : null}
+                    {order ? <div><span className={classes.label}>Заказ : </span> {order}</div> : null}
                     <div>{comment}</div>
                 </Col>
                 <Col xs={2}>{createdDate}</Col>

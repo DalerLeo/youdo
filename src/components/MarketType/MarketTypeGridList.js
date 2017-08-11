@@ -11,15 +11,13 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import MarketTypeCreateDialog from './MarketTypeCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Setting/SettingSideMenu'
+import Tooltip from '../ToolTip'
 
 const listHeader = [
     {
@@ -102,26 +100,27 @@ const enhance = compose(
             margin: '0 -30px !important',
             width: 'auto !important',
             padding: '0 30px',
-            '&:hover button': {
+            '&:hover > div:last-child > div ': {
                 opacity: '1'
             }
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0'
         }
     })
 )
 
-const vertMenuStyle = {
-    button: {
-        padding: 0,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 30,
-        height: 30
-    },
+const iconStyle = {
     icon: {
         color: '#666',
-        width: 18,
-        height: 18
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 30,
+        height: 25,
+        padding: 0
     }
 }
 
@@ -157,36 +156,34 @@ const MarketTypeGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton
-                disableTouchRipple={true}
-                className={classes.verticalButton}
-                style={vertMenuStyle.button}>
-                <MoreVertIcon />
-            </IconButton>
-        )
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={5}>{name}</Col>
                 <Col xs={4}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        iconStyle={vertMenuStyle.icon}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        />
-                    </IconMenu>
+                    <div className={classes.iconBtn}>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                touch={true}
+                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Удалить">
+                            <IconButton
+                                disableTouchRipple={true}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                touch={true}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </Col>
             </Row>
         )
