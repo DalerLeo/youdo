@@ -37,4 +37,8 @@ export const getValue = (key) => {
 export const removeToken = () => {
     localStorage.removeItem(TOKEN_KEY)
     sessionStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(USER_GROUPS)
+    sessionStorage.removeItem(USER_GROUPS)
+    localStorage.removeItem(IS_SUPERUSER)
+    sessionStorage.removeItem(IS_SUPERUSER)
 }

@@ -1,19 +1,18 @@
 import React from 'react'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import NoAccess from '../../components/Images/no-access.png'
-import * as ROUTES from '../../constants/routes'
-import {Link} from 'react-router'
+import ChoosMenu from '../../components/Images/choose-menu.png'
+import Layout from '../../components/Layout'
 
 const enhance = compose(
     injectSheet({
         wrapper: {
             background: '#fdfdfd',
-            width: '100%',
-            height: '100%',
+            height: 'calc(100% + 28px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            margin: '0 -28px -28px',
             userSelect: 'none'
         },
         item: {
@@ -24,7 +23,7 @@ const enhance = compose(
             alignItems: 'center'
         },
         image: {
-            background: 'url(' + NoAccess + ') no-repeat center center',
+            background: 'url(' + ChoosMenu + ') no-repeat center center',
             width: '200px',
             height: '200px',
             marginRight: '60px'
@@ -32,10 +31,10 @@ const enhance = compose(
         text: {
             color: '#666',
             '& h1': {
-                fontSize: '60px',
+                fontSize: '48px',
                 lineHeight: '1',
                 fontWeight: '600',
-                marginBottom: '40px',
+                marginBottom: '30px',
                 '& span': {
                     display: 'block',
                     fontSize: '25px !important'
@@ -53,24 +52,23 @@ const enhance = compose(
     })
 )
 
-const AccessList = enhance((props) => {
-    const {classes} = props
+const MainList = enhance((props) => {
+    const {classes, layout} = props
     return (
-        <div className={classes.wrapper}>
-            <div className={classes.item}>
-                <div className={classes.image}>
-                </div>
+        <Layout {...layout}>
+            <div className={classes.wrapper}>
+                <div className={classes.item}>
+                    <div className={classes.image}>
+                    </div>
 
-                <div className={classes.text}>
-                    <h1>403 <span>ошибка</span></h1>
-                    <p>У вас нет прав для просмотра этой страницы</p>
-                    <p>Вернуться на <Link to={{
-                        pathname: ROUTES.DASHBOARD_URL}}>главную</Link>
-                    </p>
+                    <div className={classes.text}>
+                        <h1>Добро пожаловать!</h1>
+                        <p>Для работы с системой выберите пункт меню</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Layout>
     )
 })
 
-export default AccessList
+export default MainList

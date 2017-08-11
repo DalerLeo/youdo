@@ -102,14 +102,20 @@ const enhance = compose(
             display: 'flex'
         },
         sidenav: {
+            position: 'fixed',
             width: '84px',
+            top: '0',
+            left: '0',
+            bottom: '0',
             zIndex: '6'
         },
         content: {
             background: '#f2f5f8',
             width: 'calc(100% - 84px)',
+            marginLeft: '84px',
             padding: '0 28px 28px',
-            overflow: 'auto'
+            overflowY: 'auto',
+            overflowX: 'hidden'
         },
         notifications: {
             background: 'rgba(0,0,0,0.3)',
@@ -243,6 +249,7 @@ const enhance = compose(
         }
     })
 )
+
 const Layout = enhance((props) => {
     const {
         classes,

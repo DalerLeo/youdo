@@ -178,7 +178,7 @@ const GridListHeader = enhance((props) => {
         )
     })
     return (
-        <div className={classes.header}>
+        <div className={classes.header} id="header">
             <div className={classes.checkbox}>
                 {withoutCheckboxes &&
                 <Checkbox onCheck={onChecked} checked={checkboxChecked}/>

@@ -3,6 +3,7 @@ import {userIsAuth} from '../permissions'
 import {getToken} from '../helpers/storage'
 import * as ROUTES from '../constants/routes'
 import App from '../containers/App'
+import {MainList} from '../containers/Main'
 import {AccessList} from '../containers/Access'
 import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
@@ -63,7 +64,7 @@ export default {
     path: '/',
     component: App,
     indexRoute: {
-        component: userIsAuth(StatSalesList)
+        component: userIsAuth(MainList)
     },
     childRoutes: [
         {
@@ -75,6 +76,7 @@ export default {
                 }
             }
         },
+
         // Access Denied
         {
             path: ROUTES.ACCESS_DENIED_URL,

@@ -95,6 +95,7 @@ const enhance = compose(
         },
         outerTitle: {
             extend: 'flex',
+            height: '40px',
             justifyContent: 'space-between',
             fontWeight: '600',
             paddingBottom: '10px',
@@ -134,6 +135,7 @@ const enhance = compose(
         },
         rightTitle: {
             extend: 'flex',
+            height: '40px',
             justifyContent: 'space-between'
         },
         green: {
@@ -193,7 +195,7 @@ const TransactionGridList = enhance((props) => {
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
-        const client = _.get(item, ['client', 'name'])
+        const client = _.get(item, ['client', 'name']) || 'Не указан'
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
 
         const iconButton = (

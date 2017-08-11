@@ -84,7 +84,7 @@ export const TRANSACTION_ACCEPT_CASH = 'finance/accept_cash_list/'
 export const TRANSACTION_CREATE = `/${TRANSACTION}/`
 export const TRANSACTION_LIST = `/${TRANSACTION}/`
 export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
-export const TRANSACTION_SEND = '/transfer/'
+export const TRANSACTION_SEND = 'finance/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 
 export const CLIENT_TRANSACTION = 'sales/client_transaction'

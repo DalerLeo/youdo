@@ -2,13 +2,14 @@ import createReducer from './createReducer'
 import toCamelCase from './toCamelCase'
 
 const defaultState = {
-    data: null,
+    data: '',
     error: null,
     loading: false,
     failed: false
 }
 
 const createThunkReducer = (actionName) => {
+    console.warn(actionName)
     return createReducer(defaultState, {
         [`${actionName}_PENDING`] (state, action) {
             return {

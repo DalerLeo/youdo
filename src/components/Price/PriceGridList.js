@@ -244,6 +244,7 @@ const PriceGridList = enhance((props) => {
         const internalMinPrice = numberFormat(_.get(item, 'internalMinPrice'))
         const internalMaxPrice = numberFormat(_.get(item, 'internalMaxPrice'), currency)
         const tooltipText = 'Агент может устанавливать цены <br/>' + internalMinPrice + ' - ' + internalMaxPrice
+        const tooltipText2 = 'Агент не может устанавливать цены'
 
         return (
             <Row key={id} className={classes.listRow}>
@@ -261,7 +262,9 @@ const PriceGridList = enhance((props) => {
                         ? <Tooltip position="bottom" text={tooltipText}>
                             <Person style={{width: 22, color: '#81c784'}}/>
                         </Tooltip>
-                        : <Person style={{width: 22, color: '#999'}}/>}
+                        : <Tooltip position="bottom" text={tooltipText2}>
+                            <Person style={{width: 22, color: '#999'}}/>
+                        </Tooltip>}
                     </Col>
                 </Link>
             </Row>
