@@ -41,7 +41,7 @@ export const usersDeleteAction = (id) => {
 export const usersUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.USERS_ITEM, id), requestData)
+        .patch(sprintf(API.USERS_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })

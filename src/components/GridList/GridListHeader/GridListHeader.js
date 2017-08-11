@@ -33,6 +33,14 @@ const enhance = compose(
                 }
             }
         },
+        fixedHeader: {
+            extend: 'header',
+            position: 'fixed',
+            width: 'auto',
+            top: '0',
+            left: '112px',
+            right: '32px'
+        },
         sortingButton: {
             color: '#ffffff',
             cursor: 'pointer',
@@ -169,7 +177,6 @@ const GridListHeader = enhance((props) => {
             </Col>
         )
     })
-
     return (
         <div className={classes.header}>
             <div className={classes.checkbox}>

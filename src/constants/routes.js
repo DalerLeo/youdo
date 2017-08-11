@@ -248,3 +248,6 @@ export const STATISTICS_PRODUCT_MOVE_ITEM_PATH = `/${STATISTICS_PRODUCT_MOVE}/%d
 
 export const STATISTICS_REPORT = 'statistics/report'
 export const STATISTICS_REPORT_URL = `/${STATISTICS_REPORT}`
+
+export const ACCESS_DENIED = 'access_denied'
+export const ACCESS_DENIED_URL = `/${ACCESS_DENIED}`

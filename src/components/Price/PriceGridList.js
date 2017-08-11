@@ -20,6 +20,7 @@ import PriceDetails from './PriceDetails'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import DoneIcon from 'material-ui/svg-icons/action/done'
+import Person from 'material-ui/svg-icons/social/person'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import toCamelCase from '../../helpers/toCamelCase'
 
@@ -38,7 +39,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        title: 'Названия',
+        title: 'Название',
         xs: 3
     },
     {
@@ -57,7 +58,7 @@ const listHeader = [
         sorting: true,
         name: 'price',
         title: 'Цена',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -139,6 +140,13 @@ const enhance = compose(
                 '& > div': {
                     fontWeight: '500'
                 }
+            }
+        },
+        icon: {
+            textAlign: 'right',
+            '& > div > div:first-child': {
+                width: '22px',
+                marginLeft: 'auto'
             }
         }
     }),
@@ -224,12 +232,19 @@ const PriceGridList = enhance((props) => {
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const currency = getConfig('PRIMARY_CURRENCY')
         const codeProduct = _.get(item, 'code') || 'не установлен'
-        const netCost = _.get(item, 'netCost') ? numberFormat(_.get(item, 'netCost'), getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
+        const netCost = _.get(item, 'netCost') ? numberFormat(_.get(item, 'netCost'), currency) : 'Не установлено'
         const minPrice = _.get(item, 'minPrice')
         const maxPrice = _.get(item, 'maxPrice')
         const price = (minPrice && maxPrice) ? numberFormat(minPrice) + ' - ' + numberFormat(maxPrice, getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
         const priceUpdate = _.get(item, 'priceUpdated') ? moment(_.get(item, 'priceUpdated')).format('DD.MM.YYYY') : 'Не установлено'
+        const customPrice = _.get(item, 'customPrice')
+
+        const internalMinPrice = numberFormat(_.get(item, 'internalMinPrice'))
+        const internalMaxPrice = numberFormat(_.get(item, 'internalMaxPrice'), currency)
+        const tooltipText = 'Агент может устанавливать цены <br/>' + internalMinPrice + ' - ' + internalMaxPrice
+
         return (
             <Row key={id} className={classes.listRow}>
                 <Link to={{
@@ -239,8 +254,15 @@ const PriceGridList = enhance((props) => {
                     <Col xs={3}>{name}</Col>
                     <Col xs={2}>{codeProduct}</Col>
                     <Col xs={2}>{netCost}</Col>
-                    <Col xs={3}>{price}</Col>
+                    <Col xs={2}>{price}</Col>
                     <Col xs={2}>{priceUpdate}</Col>
+                    <Col xs={1} className={classes.icon}>
+                        {customPrice
+                        ? <Tooltip position="bottom" text={tooltipText}>
+                            <Person style={{width: 22, color: '#81c784'}}/>
+                        </Tooltip>
+                        : <Person style={{width: 22, color: '#999'}}/>}
+                    </Col>
                 </Link>
             </Row>
         )
