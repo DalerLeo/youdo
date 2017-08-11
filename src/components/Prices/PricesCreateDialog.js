@@ -319,9 +319,11 @@ const PricesCreateDialog = enhance((props) => {
                                     ? <Fields
                                         names={['products', 'product', 'amount', 'type']}
                                         component={PricesListProductField}/>
-                                    : <Fields
-                                        names={['bonusProducts', 'bonusProduct', 'bonusAmount', 'giftProduct', 'giftAmount', 'bonusType', 'giftType']}
-                                        component={PricesBonusProductField}/>
+                                    : <div className={classes.background}>
+                                        <Fields
+                                            names={['bonusProducts', 'bonusProduct', 'bonusAmount', 'bonusType', 'giftProducts', 'giftProduct', 'giftAmount', 'giftType']}
+                                            component={PricesBonusProductField}/>
+                                    </div>
                                     }
                             </div>
                         </div>
