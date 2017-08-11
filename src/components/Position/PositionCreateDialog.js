@@ -6,9 +6,10 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
+import {Row} from 'react-flexbox-grid'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, CheckBox} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -25,17 +26,24 @@ const validate = (data) => {
 }
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
-        loader: {
+        load: {
             position: 'absolute',
             width: '100%',
             height: '100%',
             background: '#fff',
-            top: '0',
-            left: '0',
             alignItems: 'center',
             zIndex: '999',
-            textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            display: 'flex',
+            justifyContent: 'center'
+        },
+        perms: {
+            '& > div': {
+                flexBasis: '50%',
+                maxWidth: '50%',
+                '&:nth-child(even)': {
+                    textAlign: 'right'
+                }
+            }
         }
     })),
     reduxForm({
@@ -44,7 +52,7 @@ const enhance = compose(
     })
 )
 const PositionCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, data, dataLoading} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -52,20 +60,20 @@ const PositionCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '350px'}}
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить группу' : 'Добавить группу'}</span>
+                <span>{isUpdate ? 'Изменить ДОЛЖНОСТЬ' : 'ДОБАВЛЕНИЕ ДОЛЖНОСТИ'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
-                    <div className={classes.loader}>
+                <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto', position: 'relative'}}>
+                    {dataLoading && <div className={classes.load}>
                         <CircularProgress size={40} thickness={4}/>
-                    </div>
+                    </div>}
                     <div className={classes.inContent} style={{minHeight: '120px', paddingTop: '15px'}}>
                         <div className={classes.field}>
                             <Field
@@ -75,6 +83,21 @@ const PositionCreateDialog = enhance((props) => {
                                 label="Наименование"
                                 fullWidth={true}
                             />
+                            <Row className={classes.perms}>
+                                {}
+                                {_.map(data, (item) => {
+                                    const name = _.get(item, 'name')
+                                    const id = _.get(item, 'id')
+                                    return (
+                                    <div key={id}>
+                                        <Field
+                                            name={'groups[' + id + ']'}
+                                            label={name}
+                                            component={CheckBox}/>
+                                    </div>
+                                    )
+                                })}
+                            </Row>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

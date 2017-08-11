@@ -334,8 +334,10 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.POSITION_UPDATE),
         item: createThunkReducer(actionTypes.POSITION_ITEM),
         primary: createThunkReducer(actionTypes.POSITION_PRIMARY),
-        primaryUpdate: createThunkReducer(actionTypes.POSITION_PRIMARY_UPDATE)
+        primaryUpdate: createThunkReducer(actionTypes.POSITION_PRIMARY_UPDATE),
+        permission: createThunkReducer(actionTypes.POSITION_PERMISSION)
     }),
+
     statSales: combineReducers({
         data: createThunkReducer(actionTypes.STAT_SALES_DATA)
     }),

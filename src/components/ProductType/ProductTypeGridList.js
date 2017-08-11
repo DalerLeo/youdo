@@ -20,6 +20,7 @@ import Container from '../Container'
 import ProductTypeCreateDialog from './ProductTypeCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Setting/SettingSideMenu'
+import Tooltip from '../ToolTip'
 
 const listHeader = [
     {
@@ -67,6 +68,9 @@ const enhance = compose(
             borderTop: '1px #efefef solid',
             display: 'flex',
             alignItems: 'center',
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            },
             '& > div:first-child': {
                 paddingLeft: '50px'
             },
@@ -78,6 +82,9 @@ const enhance = compose(
             width: '100%',
             '& > div:first-child': {
                 paddingLeft: '0'
+            },
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
             }
         },
         marginLeft: {
@@ -131,10 +138,12 @@ const enhance = compose(
         },
         rowWithoutParent: {
             extend: 'rowWithParent',
-            flexWrap: 'none',
-            '&:hover button': {
-                opacity: '1'
-            }
+            flexWrap: 'none'
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0',
+            justifyContent: 'flex-end'
         }
     })
 )
@@ -152,6 +161,18 @@ const vertMenuStyle = {
         color: '#666',
         width: 18,
         height: 18
+    }
+}
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 25,
+        height: 25
+    },
+    button: {
+        width: 25,
+        height: 25,
+        padding: 0
     }
 }
 
@@ -202,22 +223,28 @@ const ProductTypeGridList = enhance((props) => {
                         <Col xs={8}>{name}</Col>
                         <Col xs={3}>{createdDate}</Col>
                         <Col xs={1} className={classes.right}>
-                            <IconMenu
-                                iconButtonElement={iconButton}
-                                iconStyle={vertMenuStyle.icon}
-                                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                                targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                                <MenuItem
-                                    primaryText="Изменить"
-                                    leftIcon={<Edit />}
-                                    onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                                />
-                                <MenuItem
-                                    primaryText="Удалить "
-                                    leftIcon={<DeleteIcon />}
-                                    onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                                />
-                            </IconMenu>
+                            <div className={classes.iconBtn}>
+                                <Tooltip position="bottom" text="Изменить">
+                                    <IconButton
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        disableTouchRipple={true}
+                                        touch={true}
+                                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                        <Edit />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip position="bottom" text="Удалить">
+                                    <IconButton
+                                        disableTouchRipple={true}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                        touch={true}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
                         </Col>
                     </div>
                     {_.map(_.get(item, 'children'), (child) => {
@@ -229,22 +256,28 @@ const ProductTypeGridList = enhance((props) => {
                                 <Col xs={8}>{childName}</Col>
                                 <Col xs={3}>{childCreatedDate}</Col>
                                 <Col xs={1} className={classes.right}>
-                                    <IconMenu
-                                        iconButtonElement={iconButton}
-                                        iconStyle={vertMenuStyle.icon}
-                                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                                        <MenuItem
-                                            primaryText="Изменить"
-                                            leftIcon={<Edit />}
-                                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(childId) }}
-                                        />
-                                        <MenuItem
-                                            primaryText="Удалить "
-                                            leftIcon={<DeleteIcon />}
-                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(childId) }}
-                                        />
-                                    </IconMenu>
+                                    <div className={classes.iconBtn}>
+                                        <Tooltip position="bottom" text="Изменить">
+                                            <IconButton
+                                                iconStyle={iconStyle.icon}
+                                                style={iconStyle.button}
+                                                disableTouchRipple={true}
+                                                touch={true}
+                                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(childId) }}>
+                                                <Edit />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip position="bottom" text="Удалить">
+                                            <IconButton
+                                                disableTouchRipple={true}
+                                                iconStyle={iconStyle.icon}
+                                                style={iconStyle.button}
+                                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(childId) }}
+                                                touch={true}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>
                                 </Col>
                             </div>
                         )

@@ -17,12 +17,14 @@ import SettingSideMenu from '../Setting/SettingSideMenu'
 import EditIcon from 'material-ui/svg-icons/image/edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import {Field, reduxForm} from 'redux-form'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+import CircularProgress from 'material-ui/CircularProgress'
 
 const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: '100%',
+            height: '30%',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -110,6 +112,7 @@ const enhance = compose(
             fontWeight: '600',
             '& > div': {
                 padding: '15px 0',
+                height: '40px',
                 '&:after': {
                     margin: '0 8px'
                 }
@@ -128,6 +131,10 @@ const enhance = compose(
         },
         list: {
             '& .dottedList': {
+                height: '50px',
+                '&:after': {
+                    margin: '0 8px'
+                },
                 '&:hover > div:last-child > div': {
                     opacity: '1'
                 }
@@ -157,11 +164,11 @@ const iconSearchStyle = {
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 25,
-        height: 25
+        width: 22,
+        height: 22
     },
     button: {
-        width: 25,
+        width: 30,
         height: 25,
         padding: 0
     }
@@ -177,79 +184,7 @@ const PositionGridList = enhance((props) => {
         detailId,
         filter
     } = props
-
-/*    Const positionList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const isActive = _.get(detailData, 'id') === id
-
-        if (name) {
-            return (
-                <div key={id} className={classes.list}
-                     style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
-                         : {backgroundColor: '#f2f5f8', display: 'relative'}}
-                     onClick={() => {
-                         listData.handlePositionClick(id)
-                     }}>
-                    <div className={classes.title}>{name}</div>
-                </div>
-            )
-        }
-        return null
-    }) */
-
-    const role = {
-        data: [
-            {
-                name: 'naimenivaniya1',
-                id: 1,
-                codeName: 'naimen',
-                createdDate: '21-08-2017',
-                permissions: [
-                    {
-                        name: 'sup'
-                    },
-                    {
-                        name: 'merch'
-                    },
-                    {
-                        name: 'supDir'
-                    }
-                ]
-            },
-
-            {
-                name: 'naimenivaniya2',
-                codeName: 'naimen',
-                id: 2,
-                createdDate: '22-08-2017',
-                permissions: [
-                    {
-                        name: 'merch'
-                    },
-                    {
-                        name: 'supDir'
-                    }
-                ]
-            },
-            {
-                name: 'naimenivaniya3',
-                codeName: 'naimen',
-                id: 3,
-                createdDate: '23-08-2017',
-                permissions: [
-                    {
-                        name: 'sup'
-                    },
-                    {
-                        name: 'merch'
-                    }
-                ]
-            }
-
-        ]
-
-    }
+    const loading = _.get(listData, 'listLoading')
 
     const headers = (
         <Row className="dottedList">
@@ -258,7 +193,7 @@ const PositionGridList = enhance((props) => {
             <Col xs={1}></Col>
         </Row>
     )
-    const permissionList = _.map(_.get(role, ['data']), (item, index) => {
+    const permissionList = _.map(_.get(listData, ['data']), (item, index) => {
         const name = _.get(item, 'name')
         const id = _.get(item, 'id')
         return (
@@ -268,18 +203,16 @@ const PositionGridList = enhance((props) => {
                 </Col>
                 <Col xs={9}>
                     <div className={classes.permission}>
-                    {_.map(_.get(item, ['permissions']), (perm) => {
-                        const permName = _.get(perm, 'name')
-
+                    {_.map(_.get(item, ['groups']), (perm) => {
                         return (
-                            <span key={permName}>{permName}</span>
+                            <span key={perm}>{perm}</span>
                         )
                     })}
                     </div>
                 </Col>
                 <Col xs={1}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Распечатать накладную">
+                        <Tooltip position="bottom" text="Изменить">
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -289,7 +222,7 @@ const PositionGridList = enhance((props) => {
                                 <EditIcon />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text="Удалить">
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -332,8 +265,11 @@ const PositionGridList = enhance((props) => {
                     <div className={classes.nav}>
                         <div>
                             <FlatButton
-                            label="+ создать должность"
-                            className={classes.btnSend}
+                            label="создать должность"
+                            labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                            className={classes.addButton}
+                            onTouchTap={createDialog.handleOpenCreateDialog}
+                            icon={<ContentAdd color="#12aaeb"/>}
                             primary={true}
                             />
                         </div>
@@ -342,12 +278,16 @@ const PositionGridList = enhance((props) => {
 
                     </div>
                     <div className={classes.headers}>{headers}</div>
-                    <div className={classes.list}>{permissionList}</div>
+                    {loading
+                        ? <div className={classes.loader}><CircularProgress size={60} thickness={4} /></div>
+                            : <div className={classes.list}>{permissionList}</div>}
                 </div>
                 <PositionCreateDialog
                     initialValues={createDialog.initialValues}
+                    data={_.get(createDialog, ['permissionList', 'results'])}
                     open={createDialog.openCreateDialog}
                     loading={createDialog.createLoading}
+                    dataLoading={_.get(createDialog, 'permissionLoading')}
                     onClose={createDialog.handleCloseCreateDialog}
                     onSubmit={createDialog.handleSubmitCreateDialog}
                 />
@@ -355,6 +295,8 @@ const PositionGridList = enhance((props) => {
                 <PositionCreateDialog
                     isUpdate={true}
                     initialValues={updateDialog.initialValues}
+                    dataLoading={_.get(createDialog, 'permissionLoading')}
+                    data={_.get(createDialog, ['permissionList', 'results'])}
                     open={updateDialog.openUpdateDialog}
                     loading={updateDialog.updateLoading}
                     onClose={updateDialog.handleCloseUpdateDialog}
