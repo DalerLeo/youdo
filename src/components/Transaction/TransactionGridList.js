@@ -194,7 +194,7 @@ const TransactionGridList = enhance((props) => {
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = _.get(item, ['client', 'name'])
-        const expanseCategory = _.get(item, 'expanseCategory')
+        const expanseCategory = _.get(item, ['expanseCategory', 'name'])
 
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
