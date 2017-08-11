@@ -3,6 +3,9 @@ export const DASHBOARD_URL = '/'
 export const SIGN_IN = 'sign-in'
 export const SIGN_IN_URL = '/sign-in'
 
+export const MAIN_PAGE = 'main'
+export const MAIN_PAGE_URL = `/${MAIN_PAGE}`
+
 export const SHOP = 'shop'
 export const SHOP_LIST_URL = `/${SHOP}`
 export const SHOP_ITEM_URL = `${SHOP_LIST_URL}/:shopId`

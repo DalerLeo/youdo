@@ -110,6 +110,9 @@ const enhance = compose(
                 alignSelf: 'center',
                 textAlign: 'center',
                 width: '20%'
+            },
+            '& > div > div > div': {
+                overflow: 'hidden'
             }
         },
         bonusProduct: {
@@ -231,21 +234,12 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAdd, handleRem
                             fullWidth={true}
                         />
                         <div className={classes.productAmount}>
-                            <div style={{width: '70%'}}>
+                            <div style={{width: '100%'}}>
                                 <Field
                                     label="Наименование"
                                     name="giftProduct"
                                     component={ProductCustomGiftSearchField}
-                                    className={classes.inputFieldCustom}
-                                    fullWidth={true}
-                                />
-                            </div>
-                            <div style={{width: '25%'}}>
-                                <Field
-                                    label="Кол-во"
-                                    name="giftAmount"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
+                                    className={classes.searchFieldCustom}
                                     fullWidth={true}
                                 />
                             </div>

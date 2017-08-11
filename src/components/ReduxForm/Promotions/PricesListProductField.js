@@ -263,4 +263,4 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
     )
 }
 
-export default enhance(PricesListProductField)
+    export default enhance(PricesListProductField)

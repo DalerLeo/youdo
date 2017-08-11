@@ -294,8 +294,9 @@ const PricesCreateDialog = enhance((props) => {
                                         floatingLabelText="Дата завершения акции"
                                         container="inline"
                                         fullWidth={true}/>
-                                    {isDiscount && <div className={classes.halfField}>
-                                        <Field
+                                    <div className={classes.halfField}>
+                                        {isDiscount
+                                        ? <Field
                                             name="discount"
                                             component={TextField}
                                             className={classes.inputFieldCustom}
@@ -303,7 +304,14 @@ const PricesCreateDialog = enhance((props) => {
                                             label="Размер скидки"
                                             hintText="10%"
                                         />
-                                    </div>}
+                                        : <Field
+                                                name="giftAmount"
+                                                component={TextField}
+                                                className={classes.inputFieldCustom}
+                                                fullWidth={true}
+                                                label="Кол-во"
+                                            />}
+                                    </div>
                                 </div>
                             </div>
                             <div className={classes.rightOrderPart}>
