@@ -19,6 +19,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import {Field, reduxForm} from 'redux-form'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
+import userGroupFormat from '../../helpers/userGroupFormat'
 
 const enhance = compose(
     injectSheet({
@@ -173,7 +174,36 @@ const iconStyle = {
         padding: 0
     }
 }
-
+const accessList = [
+    {
+        id: 2,
+        name: 'delivery'
+    },
+    {
+        id: 1,
+        name: 'SupDir'
+    },
+    {
+        id: 3,
+        name: 'agent'
+    },
+    {
+        id: 4,
+        name: 'merch'
+    },
+    {
+        id: 5,
+        name: 'collector'
+    },
+    {
+        id: 6,
+        name: 'cashier'
+    },
+    {
+        id: 7,
+        name: 'supervisor'
+    }
+]
 const PositionGridList = enhance((props) => {
     const {
         createDialog,
@@ -203,11 +233,17 @@ const PositionGridList = enhance((props) => {
                 </Col>
                 <Col xs={9}>
                     <div className={classes.permission}>
-                    {_.map(_.get(item, ['groups']), (perm) => {
-                        return (
-                            <span key={perm}>{perm}</span>
-                        )
-                    })}
+                        {_.map(_.get(item, ['groups']), (perm) => {
+                            const access = _.find(accessList, {'id': _.toInteger(perm)})
+                            if (access.id !== MINUS_ONE) {
+                                return (
+                                    <span key={perm}>{userGroupFormat(_.get(access, 'name'))}</span>
+                                )
+                            }
+                            return (
+                                <span key={perm}>Нет доступа</span>
+                            )
+                        })}
                     </div>
                 </Col>
                 <Col xs={1}>
@@ -218,8 +254,10 @@ const PositionGridList = enhance((props) => {
                                 style={iconStyle.button}
                                 disableTouchRipple={true}
                                 touch={true}
-                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
-                                <EditIcon />
+                                onTouchTap={() => {
+                                    updateDialog.handleOpenUpdateDialog(id)
+                                }}>
+                                <EditIcon/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip position="bottom" text="Удалить">
@@ -227,9 +265,11 @@ const PositionGridList = enhance((props) => {
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
-                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog() }}
+                                onTouchTap={() => {
+                                    confirmDialog.handleOpenConfirmDialog()
+                                }}
                                 touch={true}>
-                                <DeleteIcon />
+                                <DeleteIcon/>
                             </IconButton>
                         </Tooltip>
                     </div>
@@ -265,12 +305,12 @@ const PositionGridList = enhance((props) => {
                     <div className={classes.nav}>
                         <div>
                             <FlatButton
-                            label="создать должность"
-                            labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
-                            className={classes.addButton}
-                            onTouchTap={createDialog.handleOpenCreateDialog}
-                            icon={<ContentAdd color="#12aaeb"/>}
-                            primary={true}
+                                label="создать должность"
+                                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                                className={classes.addButton}
+                                onTouchTap={createDialog.handleOpenCreateDialog}
+                                icon={<ContentAdd color="#12aaeb"/>}
+                                primary={true}
                             />
                         </div>
                         <div>{search}</div>
@@ -279,8 +319,8 @@ const PositionGridList = enhance((props) => {
                     </div>
                     <div className={classes.headers}>{headers}</div>
                     {loading
-                        ? <div className={classes.loader}><CircularProgress size={60} thickness={4} /></div>
-                            : <div className={classes.list}>{permissionList}</div>}
+                        ? <div className={classes.loader}><CircularProgress size={60} thickness={4}/></div>
+                        : <div className={classes.list}>{permissionList}</div>}
                 </div>
                 <PositionCreateDialog
                     initialValues={createDialog.initialValues}

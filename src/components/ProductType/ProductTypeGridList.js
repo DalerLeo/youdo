@@ -166,11 +166,11 @@ const vertMenuStyle = {
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 25,
-        height: 25
+        width: 22,
+        height: 22
     },
     button: {
-        width: 25,
+        width: 30,
         height: 25,
         padding: 0
     }
