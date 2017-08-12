@@ -3,7 +3,7 @@ const groups = {
     'delivery': 'Доставщик',
     'agent': 'Агент',
     'merch': 'Мерчендайзер',
-    'collector': 'Инкасатор',
+    'collector': 'Инкассатор',
     'cashier': 'Кассир',
     'supervisor': 'Супервайзер'
 }
