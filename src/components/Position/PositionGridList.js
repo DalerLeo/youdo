@@ -20,7 +20,7 @@ import {Field, reduxForm} from 'redux-form'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import userGroupFormat from '../../helpers/userGroupFormat'
-
+import DateRangePicker from '../ReduxForm/Basic/DataRangePicker'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -322,6 +322,15 @@ const PositionGridList = enhance((props) => {
                     {loading
                         ? <div className={classes.loader}><CircularProgress size={60} thickness={4}/></div>
                         : <div className={classes.list}>{permissionList}</div>}
+
+                    <Field
+                        name="datePicker"
+                        component={DateRangePicker}
+
+                        className={classes.inputFieldCustom}
+                        label="Дата"
+                        fullWidth={true}
+                    />
                 </div>
                 <PositionCreateDialog
                     initialValues={createDialog.initialValues}
