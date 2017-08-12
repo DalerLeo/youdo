@@ -6,6 +6,7 @@ import injectSheet from 'react-jss'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
+import Tooltip from '../../ToolTip'
 import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import {
@@ -16,15 +17,16 @@ import {
     TableRow,
     TableRowColumn
 } from 'material-ui/Table'
-import DeleteIcon from '../../DeleteIcon/index'
-
-import OrderProductSearchField from './OrderProductSearchField'
+import DeleteIcon from 'material-ui/svg-icons/action/delete-forever'
+import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import TextField from '../Basic/TextField'
 import ProductCostField from '../Product/ProductCostField'
 import OrderProductMeasurementField from './OrderProductMeasurementField'
-import {ProductTypeSearchField} from '../../ReduxForm'
+import OrderProductTypeSearchField from './OrderProductTypeSearchField'
+import ProductCustomSearchField from './ProductCustomSearchField'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
+import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
 import Done from 'material-ui/svg-icons/action/done'
 
 const enhance = compose(
@@ -63,7 +65,7 @@ const enhance = compose(
             height: '40px !important',
             border: 'none !important',
             '& td:first-child': {
-                width: '250px'
+                width: '220px'
             },
             '& tr': {
                 border: 'none !important'
@@ -73,7 +75,7 @@ const enhance = compose(
                 padding: '0 5px !important'
             },
             '& th:first-child': {
-                width: '250px',
+                width: '220px',
                 textAlign: 'left !important',
                 fontWeight: '600 !important'
             },
@@ -89,7 +91,6 @@ const enhance = compose(
             fontSize: '13px !important',
             height: '45px !important',
             marginTop: '7px',
-            width: '100% !important',
             '& div': {
                 fontSize: '13px !important'
             },
@@ -99,6 +100,19 @@ const enhance = compose(
             },
             '& input': {
                 marginTop: '0 !important'
+            }
+        },
+        inputFieldEdit: {
+            extend: 'inputFieldCustom',
+            height: '40px !important',
+            marginTop: '0',
+            paddingBottom: '7px'
+        },
+        searchFieldCustom: {
+            extend: 'inputFieldCustom',
+            position: 'initial !important',
+            '& label': {
+                lineHeight: 'auto !important'
             }
         },
         title: {
@@ -115,7 +129,6 @@ const enhance = compose(
             }
         },
         background: {
-            alignItems: 'baseline',
             padding: '10px 30px',
             margin: '0 -30px',
             marginTop: '5px',
@@ -127,6 +140,9 @@ const enhance = compose(
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
+            },
+            '& > div > div > div:first-child': {
+                overflow: 'hidden'
             }
         }
     }),
@@ -140,6 +156,7 @@ const enhance = compose(
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
+    withState('editItem', 'setEditItem', null),
 
     withHandlers({
         handleAdd: props => () => {
@@ -163,6 +180,29 @@ const enhance = compose(
                     onChange(_.union(products, [{product, amount, cost, measurement, extra}]))
                 }
             }
+        },
+
+        handleEdit: props => (listIndex) => {
+            const {setEditItem} = props
+            const products = _.get(props, ['products', 'input', 'value'])
+            const amount = numberWithoutSpaces(_.get(props, ['editAmount', 'input', 'value']))
+            const cost = numberWithoutSpaces(_.get(props, ['editCost', 'input', 'value']))
+            _.map(products, (item, index) => {
+                if (index === listIndex) {
+                    if (!_.isEmpty(amount)) {
+                        item.amount = numberWithoutSpaces(amount)
+                    }
+                    if (!_.isEmpty(cost)) {
+                        item.cost = numberWithoutSpaces(cost)
+                    }
+                }
+            })
+            const fields = ['editAmount', 'editCost']
+            for (let i = 0; i < fields.length; i++) {
+                let newChange = _.get(props, [fields[i], 'input', 'onChange'])
+                props.dispatch(newChange(null))
+            }
+            setEditItem(null)
         },
 
         handleRemove: props => (listIndex) => {
@@ -189,23 +229,77 @@ const iconStyle = {
     }
 }
 
-const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProducts, setOpenAddProducts, ...defaultProps}) => {
+const productIconStyle = {
+    icon: {
+        color: '#666',
+        width: 20,
+        height: 20
+    },
+    button: {
+        width: 40,
+        height: 40,
+        padding: 0
+    }
+}
+
+const OrderListProductField = ({classes, handleAdd, handleEdit, handleRemove, openAddProducts, setOpenAddProducts, editItem, setEditItem, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const tableProducts = _.map(products, (item, index) => {
-        const cost = _.get(item, 'cost')
+        const product = _.get(item, ['product', 'text'])
+        const cost = _.toNumber(_.get(item, 'cost'))
+        const currency = getConfig('PRIMARY_CURRENCY')
         const balance = _.toNumber(_.get(item, ['extra', 'balance']))
         const amount = _.toNumber(_.get(item, 'amount'))
         const measurement = _.get(item, 'measurement')
+        const summary = 'Итого: ' + (amount * cost) + ' ' + currency
+
+        if (editItem === index) {
+            return (
+                <TableRow className={classes.tableRow}>
+                    <TableRowColumn>{product}</TableRowColumn>
+                    <TableRowColumn>{numberFormat(balance)}</TableRowColumn>
+                    <TableRowColumn>
+                        <TextField
+                            hintText={numberFormat(amount, measurement)}
+                            className={classes.inputFieldEdit}
+                            fullWidth={true}
+                            {..._.get(defaultProps, 'editAmount')}
+                        />
+                    </TableRowColumn>
+                    <TableRowColumn>{numberFormat(cost, currency)}</TableRowColumn>
+                    <TableRowColumn style={{textAlign: 'right', padding: '0'}}>
+                        <IconButton
+                            style={productIconStyle.button}
+                            iconStyle={productIconStyle.icon}
+                            onTouchTap={() => { handleEdit(index) }}>
+                            <Done color="#12aaeb"/>
+                        </IconButton>
+                    </TableRowColumn>
+                </TableRow>
+            )
+        }
+
         return (
             <TableRow key={index} className={classes.tableRow}
                       style={{background: (balance < amount) ? '#ffecec' : 'transparent'}}>
-                <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
+                <TableRowColumn>{product}</TableRowColumn>
                 <TableRowColumn>{numberFormat(balance)}</TableRowColumn>
                 <TableRowColumn>{numberFormat(amount)} {measurement}</TableRowColumn>
-                <TableRowColumn>{numberFormat(cost)} {getConfig('PRIMARY_CURRENCY')}</TableRowColumn>
+                <TableRowColumn>
+                    <Tooltip position="bottom" text={numberFormat(cost, currency)}>{summary}</Tooltip>
+                </TableRowColumn>
                 <TableRowColumn style={{textAlign: 'right'}}>
-                    <IconButton onTouchTap={() => handleRemove(index)}>
+                    <IconButton
+                        style={productIconStyle.button}
+                        iconStyle={productIconStyle.icon}
+                        onTouchTap={() => setEditItem(index)}>
+                        <EditIcon color="#666666"/>
+                    </IconButton>
+                    <IconButton
+                        style={productIconStyle.button}
+                        iconStyle={productIconStyle.icon}
+                        onTouchTap={() => handleRemove(index)}>
                         <DeleteIcon color="#666666"/>
                     </IconButton>
                 </TableRowColumn>
@@ -230,8 +324,8 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                         <Field
                             label="Тип товара"
                             name="type"
-                            component={ProductTypeSearchField}
-                            className={classes.inputFieldCustom}
+                            component={OrderProductTypeSearchField}
+                            className={classes.searchFieldCustom}
                             fullWidth={true}
                         />
                     </Col>
@@ -239,8 +333,8 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                         <Field
                             label="Наименование"
                             name="product"
-                            component={OrderProductSearchField}
-                            className={classes.inputFieldCustom}
+                            component={ProductCustomSearchField}
+                            className={classes.searchFieldCustom}
                             fullWidth={true}
                         />
                     </Col>
@@ -272,6 +366,7 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                 <Table
                     fixedHeader={true}
                     fixedFooter={false}
+                    selectable={false}
                     multiSelectable={false}>
 
                         <TableHeader
@@ -284,7 +379,7 @@ const OrderListProductField = ({classes, handleAdd, handleRemove, openAddProduct
                                     className={classes.tableTitle}>Наименование</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>На складе</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                                <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>Итого</TableHeaderColumn>
                                 <TableHeaderColumn></TableHeaderColumn>
                             </TableRow>
                         </TableHeader>

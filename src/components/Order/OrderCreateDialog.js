@@ -339,7 +339,7 @@ const OrderCreateDialog = enhance((props) => {
                             </div>
                             <div className={classes.rightOrderPart}>
                                 <Fields
-                                    names={['products', 'product', 'amount', 'cost']}
+                                    names={['products', 'product', 'amount', 'cost', 'type', 'editAmount', 'editCost']}
                                     component={OrderListProductField}
                                 />
                             </div>

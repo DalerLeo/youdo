@@ -5,7 +5,7 @@ import * as actionTypes from '../constants/actionTypes'
 
 export const getConfig = () => {
     const payload = axios()
-        .post(API.CONFIG)
+        .get(API.CONFIG)
         .then((response) => {
             return _.get(response, 'data')
         })
