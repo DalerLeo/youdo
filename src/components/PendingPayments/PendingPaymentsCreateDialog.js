@@ -19,6 +19,7 @@ import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
 import getConfig from '../../helpers/getConfig'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
+const ORDERING_CURRENCY = 1
 const INDIVIDUAL = 2
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -69,6 +70,11 @@ const enhance = compose(
             position: 'absolute',
             bottom: '8px',
             right: '32px'
+        },
+        half: {
+            width: '45%',
+            display: 'flex',
+            alignItems: 'baseline'
         }
     })),
     reduxForm({
@@ -76,7 +82,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const currencyRate = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'currencyRate'])
+        const currencyRate = _.toInteger(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'currencyRate']))
 
         return {
             currencyRate
@@ -85,7 +91,7 @@ const enhance = compose(
 )
 
 const PendingPaymentsCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate} = props
+    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate, convert} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ONE = 1
     const id = _.get(detailData, 'id')
@@ -96,13 +102,17 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), getConfig('PRIMARY_CURRENCY'))
     const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), getConfig('PRIMARY_CURRENCY'))
     const clientName = _.get(client, 'name')
+    const convertAmount = _.get(convert, ['data', 'amount'])
+    const convertLoading = _.get(convert, 'loading')
+    const createdDate = _.get(detailData, ['data', 'createdDate'])
+
     return (
         <Dialog
             modal={true}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '450px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '600px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -146,26 +156,39 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                         label="Касса получатель"
                                         fullWidth={true}
                                     />}
-                                <div className={classes.flex}>
-                                    <Field
-                                        name="amount"
-                                        className={classes.inputFieldCustom}
-                                        component={TextField}
-                                        label="Сумма"
-                                        value={null}
-                                        normalize={normalizeNumber}
-                                        fullWidth={true}
-                                    />
-                                    <CashboxCurrencyField/>
+                                <div className={classes.flex} style={{justifyContent: 'space-between'}}>
+                                    <div className={classes.half}>
+                                        <Field
+                                            name="amount"
+                                            className={classes.inputFieldCustom}
+                                            component={TextField}
+                                            label="Сумма"
+                                            normalize={normalizeNumber}
+                                            fullWidth={true}
+                                        />
+                                        <CashboxCurrencyField/>
+                                    </div>
+                                    <div className={classes.half}>
+                                        {convertLoading
+                                        ? <div>Loading...</div>
+                                        : <Field
+                                            name="convert"
+                                            className={classes.inputFieldCustom}
+                                            component={TextField}
+                                            placeholder={numberformat(convertAmount)}
+                                            disabled={true}
+                                            fullWidth={true}
+                                        />}
+                                        {getConfig('PRIMARY_CURRENCY')}
+                                    </div>
                                 </div>
 
                                 <Field
                                     name="currencyRate"
-                                    style={{marginTop: '10px'}}
+                                    createdDate={(currencyRate === ORDERING_CURRENCY) && createdDate}
                                     component={PendingPaymentRadioButton}
-                                    label="Текущий курс"
                                 />
-                                {_.toInteger(currencyRate) === _.toInteger(INDIVIDUAL)
+                                {(currencyRate === INDIVIDUAL)
                                     ? <div className={classes.customCurrency}>
                                         <Field
                                             component={TextField}
