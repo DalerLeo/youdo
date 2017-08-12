@@ -27,10 +27,8 @@ export const listFilterSerializer = (data) => {
 export const itemFilterSerializer = (data, id, type) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-
     return {
         'client': id,
-        // 'type': _.toNumber(type) === ZERO ? 'in' : 'out',
         'payment_type': type,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'dPage'),

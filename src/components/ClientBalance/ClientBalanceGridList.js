@@ -19,13 +19,13 @@ const listHeader = [
         sorting: true,
         name: 'client',
         title: 'Клиент',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
         name: 'created_date',
         title: 'Дата создания',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -46,6 +46,13 @@ const listHeader = [
         name: 'transferBalance',
         title: 'Баланс переч.',
         xs: 2
+    },
+    {
+        sorting: true,
+        alignRight: true,
+        name: 'balance',
+        title: 'Баланс',
+        xs: 2
     }
 ]
 
@@ -65,7 +72,7 @@ const enhance = compose(
     })
 )
 
-const ClientBlanceGridList = enhance((props) => {
+const ClientBalanceGridList = enhance((props) => {
     const {
         classes,
         filter,
@@ -93,14 +100,15 @@ const ClientBlanceGridList = enhance((props) => {
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const transferBalance = _.toNumber(_.get(item, 'transferBalance'))
         const cashBalance = _.toNumber(_.get(item, 'cashBalance'))
+        const balance = transferBalance + cashBalance
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const orders = numberFormat(_.get(item, 'orders'))
         const clientName = _.get(item, 'name')
 
         return (
             <Row key={id}>
-                <Col xs={3}>{clientName}</Col>
-                <Col xs={3}>{createdDate}</Col>
+                <Col xs={2}>{clientName}</Col>
+                <Col xs={2}>{createdDate}</Col>
                 <Col xs={2}>{orders}</Col>
                 <Col xs={2}
                      className={classes.rightAlign}>
@@ -118,6 +126,12 @@ const ClientBlanceGridList = enhance((props) => {
                         {numberFormat(transferBalance, currentCurrency)}
                     </span>
                 </Col>
+                <Col xs={2}
+                     className={classes.rightAlign}>
+                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id) }}>
+                        {numberFormat(balance)}
+                    </span>
+                </Col>
             </Row>
         )
     })
@@ -129,7 +143,11 @@ const ClientBlanceGridList = enhance((props) => {
     }
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const balance = _.get(infoDialog, 'type') === ZERO ? _.get(client, 'cashBalance') : _.get(client, 'transferBalance')
+    const balance = _.get(infoDialog, 'type')
+        ? (_.get(infoDialog, 'type') === ZERO
+            ? _.get(client, 'cashBalance')
+            : _.get(client, 'transferBalance'))
+        : _.toNumber(_.get(client, 'cashBalance')) + _.toNumber(_.get(client, 'transferBalance'))
     const paymentType = _.get(infoDialog, 'type') === ZERO ? 'Нал' : 'Переч.'
     return (
         <Container>
@@ -156,7 +174,7 @@ const ClientBlanceGridList = enhance((props) => {
     )
 })
 
-ClientBlanceGridList.propTypes = {
+ClientBalanceGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -176,4 +194,4 @@ ClientBlanceGridList.propTypes = {
     }).isRequired
 }
 
-export default ClientBlanceGridList
+export default ClientBalanceGridList

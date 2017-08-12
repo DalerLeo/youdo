@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxSearchField} from '../ReduxForm'
+import {TextField, CashboxTypeSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
@@ -73,7 +73,6 @@ const TransactionSendDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, cashboxData} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
-
     return (
         <Dialog
             modal={true}
@@ -102,18 +101,19 @@ const TransactionSendDialog = enhance((props) => {
                             <Field
                                 name="categoryId"
                                 className={classes.inputFieldCustom}
-                                component={CashboxSearchField}
+                                component={CashboxTypeSearchField}
+                                cashbox={cashbox}
                                 label="Касса получатель"
                                 fullWidth={true}/>
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
-                                <Field
+                                {cashbox && <Field
                                     name="amount"
                                     className={classes.inputFieldCustom}
                                     component={TextField}
                                     label="Сумма"
                                     normalize={normalizeNumber}
                                     style={{width: '50%'}}
-                                    fullWidth={false}/>
+                                    fullWidth={false}/>}
                                 <div style={{marginLeft: '20px'}}>
                                    {_.get(cashbox, ['currency', 'name'])}
                                 </div>
