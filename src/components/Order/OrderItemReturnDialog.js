@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm} from 'redux-form'
-import moment from 'moment'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
@@ -13,6 +12,7 @@ import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import dateFormat from '../../helpers/dateFormat'
 
 export const ORDER_ITEM_RETURN_DIALOG_OPEN = 'openOrderItemReturnDialog'
 const enhance = compose(
@@ -86,7 +86,7 @@ const enhance = compose(
 const OrderItemReturnDialog = enhance((props) => {
     const {open, loading, onClose, classes, returnListData} = props
     const id = _.get(returnListData, 'id')
-    const date = moment(_.get(returnListData, 'createdDate')).format('DD.MM.YYYY')
+    const date = dateFormat(_.get(returnListData, 'createdDate'))
     const firstName = _.get(returnListData, ['createdBy', 'firstName'])
     const secondName = _.get(returnListData, ['createdBy', 'secondName'])
     const comment = _.get(returnListData, 'comment')
@@ -130,7 +130,7 @@ const OrderItemReturnDialog = enhance((props) => {
                                     <span>Причина возврата</span>
                                     <span>{comment}</span>
                                 </div>
-                                <div>Добавил: <span style={{fontWeight: '600'}}>{firstName} {secondName}</span></div>
+                                <div style={{textAlign: 'right'}}>Добавил: <span style={{fontWeight: '600'}}>{firstName} {secondName}</span></div>
                             </div>
                             <div style={{marginTop: '20px'}}>
                                 <span>Дата возврата</span>

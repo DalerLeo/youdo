@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
+import {Field} from 'redux-form'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
@@ -24,12 +25,14 @@ import ReturnProductsSearchField from './ReturnProductsSearchField'
 import ProductReturnCostField from './ProductReturnCostField'
 import TextField from '../Basic/TextField'
 
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         wrapper: {
             display: 'flex',
             flexDirection: 'column',
             minHeight: '407px',
+            height: 'calc(100% - 38px)',
             position: 'relative'
         },
         imagePlaceholder: {
@@ -122,8 +125,13 @@ const enhance = compose(
     }),
     connect((state) => {
         const extra = _.get(state, ['product', 'extra', 'data'])
+        const productAmount = _.toNumber(_.get(state, ['form', 'OrderReturnForm', 'values', 'product', 'value', 'amount']))
+        const returnAmount = _.toNumber(_.get(state, ['form', 'OrderReturnForm', 'values', 'product', 'value', 'returnAmount']))
+
         return {
-            extra
+            extra,
+            productAmount,
+            returnAmount
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -131,7 +139,6 @@ const enhance = compose(
     }, {open: false}),
     withHandlers({
         handleAdd: props => () => {
-            const ZERO = 0
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
             const extra = _.get(props, ['extra'])
@@ -163,7 +170,16 @@ const enhance = compose(
     })
 )
 
-const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, orderData, ...defaultProps}) => {
+const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, productAmount, returnAmount, ...defaultProps}) => {
+    const normalizeAmount = productAmount - returnAmount
+
+    const normalizeReturn = value => {
+        if (!value) {
+            return value
+        }
+
+        return value > normalizeAmount ? normalizeAmount : value
+    }
     const products = _.get(defaultProps, ['returned_products', 'input', 'value']) || []
     return (
         <div className={classes.wrapper}>
@@ -187,11 +203,14 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         />
                     </div>
                     <div style={{width: '20%', paddingRight: '20px'}}>
-                        <TextField
+                        <Field
                             label="Кол-во"
+                            disabled={(normalizeAmount === ZERO || !normalizeAmount)}
+                            normalize={normalizeReturn}
+                            component={TextField}
                             className={classes.inputFieldCustom}
                             style={{width: '100%'}}
-                            {..._.get(defaultProps, 'amount')}
+                            name="amount"
                         />
                     </div>
                     <div>

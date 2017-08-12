@@ -102,7 +102,6 @@ const SearchField = enhance((props) => {
                 filter={() => true}
                 maxSearchResults={20}
                 maxHeight={200}
-                listStyle={{}}
                 className="autocomplete"
                 {...inputAutoComplete}
                 {...autoCompleteProps}
