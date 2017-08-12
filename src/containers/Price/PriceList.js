@@ -24,6 +24,7 @@ import {
     priceItemHistoryFetchAction,
     priceItemExpensesFetchAction
 } from '../../actions/price'
+import {openErrorAction} from '../../actions/error'
 import {marketTypeGetAllAction} from '../../actions/marketType'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ZERO = 0
@@ -144,6 +145,16 @@ const enhance = compose(
                     dispatch(getPriceItemsAction(detailId))
                     hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .catch((error) => {
+                    const nonField = _.get(error, ['non_field_error', '0'])
+                    let errorText = 'Заполните все поля!'
+                    if (nonField) {
+                        errorText = 'Минимальная цена не может быть больше максимальной!'
+                    }
+                    dispatch(openErrorAction({
+                        message: <div>{errorText && errorText}</div>
+                    }))
                 })
         },
         handleSubmitGlobalPriceForm: props => () => {
