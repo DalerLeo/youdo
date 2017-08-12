@@ -144,14 +144,13 @@ const enhance = compose(
                     dispatch(priceListFetchAction(filter))
                     dispatch(priceItemFetchAction(detailId))
                     dispatch(getPriceItemsAction(detailId))
-                    hashHistory.push({pathname})
+                    hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
         },
         handleSubmitGlobalPriceForm: props => () => {
             const {globalForm} = props
-            const globalPrice = _.get(globalForm, ['values', 'globalPrice'])
-            return globalPrice
+            return _.get(globalForm, ['values', 'globalPrice'])
         },
         handleCloseDetail: props => () => {
             const {filter} = props

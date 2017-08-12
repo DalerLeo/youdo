@@ -48,6 +48,14 @@ const enhance = compose(
                 },
                 '& > div:first-child': {
                     textAlign: 'left'
+                },
+                '& .redFont > div': {
+                    display: 'inline-block',
+                    background: '#ff9393',
+                    color: '#fff',
+                    fontWeight: '600',
+                    padding: '0 6px',
+                    borderRadius: '2px'
                 }
             }
         },
@@ -132,6 +140,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
             zIndex: 0
         }
     }
+    const ZERO = 0
     const tab = _.get(tabData, 'tab')
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
@@ -161,16 +170,24 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const price = _.get(item, 'price')
                                 const productTotal = _.get(item, 'totalPrice')
                                 const amount = _.get(item, 'amount')
+                                const returnAmount = _.toNumber(_.get(item, 'returnAmount'))
                                 const isBonus = _.get(item, 'isBonus')
                                 const measurement = _.get(product, ['measurement', 'name'])
                                 const discount = numberFormat(_.toInteger(_.get(item, 'discountPrice')) * _.toInteger(amount))
+                                const tooltipText = 'Количество возврата'
                                 totalProductPrice += _.toNumber(productTotal)
                                 totalDiscount += _.toNumber(discount)
 
                                 return (
                                     <Row className="dottedList" key={index}>
                                         <Col xs={4}>{productName} {isBonus && <strong className="greenFont">(бонус)</strong>}</Col>
-                                        <Col xs={2}>{numberFormat(amount)} {measurement}</Col>
+                                        <Col xs={2}>
+                                            {numberFormat(amount)}
+                                            {(returnAmount > ZERO) &&
+                                                <span className="redFont">
+                                                    <Tooltip position="bottom" text={tooltipText}>-{returnAmount}</Tooltip>
+                                                </span>} {measurement}
+                                        </Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
                                         <Col xs={2}>{numberFormat(productTotal)}</Col>
                                         <Col xs={2}>{discount}</Col>
@@ -219,7 +236,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                             <div className={classes.buttons}>
                                                 {(status === PENDING || status === IN_PROGRESS)
                                                     ? <div className={classes.buttons}>
-                                                        <Tooltip position="bottom" text="Ожидаеть">
+                                                        <Tooltip position="bottom" text="Ожидает">
                                                             <IconButton
                                                                 disableTouchRipple={true}
                                                                 iconStyle={iconStyle.icon}
@@ -228,7 +245,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                 <InProcess color="#f0ad4e"/>
                                                             </IconButton>
                                                         </Tooltip>
-                                                        <Tooltip position="bottom" text="отменит">
+                                                        <Tooltip position="bottom" text="Отменить">
                                                             <IconButton
                                                                 disableTouchRipple={true}
                                                                 iconStyle={iconStyle.icon}
@@ -240,7 +257,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                         </Tooltip>
                                                         </div>
                                                         : (status === COMPLETED)
-                                                            ? <Tooltip position="bottom" text="В процессе">
+                                                            ? <Tooltip position="bottom" text="Завершен">
                                                                 <IconButton
                                                                     disableTouchRipple={true}
                                                                     iconStyle={iconStyle.icon}
@@ -250,7 +267,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                 </IconButton>
                                                               </Tooltip>
                                                         : (status === CANCELLED)
-                                                            ? <Tooltip position="bottom" text="Отменено">
+                                                            ? <Tooltip position="bottom" text="Отменен">
                                                                 <IconButton
                                                                     disableTouchRipple={true}
                                                                     iconStyle={iconStyle.icon}

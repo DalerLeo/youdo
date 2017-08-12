@@ -123,12 +123,13 @@ const enhance = compose(
             '& span': {
                 padding: '5px 10px',
                 backgroundColor: '#e9ecef',
-                margin: '0 5px'
+                marginRight: '10px'
             }
         },
         iconBtn: {
             display: 'flex',
-            opacity: '0'
+            opacity: '0',
+            transition: 'all 200ms ease-out'
         },
         list: {
             '& .dottedList': {
