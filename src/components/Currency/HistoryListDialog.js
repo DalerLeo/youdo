@@ -146,7 +146,7 @@ const HistoryListDialog = enhance((props) => {
     } = props
 
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
-    const reversedRate = getConfig('REVERSED_CURRENCY_RATE')
+    const reversedRate = !getConfig('REVERSED_CURRENCY_RATE')
     const historyList = _.map(_.get(data, ['data', 'results']), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
@@ -175,7 +175,7 @@ const HistoryListDialog = enhance((props) => {
                 </div>
                 : <div>
                     <div className={classes.titleContent}>
-                        <div>History List</div>
+                        <div>Список истории</div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon2 color="#666666"/>
                         </IconButton>

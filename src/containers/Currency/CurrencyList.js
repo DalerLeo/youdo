@@ -27,7 +27,6 @@ import {
 } from '../../actions/currency'
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -220,11 +219,6 @@ const CurrencyList = enhance((props) => {
     const openCourseDialog = toBoolean(_.get(location, ['query', ADD_COURSE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CURRENCY_UPDATE_DIALOG_OPEN]))
     const openHistoryListDialog = toBoolean(_.get(location, ['query', HISTORY_LIST_DIALOG]))
-
-    if (_.get(list, ['results']) && !_.get(params, 'currencyId')) {
-        const currencyMiniId = _.get(_.nth(_.get(list, ['results']), ZERO), 'id')
-        props.handleCurrencyClick(currencyMiniId)
-    }
 
     const currencyDetailId = _.toInteger(_.get(params, 'currencyId'))
 
