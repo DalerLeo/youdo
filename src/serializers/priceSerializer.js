@@ -42,6 +42,13 @@ export const createSerializer = (data, productId, priceList) => {
         return obj
     })
 
+    if (!isCustomPrice) {
+        return {
+            'product': productId,
+            'prices': newPrices,
+            'custom_price': isCustomPrice
+        }
+    }
     return {
         'product': productId,
         'prices': newPrices,
