@@ -72,6 +72,14 @@ const enhance = compose(
                     textAlign: 'right !important'
                 }
             }
+        },
+        returnSummary: {
+            borderTop: '1px #efefef solid',
+            fontSize: '16px',
+            fontWeight: '600',
+            textAlign: 'right',
+            margin: '0 -30px',
+            padding: '15px 30px'
         }
     })),
     reduxForm({
@@ -90,17 +98,19 @@ const OrderItemReturnDialog = enhance((props) => {
     const firstName = _.get(returnListData, ['createdBy', 'firstName'])
     const secondName = _.get(returnListData, ['createdBy', 'secondName'])
     const comment = _.get(returnListData, 'comment')
-    const totalPrice = numberFormat(_.get(returnListData, 'totalPrice'))
+    const totalPrice = numberFormat(_.get(returnListData, 'totalPrice'), getConfig('PRIMARY_CURRENCY'))
     const productList = _.map(_.get(returnListData, 'returnedProducts'), (item) => {
         const product = _.get(item, 'product')
-        const amount = _.get(item, 'amount')
+        const amount = _.toNumber(_.get(item, 'amount'))
         const returnId = _.get(item, 'id')
+        const cost = _.toNumber(_.get(item, 'price'))
+        const summmary = amount * cost
         return (
             <Row key={returnId} className="dottedList">
-                <Col xs={3}>{product}</Col>
-                <Col xs={3}>{amount}</Col>
-                <Col xs={3}>Цена</Col>
-                <Col xs={3}>{totalPrice}</Col>
+                <Col xs={4}>{product}</Col>
+                <Col xs={2}>{numberFormat(amount)}</Col>
+                <Col xs={3}>{numberFormat(cost)}</Col>
+                <Col xs={3}>{numberFormat(summmary)}</Col>
             </Row>
         )
     })
@@ -139,13 +149,14 @@ const OrderItemReturnDialog = enhance((props) => {
                         </div>
                         <div className={classes.returnedItems}>
                             <Row className="dottedList">
-                                <Col xs={3}>Товар</Col>
-                                <Col xs={3}>Количество</Col>
+                                <Col xs={4}>Товар</Col>
+                                <Col xs={2}>Количество</Col>
                                 <Col xs={3}>Цена ({getConfig('PRIMARY_CURRENCY')})</Col>
                                 <Col xs={3}>Сумма ({getConfig('PRIMARY_CURRENCY')})</Col>
                             </Row>
                             {productList}
                         </div>
+                        <div className={classes.returnSummary}>Общая сумма возврата: {totalPrice}</div>
                     </div>
                 </div>
             </div>
