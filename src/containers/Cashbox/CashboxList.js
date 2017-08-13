@@ -212,6 +212,9 @@ const CashboxList = enhance((props) => {
                 currency: {
                     value: _.get(detail, 'currency')
                 },
+                division: {
+                    value: _.get(detail, 'division')
+                },
                 cashier: {
                     value: _.get(detail, 'cashier')
                 },

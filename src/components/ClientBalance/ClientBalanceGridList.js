@@ -17,7 +17,6 @@ import getConfig from '../../helpers/getConfig'
 import IconButton from 'material-ui/IconButton'
 import Cancel from 'material-ui/svg-icons/content/remove-circle'
 
-
 const listHeader = [
     {
         sorting: true,
@@ -54,8 +53,19 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
+        listRow: {
+            margin: '0 -30px !important',
+            padding: '0 30px',
+            width: 'auto !important',
+            '&:hover button': {
+                opacity: '1'
+            }
+        },
         rightAlign: {
-            textAlign: 'right'
+            textAlign: 'right',
+            '& button': {
+                opacity: '0'
+            }
         },
         red: {
             color: '#e27676',
@@ -69,14 +79,13 @@ const enhance = compose(
 )
 const iconStyle = {
     icon: {
-        color: '#d21717',
+        color: '#f44336',
         width: 24,
         height: 24
     },
     button: {
         width: 48,
-        height: 48,
-        padding: 0
+        height: 48
     }
 }
 const ClientBalanceGridList = enhance((props) => {
@@ -113,7 +122,7 @@ const ClientBalanceGridList = enhance((props) => {
         const clientName = _.get(item, 'name')
 
         return (
-            <Row key={id}>
+            <Row key={id} className={classes.listRow}>
                 <Col xs={4}>{clientName}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={2}>{orders}</Col>
@@ -123,8 +132,7 @@ const ClientBalanceGridList = enhance((props) => {
                         {numberFormat(balance, currentCurrency)}
                     </span>
                 </Col>
-                <Col xs={2}
-                     className={classes.rightAlign}>
+                <Col xs={2} className={classes.rightAlign}>
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
