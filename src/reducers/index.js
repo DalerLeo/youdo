@@ -240,7 +240,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.PENDING_PAYMENTS_CREATE),
         list: createThunkReducer(actionTypes.PENDING_PAYMENTS_LIST),
         update: createThunkReducer(actionTypes.PENDING_PAYMENTS_UPDATE),
-        item: createThunkReducer(actionTypes.PENDING_PAYMENTS_ITEM)
+        item: createThunkReducer(actionTypes.PENDING_PAYMENTS_ITEM),
+        convert: createThunkReducer(actionTypes.PENDING_PAYMENTS_CONVERT)
     }),
     marketType: combineReducers({
         create: createThunkReducer(actionTypes.MARKET_TYPE_CREATE),

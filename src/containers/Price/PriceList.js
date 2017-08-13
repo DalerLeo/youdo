@@ -24,6 +24,7 @@ import {
     priceItemHistoryFetchAction,
     priceItemExpensesFetchAction
 } from '../../actions/price'
+import {openErrorAction} from '../../actions/error'
 import {marketTypeGetAllAction} from '../../actions/marketType'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ZERO = 0
@@ -108,14 +109,12 @@ const enhance = compose(
             const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
             const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
-            const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
 
             filter.filterBy({
                 [PRICE_FILTER_OPEN]: false,
                 [PRICE_FILTER_KEY.TYPE_PARENT]: typeParent,
                 [PRICE_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [PRICE_FILTER_KEY.MEASUREMENT]: measurement,
-                [PRICE_FILTER_KEY.BRAND]: brand
+                [PRICE_FILTER_KEY.MEASUREMENT]: measurement
             })
         },
         handleOpenSupplyDialog: props => (id) => {
@@ -144,14 +143,23 @@ const enhance = compose(
                     dispatch(priceListFetchAction(filter))
                     dispatch(priceItemFetchAction(detailId))
                     dispatch(getPriceItemsAction(detailId))
-                    hashHistory.push({pathname})
+                    hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .catch((error) => {
+                    const nonField = _.get(error, ['non_field_error', '0'])
+                    let errorText = 'Заполните все поля!'
+                    if (nonField) {
+                        errorText = 'Минимальная цена не может быть больше максимальной!'
+                    }
+                    dispatch(openErrorAction({
+                        message: <div>{errorText && errorText}</div>
+                    }))
                 })
         },
         handleSubmitGlobalPriceForm: props => () => {
             const {globalForm} = props
-            const globalPrice = _.get(globalForm, ['values', 'globalPrice'])
-            return globalPrice
+            return _.get(globalForm, ['values', 'globalPrice'])
         },
         handleCloseDetail: props => () => {
             const {filter} = props

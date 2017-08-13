@@ -20,7 +20,6 @@ import {Field, reduxForm} from 'redux-form'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import userGroupFormat from '../../helpers/userGroupFormat'
-
 const enhance = compose(
     injectSheet({
         loader: {
@@ -123,12 +122,13 @@ const enhance = compose(
             '& span': {
                 padding: '5px 10px',
                 backgroundColor: '#e9ecef',
-                margin: '0 5px'
+                marginRight: '10px'
             }
         },
         iconBtn: {
             display: 'flex',
-            opacity: '0'
+            opacity: '0',
+            transition: 'all 200ms ease-out'
         },
         list: {
             '& .dottedList': {

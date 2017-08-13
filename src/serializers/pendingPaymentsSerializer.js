@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import moment from 'moment'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 const DEFAULT = 0
@@ -31,6 +32,23 @@ export const listFilterSerializer = (data) => {
         'market': _.get(defaultData, 'market'),
         'client': _.get(defaultData, 'client'),
         'payment_type': _.get(defaultData, 'paymentType')
+    }
+}
+
+export const convertSerializer = (data) => {
+    const date = _.get(data, 'createdDate')
+    if (date) {
+        return {
+            'from_currency': _.get(data, 'fromCurrency'),
+            'to_currency': _.get(data, 'toCurrency'),
+            'amount': '1',
+            'date': moment(date).format('YYYY-MM-DD HH:mm:ss')
+        }
+    }
+    return {
+        'from_currency': _.get(data, 'fromCurrency'),
+        'to_currency': _.get(data, 'toCurrency'),
+        'amount': '1'
     }
 }
 

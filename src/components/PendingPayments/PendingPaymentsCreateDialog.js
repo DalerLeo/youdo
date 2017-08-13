@@ -17,8 +17,10 @@ import numberformat from '../../helpers/numberFormat'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
 import getConfig from '../../helpers/getConfig'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
+const ORDERING_CURRENCY = 1
 const INDIVIDUAL = 2
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -65,10 +67,25 @@ const enhance = compose(
         cashbox: {
             position: 'relative'
         },
+        bold: {
+            fontWeight: 'bold'
+        },
         customCurrency: {
             position: 'absolute',
             bottom: '8px',
             right: '32px'
+        },
+        half: {
+            width: '45%',
+            display: 'flex',
+            alignItems: 'baseline'
+        },
+        halfSecond: {
+            width: '45%',
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'flex-end',
+            marginBottom: '8px'
         }
     })),
     reduxForm({
@@ -76,16 +93,20 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const currencyRate = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'currencyRate'])
+        const currencyRate = _.toInteger(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'currencyRate']))
+        const customRate = _.toNumber(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'customRate']))
+        const amountValue = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'amount'])
 
         return {
-            currencyRate
+            currencyRate,
+            customRate,
+            amountValue
         }
     }),
 )
 
 const PendingPaymentsCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate} = props
+    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate, convert, amountValue, customRate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ONE = 1
     const id = _.get(detailData, 'id')
@@ -96,13 +117,18 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), getConfig('PRIMARY_CURRENCY'))
     const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), getConfig('PRIMARY_CURRENCY'))
     const clientName = _.get(client, 'name')
+    const currentRate = (currencyRate === INDIVIDUAL) ? numberWithoutSpaces(customRate) : _.toNumber(_.get(convert, ['data', 'amount']))
+    const convertAmount = currentRate * numberWithoutSpaces(amountValue)
+    const convertLoading = _.get(convert, 'loading')
+    const createdDate = _.get(detailData, ['data', 'createdDate'])
+
     return (
         <Dialog
             modal={true}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '450px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '600px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -146,26 +172,32 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                         label="Касса получатель"
                                         fullWidth={true}
                                     />}
-                                <div className={classes.flex}>
-                                    <Field
-                                        name="amount"
-                                        className={classes.inputFieldCustom}
-                                        component={TextField}
-                                        label="Сумма"
-                                        value={null}
-                                        normalize={normalizeNumber}
-                                        fullWidth={true}
-                                    />
-                                    <CashboxCurrencyField/>
+                                <div className={classes.flex} style={{justifyContent: 'space-between'}}>
+                                    <div className={classes.half}>
+                                        <Field
+                                            name="amount"
+                                            className={classes.inputFieldCustom}
+                                            component={TextField}
+                                            label="Сумма"
+                                            normalize={normalizeNumber}
+                                            fullWidth={true}
+                                        />
+                                        <CashboxCurrencyField/>
+                                    </div>
+                                    <div className={classes.halfSecond}>
+                                        {convertLoading
+                                        ? <div>Loading...</div>
+                                            : <div> После конвертации: <span className={classes.bold}>
+                                                {numberformat(convertAmount, getConfig('PRIMARY_CURRENCY'))}</span></div>}
+                                    </div>
                                 </div>
 
                                 <Field
                                     name="currencyRate"
-                                    style={{marginTop: '10px'}}
+                                    createdDate={(currencyRate === ORDERING_CURRENCY) && createdDate}
                                     component={PendingPaymentRadioButton}
-                                    label="Текущий курс"
                                 />
-                                {_.toInteger(currencyRate) === _.toInteger(INDIVIDUAL)
+                                {(currencyRate === INDIVIDUAL)
                                     ? <div className={classes.customCurrency}>
                                         <Field
                                             component={TextField}

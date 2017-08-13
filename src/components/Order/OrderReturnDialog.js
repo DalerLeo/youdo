@@ -189,7 +189,7 @@ const enhance = compose(
     }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {open: false}),
+    }, {open: false})
 )
 
 const OrderReturnDialog = enhance((props) => {
@@ -200,7 +200,7 @@ const OrderReturnDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '500px'} : {width: '900px', maxWidth: 'unset'}}
+            contentStyle={loading ? {width: '500px'} : {width: '900px', maxWidth: 'none'}}
             className={classes.podlojkaScroll}
             open={open}
             onRequestClose={onClose}
@@ -233,7 +233,7 @@ const OrderReturnDialog = enhance((props) => {
                                     label="Комментарий к возврату"
                                     fullWidth={true}
                                     multiLine={true}
-                                    rows={2}
+                                    rows={1}
                                     rowsMax={3}/>
                             </div>
                             <div className={classes.rightOrderPart}>

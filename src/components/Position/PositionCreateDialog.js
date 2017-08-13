@@ -6,7 +6,6 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Row} from 'react-flexbox-grid'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CheckBox} from '../ReduxForm'
@@ -14,6 +13,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 export const POSITION_CREATE_DIALOG_OPEN = 'openCreateDialog'
+import userGroupFormat from '../../helpers/userGroupFormat'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -37,6 +37,8 @@ const enhance = compose(
             justifyContent: 'center'
         },
         perms: {
+            display: 'flex',
+            flexWrap: 'wrap',
             '& > div': {
                 flexBasis: '50%',
                 maxWidth: '50%',
@@ -83,10 +85,9 @@ const PositionCreateDialog = enhance((props) => {
                                 label="Наименование"
                                 fullWidth={true}
                             />
-                            <Row className={classes.perms}>
-                                {}
+                            <div className={classes.perms}>
                                 {_.map(data, (item) => {
-                                    const name = _.get(item, 'name')
+                                    const name = userGroupFormat(_.get(item, 'name'))
                                     const id = _.get(item, 'id')
                                     return (
                                     <div key={id}>
@@ -97,7 +98,7 @@ const PositionCreateDialog = enhance((props) => {
                                     </div>
                                     )
                                 })}
-                            </Row>
+                            </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

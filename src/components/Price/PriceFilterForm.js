@@ -11,7 +11,6 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
-    BrandSearchField,
     MeasurementSearchField,
     ProductTypeChildSearchField,
     ProductTypeParentSearchField
@@ -22,7 +21,6 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 export const PRICE_FILTER_OPEN = 'openFilterDialog'
 
 export const PRICE_FILTER_KEY = {
-    BRAND: 'brand',
     TYPE_PARENT: 'typeParent',
     TYPE_CHILD: 'typeChild',
     MEASUREMENT: 'measurement'
@@ -187,13 +185,6 @@ const ProductFilterForm = enhance((props) => {
                             name="measurement"
                             component={MeasurementSearchField}
                             label="Мера"/>
-                    </div>
-                    <div>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="brand"
-                            component={BrandSearchField}
-                            label="Бренд"/>
                     </div>
                     <RaisedButton
                         type="submit"

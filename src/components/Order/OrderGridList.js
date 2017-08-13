@@ -41,19 +41,19 @@ const listHeader = [
         sorting: true,
         name: 'client',
         title: 'Клиент',
-        xs: '15%'
+        xs: '17.5%'
     },
     {
         sorting: true,
         name: 'market',
         title: 'Магазин',
-        xs: '15%'
+        xs: '17.5%'
     },
     {
         sorting: true,
         name: 'user',
         title: 'Инициатор',
-        xs: '15%'
+        xs: '10%'
     },
     {
         sorting: true,
@@ -257,9 +257,9 @@ const OrderGridList = enhance((props) => {
                 }}>
                 </Link>
                 <div style={{width: '10%'}}>{id}</div>
-                <div style={{width: '15%'}}>{client}</div>
-                <div style={{width: '15%'}}>{market}</div>
-                <div style={{width: '15%'}}>{user}</div>
+                <div style={{width: '17.5%'}}>{client}</div>
+                <div style={{width: '17.5%'}}>{market}</div>
+                <div style={{width: '10%'}}>{user}</div>
                 <div style={{width: '15%', textAlign: 'right'}}>{totalPrice}</div>
                 <div style={{width: '15%'}}>{dateDelivery}</div>
                 <div style={{width: '15%'}}>{createdDate}</div>

@@ -143,7 +143,8 @@ const enhance = compose(
         iconBtn: {
             display: 'flex',
             opacity: '0',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            transition: 'all 200ms ease-out'
         }
     })
 )
