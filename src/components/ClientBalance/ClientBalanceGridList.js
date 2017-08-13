@@ -7,19 +7,23 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import ClientBalanceFilterForm from './ClientBalanceFilterForm'
-import ClientBalanceCreateDialog from './ClientBalanceInfoDialog'
+import ClientBalanceInfoDialog from './ClientBalanceInfoDialog'
+import ClientBalanceCreateDialog from './ClientBalanceCreateDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import IconButton from 'material-ui/IconButton'
+import Cancel from 'material-ui/svg-icons/content/remove-circle'
+
 
 const listHeader = [
     {
         sorting: true,
         name: 'client',
         title: 'Клиент',
-        xs: 2
+        xs: 4
     },
     {
         sorting: true,
@@ -36,22 +40,14 @@ const listHeader = [
     {
         sorting: true,
         alignRight: true,
-        name: 'cashBalance',
-        title: 'Баланс нал',
-        xs: 2
-    },
-    {
-        sorting: true,
-        alignRight: true,
-        name: 'transferBalance',
-        title: 'Баланс переч.',
-        xs: 2
-    },
-    {
-        sorting: true,
-        alignRight: true,
         name: 'balance',
         title: 'Баланс',
+        xs: 2
+    },
+    {
+        sorting: true,
+        alignRight: true,
+        title: 'Списать',
         xs: 2
     }
 ]
@@ -71,19 +67,30 @@ const enhance = compose(
         }
     })
 )
-
+const iconStyle = {
+    icon: {
+        color: '#d21717',
+        width: 24,
+        height: 24
+    },
+    button: {
+        width: 48,
+        height: 48,
+        padding: 0
+    }
+}
 const ClientBalanceGridList = enhance((props) => {
     const {
         classes,
         filter,
         filterDialog,
+        createDialog,
         filterItem,
         infoDialog,
         listData,
         detailData
     } = props
     const ZERO = 0
-    const ONE = 1
     const clientBalanceFilterDialog = (
         <ClientBalanceFilterForm
             initialValues={filterDialog.initialValues}
@@ -107,30 +114,24 @@ const ClientBalanceGridList = enhance((props) => {
 
         return (
             <Row key={id}>
-                <Col xs={2}>{clientName}</Col>
+                <Col xs={4}>{clientName}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={2}>{orders}</Col>
                 <Col xs={2}
                      className={classes.rightAlign}>
-                    <span
-                        className={cashBalance >= ZERO ? classes.green : classes.red}
-                        onClick={() => { infoDialog.handleOpenInfoDialog(id, ZERO) }}>
-                        {numberFormat(cashBalance, currentCurrency)}
-                    </span>
-                </Col>
-                <Col xs={2}
-                     className={classes.rightAlign}>
-                    <span
-                        className={transferBalance >= ZERO ? classes.green : classes.red}
-                        onClick={() => { infoDialog.handleOpenInfoDialog(id, ONE) }}>
-                        {numberFormat(transferBalance, currentCurrency)}
-                    </span>
-                </Col>
-                <Col xs={2}
-                     className={classes.rightAlign}>
                     <span onClick={() => { infoDialog.handleOpenInfoDialog(id) }}>
-                        {numberFormat(balance)}
+                        {numberFormat(balance, currentCurrency)}
                     </span>
+                </Col>
+                <Col xs={2}
+                     className={classes.rightAlign}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        onTouchTap={() => { createDialog.handleOpenCreateDialog(id) }}>
+                        <Cancel />
+                    </IconButton>
                 </Col>
             </Row>
         )
@@ -161,7 +162,7 @@ const ClientBalanceGridList = enhance((props) => {
                 loading={_.get(listData, 'listLoading')}
             />
 
-            <ClientBalanceCreateDialog
+            <ClientBalanceInfoDialog
                 open={infoDialog.openInfoDialog}
                 detailData={detailData}
                 onClose={infoDialog.handleCloseInfoDialog}
@@ -169,6 +170,14 @@ const ClientBalanceGridList = enhance((props) => {
                 name={_.get(client, 'name')}
                 balance={balance}
                 paymentType={paymentType}
+            />
+            <ClientBalanceCreateDialog
+                open={createDialog.openCreateDialog}
+                detailData={detailData}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
+                name={_.get(client, 'name')}
+                balance={balance}
             />
         </Container>
     )
