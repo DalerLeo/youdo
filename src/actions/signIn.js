@@ -41,13 +41,9 @@ export const signInAction = (params) => {
 export const signOutAction = () => {
     const payload = axios().delete(API.SIGN_OUT)
         .then(() => {
-            localStorage.removeItem(TOKEN_KEY)
-            sessionStorage.removeItem(TOKEN_KEY)
-            localStorage.removeItem(USER_GROUPS)
-            sessionStorage.removeItem(USER_GROUPS)
-            localStorage.removeItem(IS_SUPERUSER)
-            sessionStorage.removeItem(IS_SUPERUSER)
-        })
+            localStorage.clear()
+            sessionStorage.clear()
+         })
         .catch((error) => {
             const errorData = _.get(error, ['response', 'data'])
             return Promise.reject(errorData)
