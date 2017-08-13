@@ -322,15 +322,6 @@ const PositionGridList = enhance((props) => {
                     {loading
                         ? <div className={classes.loader}><CircularProgress size={60} thickness={4}/></div>
                         : <div className={classes.list}>{permissionList}</div>}
-
-                    <Field
-                        name="datePicker"
-                        component={DateRangePicker}
-
-                        className={classes.inputFieldCustom}
-                        label="Дата"
-                        fullWidth={true}
-                    />
                 </div>
                 <PositionCreateDialog
                     initialValues={createDialog.initialValues}
