@@ -17,6 +17,7 @@ import numberformat from '../../helpers/numberFormat'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
 import getConfig from '../../helpers/getConfig'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const ORDERING_CURRENCY = 1
@@ -66,6 +67,9 @@ const enhance = compose(
         cashbox: {
             position: 'relative'
         },
+        bold: {
+            fontWeight: 'bold'
+        },
         customCurrency: {
             position: 'absolute',
             bottom: '8px',
@@ -75,6 +79,13 @@ const enhance = compose(
             width: '45%',
             display: 'flex',
             alignItems: 'baseline'
+        },
+        halfSecond: {
+            width: '45%',
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'flex-end',
+            marginBottom: '8px'
         }
     })),
     reduxForm({
@@ -83,15 +94,19 @@ const enhance = compose(
     }),
     connect((state) => {
         const currencyRate = _.toInteger(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'currencyRate']))
+        const customRate = _.toNumber(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'customRate']))
+        const amountValue = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'amount'])
 
         return {
-            currencyRate
+            currencyRate,
+            customRate,
+            amountValue
         }
     }),
 )
 
 const PendingPaymentsCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate, convert} = props
+    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate, convert, amountValue, customRate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ONE = 1
     const id = _.get(detailData, 'id')
@@ -102,7 +117,8 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), getConfig('PRIMARY_CURRENCY'))
     const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), getConfig('PRIMARY_CURRENCY'))
     const clientName = _.get(client, 'name')
-    const convertAmount = _.get(convert, ['data', 'amount'])
+    const currentRate = (currencyRate === INDIVIDUAL) ? numberWithoutSpaces(customRate) : _.toNumber(_.get(convert, ['data', 'amount']))
+    const convertAmount = currentRate * numberWithoutSpaces(amountValue)
     const convertLoading = _.get(convert, 'loading')
     const createdDate = _.get(detailData, ['data', 'createdDate'])
 
@@ -168,18 +184,11 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                         />
                                         <CashboxCurrencyField/>
                                     </div>
-                                    <div className={classes.half}>
+                                    <div className={classes.halfSecond}>
                                         {convertLoading
                                         ? <div>Loading...</div>
-                                        : <Field
-                                            name="convert"
-                                            className={classes.inputFieldCustom}
-                                            component={TextField}
-                                            placeholder={numberformat(convertAmount)}
-                                            disabled={true}
-                                            fullWidth={true}
-                                        />}
-                                        {getConfig('PRIMARY_CURRENCY')}
+                                            : <div> После конвертации: <span className={classes.bold}>
+                                                {numberformat(convertAmount, getConfig('PRIMARY_CURRENCY'))}</span></div>}
                                     </div>
                                 </div>
 
