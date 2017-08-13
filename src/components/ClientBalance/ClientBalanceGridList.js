@@ -17,7 +17,6 @@ import getConfig from '../../helpers/getConfig'
 import IconButton from 'material-ui/IconButton'
 import Cancel from 'material-ui/svg-icons/content/remove-circle'
 
-
 const listHeader = [
     {
         sorting: true,
@@ -61,8 +60,19 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
+        listRow: {
+            margin: '0 -30px !important',
+            padding: '0 30px',
+            width: 'auto !important',
+            '&:hover button': {
+                opacity: '1'
+            }
+        },
         rightAlign: {
-            textAlign: 'right'
+            textAlign: 'right',
+            '& button': {
+                opacity: '0'
+            }
         },
         red: {
             color: '#e27676',
@@ -76,14 +86,13 @@ const enhance = compose(
 )
 const iconStyle = {
     icon: {
-        color: '#d21717',
+        color: '#f44336',
         width: 24,
         height: 24
     },
     button: {
         width: 48,
-        height: 48,
-        padding: 0
+        height: 48
     }
 }
 const ClientBalanceGridList = enhance((props) => {
@@ -119,8 +128,9 @@ const ClientBalanceGridList = enhance((props) => {
         const clientName = _.get(item, 'name')
 
         return (
-            <Row key={id}>
+            <Row key={id} className={classes.listRow}>
                 <Col xs={3}>{clientName}</Col>
+
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={1}>{orders}</Col>
                 <Col xs={2}
@@ -135,8 +145,7 @@ const ClientBalanceGridList = enhance((props) => {
                         {numberFormat(shampooBalance, currentCurrency)}
                     </span>
                 </Col>
-                <Col xs={2}
-                     className={classes.rightAlign}>
+                <Col xs={2} className={classes.rightAlign}>
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
@@ -156,11 +165,6 @@ const ClientBalanceGridList = enhance((props) => {
     }
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const balance = _.get(infoDialog, 'type')
-        ? (_.get(infoDialog, 'type') === ZERO
-            ? _.get(client, 'cashBalance')
-            : _.get(client, 'transferBalance'))
-        : _.toNumber(_.get(client, 'cashBalance')) + _.toNumber(_.get(client, 'transferBalance'))
     const paymentType = _.get(infoDialog, 'type') === ZERO ? 'Нал' : 'Переч.'
     return (
         <Container>
@@ -180,17 +184,16 @@ const ClientBalanceGridList = enhance((props) => {
                 onClose={infoDialog.handleCloseInfoDialog}
                 filterItem={filterItem}
                 name={_.get(client, 'name')}
-                balance={balance}
                 paymentType={paymentType}
             />
             <ClientBalanceCreateDialog
                 open={createDialog.openCreateDialog}
+                listData={listData}
                 detailData={detailData}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 name={_.get(client, 'name')}
-                balance={balance}
             />
         </Container>
     )

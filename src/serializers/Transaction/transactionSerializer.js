@@ -10,11 +10,13 @@ export const createIncomeSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
     const comment = _.get(data, 'comment')
     const clientId = _.get(data, ['client', 'value'])
+    const customRate = _.get(data, 'custom_rate')
     return {
         'amount': numberWithoutSpaces(amount),
         comment,
         'cashbox': cashboxId,
-        'client': clientId
+        'client': clientId,
+        'custom_rate': customRate
     }
 }
 
@@ -26,12 +28,14 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const comment = _.get(data, 'comment')
     const objectId = _.get(data, ['expanseCategory', 'value'])
     const clientId = _.get(data, ['client', 'value'])
+    const customRate = _.get(data, 'custom_rate')
     return {
         amount: amount,
         comment,
         'cashbox': cashboxId,
         'expanse_category': objectId,
-        'client': clientId
+        'client': clientId,
+        'custom_rate': customRate
     }
 }
 

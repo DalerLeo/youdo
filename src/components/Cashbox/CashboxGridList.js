@@ -23,12 +23,18 @@ const listHeader = [
         sorting: true,
         name: 'id',
         title: 'Id',
-        xs: 2
+        xs: 1
     },
     {
         sorting: true,
         name: 'name',
-        title: 'Name',
+        title: 'Наименование',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'division',
+        title: 'Подразделение',
         xs: 2
     },
     {
@@ -155,17 +161,19 @@ const CashboxGridList = enhance((props) => {
     const cashboxList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const division = _.get(item, ['division', 'name'])
         const currency = _.get(item, ['currency', 'name']) || 'N/A'
         const cashier = _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName'])
         const type = _.toInteger(_.get(item, 'type')) === bank ? 'банковский счет' : 'наличный'
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={2}>{id}</Col>
+                <Col xs={1}>{id}</Col>
                 <Col xs={2}>{name}</Col>
+                <Col xs={2}>{division}</Col>
                 <Col xs={2}>{currency}</Col>
                 <Col xs={2}>{cashier}</Col>
                 <Col xs={2}>{type}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>
+                <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">
                             <IconButton

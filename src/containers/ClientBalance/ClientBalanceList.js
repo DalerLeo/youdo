@@ -123,7 +123,7 @@ const enhance = compose(
         },
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}, params} = props
-            const clientId = _.get(params, [ 'clientBalanceId'])
+            const clientId = _.get(params, ['clientBalanceId'])
             return dispatch(clientBalanceCreateExpenseAction(_.get(createForm, ['values']), clientId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))

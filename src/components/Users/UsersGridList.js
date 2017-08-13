@@ -18,9 +18,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 import Tooltip from '../ToolTip'
-import userGroupFormat from '../../helpers/userGroupFormat'
 
-const ZERO = 0
 const listHeader = [
     {
         sorting: true,
