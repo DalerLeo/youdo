@@ -146,6 +146,7 @@ const ClientBalanceList = enhance((props) => {
         listLoading,
         detail,
         detailLoading,
+        createLoading,
         filter,
         filterItem,
         layout,
@@ -169,7 +170,7 @@ const ClientBalanceList = enhance((props) => {
     }
 
     const createDialog = {
-        detailLoading: detailLoading,
+        createLoading,
         openCreateDialog,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,

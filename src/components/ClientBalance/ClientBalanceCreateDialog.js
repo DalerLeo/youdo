@@ -14,6 +14,8 @@ import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
+import CircularProgress from 'material-ui/CircularProgress'
+import {DivisionSearchField} from '../ReduxForm'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -41,7 +43,6 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-
         fields: {
             width: '100%'
         }
@@ -67,63 +68,61 @@ const ClientBalanceCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Добавить расход к клиенту </span>
+                <span>Добавить расход клиенту</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            {loading ? <div className={classes.loader}>
+            {loading
+                ? <div className={classes.loader}>
                     <CircularProgress size={40} thickness={4}/>
                 </div>
                 : <div className={classes.bodyContent}>
-                    <div >
-                        <div className={classes.info}>
-                            <div>
-                                <span><b>Клиент:</b> {name} </span>
-                            </div>
-                            <div>
-                                <b>Баланс:</b>
-                                <span className={(balance >= ZERO) ? classes.green : classes.red}>{numberFormat(balance, currentCurrency)}</span>
-                            </div>
+                    <div className={classes.info} style={{padding: '20px 30px'}}>
+                        <div>
+                            <span><b>Клиент:</b> {name} </span>
+                        </div>
+                        <div>
+                            <b>Баланс:</b>&nbsp;
+                            <span
+                                className={(balance >= ZERO) ? classes.green : classes.red}>{numberFormat(balance, currentCurrency)}</span>
                         </div>
                     </div>
-                </div>
-            }
-            <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '25px'}}>
-                        <div className={classes.fields}>
-                            <div className={classes.flex} style={{alignItems: 'baseline'}}>
+                    <form onSubmit={onSubmit} className={classes.form}>
+                        <div className={classes.inContent} style={{minHeight: '100px'}}>
+                            <div style={{width: '100%'}}>
                                 <Field
                                     name="amount"
                                     component={TextField}
                                     label="Сумма"
                                     normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
-                                    style={{width: '50%'}}
-                                    fullWidth={false}/>
-                                <div style={{marginLeft: '20px'}}>
-                                </div>
+                                    fullWidth={true}/>
+                                <Field
+                                    name="division"
+                                    component={DivisionSearchField}
+                                    label="Подразделение"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
+                                <Field
+                                    name="comment"
+                                    style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
+                                    component={TextField}
+                                    label="Комментарий..."
+                                    multiLine={true}
+                                    rows={1}
+                                    rowsMax={3}
+                                    fullWidth={true}/>
                             </div>
-                            <Field
-                                name="comment"
-                                style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
-                                component={TextField}
-                                label="Комментарий..."
-                                multiLine={true}
-                                rows={1}
-                                rowsMax={3}
-                                fullWidth={true}/>
                         </div>
-                    </div>
-                    <div className={classes.bottomButton}>
-                        <FlatButton
-                            label="Сохранить"
-                            type="submit"
-                        />
-                    </div>
-                </form>
-            </div>
+                        <div className={classes.bottomButton}>
+                            <FlatButton
+                                label="Сохранить"
+                                type="submit"
+                            />
+                        </div>
+                    </form>
+                </div>}
         </Dialog>
     )
 })

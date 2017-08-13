@@ -58,6 +58,7 @@ import ZoneSearchField from './ZoneSearchField'
 import InOutTypeSearchFiled from './InOutTypeSearchFiled'
 import RemainderProductTypeSearchField from './Remainder/RemainderProductTypeSearchField'
 import PositionSearchField from './PositionSearchField'
+import DivisionSearchField from './DivisionSearchField'
 import Pagination from './Pagination'
 
 export {
@@ -121,5 +122,6 @@ export {
     InOutTypeSearchFiled,
     RemainderProductTypeSearchField,
     PositionSearchField,
+    DivisionSearchField,
     Pagination
 }

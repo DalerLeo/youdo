@@ -174,6 +174,7 @@ const ClientBalanceGridList = enhance((props) => {
             <ClientBalanceCreateDialog
                 open={createDialog.openCreateDialog}
                 detailData={detailData}
+                loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 name={_.get(client, 'name')}
@@ -192,6 +193,13 @@ ClientBalanceGridList.propTypes = {
         openInfoDialog: PropTypes.bool.isRequired,
         handleOpenInfoDialog: PropTypes.func.isRequired,
         handleCloseInfoDialog: PropTypes.func.isRequired
+    }).isRequired,
+    createDialog: PropTypes.shape({
+        createLoading: PropTypes.bool.isRequired,
+        openCreateDialog: PropTypes.bool.isRequired,
+        handleOpenCreateDialog: PropTypes.func.isRequired,
+        handleCloseCreateDialog: PropTypes.func.isRequired,
+        handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,
