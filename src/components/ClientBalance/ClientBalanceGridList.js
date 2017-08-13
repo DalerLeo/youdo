@@ -23,7 +23,7 @@ const listHeader = [
         sorting: true,
         name: 'client',
         title: 'Клиент',
-        xs: 4
+        xs: 3
     },
     {
         sorting: true,
@@ -35,13 +35,20 @@ const listHeader = [
         sorting: true,
         name: 'number_of_orders',
         title: 'Кол-во заказов',
+        xs: 1
+    },
+    {
+        sorting: true,
+        alignRight: true,
+        name: 'cashBalance',
+        title: 'Баланс косметика',
         xs: 2
     },
     {
         sorting: true,
         alignRight: true,
         name: 'balance',
-        title: 'Баланс',
+        title: 'Баланс шампунь',
         xs: 2
     },
     {
@@ -105,22 +112,27 @@ const ClientBalanceGridList = enhance((props) => {
     const clientBalanceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const transferBalance = _.toNumber(_.get(item, 'transferBalance'))
-        const cashBalance = _.toNumber(_.get(item, 'cashBalance'))
-        const balance = transferBalance + cashBalance
+        const cosmeticsBalance = _.toNumber(_.get(item, 'cosmeticsBalance'))
+        const shampooBalance = _.toNumber(_.get(item, 'shampooBalance'))
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const orders = numberFormat(_.get(item, 'orders'))
         const clientName = _.get(item, 'name')
 
         return (
             <Row key={id}>
-                <Col xs={4}>{clientName}</Col>
+                <Col xs={3}>{clientName}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}>{orders}</Col>
+                <Col xs={1}>{orders}</Col>
                 <Col xs={2}
                      className={classes.rightAlign}>
                     <span onClick={() => { infoDialog.handleOpenInfoDialog(id) }}>
-                        {numberFormat(balance, currentCurrency)}
+                        {numberFormat(cosmeticsBalance, currentCurrency)}
+                    </span>
+                </Col>
+                <Col xs={2}
+                     className={classes.rightAlign}>
+                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id) }}>
+                        {numberFormat(shampooBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2}
