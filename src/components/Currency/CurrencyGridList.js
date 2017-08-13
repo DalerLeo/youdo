@@ -10,7 +10,6 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
@@ -171,7 +170,8 @@ const enhance = compose(
         },
         iconBtn: {
             display: 'flex',
-            opacity: '0'
+            opacity: '0',
+            transition: 'all 200ms ease-out'
         },
         listRow: {
             margin: '0 -30px !important',
@@ -181,11 +181,9 @@ const enhance = compose(
                 opacity: '1'
             }
         },
-        listRow2: {
-            color: '#b8b8b8 !important',
-            margin: '0 -30px !important',
-            width: 'auto !important',
-            padding: '0 30px'
+        listRowDisabled: {
+            extend: 'listRow',
+            color: '#b8b8b8 !important'
         }
     })
 )
@@ -288,49 +286,11 @@ const CurrencyGridList = enhance((props) => {
         }
 
         return (
-            <Row key={id} className={classes.listRow2}>
+            <Row key={id} className={classes.listRowDisabled}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={3}>{name}</Col>
                 <Col xs={4}>1 {reversedRate ? name : currentCurrency} = {rate} {reversedRate ? currentCurrency : name}</Col>
                 <Col xs={3}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" onClick={courseDialog.handleOpenCourseDialog} text="Установить курс">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                disableTouchRipple={true}
-                                touch={true}
-                                onTouchTap={() => { courseDialog.handleOpenCourseDialog(id) }}>
-                                <Dollar/>
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text="Изменить">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                disableTouchRipple={true}
-                                touch={true}
-                                onTouchTap={() => {
-                                    updateDialog.handleOpenUpdateDialog(id)
-                                }}>
-                                <Edit/>
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
-                            <IconButton
-                                disableTouchRipple={true}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                onTouchTap={() => {
-                                    confirmDialog.handleOpenConfirmDialog(id)
-                                }}
-                                touch={true}>
-                                <Delete/>
-                            </IconButton>
-                        </Tooltip>
-                    </div>
-                </Col>
             </Row>
         )
     })
@@ -338,7 +298,7 @@ const CurrencyGridList = enhance((props) => {
     const list = {
         header: listHeader,
         list: currencyList,
-        loading: _.get(detailData, 'detailLoading')
+        loading: _.get(listData, 'listLoading')
     }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
     const confirmMessage = 'Валюта: ' + _.get(currentDetail, 'name')
@@ -351,7 +311,7 @@ const CurrencyGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
                 className={classes.addButton}
-                label="добавить пользователя"
+                label="добавить валюту"
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>
@@ -363,14 +323,14 @@ const CurrencyGridList = enhance((props) => {
             <div className={classes.wrapper}>
                 <SettingSideMenu currentUrl={ROUTES.CURRENCY_LIST_URL}/>
                 <div className={classes.rightPanel}>
-                    <Paper zDepth={1}>
+                    <div>
                         <div className={classes.editContent}>
                             <div className={classes.semibold}>Основная валюта: <b>&nbsp;{currentCurrency}</b><i
                                 style={{fontWeight: '400', color: '#999'}}>
                                 &nbsp;(используется при формировании стоимости продукта / заказа)</i>
                             </div>
                         </div>
-                    </Paper>
+                    </div>
                     <div>
                         <GridList
                             filter={detailFilter}
@@ -379,6 +339,7 @@ const CurrencyGridList = enhance((props) => {
                             loading={listLoading}
                             addButton={addButton}
                             detail={detail}
+                            listShadow={false}
                         />
                     </div>
                 </div>
@@ -390,6 +351,7 @@ const CurrencyGridList = enhance((props) => {
                     onClose={createDialog.handleCloseCreateDialog}
                     onSubmit={createDialog.handleSubmitCreateDialog}
                 />
+
                 <HistoryListDialog
                     open={_.get(detailData, 'open')}
                     filter={detailFilter}
@@ -398,6 +360,7 @@ const CurrencyGridList = enhance((props) => {
                     onClose={detailData.handleClose}
                     listData={listData}
                     loading={listLoading}/>
+
                 <CurrencyCreateDialog
                     isUpdate={true}
                     initialValues={updateDialog.initialValues}
