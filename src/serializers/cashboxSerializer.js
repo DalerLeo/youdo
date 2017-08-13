@@ -6,11 +6,13 @@ export const createSerializer = (data) => {
     const currency = _.get(data, ['currency', 'value'])
     const cashier = _.get(data, ['cashier', 'value'])
     const type = _.get(data, ['type', 'value'])
+    const division = _.get(data, ['division', 'value'])
 
     return {
         name,
         currency,
         cashier,
+        division,
         type
     }
 }

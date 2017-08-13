@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
+import {Row, Col} from 'react-flexbox-grid'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
@@ -45,6 +46,13 @@ const enhance = compose(
         },
         fields: {
             width: '100%'
+        },
+        bodyContent: {
+            '& > .row': {
+                '& > div:last-child': {
+                    textAlign: 'right'
+                }
+            }
         }
     })),
     reduxForm({
@@ -55,8 +63,11 @@ const enhance = compose(
 const ZERO = 0
 
 const ClientBalanceCreateDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, name, balance} = props
-    const currentCurrency = getConfig('PRIMARY_CURRENCY')
+    const {classes, open, onClose, handleSubmit, loading, name, detailData, listData} = props
+    const data = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
+    const cosmBalance = _.toNumber(_.get(data, 'cosmeticsBalance'))
+    const shammBalance = _.toNumber(_.get(data, 'shampooBalance'))
+    const currency = getConfig('PRIMARY_CURRENCY')
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
@@ -78,16 +89,19 @@ const ClientBalanceCreateDialog = enhance((props) => {
                     <CircularProgress size={40} thickness={4}/>
                 </div>
                 : <div className={classes.bodyContent}>
-                    <div className={classes.info} style={{padding: '20px 30px'}}>
-                        <div>
-                            <span><b>Клиент:</b> {name} </span>
-                        </div>
-                        <div>
-                            <b>Баланс:</b>&nbsp;
-                            <span
-                                className={(balance >= ZERO) ? classes.green : classes.red}>{numberFormat(balance, currentCurrency)}</span>
-                        </div>
-                    </div>
+                    <div style={{padding: '10px 30px'}}>Клиент: <strong>{name}</strong></div>
+                    <Row style={{padding: '10px 30px'}}>
+                        <Col xs={6}>Баланс Косметика:</Col>
+                        <Col xs={6}>
+                            <span className={(cosmBalance <= ZERO) ? classes.red : classes.green}>{numberFormat(cosmBalance, currency)}</span>
+                        </Col>
+                    </Row>
+                    <Row style={{padding: '10px 30px'}}>
+                        <Col xs={6}>Баланс Шампунь:</Col>
+                        <Col xs={6}>
+                            <span className={(shammBalance <= ZERO) ? classes.red : classes.green}>{numberFormat(shammBalance, currency)}</span>
+                        </Col>
+                    </Row>
                     <form onSubmit={onSubmit} className={classes.form}>
                         <div className={classes.inContent} style={{minHeight: '100px'}}>
                             <div style={{width: '100%'}}>

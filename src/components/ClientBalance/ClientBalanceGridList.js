@@ -129,7 +129,7 @@ const ClientBalanceGridList = enhance((props) => {
 
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={4}>{clientName}</Col>
+                <Col xs={3}>{clientName}</Col>
 
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={1}>{orders}</Col>
@@ -165,11 +165,6 @@ const ClientBalanceGridList = enhance((props) => {
     }
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const balance = _.get(infoDialog, 'type')
-        ? (_.get(infoDialog, 'type') === ZERO
-            ? _.get(client, 'cashBalance')
-            : _.get(client, 'transferBalance'))
-        : _.toNumber(_.get(client, 'cashBalance')) + _.toNumber(_.get(client, 'transferBalance'))
     const paymentType = _.get(infoDialog, 'type') === ZERO ? 'Нал' : 'Переч.'
     return (
         <Container>
@@ -189,17 +184,16 @@ const ClientBalanceGridList = enhance((props) => {
                 onClose={infoDialog.handleCloseInfoDialog}
                 filterItem={filterItem}
                 name={_.get(client, 'name')}
-                balance={balance}
                 paymentType={paymentType}
             />
             <ClientBalanceCreateDialog
                 open={createDialog.openCreateDialog}
+                listData={listData}
                 detailData={detailData}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 name={_.get(client, 'name')}
-                balance={balance}
             />
         </Container>
     )
