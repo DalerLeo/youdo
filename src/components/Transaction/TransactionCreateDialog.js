@@ -139,12 +139,20 @@ const TransactionCreateDialog = enhance((props) => {
                                 className={classes.checkbox}
                                 component={CheckBox}
                                 label="Снять со счета клиента"/>
-                            {showClients && <Field
-                                name="client"
-                                component={ClientSearchField}
-                                label="Клиент"
-                                className={classes.inputFieldCustom}
-                                fullWidth={true}/>
+                            {showClients && <div>
+                                <Field
+                                    name="client"
+                                    component={ClientSearchField}
+                                    label="Клиент"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
+                                <Field
+                                    name="custom_rate"
+                                    component={TextField}
+                                    label="Курс"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
+                            </div>
                             }
                             <Field
                                 name="expanseCategory"
@@ -160,12 +168,20 @@ const TransactionCreateDialog = enhance((props) => {
                                 component={CheckBox}
                                 label="Оплата с клиента"/>
                             }
-                            {showIncomeClients && <Field
-                                name="client"
-                                component={ClientSearchField}
-                                label="Клиент"
-                                className={classes.inputFieldCustom}
-                                fullWidth={true}/>
+                            {showIncomeClients && <div>
+                                <Field
+                                    name="client"
+                                    component={ClientSearchField}
+                                    label="Клиент"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
+                                <Field
+                                    name="custom_rate"
+                                    component={TextField}
+                                    label="Курс"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
+                            </div>
                             }
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
                                 <Field
