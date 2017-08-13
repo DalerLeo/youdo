@@ -20,7 +20,6 @@ import {Field, reduxForm} from 'redux-form'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import userGroupFormat from '../../helpers/userGroupFormat'
-import DateRangePicker from '../ReduxForm/Basic/DataRangePicker'
 const enhance = compose(
     injectSheet({
         loader: {
