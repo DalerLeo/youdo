@@ -159,20 +159,14 @@ const UsersGridList = enhance((props) => {
         const firstName = _.get(item, 'firstName')
         const secondName = _.get(item, 'secondName')
         const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
-        const groups = _.map(_.get(item, 'groups'), (val, index) => {
-            const group = _.get(val, 'name')
-            if (index === ZERO) {
-                return userGroupFormat(group)
-            }
-            return ', ' + userGroupFormat(group)
-        })
+        const position = _.get(item, ['position', 'name']) || 'Не выбрано'
         const isActive = _.get(item, 'isActive')
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{firstName} {secondName}</Col>
                 <Col xs={2}>{username}</Col>
-                <Col xs={2}>{(!_.isEmpty(groups)) ? groups : 'N/A'}</Col>
+                <Col xs={2}>{position}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
                 <Col xs={2}>{isActive ? 'Активный' : 'Неактивный'}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>

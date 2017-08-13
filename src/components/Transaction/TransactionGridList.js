@@ -196,8 +196,8 @@ const TransactionGridList = enhance((props) => {
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = _.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан'
-        const market = _.get(item, ['market', 'name'])
-        const order = _.get(item, 'order')
+        const market = _.get(item, ['clientTransaction', 'market', 'name'])
+        const order = _.get(item, ['clientTransaction', 'order'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
 
         const iconButton = (

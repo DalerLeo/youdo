@@ -378,3 +378,7 @@ export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/agents/export/'
 export const STAT_REPORT_LIST = 'stats/agents/'
 export const STAT_REPORT_ITEM = 'sales/order/'
 export const STAT_REPORT_GET_DOCUMENT = '/stats/agents/export/'
+
+export const DIVISION = 'main/division'
+export const DIVISION_LIST = `${DIVISION}/`
+export const DIVISION_ITEM = `${DIVISION}/%d/`

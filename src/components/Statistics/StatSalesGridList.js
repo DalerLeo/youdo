@@ -343,6 +343,8 @@ const StatSalesGridList = enhance((props) => {
             <Col xs={1} style={{display: 'none'}}>|</Col>
         </Row>
     )
+
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const list = (
 
         _.map(_.get(listData, 'data'), (item) => {
@@ -361,7 +363,7 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2}>
                         <div>{firstName} {secondName}</div>
                     </Col>
-                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice)} UZS</Col>
+                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice)} {currentCurrency}</Col>
                     <Col xs={1}>
                         <IconButton
                             onTouchTap={ () => { statSaleDialog.handleOpenStatSaleDialog(id) }}>

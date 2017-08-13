@@ -29,6 +29,7 @@ import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
 import PaymentTypeSearchField from './PaymentTypeSearchField'
 import StockTypeSearchField from './Stock/StockTypeSearchField'
 import CashboxSearchField from './Cashbox/CashboxSearchField'
+import CashboxTypeSearchField from './Cashbox/CashboxTypeSearchField'
 import DeliveryTypeSearchField from './DeliveryTypeSearchField'
 import ManufactureSearchField from './Manufacture/ManufactureSearchField'
 import ManufactureListMaterialField from './Manufacture/ManufactureListMaterialField'
@@ -57,6 +58,7 @@ import ZoneSearchField from './ZoneSearchField'
 import InOutTypeSearchFiled from './InOutTypeSearchFiled'
 import RemainderProductTypeSearchField from './Remainder/RemainderProductTypeSearchField'
 import PositionSearchField from './PositionSearchField'
+import DivisionSearchField from './DivisionSearchField'
 import Pagination from './Pagination'
 
 export {
@@ -101,6 +103,7 @@ export {
     PaymentTypeSearchField,
     StockTypeSearchField,
     CashboxSearchField,
+    CashboxTypeSearchField,
     CashboxCustomField,
     CashboxCashCustomField,
     CashboxBankCustomField,
@@ -119,5 +122,6 @@ export {
     InOutTypeSearchFiled,
     RemainderProductTypeSearchField,
     PositionSearchField,
+    DivisionSearchField,
     Pagination
 }
