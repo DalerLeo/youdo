@@ -254,3 +254,8 @@ export const STATISTICS_REPORT_URL = `/${STATISTICS_REPORT}`
 
 export const ACCESS_DENIED = 'access_denied'
 export const ACCESS_DENIED_URL = `/${ACCESS_DENIED}`
+
+export const DIVISION = 'division'
+export const DIVISION_LIST_URL = `/${DIVISION}`
+export const DIVISION_ITEM_URL = `${DIVISION_LIST_URL}/:divisionId`
+export const DIVISION_ITEM_PATH = `${DIVISION}/%d`

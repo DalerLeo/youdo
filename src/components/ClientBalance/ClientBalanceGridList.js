@@ -6,7 +6,6 @@ import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import ClientBalanceFilterForm from './ClientBalanceFilterForm'
 import ClientBalanceInfoDialog from './ClientBalanceInfoDialog'
 import ClientBalanceCreateDialog from './ClientBalanceCreateDialog'
 import SubMenu from '../SubMenu'
@@ -16,6 +15,11 @@ import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import IconButton from 'material-ui/IconButton'
 import Cancel from 'material-ui/svg-icons/content/remove-circle'
+
+const DIVISION = {
+    SHAMPUN: 2,
+    KOSMETIKA: 1
+}
 
 const listHeader = [
     {
@@ -72,6 +76,9 @@ const enhance = compose(
             textAlign: 'right',
             '& button': {
                 opacity: '0'
+            },
+            '& span': {
+                cursor: 'pointer'
             }
         },
         red: {
@@ -99,21 +106,12 @@ const ClientBalanceGridList = enhance((props) => {
     const {
         classes,
         filter,
-        filterDialog,
         createDialog,
         filterItem,
         infoDialog,
         listData,
         detailData
     } = props
-    const ZERO = 0
-    const clientBalanceFilterDialog = (
-        <ClientBalanceFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
-    )
 
     const clientBalanceDetail = (
         <span>a</span>
@@ -135,13 +133,13 @@ const ClientBalanceGridList = enhance((props) => {
                 <Col xs={1}>{orders}</Col>
                 <Col xs={2}
                      className={classes.rightAlign}>
-                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id) }}>
+                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA) }}>
                         {numberFormat(cosmeticsBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2}
                      className={classes.rightAlign}>
-                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id) }}>
+                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN) }}>
                         {numberFormat(shampooBalance, currentCurrency)}
                     </span>
                 </Col>
@@ -165,7 +163,7 @@ const ClientBalanceGridList = enhance((props) => {
     }
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const paymentType = _.get(infoDialog, 'type') === ZERO ? 'Нал' : 'Переч.'
+    const paymentType = _.get(infoDialog, 'division') === DIVISION.SHAMPUN ? 'шамнунь' : 'косметика'
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
@@ -174,7 +172,6 @@ const ClientBalanceGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={clientBalanceDetail}
-                filterDialog={clientBalanceFilterDialog}
                 loading={_.get(listData, 'listLoading')}
             />
 
@@ -215,14 +212,6 @@ ClientBalanceGridList.propTypes = {
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    filterDialog: PropTypes.shape({
-        initialValues: PropTypes.object,
-        filterLoading: PropTypes.bool,
-        openFilterDialog: PropTypes.bool.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

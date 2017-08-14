@@ -22,6 +22,7 @@ import ReactHighcharts from 'react-highcharts'
 import numberFormat from '../../helpers/numberFormat.js'
 import NotFound from '../Images/not-found.png'
 import CashboxDetails from './StatCashboxDetails'
+import getConfig from '../../helpers/getConfig'
 
 export const STAT_CASHBOX_FILTER_KEY = {
     CASHBOX: 'cashbox',
@@ -241,12 +242,17 @@ const StatCashboxGridList = enhance((props) => {
         listData,
         detailData,
         classes,
+        getDocument,
         handleSubmitFilterDialog,
-        getDocument
     } = props
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     const listLoading = _.get(listData, 'listLoading')
     const openDetails = _.get(listData, 'openDetails')
+    const startBalance = _.get(listData, 'startBalance')
+    const endBalance = _.get(listData, 'endBalance')
+    const income = _.get(listData, 'income')
+    const expense = _.get(listData, 'expense')
 
     const iconStyle = {
         icon: {
@@ -438,19 +444,19 @@ const StatCashboxGridList = enhance((props) => {
                             <div className={classes.balances}>
                                 <div className={classes.balanceItem}>
                                     <span>Баланс на начало периода</span>
-                                    <div>10 000 000 UZS</div>
+                                    <div>{numberFormat(startBalance, primaryCurrency)}</div>
                                 </div>
                                 <div className={classes.balanceItem}>
                                     <span>Расход за период</span>
-                                    <div>-5 000 000 UZS</div>
+                                    <div>{numberFormat(expense, primaryCurrency)}</div>
                                 </div>
                                 <div className={classes.balanceItem}>
                                     <span>Доход за период</span>
-                                    <div>25 000 000 UZS</div>
+                                    <div>{numberFormat(income, primaryCurrency)}</div>
                                 </div>
                                 <div className={classes.balanceItem}>
                                     <span>Баланс на конец периода</span>
-                                    <div>30 000 000 UZS</div>
+                                    <div>{numberFormat(endBalance, primaryCurrency)}</div>
                                 </div>
                             </div>
                             {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
