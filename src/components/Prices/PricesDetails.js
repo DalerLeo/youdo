@@ -193,6 +193,13 @@ const enhance = compose(
                 }
             }
         },
+        totalAmount: {
+            padding: '10px 0',
+            textAlign: 'right',
+            '& strong': {
+                fontWeight: 'bold'
+            }
+        },
         expenseSum: {
             display: 'flex',
             alignItems: 'center',
@@ -239,6 +246,7 @@ const PricesDetails = enhance((props) => {
     const beginDate = dateFormat(_.get(data, 'beginDate'))
     const tillDate = dateFormat(_.get(data, 'tillDate'))
     const discount = _.toNumber(_.get(data, 'discount'))
+    const totalAmount = numberFormat(_.get(data, 'totalAmount'))
     const type = _.get(data, 'type')
     const CONDITIONAL = 1
     const BONUS = 2
@@ -317,6 +325,7 @@ const PricesDetails = enhance((props) => {
                                 return false
                             })}
                         </div>
+                        <div className={classes.totalAmount}>Общее количество: <strong>{totalAmount}</strong></div>
                     </div>
                     <div className={classes.half}>
                         <div className="dataHeader">
