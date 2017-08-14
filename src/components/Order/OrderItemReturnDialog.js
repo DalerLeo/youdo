@@ -9,14 +9,106 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
-import MainStyles from '../Styles/MainStyles'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import dateFormat from '../../helpers/dateFormat'
 
 export const ORDER_ITEM_RETURN_DIALOG_OPEN = 'openOrderItemReturnDialog'
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important'
+            }
+        },
+        inContent: {
+            display: 'flex',
+            maxHeight: '50vh',
+            minHeight: '184px',
+            overflow: 'auto',
+            padding: '0 30px',
+            color: '#333'
+        },
+        bodyContent: {
+            width: '100%'
+        },
+        form: {
+            position: 'relative'
+        },
+        field: {
+            width: '100%'
+        },
+        inputField: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
+        },
         loader: {
             position: 'absolute',
             width: '100%',
@@ -81,7 +173,7 @@ const enhance = compose(
             margin: '0 -30px',
             padding: '15px 30px'
         }
-    })),
+    }),
     reduxForm({
         form: 'OrderCreateForm',
         enableReinitialize: true

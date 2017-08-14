@@ -94,7 +94,7 @@ const enhance = compose(
     }),
     connect((state) => {
         const currencyRate = _.toInteger(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'currencyRate']))
-        const customRate = _.toNumber(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'customRate']))
+        const customRate = _.toNumber(numberWithoutSpaces(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'customRate'])))
         const amountValue = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'amount'])
 
         return {
@@ -117,8 +117,8 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), getConfig('PRIMARY_CURRENCY'))
     const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), getConfig('PRIMARY_CURRENCY'))
     const clientName = _.get(client, 'name')
-    const currentRate = (currencyRate === INDIVIDUAL) ? numberWithoutSpaces(customRate) : _.toNumber(_.get(convert, ['data', 'amount']))
-    const convertAmount = currentRate * numberWithoutSpaces(amountValue)
+    const currentRate = (currencyRate === INDIVIDUAL) ? _.toNumber(numberWithoutSpaces(customRate)) : _.toNumber(numberWithoutSpaces(_.get(convert, ['data', 'amount'])))
+    const convertAmount = numberWithoutSpaces(currentRate) * numberWithoutSpaces(amountValue)
     const convertLoading = _.get(convert, 'loading')
     const createdDate = _.get(detailData, ['data', 'createdDate'])
 
@@ -186,7 +186,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     </div>
                                     <div className={classes.halfSecond}>
                                         {convertLoading
-                                        ? <div>Loading...</div>
+                                        ? <div>Загрузка...</div>
                                             : <div> После конвертации: <span className={classes.bold}>
                                                 {numberformat(convertAmount, getConfig('PRIMARY_CURRENCY'))}</span></div>}
                                     </div>
