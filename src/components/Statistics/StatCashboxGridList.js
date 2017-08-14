@@ -243,7 +243,7 @@ const StatCashboxGridList = enhance((props) => {
         detailData,
         classes,
         getDocument,
-        handleSubmitFilterDialog,
+        handleSubmitFilterDialog
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
