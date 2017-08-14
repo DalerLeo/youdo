@@ -2,10 +2,10 @@ import React from 'react'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 
 const PromotionsRadioButton = (props) => {
-    const {input, selectedType} = props
+    const {input} = props
     return (
         <div>
-            <RadioButtonGroup name="promotionType" onChange={input.onChange} defaultSelected={selectedType}>
+            <RadioButtonGroup name="promotionType" onChange={input.onChange} defaultSelected="bonus">
                 <RadioButton
                     value="discount"
                     label="Скидочная акция"
