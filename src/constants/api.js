@@ -231,11 +231,13 @@ export const STAT_MANUFACTURE_LIST = `/${STAT_MANUFACTURE}/`
 export const STAT_MANUFACTURE_ITEM = `/${STAT_MANUFACTURE}/%d/`
 export const STAT_MANUFACTURE_DELETE = `/${STAT_MANUFACTURE}/%d/`
 
+export const STAT_CASHBOX_SUM = '/stats/cashboxes_sum/'
 export const STAT_CASHBOX = 'finance/cashbox'
 export const STAT_CASHBOX_CREATE = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_ITEM = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
+export const STAT_CASHBOX_DATA_ITEM = 'stats/cashbox/%d/'
 
 export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
@@ -382,3 +384,5 @@ export const STAT_REPORT_GET_DOCUMENT = '/stats/agents/export/'
 export const DIVISION = 'main/division'
 export const DIVISION_LIST = `${DIVISION}/`
 export const DIVISION_ITEM = `${DIVISION}/%d/`
+export const DIVISION_CREATE = `/${DIVISION}/`
+export const DIVISION_DELETE = `/${DIVISION}/%d`

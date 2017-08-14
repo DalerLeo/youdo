@@ -59,6 +59,7 @@ import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveList} from '../containers/StockReceive'
 import {PlanList} from '../containers/Plan'
 import {ActivityList} from '../containers/Activity'
+import {DivisionList} from '../containers/Division'
 
 export default {
     path: '/',
@@ -606,10 +607,22 @@ export default {
                 }
             ]
         },
+        // Statistics/report
         {
             path: ROUTES.STATISTICS_REPORT_URL,
             component: userIsAuth(StatReportList),
             childRoutes: []
+        },
+        // Statistics/report
+        {
+            path: ROUTES.DIVISION_LIST_URL,
+            component: userIsAuth(DivisionList),
+            childRoutes: [
+                {
+                    path: ROUTES.DIVISION_ITEM_URL,
+                    component: userIsAuth(DivisionList)
+                }
+            ]
         },
         {
             path: '*',

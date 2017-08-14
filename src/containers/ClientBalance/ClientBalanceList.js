@@ -64,8 +64,8 @@ const enhance = compose(
             props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
     }, ({dispatch, params, filterItem, location}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
-        const type = _.get(location, ['query', 'type'])
-        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, type))
+        const division = _.get(location, ['query', 'division'])
+        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, division))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -98,11 +98,11 @@ const enhance = compose(
             })
         },
 
-        handleOpenInfoDialog: props => (id, type) => {
+        handleOpenInfoDialog: props => (id, division) => {
             const {filter} = props
             hashHistory.push({
                 pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
-                query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: true, 'type': type})
+                query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: true, 'division': division})
             })
         },
 
@@ -156,7 +156,7 @@ const ClientBalanceList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_CREATE_DIALOG_OPEN]))
     const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
-    const type = _.toNumber(_.get(location, ['query', 'type']))
+    const division = _.toNumber(_.get(location, ['query', 'division']))
     const fromDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
@@ -164,7 +164,7 @@ const ClientBalanceList = enhance((props) => {
     const infoDialog = {
         updateLoading: detailLoading,
         openInfoDialog,
-        type: type,
+        division: division,
         handleOpenInfoDialog: props.handleOpenInfoDialog,
         handleCloseInfoDialog: props.handleCloseInfoDialog
     }

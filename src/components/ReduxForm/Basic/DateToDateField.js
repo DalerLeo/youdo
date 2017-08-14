@@ -5,7 +5,7 @@ import _ from 'lodash'
 import React from 'react'
 import injectSheet from 'react-jss'
 import PropTypes from 'prop-types'
-import DateRange from 'react-date-range-ru'
+import {DateRange} from 'react-date-range-ru'
 import {Popover, FlatButton} from 'material-ui'
 import dateFormat from '../../../helpers/dateFormat'
 import MUITextField from 'material-ui/TextField'
@@ -57,12 +57,7 @@ class DateToDateField extends React.Component {
     constructor (props) {
         super(props)
         this.state = {
-            starting: false,
-            'rangePicker': {},
-            'linked': {},
-            'datePicker': null,
-            'firstDayOfWeek': null,
-            'predefined': {}
+            starting: false
         }
     }
 
@@ -105,8 +100,7 @@ class DateToDateField extends React.Component {
                     <Popover className={classes.popOver}
                         open={open}
                         anchorEl={anchorEl}
-                        onRequestClose={this.handleOnRequestClose}
-                    >
+                        onRequestClose={this.handleOnRequestClose}>
                         <div
                             className={classes.clear}
                             onClick={() => { input.onChange({startDate: undefined, endDate: undefined}) }}>

@@ -234,7 +234,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.STAT_CASHBOX_CREATE),
         list: createThunkReducer(actionTypes.STAT_CASHBOX_LIST),
         update: createThunkReducer(actionTypes.STAT_CASHBOX_UPDATE),
-        item: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM)
+        item: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM),
+        sumData: createThunkReducer(actionTypes.STAT_CASHBOX_SUM)
     }),
     pendingPayments: combineReducers({
         create: createThunkReducer(actionTypes.PENDING_PAYMENTS_CREATE),
@@ -360,6 +361,12 @@ const rootReducer = combineReducers({
     statProductMove: combineReducers({
         list: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_LIST),
         item: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_ITEM)
+    }),
+    division: combineReducers({
+        create: createThunkReducer(actionTypes.DIVISION_CREATE),
+        list: createThunkReducer(actionTypes.DIVISION_LIST),
+        update: createThunkReducer(actionTypes.DIVISION_UPDATE),
+        item: createThunkReducer(actionTypes.DIVISION_ITEM)
     }),
     snackbar: snackbarReducer(),
     error: errorReducer(),
