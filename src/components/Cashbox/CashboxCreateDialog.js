@@ -8,7 +8,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CurrencySearchField, UsersSearchField, PaymentTypeSearchField, DivisionSearchField} from '../ReduxForm'
+import {TextField, CurrencySearchField, UsersSearchField, PaymentTypeSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -88,13 +88,6 @@ const CashboxCreateDialog = enhance((props) => {
                                 component={CurrencySearchField}
                                 className={classes.inputFieldCustom}
                                 label="Валюта"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="division"
-                                component={DivisionSearchField}
-                                className={classes.inputFieldCustom}
-                                label="Подразделение"
                                 fullWidth={true}
                             />
                             <Field

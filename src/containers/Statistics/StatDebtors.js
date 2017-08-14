@@ -72,16 +72,12 @@ const enhance = compose(
     withHandlers({
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const productType = _.get(filterForm, ['values', 'productType', 'value']) || null
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const search = _.get(filterForm, ['values', 'search']) || null
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
 
             filter.filterBy({
-                [STAT_DEBTORS_FILTER_KEY.PRODUCT]: product,
-                [STAT_DEBTORS_FILTER_KEY.PRODUCT_TYPE]: productType,
-                [STAT_DEBTORS_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [STAT_DEBTORS_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [STAT_DEBTORS_FILTER_KEY.SEARCH]: search,
+                [STAT_DEBTORS_FILTER_KEY.DIVISION]: division
 
             })
         },
@@ -162,6 +158,7 @@ const StatDebtorsList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
+                handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 statDebtorsDialog={statDebtorsDialog}
                 handleOpenCloseDetail={handleOpenCloseDetail}
                 getDocument={getDocument}

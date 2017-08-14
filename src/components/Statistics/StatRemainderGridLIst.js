@@ -7,7 +7,7 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {StockSearchField, ProductTypeSearchField, ProductSearchField} from '../ReduxForm'
+import {StockSearchField, ProductTypeSearchField, ProductSearchField, DivisionSearchField} from '../ReduxForm'
 import StatRemainderDialog from './StatRemainderDialog'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
@@ -21,7 +21,8 @@ import numberFormat from '../../helpers/numberFormat.js'
 export const STAT_REMAINDER_FILTER_KEY = {
     STOCK: 'stock',
     TYPE: 'type',
-    PRODUCT: 'product'
+    PRODUCT: 'product',
+    DIVISION: 'division'
 }
 const enhance = compose(
     injectSheet({
@@ -282,6 +283,12 @@ const StatRemainderGridList = enhance((props) => {
                                     name="product"
                                     component={ProductSearchField}
                                     label="Товары"
+                                    fullWidth={true}/>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="division"
+                                    component={DivisionSearchField}
+                                    label="Подразделение"
                                     fullWidth={true}/>
                                 <IconButton
                                     className={classes.searchButton}

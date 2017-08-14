@@ -8,7 +8,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import {CashboxSearchField} from '../ReduxForm'
+import {CashboxSearchField, DivisionSearchField} from '../ReduxForm'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
@@ -26,6 +26,7 @@ import getConfig from '../../helpers/getConfig'
 
 export const STAT_CASHBOX_FILTER_KEY = {
     CASHBOX: 'cashbox',
+    DIVISION: 'division',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
@@ -423,6 +424,13 @@ const StatCashboxGridList = enhance((props) => {
                                         label="Диапазон дат"
                                         fullWidth={true}/>
                                     <Field
+                                        name="division"
+                                        component={DivisionSearchField}
+                                        className={classes.inputFieldCustom}
+                                        label="Подразделение"
+                                        fullWidth={true}
+                                    />
+                                    <Field
                                         className={classes.inputFieldCustom}
                                         name="cashbox"
                                         component={CashboxSearchField}
@@ -471,7 +479,7 @@ const StatCashboxGridList = enhance((props) => {
                         filter={filter}
                         detailData={detailData}
                         listData={listData}
-                        handleSubmitFilterDialog={handleSubmitFilterDialog}
+                        handleSubmitFilterDialog={_.get(detailData, 'handleSubmitDetailFilterDialog')}
                         getDocument={getDocument}
                     />}
                 </div>

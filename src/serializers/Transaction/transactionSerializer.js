@@ -58,6 +58,7 @@ export const listFilterSerializer = (data, cashbox) => {
     const payType = _.get(defaultData, 'type')
     const type = (payType) ? (_.toNumber(payType) === ONE) ? 'out' : 'in' : null
     return {
+        'division': _.get(defaultData, 'division'),
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'type': type,
