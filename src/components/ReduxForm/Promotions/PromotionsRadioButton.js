@@ -9,6 +9,7 @@ const PromotionsRadioButton = (props) => {
                 <RadioButton
                     value="discount"
                     label="Скидочная акция"
+                    disabled={true}
                     disableTouchRipple={true}
                 />
                 <RadioButton

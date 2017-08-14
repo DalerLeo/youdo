@@ -236,41 +236,33 @@ const PricesList = enhance((props) => {
             amount: _.get(item, 'amount')
         }
     })
-    const forUpdateBonus = _.map(_.get(detail, 'products'), (item) => {
-        const productType = _.toInteger(_.get(item, 'type'))
-        const CONDITIONAL = 1
-        if (productType === CONDITIONAL) {
-            return {
-                bonusProduct: {
-                    text: _.get(item, ['product', 'name']),
-                    value: {
-                        id: _.get(item, ['product', 'id']),
-                        name: _.get(item, ['product', 'name']),
-                        measurement: _.get(item, ['product', 'measurement'])
-                    }
+    const filterBonus = _.filter(_.get(detail, 'products'), {'type': '1'})
+    const forUpdateBonus = _.map(filterBonus, (item) => {
+        return {
+            bonusProduct: {
+                text: _.get(item, ['product', 'name']),
+                value: {
+                    id: _.get(item, ['product', 'id']),
+                    name: _.get(item, ['product', 'name']),
+                    measurement: _.get(item, ['product', 'measurement'])
                 }
             }
         }
-        return false
     })
 
-    const forUpdateGift = _.map(_.get(detail, 'products'), (item) => {
-        const productType = _.toInteger(_.get(item, 'type'))
-        const BONUS = 2
-        if (productType === BONUS) {
-            return {
-                giftProduct: {
-                    text: _.get(item, ['product', 'name']),
-                    value: {
-                        id: _.get(item, ['product', 'id']),
-                        name: _.get(item, ['product', 'name']),
-                        measurement: _.get(item, ['product', 'measurement'])
-                    }
-                },
-                giftAmount: _.get(item, 'amount')
-            }
+    const filterGift = _.filter(_.get(detail, 'products'), {'type': '2'})
+    const forUpdateGift = _.map(filterGift, (item) => {
+        return {
+            giftProduct: {
+                text: _.get(item, ['product', 'name']),
+                value: {
+                    id: _.get(item, ['product', 'id']),
+                    name: _.get(item, ['product', 'name']),
+                    measurement: _.get(item, ['product', 'measurement'])
+                }
+            },
+            giftAmount: _.get(item, 'amount')
         }
-        return false
     })
     const updateDialog = {
         initialValues: (() => {
@@ -287,7 +279,7 @@ const PricesList = enhance((props) => {
                     bonusProducts: forUpdateBonus && forUpdateBonus,
                     giftProducts: forUpdateGift && forUpdateGift,
                     promotionType: promotionType,
-                    amount: _.get(detail, 'totalAmount')
+                    amount: _.toNumber(_.get(detail, 'totalAmount'))
                 }
             }
             return {
