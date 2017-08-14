@@ -305,12 +305,12 @@ const PricesCreateDialog = enhance((props) => {
                                             hintText="10%"
                                         />
                                         : <Field
-                                                name="amount"
-                                                component={TextField}
-                                                className={classes.inputFieldCustom}
-                                                fullWidth={true}
-                                                label="Кол-во"
-                                            />}
+                                            name="amount"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}
+                                            label="Кол-во"
+                                        />}
                                     </div>
                                 </div>
                             </div>

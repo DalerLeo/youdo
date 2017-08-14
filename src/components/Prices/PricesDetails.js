@@ -147,7 +147,9 @@ const enhance = compose(
             }
         },
         data: {
-            width: '100%',
+            width: 'calc(100% + 60px)',
+            display: 'flex',
+            margin: '0 -30px -20px',
             '& .dataHeader': {
                 fontWeight: 'bold',
                 padding: '20px 0',
@@ -162,14 +164,6 @@ const enhance = compose(
                     }
                 }
             },
-            '& .summary': {
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                textAlign: 'right',
-                padding: '20px 30px',
-                margin: '0 -30px',
-                borderBottom: '1px #efefef solid'
-            },
             '& .dottedList': {
                 '&:last-child:after': {
                     display: 'none'
@@ -177,33 +171,6 @@ const enhance = compose(
                 '&:after': {
                     left: '0.5rem',
                     right: '0.5rem'
-                }
-            },
-            '& .addExpenses': {
-                padding: '20px 30px 0',
-                margin: '0 -30px',
-                borderBottom: '1px #efefef solid',
-                '& .addExpense': {
-                    display: 'flex',
-                    alignItems: 'center',
-                    paddingBottom: '20px',
-                    width: '100%',
-                    justifyContent: 'space-between',
-                    fontWeight: 'bold',
-                    '& .expenseButton > div > span ': {
-                        color: '#12aaeb !important',
-                        textTransform: 'inherit !important'
-                    }
-                }
-            },
-            '& .expenseInfo': {
-                padding: '0 !important',
-                display: 'block',
-                '&:last-child': {
-                    position: 'static'
-                },
-                '& .row': {
-                    alignItems: 'center'
                 }
             },
             '& .dataInfo': {
@@ -214,44 +181,23 @@ const enhance = compose(
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap'
                 }
-            },
-            '& .comment': {
-                display: 'flex',
-                padding: '20px 0 0',
-                alignItems: 'center',
-                '& .personImage': {
-                    borderRadius: '50%',
-                    overflow: 'hidden',
-                    flexBasis: '35px',
-                    flexGrow: '1',
-                    height: '35px',
-                    width: '35px',
-                    '& img': {
-                        display: 'block',
-                        height: '100%',
-                        width: '100%'
-                    }
-                },
-                '& .personText': {
-                    background: '#f2f5f8',
-                    borderRadius: '2px',
-                    marginLeft: '15px',
-                    padding: '15px',
-                    position: 'relative',
-                    width: 'calc(100% - 50px)',
-                    '&:after': {
-                        content: '""',
-                        position: 'absolute',
-                        borderRightColor: '#f2f5f8',
-                        borderRightStyle: 'solid',
-                        borderRightWidth: '7px',
-                        borderTop: '7px solid transparent',
-                        borderBottom: '7px solid transparent',
-                        left: '-7px',
-                        top: '50%',
-                        marginTop: '-7px'
-                    }
+            }
+        },
+        half: {
+            width: '50%',
+            padding: '0 30px 10px',
+            '&:last-child': {
+                borderLeft: '1px #efefef solid',
+                '& .row > div:last-child': {
+                    textAlign: 'right'
                 }
+            }
+        },
+        totalAmount: {
+            padding: '10px 0',
+            textAlign: 'right',
+            '& strong': {
+                fontWeight: 'bold'
             }
         },
         expenseSum: {
@@ -300,7 +246,10 @@ const PricesDetails = enhance((props) => {
     const beginDate = dateFormat(_.get(data, 'beginDate'))
     const tillDate = dateFormat(_.get(data, 'tillDate'))
     const discount = _.toNumber(_.get(data, 'discount'))
+    const totalAmount = numberFormat(_.get(data, 'totalAmount'))
     const type = _.get(data, 'type')
+    const CONDITIONAL = 1
+    const BONUS = 2
 
     if (loading) {
         return (
@@ -356,31 +305,52 @@ const PricesDetails = enhance((props) => {
 
             {(type === 'bonus')
                 ? <div className={classes.data}>
-                    <div className="dataHeader">
-                        <Row>
-                            <Col xs={4}>Товар</Col>
-                            <Col xs={2}>Кол-во</Col>
-                            <Col xs={4}>Подарок</Col>
-                            <Col xs={2}>Кол-во</Col>
-                        </Row>
+                    <div className={classes.half}>
+                        <div className="dataHeader">
+                            <Row>
+                                <Col xs={12}>Бонусный товар</Col>
+                            </Row>
+                        </div>
+                        <div>
+                            {_.map(products, (item, index) => {
+                                const product = _.get(item, ['product', 'name'])
+                                const productType = _.toInteger(_.get(item, 'type'))
+                                if (productType === CONDITIONAL) {
+                                    return (
+                                        <Row className="dataInfo dottedList" key={index}>
+                                            <Col xs={12}>{product}</Col>
+                                        </Row>
+                                    )
+                                }
+                                return false
+                            })}
+                        </div>
+                        <div className={classes.totalAmount}>Общее количество: <strong>{totalAmount}</strong></div>
                     </div>
-                    <div>
-                        {_.map(products, (item, index) => {
-                            const product = _.get(item, ['product', 'name'])
-                            const productMeasurement = _.get(item, ['product', 'measurement', 'name'])
-                            const amount = _.toNumber(_.get(item, 'amount'))
-                            const bonusProduct = _.get(item, ['bonusProduct', 'name']) || 'Не выбран'
-                            const bonusProductMeasurement = _.get(item, ['bonusProduct', 'measurement', 'name'])
-                            const bonusAmount = _.toNumber(_.get(item, 'bonusAmount'))
-                            return (
-                                <Row className="dataInfo dottedList" key={index}>
-                                    <Col xs={4}>{product}</Col>
-                                    <Col xs={2}>{amount ? numberFormat(amount, productMeasurement) : 'Не определено'}</Col>
-                                    <Col xs={4}>{bonusProduct}</Col>
-                                    <Col xs={2}>{bonusAmount ? numberFormat(bonusAmount, bonusProductMeasurement) : 'Не определено'}</Col>
-                                </Row>
-                            )
-                        })}
+                    <div className={classes.half}>
+                        <div className="dataHeader">
+                            <Row>
+                                <Col xs={9}>Подарок</Col>
+                                <Col xs={3}>Кол-во</Col>
+                            </Row>
+                        </div>
+                        <div>
+                            {_.map(products, (item, index) => {
+                                const product = _.get(item, ['product', 'name'])
+                                const productType = _.toInteger(_.get(item, 'type'))
+                                const measurement = _.get(item, ['product', 'measurement', 'name'])
+                                const amount = _.toNumber(_.get(item, 'amount'))
+                                if (productType === BONUS) {
+                                    return (
+                                        <Row className="dataInfo dottedList" key={index}>
+                                            <Col xs={9}>{product}</Col>
+                                            <Col xs={3}>{numberFormat(amount, measurement)}</Col>
+                                        </Row>
+                                    )
+                                }
+                                return false
+                            })}
+                        </div>
                     </div>
                 </div>
                 : <div className={classes.data}>

@@ -29,7 +29,6 @@ export const setUser = (userData, local = false) => {
 export const getGroups = () => {
     return _.split(localStorage.getItem(USER_GROUPS) || sessionStorage.getItem(USER_GROUPS), ',')
 }
-
 export const getValue = (key) => {
     return localStorage.getItem(key) || sessionStorage.getItem(key)
 }

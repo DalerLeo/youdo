@@ -196,7 +196,7 @@ const getMenus = () => {
     if (isSuperUser) {
         return defaultMenu
     }
-    return defaultMenu
+    return menus
 }
 export const MenuItems = getMenus()
 
