@@ -219,7 +219,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'promotionType']) || 'discount'
+        const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'promotionType']) || 'bonus'
         return {
             type
         }

@@ -236,7 +236,8 @@ const PricesList = enhance((props) => {
             amount: _.get(item, 'amount')
         }
     })
-    const forUpdateBonus = _.map(_.get(detail, 'products'), (item) => {
+    const filterBonus = _.filter(_.get(detail, 'products'), {'type': '1'})
+    const forUpdateBonus = _.map(filterBonus, (item) => {
         return {
             bonusProduct: {
                 text: _.get(item, ['product', 'name']),
@@ -245,17 +246,22 @@ const PricesList = enhance((props) => {
                     name: _.get(item, ['product', 'name']),
                     measurement: _.get(item, ['product', 'measurement'])
                 }
-            },
-            bonusAmount: _.get(item, 'amount'),
+            }
+        }
+    })
+
+    const filterGift = _.filter(_.get(detail, 'products'), {'type': '2'})
+    const forUpdateGift = _.map(filterGift, (item) => {
+        return {
             giftProduct: {
-                text: _.get(item, ['bonusProduct', 'name']),
+                text: _.get(item, ['product', 'name']),
                 value: {
-                    id: _.get(item, ['bonusProduct', 'id']),
-                    name: _.get(item, ['bonusProduct', 'name']),
-                    measurement: _.get(item, ['bonusProduct', 'measurement'])
+                    id: _.get(item, ['product', 'id']),
+                    name: _.get(item, ['product', 'name']),
+                    measurement: _.get(item, ['product', 'measurement'])
                 }
             },
-            giftAmount: _.get(item, 'bonusAmount')
+            giftAmount: _.get(item, 'amount')
         }
     })
     const updateDialog = {
@@ -264,14 +270,26 @@ const PricesList = enhance((props) => {
             if (!detail || openCreateDialog) {
                 return {}
             }
+            if (promotionType === 'bonus') {
+                return {
+                    name: _.get(detail, 'name'),
+                    discount: _.get(detail, 'discount'),
+                    beginDate: moment(_.get(detail, ['beginDate'])).toDate(),
+                    tillDate: moment(_.get(detail, ['tillDate'])).toDate(),
+                    bonusProducts: forUpdateBonus && forUpdateBonus,
+                    giftProducts: forUpdateGift && forUpdateGift,
+                    promotionType: promotionType,
+                    amount: _.toNumber(_.get(detail, 'totalAmount'))
+                }
+            }
             return {
                 name: _.get(detail, 'name'),
                 discount: _.get(detail, 'discount'),
                 beginDate: moment(_.get(detail, ['beginDate'])).toDate(),
                 tillDate: moment(_.get(detail, ['tillDate'])).toDate(),
                 products: forUpdateProducts,
-                bonusProducts: forUpdateBonus && forUpdateBonus,
-                promotionType: promotionType
+                promotionType: promotionType,
+                amount: _.get(detail, 'totalAmount')
             }
         })(),
         updateLoading,

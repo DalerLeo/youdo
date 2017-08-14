@@ -27,7 +27,7 @@ const PendingPaymentRadioButton = enhance((props) => {
         createdDate
     }
 
-    if (currency === primaryCurrency || !currency) {
+    if (currencyName === primaryCurrency || !currencyName) {
         return false
     } else if (primaryCurrency !== currencyName && currencyName) {
         dispatch(pendingPaymentsConvertAction(data))
