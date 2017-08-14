@@ -275,6 +275,7 @@ const PricesDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
+                            disabled={true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
