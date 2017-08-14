@@ -36,21 +36,22 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'number_of_orders',
+        alignRight: true,
+        name: 'orders',
         title: 'Кол-во заказов',
-        xs: 1
+        xs: 2
     },
     {
         sorting: true,
         alignRight: true,
-        name: 'cashBalance',
+        name: 'cosmetics_balance',
         title: 'Баланс косметика',
         xs: 2
     },
     {
         sorting: true,
         alignRight: true,
-        name: 'balance',
+        name: 'shampoo_balance',
         title: 'Баланс шампунь',
         xs: 2
     },
@@ -58,7 +59,7 @@ const listHeader = [
         sorting: true,
         alignRight: true,
         title: 'Списать',
-        xs: 2
+        xs: 1
     }
 ]
 
@@ -130,7 +131,7 @@ const ClientBalanceGridList = enhance((props) => {
                 <Col xs={3}>{clientName}</Col>
 
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={1}>{orders}</Col>
+                <Col xs={2} className={classes.rightAlign}>{orders}</Col>
                 <Col xs={2}
                      className={classes.rightAlign}>
                     <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA) }}>
@@ -143,7 +144,7 @@ const ClientBalanceGridList = enhance((props) => {
                         {numberFormat(shampooBalance, currentCurrency)}
                     </span>
                 </Col>
-                <Col xs={2} className={classes.rightAlign}>
+                <Col xs={1} className={classes.rightAlign}>
                     <IconButton
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
