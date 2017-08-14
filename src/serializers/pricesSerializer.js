@@ -6,7 +6,7 @@ export const createSerializer = (data) => {
     const beginDate = moment(_.get(data, 'beginDate')).format('YYYY-MM-DD')
     const tillDate = moment(_.get(data, 'tillDate')).format('YYYY-MM-DD')
     const name = _.get(data, 'name')
-    const discount = _.get(data, ['discount'])
+    const discount = _.get(data, ['discount']) || '0'
     const type = _.get(data, 'promotionType')
     const totalAmount = _.get(data, 'amount')
     let products = _.map(_.get(data, ['products']), (item) => {

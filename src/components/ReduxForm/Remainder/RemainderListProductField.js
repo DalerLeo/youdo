@@ -15,7 +15,7 @@ import {
     TableRow,
     TableRowColumn
 } from 'material-ui/Table'
-import DeleteIcon from '../../DeleteIcon/index'
+import DeleteIcon from 'material-ui/svg-icons/action/delete-forever'
 import ProductCustomSearchField from './ProductCustomSearchField'
 import RemainderStatusSearchField from './RemainderStatusSearchField'
 import {RemainderProductTypeSearchField} from '../index'

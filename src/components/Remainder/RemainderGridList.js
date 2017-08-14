@@ -47,7 +47,9 @@ const enhance = compose(
             '& .row': {
                 alignItems: 'center',
                 '& div': {
-                    lineHeight: '48px'
+                    height: '48px',
+                    display: 'flex',
+                    alignItems: 'center'
                 }
             }
         },
@@ -75,7 +77,9 @@ const enhance = compose(
             alignItems: 'center',
             position: 'absolute',
             width: '220px',
-            left: 'calc(50% - 110px)'
+            left: 'calc(50% - 110px)',
+            top: '0',
+            bottom: '0'
         },
         products: {
             display: 'flex',
@@ -93,14 +97,12 @@ const enhance = compose(
         },
         dropDown: {
             position: 'absolute !important',
+            height: '48px !important',
             right: '0',
-            top: '2px',
-            '& > div': {
-                height: '45px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }
+            top: '0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
         },
         dropUp: {
             extend: 'dropDown',
@@ -344,6 +346,7 @@ const RemainderGridList = enhance((props) => {
                                         className={classes.dropUp}
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
+                                        disableTouchRipple={true}
                                         onTouchTap={handleCloseDetail}>
                                         <ArrowDown/>
                                     </IconButton>
@@ -376,6 +379,7 @@ const RemainderGridList = enhance((props) => {
                                     <IconButton
                                         className={classes.dropDown}
                                         iconStyle={iconStyle.icon}
+                                        disableTouchRipple={true}
                                         style={iconStyle.button}>
                                         <ArrowDown/>
                                     </IconButton>
@@ -417,7 +421,7 @@ const RemainderGridList = enhance((props) => {
                         <Tooltip position="bottom" text="Передача товаров" >
                             <FloatingActionButton
                                 iconStyle={actionIconStyle.icon}
-                                style={actionIconStyle.button}
+                                style={{display: 'none'}}
                                 onTouchTap={transferDialog.handleOpenTransferDialog}>
                                 <SwapHorizIcon style={{width: '20px', height: '30px', margin: 'auto'}}/>
                             </FloatingActionButton>

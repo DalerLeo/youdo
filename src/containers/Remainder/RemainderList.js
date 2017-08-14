@@ -125,8 +125,12 @@ const enhance = compose(
                         }
                         return null
                     })
+                    let errorText = 'Заполните все поля!'
+                    if (amountError) {
+                        errorText = 'Недостаточно товаров на складе'
+                    }
                     dispatch(openErrorAction({
-                        message: <div>{amountError}</div>
+                        message: <div>{errorText}</div>
                     }))
                 })
         },
@@ -147,6 +151,16 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: false})})
                     dispatch(remainderListFetchAction(filter))
+                })
+                .catch((error) => {
+                    const amountError = _.get(error, ['products', '0'])
+                    let errorText = 'Заполните все поля!'
+                    if (amountError) {
+                        errorText = 'Недостаточно товаров на складе'
+                    }
+                    dispatch(openErrorAction({
+                        message: <div>{errorText}</div>
+                    }))
                 })
         },
         handleResetFilter: props => () => {

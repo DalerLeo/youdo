@@ -15,7 +15,7 @@ import {
     TableRow,
     TableRowColumn
 } from 'material-ui/Table'
-import DeleteIcon from '../../DeleteIcon/index'
+import DeleteIcon from 'material-ui/svg-icons/action/delete-forever'
 import DiscardProductSearchField from './DiscardProductSearchField'
 import {RemainderProductTypeSearchField} from '../index'
 import RemainderStatusSearchField from '../../ReduxForm/Remainder/RemainderStatusSearchField'
@@ -408,10 +408,10 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                                     <TableRowColumn style={{textAlign: 'right'}}>
                                         <IconButton
                                             onTouchTap={() => setEditItem(index)}>
-                                            <EditIcon color="#666666"/>
+                                            <EditIcon color="#666"/>
                                         </IconButton>
                                         <IconButton onTouchTap={() => handleRemove(index)}>
-                                            <DeleteIcon color="#666666"/>
+                                            <DeleteIcon color="#666"/>
                                         </IconButton>
                                     </TableRowColumn>
                                 </TableRow>)
