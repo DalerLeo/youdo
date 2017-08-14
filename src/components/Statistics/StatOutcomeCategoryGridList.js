@@ -8,6 +8,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
+import DivisionSearchField from '../ReduxForm/DivisionSearchField'
 import StatSideMenu from './StatSideMenu'
 import Person from '../Images/person.png'
 import Search from 'material-ui/svg-icons/action/search'
@@ -21,6 +22,7 @@ import getConfig from '../../helpers/getConfig'
 import NotFound from '../Images/not-found.png'
 
 export const STAT_OUTCOME_CATEGORY_FILTER_KEY = {
+    DIVISION: 'division',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
@@ -280,6 +282,13 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                                         component={DateToDateField}
                                         label="Диапазон дат"
                                         fullWidth={true}/>
+                                    <Field
+                                        name="division"
+                                        component={DivisionSearchField}
+                                        className={classes.inputFieldCustom}
+                                        label="Подразделение"
+                                        fullWidth={true}
+                                    />
 
                                     <IconButton
                                         className={classes.searchButton}

@@ -8,7 +8,7 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import TextField from '../ReduxForm/Basic/TextField'
+import {TextField, DivisionSearchField} from '../ReduxForm'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
@@ -22,9 +22,8 @@ import getConfig from '../../helpers/getConfig'
 import StatSaleDialog from './StatSaleDialog'
 
 export const STAT_DEBTORS_FILTER_KEY = {
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate',
-    USER: 'user'
+    DIVISION: 'division',
+    SEARCH: 'search'
 }
 
 const ZERO = 0
@@ -386,6 +385,13 @@ const StatDebtorsGridList = enhance((props) => {
                     : <div className={classes.wrapper}>
                         <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
                             <div className={classes.filter}>
+                                <Field
+                                    name="division"
+                                    component={DivisionSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Подразделение"
+                                    fullWidth={true}
+                                />
                                 <Field
                                     className={classes.inputFieldCustom}
                                     name="search"

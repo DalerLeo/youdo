@@ -7,11 +7,10 @@ export const listFilterSerializer = (data) => {
 
     return {
         'search': _.get(defaultData, 'search'),
+        'division': _.get(defaultData, 'division'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
-        'ordering': ordering && orderingSnakeCase(ordering),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate')
+        'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
 

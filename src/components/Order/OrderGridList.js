@@ -183,8 +183,7 @@ const OrderGridList = enhance((props) => {
         <OrderFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
-            filterDialog={filterDialog}
-        />
+            filterDialog={filterDialog}/>
     )
     const iconStyle = {
         icon: {

@@ -80,11 +80,13 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
 
             filter.filterBy({
                 [STAT_REMAINDER_FILTER_KEY.PRODUCT]: product,
+                [STAT_REMAINDER_FILTER_KEY.DIVISION]: division,
                 [STAT_REMAINDER_FILTER_KEY.TYPE]: type,
                 [STAT_REMAINDER_FILTER_KEY.STOCK]: stock
 
