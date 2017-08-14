@@ -297,10 +297,10 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                         {_.map(giftProducts, (item, index) => {
                             const giftProduct = _.get(item, ['giftProduct', 'value', 'name'])
                             const giftMeasurement = _.get(item, ['giftProduct', 'value', 'measurement', 'name'])
-                            const giftAmount = numberFormat(_.get(item, 'giftAmount'), giftMeasurement)
+                            const giftAmount = _.get(item, 'giftAmount')
                             return (
                                 <div key={index} className="dottedList">
-                                    <div>{giftProduct} - {giftAmount}</div>
+                                    <div>{giftProduct} {(giftAmount) && <span>- {numberFormat(giftAmount, giftMeasurement)}</span>}</div>
                                     <DeleteIcon color="#666666" onClick={() => { handleRemoveGift(index) }}/>
                                 </div>
                             )

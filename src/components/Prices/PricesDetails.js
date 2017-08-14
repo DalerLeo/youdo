@@ -147,9 +147,7 @@ const enhance = compose(
             }
         },
         data: {
-            width: 'calc(100% + 60px)',
-            display: 'flex',
-            margin: '0 -30px -20px',
+            width: '100%',
             '& .dataHeader': {
                 fontWeight: 'bold',
                 padding: '20px 0',
@@ -182,6 +180,12 @@ const enhance = compose(
                     whiteSpace: 'nowrap'
                 }
             }
+        },
+        bonusData: {
+            extend: 'data',
+            width: 'calc(100% + 60px)',
+            display: 'flex',
+            margin: '0 -30px -20px'
         },
         half: {
             width: '50%',
@@ -304,7 +308,7 @@ const PricesDetails = enhance((props) => {
             </div>
 
             {(type === 'bonus')
-                ? <div className={classes.data}>
+                ? <div className={classes.bonusData}>
                     <div className={classes.half}>
                         <div className="dataHeader">
                             <Row>
