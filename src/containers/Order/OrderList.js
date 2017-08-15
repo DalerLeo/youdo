@@ -216,11 +216,11 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'data', 'fromDate']) || null
-            const deliveryFromDate = _.get(filterForm, ['values', 'deliveryDate', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
+            const deliveryFromDate = _.get(filterForm, ['values', 'deliveryDate', 'fromDate']) || null
             const deliveryToDate = _.get(filterForm, ['values', 'deliveryDate', 'toDate']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const orderStatus = _.get(filterForm, ['values', 'orderStatus', 'value']) || null
+            const status = _.get(filterForm, ['values', 'status', 'value']) || null
             const shop = _.get(filterForm, ['values', 'shop', 'value']) || null
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
@@ -229,14 +229,14 @@ const enhance = compose(
             filter.filterBy({
                 [ORDER_FILTER_OPEN]: false,
                 [ORDER_FILTER_KEY.CLIENT]: client,
-                [ORDER_FILTER_KEY.ORDERSTATUS]: orderStatus,
+                [ORDER_FILTER_KEY.STATUS]: status,
                 [ORDER_FILTER_KEY.INITIATOR]: initiator,
                 [ORDER_FILTER_KEY.ZONE]: zone,
                 [ORDER_FILTER_KEY.SHOP]: shop,
                 [ORDER_FILTER_KEY.DEPT]: dept,
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [ORDER_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [ORDER_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD')
             })
         },

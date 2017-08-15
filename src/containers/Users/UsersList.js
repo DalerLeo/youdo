@@ -326,7 +326,8 @@ const UsersList = enhance((props) => {
                 password: _.get(detail, 'password'),
                 typeUser: _.get(detail, 'typeUser'),
                 image: _.get(detail, 'image'),
-                isActive: _.get(detail, 'isActive')
+                isActive: _.get(detail, 'isActive'),
+                position: {value: _.get(detail, ['position', 'id'])}
             }
         })(),
         updateLoading: detailLoading || updateLoading,

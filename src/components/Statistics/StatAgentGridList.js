@@ -308,19 +308,18 @@ const StatAgentGridList = enhance((props) => {
                                         label="Зона"
                                         fullWidth={true}/>
                                     <Field
-                                        className={classes.inputFieldCustom}
-                                        name="search"
-                                        component={TextField}
-                                        label="Поиск"
-                                        fullWidth={true}/>
-                                    <Field
                                         name="division"
                                         component={DivisionSearchField}
                                         className={classes.inputFieldCustom}
                                         label="Подразделение"
                                         fullWidth={true}
                                     />
-
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="search"
+                                        component={TextField}
+                                        label="Поиск"
+                                        fullWidth={true}/>
                                     <IconButton
                                         className={classes.searchButton}
                                         iconStyle={iconStyle.icon}
