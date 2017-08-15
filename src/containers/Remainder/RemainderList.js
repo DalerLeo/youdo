@@ -99,7 +99,8 @@ const enhance = compose(
             })
         },
         handleOpenTransferDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
+            dispatch(reset('RemainderTransferForm'))
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: true})})
         },
         handleCloseTransferDialog: props => () => {
@@ -135,7 +136,8 @@ const enhance = compose(
                 })
         },
         handleOpenDiscardDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
+            dispatch(reset('RemainderDiscardForm'))
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: true})})
         },
         handleCloseDiscardDialog: props => () => {
