@@ -108,11 +108,14 @@ const enhance = compose(
             }
         },
         summary: {
+            height: '35px !important',
             fontWeight: 'bold',
             padding: '10px 0 0',
-            textAlign: 'right',
-            position: 'absolute',
-            right: '0'
+            border: 'none !important',
+            '& > div': {
+                border: 'none!important'
+            }
+
         }
     })
 )
@@ -120,6 +123,7 @@ const enhance = compose(
 const OrderPrint = enhance((props) => {
     const {classes, printDialog, listPrintData} = props
     const loading = _.get(listPrintData, 'listPrintLoading')
+    let formattedAmount = true
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -132,6 +136,7 @@ const OrderPrint = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             {_.map(_.get(listPrintData, 'data'), (item) => {
+                let totalAmount = Number('0')
                 const id = _.get(item, 'id')
                 const marketName = _.get(item, ['market', 'name'])
                 const marketAddress = _.get(item, ['market', 'address'])
@@ -145,6 +150,7 @@ const OrderPrint = enhance((props) => {
                 const paymentType = paymentTypeFormat(_.get(item, 'paymentType'))
                 const dealType = dealTypeFormat(_.get(item, 'dealType'))
                 const currentCurrency = getConfig('PRIMARY_CURRENCY')
+                const firstMeasure = _.get(item, ['products', '0', 'product', 'measurement', 'name'])
 
                 return (
                     <div key={id} className="printItem">
@@ -188,10 +194,10 @@ const OrderPrint = enhance((props) => {
                         <div className={classes.products}>
                             <Row>
                                 <Col xs={1}>№</Col>
-                                <Col xs={1}>Код</Col>
                                 <Col xs={4}>Наименование</Col>
-                                <Col xs={2}>Цена ({currentCurrency})</Col>
+                                <Col xs={1}>Код</Col>
                                 <Col xs={2}>Кол-во</Col>
+                                <Col xs={2}>Цена ({currentCurrency})</Col>
                                 <Col xs={2}>Сумма ({currentCurrency})</Col>
                             </Row>
                             {_.map(_.get(item, 'products'), (product) => {
@@ -200,21 +206,34 @@ const OrderPrint = enhance((props) => {
                                 const code = _.get(product, ['product', 'code'])
                                 const measurment = _.get(product, ['product', 'measurement', 'name'])
                                 const name = _.get(product, ['product', 'name'])
+                                const isBonus = _.get(product, ['isBonus'])
                                 const price = numberFormat(_.get(product, 'price'))
                                 const amount = numberFormat(_.get(product, 'amount'), measurment)
+                                totalAmount += Number(_.get(product, 'amount'))
+                                if (formattedAmount) {
+                                    formattedAmount = (firstMeasure === measurment)
+                                }
                                 return (
                                     <Row key={productId}>
                                         <Col xs={1}>{productId}</Col>
+                                        <Col xs={4}>{!isBonus ? name : <div><span style={{fontWeight: '700'}}>БОНУС</span> {name}</div>}</Col>
                                         <Col xs={1}>{code}</Col>
-                                        <Col xs={5}>{name}</Col>
-                                        <Col xs={2}>{price}</Col>
                                         <Col xs={2}>{amount}</Col>
+                                        <Col xs={2}>{price}</Col>
                                         <Col xs={2}>{totalProductPrice}</Col>
                                     </Row>
                                 )
                             })}
-                            <div className={classes.summary}>Итого: {numberFormat(totalPrice)}</div>
+                            <Row className={classes.summary}>
+                                <Col xs={1}></Col>
+                                <Col xs={1}></Col>
+                                <Col xs={4}></Col>
+                                <Col xs={2}>{formattedAmount && 'Итого: ' + numberFormat(totalAmount, firstMeasure)}</Col>
+                                <Col xs={2}></Col>
+                                <Col xs={2}>Итого: {numberFormat(totalPrice)}</Col>
+                            </Row>
                         </div>
+
                     </div>
                 )
             })}
