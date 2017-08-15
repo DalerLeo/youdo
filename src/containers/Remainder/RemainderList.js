@@ -118,16 +118,18 @@ const enhance = compose(
                     dispatch(remainderListFetchAction(filter))
                 })
                 .catch((error) => {
-                    const amountError = _.map(error, (item) => {
-                        const amount = _.get(item, ['0'])
-                        if (amount) {
-                            return (
-                                <div style={{marginTop: '10px'}}>{amount}</div>)
-                        }
-                        return null
-                    })
+                    const fromStock = _.get(error, ['from_stock', '0']) ? 'Выберите склад' : ''
+                    const toStock = _.get(error, ['to_stock', '0']) ? 'Выберите склад для отправки' : ''
+                    const err1 = _.get(error, ['non_field_errors']) || ''
+                    const err2 = (
+                                    <div>
+                                        <div>{fromStock}</div>
+                                        <div>{toStock}</div>
+                                        <div>{err1}</div>
+                                    </div>
+                                )
                     dispatch(openErrorAction({
-                        message: <div>{amountError}</div>
+                        message: <div>{err2}</div>
                     }))
                 })
         },
