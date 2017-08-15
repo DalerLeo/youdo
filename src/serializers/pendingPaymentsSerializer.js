@@ -3,17 +3,24 @@ import {orderingSnakeCase} from '../helpers/serializer'
 import moment from 'moment'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
-const DEFAULT = 0
 export const createSerializer = (data, order) => {
     const amount = _.get(data, 'amount')
     const cashbox = _.get(data, ['cashbox', 'value', 'id'])
-    const currencyRate = _.get(data, 'currencyRate') || DEFAULT
+    const currencyRate = _.get(data, 'currencyRate') || '0'
+    if (currencyRate === '2') {
+        return {
+            order,
+            'amount': numberWithoutSpaces(amount),
+            cashbox,
+            'rate_type': currencyRate,
+            'custom_rate': currencyRate && numberWithoutSpaces(_.get(data, 'customRate'))
+        }
+    }
     return {
         order,
         'amount': numberWithoutSpaces(amount),
         cashbox,
-        'rate_type': currencyRate,
-        'custom_rate': numberWithoutSpaces(_.get(data, 'customRate'))
+        'rate_type': currencyRate
     }
 }
 
