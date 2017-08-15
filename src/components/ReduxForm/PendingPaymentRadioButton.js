@@ -19,11 +19,11 @@ const PendingPaymentRadioButton = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const primaryCurrencyId = getConfig('PRIMARY_CURRENCY_ID')
     const currencyName = _.get(currency, 'name')
-    const currencyId = _.get(currency, 'id')
+    const currencyId = _.toInteger(_.get(currency, 'id'))
 
     const data = {
-        fromCurrency: currencyId,
-        toCurrency: primaryCurrencyId,
+        fromCurrency: primaryCurrencyId,
+        toCurrency: currencyId,
         createdDate
     }
 
