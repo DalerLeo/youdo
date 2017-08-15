@@ -218,11 +218,12 @@ const StockTransferDetails = enhance((props) => {
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const amount = numberformat(_.get(item, 'amount'), measurement)
                                 const stock = _.toInteger(_.get(item, ['stock', 'id']))
+                                const type = (_.get(item, ['product', 'productType', 'name']))
                                 if (stock === detailType) {
                                     return (
                                         <Row key={productId} className='dottedList'>
                                             <Col xs={6}>{name}</Col>
-                                            <Col xs={4}>Стиральный порошек</Col>
+                                            <Col xs={4}>{type}</Col>
                                             <Col xs={2}>{amount}</Col>
                                         </Row>
                                     )
