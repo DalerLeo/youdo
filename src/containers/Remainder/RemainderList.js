@@ -119,19 +119,15 @@ const enhance = compose(
                 })
                 .catch((error) => {
                     const amountError = _.map(error, (item) => {
-                        const amount = _.get(item, ['non_field_errors', '0'])
+                        const amount = _.get(item, ['0'])
                         if (amount) {
                             return (
                                 <div style={{marginTop: '10px'}}>{amount}</div>)
                         }
                         return null
                     })
-                    let errorText = 'Заполните все поля!'
-                    if (amountError) {
-                        errorText = 'Недостаточно товаров на складе'
-                    }
                     dispatch(openErrorAction({
-                        message: <div>{errorText}</div>
+                        message: <div>{amountError}</div>
                     }))
                 })
         },
