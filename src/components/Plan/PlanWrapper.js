@@ -9,6 +9,7 @@ import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import Tooltip from '../ToolTip'
 import Search from './PlanSearch'
+import PlanDatePicker from './PlanDatePicker'
 import Details from './PlanDetails'
 import PlanCreateDialog from './PlanCreateDialog'
 import injectSheet from 'react-jss'
@@ -16,7 +17,6 @@ import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Calendar from 'material-ui/svg-icons/action/today'
 import Bike from 'material-ui/svg-icons/maps/directions-bike'
 import Man from 'material-ui/svg-icons/maps/transfer-within-a-station'
 import Van from 'material-ui/svg-icons/maps/local-shipping'
@@ -47,7 +47,8 @@ const enhance = compose(
             width: '330px',
             minWidth: '330px',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            position: 'relative'
         },
         titleDate: {
             display: 'flex',
@@ -175,6 +176,19 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         },
+        datePicker: {
+            background: '#fff',
+            padding: '10px 0 20px',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '2',
+            '& > div': {
+                textAlign: 'center'
+            }
+        },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
             backgroundSize: '150px',
@@ -216,7 +230,8 @@ const PlanWrapper = enhance((props) => {
         classes,
         addPlan,
         handleClickTab,
-        groupId
+        groupId,
+        PlanDateInitialValues
     } = props
 
     const detailId = _.get(detailData, 'id')
@@ -265,10 +280,9 @@ const PlanWrapper = enhance((props) => {
 
     const leftSide = (
         <div className={classes.leftSide}>
-            <div className={classes.titleDate}>
-                <Calendar color="#666"/>
-                <a className={classes.link}>21 Апр, 2017 - 27 Апр, 2017</a>
-            </div>
+            <PlanDatePicker
+                PlanDateInitialValues={PlanDateInitialValues}
+            />
             <div className={classes.titleTabs}>
                 {_.map(buttons, (item) => {
                     const group = _.get(item, 'group')
