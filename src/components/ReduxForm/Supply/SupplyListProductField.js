@@ -164,8 +164,7 @@ const enhance = compose(
             const measurement = _.get(props, ['measurement'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
-
-            if (!_.isEmpty(product) && amount && cost) {
+            if (!_.isEmpty(_.get(product, 'value')) && amount && cost) {
                 let has = false
                 _.map(products, (item) => {
                     if (_.get(item, 'product') === product) {
