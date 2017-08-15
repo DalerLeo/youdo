@@ -6,13 +6,15 @@ import injectSheet from 'react-jss'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
+import {connect} from 'react-redux'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
-import {TextField} from '../ReduxForm'
+import {TextField, CheckBox} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
+
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -166,6 +168,16 @@ const enhance = compose(
     reduxForm({
         form: 'StockReceiveCreateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const showClients = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'showClients'])
+        const rate = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'custom_rate'])
+        const amount = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'amount'])
+        return {
+            showClients,
+            rate,
+            amount
+        }
     })
 )
 
@@ -215,8 +227,9 @@ const OrderCreateDialog = enhance((props) => {
                             <div className={classes.list}>
                                 <Row className="dottedList">
                                     <Col xs={3}>Товар</Col>
-                                    <Col xs={3}>Тип товара</Col>
+                                    <Col xs={2}>Тип товара</Col>
                                     <Col xs={2}>Кол-во</Col>
+                                    <Col xs={1}></Col>
                                     <Col xs={2}>Принято</Col>
                                     <Col xs={2}>Брак</Col>
                                 </Row>
@@ -230,8 +243,16 @@ const OrderCreateDialog = enhance((props) => {
                                     return (
                                         <Row key={id} className="dottedList">
                                             <Col xs={3}>{name}</Col>
-                                            <Col xs={3}>{type}</Col>
+                                            <Col xs={2}>{type}</Col>
                                             <Col xs={2}>{amount} {measurement}</Col>
+                                            <Col xs={1}>
+                                                <Tooltip position="left" text='Передат'>
+                                                    <Field
+                                                        key={id}
+                                                        name={'stocks[' + index + '][selected]'}
+                                                        component={CheckBox}/>
+                                                </Tooltip>
+                                            </Col>
                                             <Col xs={2}>
                                                 <Field
                                                     name={'product[' + index + '][accepted]'}
