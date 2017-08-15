@@ -27,7 +27,6 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
         })
 }
 
-const ZERO = 0
 const fetchItem = (props) => {
     const {dispatch, getItem, getItemText} = props
     const id = _.get(props, ['input', 'value', 'value'])
@@ -62,15 +61,8 @@ const enhance = compose(
     }, {dataSource: [], text: '', loading: false}),
 
     withPropsOnChange((props, nextProps) => {
-        return (!_.get(props, ['dataSource']) && _.get(nextProps, ['loading']) === false) ||
-                (_.get(nextProps, ['type']) && (_.get(props, ['type']) !== _.get(nextProps, ['type']))) ||
-            ((_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])) && (_.get(nextProps, ['state', 'text']).length === ZERO))
-    }, (props) => {
-        if (_.get(props, ['type']) && _.toInteger(_.get(props, ['type'])) > ZERO) {
-            props.dispatch({text: ''})
-        }
-        _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
-    }),
+        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
+    }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
 
     withPropsOnChange((props, nextProps) => {
         const value = _.get(props, ['input', 'value', 'value'])
@@ -79,7 +71,7 @@ const enhance = compose(
     }, (props) => fetchItem(props))
 )
 
-const SearchFieldCustom = enhance((props) => {
+const SearchField = enhance((props) => {
     const {
         classes,
         input,
@@ -94,7 +86,6 @@ const SearchFieldCustom = enhance((props) => {
         'sheet', 'getText', 'getValue', 'getOptions', 'getItem', 'getItemText'
     ])
     const inputAutoComplete = excludeObjKey(input, ['value', 'onChange'])
-    const MINUS_ONE = -1
 
     return (
         <div className={classes.wrapper}>
@@ -103,16 +94,14 @@ const SearchFieldCustom = enhance((props) => {
                 searchText={input.value ? state.text : ''}
                 errorStyle={errorStyle}
                 floatingLabelText={label}
-                filter={(searchText, key) => (searchText.length > ZERO ? key.toLowerCase().search(searchText.toLowerCase()) !== MINUS_ONE : true)}
                 dataSource={state.dataSource}
                 dataSourceConfig={{text: 'text', value: 'value'}}
                 onUpdateInput={value => dispatch({text: value})}
                 onNewRequest={value => input.onChange(value)}
                 openOnFocus={true}
-                style={{position: 'relative'}}
-                menuStyle={{maxHeight: '300px', overflowY: 'auto'}}
-                textFieldStyle={{width: '400px'}}
-                listStyle={{}}
+                filter={() => true}
+                maxSearchResults={20}
+                maxHeight={200}
                 className="autocomplete"
                 {...inputAutoComplete}
                 {...autoCompleteProps}
@@ -127,19 +116,19 @@ const SearchFieldCustom = enhance((props) => {
     )
 })
 
-SearchFieldCustom.defaultGetText = (text) => {
+SearchField.defaultGetText = (text) => {
     return (obj) => {
         return _.get(obj, text)
     }
 }
 
-SearchFieldCustom.defaultGetValue = (value) => {
+SearchField.defaultGetValue = (value) => {
     return (obj) => {
         return _.get(obj, value)
     }
 }
 
-SearchFieldCustom.propTypes = {
+SearchField.propTypes = {
     getText: PropTypes.func.isRequired,
     getValue: PropTypes.func.isRequired,
     getOptions: PropTypes.func.isRequired,
@@ -147,4 +136,4 @@ SearchFieldCustom.propTypes = {
     getItem: PropTypes.func.isRequired
 }
 
-export default SearchFieldCustom
+export default SearchField

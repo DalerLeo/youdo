@@ -421,7 +421,7 @@ const RemainderGridList = enhance((props) => {
                         <Tooltip position="bottom" text="Передача товаров" >
                             <FloatingActionButton
                                 iconStyle={actionIconStyle.icon}
-                                style={{display: 'none'}}
+                                style={actionIconStyle.button}
                                 onTouchTap={transferDialog.handleOpenTransferDialog}>
                                 <SwapHorizIcon style={{width: '20px', height: '30px', margin: 'auto'}}/>
                             </FloatingActionButton>
