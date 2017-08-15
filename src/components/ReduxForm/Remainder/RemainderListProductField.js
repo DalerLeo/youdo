@@ -257,7 +257,11 @@ const enhance = compose(
                     props.dispatch(newChange(null))
                 }
                 if (!has) {
-                    onChange(_.union(products, [{product, isDefect, amount}]))
+                    let newArray = [{product, isDefect, amount}]
+                    _.map(products, (obj) => {
+                        newArray.push(obj)
+                    })
+                    onChange(newArray)
                     has = false
                 }
             }

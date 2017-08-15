@@ -242,11 +242,10 @@ const enhance = compose(
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
 
-            if (!_.isEmpty(product) && amount && isDefect) {
+            if (!_.isEmpty(_.get(product, 'value')) && amount && _.get(isDefect, 'value')) {
                 let has = false
                 _.map(products, (item) => {
-                    if (_.get(item, 'product') === product && _.get(item, 'isDefect') === isDefect) {
-                        item.amount = _.toInteger(item.amount) + _.toInteger(amount)
+                    if (_.get(item, 'product') === product && _.isEqual(isDefect, _.get(item, 'isDefect'))) {
                         has = true
                     }
                 })
@@ -256,7 +255,11 @@ const enhance = compose(
                     props.dispatch(newChange(null))
                 }
                 if (!has) {
-                    onChange(_.union(products, [{product, isDefect, amount}]))
+                    let newArray = [{product, isDefect, amount}]
+                    _.map(products, (obj) => {
+                        newArray.push(obj)
+                    })
+                    onChange(newArray)
                     has = false
                 }
             }
