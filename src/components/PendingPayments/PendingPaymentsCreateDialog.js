@@ -18,6 +18,7 @@ import convertCurrency from '../../helpers/convertCurrency'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
 import getConfig from '../../helpers/getConfig'
+import {currencyUpdateAction} from "../../actions/currency";
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const ORDERING_CURRENCY = 1
@@ -107,6 +108,7 @@ const enhance = compose(
 
 const PendingPaymentsCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate, convert, amountValue, customRate} = props
+
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ONE = 1
     const id = _.get(detailData, 'id')
@@ -184,12 +186,12 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                         />
                                         <CashboxCurrencyField/>
                                     </div>
-                                    <div className={classes.halfSecond}>
+                                    {(currencyRate !== INDIVIDUAL) && <div className={classes.halfSecond}>
                                         {convertLoading
                                         ? <div>Загрузка...</div>
                                             : <div> После конвертации: <span className={classes.bold}>
                                                 {convertAmount} {getConfig('PRIMARY_CURRENCY')}</span></div>}
-                                    </div>
+                                    </div>}
                                 </div>
 
                                 <Field
