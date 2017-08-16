@@ -57,3 +57,29 @@ export const createExpenseSerializer = (data, client) => {
         division
     }
 }
+
+export const createReturnSerializer = (data) => {
+    const client = _.get(data, ['client', 'value'])
+    const stock = _.get(data, ['stock', 'value'])
+    const division = _.get(data, ['division', 'value'])
+    const comment = _.get(data, ['comment'])
+    const products = _.map(_.get(data, ['products']), (item) => {
+        const amount = numberWithoutSpaces(_.get(item, 'amount'))
+        const itemCost = numberWithoutSpaces(_.get(item, 'cost'))
+        const summary = numberWithoutSpaces(_.toNumber(amount) * _.toNumber(itemCost))
+        const product = _.get(item, ['product', 'value', 'id'])
+        return {
+            amount: amount,
+            cost: summary,
+            product: product
+        }
+    })
+
+    return {
+        client,
+        stock,
+        comment,
+        products,
+        division
+    }
+}

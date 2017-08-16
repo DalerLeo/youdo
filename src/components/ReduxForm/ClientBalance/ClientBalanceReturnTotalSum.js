@@ -9,7 +9,7 @@ const ZERO = 0
 
 const enhance = compose(
     connect((state) => {
-        const products = _.get(state, ['form', 'OrderReturnForm', 'values', 'returned_products'])
+        const products = _.get(state, ['form', 'ClientBalanceReturnForm', 'values', 'products'])
         return {
             products
         }
@@ -19,7 +19,7 @@ const OrderReturnTotalSum = enhance((props) => {
     const {products} = props
     let totalCost = ZERO
     _.map(products, (item) => {
-        const itemCost = _.toNumber(_.get(item, ['product', 'value', 'price']))
+        const itemCost = _.toNumber(_.get(item, ['cost']))
         const itemAmount = _.toNumber(_.get(item, 'amount'))
         totalCost += (itemAmount * itemCost)
     })

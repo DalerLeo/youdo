@@ -14,12 +14,14 @@ import {
     CLIENT_BALANCE_FILTER_KEY,
     CLIENT_BALANCE_FILTER_OPEN,
     CLIENT_BALANCE_CREATE_DIALOG_OPEN,
+    CLIENT_BALANCE_RETURN_DIALOG_OPEN,
     ClientBalanceGridList
 } from '../../components/ClientBalance'
 import {
     clientBalanceListFetchAction,
     clientBalanceItemFetchAction,
-    clientBalanceCreateExpenseAction
+    clientBalanceCreateExpenseAction,
+    clientBalanceReturnAction
 } from '../../actions/clientBalance'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -35,6 +37,8 @@ const enhance = compose(
         const listLoading = _.get(state, ['clientBalance', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'ClientBalanceFilterForm'])
         const createForm = _.get(state, ['form', 'ClientBalanceCreateForm'])
+        const returnForm = _.get(state, ['form', 'ClientBalanceReturnForm'])
+
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 
@@ -48,7 +52,8 @@ const enhance = compose(
             filter,
             filterItem,
             filterForm,
-            createForm
+            createForm,
+            returnForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -135,6 +140,26 @@ const enhance = compose(
                     })
                     dispatch(clientBalanceListFetchAction(filter))
                 })
+        },
+        handleOpenClientReturnDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseClientReturnDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: false})})
+        },
+        handleSubmitClientReturnDialog: props => () => {
+            const {location: {pathname}, dispatch, returnForm, filter} = props
+            return dispatch(clientBalanceReturnAction(_.get(returnForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: false})})
+                    dispatch(clientBalanceListFetchAction(filter))
+                })
         }
     })
 )
@@ -156,6 +181,7 @@ const ClientBalanceList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_CREATE_DIALOG_OPEN]))
     const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
+    const openClientReturnDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_RETURN_DIALOG_OPEN]))
     const division = _.toNumber(_.get(location, ['query', 'division']))
     const fromDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.TO_DATE)
@@ -177,6 +203,12 @@ const ClientBalanceList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
+    const clientReturnDialog = {
+        openClientReturnDialog,
+        handleOpenClientReturnDialog: props.handleOpenClientReturnDialog,
+        handleCloseClientReturnDialog: props.handleCloseClientReturnDialog,
+        handleSubmitClientReturnDialog: props.handleSubmitClientReturnDialog
+    }
     const filterDialog = {
         initialValues: {
             date: {
@@ -213,6 +245,7 @@ const ClientBalanceList = enhance((props) => {
                 infoDialog={infoDialog}
                 createDialog={createDialog}
                 filterDialog={filterDialog}
+                clientReturnDialog={clientReturnDialog}
             />
         </Layout>
     )
