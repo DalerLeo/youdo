@@ -32,10 +32,11 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-
+const HUNDRED = 100
 export const expenseSupplySerializer = (supplyId) => {
     return {
-        'supply': supplyId
+        'supply': supplyId,
+        'page_size': HUNDRED
     }
 }
 

@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
-import CircularProgress from 'material-ui/CircularProgress'
 
 const enhance = compose(
     connect((state) => {

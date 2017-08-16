@@ -25,6 +25,7 @@ import {
 } from '../../actions/clientBalance'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const MINUS_ONE = -1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -141,23 +142,26 @@ const enhance = compose(
                     dispatch(clientBalanceListFetchAction(filter))
                 })
         },
-        handleOpenClientReturnDialog: props => () => {
+        handleOpenClientReturnDialog: props => (id) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: true})})
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: id})})
         },
 
         handleCloseClientReturnDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: MINUS_ONE})})
         },
         handleSubmitClientReturnDialog: props => () => {
             const {location: {pathname}, dispatch, returnForm, filter} = props
-            return dispatch(clientBalanceReturnAction(_.get(returnForm, ['values'])))
+            const id = _.toInteger(_.get(props, ['location', 'query', 'openClientReturnDialog']))
+            return dispatch(clientBalanceReturnAction(_.get(returnForm, ['values']), id))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: MINUS_ONE})})
                     dispatch(clientBalanceListFetchAction(filter))
                 })
         }
@@ -181,7 +185,7 @@ const ClientBalanceList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_CREATE_DIALOG_OPEN]))
     const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
-    const openClientReturnDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_RETURN_DIALOG_OPEN]))
+    const openClientReturnDialog = _.get(location, ['query', CLIENT_BALANCE_RETURN_DIALOG_OPEN])
     const division = _.toNumber(_.get(location, ['query', 'division']))
     const fromDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.TO_DATE)

@@ -55,8 +55,8 @@ export const clientBalanceCreateExpenseAction = (formValues, clientId) => {
     }
 }
 
-export const clientBalanceReturnAction = (formValues) => {
-    const requestData = serializers.createReturnSerializer(formValues)
+export const clientBalanceReturnAction = (formValues, id) => {
+    const requestData = serializers.createReturnSerializer(formValues, id)
     const payload = axios()
         .post(API.CLIENT_TRANSACTION_CREATE, requestData)
         .then((response) => {

@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -33,12 +32,6 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'created_date',
-        title: 'Дата создания',
-        xs: 2
-    },
-    {
-        sorting: true,
         name: 'orders',
         title: 'Кол-во заказов',
         xs: 2
@@ -51,8 +44,14 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'shampoo_balance',
-        title: 'Баланс шампунь',
+        name: 'shampoo_balance_nal',
+        title: 'Баланс шампунь нал.',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'created_date_perech',
+        title: 'Баланс шампунь переч.',
         xs: 2
     },
     {
@@ -107,6 +106,8 @@ const iconStyle = {
         height: 48
     }
 }
+
+const MINUS_ONE = -1
 const ClientBalanceGridList = enhance((props) => {
     const {
         classes,
@@ -124,7 +125,6 @@ const ClientBalanceGridList = enhance((props) => {
     )
     const clientBalanceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const cosmeticsBalance = _.toNumber(_.get(item, 'cosmeticsBalance'))
         const shampooBalance = _.toNumber(_.get(item, 'shampooBalance'))
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -134,16 +134,25 @@ const ClientBalanceGridList = enhance((props) => {
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={3}>{clientName}</Col>
-
-                <Col xs={2}>{createdDate}</Col>
                 <Col xs={2}>{orders}</Col>
                 <Col xs={2} className={classes.balance}>
-                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA) }}>
+                    <span onClick={() => {
+                        infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA)
+                    }}>
                         {numberFormat(cosmeticsBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2} className={classes.balance}>
-                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN) }}>
+                    <span onClick={() => {
+                        infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN)
+                    }}>
+                        {numberFormat(shampooBalance, currentCurrency)}
+                    </span>
+                </Col>
+                <Col xs={2} className={classes.balance}>
+                    <span onClick={() => {
+                        infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN)
+                    }}>
                         {numberFormat(shampooBalance, currentCurrency)}
                     </span>
                 </Col>
@@ -154,8 +163,10 @@ const ClientBalanceGridList = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onTouchTap={() => { clientReturnDialog.handleOpenClientReturnDialog() }}>
-                                <ReturnIcon />
+                                onTouchTap={() => {
+                                    clientReturnDialog.handleOpenClientReturnDialog(id)
+                                }}>
+                                <ReturnIcon/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip position="bottom" text="Списать">
@@ -163,7 +174,9 @@ const ClientBalanceGridList = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
-                                onTouchTap={() => { createDialog.handleOpenCreateDialog(id) }}>
+                                onTouchTap={() => {
+                                    createDialog.handleOpenCreateDialog(id)
+                                }}>
                                 <Cancel color='#f44336'/>
                             </IconButton>
                         </Tooltip>
@@ -180,9 +193,11 @@ const ClientBalanceGridList = enhance((props) => {
     }
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const balance = _.get(infoDialog, 'division') === DIVISION.SHAMPUN ? _.get(client, 'shampooBalance')
-                                                                            : _.get(client, 'cosmeticsBalance')
+    const balance = _.get(infoDialog, 'division') === DIVISION.SHAMPUN
+        ? _.get(client, 'shampooBalance')
+        : _.get(client, 'cosmeticsBalance')
     const paymentType = _.get(infoDialog, 'division') === DIVISION.SHAMPUN ? 'шамнунь' : 'косметика'
+    const clientName = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog'))})
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
@@ -213,7 +228,8 @@ const ClientBalanceGridList = enhance((props) => {
                 name={_.get(client, 'name')}
             />
             <ClientBalanceReturnDialog
-                open={clientReturnDialog.openClientReturnDialog}
+                name={_.get(clientName, 'name')}
+                open={_.get(clientReturnDialog, 'openClientReturnDialog') && _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog')) !== MINUS_ONE}
                 onClose={clientReturnDialog.handleCloseClientReturnDialog}
                 onSubmit={clientReturnDialog.handleSubmitClientReturnDialog}
             />

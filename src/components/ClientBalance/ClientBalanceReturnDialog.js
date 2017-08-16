@@ -14,7 +14,7 @@ import {
     ClientBalanceReturnProductList,
     TextField,
     DivisionSearchField,
-    ClientSearchField,
+    PaymentTypeSearchField,
     ClientBalanceReturnTotalSum
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
@@ -230,7 +230,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes} = props
+    const {open, handleSubmit, onClose, classes, name} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -242,7 +242,7 @@ const SupplyCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>ВОЗВРАТ ОТ КЛИЕНТА</span>
+                <span>ВОЗВРАТ ОТ {name}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -255,15 +255,7 @@ const SupplyCreateDialog = enhance((props) => {
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent} style={{minHeight: '350px'}}>
                             <div className={classes.leftOrderPart}>
-                                <div className={classes.subTitleOrder}>Выбор Клиента</div>
-                                <div className={classes.selectContent}>
-                                    <Field
-                                        name="client"
-                                        component={ClientSearchField}
-                                        className={classes.searchFieldCustom}
-                                        label="Клиент"
-                                        fullWidth={true}/>
-                                </div>
+                                <div className={classes.subTitleOrder}>Детали</div>
                                 <div className={classes.condition}>
                                     <Field
                                         name="stock"
@@ -279,6 +271,15 @@ const SupplyCreateDialog = enhance((props) => {
                                         component={DivisionSearchField}
                                         className={classes.searchFieldCustom}
                                         label="Подразделение"
+                                        fullWidth={true}/>
+                                </div>
+                                <div className={classes.condition}>
+                                    <Field
+                                        name="paymentType"
+                                        style={{lineHeight: '20px', fontSize: '13px'}}
+                                        component={PaymentTypeSearchField}
+                                        className={classes.searchFieldCustom}
+                                        label="Тип оплаты"
                                         fullWidth={true}/>
                                 </div>
                                 <div>
