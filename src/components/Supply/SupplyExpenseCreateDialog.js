@@ -10,7 +10,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CurrencySearchField, CheckBox} from '../ReduxForm'
+import {TextField, CurrencySearchField, CheckBox, normalizeNumber} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
 import ProductSearchField from '../ReduxForm/Product/ProductSearchField'
 import {connect} from 'react-redux'
@@ -92,7 +92,8 @@ const ExpenseCreateDialog = enhance((props) => {
                                         component={TextField}
                                         className={classes.inputFieldCustom}
                                         label="Сумма"
-                                        fullWidth={true}/>
+                                        fullWidth={true}
+                                        normalize={normalizeNumber}/>
                                 </div>
                                 <div className={classes.inputHalfWrap}>
                                     <Field
