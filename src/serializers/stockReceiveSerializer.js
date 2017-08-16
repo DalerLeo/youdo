@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 export const acceptSerializer = (id, stock) => {
     return {
@@ -12,9 +13,8 @@ export const createSerializer = (data, detail) => {
     const provider = _.get(detail, ['provider', 'id'])
     const products = _.map(_.get(detail, 'products'), (item, index) => {
         const supplyProduct = _.get(item, 'id')
-
         return {
-            'amount': _.get(data, ['product', index, 'accepted']),
+            'amount': numberWithoutSpaces(_.get(data, ['product', index, 'accepted'])),
             'defect_amount': _.get(data, ['product', index, 'defected']),
             'supply_product': supplyProduct
         }

@@ -138,7 +138,8 @@ const StockTabReceive = enhance((props) => {
         handleCloseDetail,
         createDialog,
         filterDialog,
-        history
+        history,
+        handleCheckedForm
     } = props
     const listLoading = _.get(listData, 'listLoading')
     const stockReceiveFilterDialog = (
@@ -221,6 +222,7 @@ const StockTabReceive = enhance((props) => {
                 listLoading={createDialog.detailLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
+                handleCheckedForm={handleCheckedForm}
             />
             <CreateDialog
                 loading={updateDialog.updateLoading}
@@ -231,6 +233,7 @@ const StockTabReceive = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
+                handleCheckedForm={handleCheckedForm}
             />
         </div>
     )
