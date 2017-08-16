@@ -12,6 +12,7 @@ import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import dealTypeFormat from '../../helpers/dealTypeFormat'
 import getConfig from '../../helpers/getConfig'
 
+const ONE = 1
 const enhance = compose(
     injectSheet({
         loader: {
@@ -200,7 +201,7 @@ const OrderPrint = enhance((props) => {
                                 <Col xs={2}>Цена ({currentCurrency})</Col>
                                 <Col xs={2}>Сумма ({currentCurrency})</Col>
                             </Row>
-                            {_.map(_.get(item, 'products'), (product) => {
+                            {_.map(_.get(item, 'products'), (product, index) => {
                                 const totalProductPrice = numberFormat(_.get(product, 'totalPrice'))
                                 const productId = _.get(product, 'id')
                                 const code = _.get(product, ['product', 'code'])
@@ -215,7 +216,7 @@ const OrderPrint = enhance((props) => {
                                 }
                                 return (
                                     <Row key={productId}>
-                                        <Col xs={1}>{productId}</Col>
+                                        <Col xs={1}>{index + ONE}</Col>
                                         <Col xs={4}>{!isBonus ? name : <div><span style={{fontWeight: '700'}}>БОНУС</span> {name}</div>}</Col>
                                         <Col xs={1}>{code}</Col>
                                         <Col xs={2}>{amount}</Col>
