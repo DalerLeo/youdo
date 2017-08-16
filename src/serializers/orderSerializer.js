@@ -1,38 +1,31 @@
 import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
-import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
+const ZERO = 0
 const ONE = 1
 const TWO = 2
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
-    const contact = _.get(data, ['contact'])
     const paymentType = 1
     const paymentTerm = 1
     const paymentDate = moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD')
     const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
-    const deliveryType = _.get(data, ['deliveryType', 'value'])
-    const deliveryPrice = numberWithoutSpaces(_.get(data, 'deliveryPrice'))
-    const discountPrice = _.get(data, 'discountPrice')
     const requestDeadline = moment(_.get(data, ['request_dedline'])).format('YYYY-MM-DD')
-    const dealType = _.get(data, ['dealType', 'value'])
+    const dealType = _.get(data, ['dealType']) === 'standart' ? ZERO : ONE
     const market = _.get(data, ['market', 'value'])
     const products = _.map(_.get(data, ['products']), (item) => {
         return {
-            amount: item.amount,
-            cost: item.cost,
-            product: item.product.value
+            id: _.get(item, ['product', 'id']),
+            amount: _.get(item, 'amount'),
+            cost: _.get(item, 'cost'),
+            product: _.get(item, ['product', 'value', 'id'])
         }
     })
     return {
         client,
-        contact,
         'date_delivery': deliveryDate,
         'request_dedline': requestDeadline,
-        'delivery_type': deliveryType,
-        'delivery_price': deliveryPrice,
-        'discount_price': discountPrice,
         'payment_date': paymentDate,
         'payment_type': paymentType,
         'payment_term': paymentTerm,

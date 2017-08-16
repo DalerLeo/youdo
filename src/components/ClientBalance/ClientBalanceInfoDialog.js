@@ -87,7 +87,7 @@ const enhance = compose(
             width: '45%',
             justifyContent: 'space-between',
             '& span': {
-                fontWeight: '500'
+                fontWeight: '400'
             }
         },
         content: {

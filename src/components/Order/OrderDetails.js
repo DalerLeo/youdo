@@ -188,6 +188,7 @@ const OrderDetails = enhance((props) => {
     const market = _.get(data, ['market', 'name'])
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
     const dealType = _.get(data, 'dealType')
+    const division = _.get(data, ['division', 'name'])
 
     const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
@@ -250,7 +251,6 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -314,6 +314,10 @@ const OrderDetails = enhance((props) => {
                                 <li>
                                     <span>Тип сделки:</span>
                                     <span>{(dealType === '0') ? 'Стандартная' : 'Консигнация'}</span>
+                                </li>
+                                <li>
+                                    <span>Подразделение:</span>
+                                    <span>{division}</span>
                                 </li>
                             </ul>
                         </div>

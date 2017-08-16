@@ -133,6 +133,7 @@ const enhance = compose(
             }
         },
         flex: {
+            display: 'flex',
             alignItems: 'initial',
             '& > div:first-child': {
                 maxWidth: '60%'
