@@ -55,3 +55,19 @@ export const clientBalanceCreateExpenseAction = (formValues, clientId) => {
     }
 }
 
+export const clientBalanceReturnAction = (formValues) => {
+    const requestData = serializers.createReturnSerializer(formValues)
+    const payload = axios()
+        .post(API.CLIENT_TRANSACTION_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.CLIENT_TRANSACTION_EXPENSE,
+        payload
+    }
+}

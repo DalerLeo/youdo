@@ -60,6 +60,8 @@ import RemainderProductTypeSearchField from './Remainder/RemainderProductTypeSea
 import PositionSearchField from './PositionSearchField'
 import DivisionSearchField from './DivisionSearchField'
 import Pagination from './Pagination'
+import ClientBalanceReturnTotalSum from './ClientBalance/ClientBalanceReturnTotalSum'
+import ClientBalanceReturnProductList from './ClientBalance/ClientBalanceReturnProductList'
 
 export {
     ZoneSearchField,
@@ -123,5 +125,7 @@ export {
     RemainderProductTypeSearchField,
     PositionSearchField,
     DivisionSearchField,
-    Pagination
+    Pagination,
+    ClientBalanceReturnTotalSum,
+    ClientBalanceReturnProductList
 }

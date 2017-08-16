@@ -8,6 +8,7 @@ import GridList from '../GridList'
 import Container from '../Container'
 import ClientBalanceInfoDialog from './ClientBalanceInfoDialog'
 import ClientBalanceCreateDialog from './ClientBalanceCreateDialog'
+import ClientBalanceReturnDialog from './ClientBalanceReturnDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -15,6 +16,8 @@ import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import IconButton from 'material-ui/IconButton'
 import Cancel from 'material-ui/svg-icons/content/remove-circle'
+import ReturnIcon from 'material-ui/svg-icons/content/reply'
+import Tooltip from '../ToolTip'
 
 const DIVISION = {
     SHAMPUN: 2,
@@ -56,9 +59,9 @@ const listHeader = [
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         alignRight: true,
-        title: 'Списать',
+        title: '',
         xs: 1
     }
 ]
@@ -94,7 +97,6 @@ const enhance = compose(
 )
 const iconStyle = {
     icon: {
-        color: '#f44336',
         width: 24,
         height: 24
     },
@@ -111,7 +113,8 @@ const ClientBalanceGridList = enhance((props) => {
         filterItem,
         infoDialog,
         listData,
-        detailData
+        detailData,
+        clientReturnDialog
     } = props
 
     const clientBalanceDetail = (
@@ -145,13 +148,26 @@ const ClientBalanceGridList = enhance((props) => {
                     </span>
                 </Col>
                 <Col xs={1} className={classes.rightAlign}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        onTouchTap={() => { createDialog.handleOpenCreateDialog(id) }}>
-                        <Cancel />
-                    </IconButton>
+                    <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                        <Tooltip position="bottom" text="Возврат с клиента">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onTouchTap={() => { clientReturnDialog.handleOpenClientReturnDialog() }}>
+                                <ReturnIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Списать">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onTouchTap={() => { createDialog.handleOpenCreateDialog(id) }}>
+                                <Cancel color='#f44336'/>
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </Col>
             </Row>
         )
@@ -193,6 +209,11 @@ const ClientBalanceGridList = enhance((props) => {
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 name={_.get(client, 'name')}
             />
+            <ClientBalanceReturnDialog
+                open={clientReturnDialog.openClientReturnDialog}
+                onClose={clientReturnDialog.handleCloseClientReturnDialog}
+                onSubmit={clientReturnDialog.handleSubmitClientReturnDialog}
+            />
         </Container>
     )
 })
@@ -213,7 +234,13 @@ ClientBalanceGridList.propTypes = {
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    clientReturnDialog: PropTypes.shape({
+        openClientReturnDialog: PropTypes.bool.isRequired,
+        handleOpenClientReturnDialog: PropTypes.func.isRequired,
+        handleCloseClientReturnDialog: PropTypes.func.isRequired,
+        handleSubmitClientReturnDialog: PropTypes.func.isRequired
+    })
 }
 
 export default ClientBalanceGridList
