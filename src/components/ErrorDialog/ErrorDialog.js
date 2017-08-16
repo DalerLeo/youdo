@@ -71,7 +71,6 @@ const ErrorDialog = ({dispatch, message, open, classes, ...defaultProps}) => {
             bodyClassName={classes.popUp}
             overlayStyle={{background: 'rgba(0,0,0,0.45)'}}
             style={{zIndex: '9999999999'}}
-            paperClassName="ffff"
             {...defaultProps}>
             <div className={classes.bodyContent}>
                 <IconButton onTouchTap={close}>

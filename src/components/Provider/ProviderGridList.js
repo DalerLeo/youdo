@@ -71,9 +71,6 @@ const enhance = compose(
                 },
                 '& > div:last-child': {
                     paddingRight: '0'
-                },
-                '& > div': {
-                    fontWeight: '600'
                 }
             }
         }

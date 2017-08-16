@@ -60,10 +60,14 @@ const enhance = compose(
             }
         },
         tabWrapper: {
-            maxHeight: '441px',
+            maxHeight: '400px',
             overflowY: 'auto',
             overflowX: 'hidden',
-            paddingRight: '30px'
+            paddingRight: '30px',
+            '& .row': {
+                height: '50px',
+                padding: '0'
+            }
         },
         summary: {
             fontWeight: '600',

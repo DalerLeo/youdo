@@ -78,7 +78,6 @@ const enhance = compose(
                 bottom: '0',
                 padding: '0 30px',
                 '& > div': {
-                    fontWeight: '600',
                     '&:first-child': {
                         paddingLeft: '0'
                     },

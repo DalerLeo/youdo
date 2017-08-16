@@ -222,6 +222,7 @@ const enhance = compose(
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const status = _.get(filterForm, ['values', 'status', 'value']) || null
             const shop = _.get(filterForm, ['values', 'shop', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
@@ -233,6 +234,7 @@ const enhance = compose(
                 [ORDER_FILTER_KEY.INITIATOR]: initiator,
                 [ORDER_FILTER_KEY.ZONE]: zone,
                 [ORDER_FILTER_KEY.SHOP]: shop,
+                [ORDER_FILTER_KEY.DIVISION]: division,
                 [ORDER_FILTER_KEY.DEPT]: dept,
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
@@ -398,6 +400,16 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: false})})
                     dispatch(orderListFetchAction(filter))
                 })
+                .catch((error) => {
+                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
+                        return <p key={index}>{item}</p>
+                    })
+                    if (notEnough) {
+                        dispatch(openErrorAction({
+                            message: <div style={{padding: '0 30px'}}>{notEnough}</div>
+                        }))
+                    }
+                })
         },
 
         handleOpenCreateClientDialog: props => () => {
@@ -490,7 +502,7 @@ const OrderList = enhance((props) => {
     const openCancelOrderReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_ORDER_RETURN_DIALOG_OPEN]))
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
     const zone = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ZONE))
-    const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ORDERSTATUS))
+    const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STATUS))
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
@@ -568,9 +580,16 @@ const OrderList = enhance((props) => {
         return {
             amount: _.get(item, 'amount'),
             cost: _.get(item, 'price'),
-            measurement: _.get(item, ['product', 'measurement', 'name']),
             product: {
-                value: _.get(item, ['product', 'id']),
+                id: _.get(item, 'id'),
+                value: {
+                    id: _.get(item, ['product', 'id']),
+                    name: _.get(item, ['product', 'name']),
+                    measurement: {
+                        id: _.get(item, ['product', 'measurement', 'id']),
+                        name: _.get(item, ['product', 'measurement', 'name'])
+                    }
+                },
                 text: _.get(item, ['product', 'name'])
             }
 
@@ -582,6 +601,7 @@ const OrderList = enhance((props) => {
             if (!detail || openCreateDialog) {
                 return {}
             }
+            const ONE = 1
             const HUND = 100
             const discountPrice = _.toNumber(_.get(detail, 'discountPrice'))
             const totalPrice = _.toNumber(_.get(detail, 'totalPrice'))
@@ -592,11 +612,8 @@ const OrderList = enhance((props) => {
             if (deliveryType === ZERO) {
                 deliveryTypeText = 'Самовывоз'
             }
-            const dealType = _.toInteger(_.get(detail, 'dealType'))
-            let dealTypeText = 'Консигнация'
-            if (dealType === ZERO) {
-                deliveryTypeText = 'Стандартная'
-            }
+            const dealType = _.toInteger(_.get(detail, 'dealType')) === ONE ? 'consignment' : 'standart'
+
             return {
                 client: {
                     value: _.toInteger(_.get(detail, ['client', 'id']))
@@ -611,10 +628,7 @@ const OrderList = enhance((props) => {
                     value: deliveryType,
                     text: deliveryTypeText
                 },
-                dealType: {
-                    value: dealType,
-                    text: dealTypeText
-                },
+                dealType: dealType,
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
