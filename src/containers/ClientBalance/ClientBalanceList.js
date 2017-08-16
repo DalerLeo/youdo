@@ -160,7 +160,7 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: false})})
                     dispatch(clientBalanceListFetchAction(filter))
                 })
-        },
+        }
     })
 )
 
