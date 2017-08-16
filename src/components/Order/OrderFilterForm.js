@@ -19,15 +19,13 @@ export const ORDER_FILTER_OPEN = 'openFilterDialog'
 
 export const ORDER_FILTER_KEY = {
     CLIENT: 'client',
-    ORDERSTATUS: 'orderStatus',
+    STATUS: 'status',
+    INITIATOR: 'initiator',
     SHOP: 'shop',
     DEPT: 'dept',
-    INITIATOR: 'initiator',
-    DOST_DATE: 'dostDate',
-    CREATE_DATE: 'createDate',
     FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate',
     DELIVERY_FROM_DATE: 'deliveryFromDate',
-    TO_DATE: 'fromDate',
     DELIVERY_TO_DATE: 'deliveryToDate',
     ZONE: 'zone'
 }
@@ -191,7 +189,7 @@ const OrderFilterForm = enhance((props) => {
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
-                        <Field className={classes.inputFieldCustom} name="orderStatus" component={OrderStatusSearchField} label="Статус"/>
+                        <Field className={classes.inputFieldCustom} name="status" component={OrderStatusSearchField} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersSearchField} label="Инициатор "/>
                         <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Оплаченный "/>

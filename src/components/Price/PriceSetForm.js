@@ -106,6 +106,7 @@ const enhance = compose(
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
+            marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
             },

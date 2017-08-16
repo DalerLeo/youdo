@@ -7,6 +7,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
+import DivisionSearchField from '../ReduxForm/DivisionSearchField'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
@@ -16,7 +17,7 @@ import NotFound from '../Images/not-found.png'
 import Person from '../Images/person.png'
 import numberFormat from '../../helpers/numberFormat'
 
-export const STAT_CASHBOX_FILTER_KEY = {
+export const STAT_CASHBOX_DETAIL_FILTER_KEY = {
     CASHBOX: 'cashbox',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
@@ -201,7 +202,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatCashboxFilterForm',
+        form: 'StatCashboxDetailFilterForm',
         enableReinitialize: true
     }),
 )
@@ -277,6 +278,13 @@ const StatCashboxDetails = enhance((props) => {
                                 component={DateToDateField}
                                 label="Диапазон дат"
                                 fullWidth={true}/>
+                            <Field
+                                name="division"
+                                component={DivisionSearchField}
+                                className={classes.inputFieldCustom}
+                                label="Подразделение"
+                                fullWidth={true}
+                            />
                             <IconButton
                                 className={classes.searchButton}
                                 iconStyle={iconStyle.icon}

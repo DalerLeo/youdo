@@ -9,7 +9,7 @@ import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import ClientSearchField from '../ReduxForm/Client/ClientSearchField'
+import {DivisionSearchField, TextField} from '../ReduxForm'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
@@ -21,7 +21,8 @@ import numberFormat from '../../helpers/numberFormat'
 export const STAT_FINANCE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    USER: 'user'
+    SEARCH: 'search',
+    DIVISION: 'division'
 }
 
 const NEGATIVE = -1
@@ -386,10 +387,16 @@ const StatFinanceGridList = enhance((props) => {
                                         label="Диапазон дат"
                                         fullWidth={true}/>
                                     <Field
+                                        name="division"
+                                        component={DivisionSearchField}
                                         className={classes.inputFieldCustom}
-                                        name="client"
-                                        component={ClientSearchField}
-                                        label="Клиенты"
+                                        label="Подразделение"
+                                        fullWidth={true}/>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="search"
+                                        component={TextField}
+                                        label="Поиск"
                                         fullWidth={true}/>
 
                                     <IconButton

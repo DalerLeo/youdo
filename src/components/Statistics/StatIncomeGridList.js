@@ -10,7 +10,7 @@ import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import TextField from '../ReduxForm/Basic/TextField'
+import {TextField, DivisionSearchField} from '../ReduxForm'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
@@ -25,7 +25,8 @@ import NotFound from '../Images/not-found.png'
 export const STAT_INCOME_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    SEARCH: 'search'
+    SEARCH: 'search',
+    DIVISION: 'division'
 }
 
 const enhance = compose(
@@ -376,6 +377,12 @@ const StatIncomeGridList = enhance((props) => {
                                         name="date"
                                         component={DateToDateField}
                                         label="Диапазон дат"
+                                        fullWidth={true}/>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="division"
+                                        component={DivisionSearchField}
+                                        label="Подразделение"
                                         fullWidth={true}/>
                                     <Field
                                         className={classes.inputFieldCustom}

@@ -140,7 +140,7 @@ const iconStyle = {
     }
 }
 
-const ClientBalanceCreateDialog = enhance((props) => {
+const ClientBalanceInfoDialog = enhance((props) => {
     const {open, filterItem, onClose, classes, detailData, name, balance, paymentType} = props
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -227,10 +227,10 @@ const ClientBalanceCreateDialog = enhance((props) => {
     )
 })
 
-ClientBalanceCreateDialog.propTyeps = {
+ClientBalanceInfoDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
-export default ClientBalanceCreateDialog
+export default ClientBalanceInfoDialog

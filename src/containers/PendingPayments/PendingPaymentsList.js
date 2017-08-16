@@ -35,6 +35,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['pendingPayments', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'PendingPaymentsFilterForm'])
         const createForm = _.get(state, ['form', 'PendingPaymentsCreateForm'])
+        const convert = _.get(state, ['pendingPayments', 'convert'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -45,7 +46,8 @@ const enhance = compose(
             updateLoading,
             filter,
             filterForm,
-            createForm
+            createForm,
+            convert
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -142,6 +144,7 @@ const PendingPaymentsList = enhance((props) => {
         updateLoading,
         filter,
         layout,
+        convert,
         params
     } = props
 
@@ -214,6 +217,7 @@ const PendingPaymentsList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
+                convert={convert}
             />
         </Layout>
     )

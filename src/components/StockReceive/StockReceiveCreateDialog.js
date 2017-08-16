@@ -6,13 +6,16 @@ import injectSheet from 'react-jss'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
+import {connect} from 'react-redux'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
-import {TextField} from '../ReduxForm'
+import {TextField, CheckBox} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
+import Tooltip from '../ToolTip'
+
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -166,6 +169,21 @@ const enhance = compose(
     reduxForm({
         form: 'StockReceiveCreateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const showClients = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'showClients'])
+        const rate = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'custom_rate'])
+        const amount = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'amount'])
+        const values = _.get(state, ['form', 'StockReceiveCreateForm', 'values'])
+        const stock = _.map(_.get(values, 'stocks'), (item) => {
+            return _.get(item, 'selected') && true
+        })
+        return {
+            showClients,
+            rate,
+            amount,
+            stock
+        }
     })
 )
 
@@ -182,10 +200,13 @@ const OrderCreateDialog = enhance((props) => {
         classes,
         detailProducts,
         listLoading,
-        isUpdate
+        isUpdate,
+        handleCheckedForm,
+        stock
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const supplyId = _.get(detailProducts, 'id')
+
     return (
         <Dialog
             modal={true}
@@ -215,12 +236,14 @@ const OrderCreateDialog = enhance((props) => {
                             <div className={classes.list}>
                                 <Row className="dottedList">
                                     <Col xs={3}>Товар</Col>
-                                    <Col xs={3}>Тип товара</Col>
+                                    <Col xs={2}>Тип товара</Col>
                                     <Col xs={2}>Кол-во</Col>
+                                    <Col xs={1}></Col>
                                     <Col xs={2}>Принято</Col>
                                     <Col xs={2}>Брак</Col>
                                 </Row>
                                 {_.map(_.get(detailProducts, 'products'), (item, index) => {
+                                    const disable = Boolean(stock[index])
                                     const id = _.get(item, 'id')
                                     const name = _.get(item, ['product', 'name'])
                                     const type = _.get(item, ['product', 'type', 'name'])
@@ -230,14 +253,24 @@ const OrderCreateDialog = enhance((props) => {
                                     return (
                                         <Row key={id} className="dottedList">
                                             <Col xs={3}>{name}</Col>
-                                            <Col xs={3}>{type}</Col>
+                                            <Col xs={2}>{type}</Col>
                                             <Col xs={2}>{amount} {measurement}</Col>
+                                            <Col xs={1}>
+                                                <Tooltip position="left" text='Без браков'>
+                                                    <Field
+                                                        onTouchTap={() => { handleCheckedForm(index, _.get(item, 'amount'), disable) }}
+                                                        key={id}
+                                                        name={'stocks[' + index + '][selected]'}
+                                                        component={CheckBox}/>
+                                                </Tooltip>
+                                            </Col>
                                             <Col xs={2}>
                                                 <Field
                                                     name={'product[' + index + '][accepted]'}
                                                     component={TextField}
                                                     className={classes.inputFieldCustom}
                                                     fullWidth={true}
+                                                    disabled={disable}
                                                 />
                                                 {measurement}
                                             </Col>
@@ -247,6 +280,7 @@ const OrderCreateDialog = enhance((props) => {
                                                     component={TextField}
                                                     className={classes.inputFieldCustom}
                                                     fullWidth={true}
+                                                    disabled={disable}
                                                 />
                                                 {measurement}
                                             </Col>

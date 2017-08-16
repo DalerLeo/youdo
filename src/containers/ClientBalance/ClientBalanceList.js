@@ -13,12 +13,15 @@ import {
     CLIENT_BALANCE_INFO_DIALOG_OPEN,
     CLIENT_BALANCE_FILTER_KEY,
     CLIENT_BALANCE_FILTER_OPEN,
+    CLIENT_BALANCE_CREATE_DIALOG_OPEN,
     ClientBalanceGridList
 } from '../../components/ClientBalance'
 import {
     clientBalanceListFetchAction,
-    clientBalanceItemFetchAction
+    clientBalanceItemFetchAction,
+    clientBalanceCreateExpenseAction
 } from '../../actions/clientBalance'
+import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
@@ -61,8 +64,8 @@ const enhance = compose(
             props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
     }, ({dispatch, params, filterItem, location}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
-        const type = _.get(location, ['query', 'type'])
-        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, type))
+        const division = _.get(location, ['query', 'division'])
+        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, division))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -95,17 +98,43 @@ const enhance = compose(
             })
         },
 
-        handleOpenInfoDialog: props => (id, type) => {
+        handleOpenInfoDialog: props => (id, division) => {
             const {filter} = props
             hashHistory.push({
                 pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
-                query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: true, 'type': type})
+                query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: true, 'division': division})
             })
         },
 
         handleCloseInfoDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: false, 'dPage': null, 'dPageSize': null})})
+        },
+        handleOpenCreateDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
+                query: filter.getParams({[CLIENT_BALANCE_CREATE_DIALOG_OPEN]: true})
+            })
+        },
+        handleCloseCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_CREATE_DIALOG_OPEN]: false})})
+        },
+        handleSubmitCreateDialog: props => () => {
+            const {dispatch, createForm, filter, location: {pathname}, params} = props
+            const clientId = _.get(params, ['clientBalanceId'])
+            return dispatch(clientBalanceCreateExpenseAction(_.get(createForm, ['values']), clientId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[CLIENT_BALANCE_CREATE_DIALOG_OPEN]: false})
+                    })
+                    dispatch(clientBalanceListFetchAction(filter))
+                })
         }
     })
 )
@@ -117,6 +146,7 @@ const ClientBalanceList = enhance((props) => {
         listLoading,
         detail,
         detailLoading,
+        createLoading,
         filter,
         filterItem,
         layout,
@@ -124,8 +154,9 @@ const ClientBalanceList = enhance((props) => {
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_CREATE_DIALOG_OPEN]))
     const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
-    const type = _.toNumber(_.get(location, ['query', 'type']))
+    const division = _.toNumber(_.get(location, ['query', 'division']))
     const fromDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
@@ -133,9 +164,17 @@ const ClientBalanceList = enhance((props) => {
     const infoDialog = {
         updateLoading: detailLoading,
         openInfoDialog,
-        type: type,
+        division: division,
         handleOpenInfoDialog: props.handleOpenInfoDialog,
         handleCloseInfoDialog: props.handleCloseInfoDialog
+    }
+
+    const createDialog = {
+        createLoading,
+        openCreateDialog,
+        handleOpenCreateDialog: props.handleOpenCreateDialog,
+        handleCloseCreateDialog: props.handleCloseCreateDialog,
+        handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
     const filterDialog = {
@@ -172,6 +211,7 @@ const ClientBalanceList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 infoDialog={infoDialog}
+                createDialog={createDialog}
                 filterDialog={filterDialog}
             />
         </Layout>

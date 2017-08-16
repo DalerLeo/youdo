@@ -220,6 +220,7 @@ export const STATDEBTORS_DELETE = `/${STATDEBTORS}/%d/`
 export const STATDEBTORS_GET_DOCUMENT = 'sales/debtors_statistics/'
 
 export const PENDING_PAYMENTS = 'sales/order'
+export const PENDING_PAYMENTS_CONVERT = 'finance/convert'
 export const PENDING_PAYMENTS_CREATE = '/sales/order_payment/'
 export const PENDING_PAYMENTS_LIST = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_ITEM = `/${PENDING_PAYMENTS}/%d/`
@@ -230,11 +231,13 @@ export const STAT_MANUFACTURE_LIST = `/${STAT_MANUFACTURE}/`
 export const STAT_MANUFACTURE_ITEM = `/${STAT_MANUFACTURE}/%d/`
 export const STAT_MANUFACTURE_DELETE = `/${STAT_MANUFACTURE}/%d/`
 
+export const STAT_CASHBOX_SUM = '/stats/cashboxes_sum/'
 export const STAT_CASHBOX = 'finance/cashbox'
 export const STAT_CASHBOX_CREATE = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_ITEM = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
+export const STAT_CASHBOX_DATA_ITEM = 'stats/cashbox/%d/'
 
 export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
@@ -377,3 +380,9 @@ export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/agents/export/'
 export const STAT_REPORT_LIST = 'stats/agents/'
 export const STAT_REPORT_ITEM = 'sales/order/'
 export const STAT_REPORT_GET_DOCUMENT = '/stats/agents/export/'
+
+export const DIVISION = 'main/division'
+export const DIVISION_LIST = `${DIVISION}/`
+export const DIVISION_ITEM = `${DIVISION}/%d/`
+export const DIVISION_CREATE = `/${DIVISION}/`
+export const DIVISION_DELETE = `/${DIVISION}/%d`

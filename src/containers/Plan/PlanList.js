@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
@@ -153,6 +154,19 @@ const PlanList = enhance((props) => {
         detailLoading
     }
 
+    const WEEK = 7
+    const defaultStart = moment()
+    const defaultEnd = moment().add(WEEK, 'days')
+
+    const PlanDateInitialValues = {
+        initialValues: {
+            period: {
+                fromDate: defaultStart,
+                toDate: defaultEnd
+            }
+        }
+    }
+
     return (
         <Layout {...layout}>
             <PlanWrapper
@@ -162,6 +176,7 @@ const PlanList = enhance((props) => {
                 addPlan={addPlan}
                 handleClickTab={props.handleClickTab}
                 groupId={groupId}
+                PlanDateInitialValues={PlanDateInitialValues}
                 detailData={detailData}
             />
         </Layout>

@@ -6,13 +6,20 @@ import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import ClientBalanceFilterForm from './ClientBalanceFilterForm'
-import ClientBalanceCreateDialog from './ClientBalanceInfoDialog'
+import ClientBalanceInfoDialog from './ClientBalanceInfoDialog'
+import ClientBalanceCreateDialog from './ClientBalanceCreateDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import IconButton from 'material-ui/IconButton'
+import Cancel from 'material-ui/svg-icons/content/remove-circle'
+
+const DIVISION = {
+    SHAMPUN: 2,
+    KOSMETIKA: 1
+}
 
 const listHeader = [
     {
@@ -25,34 +32,55 @@ const listHeader = [
         sorting: true,
         name: 'created_date',
         title: 'Дата создания',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
-        name: 'number_of_orders',
+        alignRight: true,
+        name: 'orders',
         title: 'Кол-во заказов',
         xs: 2
     },
     {
         sorting: true,
         alignRight: true,
-        name: 'cashBalance',
-        title: 'Баланс нал',
+        name: 'cosmetics_balance',
+        title: 'Баланс косметика',
         xs: 2
     },
     {
         sorting: true,
         alignRight: true,
-        name: 'transferBalance',
-        title: 'Баланс переч.',
+        name: 'shampoo_balance',
+        title: 'Баланс шампунь',
         xs: 2
+    },
+    {
+        sorting: true,
+        alignRight: true,
+        title: 'Списать',
+        xs: 1
     }
 ]
 
 const enhance = compose(
     injectSheet({
+        listRow: {
+            margin: '0 -30px !important',
+            padding: '0 30px',
+            width: 'auto !important',
+            '&:hover button': {
+                opacity: '1'
+            }
+        },
         rightAlign: {
-            textAlign: 'right'
+            textAlign: 'right',
+            '& button': {
+                opacity: '0'
+            },
+            '& span': {
+                cursor: 'pointer'
+            }
         },
         red: {
             color: '#e27676',
@@ -64,26 +92,27 @@ const enhance = compose(
         }
     })
 )
-
-const ClientBlanceGridList = enhance((props) => {
+const iconStyle = {
+    icon: {
+        color: '#f44336',
+        width: 24,
+        height: 24
+    },
+    button: {
+        width: 48,
+        height: 48
+    }
+}
+const ClientBalanceGridList = enhance((props) => {
     const {
         classes,
         filter,
-        filterDialog,
+        createDialog,
         filterItem,
         infoDialog,
         listData,
         detailData
     } = props
-    const ZERO = 0
-    const ONE = 1
-    const clientBalanceFilterDialog = (
-        <ClientBalanceFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
-    )
 
     const clientBalanceDetail = (
         <span>a</span>
@@ -91,32 +120,38 @@ const ClientBlanceGridList = enhance((props) => {
     const clientBalanceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const transferBalance = _.toNumber(_.get(item, 'transferBalance'))
-        const cashBalance = _.toNumber(_.get(item, 'cashBalance'))
+        const cosmeticsBalance = _.toNumber(_.get(item, 'cosmeticsBalance'))
+        const shampooBalance = _.toNumber(_.get(item, 'shampooBalance'))
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const orders = numberFormat(_.get(item, 'orders'))
         const clientName = _.get(item, 'name')
 
         return (
-            <Row key={id}>
+            <Row key={id} className={classes.listRow}>
                 <Col xs={3}>{clientName}</Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={2}>{orders}</Col>
+
+                <Col xs={2}>{createdDate}</Col>
+                <Col xs={2} className={classes.rightAlign}>{orders}</Col>
                 <Col xs={2}
                      className={classes.rightAlign}>
-                    <span
-                        className={cashBalance >= ZERO ? classes.green : classes.red}
-                        onClick={() => { infoDialog.handleOpenInfoDialog(id, ZERO) }}>
-                        {numberFormat(cashBalance, currentCurrency)}
+                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA) }}>
+                        {numberFormat(cosmeticsBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2}
                      className={classes.rightAlign}>
-                    <span
-                        className={transferBalance >= ZERO ? classes.green : classes.red}
-                        onClick={() => { infoDialog.handleOpenInfoDialog(id, ONE) }}>
-                        {numberFormat(transferBalance, currentCurrency)}
+                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN) }}>
+                        {numberFormat(shampooBalance, currentCurrency)}
                     </span>
+                </Col>
+                <Col xs={1} className={classes.rightAlign}>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        touch={true}
+                        onTouchTap={() => { createDialog.handleOpenCreateDialog(id) }}>
+                        <Cancel />
+                    </IconButton>
                 </Col>
             </Row>
         )
@@ -129,8 +164,7 @@ const ClientBlanceGridList = enhance((props) => {
     }
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const balance = _.get(infoDialog, 'type') === ZERO ? _.get(client, 'cashBalance') : _.get(client, 'transferBalance')
-    const paymentType = _.get(infoDialog, 'type') === ZERO ? 'Нал' : 'Переч.'
+    const paymentType = _.get(infoDialog, 'division') === DIVISION.SHAMPUN ? 'шамнунь' : 'косметика'
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
@@ -139,24 +173,31 @@ const ClientBlanceGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={clientBalanceDetail}
-                filterDialog={clientBalanceFilterDialog}
                 loading={_.get(listData, 'listLoading')}
             />
 
-            <ClientBalanceCreateDialog
+            <ClientBalanceInfoDialog
                 open={infoDialog.openInfoDialog}
                 detailData={detailData}
                 onClose={infoDialog.handleCloseInfoDialog}
                 filterItem={filterItem}
                 name={_.get(client, 'name')}
-                balance={balance}
                 paymentType={paymentType}
+            />
+            <ClientBalanceCreateDialog
+                open={createDialog.openCreateDialog}
+                listData={listData}
+                detailData={detailData}
+                loading={createDialog.createLoading}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
+                name={_.get(client, 'name')}
             />
         </Container>
     )
 })
 
-ClientBlanceGridList.propTypes = {
+ClientBalanceGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -166,14 +207,13 @@ ClientBlanceGridList.propTypes = {
         handleOpenInfoDialog: PropTypes.func.isRequired,
         handleCloseInfoDialog: PropTypes.func.isRequired
     }).isRequired,
-    filterDialog: PropTypes.shape({
-        initialValues: PropTypes.object,
-        filterLoading: PropTypes.bool,
-        openFilterDialog: PropTypes.bool.isRequired,
-        handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
+    createDialog: PropTypes.shape({
+        createLoading: PropTypes.bool.isRequired,
+        openCreateDialog: PropTypes.bool.isRequired,
+        handleOpenCreateDialog: PropTypes.func.isRequired,
+        handleCloseCreateDialog: PropTypes.func.isRequired,
+        handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default ClientBlanceGridList
+export default ClientBalanceGridList

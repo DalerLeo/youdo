@@ -164,24 +164,25 @@ const enhance = compose(
             const measurement = _.get(props, ['measurement'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
-
-            if (!_.isEmpty(product) && amount && cost) {
+            if (!_.isEmpty(_.get(product, 'value')) && amount && cost) {
                 let has = false
                 _.map(products, (item) => {
                     if (_.get(item, 'product') === product) {
-                        item.amount = numberWithoutSpaces(amount)
-                        item.cost = numberWithoutSpaces(cost)
                         has = true
                     }
                 })
-                const fields = ['amount', 'cost']
+                const fields = ['amount', 'cost', 'product']
                 for (let i = 0; i < fields.length; i++) {
                     let newChange = _.get(props, [fields[i], 'input', 'onChange'])
                     props.dispatch(newChange(null))
                 }
 
                 if (!has) {
-                    onChange(_.union(products, [{product, amount, cost, currency, measurement}]))
+                    let newArray = [{product, amount, cost, currency, measurement}]
+                    _.map(products, (obj) => {
+                        newArray.push(obj)
+                    })
+                    onChange(newArray)
                     has = false
                 }
             }
@@ -253,6 +254,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                     <Col xs={3}>
                         <Field
                             label="Тип товара"
+                            name="type"
                             component={SupplyProductTypeSearchField}
                             className={classes.searchFieldCustom}
                             fullWidth={true}
@@ -261,6 +263,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                     </Col>
                     <Col xs={3}>
                         <ProductCustomSearchField
+                            name="product"
                             label="Наименование"
                             className={classes.searchFieldCustom}
                             fullWidth={true}
@@ -271,6 +274,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                         <Field
                             component={TextField}
                             label="Кол-во"
+                            name="amount"
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                             {..._.get(defaultProps, 'amount')}
@@ -285,6 +289,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                         <Field
                             component={TextField}
                             label="Сумма за ед"
+                            name="cost"
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                             normalize={normalizeNumber}
@@ -334,7 +339,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
 
                             if (editItem === index) {
                                 return (
-                                    <TableRow className={classes.tableRow}>
+                                    <TableRow key={index} className={classes.tableRow}>
                                         <TableRowColumn>
                                             {product}
                                         </TableRowColumn>
@@ -351,7 +356,6 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                                                 label={cost}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}
-                                                normalize={normalizeNumber}
                                                 {..._.get(defaultProps, 'editCost')}
                                             />
                                         </TableRowColumn>

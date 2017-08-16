@@ -1,7 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
 import {compose} from 'recompose'
-import {hashHistory} from 'react-router'
 import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import {signInAction, authConfirmAction} from '../../actions/signIn'
@@ -33,16 +32,16 @@ const SignIn = enhance((props) => {
     const onSubmit = () => {
         return dispatch(signInAction(formValues))
             .then(() => {
-                const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
                 dispatch(getConfig())
-                hashHistory.push(redirectUrl)
-                dispatch(authConfirmAction())
+                return dispatch(authConfirmAction())
+            }).then(() => {
+                window.location.href = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
             })
     }
 
     return (
         <div className={classes.container}>
-            <SignInForm loading={loading} onSubmit={onSubmit} />
+            <SignInForm loading={loading} onSubmit={onSubmit}/>
         </div>
     )
 })

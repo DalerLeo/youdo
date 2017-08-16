@@ -23,19 +23,19 @@ const listHeader = [
         sorting: true,
         name: 'id',
         title: 'Id',
-        xs: 2
+        xs: 1
     },
     {
         sorting: true,
         name: 'name',
-        title: 'Name',
-        xs: 2
+        title: 'Наименование',
+        xs: 3
     },
     {
         sorting: true,
         name: 'currency',
         title: 'Валюта',
-        xs: 2
+        xs: 3
     },
     {
         sorting: true,
@@ -105,6 +105,7 @@ const enhance = compose(
         iconBtn: {
             display: 'flex',
             opacity: '0',
+            transition: 'all 200ms ease-out',
             justifyContent: 'flex-end'
         }
     }),
@@ -159,12 +160,12 @@ const CashboxGridList = enhance((props) => {
         const type = _.toInteger(_.get(item, 'type')) === bank ? 'банковский счет' : 'наличный'
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={2}>{name}</Col>
-                <Col xs={2}>{currency}</Col>
+                <Col xs={1}>{id}</Col>
+                <Col xs={3}>{name}</Col>
+                <Col xs={3}>{currency}</Col>
                 <Col xs={2}>{cashier}</Col>
                 <Col xs={2}>{type}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>
+                <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">
                             <IconButton

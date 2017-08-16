@@ -8,6 +8,7 @@ import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import ArrowLeftIcon from './ArrowLeftIcon'
 import ArrowRightIcon from './ArrowRightIcon'
+import * as storageHelper from '../../../helpers/storage'
 
 const enhance = compose(
     injectSheet({
@@ -57,6 +58,7 @@ const enhance = compose(
             event.preventDefault()
 
             hashHistory.push(filter.createURL({pageSize: value, page: 1}))
+            storageHelper.setPageSize(value)
         }
     })
 )
@@ -66,7 +68,6 @@ const GridListNavPagination = enhance(({classes, onChange, filter, customPaginat
     const firstPage = 1
     const startPage = (filter.getPageRange() * (filter.getCurrentPage() - firstPage)) + firstPage
     const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
-
     return (
         <div className={customPagination ? classes.customWrapper : classes.wrapper}>
             <div className={classes.count}>

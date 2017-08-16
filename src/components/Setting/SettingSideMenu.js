@@ -47,7 +47,7 @@ const SettingSideMenu = enhance((props) => {
             childs: [
                 {name: 'Пользователи', url: ROUTES.USERS_LIST_URL},
                 {name: 'Смена', url: ROUTES.SHIFT_LIST_URL},
-                {name: 'Должность', url: ROUTES.POSITION_LIST_URL}
+                {name: 'Должности', url: ROUTES.POSITION_LIST_URL}
             ]
         },
         {
@@ -73,7 +73,9 @@ const SettingSideMenu = enhance((props) => {
             childs: [
                 {name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL},
                 {name: 'Склады', url: ROUTES.STOCK_LIST_URL},
-                {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL}
+                {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL},
+                {name: 'Подразделение', url: ROUTES.DIVISION_LIST_URL}
+
             ]
         }
     ]

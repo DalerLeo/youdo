@@ -66,7 +66,7 @@ const enhance = compose(
             display: 'flex',
             margin: '0 -28px',
             padding: '0 28px 0 0',
-            minHeight: 'calc(100% - 41px)'
+            minHeight: 'calc(100% - 72px)'
         },
         listWrapper: {
             border: '1px solid #d9dde1',
@@ -196,8 +196,8 @@ const TransactionGridList = enhance((props) => {
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = _.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан'
-        const market = _.get(item, ['market', 'name'])
-        const order = _.get(item, 'order')
+        const market = _.get(item, ['clientTransaction', 'market', 'name'])
+        const order = _.get(item, ['clientTransaction', 'order'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
 
         const iconButton = (
@@ -378,6 +378,7 @@ const TransactionGridList = enhance((props) => {
                         initialValues={updateExpenseDialog.initialValues}
                         isUpdate={true}
                         isExpense={true}
+                        cashboxData={cashboxData}
                         open={updateExpenseDialog.open}
                         loading={updateExpenseDialog.loading}
                         onClose={updateExpenseDialog.handleCloseUpdateDialog}
@@ -387,6 +388,7 @@ const TransactionGridList = enhance((props) => {
                     <TransactionCreateDialog
                         initialValues={updateIncomeDialog.initialValues}
                         isUpdate={true}
+                        cashboxData={cashboxData}
                         open={updateIncomeDialog.open}
                         loading={updateIncomeDialog.loading}
                         onClose={updateIncomeDialog.handleCloseUpdateDialog}

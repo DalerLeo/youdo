@@ -1,5 +1,7 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
+import getConfig from '../helpers/getConfig'
 
 export const createSerializer = (data, expenseId) => {
     const cashboxId = _.get(data, ['cashbox', 'value'])
@@ -24,14 +26,12 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-export const itemFilterSerializer = (data, id, type) => {
+export const itemFilterSerializer = (data, id, division) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-
     return {
         'client': id,
-        // 'type': _.toNumber(type) === ZERO ? 'in' : 'out',
-        'payment_type': type,
+        'division': division,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'dPage'),
         'page_size': _.get(defaultData, 'dPageSize'),
@@ -39,3 +39,21 @@ export const itemFilterSerializer = (data, id, type) => {
     }
 }
 
+const ZERO = 0
+const MINUS_ONE = -1
+
+export const createExpenseSerializer = (data, client) => {
+    const amount = numberWithoutSpaces(_.get(data, 'amount'))
+    const newAmount = amount > ZERO ? amount * MINUS_ONE : amount
+    const comment = _.get(data, 'comment')
+    const currency = getConfig('PRIMARY_CURRENCY_ID')
+    const division = _.get(data, ['division', 'value'])
+
+    return {
+        'amount': newAmount,
+        'comment': comment,
+        client,
+        currency,
+        division
+    }
+}

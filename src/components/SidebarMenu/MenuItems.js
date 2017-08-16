@@ -63,7 +63,7 @@ const defaultMenu = [
     {
         name: 'Поставки',
         icon: (<Supply />),
-        url: ROUTES.PROVIDER_LIST_URL,
+        url: ROUTES.SUPPLY_LIST_URL,
         childs: [
             {name: 'Поставщики', url: ROUTES.PROVIDER_LIST_URL},
             {name: 'Поставки', url: ROUTES.SUPPLY_LIST_URL}
@@ -196,7 +196,7 @@ const getMenus = () => {
     if (isSuperUser) {
         return defaultMenu
     }
-    return defaultMenu
+    return menus
 }
 export const MenuItems = getMenus()
 

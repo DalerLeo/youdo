@@ -202,8 +202,6 @@ const OrderDetails = enhance((props) => {
     const status = _.toInteger(_.get(data, 'status'))
 
     const zero = 0
-    const deliveryPrice = _.toNumber(_.get(data, 'deliveryPrice'))
-    const totalPrice = _.toNumber(_.get(data, 'totalPrice'))
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const paymentType = _.get(data, 'paymentType')
     const totalBalance = _.get(data, 'totalBalance')
@@ -335,14 +333,6 @@ const OrderDetails = enhance((props) => {
                                 <li>
                                     <span>Стоимость товаров</span>
                                     <span>{numberFormat(productTotal, primaryCurrency)}</span>
-                                </li>
-                                <li>
-                                    <span>Стоимость доставки:</span>
-                                    <span>{numberFormat(deliveryPrice)} {primaryCurrency}</span>
-                                </li>
-                                <li>
-                                    <span>ИТОГО</span>
-                                    <span>{numberFormat(totalPrice, primaryCurrency)}</span>
                                 </li>
                                 <li>
                                     <span>Оплачено:</span>

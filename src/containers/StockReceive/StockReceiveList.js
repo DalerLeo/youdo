@@ -9,6 +9,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
 import moment from 'moment'
+import {change} from 'redux-form'
 import * as STOCK_TAB from '../../constants/stockReceiveTab'
 import {OrderPrint} from '../../components/Order'
 import {
@@ -309,8 +310,13 @@ const enhance = compose(
                     dispatch(stockReceiveListFetchAction(filter))
                 })
                 .catch((error) => {
-                    const comment = _.map(error, (item) => {
-                        return (<p>{_.get(item, 'amount')}</p>)
+                    const comment = _.map(error, (item, index) => {
+                        return (
+                            <div key={index}>
+                                <p>{_.get(item, 'amount') }</p>
+                                {_.get(item, 'amount or defect_amount') || <p>{_.get(item, 'amount or defect_amount')}</p>}
+                            </div>
+                        )
                     })
                     return dispatch(openErrorAction({message: comment}))
                 })
@@ -355,6 +361,12 @@ const enhance = compose(
                 pathname: sprintf(ROUTER.STOCK_RECEIVE_ITEM_PATH, id),
                 query: filter.getParams({[TYPE]: type})
             })
+        },
+        handleCheckedForm: props => (index, value, selected) => {
+            const {dispatch} = props
+            const val = !selected ? value : ''
+            const form = 'StockReceiveCreateForm'
+            dispatch(change(form, 'product[' + index + '][accepted]', val))
         }
     })
 )
@@ -547,6 +559,7 @@ const StockReceiveList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 printDialog={printDialog}
                 updateDialog={updateDialog}
+                handleCheckedForm={props.handleCheckedForm}
             />
         </Layout>
     )

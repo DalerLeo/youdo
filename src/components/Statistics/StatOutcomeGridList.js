@@ -10,7 +10,7 @@ import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import ClientSearchField from '../ReduxForm/Client/ClientSearchField'
+import {TextField, DivisionSearchField} from '../ReduxForm'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -25,7 +25,8 @@ import NotFound from '../Images/not-found.png'
 export const STAT_OUTCOME_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    USER: 'user'
+    SEARCH: 'search',
+    DIVISION: 'division'
 }
 
 const enhance = compose(
@@ -385,10 +386,17 @@ const StatOutcomeGridList = enhance((props) => {
                                         label="Диапазон дат"
                                         fullWidth={true}/>
                                     <Field
+                                        name="division"
+                                        component={DivisionSearchField}
                                         className={classes.inputFieldCustom}
-                                        name="client"
-                                        component={ClientSearchField}
-                                        label="Клиенты"
+                                        label="Подразделение"
+                                        fullWidth={true}
+                                    />
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="search"
+                                        component={TextField}
+                                        label="Поиск"
                                         fullWidth={true}/>
 
                                     <IconButton

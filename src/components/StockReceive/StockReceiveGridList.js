@@ -117,7 +117,8 @@ const StockReceiveGridList = enhance((props) => {
         classes,
         handleCloseDetail,
         confirmDialog,
-        createDialog
+        createDialog,
+        handleCheckedForm
     } = props
     const tab = _.get(tabData, 'tab')
 
@@ -145,6 +146,7 @@ const StockReceiveGridList = enhance((props) => {
                 createDialog={createDialog}
                 filterDialog={filterDialog}
                 history={false}
+                handleCheckedForm={handleCheckedForm}
 
             />}
             {TAB.STOCK_RECEIVE_TAB_TRANSFER === tab && <TabTransfer

@@ -145,21 +145,18 @@ const enhance = compose(
     withHandlers({
         handleAddBonus: props => () => {
             const bonusProduct = _.get(props, ['bonusProduct', 'input', 'value'])
-            const bonusAmount = _.get(props, ['bonusAmount', 'input', 'value'])
             const onChange = _.get(props, ['bonusProducts', 'input', 'onChange'])
             const bonusProducts = _.get(props, ['bonusProducts', 'input', 'value'])
 
-            if (!_.isEmpty(bonusProduct) && bonusAmount) {
+            if (!_.isEmpty(bonusProduct)) {
                 let has = false
                 _.map(bonusProducts, (item) => {
                     if (_.get(item, 'bonusProduct') === bonusProduct) {
-                        item.bonusAmount = _.toInteger(item.bonusAmount) + _.toInteger(bonusAmount)
-                        item.giftAmount = _.toInteger(item.giftAmount)
                         has = true
                     }
                 })
                 if (!has) {
-                    onChange(_.union(bonusProducts, [{bonusProduct, bonusAmount}]))
+                    onChange(_.union(bonusProducts, [{bonusProduct}]))
                     has = false
                 }
             }
@@ -175,7 +172,6 @@ const enhance = compose(
                 let has = false
                 _.map(giftProducts, (item) => {
                     if (_.get(item, 'giftProduct') === giftProduct) {
-                        item.giftAmount = _.toInteger(item.giftAmount) + _.toInteger(giftAmount)
                         item.giftAmount = _.toInteger(item.giftAmount)
                         has = true
                     }
@@ -288,11 +284,9 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                         <div className={classes.subTitle}>При покупке:</div>
                         {_.map(bonusProducts, (item, index) => {
                             const bonusProduct = _.get(item, ['bonusProduct', 'value', 'name'])
-                            const bonusMeasurement = _.get(item, ['bonusProduct', 'value', 'measurement', 'name'])
-                            const bonusAmount = numberFormat(_.get(item, 'bonusAmount'), bonusMeasurement)
                             return (
                                 <div key={index} className="dottedList">
-                                    <div>{bonusProduct} - {bonusAmount}</div>
+                                    <div>{bonusProduct}</div>
                                     <DeleteIcon color="#666666" onClick={() => { handleRemoveBonus(index) }}/>
                                 </div>
                             )
@@ -303,10 +297,10 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                         {_.map(giftProducts, (item, index) => {
                             const giftProduct = _.get(item, ['giftProduct', 'value', 'name'])
                             const giftMeasurement = _.get(item, ['giftProduct', 'value', 'measurement', 'name'])
-                            const giftAmount = numberFormat(_.get(item, 'giftAmount'), giftMeasurement)
+                            const giftAmount = _.get(item, 'giftAmount')
                             return (
                                 <div key={index} className="dottedList">
-                                    <div>{giftProduct} - {giftAmount}</div>
+                                    <div>{giftProduct} {(giftAmount) && <span>- {numberFormat(giftAmount, giftMeasurement)}</span>}</div>
                                     <DeleteIcon color="#666666" onClick={() => { handleRemoveGift(index) }}/>
                                 </div>
                             )

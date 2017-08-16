@@ -61,6 +61,7 @@ const enhance = compose(
             minWidth: 'auto !important',
             position: 'relative !important',
             lineHeight: 'normal !important',
+            textAlign: 'left !important',
             '&:hover': {
                 backgroundColor: 'transparent !important'
             },

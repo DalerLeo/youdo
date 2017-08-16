@@ -13,10 +13,13 @@ import getDocuments from '../../helpers/getDocument'
 
 import {StatCashboxGridList} from '../../components/Statistics'
 import {STAT_CASHBOX_FILTER_KEY} from '../../components/Statistics/StatCashboxGridList'
+import {STAT_CASHBOX_DETAIL_FILTER_KEY} from '../../components/Statistics/StatCashboxDetails'
 import {
     statCashboxListFetchAction,
-    statCashboxItemFetchAction
-} from '../../actions/statisticsCashboxt'
+    statCashboxItemFetchAction,
+    statCashBoxSumDataFetchAction,
+    statCashBoxItemDataFetchAction
+} from '../../actions/statCashbox'
 import {transactionListFetchAction} from '../../actions/transaction'
 
 const ZERO = 0
@@ -24,12 +27,16 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['cashbox', 'item', 'data'])
+        const detail = _.get(state, ['statCashbox', 'item', 'data'])
         const detailLoading = _.get(state, ['cashbox', 'item', 'loading'])
-        const list = _.get(state, ['cashbox', 'list', 'data'])
-        const listLoading = _.get(state, ['cashbox', 'list', 'loading'])
+        const list = _.get(state, ['statCashbox', 'list', 'data'])
+        const listLoading = _.get(state, ['statCashbox', 'list', 'loading'])
+        const sumData = _.get(state, ['statCashbox', 'sumData', 'data'])
+        const sumLoading = _.get(state, ['statCashbox', 'sumData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatCashboxFilterForm'])
+        const detailFilterForm = _.get(state, ['form', 'StatCashboxFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterDetail = filterHelper(detail, pathname, query)
         const transactionsList = _.get(state, ['transaction', 'list', 'data'])
         const transactionsLoading = _.get(state, ['transaction', 'list', 'loading'])
         return {
@@ -40,23 +47,29 @@ const enhance = compose(
             transactionsList,
             transactionsLoading,
             filter,
-            filterForm
+            filterForm,
+            filterDetail,
+            detailFilterForm,
+            sumData,
+            sumLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statCashboxListFetchAction(filter))
+        dispatch(statCashBoxSumDataFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
         const prevId = _.toInteger(_.get(props, ['params', 'cashboxId']))
         const nextId = _.toInteger(_.get(nextProps, ['params', 'cashboxId']))
         return prevId !== nextId && nextId > ZERO
-    }, ({dispatch, params, filter}) => {
+    }, ({dispatch, params, filterDetail}) => {
         const id = _.toInteger(_.get(params, 'cashboxId'))
         if (id > ZERO) {
             dispatch(statCashboxItemFetchAction(id))
-            dispatch(transactionListFetchAction(filter, id))
+            dispatch(transactionListFetchAction(filterDetail, id))
+            dispatch(statCashBoxItemDataFetchAction(filterDetail, id))
         }
     }),
 
@@ -66,13 +79,30 @@ const enhance = compose(
             const {filter, filterForm} = props
 
             const cashbox = _.get(filterForm, ['values', 'cashbox', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 [STAT_CASHBOX_FILTER_KEY.CASHBOX]: cashbox,
+                [STAT_CASHBOX_FILTER_KEY.DIVISION]: division,
                 [STAT_CASHBOX_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_CASHBOX_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+
+            })
+        },
+        handleSubmitDetailFilterDialog: props => (event) => {
+            event.preventDefault()
+            const {filter, filterForm} = props
+
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+
+            filter.filterBy({
+                [STAT_CASHBOX_DETAIL_FILTER_KEY.DIVISION]: division,
+                [STAT_CASHBOX_DETAIL_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [STAT_CASHBOX_DETAIL_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
         },
@@ -86,6 +116,10 @@ const enhance = compose(
             const {filter} = props
             const params = serializers.listFilterSerializer(filter.getParams())
             getDocuments(API.STAT_CASHBOX_GET_DOCUMENT, params)
+        },
+        handleGetDataItem: props => (id) => {
+            const {filter, dispatch} = props
+            dispatch(statCashBoxItemDataFetchAction(filter, id))
         }
     })
 )
@@ -101,7 +135,9 @@ const StatCashboxList = enhance((props) => {
         transactionsList,
         transactionsLoading,
         params,
-        location
+        location,
+        sumData,
+        sumLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'cashboxId'))
@@ -112,6 +148,8 @@ const StatCashboxList = enhance((props) => {
     const openDetails = detailId > ZERO
 
     const listData = {
+        sumData,
+        sumLoading,
         data: _.get(list, 'results'),
         listLoading,
         openDetails
@@ -123,7 +161,8 @@ const StatCashboxList = enhance((props) => {
         transactionData: _.get(transactionsList, 'results'),
         detailLoading,
         transactionsLoading,
-        handleCloseDetail: props.handleCloseDetail
+        handleCloseDetail: props.handleCloseDetail,
+        handleSubmitDetailFilterDialog: props.handleSubmitDetailFilterDialog
     }
     const getDocument = {
         handleGetDocument: props.handleGetDocument
@@ -147,6 +186,7 @@ const StatCashboxList = enhance((props) => {
                 getDocument={getDocument}
                 initialValues={filterForm.initialValues}
                 filterForm={filterForm}
+                getCashBoxByOne={props.handleGetDataItem}
             />
         </Layout>
     )

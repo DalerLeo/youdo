@@ -91,9 +91,9 @@ const PendingPaymentsGridList = enhance((props) => {
         updateDialog,
         filterDialog,
         listData,
-        detailData
+        detailData,
+        convert
     } = props
-
     const pendingPaymentsFilterDialog = (
         <PendingPaymentsFilterForm
             initialValues={filterDialog.initialValues}
@@ -157,6 +157,7 @@ const PendingPaymentsGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+                convert={convert}
             />
         </Container>
     )

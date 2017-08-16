@@ -5,41 +5,55 @@ import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
+import Dollar from 'material-ui/svg-icons/editor/monetization-on'
 import Delete from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import CircularProgress from 'material-ui/CircularProgress'
+import Edit from 'material-ui/svg-icons/image/edit'
 import CurrencyCreateDialog from './CurrencyCreateDialog'
 import AddCourseDialog from './AddCourseDialog'
+import HistoryListDialog from './HistoryListDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Container from '../Container'
+import Tooltip from '../ToolTip'
+import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import SettingSideMenu from '../Setting/SettingSideMenu'
-import getConfig from '../../helpers/getConfig'
 
 const listHeader = [
     {
         sorting: true,
-        name: 'name',
-        xs: 2,
+        name: 'id',
+        xs: 1,
         title: '№'
     },
     {
         sorting: true,
         name: 'name',
-        xs: 4,
-        title: 'Курс'
+        xs: 3,
+        title: 'Валюта'
     },
     {
         sorting: true,
         xs: 4,
+        name: 'rate',
+        title: 'Курс'
+    },
+    {
+        sorting: true,
+        xs: 3,
         name: 'created_date',
         title: 'Дата обновления'
+    },
+    {
+        sorting: false,
+        xs: 1,
+        name: 'actions',
+        title: ''
     }
 ]
 
@@ -54,8 +68,7 @@ const enhance = compose(
             height: '100%',
             display: 'flex',
             alignItems: 'center',
-            position: 'absolute',
-            right: '0'
+            marginLeft: '-18px'
         },
         loader: {
             width: '100%',
@@ -111,9 +124,8 @@ const enhance = compose(
                 textAlign: 'right'
             }
         },
-        rightSide: {
-            flexBasis: '75%',
-            marginLeft: '28px'
+        cursor: {
+            cursor: 'pointer'
         },
         rightTitle: {
             display: 'flex',
@@ -124,7 +136,9 @@ const enhance = compose(
             color: '#12aaeb !important'
         },
         btnAdd: {
-            color: '#8acb8d !important'
+            right: '0',
+            color: '#8acb8d !important',
+            position: 'absolute'
         },
         btnRemove: {
             color: '#e57373 !important'
@@ -147,14 +161,44 @@ const enhance = compose(
             textAlign: 'right'
         },
         rightPanel: {
+            background: '#fff',
+            flexBasis: 'calc(100% - 225px)',
+            maxWidth: 'calc(100% - 225px)',
             paddingTop: '10px',
-            flexBasis: 'calc(100% - 250px)',
-            maxWidth: 'calc(100% - 250px)',
-            overflowY: 'auto',
+            overflowY: 'hidden',
             overflowX: 'hidden'
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0',
+            transition: 'all 200ms ease-out'
+        },
+        listRow: {
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            }
+        },
+        listRowDisabled: {
+            extend: 'listRow',
+            color: '#b8b8b8 !important'
         }
     })
 )
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 30,
+        height: 25,
+        padding: 0
+    }
+}
 const MINUS_ONE = -1
 
 const CurrencyGridList = enhance((props) => {
@@ -182,61 +226,84 @@ const CurrencyGridList = enhance((props) => {
             </IconButton>
         </div>
     )
-
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
+    const reversedRate = !getConfig('REVERSED_CURRENCY_RATE')
+    const currency = _.get(_.find(_.get(listData, 'data'), (o) => {
+        return o.id === _.toInteger(_.get(detailData, 'id'))
+    }), 'name')
     const currencyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const rate = numberFormat(_.get(item, 'rate'))
-        const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const createdDate = moment(_.get(_.find(_.get(detailData, ['data', 'results']), {'currency': id}), 'createdDate')).format('DD.MM.YYYY')
-        const isActive = _.get(detailData, 'id') === id
-
         if (name !== currentCurrency) {
             return (
-                <div key={id} className={classes.list}
-                     style={isActive ? {backgroundColor: '#ffffff', display: 'relative'}
-                         : {backgroundColor: '#f2f5f8', display: 'relative'}}
-                     onClick={() => {
-                         listData.handleCurrencyClick(id)
-                     }}>
-                    <div className={classes.title}>{name}</div>
-                    <div className={classes.balance}>
-                        <div>Курс: {rate}</div>
-                        <div>{createdDate}</div>
-                    </div>
-                </div>
+                <Row key={id} className={classes.listRow}>
+                    <Col xs={1}>{id}</Col>
+                    <Col xs={3} className={classes.cursor} onClick={() => { listData.handleCurrencyClick(id) }}>{name}</Col>
+                    <Col xs={4}>1 {reversedRate ? name : currentCurrency} = {rate} {reversedRate ? currentCurrency : name}</Col>
+                    <Col xs={3}>{createdDate}</Col>
+                    <Col xs={1} style={{textAlign: 'right'}}>
+                        <div className={classes.iconBtn}>
+                            <Tooltip position="bottom" onClick={courseDialog.handleOpenCourseDialog} text="Установить курс">
+                                <IconButton
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    disableTouchRipple={true}
+                                    touch={true}
+                                    onTouchTap={() => { courseDialog.handleOpenCourseDialog(id) }}>
+                                    <Dollar/>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip position="bottom" text="Изменить">
+                                <IconButton
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    disableTouchRipple={true}
+                                    touch={true}
+                                    onTouchTap={() => {
+                                        updateDialog.handleOpenUpdateDialog(id)
+                                    }}>
+                                    <Edit/>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip position="bottom" text="Удалить">
+                                <IconButton
+                                    disableTouchRipple={true}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    onTouchTap={() => {
+                                        confirmDialog.handleOpenConfirmDialog(id)
+                                    }}
+                                    touch={true}>
+                                    <Delete/>
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                    </Col>
+                </Row>
             )
         }
-        return false
-    })
-    const currency = _.get(_.find(_.get(listData, 'data'), (o) => {
-        return o.id === _.toInteger(_.get(detailData, 'id'))
-    }), 'name')
 
-    const currentCurrency = getConfig('PRIMARY_CURRENCY')
-    const reversedRate = getConfig('REVERSED_CURRENCY_RATE')
-    const historyList = _.map(_.get(detailData, ['data', 'results']), (item) => {
-        const id = _.get(item, 'id')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const rate = numberFormat(_.get(item, 'rate')) || 'N/A'
         return (
-            <Row key={id}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={4}>1 {reversedRate ? currency : currentCurrency} = {rate} {reversedRate ? currentCurrency : currency}</Col>
-                <Col xs={4}>{createdDate}</Col>
+            <Row key={id} className={classes.listRowDisabled}>
+                <Col xs={1}>{id}</Col>
+                <Col xs={3}>{name}</Col>
+                <Col xs={4}>1 {reversedRate ? name : currentCurrency} = {rate} {reversedRate ? currentCurrency : name}</Col>
+                <Col xs={3}>{createdDate}</Col>
             </Row>
         )
     })
 
     const list = {
         header: listHeader,
-        list: historyList,
-        loading: _.get(detailData, 'detailLoading')
+        list: currencyList,
+        loading: _.get(listData, 'listLoading')
     }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
     const confirmMessage = 'Валюта: ' + _.get(currentDetail, 'name')
     const listLoading = _.get(listData, 'listLoading')
-    const detail = <div>a</div>
+    const detail = <span></span>
 
     const addButton = (
         <div className={classes.addButtonWrapper}>
@@ -256,86 +323,67 @@ const CurrencyGridList = enhance((props) => {
             <div className={classes.wrapper}>
                 <SettingSideMenu currentUrl={ROUTES.CURRENCY_LIST_URL}/>
                 <div className={classes.rightPanel}>
-                    <Paper zDepth={1}>
+                    <div>
                         <div className={classes.editContent}>
                             <div className={classes.semibold}>Основная валюта: <b>&nbsp;{currentCurrency}</b><i
                                 style={{fontWeight: '400', color: '#999'}}>
                                 &nbsp;(используется при формировании стоимости продукта / заказа)</i>
-                                {addButton}
                             </div>
-                        </div>
-                    </Paper>
-                    <div className={classes.wrap}>
-                        <div className={classes.leftSide}>
-                            <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
-                                <div>Валюты</div>
-                            </div>
-                            <Paper zDepth={1} style={{height: 'calc(100% - 18px)'}}>
-                                {listLoading
-                                    ? <div className={classes.loader}>
-                                        <CircularProgress size={40} thickness={4}/>
-                                    </div>
-                                    : <div className={classes.listWrapper}>
-                                        {currencyList}
-                                    </div>
-                                }
-                            </Paper>
-                        </div>
-                        <div className={classes.rightSide}>
-                            <div className={classes.rightTitle}>
-                                <div className={classes.outerTitle}>История</div>
-                                <div className={classes.outerTitle}>
-                                    <div className={classes.buttons}>
-                                        <a onClick={confirmDialog.handleOpenConfirmDialog}
-                                           className={classes.btnRemove}>Удалить валюту</a>
-                                        <a onClick={updateDialog.handleOpenUpdateDialog} className={classes.btnSend}>Изменить
-                                            валюту</a>
-                                        <a onClick={courseDialog.handleOpenCourseDialog} className={classes.btnAdd}>Установить
-                                            курс</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <GridList
-                                filter={detailFilter}
-                                list={list}
-                                detail={detail}
-                                actionsDialog={actions}
-                            />
-
-                            <CurrencyCreateDialog
-                                initialValues={createDialog.initialValues}
-                                open={createDialog.openCreateDialog}
-                                loading={createDialog.createLoading}
-                                onClose={createDialog.handleCloseCreateDialog}
-                                onSubmit={createDialog.handleSubmitCreateDialog}
-                            />
-
-                            <CurrencyCreateDialog
-                                isUpdate={true}
-                                initialValues={updateDialog.initialValues}
-                                open={updateDialog.openUpdateDialog}
-                                loading={updateDialog.updateLoading}
-                                onClose={updateDialog.handleCloseUpdateDialog}
-                                onSubmit={updateDialog.handleSubmitUpdateDialog}
-                            />
-
-                            <AddCourseDialog
-                                initialValues={courseDialog.initialValues}
-                                open={courseDialog.openCourseDialog}
-                                onClose={courseDialog.handleCloseCourseDialog}
-                                onSubmit={courseDialog.handleSubmitCourseDialog}
-                            />
-
-                            {detailId !== MINUS_ONE && <ConfirmDialog
-                                type="delete"
-                                message={confirmMessage}
-                                onClose={confirmDialog.handleCloseConfirmDialog}
-                                onSubmit={confirmDialog.handleSendConfirmDialog}
-                                open={confirmDialog.openConfirmDialog}
-                            />}
                         </div>
                     </div>
+                    <div>
+                        <GridList
+                            filter={detailFilter}
+                            list={list}
+                            actionsDialog={actions}
+                            loading={listLoading}
+                            addButton={addButton}
+                            detail={detail}
+                            listShadow={false}
+                        />
+                    </div>
                 </div>
+
+                <CurrencyCreateDialog
+                    initialValues={createDialog.initialValues}
+                    open={createDialog.openCreateDialog}
+                    loading={createDialog.createLoading}
+                    onClose={createDialog.handleCloseCreateDialog}
+                    onSubmit={createDialog.handleSubmitCreateDialog}
+                />
+
+                <HistoryListDialog
+                    open={_.get(detailData, 'open')}
+                    filter={detailFilter}
+                    currency={currency}
+                    data={detailData}
+                    onClose={detailData.handleClose}
+                    listData={listData}
+                    loading={listLoading}/>
+
+                <CurrencyCreateDialog
+                    isUpdate={true}
+                    initialValues={updateDialog.initialValues}
+                    open={updateDialog.openUpdateDialog}
+                    loading={updateDialog.updateLoading}
+                    onClose={updateDialog.handleCloseUpdateDialog}
+                    onSubmit={updateDialog.handleSubmitUpdateDialog}
+                />
+
+                <AddCourseDialog
+                    initialValues={courseDialog.initialValues}
+                    open={courseDialog.openCourseDialog}
+                    onClose={courseDialog.handleCloseCourseDialog}
+                    onSubmit={courseDialog.handleSubmitCourseDialog}
+                />
+
+                {detailId !== MINUS_ONE && <ConfirmDialog
+                    type="delete"
+                    message={confirmMessage}
+                    onClose={confirmDialog.handleCloseConfirmDialog}
+                    onSubmit={confirmDialog.handleSendConfirmDialog}
+                    open={confirmDialog.openConfirmDialog}
+                />}
             </div>
         </Container>
     )

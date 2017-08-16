@@ -1,18 +1,20 @@
 import React from 'react'
+import sprintf from 'sprintf'
 import _ from 'lodash'
 import {reset} from 'redux-form'
-import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
+import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
     CURRENCY_CREATE_DIALOG_OPEN,
     CURRENCY_UPDATE_DIALOG_OPEN,
+    CURRENCY_DELETE_DIALOG_OPEN,
     ADD_COURSE_DIALOG_OPEN,
+    HISTORY_LIST_DIALOG,
     CurrencyGridList
 } from '../../components/Currency'
 import {
@@ -25,7 +27,6 @@ import {
 } from '../../actions/currency'
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -79,20 +80,20 @@ const enhance = compose(
             return null
         },
 
-        handleOpenConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(true)
+        handleOpenConfirmDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id), query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: true})})
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(false)
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: false})})
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detailId, filter, setOpenConfirmDialog} = props
+            const {dispatch, detailId, filter, location: {pathname}} = props
             dispatch(currencyDeleteAction(_.toNumber(detailId)))
                 .then(() => {
-                    setOpenConfirmDialog(false)
+                    hashHistory.push({pathname, query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: false})})
                     dispatch(currencyListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
@@ -114,9 +115,9 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
-        handleOpenCourseDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: true})})
+        handleOpenCourseDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id), query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: true})})
         },
 
         handleCloseCourseDialog: props => () => {
@@ -162,20 +163,14 @@ const enhance = compose(
         },
 
         handleOpenUpdateDialog: props => (id) => {
-            const {dispatch, filter, location: {pathname}} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({[CURRENCY_UPDATE_DIALOG_OPEN]: true})
-            })
+            const {dispatch, filter} = props
+            hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, id), query: filter.getParams({[CURRENCY_UPDATE_DIALOG_OPEN]: true})})
             dispatch(currencyItemFetchAction(id))
         },
 
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({[CURRENCY_UPDATE_DIALOG_OPEN]: false})
-            })
+            hashHistory.push({pathname, query: filter.getParams({[CURRENCY_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
@@ -193,7 +188,12 @@ const enhance = compose(
 
         handleCurrencyClick: props => (id) => {
             const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, _.toNumber(id)), query: filter.getParams()})
+            hashHistory.push({pathname: sprintf(ROUTER.CURRENCY_ITEM_PATH, _.toNumber(id)), query: filter.getParams({[HISTORY_LIST_DIALOG]: true})})
+        },
+
+        handleCloseDetailPopover: props => () => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[HISTORY_LIST_DIALOG]: false})})
         }
     })
 )
@@ -207,7 +207,6 @@ const CurrencyList = enhance((props) => {
         detailLoading,
         createLoading,
         updateLoading,
-        openConfirmDialog,
         filter,
         layout,
         params,
@@ -215,14 +214,11 @@ const CurrencyList = enhance((props) => {
         detailFilter
     } = props
 
+    const openDeleteDialog = toBoolean(_.get(location, ['query', CURRENCY_DELETE_DIALOG_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', CURRENCY_CREATE_DIALOG_OPEN]))
     const openCourseDialog = toBoolean(_.get(location, ['query', ADD_COURSE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CURRENCY_UPDATE_DIALOG_OPEN]))
-
-    if (_.get(list, ['results']) && !_.get(params, 'currencyId')) {
-        const currencyMiniId = _.get(_.nth(_.get(list, ['results']), ZERO), 'id')
-        props.handleCurrencyClick(currencyMiniId)
-    }
+    const openHistoryListDialog = toBoolean(_.get(location, ['query', HISTORY_LIST_DIALOG]))
 
     const currencyDetailId = _.toInteger(_.get(params, 'currencyId'))
 
@@ -252,7 +248,7 @@ const CurrencyList = enhance((props) => {
     }
 
     const confirmDialog = {
-        openConfirmDialog: openConfirmDialog,
+        openConfirmDialog: openDeleteDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
@@ -286,7 +282,9 @@ const CurrencyList = enhance((props) => {
     const detailData = {
         id: currencyDetailId,
         data: detail,
-        detailLoading
+        detailLoading,
+        open: openHistoryListDialog,
+        handleClose: props.handleCloseDetailPopover
     }
 
     return (

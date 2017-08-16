@@ -9,6 +9,7 @@ import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../ReduxForm'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
+import DivisionSearchField from '../ReduxForm/DivisionSearchField'
 import ZoneSearchField from '../ReduxForm/ZoneSearchField'
 import StatProductMoveDialog from './StatProductMoveDialog'
 import StatSideMenu from './StatSideMenu'
@@ -25,7 +26,8 @@ export const STAT_PRODUCT_MOVE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     ZONE: 'zone',
-    SEARCH: 'search'
+    SEARCH: 'search',
+    DIVISION: 'division'
 }
 
 const enhance = compose(
@@ -478,6 +480,13 @@ const StatProductMoveGridList = enhance((props) => {
                                         component={ZoneSearchField}
                                         label="Зона"
                                         fullWidth={true}/>
+                                    <Field
+                                        name="division"
+                                        component={DivisionSearchField}
+                                        className={classes.inputFieldCustom}
+                                        label="Подразделение"
+                                        fullWidth={true}
+                                    />
                                     <Field
                                         className={classes.inputFieldCustom}
                                         name="search"

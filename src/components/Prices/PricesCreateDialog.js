@@ -219,7 +219,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'promotionType']) || 'discount'
+        const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'promotionType']) || 'bonus'
         return {
             type
         }
@@ -305,12 +305,12 @@ const PricesCreateDialog = enhance((props) => {
                                             hintText="10%"
                                         />
                                         : <Field
-                                                name="amount"
-                                                component={TextField}
-                                                className={classes.inputFieldCustom}
-                                                fullWidth={true}
-                                                label="Кол-во"
-                                            />}
+                                            name="amount"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}
+                                            label="Кол-во"
+                                        />}
                                     </div>
                                 </div>
                             </div>

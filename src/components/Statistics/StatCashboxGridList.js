@@ -8,7 +8,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import {CashboxSearchField} from '../ReduxForm'
+import {CashboxSearchField, DivisionSearchField} from '../ReduxForm'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
@@ -22,9 +22,11 @@ import ReactHighcharts from 'react-highcharts'
 import numberFormat from '../../helpers/numberFormat.js'
 import NotFound from '../Images/not-found.png'
 import CashboxDetails from './StatCashboxDetails'
+import getConfig from '../../helpers/getConfig'
 
 export const STAT_CASHBOX_FILTER_KEY = {
     CASHBOX: 'cashbox',
+    DIVISION: 'division',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
@@ -241,12 +243,17 @@ const StatCashboxGridList = enhance((props) => {
         listData,
         detailData,
         classes,
-        handleSubmitFilterDialog,
-        getDocument
+        getDocument,
+        handleSubmitFilterDialog
     } = props
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     const listLoading = _.get(listData, 'listLoading')
     const openDetails = _.get(listData, 'openDetails')
+    const startBalance = _.get(listData, 'startBalance')
+    const endBalance = _.get(listData, 'endBalance')
+    const income = _.get(listData, 'income')
+    const expense = _.get(listData, 'expense')
 
     const iconStyle = {
         icon: {
@@ -417,6 +424,13 @@ const StatCashboxGridList = enhance((props) => {
                                         label="Диапазон дат"
                                         fullWidth={true}/>
                                     <Field
+                                        name="division"
+                                        component={DivisionSearchField}
+                                        className={classes.inputFieldCustom}
+                                        label="Подразделение"
+                                        fullWidth={true}
+                                    />
+                                    <Field
                                         className={classes.inputFieldCustom}
                                         name="cashbox"
                                         component={CashboxSearchField}
@@ -438,19 +452,19 @@ const StatCashboxGridList = enhance((props) => {
                             <div className={classes.balances}>
                                 <div className={classes.balanceItem}>
                                     <span>Баланс на начало периода</span>
-                                    <div>10 000 000 UZS</div>
+                                    <div>{numberFormat(startBalance, primaryCurrency)}</div>
                                 </div>
                                 <div className={classes.balanceItem}>
                                     <span>Расход за период</span>
-                                    <div>-5 000 000 UZS</div>
+                                    <div>{numberFormat(expense, primaryCurrency)}</div>
                                 </div>
                                 <div className={classes.balanceItem}>
                                     <span>Доход за период</span>
-                                    <div>25 000 000 UZS</div>
+                                    <div>{numberFormat(income, primaryCurrency)}</div>
                                 </div>
                                 <div className={classes.balanceItem}>
                                     <span>Баланс на конец периода</span>
-                                    <div>30 000 000 UZS</div>
+                                    <div>{numberFormat(endBalance, primaryCurrency)}</div>
                                 </div>
                             </div>
                             {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
@@ -465,7 +479,7 @@ const StatCashboxGridList = enhance((props) => {
                         filter={filter}
                         detailData={detailData}
                         listData={listData}
-                        handleSubmitFilterDialog={handleSubmitFilterDialog}
+                        handleSubmitFilterDialog={_.get(detailData, 'handleSubmitDetailFilterDialog')}
                         getDocument={getDocument}
                     />}
                 </div>

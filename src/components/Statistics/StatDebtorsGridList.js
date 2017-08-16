@@ -8,7 +8,7 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import TextField from '../ReduxForm/Basic/TextField'
+import {TextField, DivisionSearchField} from '../ReduxForm'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
@@ -22,9 +22,8 @@ import getConfig from '../../helpers/getConfig'
 import StatSaleDialog from './StatSaleDialog'
 
 export const STAT_DEBTORS_FILTER_KEY = {
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate',
-    USER: 'user'
+    DIVISION: 'division',
+    SEARCH: 'search'
 }
 
 const ZERO = 0
@@ -142,6 +141,9 @@ const enhance = compose(
             display: 'block !important',
             borderTop: '1px #efefef solid',
             '& .dottedList': {
+                '& > div': {
+                    padding: '0 5px'
+                },
                 '& > div:nth-child(2)': {
                     justifyContent: 'flex-start'
                 },
@@ -276,35 +278,36 @@ const StatDebtorsGridList = enhance((props) => {
     }
 
     const listLoading = _.get(listData, 'listLoading')
-
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const headers = (
         <Row className={classes.headers}>
             <Col xs={5}>Клиент</Col>
-            <Col xs={3}>Просроченные (UZS)</Col>
-            <Col xs={3}>Ожидаемые (UZS)</Col>
+            <Col xs={3}>Просроченные ({primaryCurrency})</Col>
+            <Col xs={3}>Ожидаемые ({primaryCurrency})</Col>
         </Row>
     )
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+
     const detailList = _.map(_.get(detailData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const createdDate = moment(_.get(item, 'createdDate')).format(('DD.MM.YYYY'))
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
         const totalBalance = numberFormat(_.get(item, 'totalBalance'), primaryCurrency)
+        const paymentType = _.get(item, 'paymentType')
         const totalExpected = numberFormat(_.toInteger(_.get(item, 'totalPrice')) - _.toInteger(_.get(item, 'totalBalance')), primaryCurrency)
-
         return (
             <Row key={id} className="dottedList">
-                <Col xs={2}>{id}</Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={2}>{totalPrice}</Col>
-                <Col xs={2}>{totalBalance}</Col>
-                <Col xs={2}>{totalExpected}</Col>
-                <Col xs={1} style={{paddingRight: '0'}}>
+                <div style={{flexBasis: '9%', maxWidth: '9%'}}>{id}</div>
+                <div style={{flexBasis: '21%', maxWidth: '21%'}}>{createdDate}</div>
+                <div style={{flexBasis: '14%', maxWidth: '14%'}}>{(paymentType === '0') ? 'Нал.' : 'Переч.'}</div>
+                <div style={{flexBasis: '19%', maxWidth: '19%'}}>{totalPrice}</div>
+                <div style={{flexBasis: '15%', maxWidth: '15%'}}>{totalBalance}</div>
+                <div style={{flexBasis: '15%', maxWidth: '15%'}}>{totalExpected}</div>
+                <div style={{flexBasis: '7%', maxWidth: '7%', paddingRight: '0'}}>
                     <IconButton
                         onTouchTap={() => { statDebtorsDialog.handleOpenStatDebtorsDialog(id) }}>
                         <List color="#12aaeb"/>
                     </IconButton>
-                </Col>
+                </div>
             </Row>
         )
     })
@@ -332,11 +335,14 @@ const StatDebtorsGridList = enhance((props) => {
                     </Row>
                     <div className={classes.detail}>
                         <Row className="dottedList">
-                            <Col xs={2}>№ заказа</Col>
-                            <Col xs={3}>Ожидаемая дата платежа</Col>
-                            <Col xs={2}>Сумма заказа (UZS)</Col>
-                            <Col xs={2}>Оплачено (UZS)</Col>
-                            <Col xs={2}>Долг (UZS)</Col>
+                            <div style={{flexBasis: '9%', maxWidth: '9%'}}>№ заказа</div>
+                            <div style={{flexBasis: '21%', maxWidth: '21%'}}>Ожидаемая дата платежа</div>
+                            <div style={{flexBasis: '14%', maxWidth: '14%'}}>Тип оплаты</div>
+                            <div style={{flexBasis: '19%', maxWidth: '19%'}}>Сумма заказа ({primaryCurrency})</div>
+                            <div style={{flexBasis: '15%', maxWidth: '15%'}}>Оплачено ({primaryCurrency})</div>
+                            <div style={{flexBasis: '15%', maxWidth: '15%'}}>Долг ({primaryCurrency})</div>
+                            <div style={{flexBasis: '7%', maxWidth: '7%', paddingRight: '0'}}>
+                            </div>
                         </Row>
                         {_.get(detailData, 'detailLoading')
                             ? <div style={{textAlign: 'center'}}>
@@ -379,6 +385,13 @@ const StatDebtorsGridList = enhance((props) => {
                     : <div className={classes.wrapper}>
                         <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
                             <div className={classes.filter}>
+                                <Field
+                                    name="division"
+                                    component={DivisionSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Подразделение"
+                                    fullWidth={true}
+                                />
                                 <Field
                                     className={classes.inputFieldCustom}
                                     name="search"

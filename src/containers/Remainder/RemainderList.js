@@ -99,7 +99,8 @@ const enhance = compose(
             })
         },
         handleOpenTransferDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
+            dispatch(reset('RemainderTransferForm'))
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: true})})
         },
         handleCloseTransferDialog: props => () => {
@@ -117,21 +118,24 @@ const enhance = compose(
                     dispatch(remainderListFetchAction(filter))
                 })
                 .catch((error) => {
-                    const amountError = _.map(error, (item) => {
-                        const amount = _.get(item, ['non_field_errors', '0'])
-                        if (amount) {
-                            return (
-                                <div style={{marginTop: '10px'}}>{amount}</div>)
-                        }
-                        return null
-                    })
+                    const fromStock = _.get(error, ['from_stock', '0']) ? 'Выберите склад' : ''
+                    const toStock = _.get(error, ['to_stock', '0']) ? 'Выберите склад для отправки' : ''
+                    const err1 = _.get(error, ['non_field_errors']) || ''
+                    const err2 = (
+                                    <div>
+                                        <div>{fromStock}</div>
+                                        <div>{toStock}</div>
+                                        <div>{err1}</div>
+                                    </div>
+                                )
                     dispatch(openErrorAction({
-                        message: <div>{amountError}</div>
+                        message: <div>{err2}</div>
                     }))
                 })
         },
         handleOpenDiscardDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
+            dispatch(reset('RemainderDiscardForm'))
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: true})})
         },
         handleCloseDiscardDialog: props => () => {
@@ -147,6 +151,16 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: false})})
                     dispatch(remainderListFetchAction(filter))
+                })
+                .catch((error) => {
+                    const amountError = _.get(error, ['products', '0'])
+                    let errorText = 'Заполните все поля!'
+                    if (amountError) {
+                        errorText = 'Недостаточно товаров на складе'
+                    }
+                    dispatch(openErrorAction({
+                        message: <div>{errorText}</div>
+                    }))
                 })
         },
         handleResetFilter: props => () => {

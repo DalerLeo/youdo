@@ -449,8 +449,15 @@ const TransactionList = enhance((props) => {
         handleSubmitDialog: props.handleSubmitCreateSendDialog
     }
 
+    const MINUS_ONE = -1
     const updateExpenseDialog = {
         initialValues: (() => {
+            const client = _.get(detail, ['clientTransaction', 'client', 'id'])
+            const showClients = _.toInteger(client || ZERO) > ZERO
+            let amount = _.toNumber(_.get(detail, 'amount'))
+            if (amount < ZERO) {
+                amount *= MINUS_ONE
+            }
             if (!detailId || openCreateExpenseDialog) {
                 return {}
             }
@@ -460,7 +467,10 @@ const TransactionList = enhance((props) => {
                     value: _.get(detail, ['expanseCategory', 'id']),
                     text: _.get(detail, ['expanseCategory', 'name'])
                 },
-                amount: _.get(detail, 'amount')
+                amount: amount,
+                custom_rate: _.get(detail, ['clientTransaction', 'customRate']),
+                division: {value: _.get(detail, ['clientTransaction', 'division', 'id'])},
+                showClients: showClients
             }
         })(),
         loading: updateLoading,
@@ -472,13 +482,28 @@ const TransactionList = enhance((props) => {
 
     const updateIncomeDialog = {
         initialValues: (() => {
+            let amount = _.toNumber(_.get(detail, 'amount'))
+            if (amount < ZERO) {
+                amount *= MINUS_ONE
+            }
+            const client = _.get(detail, ['clientTransaction', 'client', 'id'])
+            const showIncomeClients = _.toInteger(client || ZERO) > ZERO
             if (!detailId || openCreateIncomeDialog) {
                 return {}
             }
 
             return {
                 comment: _.get(detail, 'comment'),
-                amount: _.get(detail, 'amount')
+                amount: amount,
+                client: {value: client},
+                showClients: showIncomeClients,
+                expanseCategory: {
+                    value: _.get(detail, ['expanseCategory', 'id']),
+                    text: _.get(detail, ['expanseCategory', 'name'])
+                },
+                custom_rate: _.get(detail, ['clientTransaction', 'customRate']),
+                division: {value: _.get(detail, ['clientTransaction', 'division', 'id'])},
+                showIncomeClients: showIncomeClients
             }
         })(),
         loading: updateLoading,
