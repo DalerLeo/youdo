@@ -11,6 +11,7 @@ import dateFormat from '../../helpers/dateFormat'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import dealTypeFormat from '../../helpers/dealTypeFormat'
 import getConfig from '../../helpers/getConfig'
+import toBoolean from '../../helpers/toBoolean'
 
 const ONE = 1
 const enhance = compose(
@@ -117,7 +118,18 @@ const enhance = compose(
                 border: 'none!important'
             }
 
+        },
+        sign: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginTop: '20px',
+            '& span': {
+                borderBottom: 'solid 1px',
+                width: '100px',
+                marginLeft: '20px'
+            }
         }
+
     })
 )
 
@@ -156,7 +168,7 @@ const OrderPrint = enhance((props) => {
                 return (
                     <div key={id} className="printItem">
                         <div className={classes.title}>
-                            <span>Заказ № {id}</span>
+                            <span>{toBoolean(getConfig('DIVISIONS')) && 'Kerasys'} Заказ № {id}</span>
                             <div>Добавлено: {createdDate}</div>
                         </div>
                         <div className={classes.info}>
@@ -234,6 +246,7 @@ const OrderPrint = enhance((props) => {
                                 <Col xs={2}>Итого: {numberFormat(totalPrice)}</Col>
                             </Row>
                         </div>
+                        <div className={classes.sign}>Подпись клиента:<span> </span></div>
 
                     </div>
                 )
