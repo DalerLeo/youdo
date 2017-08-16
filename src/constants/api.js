@@ -88,7 +88,7 @@ export const TRANSACTION_SEND = 'finance/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 
 export const CLIENT_TRANSACTION = 'sales/client_transaction'
-export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
+export const CLIENT_TRANSACTION_CREATE = 'sales/order_return/from_client/'
 export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
 export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
 export const CLIENT_TRANSACTION_SEND = '/transfer/'

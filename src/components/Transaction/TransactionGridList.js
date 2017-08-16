@@ -26,39 +26,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
-const listHeader = [
-    {
-        sorting: true,
-        name: 'id',
-        title: 'Id',
-        xs: 1
-    },
-    {
-        sorting: true,
-        name: 'client',
-        title: 'Клиент',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'comment',
-        title: 'Описание',
-        xs: 4
-    },
-    {
-        sorting: true,
-        name: 'date',
-        title: 'Дата',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'amount',
-        alignRight: true,
-        title: 'Сумма',
-        xs: 2
-    }
-]
+import toBoolean from '../../helpers/toBoolean'
 
 const enhance = compose(
     injectSheet({
@@ -154,6 +122,7 @@ const enhance = compose(
     }),
 )
 
+const ZERO = 0
 const TransactionGridList = enhance((props) => {
     const {
         filter,
@@ -185,6 +154,48 @@ const TransactionGridList = enhance((props) => {
     const transactionDetail = (
         <span>a</span>
     )
+    const AllCashboxId = 0
+    const selectedCashbox = _.find(_.get(cashboxData, 'data'),
+        (o) => {
+            return _.toInteger(o.id) === _.toInteger(_.get(cashboxData, 'cashboxId'))
+        })
+    const cashboxName = _.get(cashboxData, 'cashboxId') === AllCashboxId ? 'Общий объем' : _.get(selectedCashbox, 'name')
+    const currentCashbox = _.get(cashboxData, 'cashboxId')
+    const showCashbox = !toBoolean(currentCashbox && currentCashbox !== ZERO)
+
+    const listHeader = [
+        {
+            sorting: true,
+            name: 'id',
+            title: 'Id',
+            xs: 1
+        },
+        {
+            sorting: true,
+            name: 'client',
+            title: showCashbox ? 'Касса' : 'Клиент',
+            xs: 2
+        },
+        {
+            sorting: true,
+            name: 'comment',
+            title: 'Описание',
+            xs: 4
+        },
+        {
+            sorting: true,
+            name: 'date',
+            title: 'Дата',
+            xs: 2
+        },
+        {
+            sorting: true,
+            name: 'amount',
+            alignRight: true,
+            title: 'Сумма',
+            xs: 2
+        }
+    ]
 
     const transactionList = _.map(_.get(listData, 'data'), (item) => {
         const zero = 0
@@ -195,7 +206,8 @@ const TransactionGridList = enhance((props) => {
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
-        const client = _.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан'
+        const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name')
+            : (_.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан')
         const market = _.get(item, ['clientTransaction', 'market', 'name'])
         const order = _.get(item, ['clientTransaction', 'order'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
@@ -208,7 +220,10 @@ const TransactionGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={2}>{client}</Col>
+                <Col xs={2}>
+                    {client}
+                    {showCashbox ? <div><span className={classes.label}>Клиент: </span> {_.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан'}</div> : null}
+                </Col>
                 <Col xs={4}>
                     {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : null}
                     {market ? <div><span className={classes.label}>Магазин : </span> {market}</div> : null}
@@ -287,12 +302,6 @@ const TransactionGridList = enhance((props) => {
         list: transactionList,
         loading: _.get(listData, 'listLoading')
     }
-    const AllCashboxId = 0
-    const selectedCashbox = _.find(_.get(cashboxData, 'data'),
-        (o) => {
-            return _.toInteger(o.id) === _.toInteger(_.get(cashboxData, 'cashboxId'))
-        })
-    const cashboxName = _.get(cashboxData, 'cashboxId') === AllCashboxId ? 'Общий объем' : _.get(selectedCashbox, 'name')
     return (
         <Container>
             <SubMenu url={ROUTES.TRANSACTION_LIST_URL}/>
