@@ -39,21 +39,18 @@ const listHeader = [
     },
     {
         sorting: true,
-        alignRight: true,
         name: 'orders',
         title: 'Кол-во заказов',
         xs: 2
     },
     {
         sorting: true,
-        alignRight: true,
         name: 'cosmetics_balance',
         title: 'Баланс косметика',
         xs: 2
     },
     {
         sorting: true,
-        alignRight: true,
         name: 'shampoo_balance',
         title: 'Баланс шампунь',
         xs: 2
@@ -92,6 +89,11 @@ const enhance = compose(
         green: {
             color: '#92ce95',
             cursor: 'pointer'
+        },
+        balance: {
+            '& span': {
+                cursor: 'pointer'
+            }
         }
     })
 )
@@ -134,15 +136,13 @@ const ClientBalanceGridList = enhance((props) => {
                 <Col xs={3}>{clientName}</Col>
 
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={2} className={classes.rightAlign}>{orders}</Col>
-                <Col xs={2}
-                     className={classes.rightAlign}>
+                <Col xs={2}>{orders}</Col>
+                <Col xs={2} className={classes.balance}>
                     <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA) }}>
                         {numberFormat(cosmeticsBalance, currentCurrency)}
                     </span>
                 </Col>
-                <Col xs={2}
-                     className={classes.rightAlign}>
+                <Col xs={2} className={classes.balance}>
                     <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN) }}>
                         {numberFormat(shampooBalance, currentCurrency)}
                     </span>
@@ -180,6 +180,8 @@ const ClientBalanceGridList = enhance((props) => {
     }
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
+    const balance = _.get(infoDialog, 'division') === DIVISION.SHAMPUN ? _.get(client, 'shampooBalance')
+                                                                            : _.get(client, 'cosmeticsBalance')
     const paymentType = _.get(infoDialog, 'division') === DIVISION.SHAMPUN ? 'шамнунь' : 'косметика'
     return (
         <Container>
@@ -199,6 +201,7 @@ const ClientBalanceGridList = enhance((props) => {
                 filterItem={filterItem}
                 name={_.get(client, 'name')}
                 paymentType={paymentType}
+                balance={balance}
             />
             <ClientBalanceCreateDialog
                 open={createDialog.openCreateDialog}
