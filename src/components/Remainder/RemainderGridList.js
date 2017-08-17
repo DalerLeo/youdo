@@ -244,16 +244,21 @@ const headerItems = [
         name: 'productType',
         sorting: true,
         title: 'Тип товара',
-        xs: 3
+        xs: 2
     },
     {
         sorting: false,
         title: 'Всего товаров',
-        xs: 3
+        xs: 2
     },
     {
         sorting: false,
         title: 'Бракованные товары',
+        xs: 2
+    },
+    {
+        sorting: false,
+        title: 'Забронированый',
         xs: 2
     }
 ]
@@ -328,6 +333,7 @@ const RemainderGridList = enhance((props) => {
                 const product = _.get(item, 'title')
                 const balance = Number(_.get(item, 'balance')) + Number(_.get(item, 'defects'))
                 const defects = _.get(item, 'defects')
+                const reserved = _.get(item, 'reserved')
                 const measurement = _.get(item, ['measurement', 'name'])
                 const type = _.get(item, ['type', 'name'])
                 if (id === detailId) {
@@ -338,9 +344,10 @@ const RemainderGridList = enhance((props) => {
                                     onClick={handleCloseDetail}>
                                 </div>
                                 <Col xs={3}>{product}</Col>
-                                <Col xs={3}>{type}</Col>
-                                <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
+                                <Col xs={2}>{type}</Col>
+                                <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
                                 <Col xs={2} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
+                                <Col xs={2} className={classes.itemData}>{numberFormat(reserved, measurement)}</Col>
                                 <Col xs={1} style={{textAlign: 'right'}}>
                                     <IconButton
                                         className={classes.dropUp}
@@ -368,9 +375,10 @@ const RemainderGridList = enhance((props) => {
                     }}>
                         <Row style={{position: 'relative'}}>
                             <Col xs={3}>{product}</Col>
-                            <Col xs={3}>{type}</Col>
-                            <Col xs={3} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
+                            <Col xs={2}>{type}</Col>
+                            <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
                             <Col xs={2} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
+                            <Col xs={2} className={classes.itemData}>{numberFormat(reserved, measurement)}</Col>
                             <Col xs={1} style={{textAlign: 'right'}}>
                                 <Link to={{
                                     pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
