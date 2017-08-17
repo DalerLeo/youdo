@@ -173,19 +173,13 @@ const TransactionGridList = enhance((props) => {
             sorting: true,
             name: 'id',
             title: 'Id',
-            xs: '6%'
-        },
-        {
-            sorting: true,
-            name: 'order',
-            title: 'Заказы',
-            xs: '8%'
+            xs: '10%'
         },
         {
             sorting: true,
             name: 'client',
             title: showCashbox ? 'Касса' : 'Клиент',
-            xs: '18%'
+            xs: '22%'
         },
         {
             sorting: true,
@@ -195,22 +189,16 @@ const TransactionGridList = enhance((props) => {
         },
         {
             sorting: true,
-            name: 'market',
-            title: 'Магазин',
-            xs: '10%'
-        },
-        {
-            sorting: true,
             name: 'date',
             title: 'Дата',
-            xs: '13%'
+            xs: '18%'
         },
         {
             sorting: true,
             name: 'amount',
             alignRight: true,
             title: 'Сумма',
-            xs: '10%'
+            xs: '15%'
         }
     ]
 
@@ -225,9 +213,6 @@ const TransactionGridList = enhance((props) => {
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name')
             : (_.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан')
-        const market = _.get(item, ['clientTransaction', 'market', 'name'])
-        const division = _.get(item, ['clientTransaction', 'division', 'name'])
-        const order = _.get(item, ['clientTransaction', 'order'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
 
         const iconButton = (
@@ -237,20 +222,17 @@ const TransactionGridList = enhance((props) => {
         )
         return (
             <Row key={id} className={classes.rows}>
-                <div style={{flexBasis: '6%', maxWidth: '6%'}}>{id}</div>
-                <div style={{flexBasis: '8%', maxWidth: '8%'}}>{order}</div>
-                <div style={{flexBasis: '18%', maxWidth: '18%'}}>
+                <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
+                <div style={{flexBasis: '22%', maxWidth: '24%'}}>
                     {client}
                     {showCashbox ? <div><span className={classes.label}>Клиент: </span> {_.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан'}</div> : null}
                 </div>
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
                     {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : null}
-                    {division ? <div><span className={classes.label}>Подразделение : </span> {division}</div> : null}
                     <div>{comment}</div>
                 </div>
-                <div style={{flexBasis: '10%', maxWidth: '10%'}}>{market}</div>
-                <div style={{flexBasis: '13%', maxWidth: '13%'}}>{createdDate}</div>
-                <div style={{flexBasis: '10%', maxWidth: '10%', textAlign: 'right'}}
+                <div style={{flexBasis: '18%', maxWidth: '18%'}}>{createdDate}</div>
+                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}
                      className={type >= zero ? classes.green : classes.red}>
                     {amount} {currentCurrency}
                 </div>
