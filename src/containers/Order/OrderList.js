@@ -75,6 +75,7 @@ const enhance = compose(
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
         const returnData = _.get(state, ['order', 'return', 'data', 'results'])
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
+        const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -100,7 +101,8 @@ const enhance = compose(
             orderReturnList,
             returnDataLoading,
             returnDialogLoading,
-            products
+            products,
+            editProducts
         }
     }),
     withPropsOnChange((props, nextProps) => {

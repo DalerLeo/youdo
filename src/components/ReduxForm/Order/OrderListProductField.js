@@ -302,7 +302,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                     <Col xs={2}>
                         {customPrice && <Field
                             component={TextField}
-                            label={customPrice ? 'Сумма за ед' : '20000'}
+                            label="Сумма за ед"
                             name="cost"
                             disabled={!customPrice && true}
                             className={classes.inputFieldCustom}
@@ -351,6 +351,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                             const itemMeasurement = _.get(item, 'measurement') || ''
                             const cost = _.toNumber(_.get(item, 'cost'))
                             const amount = _.toNumber(_.get(item, 'amount'))
+                            const isEditable = _.get(item, 'customPrice')
 
                             if (editItem === index) {
                                 return (
@@ -393,12 +394,12 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                     <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost)}</TableRowColumn>
                                     <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
                                     <TableRowColumn style={{textAlign: 'right'}}>
-                                        <IconButton
+                                        {isEditable && <IconButton
                                             onTouchTap={() => setEditItem(index)}
                                             style={iconStyle.button}
                                             iconStyle={iconStyle.icon}>
                                             <EditIcon color="#666666"/>
-                                        </IconButton>
+                                        </IconButton>}
                                         <IconButton
                                             onTouchTap={() => handleRemove(index)}
                                             style={iconStyle.button}
