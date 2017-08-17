@@ -200,6 +200,7 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
     return {
         getParam,
         getParams,
+        getKey,
         getCounts,
         getPageRange,
         getCurrentPage,

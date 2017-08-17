@@ -37,7 +37,7 @@ export const expenseSupplySerializer = (supplyId, data) => {
     return {
         'supply': supplyId,
         'page': _.get(defaultData, 'dPage'),
-        'page_size2': _.get(defaultData, 'dPageSize')
+        'page_size': _.get(defaultData, 'dPageSize')
     }
 }
 

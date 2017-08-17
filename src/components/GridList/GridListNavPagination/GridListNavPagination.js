@@ -56,8 +56,7 @@ const enhance = compose(
         onChange: props => (event, index, value) => {
             const {filter} = props
             event.preventDefault()
-
-            hashHistory.push(filter.createURL({pageSize: value, page: 1}))
+            hashHistory.push(filter.createURL({[filter.getKey('pageSize')]: value, [filter.getKey('page')]: 1}))
             storageHelper.setPageSize(value)
         }
     })
