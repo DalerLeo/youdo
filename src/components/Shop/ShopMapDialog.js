@@ -46,7 +46,8 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            maxHeight: 'inherit !important'
+            maxHeight: 'inherit !important',
+            marginBottom: '64px'
         },
         titleContent: {
             display: 'flex',

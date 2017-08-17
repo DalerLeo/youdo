@@ -134,8 +134,14 @@ export const PRODUCT_CREATE = `/${PRODUCT}/`
 export const PRODUCT_LIST = `/${PRODUCT}/`
 export const PRODUCT_ITEM = `/${PRODUCT}/%d/`
 export const PRODUCT_DELETE = `/${PRODUCT}/%d/`
-export const PRODUCT_EXTRA = 'sales/products_extra_list/'
 export const PRODUCT_INGREDIENT = 'main/product/%d/ingredient_list/'
+
+export const PRODUCT_FOR_SELECT = 'main/product/for_select'
+export const PRODUCT_FOR_SELECT_LIST = `${PRODUCT_FOR_SELECT}/`
+
+export const PRODUCT_MOBILE = 'main/product_mobile/'
+export const PRODUCT_MOBILE_ITEM = `${PRODUCT_MOBILE}%d/`
+export const PRODUCT_EXTRA = `${PRODUCT_MOBILE}%d/`
 
 export const PRODUCT_PRICE = 'main/product'
 export const PRODUCT_PRICE_CREATE = `/${PRODUCT_PRICE}/`

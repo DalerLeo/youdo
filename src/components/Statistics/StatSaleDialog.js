@@ -33,7 +33,8 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            maxHeight: 'none !important'
+            maxHeight: 'none !important',
+            marginBottom: '64px'
         },
         content: {
             width: '100%',

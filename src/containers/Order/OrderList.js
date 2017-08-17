@@ -39,7 +39,8 @@ import {
     orderTransactionFetchAction,
     orderItemReturnFetchAction,
     orderListPintFetchAction,
-    orderReturnCancelAction
+    orderReturnCancelAction,
+    orderProductMobileAction
 } from '../../actions/order'
 import {
     clientCreateAction
@@ -148,6 +149,18 @@ const enhance = compose(
         if (returnItemId > ZERO) {
             dispatch(orderReturnListAction(returnItemId))
         }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
+        const nextUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
+        const prevId = _.toInteger(_.get(nextProps, ['params', 'orderId']))
+        const nextId = _.toInteger(_.get(nextProps, ['params', 'orderId']))
+
+        return (prevUpdate !== nextUpdate) || (prevId !== nextId)
+    }, ({dispatch, params}) => {
+        const orderId = _.toInteger(_.get(params, 'orderId'))
+        dispatch(orderProductMobileAction(orderId))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -376,8 +389,10 @@ const enhance = compose(
         },
 
         handleOpenUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter, params} = props
+            const orderId = _.toInteger(_.get(params, 'orderId'))
             hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})})
+            dispatch(orderProductMobileAction(orderId))
         },
 
         handleCloseUpdateDialog: props => () => {
@@ -613,6 +628,7 @@ const OrderList = enhance((props) => {
                 deliveryTypeText = 'Самовывоз'
             }
             const dealType = _.toInteger(_.get(detail, 'dealType')) === ONE ? 'consignment' : 'standart'
+            const paymentType = _.toInteger(_.get(detail, 'paymentType')) === ONE ? 'bank' : 'cash'
 
             return {
                 client: {
@@ -629,6 +645,7 @@ const OrderList = enhance((props) => {
                     text: deliveryTypeText
                 },
                 dealType: dealType,
+                paymentType: paymentType,
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,

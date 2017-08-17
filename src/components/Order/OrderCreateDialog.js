@@ -18,7 +18,8 @@ import {
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import OrderTotalSum from '../ReduxForm/Order/OrderTotalSum'
-import OrderDealTypeRadio from '../ReduxForm/OrderDealTypeRadio'
+import OrderDealTypeRadio from '../ReduxForm/Order/OrderDealTypeRadio'
+import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
@@ -51,7 +52,8 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            maxHeight: 'inherit !important'
+            maxHeight: 'inherit !important',
+            marginBottom: '64px'
         },
         titleContent: {
             background: '#fff',
@@ -303,6 +305,10 @@ const OrderCreateDialog = enhance((props) => {
                                 <div className={classes.condition}>
                                     <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Оплата
                                     </div>
+                                    <Field
+                                        name="paymentType"
+                                        component={OrderPaymentTypeRadio}
+                                    />
                                     <Field
                                         name="paymentDate"
                                         component={DateField}

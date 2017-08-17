@@ -28,7 +28,9 @@ const MainStyles = {
         position: 'relative',
         padding: '0 !important',
         overflowX: 'hidden',
-        height: '100%'
+        height: '100%',
+        maxHeight: 'none !important',
+        marginBottom: '64px'
     },
     titleContent: {
         background: '#fff',
