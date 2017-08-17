@@ -181,13 +181,13 @@ const ClientDetails = enhance((props) => {
                     <div>
                         {_.map(contacts, (item) => {
                             const name = _.get(item, 'name')
-                            const phone = _.get(item, 'telephone')
-                            const email = _.get(item, 'email')
+                            const phone = _.get(item, 'telephone') || 'Не указан'
+                            const email = _.get(item, 'email') || 'Не указан'
                             return (
                                 <Row key={item.id} className="dottedList">
-                                    <Col xs={4}>{name}</Col>
-                                    <Col xs={4}>{email}</Col>
-                                    <Col xs={4}>{phone}</Col>
+                                    <Col xs={4}><span>Имя:</span> <br/>{name}</Col>
+                                    <Col xs={4}><span>Email:</span> <br/>{email}</Col>
+                                    <Col xs={4}><span>Телефон:</span> <br/>{phone}</Col>
                                 </Row>
                             )
                         })}

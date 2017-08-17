@@ -7,7 +7,7 @@ const ONE = 1
 const TWO = 2
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
-    const paymentType = 1
+    const paymentType = _.get(data, ['paymentType']) === 'cash' ? ZERO : ONE
     const paymentTerm = 1
     const paymentDate = moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD')
     const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
@@ -18,7 +18,7 @@ export const createSerializer = (data) => {
         return {
             id: _.get(item, ['product', 'id']),
             amount: _.get(item, 'amount'),
-            cost: _.get(item, 'cost'),
+            custom_price: _.get(item, 'cost'),
             product: _.get(item, ['product', 'value', 'id'])
         }
     })

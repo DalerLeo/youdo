@@ -181,6 +181,7 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openAcceptCashDialog: null,
             openCreateExpenseDialog: null,
             openAddCourseDialog: null,
+            openClientReturnDialog: null,
             detailId: null,
             orderId: null
         }))
