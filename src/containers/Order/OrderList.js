@@ -419,9 +419,15 @@ const enhance = compose(
                     const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
                         return <p key={index}>{item}</p>
                     })
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
                     if (notEnough) {
                         dispatch(openErrorAction({
-                            message: <div style={{padding: '0 30px'}}>{notEnough}</div>
+                            message: <div style={{padding: '0 30px'}}>
+                                {notEnough && <p>{notEnough}</p>}
+                                {errorWhole}
+                            </div>
                         }))
                     }
                 })

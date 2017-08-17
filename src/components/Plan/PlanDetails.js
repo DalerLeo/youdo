@@ -387,7 +387,6 @@ const enhance = compose(
             '& span': {
                 display: 'block',
                 fontSize: '17px !important',
-                lineHeight: '1',
                 marginTop: '10px'
             }
         }
