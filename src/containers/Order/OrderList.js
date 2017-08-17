@@ -75,6 +75,7 @@ const enhance = compose(
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
         const returnData = _.get(state, ['order', 'return', 'data', 'results'])
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
+        const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -100,7 +101,8 @@ const enhance = compose(
             orderReturnList,
             returnDataLoading,
             returnDialogLoading,
-            products
+            products,
+            editProducts
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -419,9 +421,15 @@ const enhance = compose(
                     const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
                         return <p key={index}>{item}</p>
                     })
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
                     if (notEnough) {
                         dispatch(openErrorAction({
-                            message: <div style={{padding: '0 30px'}}>{notEnough}</div>
+                            message: <div style={{padding: '0 30px'}}>
+                                {notEnough && <p>{notEnough}</p>}
+                                {errorWhole}
+                            </div>
                         }))
                     }
                 })
