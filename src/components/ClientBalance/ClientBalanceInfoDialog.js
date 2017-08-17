@@ -152,9 +152,9 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const currency = _.get(item, ['currency', 'name'])
         const market = _.get(item, ['market', 'name'])
         const amount = _.toNumber(_.get(item, 'amount'))
+        const customRate = _.toNumber(_.get(item, 'customRate'))
         const internal = _.toNumber(_.get(item, 'internal'))
         const user = _.get(item, 'user') ? (_.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])) : 'Система'
-
         return (
             <Row key={index} className='dottedList'>
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>
@@ -169,7 +169,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>
-                    <div>{currency !== currentCurrency ? numberFormat(internal, currentCurrency) : null} </div>
+                    <div>{currency !== currentCurrency ? numberFormat(internal, currentCurrency) + '(' + customRate + ')' : null} </div>
                 </div>
             </Row>)
     })

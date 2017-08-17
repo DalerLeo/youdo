@@ -255,7 +255,7 @@ ClientBalanceGridList.propTypes = {
         handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
     clientReturnDialog: PropTypes.shape({
-        openClientReturnDialog: PropTypes.bool.isRequired,
+        openClientReturnDialog: PropTypes.string.isRequired,
         handleOpenClientReturnDialog: PropTypes.func.isRequired,
         handleCloseClientReturnDialog: PropTypes.func.isRequired,
         handleSubmitClientReturnDialog: PropTypes.func.isRequired

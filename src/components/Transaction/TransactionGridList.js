@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Row, Col} from 'react-flexbox-grid'
+import {Row} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
@@ -42,10 +42,10 @@ const enhance = compose(
             height: '100%'
         },
         leftSide: {
-            flexBasis: '25%'
+            flexBasis: '20%'
         },
         rightSide: {
-            flexBasis: '75%',
+            flexBasis: '80%',
             marginLeft: '28px'
         },
         list: {
@@ -118,6 +118,11 @@ const enhance = compose(
         actionButtons: {
             pointerEvents: 'none',
             opacity: '0.4'
+        },
+        rows: {
+            '& > div': {
+                padding: '0 5px'
+            }
         }
     }),
 )
@@ -168,32 +173,44 @@ const TransactionGridList = enhance((props) => {
             sorting: true,
             name: 'id',
             title: 'Id',
-            xs: 1
+            xs: '6%'
+        },
+        {
+            sorting: true,
+            name: 'order',
+            title: 'Заказы',
+            xs: '8%'
         },
         {
             sorting: true,
             name: 'client',
             title: showCashbox ? 'Касса' : 'Клиент',
-            xs: 2
+            xs: '18%'
         },
         {
             sorting: true,
             name: 'comment',
             title: 'Описание',
-            xs: 4
+            xs: '30%'
+        },
+        {
+            sorting: true,
+            name: 'market',
+            title: 'Магазин',
+            xs: '10%'
         },
         {
             sorting: true,
             name: 'date',
             title: 'Дата',
-            xs: 2
+            xs: '13%'
         },
         {
             sorting: true,
             name: 'amount',
             alignRight: true,
             title: 'Сумма',
-            xs: 2
+            xs: '10%'
         }
     ]
 
@@ -209,6 +226,7 @@ const TransactionGridList = enhance((props) => {
         const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name')
             : (_.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан')
         const market = _.get(item, ['clientTransaction', 'market', 'name'])
+        const division = _.get(item, ['clientTransaction', 'division', 'name'])
         const order = _.get(item, ['clientTransaction', 'order'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
 
@@ -218,25 +236,25 @@ const TransactionGridList = enhance((props) => {
             </IconButton>
         )
         return (
-            <Row key={id}>
-                <Col xs={1}>{id}</Col>
-                <Col xs={2}>
+            <Row key={id} className={classes.rows}>
+                <div style={{flexBasis: '6%', maxWidth: '6%'}}>{id}</div>
+                <div style={{flexBasis: '8%', maxWidth: '8%'}}>{order}</div>
+                <div style={{flexBasis: '18%', maxWidth: '18%'}}>
                     {client}
                     {showCashbox ? <div><span className={classes.label}>Клиент: </span> {_.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан'}</div> : null}
-                </Col>
-                <Col xs={4}>
+                </div>
+                <div style={{flexBasis: '30%', maxWidth: '30%'}}>
                     {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : null}
-                    {market ? <div><span className={classes.label}>Магазин : </span> {market}</div> : null}
-                    {order ? <div><span className={classes.label}>Заказ : </span> {order}</div> : null}
+                    {division ? <div><span className={classes.label}>Подразделение : </span> {division}</div> : null}
                     <div>{comment}</div>
-                </Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}
-                     style={{textAlign: 'right'}}
+                </div>
+                <div style={{flexBasis: '10%', maxWidth: '10%'}}>{market}</div>
+                <div style={{flexBasis: '13%', maxWidth: '13%'}}>{createdDate}</div>
+                <div style={{flexBasis: '10%', maxWidth: '10%', textAlign: 'right'}}
                      className={type >= zero ? classes.green : classes.red}>
                     {amount} {currentCurrency}
-                </Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
+                </div>
+                <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -256,7 +274,7 @@ const TransactionGridList = enhance((props) => {
                             }}
                         />
                     </IconMenu>
-                </Col>
+                </div>
             </Row>
         )
     })
@@ -361,6 +379,7 @@ const TransactionGridList = enhance((props) => {
 
                     <GridList
                         filter={filter}
+                        withoutRow={true}
                         list={list}
                         detail={transactionDetail}
                         filterDialog={transactionFilterDialog}

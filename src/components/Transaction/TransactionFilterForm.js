@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {TransactionTypeSearchField, ExpensiveCategorySearchField, ClientSearchField} from '../ReduxForm'
+import {TransactionTypeSearchField, ExpensiveCategorySearchField, ClientSearchField, DivisionSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -21,7 +21,8 @@ export const TRANSACTION_FILTER_KEY = {
     CATEGORY_EXPENSE: 'categoryExpense',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    CLIENT: 'client'
+    CLIENT: 'client',
+    DIVISION: 'division'
 }
 
 const enhance = compose(
@@ -165,6 +166,9 @@ const TransactionFilterForm = enhance((props) => {
                     </div>
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение" fullWidth={true}/>
                     </div>
                     <div>
                         <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
