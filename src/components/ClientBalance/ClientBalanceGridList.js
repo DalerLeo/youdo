@@ -46,14 +46,14 @@ const listHeader = [
     {
         sorting: true,
         alignRight: true,
-        name: 'shampoo_balance_nal',
+        name: 'shampoo_balance',
         title: 'Баланс шампунь нал.',
         xs: 2
     },
     {
         sorting: true,
         alignRight: true,
-        name: 'created_date_perech',
+        name: 'shampoo_bank',
         title: 'Баланс шампунь переч.',
         xs: 2
     },
@@ -137,6 +137,7 @@ const ClientBalanceGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const cosmeticsBalance = _.toNumber(_.get(item, 'cosmeticsBalance'))
         const shampooBalance = _.toNumber(_.get(item, 'shampooBalance'))
+        const shampooBank = _.toNumber(_.get(item, 'shampooBank'))
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const orders = numberFormat(_.get(item, 'orders'))
         const clientName = _.get(item, 'name')
@@ -154,16 +155,16 @@ const ClientBalanceGridList = enhance((props) => {
                 </Col>
                 <Col xs={2} className={classes.balance}>
                     <span onClick={() => {
-                        infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN)
+                        infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'cash')
                     }}>
                         {numberFormat(shampooBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2} className={classes.balance}>
                     <span onClick={() => {
-                        infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN)
+                        infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'bank')
                     }}>
-                        {numberFormat(shampooBalance, currentCurrency)}
+                        {numberFormat(shampooBank, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={1} className={classes.rightAlign}>
@@ -204,9 +205,11 @@ const ClientBalanceGridList = enhance((props) => {
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
     const balance = _.get(infoDialog, 'division') === DIVISION.SHAMPUN
-        ? _.get(client, 'shampooBalance')
+        ? _.get(infoDialog, 'type') === 'cash' ? _.get(client, 'shampooBalance') : _.get(client, 'shampooBank')
         : _.get(client, 'cosmeticsBalance')
-    const paymentType = _.get(infoDialog, 'division') === DIVISION.SHAMPUN ? 'шамнунь' : 'косметика'
+    const paymentType = _.get(infoDialog, 'division') === DIVISION.SHAMPUN ? 'шамнунь' + (
+            _.get(infoDialog, 'type') === 'bank' ? ' переч.' : ' нал.'
+        ) : 'косметика'
     const clientName = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog'))})
     return (
         <Container>

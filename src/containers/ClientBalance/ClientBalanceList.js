@@ -71,7 +71,8 @@ const enhance = compose(
     }, ({dispatch, params, filterItem, location}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
         const division = _.get(location, ['query', 'division'])
-        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, division))
+        const type = _.get(location, ['query', 'type'])
+        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, division, type))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -104,17 +105,17 @@ const enhance = compose(
             })
         },
 
-        handleOpenInfoDialog: props => (id, division) => {
-            const {filter} = props
+        handleOpenInfoDialog: props => (id, division, type) => {
+            const {filterItem} = props
             hashHistory.push({
                 pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
-                query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: true, 'division': division})
+                query: filterItem.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: true, 'division': division, 'type': type})
             })
         },
 
         handleCloseInfoDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: false, 'dPage': null, 'dPageSize': null})})
+            const {location: {pathname}, filterItem} = props
+            hashHistory.push({pathname, query: filterItem.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: false, 'dPage': null, 'dPageSize': null})})
         },
         handleOpenCreateDialog: props => (id) => {
             const {filter} = props
@@ -187,6 +188,7 @@ const ClientBalanceList = enhance((props) => {
     const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
     const openClientReturnDialog = _.get(location, ['query', CLIENT_BALANCE_RETURN_DIALOG_OPEN])
     const division = _.toNumber(_.get(location, ['query', 'division']))
+    const type = _.get(location, ['query', 'type'])
     const fromDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
@@ -195,6 +197,7 @@ const ClientBalanceList = enhance((props) => {
         updateLoading: detailLoading,
         openInfoDialog,
         division: division,
+        type: type,
         handleOpenInfoDialog: props.handleOpenInfoDialog,
         handleCloseInfoDialog: props.handleCloseInfoDialog
     }

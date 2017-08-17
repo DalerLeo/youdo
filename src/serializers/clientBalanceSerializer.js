@@ -26,12 +26,16 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-export const itemFilterSerializer = (data, id, division) => {
+export const itemFilterSerializer = (data, id, division, type) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
+    const CASH = 0
+    const BANK = 1
+    const paymentType = (type === 'cash') ? CASH : (type === 'bank') ? BANK : null
     return {
         'client': id,
         'division': division,
+        'payment_type': paymentType,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'dPage'),
         'page_size': _.get(defaultData, 'dPageSize'),

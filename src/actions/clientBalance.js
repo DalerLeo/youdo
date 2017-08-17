@@ -21,8 +21,8 @@ export const clientBalanceListFetchAction = (filter) => {
     }
 }
 
-export const clientBalanceItemFetchAction = (filter, id, division) => {
-    const params = serializers.itemFilterSerializer(filter.getParams(), id, division)
+export const clientBalanceItemFetchAction = (filter, id, division, type) => {
+    const params = serializers.itemFilterSerializer(filter.getParams(), id, division, type)
     const payload = axios()
         .get(API.CLIENT_BALANCE_ITEM, {params})
         .then((response) => {
