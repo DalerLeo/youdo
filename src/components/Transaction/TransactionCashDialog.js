@@ -37,7 +37,12 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            marginBottom: '64px'
+            maxHeight: 'none !important'
+        },
+        dialog: {
+            '& > div:first-child > div:first-child': {
+                transform: 'translate(0px, 0px) !important'
+            }
         },
         titleContent: {
             background: '#fff',
@@ -58,7 +63,7 @@ const enhance = compose(
         },
         inContent: {
             display: 'flex',
-            maxHeight: '50vh',
+            maxHeight: '86vh',
             minHeight: '184px',
             overflow: 'auto',
             padding: '0 30px',
@@ -168,6 +173,7 @@ const TransactionCashDialog = enhance((props) => {
             : _.map(_.get(paymentData, 'data'), (item) => {
                 const clientName = _.get(item, ['client', 'name'])
                 const marketName = _.get(item, ['market', 'name'])
+                const customRate = _.get(item, ['customRate'])
                 const currency = _.get(item, ['currency', 'name'])
                 const order = _.get(item, ['order'])
                 const amount = numberFormat(_.get(item, ['amount']), currency)
@@ -176,7 +182,7 @@ const TransactionCashDialog = enhance((props) => {
                     <Col xs={3}>{clientName}</Col>
                     <Col xs={3}>{marketName}</Col>
                     <Col xs={3}>{order}</Col>
-                    <Col xs={3}>{amount}</Col>
+                    <Col xs={3}>{amount} {customRate ? '(' + customRate + ')' : null }</Col>
                 </Row>
 
                 )
@@ -189,6 +195,7 @@ const TransactionCashDialog = enhance((props) => {
             contentStyle={loading ? {width: '300px'} : {width: '900px', maxWidth: 'auto'}}
             open={open}
             onRequestClose={onClose}
+            className={classes.dialog}
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
@@ -204,10 +211,7 @@ const TransactionCashDialog = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={3}>Агент</Col>
-                            <Col xs={3}>Клиент</Col>
-                            <Col xs={2}>Магазин</Col>
-                            <Col xs={1}>Заказ</Col>
+                            <Col xs={10}>Агент</Col>
                             <Col xs={2}>Сумма</Col>
                         </Row>
                         {_.map(_.get(acceptCashDialog, ['data']), (item, index) => {
