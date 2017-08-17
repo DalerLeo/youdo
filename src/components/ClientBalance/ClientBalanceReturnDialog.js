@@ -68,7 +68,8 @@ const enhance = compose(
             overflowX: 'hidden',
             height: '100%',
             minHeight: '700px',
-            maxHeight: 'inherit !important'
+            maxHeight: 'inherit !important',
+            marginBottom: '64px'
         },
         titleContent: {
             background: '#fff',

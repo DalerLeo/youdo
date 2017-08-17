@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
@@ -16,18 +16,7 @@ import convertCurrency from '../../helpers/convertCurrency'
 import {TextField, ExpensiveCategorySearchField, CheckBox, ClientSearchField, normalizeNumber, DivisionSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
+import {openErrorAction} from '../../actions/error'
 
 const validateForm = values => {
     const errors = {}
@@ -107,12 +96,25 @@ const enhance = compose(
             rate,
             amount
         }
+    }),
+    withHandlers({
+        validate: props => (data) => {
+            const errors = toCamelCase(data)
+            const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+            props.dispatch(openErrorAction({
+                message: <div>{nonFieldErrors}</div>
+            }))
+            throw new SubmissionError({
+                ...errors,
+                _error: nonFieldErrors
+            })
+        }
     })
 )
 const TransactionCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, cashboxData, isExpense, showClients, showIncomeClients, rate, amount} = props
 
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
     const convert = convertCurrency(amount, rate)
 

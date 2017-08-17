@@ -38,25 +38,27 @@ const listHeader = [
     },
     {
         sorting: true,
+        alignRight: true,
         name: 'cosmetics_balance',
         title: 'Баланс косметика',
         xs: 2
     },
     {
         sorting: true,
+        alignRight: true,
         name: 'shampoo_balance_nal',
         title: 'Баланс шампунь нал.',
         xs: 2
     },
     {
         sorting: true,
+        alignRight: true,
         name: 'created_date_perech',
         title: 'Баланс шампунь переч.',
         xs: 2
     },
     {
         sorting: false,
-        alignRight: true,
         title: '',
         xs: 1
     }
@@ -75,7 +77,12 @@ const enhance = compose(
         rightAlign: {
             textAlign: 'right',
             '& button': {
-                opacity: '0'
+                opacity: '0',
+                '& > div': {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }
             },
             '& span': {
                 cursor: 'pointer'
@@ -90,6 +97,8 @@ const enhance = compose(
             cursor: 'pointer'
         },
         balance: {
+            textAlign: 'right',
+            fontWeight: '600',
             '& span': {
                 cursor: 'pointer'
             }
@@ -98,12 +107,13 @@ const enhance = compose(
 )
 const iconStyle = {
     icon: {
-        width: 24,
-        height: 24
+        width: 22,
+        height: 22
     },
     button: {
-        width: 48,
-        height: 48
+        width: 40,
+        height: 40,
+        padding: 0
     }
 }
 
@@ -166,7 +176,7 @@ const ClientBalanceGridList = enhance((props) => {
                                 onTouchTap={() => {
                                     clientReturnDialog.handleOpenClientReturnDialog(id)
                                 }}>
-                                <ReturnIcon/>
+                                <ReturnIcon color="#666"/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip position="bottom" text="Списать">

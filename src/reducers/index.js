@@ -74,7 +74,8 @@ const rootReducer = combineReducers({
         document: createThunkReducer(actionTypes.GET_DOCUMENT),
         return: createThunkReducer(actionTypes.ORDER_RETURN),
         returnList: createThunkReducer(actionTypes.ORDER_RETURN_LIST),
-        update: createThunkReducer(actionTypes.ORDER_UPDATE)
+        update: createThunkReducer(actionTypes.ORDER_UPDATE),
+        updateProducts: createThunkReducer(actionTypes.PRODUCT_MOBILE)
     }),
     product: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_CREATE),

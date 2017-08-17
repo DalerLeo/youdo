@@ -17,8 +17,8 @@ import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Bike from 'material-ui/svg-icons/maps/directions-bike'
-import Man from 'material-ui/svg-icons/maps/transfer-within-a-station'
+import Man from 'material-ui/svg-icons/action/accessibility'
+import Loyalty from 'material-ui/svg-icons/action/loyalty'
 import Van from 'material-ui/svg-icons/maps/local-shipping'
 import Money from 'material-ui/svg-icons/maps/local-atm'
 import NotFound from '../Images/not-found.png'
@@ -251,7 +251,7 @@ const PlanWrapper = enhance((props) => {
                     <div className={classes.line}>
                     </div>
                     <span>{username}</span>
-                    <span>70 / 100</span>
+                    <span>56%</span>
                 </div>
             </Tooltip>
         )
@@ -262,11 +262,11 @@ const PlanWrapper = enhance((props) => {
     const buttons = [
         {
             group: 1,
-            icon: <Bike/>
+            icon: <Man/>
         },
         {
             group: 2,
-            icon: <Man/>
+            icon: <Loyalty/>
         },
         {
             group: 3,

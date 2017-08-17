@@ -75,11 +75,9 @@ const enhance = compose(
             },
             '& th:first-child': {
                 width: '250px',
-                textAlign: 'left !important',
                 fontWeight: '600 !important'
             },
             '& th': {
-                textAlign: 'left !important',
                 border: 'none !important',
                 height: '40px !important',
                 padding: '0 5px !important',
@@ -105,6 +103,12 @@ const enhance = compose(
             extend: 'inputFieldCustom',
             height: '40px !important',
             marginTop: '0'
+        },
+        inputFieldEditRight: {
+            extend: 'inputFieldEdit',
+            '& input': {
+                textAlign: 'right'
+            }
         },
         searchFieldCustom: {
             extend: 'inputFieldCustom',
@@ -149,9 +153,13 @@ const enhance = compose(
         }
     }),
     connect((state) => {
-        const measurement = _.get(state, ['form', 'OrderCreateForm', 'values', 'product', 'value', 'measurement', 'name'])
+        const measurement = _.get(state, ['product', 'extra', 'data', 'measurement', 'name'])
+        const customPrice = _.get(state, ['product', 'extra', 'data', 'custom_price'])
+        const cashPrice = _.get(state, ['product', 'extra', 'data', 'cash_price'])
         return {
-            measurement
+            measurement,
+            customPrice,
+            cashPrice
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -162,10 +170,11 @@ const enhance = compose(
     withHandlers({
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
+            const cashPrice = _.get(props, ['cashPrice'])
             const amount = numberWithoutSpaces(_.get(props, ['amount', 'input', 'value']))
-            const cost = numberWithoutSpaces(_.get(props, ['cost', 'input', 'value']))
-            const currency = getConfig('PRIMARY_CURRENCY')
+            const cost = numberWithoutSpaces(_.get(props, ['cost', 'input', 'value'])) || cashPrice
             const measurement = _.get(props, ['measurement'])
+            const customPrice = _.get(props, ['customPrice'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
             if (!_.isEmpty(_.get(product, 'value')) && amount && cost) {
@@ -182,7 +191,7 @@ const enhance = compose(
                 }
 
                 if (!has) {
-                    let newArray = [{product, amount, cost, currency, measurement}]
+                    let newArray = [{product, amount, cost, measurement, customPrice}]
                     _.map(products, (obj) => {
                         newArray.push(obj)
                     })
@@ -239,9 +248,10 @@ const iconStyle = {
     }
 }
 
-const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, currency, measurement, ...defaultProps}) => {
+const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, customPrice, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
+    const currency = getConfig('PRIMARY_CURRENCY')
     return (
         <div className={classes.wrapper}>
             <div>
@@ -290,15 +300,16 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                         </div>
                     </Col>
                     <Col xs={2}>
-                        <Field
+                        {customPrice && <Field
                             component={TextField}
                             label="Сумма за ед"
                             name="cost"
+                            disabled={!customPrice && true}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                             normalize={normalizeNumber}
                             {..._.get(defaultProps, 'cost')}
-                        />
+                        />}
                     </Col>
                     <Col xs={1}>
                         <IconButton
@@ -325,8 +336,8 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                             <TableHeaderColumn
                                 className={classes.tableTitle}>Наименование</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Сумма (ед.)</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Всего</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Цена ({currency})</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Всего ({currency})</TableHeaderColumn>
                             <TableHeaderColumn></TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
@@ -337,9 +348,10 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                         stripedRows={false}>
                         {_.map(products, (item, index) => {
                             const product = _.get(item, ['product', 'value', 'name'])
-                            const itemMeasurement = _.get(item, ['product', 'value', 'measurement', 'name'])
+                            const itemMeasurement = _.get(item, 'measurement') || ''
                             const cost = _.toNumber(_.get(item, 'cost'))
                             const amount = _.toNumber(_.get(item, 'amount'))
+                            const isEditable = _.get(item, 'customPrice')
 
                             if (editItem === index) {
                                 return (
@@ -358,12 +370,12 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                         <TableRowColumn style={{padding: 0}}>
                                             <TextField
                                                 placeholder={cost}
-                                                className={classes.inputFieldEdit}
+                                                className={classes.inputFieldEditRight}
                                                 fullWidth={true}
                                                 {..._.get(defaultProps, 'editCost')}
                                             />
                                         </TableRowColumn>
-                                        <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
+                                        <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>
                                             <IconButton
                                                 onTouchTap={() => { handleEdit(index) }}>
@@ -379,15 +391,15 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                     <TableRowColumn>{product}</TableRowColumn>
                                     <TableRowColumn>
                                         {amount} {itemMeasurement}</TableRowColumn>
-                                    <TableRowColumn>{numberFormat(cost, currency)}</TableRowColumn>
-                                    <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
+                                    <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost)}</TableRowColumn>
+                                    <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
                                     <TableRowColumn style={{textAlign: 'right'}}>
-                                        <IconButton
+                                        {isEditable && <IconButton
                                             onTouchTap={() => setEditItem(index)}
                                             style={iconStyle.button}
                                             iconStyle={iconStyle.icon}>
                                             <EditIcon color="#666666"/>
-                                        </IconButton>
+                                        </IconButton>}
                                         <IconButton
                                             onTouchTap={() => handleRemove(index)}
                                             style={iconStyle.button}
