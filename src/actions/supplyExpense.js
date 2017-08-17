@@ -38,8 +38,8 @@ export const supplyExpenseDeleteAction = (id) => {
     }
 }
 
-export const supplyExpenseListFetchAction = (supplyId) => {
-    const params = serializers.expenseSupplySerializer(supplyId)
+export const supplyExpenseListFetchAction = (supplyId, filter) => {
+    const params = serializers.expenseSupplySerializer(supplyId, filter.getParams())
     const payload = axios()
         .get(API.SUPPLY_EXPENSE_LIST, {params})
         .then((response) => {
