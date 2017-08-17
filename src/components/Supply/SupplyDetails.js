@@ -15,6 +15,7 @@ import CloseIcon from '../CloseIcon'
 import numberFormat from '../../helpers/numberFormat'
 import Tooltip from '../ToolTip'
 import moment from 'moment'
+import Pagination from '../GridList/GridListNavPagination'
 
 const colorBlue = '#12aaeb'
 const enhance = compose(
@@ -288,7 +289,8 @@ const SupplyDetails = enhance((props) => {
         updateDialog,
         confirmDialog,
         confirmExpenseDialog,
-        handleCloseDetail
+        handleCloseDetail,
+        filter
     } = props
     const id = _.get(data, 'id')
     const provider = _.get(data, ['provider', 'name'])
@@ -450,6 +452,7 @@ const SupplyDetails = enhance((props) => {
                                 className="expenseButton"
                                 label="+ добавить доп. расход"/>
                         </div>
+                        <div><Pagination filter={filter}/></div>
                     </div>
                     {supplyExpenseListLoading && <div className={classes.expenseLoader}>
                         <div>

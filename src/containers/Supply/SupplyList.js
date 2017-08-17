@@ -51,11 +51,11 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'SupplyFilterForm'])
         const createForm = _.get(state, ['form', 'SupplyCreateForm'])
         const filter = filterHelper(list, pathname, query)
-
         const supplyExpenseLoading = _.get(state, ['supplyExpense', 'create', 'loading'])
         const createSupplyExpenseForm = _.get(state, ['form', 'SupplyExpenseCreateForm'])
         const supplyExpenseList = _.get(state, ['supplyExpense', 'list', 'data'])
         const supplyExpenseListLoading = _.get(state, ['supplyExpense', 'list', 'loading'])
+        const filterItem = filterHelper(supplyExpenseList, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 
         return {
             list,
@@ -71,7 +71,8 @@ const enhance = compose(
             supplyExpenseLoading,
             createSupplyExpenseForm,
             supplyExpenseList,
-            supplyExpenseListLoading
+            supplyExpenseListLoading,
+            filterItem
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -94,11 +95,12 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const supplyId = _.get(nextProps, ['params', 'supplyId'])
-        return supplyId && _.get(props, ['params', 'supplyId']) !== supplyId
-    }, ({dispatch, params}) => {
+        return supplyId && (_.get(props, ['params', 'supplyId']) !== supplyId ||
+            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
+    }, ({dispatch, params, filterItem}) => {
         const supplyId = _.toInteger(_.get(params, 'supplyId'))
         supplyId && dispatch(supplyItemFetchAction(supplyId))
-        supplyId && dispatch(supplyExpenseListFetchAction(supplyId))
+        supplyId && dispatch(supplyExpenseListFetchAction(supplyId, filterItem))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -310,7 +312,7 @@ const SupplyList = enhance((props) => {
         layout,
         params,
         expenseRemoveId,
-
+        filterItem,
         supplyExpenseLoading,
         supplyExpenseList,
         supplyExpenseListLoading
@@ -474,6 +476,7 @@ const SupplyList = enhance((props) => {
         <Layout {...layout}>
             <SupplyGridList
                 filter={filter}
+                filterItem={filterItem}
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}

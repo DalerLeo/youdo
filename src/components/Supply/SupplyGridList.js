@@ -138,6 +138,7 @@ const enhance = compose(
 const SupplyGridList = enhance((props) => {
     const {
         filter,
+        filterItem,
         createDialog,
         defectDialog,
         updateDialog,
@@ -187,6 +188,7 @@ const SupplyGridList = enhance((props) => {
             handleSupplyExpenseOpenCreateDialog={supplyExpenseCreateDialog.handleSupplyExpenseOpenCreateDialog}
             supplyListData={supplyListData}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+            filter={filterItem}
         />
     )
 
