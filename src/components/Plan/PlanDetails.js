@@ -394,7 +394,7 @@ const enhance = compose(
 )
 
 const PlanDetails = enhance((props) => {
-    const {classes, detailData} = props
+    const {classes, detailData, planSalesDialog} = props
     const loading = _.get(detailData, 'detailLoading')
     const isOpenDetails = _.get(detailData, 'openDetail')
     const firstName = _.get(detailData, ['data', 'firstName'])
@@ -470,7 +470,7 @@ const PlanDetails = enhance((props) => {
                                     </div>
                                     <div>
                                         <span>план продаж</span>
-                                        <a className={classes.link}><big>2 000 000</big> UZS</a>
+                                        <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}><big>2 000 000</big> UZS</a>
                                     </div>
                                 </div>
                             </div>
@@ -582,7 +582,12 @@ const PlanDetails = enhance((props) => {
 
 PlanDetails.PropTypes = {
     filter: PropTypes.object,
-    detailData: PropTypes.object
+    detailData: PropTypes.object,
+    planSalesDialog: PropTypes.shape({
+        openPlanSales: PropTypes.bool.isRequired,
+        handleOpenPlanSales: PropTypes.func.isRequired,
+        handleClosePlanSales: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default PlanDetails

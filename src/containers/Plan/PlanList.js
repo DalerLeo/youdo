@@ -7,7 +7,7 @@ import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {ADD_PLAN, PlanWrapper, USER_GROUP} from '../../components/Plan'
+import {ADD_PLAN, PlanWrapper, USER_GROUP, OPEN_PLAN_SALES} from '../../components/Plan'
 import {
     planCreateAction,
     planAgentsListFetchAction,
@@ -103,6 +103,16 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ADD_PLAN]: false})})
                     dispatch(planAgentsListFetchAction(filter))
                 })
+        },
+
+        handleOpenPlanSales: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_PLAN_SALES]: true})})
+        },
+
+        handleClosePlanSales: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_PLAN_SALES]: false})})
         }
     })
 )
@@ -124,6 +134,7 @@ const PlanList = enhance((props) => {
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
+    const openPlanSales = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
     const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
@@ -135,6 +146,12 @@ const PlanList = enhance((props) => {
         handleOpenAddPlan: props.handleOpenAddPlan,
         handleCloseAddPlan: props.handleCloseAddPlan,
         handleSubmitAddPlan: props.handleSubmitAddPlan
+    }
+
+    const planSalesDialog = {
+        openPlanSales,
+        handleOpenPlanSales: props.handleOpenPlanSales,
+        handleClosePlanSales: props.handleClosePlanSales
     }
 
     const listData = {
@@ -174,6 +191,7 @@ const PlanList = enhance((props) => {
                 usersList={listData}
                 statData={statData}
                 addPlan={addPlan}
+                planSalesDialog={planSalesDialog}
                 handleClickTab={props.handleClickTab}
                 groupId={groupId}
                 PlanDateInitialValues={PlanDateInitialValues}

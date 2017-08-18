@@ -12,6 +12,7 @@ import Search from './PlanSearch'
 import PlanDatePicker from './PlanDatePicker'
 import Details from './PlanDetails'
 import PlanCreateDialog from './PlanCreateDialog'
+import PlanSalesDialog from './PlanSalesDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -229,6 +230,7 @@ const PlanWrapper = enhance((props) => {
         detailData,
         classes,
         addPlan,
+        planSalesDialog,
         handleClickTab,
         groupId,
         PlanDateInitialValues
@@ -334,6 +336,7 @@ const PlanWrapper = enhance((props) => {
                 {leftSide}
                 <Details
                     detailData={detailData}
+                    planSalesDialog={planSalesDialog}
                     filter={filter}/>
             </div>
 
@@ -343,6 +346,11 @@ const PlanWrapper = enhance((props) => {
                 onSubmit={addPlan.handleSubmitAddPlan}
                 zonesList={addPlan.zonesList}
                 zonesLoading={addPlan.zonesLoading}
+            />
+
+            <PlanSalesDialog
+                open={planSalesDialog.openPlanSales}
+                onClose={planSalesDialog.handleClosePlanSales}
             />
         </Container>
     )
@@ -357,6 +365,11 @@ PlanWrapper.PropTypes = {
         handleOpenAddPlan: PropTypes.func.isRequired,
         handleCloseAddPlan: PropTypes.func.isRequired,
         handleSubmitAddPlan: PropTypes.func.isRequired
+    }).isRequired,
+    planSalesDialog: PropTypes.shape({
+        openPlanSales: PropTypes.bool.isRequired,
+        handleOpenPlanSales: PropTypes.func.isRequired,
+        handleClosePlanSales: PropTypes.func.isRequired
     }).isRequired
 }
 
