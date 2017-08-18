@@ -216,15 +216,15 @@ const StatMarketGridList = enhance((props) => {
 
     const listLoading = _.get(listData, 'listLoading')
     const graphLoading = _.get(detailData, ['graphLoading'])
+    const sumData = _.get(listData, ['sumData', 'income'])
+    const sumLoading = _.get(listData, ['sumLoading'])
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
         color: '#666'
     }
 
-    let sum = 0
     const value = _.map(_.get(detailData, ['graphList']), (item) => {
-        sum += _.toInteger(_.get(item, 'amount'))
         return _.toInteger(_.get(item, 'amount'))
     })
 
@@ -445,14 +445,14 @@ const StatMarketGridList = enhance((props) => {
                             </form>
                             <div className={classes.summary}>Сумма от продаж
                                 <div>
-                                    {numberFormat(sum, 'SUM')}
+                                    {numberFormat(sumData, getConfig('PRIMARY_CURRENCY'))}
                                 </div>
                             </div>
                             <div className={classes.pagination}>
                                 <div>Продажи по магазинам в зоне</div>
                                 <Pagination filter={filter}/>
                             </div>
-                            {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                            {(_.isEmpty(list) && !listLoading && sumLoading) ? <div className={classes.emptyQuery}>
                                 <div>По вашему запросу ничего не найдено</div>
                             </div>
                                 : <div className={classes.tableWrapper}>

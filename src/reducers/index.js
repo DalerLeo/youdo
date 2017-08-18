@@ -236,7 +236,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STAT_CASHBOX_LIST),
         update: createThunkReducer(actionTypes.STAT_CASHBOX_UPDATE),
         item: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM),
-        sumData: createThunkReducer(actionTypes.STAT_CASHBOX_SUM)
+        sumData: createThunkReducer(actionTypes.STAT_CASHBOX_SUM),
+        itemGraph: createThunkReducer(actionTypes.STAT_CASHBOX_DATA_ITEM)
     }),
     pendingPayments: combineReducers({
         create: createThunkReducer(actionTypes.PENDING_PAYMENTS_CREATE),
@@ -288,7 +289,8 @@ const rootReducer = combineReducers({
     statMarket: combineReducers({
         list: createThunkReducer(actionTypes.STAT_MARKET_LIST),
         item: createThunkReducer(actionTypes.STAT_MARKET_ITEM),
-        data: createThunkReducer(actionTypes.STAT_MARKET_DATA)
+        data: createThunkReducer(actionTypes.STAT_MARKET_DATA),
+        sum: createThunkReducer(actionTypes.STAT_MARKET_SUM)
     }),
     statIncome: combineReducers({
         data: createThunkReducer(actionTypes.STAT_INCOME_DATA),

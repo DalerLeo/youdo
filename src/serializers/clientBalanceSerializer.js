@@ -45,6 +45,7 @@ export const itemFilterSerializer = (data, id, division, type) => {
 
 const ZERO = 0
 const MINUS_ONE = -1
+const TWO = 2
 
 export const createExpenseSerializer = (data, client) => {
     const amount = numberWithoutSpaces(_.get(data, 'amount'))
@@ -52,13 +53,15 @@ export const createExpenseSerializer = (data, client) => {
     const comment = _.get(data, 'comment')
     const currency = getConfig('PRIMARY_CURRENCY_ID')
     const division = _.get(data, ['division', 'value'])
+    const paymentType = _.get(data, ['paymentType', 'value'])
 
     return {
         'amount': newAmount,
         'comment': comment,
         client,
         currency,
-        division
+        division,
+        payment_type: paymentType === TWO ? ZERO : paymentType
     }
 }
 
