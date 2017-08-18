@@ -324,18 +324,18 @@ const enhance = compose(
                     dispatch(orderItemFetchAction(orderId))
                 })
                 .catch((error) => {
-                    const commentError = _.get(error, ['comment', '0'])
-                    const amountError = _.map(_.get(error, 'returned_products'), (item) => {
-                        const amount = _.get(item, ['amount', '0'])
-                        if (amount) {
-                            return (
-                                <div style={{marginTop: '10px'}}>Количество возвращаемого товара превышает количество
-                                    товара в заказе</div>)
-                        }
-                        return false
+                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
+                        return <p key={index}>{item}</p>
+                    })
+
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
                     })
                     dispatch(openErrorAction({
-                        message: <div>{(commentError) && 'Введите комментарий к возврату!'} {amountError}</div>
+                        message: <div style={{padding: '0 30px'}}>
+                                {notEnough && <p>{notEnough}</p>}
+                                {errorWhole}
+                            </div>
                     }))
                 })
         },
@@ -424,14 +424,13 @@ const enhance = compose(
                     const errorWhole = _.map(error, (item, index) => {
                         return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
                     })
-                    if (notEnough) {
-                        dispatch(openErrorAction({
-                            message: <div style={{padding: '0 30px'}}>
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
                                 {notEnough && <p>{notEnough}</p>}
                                 {errorWhole}
                             </div>
-                        }))
-                    }
+                    }))
                 })
         },
 
