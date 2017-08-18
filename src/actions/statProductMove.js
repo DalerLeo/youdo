@@ -9,7 +9,7 @@ import * as serializers from '../serializers/Statistics/statProductMoveSerialize
 export const statProductMoveListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get((API.STAT_PRODUCT_MOVE_LIST), {params})
+        .get((API.PRODUCT_LIST), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
