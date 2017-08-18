@@ -50,7 +50,7 @@ export const clientBalanceCreateExpenseAction = (formValues, clientId) => {
         })
 
     return {
-        type: actionTypes.CLIENT_TRANSACTION_EXPENSE,
+        type: actionTypes.CLIENT_TRANSACTION_CREATE,
         payload
     }
 }
@@ -58,7 +58,7 @@ export const clientBalanceCreateExpenseAction = (formValues, clientId) => {
 export const clientBalanceReturnAction = (formValues, id) => {
     const requestData = serializers.createReturnSerializer(formValues, id)
     const payload = axios()
-        .post(API.CLIENT_TRANSACTION_CREATE, requestData)
+        .post(API.CLIENT_TRANSACTION_RETURN, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,7 +67,7 @@ export const clientBalanceReturnAction = (formValues, id) => {
         })
 
     return {
-        type: actionTypes.CLIENT_TRANSACTION_EXPENSE,
+        type: actionTypes.CLIENT_TRANSACTION_RETURN,
         payload
     }
 }

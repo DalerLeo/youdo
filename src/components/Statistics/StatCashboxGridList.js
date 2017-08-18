@@ -267,7 +267,6 @@ const StatCashboxGridList = enhance((props) => {
             padding: 0
         }
     }
-
     const list = _.map(_.get(listData, 'data'), (item) => {
         const ZERO = 0
         const TEN = 10

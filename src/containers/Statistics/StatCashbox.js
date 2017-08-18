@@ -33,6 +33,8 @@ const enhance = compose(
         const listLoading = _.get(state, ['statCashbox', 'list', 'loading'])
         const sumData = _.get(state, ['statCashbox', 'sumData', 'data'])
         const sumLoading = _.get(state, ['statCashbox', 'sumData', 'loading'])
+        const itemGraph = _.get(state, ['statCashbox', 'itemGraph', 'data'])
+        const itemGraphLoading = _.get(state, ['statCashbox', 'itemGraph', 'loading'])
         const filterForm = _.get(state, ['form', 'StatCashboxFilterForm'])
         const detailFilterForm = _.get(state, ['form', 'StatCashboxFilterForm'])
         const filter = filterHelper(list, pathname, query)
@@ -51,16 +53,26 @@ const enhance = compose(
             filterDetail,
             detailFilterForm,
             sumData,
-            sumLoading
+            sumLoading,
+            itemGraph,
+            itemGraphLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        console.warn(_.get(props.list))
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter, props}) => {
+    }, ({dispatch, filter}) => {
         dispatch(statCashboxListFetchAction(filter))
         dispatch(statCashBoxSumDataFetchAction(filter))
     }),
+
+    withPropsOnChange((props, nextProps) => {
+        return _.get(props, ['list', 'count']) !== _.get(nextProps, ['list', 'count'])
+    }, ({dispatch, filter, list}) => {
+        _.map(_.get(list, 'results'), (item) => {
+            dispatch(statCashBoxItemDataFetchAction(filter, _.get(item, 'id')))
+        })
+    }),
+
     withPropsOnChange((props, nextProps) => {
         const prevId = _.toInteger(_.get(props, ['params', 'cashboxId']))
         const nextId = _.toInteger(_.get(nextProps, ['params', 'cashboxId']))
@@ -107,12 +119,16 @@ const enhance = compose(
 
             })
         },
-
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STATISTICS_CASHBOX_URL, query: filter.getParams()})
         },
-
+        handleGetCashBoxes: props => () => {
+            const {list, filter, dispatch} = props
+            _.map(_.get(list, 'results'), (item) => {
+                dispatch(statCashBoxItemDataFetchAction(filter, _.get(item, 'id')))
+            })
+        },
         handleGetDocument: props => () => {
             const {filter} = props
             const params = serializers.listFilterSerializer(filter.getParams())
@@ -138,7 +154,10 @@ const StatCashboxList = enhance((props) => {
         params,
         location,
         sumData,
-        sumLoading
+        sumLoading,
+        handleGetCashBoxes,
+        itemGraphLoading,
+        itemGraph
     } = props
 
     const detailId = _.toInteger(_.get(params, 'cashboxId'))
@@ -148,7 +167,12 @@ const StatCashboxList = enhance((props) => {
 
     const openDetails = detailId > ZERO
 
+    let detailItem = []
+
     const listData = {
+        itemGraphLoading,
+        itemGraph,
+        detailItem,
         sumData,
         sumLoading,
         data: _.get(list, 'results'),
@@ -188,6 +212,7 @@ const StatCashboxList = enhance((props) => {
                 initialValues={filterForm.initialValues}
                 filterForm={filterForm}
                 getCashBoxByOne={props.handleGetDataItem}
+                handleGetCashBoxes={handleGetCashBoxes}
             />
         </Layout>
     )
