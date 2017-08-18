@@ -367,13 +367,15 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                                 {..._.get(defaultProps, 'editAmount')}
                                             />
                                         </TableRowColumn>
-                                        <TableRowColumn style={{padding: 0}}>
-                                            <TextField
+                                        <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
+                                            {isEditable
+                                            ? <TextField
                                                 placeholder={cost}
                                                 className={classes.inputFieldEditRight}
                                                 fullWidth={true}
                                                 {..._.get(defaultProps, 'editCost')}
                                             />
+                                            : numberFormat(cost)}
                                         </TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>
@@ -394,12 +396,12 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                     <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost)}</TableRowColumn>
                                     <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
                                     <TableRowColumn style={{textAlign: 'right'}}>
-                                        {isEditable && <IconButton
+                                        <IconButton
                                             onTouchTap={() => setEditItem(index)}
                                             style={iconStyle.button}
                                             iconStyle={iconStyle.icon}>
                                             <EditIcon color="#666666"/>
-                                        </IconButton>}
+                                        </IconButton>
                                         <IconButton
                                             onTouchTap={() => handleRemove(index)}
                                             style={iconStyle.button}

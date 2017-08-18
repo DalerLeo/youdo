@@ -603,6 +603,7 @@ const OrderList = enhance((props) => {
         return {
             amount: _.get(item, 'amount'),
             cost: _.get(item, 'price'),
+            customPrice: _.get(item, ['product', 'customPrice']),
             product: {
                 id: _.get(item, 'id'),
                 value: {
@@ -658,7 +659,10 @@ const OrderList = enhance((props) => {
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
-                products: forUpdateProducts
+                products: forUpdateProducts,
+                user: {
+                    value: _.get(detail, ['user', 'id'])
+                }
             }
         })(),
         updateLoading: detailLoading || updateLoading,
