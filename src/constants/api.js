@@ -303,6 +303,7 @@ export const STAT_MARKET_LIST = 'stats/markets/'
 export const STAT_MARKET_ITEM = 'sales/order/'
 export const STAT_MARKET_GET_DOCUMENT = '/stats/markets/export'
 export const STAT_MARKET_DATA = '/stats/orders/'
+export const STAT_MARKET_SUM = '/stats/orders/sum/'
 
 export const STAT_FINANCE_LIST = 'finance/transaction/'
 export const STAT_FINANCE_DATA = 'stats/transactions/'

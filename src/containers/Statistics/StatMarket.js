@@ -14,7 +14,8 @@ import * as serializers from '../../serializers/Statistics/statProductSerializer
 import getDocuments from '../../helpers/getDocument'
 import {
     statMarketListFetchAction,
-    statMarketDataFetchAction
+    statMarketDataFetchAction,
+    statMarketSumFetchAction
 } from '../../actions/statMarket'
 
 import {StatMarketGridList, STAT_MARKET_DIALOG_OPEN} from '../../components/Statistics'
@@ -26,6 +27,8 @@ const enhance = compose(
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const graphList = _.get(state, ['statMarket', 'data', 'data'])
+        const sumData = _.get(state, ['statMarket', 'sum', 'data'])
+        const sumLoading = _.get(state, ['statMarket', 'sum', 'loading'])
         const graphLoading = _.get(state, ['statMarket', 'data', 'loading'])
         const list = _.get(state, ['statMarket', 'list', 'data'])
         const listLoading = _.get(state, ['statMarket', 'list', 'loading'])
@@ -37,13 +40,16 @@ const enhance = compose(
             filter,
             filterForm,
             graphList,
-            graphLoading
+            graphLoading,
+            sumLoading,
+            sumData
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest())
     }, ({dispatch, filter}) => {
         dispatch(statMarketListFetchAction(filter))
+        dispatch(statMarketSumFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -114,7 +120,9 @@ const StatMarketList = enhance((props) => {
         layout,
         params,
         graphList,
-        graphLoading
+        graphLoading,
+        sumData,
+        sumLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statMarketId'))
@@ -130,6 +138,8 @@ const StatMarketList = enhance((props) => {
     }
 
     const listData = {
+        sumData,
+        sumLoading,
         data: _.get(list, 'results'),
         listLoading
     }

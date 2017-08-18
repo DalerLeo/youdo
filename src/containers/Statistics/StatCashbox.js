@@ -55,8 +55,9 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
+        console.warn(_.get(props.list))
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
+    }, ({dispatch, filter, props}) => {
         dispatch(statCashboxListFetchAction(filter))
         dispatch(statCashBoxSumDataFetchAction(filter))
     }),

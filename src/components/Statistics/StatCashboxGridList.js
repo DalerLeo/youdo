@@ -250,10 +250,10 @@ const StatCashboxGridList = enhance((props) => {
 
     const listLoading = _.get(listData, 'listLoading')
     const openDetails = _.get(listData, 'openDetails')
-    const startBalance = _.get(listData, 'startBalance')
-    const endBalance = _.get(listData, 'endBalance')
-    const income = _.get(listData, 'income')
-    const expense = _.get(listData, 'expense')
+    const startBalance = _.get(listData, ['sumData', 'startBalance'])
+    const endBalance = _.get(listData, ['sumData', 'endBalance'])
+    const income = _.get(listData, ['sumData', 'income'])
+    const expense = _.get(listData, ['sumData', 'expense'])
 
     const iconStyle = {
         icon: {
