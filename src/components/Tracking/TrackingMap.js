@@ -11,6 +11,7 @@ import PropTypes from 'prop-types'
 import RedPin from '../Images/person-pin-red.png'
 import GreenPin from '../Images/person-pin-green.png'
 import MarketLocation from '../Images/market-location.png'
+import {googleMapStyle} from '../../constants/googleMapsStyle'
 
 const ZERO = 0
 const enhance = compose(
@@ -20,17 +21,17 @@ const enhance = compose(
 )
 
 const GoogleMapWrapper = enhance(({
-        onMapLoad,
-        listData,
-        handleOpenDetails,
-        agentLocation,
-        marketsLocation,
-        isOpenTrack,
-        isOpenMarkets,
-        openMarketInfo,
-        setOpenMarketInfo,
-        shopDetails,
-        ...props
+      onMapLoad,
+      listData,
+      handleOpenDetails,
+      agentLocation,
+      marketsLocation,
+      isOpenTrack,
+      isOpenMarkets,
+      openMarketInfo,
+      setOpenMarketInfo,
+      shopDetails,
+      ...props
     }) => {
     const agentCoordinates = [
         _.map(_.get(agentLocation, 'results'), (item) => {
@@ -44,6 +45,12 @@ const GoogleMapWrapper = enhance(({
         strokeOpacity: 1,
         strokeWeight: 3
     }
+
+    const clickMarket = (id) => {
+        shopDetails.handleOpenShopDetails(id)
+        setOpenMarketInfo(id)
+    }
+
     return (
         <DefaultGoogleMap ref={onMapLoad} {...props}>
             <MarkerClusterer
@@ -56,24 +63,28 @@ const GoogleMapWrapper = enhance(({
                     const lat = _.get(item, ['location', 'coordinates', '0'])
                     const lng = _.get(item, ['location', 'coordinates', '1'])
 
-                    if (isOpenMarkets) {
-                        return (
-                            <Marker
-                                key={id}
-                                onClick={() => { shopDetails.handleOpenShopDetails(id) }}
-                                position={{lat: lat, lng: lng}}
-                                options={
-                                {icon:
-                                {url: MarketLocation,
+                    const marker = (
+                        <Marker
+                            key={id}
+                            onClick={() => { clickMarket(id) }}
+                            position={{lat: lat, lng: lng}}
+                            options={
+                            {
+                                icon: {
+                                    url: MarketLocation,
                                     size: {width: 15, height: 15},
                                     scaledSize: {width: 15, height: 15}
-                                }}}>
+                                }
+                            }}>
 
-                                {(id === openMarketInfo) && <InfoWindow>
-                                    <div>{name}</div>
-                                </InfoWindow>}
-                            </Marker>
-                        )
+                            {(id === openMarketInfo) && <InfoWindow>
+                                <div>{name}</div>
+                            </InfoWindow>}
+                        </Marker>
+                    )
+
+                    if (isOpenMarkets && !_.isEmpty(_.get(item, 'location'))) {
+                        return marker
                     }
                     return false
                 })}
@@ -99,11 +110,13 @@ const GoogleMapWrapper = enhance(({
                             onClick={() => { handleOpenDetails(id) }}
                             position={{lat: lat, lng: lng}}
                             options={
-                            {icon:
-                            {url: isOnline ? GreenPin : RedPin,
-                                size: {width: 26, height: 30},
-                                scaledSize: {width: 26, height: 30}
-                            }}}>
+                            {
+                                icon: {
+                                    url: isOnline ? GreenPin : RedPin,
+                                    size: {width: 26, height: 30},
+                                    scaledSize: {width: 26, height: 30}
+                                }
+                            }}>
                         </Marker>
                     )
                 })}
@@ -121,7 +134,7 @@ const GoogleMapWrapper = enhance(({
 
 const Loader = () =>
     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
-        <CircularProgress size={40} thickness={4} />
+        <CircularProgress size={40} thickness={4}/>
     </div>
 
 const GoogleMap = (props) => {
@@ -141,8 +154,8 @@ const GoogleMap = (props) => {
             defaultCenter={GOOGLE_MAP.DEFAULT_LOCATION}
             googleMapURL={GOOGLE_MAP.GOOGLE_API_URL}
             loadingElement={<Loader />}
-            containerElement={<div style={{height: '100%'}} />}
-            mapElement={<div style={{height: '100%'}} />}
+            containerElement={<div style={{height: '100%'}}/>}
+            mapElement={<div style={{height: '100%'}}/>}
             defaultZoom={15}
             radius="500"
             listData={listData}
@@ -152,6 +165,7 @@ const GoogleMap = (props) => {
             isOpenTrack={isOpenTrack}
             isOpenMarkets={isOpenMarkets}
             shopDetails={shopDetails}
+            defaultOptions={{styles: googleMapStyle}}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>

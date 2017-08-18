@@ -50,9 +50,7 @@ const enhance = compose(
                 bottom: '0'
             }
         },
-        wrapper: {
-
-        },
+        wrapper: {},
         trackingInfo: {
             background: '#fff',
             position: 'absolute',
@@ -198,6 +196,7 @@ const TrackingWrapper = enhance((props) => {
     if (_.get(shopDetails, 'openShopDetails') > ZERO) {
         openShopDetail = true
     }
+    const orderedData = _.orderBy(_.get(listData, 'data'), ['registeredDate'], ['desc'])
 
     const zoneInfoToggle = (
         <div className={classes.trackingInfo} style={isOpenToggle ? {right: '0'} : {right: '-350px'}}>
@@ -224,7 +223,8 @@ const TrackingWrapper = enhance((props) => {
                                     }
                                 })
                             }
-                            <span className={agentsOnline > ZERO && classes.green}>{agentsOnline}</span>/<span>{agentsCount}</span>
+                            <span
+                                className={agentsOnline > ZERO && classes.green}>{agentsOnline}</span>/<span>{agentsCount}</span>
                         </div>
                     </div>
                 </div>
@@ -250,21 +250,20 @@ const TrackingWrapper = enhance((props) => {
                         </form>
                     </div>
                     <div className={classes.activeAgents}>
-                        {
-                            _.map(_.get(listData, 'data'), (item) => {
-                                const id = _.get(item, 'id')
-                                const agent = _.get(item, 'agent')
-                                const FIVE_MIN = 350000
-                                const dateNow = _.toInteger(moment().format('x'))
-                                const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
-                                const difference = dateNow - registeredDate
-                                let isOnline = false
-                                if (difference <= FIVE_MIN) {
-                                    isOnline = true
-                                }
-                                const lastSeen = moment(registeredDate).fromNow()
+                        {_.map(orderedData, (item) => {
+                            const id = _.get(item, 'id')
+                            const agent = _.get(item, 'agent')
+                            const FIVE_MIN = 350000
+                            const dateNow = _.toInteger(moment().format('x'))
+                            const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                            const difference = dateNow - registeredDate
+                            let isOnline = false
+                            if (difference <= FIVE_MIN) {
+                                isOnline = true
+                            }
+                            const lastSeen = moment(registeredDate).fromNow()
 
-                                return (
+                            return (
                                     <div key={id} className={classes.agent}>
                                         <Dot style={isOnline ? {color: '#81c784'} : {color: '#666'}}/>
                                         <Link to={{
@@ -273,13 +272,13 @@ const TrackingWrapper = enhance((props) => {
                                         }}>{agent}</Link>
                                         {!isOnline && <i>({lastSeen})</i>}
                                     </div>
-                                )
-                            })
+                            )
+                        })
                         }
                     </div>
                 </div>
             </div>
-            : <div className={classes.loader}>
+                : <div className={classes.loader}>
                     <div>
                         <CircularProgress size={40} thickness={4}/>
                     </div>

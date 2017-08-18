@@ -10,6 +10,11 @@ import Paper from 'material-ui/Paper'
 
 const enhance = compose(
     injectSheet({
+        itemsWrapper: {
+            '& > div:last-child': {
+                marginBottom: '100px'
+            }
+        },
         item: {
             height: '50px',
             padding: '0 30px',
@@ -136,7 +141,7 @@ const GridListBody = enhance((props) => {
     return (
         <div>
             {!_.isEmpty(items)
-                ? <div>{items}</div>
+                ? <div className={classes.itemsWrapper}>{items}</div>
                 : <Paper zDepth={1} className={classes.emptyQuery} style={!listShadow ? {boxShadow: 'none'} : {}}>
                     <div>По вашему запросу ничего не найдено</div>
                   </Paper>}
