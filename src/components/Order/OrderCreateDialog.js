@@ -14,7 +14,8 @@ import {
     OrderListProductField,
     ClientContactsField,
     DateField,
-    MarketSearchField
+    MarketSearchField,
+    UsersSearchField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import OrderTotalSum from '../ReduxForm/Order/OrderTotalSum'
@@ -149,7 +150,8 @@ const enhance = compose(
         rightOrderPart: {
             flexBasis: '75%',
             maxWidth: '75%',
-            padding: '20px 30px'
+            padding: '20px 30px',
+            overflowY: 'auto'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -315,6 +317,12 @@ const OrderCreateDialog = enhance((props) => {
                                         className={classes.inputDateCustom}
                                         floatingLabelText="Дата оплаты"
                                         container="inline"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="user"
+                                        component={UsersSearchField}
+                                        className={classes.inputFieldCustom}
+                                        label="Агент"
                                         fullWidth={true}/>
                                 </div>
                             </div>
