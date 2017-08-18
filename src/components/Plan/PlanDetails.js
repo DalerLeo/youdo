@@ -4,6 +4,7 @@ import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
 import Person from '../Images/person.png'
 import Place from 'material-ui/svg-icons/maps/place'
@@ -248,7 +249,7 @@ const enhance = compose(
                         right: 'auto',
                         borderTop: '8px solid transparent',
                         borderLeft: 'none',
-                        borderRight: '11px solid rgba(0, 0, 0, 0.12)',
+                        borderRight: '11px solid rgba(0, 0, 0, 0.25)',
                         borderBottom: '8px solid transparent',
                         filter: 'blur(1px)',
                         zIndex: '1'
@@ -322,7 +323,7 @@ const enhance = compose(
                 top: '15px',
                 right: '-13px',
                 borderTop: '8px solid transparent',
-                borderLeft: '11px solid rgba(0, 0, 0, 0.12)',
+                borderLeft: '11px solid rgba(0, 0, 0, 0.25)',
                 borderBottom: '8px solid transparent',
                 filter: 'blur(1px)',
                 zIndex: '1'
@@ -394,11 +395,17 @@ const enhance = compose(
 )
 
 const PlanDetails = enhance((props) => {
-    const {classes, detailData, planSalesDialog} = props
+    const {classes, detailData, planSalesDialog, calendar} = props
     const loading = _.get(detailData, 'detailLoading')
     const isOpenDetails = _.get(detailData, 'openDetail')
     const firstName = _.get(detailData, ['data', 'firstName'])
     const secondName = _.get(detailData, ['data', 'secondName'])
+
+    const monthFormat = (date, defaultText) => {
+        return (date) ? moment(date).locale('ru').format('MMMM') : defaultText
+    }
+    const selectedMonth = moment(_.get(calendar, 'selectedDate'))
+    const selectedYear = moment(_.get(calendar, 'selectedDate')).format('YYYY')
 
     const achieveIcon = {
         basic: {
@@ -429,7 +436,7 @@ const PlanDetails = enhance((props) => {
                             <div className={classes.header}>
                                 <div className={classes.info}>
                                     <span>Данные за</span>
-                                    <span>Август 2017 г.</span>
+                                    <span style={{textTransform: 'capitalize'}}>{monthFormat(selectedMonth)} {selectedYear}г.</span>
                                 </div>
                                 <div className={classes.agent}>
                                     <img src={Person} alt=""/>

@@ -233,7 +233,7 @@ const PlanWrapper = enhance((props) => {
         planSalesDialog,
         handleClickTab,
         groupId,
-        PlanDateInitialValues
+        calendar
     } = props
 
     const detailId = _.get(detailData, 'id')
@@ -282,7 +282,7 @@ const PlanWrapper = enhance((props) => {
 
     const leftSide = (
         <div className={classes.leftSide}>
-            <PlanMonthFilter/>
+            <PlanMonthFilter calendar={calendar}/>
             <div className={classes.titleTabs}>
                 {_.map(buttons, (item) => {
                     const group = _.get(item, 'group')
@@ -333,6 +333,7 @@ const PlanWrapper = enhance((props) => {
             <div className={classes.wrapper}>
                 {leftSide}
                 <Details
+                    calendar={calendar}
                     detailData={detailData}
                     planSalesDialog={planSalesDialog}
                     filter={filter}/>
@@ -368,7 +369,8 @@ PlanWrapper.PropTypes = {
         openPlanSales: PropTypes.bool.isRequired,
         handleOpenPlanSales: PropTypes.func.isRequired,
         handleClosePlanSales: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    calendar: PropTypes.object
 }
 
 export default PlanWrapper

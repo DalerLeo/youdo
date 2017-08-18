@@ -79,8 +79,12 @@ const SearchField = enhance((props) => {
         meta: {error},
         state,
         dispatch,
+        selectFieldScroll,
         ...defaultProps
     } = props
+
+    const scrollable = _.get(selectFieldScroll, 'scrollable')
+    const scrollMaxHeight = _.get(selectFieldScroll, 'maxHeight')
 
     const autoCompleteProps = excludeObjKey(defaultProps, [
         'sheet', 'getText', 'getValue', 'getOptions', 'getItem', 'getItemText'
@@ -100,8 +104,8 @@ const SearchField = enhance((props) => {
                 onNewRequest={value => input.onChange(value)}
                 openOnFocus={true}
                 filter={() => true}
+                listStyle={scrollable && {maxHeight: scrollMaxHeight, overflowY: 'auto'}}
                 maxSearchResults={20}
-                maxHeight={200}
                 className="autocomplete"
                 {...inputAutoComplete}
                 {...autoCompleteProps}
