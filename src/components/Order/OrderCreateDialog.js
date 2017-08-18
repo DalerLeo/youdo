@@ -237,6 +237,11 @@ const OrderCreateDialog = enhance((props) => {
         }
     })
 
+    const selectFieldScroll = {
+        scrollable: true,
+        maxHeight: '150px'
+    }
+
     return (
         <Dialog
             modal={true}
@@ -323,6 +328,7 @@ const OrderCreateDialog = enhance((props) => {
                                         component={UsersSearchField}
                                         className={classes.inputFieldCustom}
                                         label="Агент"
+                                        selectFieldScroll={selectFieldScroll}
                                         fullWidth={true}/>
                                 </div>
                             </div>

@@ -25,10 +25,12 @@ const getText = (obj) => {
 }
 
 const UsersSearchField = (props) => {
+    const selectFieldScroll = _.get(props, 'selectFieldScroll')
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={getText}
+            selectFieldScroll={selectFieldScroll}
             getOptions={getOptions}
             getItem={getItem}
             getItemText={getText}

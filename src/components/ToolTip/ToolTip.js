@@ -12,6 +12,7 @@ const enhance = compose(
         },
         tooltip: {
             zIndex: '999999 !important',
+            lineHeight: '1.2',
             '&.place-left': {
                 '&:after': {
                     right: '-5px !important'

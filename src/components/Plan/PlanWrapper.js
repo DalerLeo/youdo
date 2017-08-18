@@ -9,9 +9,10 @@ import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import Tooltip from '../ToolTip'
 import Search from './PlanSearch'
-import PlanDatePicker from './PlanDatePicker'
+import PlanMonthFilter from './PlanMonthFilter'
 import Details from './PlanDetails'
 import PlanCreateDialog from './PlanCreateDialog'
+import PlanSalesDialog from './PlanSalesDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -229,9 +230,10 @@ const PlanWrapper = enhance((props) => {
         detailData,
         classes,
         addPlan,
+        planSalesDialog,
         handleClickTab,
         groupId,
-        PlanDateInitialValues
+        calendar
     } = props
 
     const detailId = _.get(detailData, 'id')
@@ -280,9 +282,7 @@ const PlanWrapper = enhance((props) => {
 
     const leftSide = (
         <div className={classes.leftSide}>
-            <PlanDatePicker
-                PlanDateInitialValues={PlanDateInitialValues}
-            />
+            <PlanMonthFilter calendar={calendar}/>
             <div className={classes.titleTabs}>
                 {_.map(buttons, (item) => {
                     const group = _.get(item, 'group')
@@ -333,7 +333,9 @@ const PlanWrapper = enhance((props) => {
             <div className={classes.wrapper}>
                 {leftSide}
                 <Details
+                    calendar={calendar}
                     detailData={detailData}
+                    planSalesDialog={planSalesDialog}
                     filter={filter}/>
             </div>
 
@@ -343,6 +345,11 @@ const PlanWrapper = enhance((props) => {
                 onSubmit={addPlan.handleSubmitAddPlan}
                 zonesList={addPlan.zonesList}
                 zonesLoading={addPlan.zonesLoading}
+            />
+
+            <PlanSalesDialog
+                open={planSalesDialog.openPlanSales}
+                onClose={planSalesDialog.handleClosePlanSales}
             />
         </Container>
     )
@@ -357,7 +364,13 @@ PlanWrapper.PropTypes = {
         handleOpenAddPlan: PropTypes.func.isRequired,
         handleCloseAddPlan: PropTypes.func.isRequired,
         handleSubmitAddPlan: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    planSalesDialog: PropTypes.shape({
+        openPlanSales: PropTypes.bool.isRequired,
+        handleOpenPlanSales: PropTypes.func.isRequired,
+        handleClosePlanSales: PropTypes.func.isRequired
+    }).isRequired,
+    calendar: PropTypes.object
 }
 
 export default PlanWrapper
