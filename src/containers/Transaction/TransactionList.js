@@ -96,7 +96,7 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const prevCashList = toBoolean(_.get(props, ['location', 'query', TRANSACTION_CASH_DIALOG_OPEN]))
         const nextCashList = toBoolean(_.get(nextProps, ['location', 'query', TRANSACTION_CASH_DIALOG_OPEN]))
-        return prevCashList !== nextCashList && nextCashList === true
+        return prevCashList !== nextCashList && nextCashList
     }, ({dispatch, location}) => {
         const nextCashList = toBoolean(_.get(location, ['query', TRANSACTION_CASH_DIALOG_OPEN]))
         nextCashList && dispatch(acceptCashListFetchAction())
@@ -156,6 +156,7 @@ const enhance = compose(
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const categoryExpense = _.get(filterForm, ['values', 'categoryExpense', 'value']) || null
 
@@ -163,6 +164,7 @@ const enhance = compose(
                 [TRANSACTION_FILTER_OPEN]: false,
                 [TRANSACTION_FILTER_KEY.TYPE]: type,
                 [TRANSACTION_FILTER_KEY.CLIENT]: client,
+                [TRANSACTION_FILTER_KEY.DIVISION]: division,
                 [TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: categoryExpense,
                 [TRANSACTION_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [TRANSACTION_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
@@ -187,7 +189,10 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN]: false})})
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN]: false})
+                    })
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
                 })
@@ -211,7 +216,10 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_INCOME_DIALOG_OPEN]: false})})
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[TRANSACTION_CREATE_INCOME_DIALOG_OPEN]: false})
+                    })
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
                 })
@@ -236,7 +244,10 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})})
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})
+                    })
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
                 })
@@ -313,7 +324,13 @@ const enhance = compose(
 
         handleCloseCashDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: false, [TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]: false})})
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({
+                    [TRANSACTION_CASH_DIALOG_OPEN]: false,
+                    [TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]: false
+                })
+            })
         },
 
         handleSubmitCashDialog: props => () => {
@@ -329,12 +346,26 @@ const enhance = compose(
         },
         handleOpenCashBoxDialog: props => (user, currency) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_DIALOG_OPEN]: true, 'openUser': user, 'openCurrency': currency})})
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({
+                    [TRANSACTION_ACCEPT_DIALOG_OPEN]: true,
+                    'openUser': user,
+                    'openCurrency': currency
+                })
+            })
         },
 
         handleCloseCashBoxDialog: props => () => {
             const {location: {pathname}, filter, dispatch} = props
-            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_DIALOG_OPEN]: false, 'openUser': ZERO, 'openCurrency': ZERO})})
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({
+                    [TRANSACTION_ACCEPT_DIALOG_OPEN]: false,
+                    'openUser': ZERO,
+                    'openCurrency': ZERO
+                })
+            })
             dispatch(reset('AcceptClientTransactionForm'))
         },
         handleSubmitCashBoxDialog: props => (amount) => {
@@ -361,7 +392,14 @@ const enhance = compose(
         },
         handleOpenAcceptCashDetail: props => (user, currency) => {
             const {filter, location: {pathname}, dispatch} = props
-            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]: user + '_' + currency, 'openUser': user, 'openCurrency': currency})})
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({
+                    [TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]: user + '_' + currency,
+                    'openUser': user,
+                    'openCurrency': currency
+                })
+            })
             dispatch(pendingTransactionFetchAction(user, currency))
         },
         handleCloseAcceptCashDetail: props => () => {

@@ -21,6 +21,7 @@ import ProductTypeCreateDialog from './ProductTypeCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 import Tooltip from '../ToolTip'
+import Dot from '../Images/dot.png'
 
 const listHeader = [
     {
@@ -65,9 +66,9 @@ const enhance = compose(
         },
         subCategory: {
             width: '100%',
-            borderTop: '1px #efefef solid',
             display: 'flex',
             alignItems: 'center',
+            position: 'relative',
             '&:hover > div:last-child > div ': {
                 opacity: '1'
             },
@@ -76,6 +77,17 @@ const enhance = compose(
             },
             '& > div:last-child': {
                 paddingRight: '0'
+            },
+            '&:after': {
+                content: '""',
+                opacity: '0.5',
+                background: 'url(' + Dot + ')',
+                position: 'absolute',
+                height: '2px',
+                top: '0',
+                left: '0',
+                right: '0',
+                marginTop: '1px'
             }
         },
         parentCategory: {

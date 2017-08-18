@@ -21,8 +21,8 @@ export const clientBalanceListFetchAction = (filter) => {
     }
 }
 
-export const clientBalanceItemFetchAction = (filter, id, division) => {
-    const params = serializers.itemFilterSerializer(filter.getParams(), id, division)
+export const clientBalanceItemFetchAction = (filter, id, division, type) => {
+    const params = serializers.itemFilterSerializer(filter.getParams(), id, division, type)
     const payload = axios()
         .get(API.CLIENT_BALANCE_ITEM, {params})
         .then((response) => {
@@ -50,7 +50,7 @@ export const clientBalanceCreateExpenseAction = (formValues, clientId) => {
         })
 
     return {
-        type: actionTypes.CLIENT_TRANSACTION_EXPENSE,
+        type: actionTypes.CLIENT_TRANSACTION_CREATE,
         payload
     }
 }
@@ -58,7 +58,7 @@ export const clientBalanceCreateExpenseAction = (formValues, clientId) => {
 export const clientBalanceReturnAction = (formValues, id) => {
     const requestData = serializers.createReturnSerializer(formValues, id)
     const payload = axios()
-        .post(API.CLIENT_TRANSACTION_CREATE, requestData)
+        .post(API.CLIENT_TRANSACTION_RETURN, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,7 +67,7 @@ export const clientBalanceReturnAction = (formValues, id) => {
         })
 
     return {
-        type: actionTypes.CLIENT_TRANSACTION_EXPENSE,
+        type: actionTypes.CLIENT_TRANSACTION_RETURN,
         payload
     }
 }

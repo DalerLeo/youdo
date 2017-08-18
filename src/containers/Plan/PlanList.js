@@ -7,7 +7,13 @@ import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {ADD_PLAN, PlanWrapper, USER_GROUP} from '../../components/Plan'
+import {
+    ADD_PLAN,
+    PlanWrapper,
+    USER_GROUP,
+    OPEN_PLAN_SALES,
+    DATE
+} from '../../components/Plan'
 import {
     planCreateAction,
     planAgentsListFetchAction,
@@ -17,6 +23,7 @@ import {
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const ONE = 1
+const defaultDate = moment().format('YYYY-MM-DD')
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -30,6 +37,7 @@ const enhance = compose(
         const stat = _.get(state, ['plan', 'statistics', 'data'])
         const statLoading = _.get(state, ['plan', 'statistics', 'loading'])
         const createForm = _.get(state, ['form', 'PlanCreateForm', 'values'])
+        const selectedDate = _.get(query, DATE) || defaultDate
         const filter = filterHelper(usersList, pathname, query)
         return {
             query,
@@ -43,6 +51,7 @@ const enhance = compose(
             zones,
             zonesLoading,
             createForm,
+            selectedDate,
             filter
         }
     }),
@@ -103,6 +112,30 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ADD_PLAN]: false})})
                     dispatch(planAgentsListFetchAction(filter))
                 })
+        },
+
+        handleOpenPlanSales: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_PLAN_SALES]: true})})
+        },
+
+        handleClosePlanSales: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_PLAN_SALES]: false})})
+        },
+
+        handlePrevMonth: props => () => {
+            const {location: {pathname}, filter, selectedDate} = props
+            const prevMonth = moment(selectedDate).subtract(ONE, 'month')
+            const dateForURL = prevMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
+        handleNextMonth: props => () => {
+            const {location: {pathname}, filter, selectedDate} = props
+            const nextMonth = moment(selectedDate).add(ONE, 'month')
+            const dateForURL = nextMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
         }
     })
 )
@@ -120,13 +153,16 @@ const PlanList = enhance((props) => {
         detail,
         detailLoading,
         zones,
-        zonesLoading
+        zonesLoading,
+        currentDate
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
+    const openPlanSales = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
     const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
+    const selectedDate = _.get(location, ['query', DATE]) || currentDate
 
     const addPlan = {
         openAddPlan,
@@ -135,6 +171,12 @@ const PlanList = enhance((props) => {
         handleOpenAddPlan: props.handleOpenAddPlan,
         handleCloseAddPlan: props.handleCloseAddPlan,
         handleSubmitAddPlan: props.handleSubmitAddPlan
+    }
+
+    const planSalesDialog = {
+        openPlanSales,
+        handleOpenPlanSales: props.handleOpenPlanSales,
+        handleClosePlanSales: props.handleClosePlanSales
     }
 
     const listData = {
@@ -154,17 +196,10 @@ const PlanList = enhance((props) => {
         detailLoading
     }
 
-    const WEEK = 7
-    const defaultStart = moment()
-    const defaultEnd = moment().add(WEEK, 'days')
-
-    const PlanDateInitialValues = {
-        initialValues: {
-            period: {
-                fromDate: defaultStart,
-                toDate: defaultEnd
-            }
-        }
+    const calendar = {
+        selectedDate: selectedDate,
+        handlePrevMonth: props.handlePrevMonth,
+        handleNextMonth: props.handleNextMonth
     }
 
     return (
@@ -174,9 +209,10 @@ const PlanList = enhance((props) => {
                 usersList={listData}
                 statData={statData}
                 addPlan={addPlan}
+                planSalesDialog={planSalesDialog}
                 handleClickTab={props.handleClickTab}
                 groupId={groupId}
-                PlanDateInitialValues={PlanDateInitialValues}
+                calendar={calendar}
                 detailData={detailData}
             />
         </Layout>

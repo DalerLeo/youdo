@@ -200,3 +200,19 @@ export const orderItemFetchAction = (id) => {
     }
 }
 
+export const orderProductMobileAction = (id) => {
+    const payload = axios()
+        .get(API.PRODUCT_MOBILE, {'params': {'order': id}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PRODUCT_MOBILE,
+        payload
+    }
+}
+

@@ -54,3 +54,20 @@ export const statMarketDataFetchAction = (market) => {
         payload
     }
 }
+
+export const statMarketSumFetchAction = (filter) => {
+    const params = serializers.sumFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get(sprintf(API.STAT_MARKET_SUM), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_MARKET_SUM,
+        payload
+    }
+}

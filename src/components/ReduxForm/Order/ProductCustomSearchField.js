@@ -10,25 +10,25 @@ import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
 const getOptions = (search, type) => {
-    return axios().get(`${PATH.PRODUCT_LIST}?type=${type || ''}&page_size=1000&search=${search || ''}`)
+    return axios().get(`${PATH.PRODUCT_FOR_SELECT_LIST}?type=${type || ''}&page_size=1000&search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
 }
 
-const setMeasurementAction = (data, loading) => {
+const setExtraData = (data, loading) => {
     return {
-        type: actionTypes.PRODUCT_MEASUREMENT,
+        type: actionTypes.PRODUCT_EXTRA,
         data: data,
         loading: loading
     }
 }
 
-const getItem = (id, dispatch) => {
-    dispatch(setMeasurementAction(null, true))
-    return axios().get(sprintf(PATH.PRODUCT_ITEM, _.get(id, 'id')))
+const getItem = (id, dispatch, market) => {
+    dispatch(setExtraData(null, true))
+    return axios().get(sprintf(PATH.PRODUCT_MOBILE_ITEM, _.get(id, 'id')), {'params': {'market': market}})
         .then(({data}) => {
-            dispatch(setMeasurementAction(_.get(data, ['measurement', 'name']), false))
+            dispatch(setExtraData(data, false))
             return Promise.resolve(toCamelCase(data))
         })
 }
@@ -36,17 +36,19 @@ const getItem = (id, dispatch) => {
 const enhance = compose(
     connect((state, props) => {
         const dispatch = _.get(props, 'dispatch')
+        const market = _.get(state, ['form', 'OrderCreateForm', 'values', 'market', 'value'])
         return {
             state,
-            dispatch
+            dispatch,
+            market
         }
     })
 )
 
 const ProductCustomSearchField = enhance((props) => {
-    const {dispatch, state, ...defaultProps} = props
+    const {dispatch, state, market, ...defaultProps} = props
     const test = (id) => {
-        return getItem(id, dispatch)
+        return getItem(id, dispatch, market)
     }
     const type = _.get(state, ['form', 'OrderCreateForm', 'values', 'type', 'value'])
     return (

@@ -9,16 +9,17 @@ import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import Tooltip from '../ToolTip'
 import Search from './PlanSearch'
-import PlanDatePicker from './PlanDatePicker'
+import PlanMonthFilter from './PlanMonthFilter'
 import Details from './PlanDetails'
 import PlanCreateDialog from './PlanCreateDialog'
+import PlanSalesDialog from './PlanSalesDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Bike from 'material-ui/svg-icons/maps/directions-bike'
-import Man from 'material-ui/svg-icons/maps/transfer-within-a-station'
+import Man from 'material-ui/svg-icons/action/accessibility'
+import Loyalty from 'material-ui/svg-icons/action/loyalty'
 import Van from 'material-ui/svg-icons/maps/local-shipping'
 import Money from 'material-ui/svg-icons/maps/local-atm'
 import NotFound from '../Images/not-found.png'
@@ -229,9 +230,10 @@ const PlanWrapper = enhance((props) => {
         detailData,
         classes,
         addPlan,
+        planSalesDialog,
         handleClickTab,
         groupId,
-        PlanDateInitialValues
+        calendar
     } = props
 
     const detailId = _.get(detailData, 'id')
@@ -251,7 +253,7 @@ const PlanWrapper = enhance((props) => {
                     <div className={classes.line}>
                     </div>
                     <span>{username}</span>
-                    <span>70 / 100</span>
+                    <span>56%</span>
                 </div>
             </Tooltip>
         )
@@ -262,11 +264,11 @@ const PlanWrapper = enhance((props) => {
     const buttons = [
         {
             group: 1,
-            icon: <Bike/>
+            icon: <Man/>
         },
         {
             group: 2,
-            icon: <Man/>
+            icon: <Loyalty/>
         },
         {
             group: 3,
@@ -280,9 +282,7 @@ const PlanWrapper = enhance((props) => {
 
     const leftSide = (
         <div className={classes.leftSide}>
-            <PlanDatePicker
-                PlanDateInitialValues={PlanDateInitialValues}
-            />
+            <PlanMonthFilter calendar={calendar}/>
             <div className={classes.titleTabs}>
                 {_.map(buttons, (item) => {
                     const group = _.get(item, 'group')
@@ -333,7 +333,9 @@ const PlanWrapper = enhance((props) => {
             <div className={classes.wrapper}>
                 {leftSide}
                 <Details
+                    calendar={calendar}
                     detailData={detailData}
+                    planSalesDialog={planSalesDialog}
                     filter={filter}/>
             </div>
 
@@ -343,6 +345,11 @@ const PlanWrapper = enhance((props) => {
                 onSubmit={addPlan.handleSubmitAddPlan}
                 zonesList={addPlan.zonesList}
                 zonesLoading={addPlan.zonesLoading}
+            />
+
+            <PlanSalesDialog
+                open={planSalesDialog.openPlanSales}
+                onClose={planSalesDialog.handleClosePlanSales}
             />
         </Container>
     )
@@ -357,7 +364,13 @@ PlanWrapper.PropTypes = {
         handleOpenAddPlan: PropTypes.func.isRequired,
         handleCloseAddPlan: PropTypes.func.isRequired,
         handleSubmitAddPlan: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    planSalesDialog: PropTypes.shape({
+        openPlanSales: PropTypes.bool.isRequired,
+        handleOpenPlanSales: PropTypes.func.isRequired,
+        handleClosePlanSales: PropTypes.func.isRequired
+    }).isRequired,
+    calendar: PropTypes.object
 }
 
 export default PlanWrapper

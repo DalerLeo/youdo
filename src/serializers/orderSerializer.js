@@ -7,18 +7,19 @@ const ONE = 1
 const TWO = 2
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
-    const paymentType = 1
+    const paymentType = _.get(data, ['paymentType']) === 'cash' ? ZERO : ONE
     const paymentTerm = 1
     const paymentDate = moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD')
     const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
     const requestDeadline = moment(_.get(data, ['request_dedline'])).format('YYYY-MM-DD')
     const dealType = _.get(data, ['dealType']) === 'standart' ? ZERO : ONE
     const market = _.get(data, ['market', 'value'])
+    const user = _.get(data, ['user', 'value'])
     const products = _.map(_.get(data, ['products']), (item) => {
         return {
             id: _.get(item, ['product', 'id']),
             amount: _.get(item, 'amount'),
-            cost: _.get(item, 'cost'),
+            custom_price: _.get(item, 'cost'),
             product: _.get(item, ['product', 'value', 'id'])
         }
     })
@@ -31,6 +32,7 @@ export const createSerializer = (data) => {
         'payment_term': paymentTerm,
         'deal_type': dealType,
         market,
+        user,
         products
     }
 }
@@ -51,12 +53,12 @@ export const listFilterSerializer = (data, id) => {
         'division': _.get(defaultData, 'division'),
         'zone': _.get(defaultData, 'zone'),
         'user': _.get(defaultData, 'initiator'),
-        'dept': dept === ONE ? true : (dept === TWO ? false : null),
-        'shop': _.get(defaultData, 'shop'),
+        'debt': dept === ONE ? true : (dept === TWO ? false : null),
+        'market': _.get(defaultData, 'shop'),
         'dateDelivery': _.get(defaultData, 'dateDelivery'),
         'totalCost': _.get(defaultData, 'totalCost'),
         'totalBalance': _.get(defaultData, 'totalBalance'),
-        'status': _.get(defaultData, 'orderStatus'),
+        'status': _.get(defaultData, 'status'),
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate') || _.get(defaultData, 'fromDate'),
         'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),

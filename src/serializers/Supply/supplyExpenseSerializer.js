@@ -32,11 +32,12 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-const HUNDRED = 100
-export const expenseSupplySerializer = (supplyId) => {
+export const expenseSupplySerializer = (supplyId, data) => {
+    const {...defaultData} = data
     return {
         'supply': supplyId,
-        'page_size': HUNDRED
+        'page': _.get(defaultData, 'dPage'),
+        'page_size': _.get(defaultData, 'dPageSize')
     }
 }
 

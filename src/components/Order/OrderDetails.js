@@ -251,6 +251,7 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
+                            disabled={!(status === REQUESTED || status === READY) && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

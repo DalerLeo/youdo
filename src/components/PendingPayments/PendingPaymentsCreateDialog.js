@@ -14,6 +14,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import numberformat from '../../helpers/numberFormat'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import convertCurrency from '../../helpers/convertCurrency'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
@@ -97,33 +98,34 @@ const enhance = compose(
         const currencyRate = _.toInteger(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'currencyRate']))
         const customRate = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'customRate'])
         const amountValue = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'amount'])
+        const currency = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'cashbox', 'value', 'currency'])
 
         return {
             currencyRate,
             customRate,
-            amountValue
+            amountValue,
+            currency
         }
     }),
 )
 
 const PendingPaymentsCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate, convert, amountValue, customRate} = props
-
+    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate, convert, amountValue, customRate, currency} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const ZERO = 0
     const ONE = 1
     const id = _.get(detailData, 'id')
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const client = _.get(detailData, ['data', 'client'])
     const marketName = _.get(detailData, ['data', 'market', 'name'])
     const paymentType = _.toInteger(_.get(detailData, ['data', 'paymentType']))
     const paymentTypeOutput = (Number(_.get(detailData, ['data', 'paymentType'])) === ONE) ? 'банковский счет' : 'наличный'
-    const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), getConfig('PRIMARY_CURRENCY'))
-    const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), getConfig('PRIMARY_CURRENCY'))
+    const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), primaryCurrency)
+    const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), primaryCurrency)
     const clientName = _.get(client, 'name')
     const currentRate = (currencyRate === INDIVIDUAL) ? customRate : _.get(convert, ['data', 'amount'])
     const convertAmount = convertCurrency(amountValue, currentRate)
-    const convertLoading = _.get(convert, 'loading')
     const createdDate = _.get(detailData, ['data', 'createdDate'])
-
     return (
         <Dialog
             modal={true}
@@ -186,11 +188,8 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                         />
                                         <CashboxCurrencyField/>
                                     </div>
-                                    {(currencyRate !== INDIVIDUAL) && <div className={classes.halfSecond}>
-                                        {convertLoading
-                                        ? <div>Загрузка...</div>
-                                            : <div> После конвертации: <span className={classes.bold}>
-                                                {convertAmount} {getConfig('PRIMARY_CURRENCY')}</span></div>}
+                                    {(currency !== primaryCurrency && _.toNumber(numberWithoutSpaces(amountValue)) > ZERO) && <div className={classes.halfSecond}>
+                                        <div> После конвертации: <span className={classes.bold}>{convertAmount} {getConfig('PRIMARY_CURRENCY')}</span></div>
                                     </div>}
                                 </div>
 

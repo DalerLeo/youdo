@@ -12,24 +12,24 @@ const enhance = compose(
         }
     }),
 )
-const OrderDealTypeRadio = enhance((props) => {
+const OrderPaymentTypeRadio = enhance((props) => {
     const {input} = props
     return (
-        <div style={{width: '205px', marginBottom: '10px'}}>
+        <div style={{width: '205px', marginBottom: '20px'}}>
         <RadioButtonGroup name="dealType" onChange={input.onChange} defaultSelected={input.value}>
             <RadioButton
-                value={'standart'}
+                value={'cash'}
                 style={{margin: '10px 0'}}
-                label="Стандартная"
+                label="Наличными"
             />
             <RadioButton
-                value={'consignment'}
+                value={'bank'}
                 style={{margin: '10px 0'}}
-                label="Консигнация"
+                label="Перечислением"
             />
         </RadioButtonGroup>
         </div>
     )
 })
 
-export default OrderDealTypeRadio
+export default OrderPaymentTypeRadio

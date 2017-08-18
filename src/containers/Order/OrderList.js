@@ -39,7 +39,8 @@ import {
     orderTransactionFetchAction,
     orderItemReturnFetchAction,
     orderListPintFetchAction,
-    orderReturnCancelAction
+    orderReturnCancelAction,
+    orderProductMobileAction
 } from '../../actions/order'
 import {
     clientCreateAction
@@ -74,6 +75,7 @@ const enhance = compose(
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
         const returnData = _.get(state, ['order', 'return', 'data', 'results'])
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
+        const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -99,7 +101,8 @@ const enhance = compose(
             orderReturnList,
             returnDataLoading,
             returnDialogLoading,
-            products
+            products,
+            editProducts
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -148,6 +151,18 @@ const enhance = compose(
         if (returnItemId > ZERO) {
             dispatch(orderReturnListAction(returnItemId))
         }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
+        const nextUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
+        const prevId = _.toInteger(_.get(nextProps, ['params', 'orderId']))
+        const nextId = _.toInteger(_.get(nextProps, ['params', 'orderId']))
+
+        return (prevUpdate !== nextUpdate) || (prevId !== nextId)
+    }, ({dispatch, params}) => {
+        const orderId = _.toInteger(_.get(params, 'orderId'))
+        dispatch(orderProductMobileAction(orderId))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -309,18 +324,18 @@ const enhance = compose(
                     dispatch(orderItemFetchAction(orderId))
                 })
                 .catch((error) => {
-                    const commentError = _.get(error, ['comment', '0'])
-                    const amountError = _.map(_.get(error, 'returned_products'), (item) => {
-                        const amount = _.get(item, ['amount', '0'])
-                        if (amount) {
-                            return (
-                                <div style={{marginTop: '10px'}}>Количество возвращаемого товара превышает количество
-                                    товара в заказе</div>)
-                        }
-                        return false
+                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
+                        return <p key={index}>{item}</p>
+                    })
+
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
                     })
                     dispatch(openErrorAction({
-                        message: <div>{(commentError) && 'Введите комментарий к возврату!'} {amountError}</div>
+                        message: <div style={{padding: '0 30px'}}>
+                                {notEnough && <p>{notEnough}</p>}
+                                {errorWhole}
+                            </div>
                     }))
                 })
         },
@@ -376,8 +391,10 @@ const enhance = compose(
         },
 
         handleOpenUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter, params} = props
+            const orderId = _.toInteger(_.get(params, 'orderId'))
             hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})})
+            dispatch(orderProductMobileAction(orderId))
         },
 
         handleCloseUpdateDialog: props => () => {
@@ -404,11 +421,16 @@ const enhance = compose(
                     const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
                         return <p key={index}>{item}</p>
                     })
-                    if (notEnough) {
-                        dispatch(openErrorAction({
-                            message: <div style={{padding: '0 30px'}}>{notEnough}</div>
-                        }))
-                    }
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                                {notEnough && <p>{notEnough}</p>}
+                                {errorWhole}
+                            </div>
+                    }))
                 })
         },
 
@@ -580,6 +602,7 @@ const OrderList = enhance((props) => {
         return {
             amount: _.get(item, 'amount'),
             cost: _.get(item, 'price'),
+            customPrice: _.get(item, ['product', 'customPrice']),
             product: {
                 id: _.get(item, 'id'),
                 value: {
@@ -613,6 +636,7 @@ const OrderList = enhance((props) => {
                 deliveryTypeText = 'Самовывоз'
             }
             const dealType = _.toInteger(_.get(detail, 'dealType')) === ONE ? 'consignment' : 'standart'
+            const paymentType = _.toInteger(_.get(detail, 'paymentType')) === ONE ? 'bank' : 'cash'
 
             return {
                 client: {
@@ -629,11 +653,15 @@ const OrderList = enhance((props) => {
                     text: deliveryTypeText
                 },
                 dealType: dealType,
+                paymentType: paymentType,
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
-                products: forUpdateProducts
+                products: forUpdateProducts,
+                user: {
+                    value: _.get(detail, ['user', 'id'])
+                }
             }
         })(),
         updateLoading: detailLoading || updateLoading,

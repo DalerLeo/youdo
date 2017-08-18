@@ -88,7 +88,8 @@ export const TRANSACTION_SEND = 'finance/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 
 export const CLIENT_TRANSACTION = 'sales/client_transaction'
-export const CLIENT_TRANSACTION_CREATE = 'sales/order_return/from_client/'
+export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
+export const CLIENT_TRANSACTION_RETURN = 'sales/order_return/from_client/'
 export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
 export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
 export const CLIENT_TRANSACTION_SEND = '/transfer/'
@@ -134,8 +135,14 @@ export const PRODUCT_CREATE = `/${PRODUCT}/`
 export const PRODUCT_LIST = `/${PRODUCT}/`
 export const PRODUCT_ITEM = `/${PRODUCT}/%d/`
 export const PRODUCT_DELETE = `/${PRODUCT}/%d/`
-export const PRODUCT_EXTRA = 'sales/products_extra_list/'
 export const PRODUCT_INGREDIENT = 'main/product/%d/ingredient_list/'
+
+export const PRODUCT_FOR_SELECT = 'main/product/for_select'
+export const PRODUCT_FOR_SELECT_LIST = `${PRODUCT_FOR_SELECT}/`
+
+export const PRODUCT_MOBILE = 'main/product_mobile/'
+export const PRODUCT_MOBILE_ITEM = `${PRODUCT_MOBILE}%d/`
+export const PRODUCT_EXTRA = `${PRODUCT_MOBILE}%d/`
 
 export const PRODUCT_PRICE = 'main/product'
 export const PRODUCT_PRICE_CREATE = `/${PRODUCT_PRICE}/`
@@ -297,6 +304,7 @@ export const STAT_MARKET_LIST = 'stats/markets/'
 export const STAT_MARKET_ITEM = 'sales/order/'
 export const STAT_MARKET_GET_DOCUMENT = '/stats/markets/export'
 export const STAT_MARKET_DATA = '/stats/orders/'
+export const STAT_MARKET_SUM = '/stats/orders/sum/'
 
 export const STAT_FINANCE_LIST = 'finance/transaction/'
 export const STAT_FINANCE_DATA = 'stats/transactions/'

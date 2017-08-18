@@ -16,7 +16,7 @@ import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import CircularProgress from 'material-ui/CircularProgress'
-import {DivisionSearchField} from '../ReduxForm'
+import {DivisionSearchField, PaymentTypeSearchField} from '../ReduxForm'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -67,6 +67,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
     const data = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
     const cosmBalance = _.toNumber(_.get(data, 'cosmeticsBalance'))
     const shammBalance = _.toNumber(_.get(data, 'shampooBalance'))
+    const shampooBank = _.toNumber(_.get(data, 'shampooBank'))
     const currency = getConfig('PRIMARY_CURRENCY')
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -97,14 +98,26 @@ const ClientBalanceCreateDialog = enhance((props) => {
                         </Col>
                     </Row>
                     <Row style={{padding: '10px 30px'}}>
-                        <Col xs={6}>Баланс Шампунь:</Col>
+                        <Col xs={6}>Баланс Шампунь Нал.:</Col>
                         <Col xs={6}>
                             <span className={(shammBalance <= ZERO) ? classes.red : classes.green}>{numberFormat(shammBalance, currency)}</span>
+                        </Col>
+                    </Row>
+                    <Row style={{padding: '10px 30px'}}>
+                        <Col xs={6}>Баланс Шампунь Переч.:</Col>
+                        <Col xs={6}>
+                            <span className={(shampooBank <= ZERO) ? classes.red : classes.green}>{numberFormat(shampooBank, currency)}</span>
                         </Col>
                     </Row>
                     <form onSubmit={onSubmit} className={classes.form}>
                         <div className={classes.inContent} style={{minHeight: '100px'}}>
                             <div style={{width: '100%'}}>
+                                <Field
+                                    name="paymentType"
+                                    component={PaymentTypeSearchField}
+                                    label="Тип оплаты"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
                                 <Field
                                     name="amount"
                                     component={TextField}
