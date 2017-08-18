@@ -107,7 +107,8 @@ const enhance = compose(
             padding: '15px 30px',
             borderBottom: '1px #efefef solid',
             '&:last-child': {
-                border: 'none'
+                border: 'none',
+                paddingBottom: '20px'
             }
         },
         subtitle: {
@@ -233,6 +234,7 @@ const OrderDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Добавить возврат">
                         <IconButton
+                            disabled={!(status === REQUESTED || status === READY) && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -242,6 +244,7 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Распечатать накладную">
                         <IconButton
+                            disabled={!(status === REQUESTED || status === READY) && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -261,6 +264,7 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Отменить">
                         <IconButton
+                            disabled={!(status === REQUESTED || status === READY) && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

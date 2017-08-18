@@ -34,6 +34,9 @@ const enhance = compose(
         listWrapper: {
             '& > div:first-child': {
                 marginTop: '0 !important'
+            },
+            '& > div:last-child': {
+                marginBottom: '100px !important'
             }
         },
         wrapper: {
@@ -258,7 +261,7 @@ const headerItems = [
     },
     {
         sorting: false,
-        title: 'Забронированый',
+        title: 'Забронированые',
         xs: 2
     }
 ]
