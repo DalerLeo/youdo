@@ -26,6 +26,7 @@ const enhance = compose(
     })
 )
 
+const MINUS_ONE = -1
 const SignIn = enhance((props) => {
     const {classes, dispatch, location, loading, formValues} = props
 
@@ -35,7 +36,9 @@ const SignIn = enhance((props) => {
                 dispatch(getConfig())
                 return dispatch(authConfirmAction())
             }).then(() => {
-                window.location.href = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
+                window.location.href = _.get(location, ['query', 'redirect']) ? (_.get(location, ['query', 'redirect']).indexOf('#') > MINUS_ONE
+                    ? _.get(location, ['query', 'redirect'])
+                    : '/#' + _.get(location, ['query', 'redirect'])) : ROUTES.DASHBOARD_URL
             })
     }
 
