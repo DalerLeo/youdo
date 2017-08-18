@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
@@ -92,11 +92,6 @@ const enhance = compose(
                 '& span': {
                     fontWeight: '600',
                     marginRight: '10px'
-                },
-                '& button > div': {
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
                 }
             }
         },
@@ -112,7 +107,7 @@ const enhance = compose(
         },
         flexInline: {
             extend: 'flex',
-            border: 'none',
+            borderBottom: 'none',
             justifyContent: 'flex-start',
             '& > div, & > span': {
                 marginRight: '10px'
@@ -132,6 +127,9 @@ const enhance = compose(
                     textAlign: 'right'
                 }
             }
+        },
+        rotateBtn: {
+            transform: 'rotate(180deg)'
         },
         bottomButton: {
             bottom: '0',
@@ -176,7 +174,8 @@ const enhance = compose(
     reduxForm({
         form: 'PlanSalesForm',
         enableReinitialize: true
-    })
+    }),
+    withState('openMarkets', 'setOpenMarkets', false)
 )
 
 const actionBtnStyle = {
@@ -186,8 +185,8 @@ const actionBtnStyle = {
         height: 22
     },
     button: {
-        width: 36,
-        height: 36,
+        width: 22,
+        height: 22,
         padding: 0
     }
 }
@@ -203,7 +202,7 @@ const inputStyle = {
 }
 
 const PlanSalesDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, openMarkets, setOpenMarkets} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const infoText = 'Рекомендованая сумма расчитана <br/> исходя из результатов продаж за <br/> последние 3 месяца'
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -231,19 +230,24 @@ const PlanSalesDialog = enhance((props) => {
                         <div className={classes.flex}>
                             <div className={classes.info}>
                                 <div>Рекомендуемая сумма</div>
+                                {!openMarkets &&
                                 <Tooltip text={infoText} position="right">
                                     <Info style={actionBtnStyle.icon} color="#999"/>
-                                </Tooltip>
+                                </Tooltip>}
                             </div>
                             <div>
                                 <span>5 000 000 - 6 000 000 {primaryCurrency}</span>
                                 <IconButton
+                                    onTouchTap={() => { setOpenMarkets(!openMarkets) }}
+                                    disableTouchRipple={true}
                                     iconStyle={actionBtnStyle.icon}
-                                    style={actionBtnStyle.button}>
+                                    style={actionBtnStyle.button}
+                                    className={openMarkets && classes.rotateBtn}>
                                     <List/>
                                 </IconButton>
                             </div>
                         </div>
+                        {openMarkets &&
                         <div className={classes.list}>
                             <Row className="dottedList">
                                 <Col xs={7}>Магазин</Col>
@@ -261,7 +265,7 @@ const PlanSalesDialog = enhance((props) => {
                                 <Col xs={7}>Наименование магазина</Col>
                                 <Col xs={5}>2 000 000 - 3 200 150</Col>
                             </Row>
-                        </div>
+                        </div>}
                         <div className={classes.flexInline}>
                             <span>Сумма плана продаж</span>
                             <Field

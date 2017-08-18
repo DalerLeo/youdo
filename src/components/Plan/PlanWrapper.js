@@ -9,7 +9,7 @@ import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import Tooltip from '../ToolTip'
 import Search from './PlanSearch'
-import PlanDatePicker from './PlanDatePicker'
+import PlanMonthFilter from './PlanMonthFilter'
 import Details from './PlanDetails'
 import PlanCreateDialog from './PlanCreateDialog'
 import PlanSalesDialog from './PlanSalesDialog'
@@ -282,9 +282,7 @@ const PlanWrapper = enhance((props) => {
 
     const leftSide = (
         <div className={classes.leftSide}>
-            <PlanDatePicker
-                PlanDateInitialValues={PlanDateInitialValues}
-            />
+            <PlanMonthFilter/>
             <div className={classes.titleTabs}>
                 {_.map(buttons, (item) => {
                     const group = _.get(item, 'group')
