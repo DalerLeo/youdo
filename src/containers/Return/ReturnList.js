@@ -34,55 +34,25 @@ const enhance = compose(
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['return', 'item', 'data'])
-        const payment = _.get(state, ['return', 'payment', 'data'])
-        const paymentLoading = _.get(state, ['return', 'payment', 'loading'])
-        const returnReturnList = _.get(state, ['return', 'returnList', 'data'])
         const detailLoading = _.get(state, ['return', 'item', 'loading'])
-        const createLoading = _.get(state, ['return', 'create', 'loading'])
-        const createClientLoading = _.get(state, ['client', 'create', 'loading'])
-        const returnLoading = _.get(state, ['return', 'return', 'loading'])
-        const returnDataLoading = _.get(state, ['return', 'return', 'loading'])
-        const returnDialogLoading = _.get(state, ['return', 'returnList', 'loading'])
-        const shortageLoading = _.get(state, ['return', 'create', 'loading'])
         const updateLoading = _.get(state, ['return', 'update', 'loading'])
         const list = _.get(state, ['return', 'list', 'data'])
         const listPrint = _.get(state, ['return', 'listPrint', 'data'])
         const listPrintLoading = _.get(state, ['return', 'listPrint', 'loading'])
         const listLoading = _.get(state, ['return', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'ReturnFilterForm'])
-        const createForm = _.get(state, ['form', 'ReturnCreateForm'])
-        const clientCreateForm = _.get(state, ['form', 'ClientCreateForm'])
-        const returnForm = _.get(state, ['form', 'ReturnReturnForm'])
-        const returnData = _.get(state, ['return', 'return', 'data', 'results'])
-        const products = _.get(state, ['form', 'ReturnCreateForm', 'values', 'products'])
-        const editProducts = _.get(state, ['return', 'updateProducts', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
 
         return {
             list,
             listLoading,
             detail,
-            payment,
             listPrintLoading,
             listPrint,
             detailLoading,
-            createLoading,
-            createClientLoading,
-            returnLoading,
-            shortageLoading,
             updateLoading,
             filter,
-            filterForm,
-            paymentLoading,
-            createForm,
-            clientCreateForm,
-            returnForm,
-            returnData,
-            returnReturnList,
-            returnDataLoading,
-            returnDialogLoading,
-            products,
-            editProducts
+            filterForm
         }
     }),
     withPropsOnChange((props, nextProps) => {

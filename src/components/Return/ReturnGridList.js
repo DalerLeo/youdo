@@ -12,68 +12,57 @@ import ReturnDetails from './ReturnDetails'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
+import {Row, Col} from 'react-flexbox-grid'
 import {compose} from 'recompose'
-import moment from 'moment'
 import getConfig from '../../helpers/getConfig'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
-import Delivered from 'material-ui/svg-icons/action/done-all'
-import Available from 'material-ui/svg-icons/av/playlist-add-check'
-import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
-import Transfered from 'material-ui/svg-icons/action/motorcycle'
-import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/action/cached'
-import dateFormat from '../../helpers/dateFormat'
+import DoneIcon from 'material-ui/svg-icons/action/done-all'
+import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
+import dateFormat from '../../helpers/dateTimeFormat'
 
 const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: 'Заказ №',
-        xs: '10%'
+        title: 'Возврат',
+        xs: 1
     },
     {
         sorting: true,
-        name: 'client',
-        title: 'Клиент',
-        xs: '17.5%'
+        name: 'order',
+        title: 'Заказ',
+        xs: 1
     },
     {
         sorting: true,
-        name: 'market',
-        title: 'Магазин',
-        xs: '17.5%'
+        name: 'stock',
+        title: 'Склад',
+        xs: 1
     },
     {
         sorting: true,
         name: 'user',
-        title: 'Инициатор',
-        xs: '10%'
-    },
-    {
-        sorting: true,
-        name: 'totalCost',
-        alignRight: true,
-        title: 'Сумма заказа',
-        xs: '15%'
-    },
-    {
-        sorting: true,
-        name: 'dateDelivery',
-        title: 'Дата доставки',
-        xs: '15%'
+        title: 'Добавил',
+        xs: 3
     },
     {
         sorting: true,
         name: 'createdDate',
-        title: 'Дата создания',
-        xs: '15%'
+        title: 'Дата возврата',
+        xs: 2
     },
     {
         sorting: true,
-        name: 'acceptedCost',
-        title: 'Статус',
-        xs: '5%'
+        name: 'amount',
+        alignRight: true,
+        title: 'Сумма возврата',
+        xs: 3
+    },
+    {
+        sorting: false,
+        xs: 1
     }
 ]
 
@@ -94,43 +83,18 @@ const enhance = compose(
             height: '100%',
             display: 'flex',
             alignItems: 'center',
-            margin: '0 -30px',
+            margin: '0 -30px !important',
+            width: 'auto !important',
             padding: '0 30px',
             position: 'relative',
             '& > div': {
-                padding: '0 0.5rem',
+                '&:first-child': {
+                    paddingLeft: '0'
+                },
                 '&:last-child': {
-                    padding: '0'
+                    textAlign: 'right'
                 }
             }
-        },
-        listWrapperNew: {
-            extend: 'listWrapper',
-            fontWeight: '600',
-            '&:before': {
-                content: '""',
-                position: 'absolute',
-                left: '0',
-                bottom: '0',
-                top: '0',
-                width: '3px',
-                background: '#12aaeb'
-            }
-        },
-        dot: {
-            display: 'inline-block',
-            height: '7px',
-            width: '7px',
-            borderRadius: '50%',
-            marginRight: '6px'
-        },
-        success: {
-            extend: 'dot',
-            backgroundColor: '#81c784'
-        },
-        error: {
-            extend: 'dot',
-            backgroundColor: '#e57373'
         },
         buttons: {
             display: 'flex',
@@ -157,7 +121,7 @@ const OrderGridList = enhance((props) => {
         detailData,
         classes,
         printDialog,
-        cancelOrderReturnDialog,
+        cancelOrderReturnDialog
     } = props
 
     const orderFilterDialog = (
@@ -192,86 +156,54 @@ const OrderGridList = enhance((props) => {
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
+        const orderId = _.get(item, 'order')
+        const stockId = _.get(item, 'stock')
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
-        const client = _.get(item, ['client', 'name'])
-        const market = _.get(item, ['market', 'name'])
-        const paymentDate = moment(_.get(item, 'paymentDate'))
-        const now = moment()
-        const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
-        const dateDelivery = dateFormat((_.get(item, 'dateDelivery')), '')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
-        const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
-        const balanceTooltip = numberFormat(totalBalance, currentCurrency)
+        const user = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || 'N/A'
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
-        const isNew = _.get(item, 'isNew')
-        const REQUESTED = 0
-        const PAY_PENDING = 'Оплата ожидается: ' +
-                            paymentDate.locale('ru').format('DD MMM YYYY') +
-                            '<br/>Ожидаемый платеж: ' + balanceTooltip
-
-        const PAY_DELAY = 'Оплата ожидалась: ' +
-                            paymentDate.locale('ru').format('DD MMM YYYY') +
-                            '<br/>Долг: ' + balanceTooltip
-
-        const READY = 1
-        const GIVEN = 2
-        const DELIVERED = 3
-        const CANCELED = 4
-        const ZERO = 0
+        const PENDING = 0
+        const IN_PROGRESS = 1
+        const COMPLETED = 2
+        const CANCELLED = 3
         return (
-            <div className={isNew ? classes.listWrapperNew : classes.listWrapper} key={id}>
+            <Row className={classes.listWrapper} key={id}>
+                <Col xs={1}>{id}</Col>
+                <Col xs={1}>{orderId}</Col>
                 <Link className={classes.openDetails} to={{
                     pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
                 </Link>
-                <div style={{width: '10%'}}>{id}</div>
-                <div style={{width: '17.5%'}}>{client}</div>
-                <div style={{width: '17.5%'}}>{market}</div>
-                <div style={{width: '10%'}}>{user}</div>
-                <div style={{width: '15%', textAlign: 'right'}}>{totalPrice}</div>
-                <div style={{width: '15%'}}>{dateDelivery}</div>
-                <div style={{width: '15%'}}>{createdDate}</div>
-                <div style={{width: '5%'}} className={classes.buttons}>
-                    {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
-                        <IconButton
-                            disableTouchRipple={true}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}>
-                            <InProcess color="#f0ad4e"/>
-                        </IconButton>
-                    </Tooltip>
-                        : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
-                            <IconButton
-                                disableTouchRipple={true}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}>
-                                <Available color="#f0ad4e"/>
-                            </IconButton>
-                        </Tooltip>
-
-                            : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
+                <Col xs={1}>{stockId}</Col>
+                <Col xs={3}>{user}</Col>
+                <Col xs={2}>{createdDate}</Col>
+                <Col xs={3} style={{textAlign: 'right'}}>{totalPrice}</Col>
+                <Col xs={1}>
+                    <div className={classes.buttons}>
+                        {(status === PENDING || status === IN_PROGRESS)
+                            ? <Tooltip position="bottom" text="Ожидает">
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
                                     touch={true}>
-                                    <Delivered color="#81c784"/>
+                                    <InProcess color="#f0ad4e"/>
                                 </IconButton>
                             </Tooltip>
-                                : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
+                            : (status === COMPLETED)
+                                ? <Tooltip position="bottom" text="Завершен">
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         touch={true}>
-                                        <Transfered color="#f0ad4e"/>
+                                        <DoneIcon color="#81c784"/>
                                     </IconButton>
                                 </Tooltip>
-                                    : <Tooltip position="bottom" text="Заказ отменен">
+                                : (status === CANCELLED)
+                                    ? <Tooltip position="bottom" text="Отменен">
                                         <IconButton
                                             disableTouchRipple={true}
                                             iconStyle={iconStyle.icon}
@@ -279,30 +211,10 @@ const OrderGridList = enhance((props) => {
                                             touch={true}>
                                             <Canceled color='#e57373'/>
                                         </IconButton>
-                                    </Tooltip>
-                    }
-                    {!(status === CANCELED) &&
-                    <Tooltip position="bottom" text={(totalBalance > ZERO) && ((paymentDate.diff(now, 'days') <= ZERO))
-                        ? PAY_DELAY
-                        : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
-                            ? PAY_PENDING
-                            : 'Оплачено'}>
-                        <IconButton
-                            disableTouchRipple={true}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}>
-                            <Payment color={(totalBalance > ZERO) && ((paymentDate.diff(now, 'days') <= ZERO))
-                                ? '#e57373'
-                                : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
-                                    ? '#B7BBB7'
-                                    : '#81c784'
-                            }/>
-                        </IconButton>
-                    </Tooltip>
-                    }
-                </div>
-            </div>
+                                    </Tooltip> : null}
+                    </div>
+                </Col>
+            </Row>
         )
     })
 
@@ -339,9 +251,6 @@ const OrderGridList = enhance((props) => {
 OrderGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
-    paymentData: PropTypes.object,
-    returnListData: PropTypes.object,
-    products: PropTypes.array,
     detailData: PropTypes.object,
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,
@@ -360,7 +269,6 @@ OrderGridList.propTypes = {
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired
     }),
-    returnDataLoading: PropTypes.bool,
     printDialog: PropTypes.shape({
         openPrint: PropTypes.bool.isRequired,
         handleOpenPrintDialog: PropTypes.func.isRequired,

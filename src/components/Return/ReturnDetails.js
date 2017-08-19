@@ -1,19 +1,18 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
-import Paper from 'material-ui/Paper'
+import {Row, Col} from 'react-flexbox-grid'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
-import Return from 'material-ui/svg-icons/content/reply'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import ConfirmDialog from '../ConfirmDialog'
 import Tooltip from '../ToolTip'
-import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 import getConfig from '../../helpers/getConfig'
 
 const ZERO = 0
@@ -98,18 +97,36 @@ const enhance = compose(
             width: '320px',
             borderRight: '1px #efefef solid'
         },
-        subBlock: {
-            padding: '15px 30px',
-            borderBottom: '1px #efefef solid',
-            '&:last-child': {
-                border: 'none',
-                paddingBottom: '20px'
+        rightSide: {
+            padding: '0 30px',
+            width: 'calc(100% - 320px)'
+        },
+        list: {
+            '& .row': {
+                padding: '15px 0',
+                '&:first-child': {
+                    fontWeight: '600'
+                },
+                '&:after': {
+                    left: '0.5rem',
+                    right: '0.5rem'
+                },
+                '& > div:last-child': {
+                    textAlign: 'right'
+                },
+                '& > div:nth-child(3)': {
+                    textAlign: 'right'
+                }
             }
         },
-        subtitle: {
-            fontWeight: '600',
+        total: {
             textTransform: 'uppercase',
-            marginBottom: '10px'
+            fontWeight: '600',
+            textAlign: 'right',
+            padding: '15px 0 20px'
+        },
+        subBlock: {
+            padding: '20px 30px'
         },
         dataBox: {
             '& li': {
@@ -138,8 +155,7 @@ const enhance = compose(
                 }
             }
         }
-    }),
-    withState('openInfo', 'setOpenInfo', false)
+    })
 )
 
 const iconStyle = {
@@ -156,13 +172,10 @@ const iconStyle = {
 }
 
 const ReturnDetails = enhance((props) => {
-    const {classes,
+    const {
+        classes,
         loading,
         data,
-        setOpenInfo,
-        openInfo,
-        transactionsDialog,
-        returnDialog,
         cancelReturnReturnDialog,
         confirmDialog,
         handleOpenUpdateDialog,
@@ -172,35 +185,18 @@ const ReturnDetails = enhance((props) => {
     } = props
 
     const id = _.get(data, 'id')
-    const contactName = _.get(data, ['contact', 'name'])
-    const contactEmail = _.get(data, ['contact', 'email']) || 'N/A'
-    const contactPhone = _.get(data, ['contact', 'telephone']) || 'N/A'
-    const market = _.get(data, ['market', 'name'])
-    const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
-    const dealType = _.get(data, 'dealType')
-    const division = _.get(data, ['division', 'name'])
-
-    const client = _.get(data, ['client', 'name'])
-    const deliveryType = _.get(data, 'deliveryType')
-    const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
-    const createdDate = moment(_.get(data, 'createdDate')).format('DD.MM.YYYY')
-    const paymentDate = moment(_.get(data, 'paymentDate')).format('DD.MM.YYYY')
-
-    const REQUESTED = 0
-    const READY = 1
-    const GIVEN = 2
-    const DELIVERED = 3
+    const user = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
+    const createdDate = dateTimeFormat(_.get(data, 'createdDate'))
+    const comment = _.get(data, 'comment')
     const status = _.toInteger(_.get(data, 'status'))
+    const PENDING = 0
+    const IN_PROGRESS = 1
+    const COMPLETED = 2
+    const CANCELLED = 3
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const totalPrice = numberFormat(_.get(data, 'totalPrice'), primaryCurrency)
 
-    const zero = 0
-    const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
-    const paymentType = _.get(data, 'paymentType')
-    const totalBalance = _.get(data, 'totalBalance')
-
-    let productTotal = _.toNumber(zero)
-    _.map(_.get(data, 'products'), (item) => {
-        productTotal += _.toNumber(_.get(item, 'totalPrice'))
-    })
+    const products = _.get(data, 'returnedProducts')
     if (loading) {
         return (
             <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
@@ -212,28 +208,16 @@ const ReturnDetails = enhance((props) => {
             </div>
         )
     }
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     return (
         <div className={classes.wrapper}>
-            {type && <div className={classes.title}>
-                <div className={classes.titleLabel}>Заказ №{id}</div>
+            <div className={classes.title}>
+                <div className={classes.titleLabel}>Возврат №{id}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Добавить возврат">
-                        <IconButton
-                            disabled={!(status === REQUESTED || status === READY) && true}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={returnDialog.handleOpenReturnDialog}>
-                            <Return />
-                        </IconButton>
-                    </Tooltip>
                     <Tooltip position="bottom" text="Распечатать накладную">
                         <IconButton
-                            disabled={!(status === REQUESTED || status === READY) && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -243,7 +227,6 @@ const ReturnDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={!(status === REQUESTED || status === READY) && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -253,7 +236,6 @@ const ReturnDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Отменить">
                         <IconButton
-                            disabled={!(status === REQUESTED || status === READY) && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -262,115 +244,66 @@ const ReturnDetails = enhance((props) => {
                         </IconButton>
                     </Tooltip>
                 </div>
-            </div>}
+            </div>
             <div className={classes.content}>
                 <div className={classes.leftSide}>
                     <div className={classes.subBlock}>
                         <div className={classes.dataBox}>
                             <ul>
-                                <li onMouseEnter={() => { setOpenInfo(true) }}
-                                    onMouseLeave={() => {
-                                        if (openInfo) {
-                                            setOpenInfo(false)
-                                        }
-                                    }}>
-                                    <span>Клиент:</span>
-                                    <a><strong>{client}</strong></a>
-                                    <Paper zDepth={1} style={openInfo ? {opacity: '1', zIndex: '2', top: '0'} : {}}>
-                                        <li>
-                                            <span>Контактное лицо:</span>
-                                            <span>{contactName}</span>
-                                        </li>
-                                        <li>
-                                            <span>Телефон:</span>
-                                            <span>{contactPhone}</span>
-                                        </li>
-                                        <li>
-                                            <span>Email:</span>
-                                            <span>{contactEmail}</span>
-                                        </li>
-                                    </Paper>
-                                </li>
-
                                 <li>
-                                    <span>Магазин:</span>
-                                    <span>{market}</span>
+                                    <span>Добавил:</span>
+                                    <span>{user}</span>
                                 </li>
                                 <li>
-                                    <span>Инициатор:</span>
-                                    <span>{agent}</span>
-                                </li>
-                                <li>
-                                    <span>Дата создания</span>
+                                    <span>Дата возврата:</span>
                                     <span>{createdDate}</span>
                                 </li>
-
                                 <li>
-                                    <span>Тип сделки:</span>
-                                    <span>{(dealType === '0') ? 'Стандартная' : 'Консигнация'}</span>
-                                </li>
-                                <li>
-                                    <span>Подразделение:</span>
-                                    <span>{division}</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Баланс</div>
-                        <div className={classes.dataBox}>
-                            <ul>
-                                <li>
-                                    <span>Дата ожидаемой оплаты:</span>
-                                    <span>{paymentDate}</span>
-                                </li>
-                                <li>
-                                    <span>Тип оплаты:</span>
-                                    <span>{(paymentType === '0') ? 'Наличными' : 'Перечислением'}</span>
-                                </li>
-                                <li>
-                                    <span>Стоимость товаров</span>
-                                    <span>{numberFormat(productTotal, primaryCurrency)}</span>
-                                </li>
-                                <li>
-                                    <span>Оплачено:</span>
-                                    {(totalPaid !== zero && type) ? <span>
-                                        <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {primaryCurrency}</a>
+                                    <span>Статус:</span>
+                                    <span>
+                                        {(status === PENDING || status === IN_PROGRESS)
+                                            ? 'Ожидает'
+                                            : (status === COMPLETED)
+                                                ? 'Завершен'
+                                                : (status === CANCELLED)
+                                                    ? 'Отменен' : null}
                                     </span>
-                                        : <span>{numberFormat(totalPaid)} {primaryCurrency}</span>}
-                                </li>
-                                <li>
-                                    <span>Остаток:</span>
-                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {primaryCurrency}</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
-
                     <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Исполнение</div>
                         <div className={classes.dataBox}>
                             <ul>
-                                <li>
-                                    <span>Текущий статус:</span>
-                                    {(status === REQUESTED) ? <span className={classes.yellow}>Запрос отправлен</span>
-                                        : (status === READY) ? <span className={classes.green}>Готов</span>
-                                            : (status === GIVEN) ? <span className={classes.yellow}>Передан доставщику</span>
-                                            : (status === DELIVERED) ? <span className={classes.green}>Доставлен</span>
-                                                : <span className={classes.red}>Отменен</span>
-                                    }
-                                </li>
-                                <li>
-                                    <span>Тип передачи:</span>
-                                    <span>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</span>
-                                </li>
-                                <li>
-                                    <span>Дата передачи:</span>
-                                    <span>{dateDelivery}</span>
-                                </li>
+                                <li style={{display: 'block'}}>Причина возврата:&nbsp;<strong>{comment}</strong></li>
                             </ul>
                         </div>
+                    </div>
+                </div>
+                <div className={classes.rightSide}>
+                    <div className={classes.list}>
+                        <Row className="dottedList">
+                            <Col xs={6}>Товар</Col>
+                            <Col xs={2}>Количество</Col>
+                            <Col xs={2}>Цена ({primaryCurrency})</Col>
+                            <Col xs={2}>Сумма ({primaryCurrency})</Col>
+                        </Row>
+                        {_.map(products, (item) => {
+                            const product = _.get(item, 'product')
+                            const amount = _.toNumber(_.get(item, 'amount'))
+                            const returnId = _.get(item, 'id')
+                            const cost = _.toNumber(_.get(item, 'price'))
+                            const summmary = amount * cost
+                            return (
+                                <Row key={returnId} className="dottedList">
+                                    <Col xs={6}>{product}</Col>
+                                    <Col xs={2}>{numberFormat(amount)}</Col>
+                                    <Col xs={2}>{numberFormat(cost)}</Col>
+                                    <Col xs={2}>{numberFormat(summmary)}</Col>
+                                </Row>
+                            )
+                        })}
+                        <div className={classes.total}>Итого: {totalPrice}</div>
                     </div>
                 </div>
             </div>

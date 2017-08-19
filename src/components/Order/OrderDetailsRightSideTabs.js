@@ -122,7 +122,8 @@ const enhance = compose(
 )
 
 const OrderDetailsRightSideTabs = enhance((props) => {
-    const {classes,
+    const {
+        classes,
         data,
         returnDataLoading,
         itemReturnDialog,
@@ -184,12 +185,14 @@ const OrderDetailsRightSideTabs = enhance((props) => {
 
                                 return (
                                     <Row className="dottedList" key={index}>
-                                        <Col xs={4}>{productName} {isBonus && <strong className="greenFont">(бонус)</strong>}</Col>
+                                        <Col xs={4}>{productName} {isBonus &&
+                                        <strong className="greenFont">(бонус)</strong>}</Col>
                                         <Col xs={2}>
                                             {numberFormat(amount)}
                                             {(returnAmount > ZERO) &&
-                                                <span className="redFont">
-                                                    <Tooltip position="bottom" text={tooltipText}>-{returnAmount}</Tooltip>
+                                            <span className="redFont">
+                                                    <Tooltip position="bottom"
+                                                             text={tooltipText}>-{returnAmount}</Tooltip>
                                                 </span>} {measurement}
                                         </Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
@@ -210,55 +213,55 @@ const OrderDetailsRightSideTabs = enhance((props) => {
 
                 <Tab label="Возврат" value={TAB.ORDER_TAB_RETURN}>
                     {!_.isEmpty(returnData)
-                    ? <div className={classes.tabContent}>
-                        {!returnDataLoading ? <div className={classes.tabWrapper}>
-                            <Row className="dottedList">
-                                <Col xs={1}>Код</Col>
-                                <Col xs={6} style={{textAlign: 'left'}}>Причина возврата</Col>
-                                <Col xs={2}>Дата возврата</Col>
-                                <Col xs={2}>Сумма {primaryCurrency}</Col>
+                        ? <div className={classes.tabContent}>
+                            {!returnDataLoading ? <div className={classes.tabWrapper}>
+                                <Row className="dottedList">
+                                    <Col xs={1}>Код</Col>
+                                    <Col xs={6} style={{textAlign: 'left'}}>Причина возврата</Col>
+                                    <Col xs={2}>Дата возврата</Col>
+                                    <Col xs={2}>Сумма {primaryCurrency}</Col>
 
-                            </Row>
-                            {_.map(returnData, (item, index) => {
-                                const returnId = _.get(item, 'id')
-                                const comment = _.get(item, 'comment')
-                                const status = _.toNumber(_.get(item, 'status'))
-                                const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-                                const totalSum = numberFormat(_.get(item, 'totalPrice'))
-                                return (
-                                    <Row className="dottedList" key={index}>
-                                        <Col xs={1}><a
-                                            onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(returnId) }}
-                                            className={classes.link}>
-                                            {returnId}
-                                        </a>
-                                        </Col>
-                                        <Col style={{textAlign: 'left'}} xs={6}>{comment}</Col>
-                                        <Col xs={2}>{dateReturn}</Col>
-                                        <Col xs={2}>{totalSum}</Col>
-                                        <Col xs={1}>
-                                            <div className={classes.buttons}>
-                                                {(status === PENDING || status === IN_PROGRESS)
-                                                    ? <div className={classes.buttons}>
-                                                        <Tooltip position="bottom" text="Ожидает">
-                                                            <IconButton
-                                                                disableTouchRipple={true}
-                                                                iconStyle={iconStyle.icon}
-                                                                style={iconStyle.button}
-                                                                touch={true}>
-                                                                <InProcess color="#f0ad4e"/>
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        <Tooltip position="bottom" text="Отменить">
-                                                            <IconButton
-                                                                disableTouchRipple={true}
-                                                                iconStyle={iconStyle.icon}
-                                                                style={iconStyle.button}
-                                                                touch={true}
-                                                                onClick={() => { cancelOrderReturnOpen(returnId) }} >
-                                                                <DeleteIcon/>
-                                                            </IconButton>
-                                                        </Tooltip>
+                                </Row>
+                                {_.map(returnData, (item, index) => {
+                                    const returnId = _.get(item, 'id')
+                                    const comment = _.get(item, 'comment')
+                                    const status = _.toNumber(_.get(item, 'status'))
+                                    const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+                                    const totalSum = numberFormat(_.get(item, 'totalPrice'))
+                                    return (
+                                        <Row className="dottedList" key={index}>
+                                            <Col xs={1}><a
+                                                onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(returnId) }}
+                                                className={classes.link}>
+                                                {returnId}
+                                            </a>
+                                            </Col>
+                                            <Col style={{textAlign: 'left'}} xs={6}>{comment}</Col>
+                                            <Col xs={2}>{dateReturn}</Col>
+                                            <Col xs={2}>{totalSum}</Col>
+                                            <Col xs={1}>
+                                                <div className={classes.buttons}>
+                                                    {(status === PENDING || status === IN_PROGRESS)
+                                                        ? <div className={classes.buttons}>
+                                                            <Tooltip position="bottom" text="Ожидает">
+                                                                <IconButton
+                                                                    disableTouchRipple={true}
+                                                                    iconStyle={iconStyle.icon}
+                                                                    style={iconStyle.button}
+                                                                    touch={true}>
+                                                                    <InProcess color="#f0ad4e"/>
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                            <Tooltip position="bottom" text="Отменить">
+                                                                <IconButton
+                                                                    disableTouchRipple={true}
+                                                                    iconStyle={iconStyle.icon}
+                                                                    style={iconStyle.button}
+                                                                    touch={true}
+                                                                    onClick={() => { cancelOrderReturnOpen(returnId) }}>
+                                                                    <DeleteIcon/>
+                                                                </IconButton>
+                                                            </Tooltip>
                                                         </div>
                                                         : (status === COMPLETED)
                                                             ? <Tooltip position="bottom" text="Завершен">
@@ -269,31 +272,30 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                     touch={true}>
                                                                     <DoneIcon color="#81c784"/>
                                                                 </IconButton>
-                                                              </Tooltip>
-                                                        : (status === CANCELLED)
-                                                            ? <Tooltip position="bottom" text="Отменен">
-                                                                <IconButton
-                                                                    disableTouchRipple={true}
-                                                                    iconStyle={iconStyle.icon}
-                                                                    style={iconStyle.button}
-                                                                    touch={true}>
-                                                                    <Canceled color='#e57373'/>
-                                                                </IconButton>
-                                                              </Tooltip> : null}
-                                            </div>
-                                        </Col>
-
-                                    </Row>
-                                )
-                            })}
-                        </div>
-                            : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
-                                <div>
-                                    <CircularProgress size={40} thickness={4}/>
-                                </div>
+                                                            </Tooltip>
+                                                            : (status === CANCELLED)
+                                                                ? <Tooltip position="bottom" text="Отменен">
+                                                                    <IconButton
+                                                                        disableTouchRipple={true}
+                                                                        iconStyle={iconStyle.icon}
+                                                                        style={iconStyle.button}
+                                                                        touch={true}>
+                                                                        <Canceled color='#e57373'/>
+                                                                    </IconButton>
+                                                                </Tooltip> : null}
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    )
+                                })}
                             </div>
-                        }
-                    </div>
+                                : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
+                                    <div>
+                                        <CircularProgress size={40} thickness={4}/>
+                                    </div>
+                                </div>
+                            }
+                        </div>
                         : <div className={classes.emptyQuery}>
                             <div>В данном заказе нет возвратов</div>
                         </div>}
