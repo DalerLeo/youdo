@@ -29,7 +29,7 @@ const defaultMenu = [
             {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL},
             {name: 'План', url: ROUTES.PLAN_LIST_URL},
             {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL},
-            {name: 'Отслеживание агентов', url: ROUTES.TRACKING_LIST_URL},
+            {name: 'Отслеживание', url: ROUTES.TRACKING_LIST_URL},
             {name: 'Маркетинговые акции', url: ROUTES.PRICES_LIST_URL},
             {name: 'Зоны', url: ROUTES.ZONES_LIST_URL}
         ]

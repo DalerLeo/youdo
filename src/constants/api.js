@@ -394,3 +394,10 @@ export const DIVISION_LIST = `${DIVISION}/`
 export const DIVISION_ITEM = `${DIVISION}/%d/`
 export const DIVISION_CREATE = `/${DIVISION}/`
 export const DIVISION_DELETE = `/${DIVISION}/%d`
+
+export const RETURN = 'sales/order_return'
+export const RETURN_LIST = `${RETURN}/`
+export const RETURN_ITEM = `${RETURN}/%d/`
+export const RETURN_UPDATE = `${RETURN}/%d/`
+export const RETURN_DELETE = `${RETURN}/%d/`
+export const RETURN_CANCEL = `${RETURN}/%d/cancel/`
