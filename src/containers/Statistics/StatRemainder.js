@@ -8,6 +8,9 @@ import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import * as serializers from '../../serializers/Statistics/statRemainderSerializer'
+import getDocuments from '../../helpers/getDocument'
+import * as API from '../../constants/api'
 
 import {
     StatRemainderGridList,
@@ -81,7 +84,7 @@ const enhance = compose(
             const {filter, filterForm} = props
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
 
             filter.filterBy({
@@ -91,6 +94,11 @@ const enhance = compose(
                 [STAT_REMAINDER_FILTER_KEY.STOCK]: stock
 
             })
+        },
+        handleGetDocument: props => () => {
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.STAT_REMAINDER_GET_DOCUMENT, params)
         }
     })
 )
