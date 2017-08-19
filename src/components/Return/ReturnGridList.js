@@ -150,24 +150,14 @@ const enhance = compose(
 const OrderGridList = enhance((props) => {
     const {
         filter,
-        updateDialog,
         filterDialog,
         getDocument,
-        transactionsDialog,
-        returnDialog,
         confirmDialog,
-        itemReturnDialog,
         listData,
         detailData,
-        returnListData,
-        paymentData,
-        tabData,
         classes,
-        returnDataLoading,
         printDialog,
-        type,
         cancelOrderReturnDialog,
-        refreshAction
     } = props
 
     const orderFilterDialog = (
@@ -193,21 +183,11 @@ const OrderGridList = enhance((props) => {
         <ReturnDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
-            returnData={_.get(detailData, 'return')}
-            transactionsDialog={transactionsDialog}
-            tabData={tabData}
             getDocument={getDocument}
-            paymentData={paymentData}
-            returnListData={returnListData}
-            returnDialog={returnDialog}
-            itemReturnDialog={itemReturnDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
-            returnDataLoading={returnDataLoading}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             cancelOrderReturnDialog={cancelOrderReturnDialog}
-            type={type}
         />
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {
@@ -242,7 +222,7 @@ const OrderGridList = enhance((props) => {
         return (
             <div className={isNew ? classes.listWrapperNew : classes.listWrapper} key={id}>
                 <Link className={classes.openDetails} to={{
-                    pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                    pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
                 </Link>
@@ -334,17 +314,15 @@ const OrderGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.ORDER_LIST_URL}/>
+            <SubMenu url={ROUTES.RETURN_LIST_URL}/>
 
             <GridList
                 filter={filter}
                 list={list}
                 detail={orderDetail}
-                withoutRow={true}
                 withInvoice={true}
                 filterDialog={orderFilterDialog}
                 printDialog={printDialog}
-                refreshAction={refreshAction}
             />
 
             {detailData.data && <ConfirmDialog

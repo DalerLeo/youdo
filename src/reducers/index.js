@@ -375,7 +375,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.RETURN_LIST),
         item: createThunkReducer(actionTypes.RETURN_ITEM),
         document: createThunkReducer(actionTypes.GET_DOCUMENT),
-        update: createThunkReducer(actionTypes.RETURN_UPDATE)
+        update: createThunkReducer(actionTypes.RETURN_UPDATE),
+        cancel: createThunkReducer(actionTypes.RETURN_CANCEL)
     }),
     snackbar: snackbarReducer(),
     error: errorReducer(),

@@ -11,7 +11,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import {ClientSearchField, MarketSearchField, UsersSearchField, DeptSearchField, ZoneSearchField, DivisionSearchField} from '../ReduxForm'
-import ReturnStatusSearchField from '../ReduxForm/Return/ReturnStatusSearchField'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -190,7 +189,6 @@ const ReturnFilterForm = enhance((props) => {
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
-                        <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusSearchField} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
                         <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersSearchField} label="Инициатор "/>

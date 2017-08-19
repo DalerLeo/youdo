@@ -21,9 +21,6 @@ import {
     returnListFetchAction,
     returnDeleteAction,
     returnItemFetchAction,
-    returnReturnListAction,
-    returnTransactionFetchAction,
-    returnItemReturnFetchAction,
     returnListPintFetchAction,
     returnReturnCancelAction
 } from '../../actions/return'
@@ -32,7 +29,6 @@ import {
 } from '../../actions/client'
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -94,28 +90,6 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(returnListFetchAction(filter))
     }),
-    withPropsOnChange((props, nextProps) => {
-        const prevTransaction = _.get(props, ['location', 'query', 'openTransactionsDialog'])
-        const nextTransaction = _.get(nextProps, ['location', 'query', 'openTransactionsDialog'])
-        return prevTransaction !== nextTransaction && nextTransaction === 'true'
-    }, ({dispatch, params}) => {
-        const returnId = _.toInteger(_.get(params, 'returnId'))
-        if (returnId > ZERO) {
-            dispatch(returnTransactionFetchAction(returnId))
-        }
-    }),
-    withPropsOnChange((props, nextProps) => {
-        const prevReturnId = _.get(props, ['params', 'returnId'])
-        const nextReturnId = _.get(nextProps, ['params', 'returnId'])
-        const prevTab = _.get(props, ['location', 'query', 'tab'])
-        const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
-        return (prevReturnId !== nextReturnId || prevTab !== nextTab) && nextTab === 'return'
-    }, ({dispatch, params}) => {
-        const returnId = _.toInteger(_.get(params, 'returnId'))
-        if (returnId > ZERO) {
-            dispatch(returnItemReturnFetchAction(returnId))
-        }
-    }),
 
     withPropsOnChange((props, nextProps) => {
         const returnId = _.get(nextProps, ['params', 'returnId'])
@@ -124,17 +98,6 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const returnId = _.toInteger(_.get(params, 'returnId'))
         returnId && dispatch(returnItemFetchAction(returnId))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const prevReturn = _.toInteger(_.get(props, ['location', 'query', 'openReturnItemReturnDialog']))
-        const nextReturn = _.toInteger(_.get(nextProps, ['location', 'query', 'openReturnItemReturnDialog']))
-        return prevReturn !== nextReturn && nextReturn > ZERO
-    }, ({dispatch, location}) => {
-        const returnItemId = _.toInteger(_.get(location, ['query', 'openReturnItemReturnDialog']))
-        if (returnItemId > ZERO) {
-            dispatch(returnReturnListAction(returnItemId))
-        }
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -231,20 +194,6 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CANCEL_RETURN_RETURN_DIALOG_OPEN]: false})})
         },
-        handleSubmitCancelReturnReturnDialog: props => () => {
-            const {dispatch, filter, params, location: {pathname, query}} = props
-            const returnReturnId = _.toInteger(_.get(query, CANCEL_RETURN_RETURN_DIALOG_OPEN))
-            const returnId = _.toInteger(_.get(params, 'returnId'))
-            return dispatch(returnReturnCancelAction(returnReturnId))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно отменена'}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[CANCEL_RETURN_RETURN_DIALOG_OPEN]: false})})
-                    dispatch(returnItemReturnFetchAction(returnId))
-                    dispatch(returnItemFetchAction(returnId))
-                })
-        },
 
         handleOpenCreateClientDialog: props => () => {
             const {location: {pathname}, filter} = props
@@ -303,14 +252,12 @@ const ReturnList = enhance((props) => {
         detail,
         returnData,
         returnReturnList,
-        payment,
         detailLoading,
         returnDataLoading,
         filter,
         layout,
         products,
         openPrint,
-        paymentLoading,
         params,
         listPrint,
         listPrintLoading
@@ -389,12 +336,6 @@ const ReturnList = enhance((props) => {
         handleCloseDetail: props.handleCloseDetail
     }
 
-    const paymentData = {
-        id: detailId,
-        data: payment,
-        paymentLoading
-    }
-
     const printDialog = {
         openPrint,
         handleOpenPrintDialog: props.handleOpenPrintDialog,
@@ -417,7 +358,6 @@ const ReturnList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 returnListData={returnReturnList}
-                paymentData={paymentData}
                 getDocument={getDocument}
                 confirmDialog={confirmDialog}
                 returnDataLoading={returnDataLoading}

@@ -26,6 +26,7 @@ const defaultMenu = [
         url: ROUTES.ORDER_LIST_URL,
         childs: [
             {name: 'Заказы', url: ROUTES.ORDER_LIST_URL},
+            {name: 'Возвраты', url: ROUTES.RETURN_LIST_URL},
             {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL},
             {name: 'План', url: ROUTES.PLAN_LIST_URL},
             {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL},
