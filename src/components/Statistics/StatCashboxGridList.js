@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -268,10 +269,8 @@ const StatCashboxGridList = enhance((props) => {
         }
     }
     const list = _.map(_.get(listData, 'data'), (item) => {
-        const ZERO = 0
-        const TEN = 10
-        const bank = 1
         const id = _.get(item, 'id')
+        const bank = 1
         const name = _.get(item, 'name')
         const currency = _.get(item, ['currency', 'name'])
         const balance = numberFormat(_.get(item, 'balance'), currency)
@@ -279,13 +278,14 @@ const StatCashboxGridList = enhance((props) => {
         const cashierSecondName = _.get(item, ['cashier', 'secondName'])
         const cashier = cashierFirstName + ' ' + cashierSecondName
         const type = _.toInteger(_.get(item, 'type')) === bank ? 'банковский счет' : 'наличные'
-
+        const ZERO = 0
+        const TEN = 10
         const config = {
             chart: {
                 type: 'area',
                 height: 100,
                 showAxes: false,
-                spacing: [TEN, ZERO, TEN, ZERO]
+                spacing: [ZERO, TEN, ZERO, TEN]
             },
             title: {
                 text: '',

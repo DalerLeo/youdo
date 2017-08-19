@@ -316,108 +316,32 @@ const StatProductMoveGridList = enhance((props) => {
         }
     }
 
-    const tableLeft = (
-        <div className={classes.leftTable}>
-            <div><span>Товар</span></div>
-            <div><span>Наименование товара</span></div>
-            <div><span>Наименование товара</span></div>
-            <div><span>Наименование товара</span></div>
-            <div><span>Наименование товара</span></div>
-            <div><span>Наименование товара</span></div>
-            <div><span>Наименование товара</span></div>
-        </div>
-    )
+    const tableLeft = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name') || 'No'
+        return (
+            <div key={id}><span>{name}</span></div>
+        )
+    })
 
-    const tableList = (
-        <table className={classes.mainTable}>
-            <tbody className={classes.tableBody}>
-            <tr className={classes.title}>
-                <td rowSpan={2}>ID товара</td>
-                <td colSpan={2}>Остаток на начало периода</td>
-                <td colSpan={2}>Поступивший товара за период</td>
-                <td colSpan={2}>Выданный товара за период</td>
-                <td colSpan={2}>Остаток на конец</td>
+    const tableList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const code = _.get(item, 'code') || 'неизвестна'
+        return (
+            <tr key={id} className={classes.tableRow}>
+                <td>{code}</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+                <td>300 00 шт</td>
+                <td>20 000 000 UZS</td>
+            </tr>
+        )
+    })
 
-            </tr>
-            <tr className={classes.subTitle}>
-                <td>Кол-во</td>
-                <td>Стоимость</td>
-                <td>Кол-во</td>
-                <td>Стоимость</td>
-                <td>Кол-во</td>
-                <td>Стоимость</td>
-                <td>Кол-во</td>
-                <td>Стоимость</td>
-            </tr>
-            <tr className={classes.tableRow}>
-                <td>1</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-            </tr>
-            <tr className={classes.tableRow}>
-                <td>1</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-            </tr>
-            <tr className={classes.tableRow}>
-                <td>1</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-            </tr>
-            <tr className={classes.tableRow}>
-                <td>1</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-            </tr>
-            <tr className={classes.tableRow}>
-                <td>1</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-            </tr>
-            <tr className={classes.tableRow}>
-                <td>1</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-            </tr>
-            </tbody>
-        </table>
-    )
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -526,13 +450,40 @@ const StatProductMoveGridList = enhance((props) => {
                                 <Pagination filter={filter}/>
                             </div>
                             <div className={classes.tableWrapper}>
-                                {tableLeft}
-                                <div>{tableList}</div>
+                                <div className={classes.leftTable}>
+                                    <div><span>Товар</span></div>
+                                    {tableLeft}
+                                </div>
+                                <div>
+                                    <table className={classes.mainTable}>
+                                        <tbody className={classes.tableBody}>
+                                        <tr className={classes.title}>
+                                            <td rowSpan={2}>ID товара</td>
+                                            <td colSpan={2}>Остаток на начало периода</td>
+                                            <td colSpan={2}>Поступивший товара за период</td>
+                                            <td colSpan={2}>Выданный товара за период</td>
+                                            <td colSpan={2}>Остаток на конец</td>
+
+                                        </tr>
+                                        <tr className={classes.subTitle}>
+                                            <td>Кол-во</td>
+                                            <td>Стоимость</td>
+                                            <td>Кол-во</td>
+                                            <td>Стоимость</td>
+                                            <td>Кол-во</td>
+                                            <td>Стоимость</td>
+                                            <td>Кол-во</td>
+                                            <td>Стоимость</td>
+                                        </tr>
+                                        {tableList}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
                             {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
-                                <div>По вашему запросу ничего не найдено</div>
-                            </div>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>
                                 : null}
                         </div>
                     }
