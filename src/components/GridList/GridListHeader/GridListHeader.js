@@ -76,6 +76,9 @@ const enhance = compose(
             },
             '& .row > div:first-child': {
                 paddingLeft: '0'
+            },
+            '& .row > div:last-child': {
+                paddingRight: '0'
             }
         },
         withoutRowDiv: {

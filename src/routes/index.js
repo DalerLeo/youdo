@@ -12,6 +12,7 @@ import {TransactionList} from '../containers/Transaction'
 import {ClientTransactionList} from '../containers/ClientTransaction'
 import {SupplyList} from '../containers/Supply'
 import {OrderList} from '../containers/Order'
+import {ReturnList} from '../containers/Return'
 import {ProductList} from '../containers/Product'
 import {ProductTypeList} from '../containers/ProductType'
 import {ProductPriceList} from '../containers/ProductPrice'
@@ -185,6 +186,17 @@ export default {
                 {
                     path: ROUTES.ORDER_ITEM_URL,
                     component: userIsAuth(OrderList)
+                }
+            ]
+        },
+        // Return
+        {
+            path: ROUTES.RETURN_LIST_URL,
+            component: userIsAuth(ReturnList),
+            childRoutes: [
+                {
+                    path: ROUTES.RETURN_ITEM_URL,
+                    component: userIsAuth(ReturnList)
                 }
             ]
         },

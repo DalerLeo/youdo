@@ -259,3 +259,8 @@ export const DIVISION = 'division'
 export const DIVISION_LIST_URL = `/${DIVISION}`
 export const DIVISION_ITEM_URL = `${DIVISION_LIST_URL}/:divisionId`
 export const DIVISION_ITEM_PATH = `${DIVISION}/%d`
+
+export const RETURN = 'return'
+export const RETURN_LIST_URL = `/${RETURN}`
+export const RETURN_ITEM_URL = `/${RETURN}/:returnId`
+export const RETURN_ITEM_PATH = `/${RETURN}/%d`

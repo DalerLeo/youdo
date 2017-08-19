@@ -371,6 +371,14 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.DIVISION_UPDATE),
         item: createThunkReducer(actionTypes.DIVISION_ITEM)
     }),
+    return: combineReducers({
+        list: createThunkReducer(actionTypes.RETURN_LIST),
+        item: createThunkReducer(actionTypes.RETURN_ITEM),
+        document: createThunkReducer(actionTypes.GET_DOCUMENT),
+        update: createThunkReducer(actionTypes.RETURN_UPDATE),
+        cancel: createThunkReducer(actionTypes.RETURN_CANCEL),
+        listPrint: createThunkReducer(actionTypes.RETURN_PRINT)
+    }),
     snackbar: snackbarReducer(),
     error: errorReducer(),
     form: formReducer,
