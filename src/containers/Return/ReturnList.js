@@ -133,29 +133,27 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'data', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
-            const deliveryFromDate = _.get(filterForm, ['values', 'deliveryDate', 'fromDate']) || null
-            const deliveryToDate = _.get(filterForm, ['values', 'deliveryDate', 'toDate']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const order = _.get(filterForm, ['values', 'order', 'value']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const status = _.get(filterForm, ['values', 'status', 'value']) || null
-            const shop = _.get(filterForm, ['values', 'shop', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
-            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
-            const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
+            const market = _.get(filterForm, ['values', 'market', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
+            const product = _.get(filterForm, ['values', 'product', 'value']) || null
+            const code = _.get(filterForm, ['values', 'code']) || null
 
             filter.filterBy({
                 [RETURN_FILTER_OPEN]: false,
+                [RETURN_FILTER_KEY.TYPE]: type,
+                [RETURN_FILTER_KEY.ORDER]: order,
                 [RETURN_FILTER_KEY.CLIENT]: client,
                 [RETURN_FILTER_KEY.STATUS]: status,
                 [RETURN_FILTER_KEY.INITIATOR]: initiator,
-                [RETURN_FILTER_KEY.ZONE]: zone,
-                [RETURN_FILTER_KEY.SHOP]: shop,
-                [RETURN_FILTER_KEY.DIVISION]: division,
-                [RETURN_FILTER_KEY.DEPT]: dept,
+                [RETURN_FILTER_KEY.MARKET]: market,
+                [RETURN_FILTER_KEY.PRODUCT]: product,
+                [RETURN_FILTER_KEY.CODE]: code,
                 [RETURN_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [RETURN_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
-                [RETURN_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
-                [RETURN_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD')
+                [RETURN_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
 

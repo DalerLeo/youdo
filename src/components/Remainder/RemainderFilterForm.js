@@ -1,15 +1,14 @@
 import React from 'react'
 import _ from 'lodash'
 import {compose, withHandlers} from 'recompose'
+import {connect} from 'react-redux'
 import {reduxForm, Field} from 'redux-form'
 import injectSheet from 'react-jss'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import PropTypes from 'prop-types'
-import StockSearchField from '../ReduxForm/Stock/StockSearchField'
-import ProductTypeSearchField from '../ReduxForm/Product/ProductTypeSearchField'
-import RemainderStatusSearchField from '../ReduxForm/Remainder/RemainderStatusSearchField'
+import {ProductTypeParentSearchField, ProductTypeChildSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {Link} from 'react-router'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -17,9 +16,10 @@ import CloseIcon from '../CloseIcon'
 export const REMAINDER_FILTER_OPEN = 'openFilterDialog'
 
 export const REMAINDER_FILTER_KEY = {
-    TYPE: 'type',
-    STOCK: 'stock',
-    STATUS: 'status'
+    BRAND: 'brand',
+    TYPE_PARENT: 'typeParent',
+    TYPE_CHILD: 'typeChild',
+    MEASUREMENT: 'measurement'
 }
 
 const enhance = compose(
@@ -103,6 +103,12 @@ const enhance = compose(
         form: 'RemainderFilterForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'RemainderFilterForm', 'values', 'typeParent', 'value'])
+        return {
+            typeParent
+        }
+    }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
@@ -117,7 +123,7 @@ const enhance = compose(
 )
 
 const RemainderFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, typeParent} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -157,23 +163,34 @@ const RemainderFilterForm = enhance((props) => {
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
                         <Field
+                            name="typeParent"
                             className={classes.inputFieldCustom}
-                            name="stock"
-                            component={StockSearchField}
-                            label="Склад"
-                            fullWidth={true}/>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="type"
-                            component={ProductTypeSearchField}
+                            component={ProductTypeParentSearchField}
+                            label="Тип продукта"
                             fullWidth={true}
-                            label="Тип товара"/>
-                        <Field
+                        />
+                        {typeParent ? <Field
+                            name="typeChild"
                             className={classes.inputFieldCustom}
-                            name="status"
+                            component={ProductTypeChildSearchField}
+                            parentType={typeParent}
+                            label="Подкатегория"
                             fullWidth={true}
-                            component={RemainderStatusSearchField}
-                            label="Статус"/>
+                        /> : null}
+                        <div>
+                            <Field
+                                className={classes.inputFieldCustom}
+                                name="measurement"
+                                component={MeasurementSearchField}
+                                label="Мера"/>
+                        </div>
+                        <div>
+                            <Field
+                                className={classes.inputFieldCustom}
+                                name="brand"
+                                component={BrandSearchField}
+                                label="Бренд"/>
+                        </div>
                     </div>
 
                     <RaisedButton

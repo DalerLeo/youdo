@@ -32,20 +32,20 @@ const listHeader = [
     {
         sorting: true,
         name: 'order',
-        title: 'Заказ',
-        xs: 1
+        title: 'От каго',
+        xs: 2
     },
     {
         sorting: true,
         name: 'stock',
         title: 'Склад',
-        xs: 1
+        xs: 2
     },
     {
         sorting: true,
         name: 'user',
         title: 'Добавил',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -58,7 +58,7 @@ const listHeader = [
         name: 'amount',
         alignRight: true,
         title: 'Сумма возврата',
-        xs: 3
+        xs: 2
     },
     {
         sorting: false,
@@ -156,8 +156,8 @@ const OrderGridList = enhance((props) => {
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const orderId = _.get(item, 'order')
-        const stockId = _.get(item, 'stock')
+        const orderId = _.get(item, 'order') ? _.get(item, ['order', 'id']) : _.get(item, ['client', 'name'])
+        const stockId = _.get(item, ['stock', 'name'])
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const user = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'))
@@ -170,16 +170,16 @@ const OrderGridList = enhance((props) => {
         return (
             <Row className={classes.listWrapper} key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={1}>{orderId}</Col>
+                <Col xs={2}>{orderId}</Col>
                 <Link className={classes.openDetails} to={{
                     pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
                 </Link>
-                <Col xs={1}>{stockId}</Col>
-                <Col xs={3}>{user}</Col>
+                <Col xs={2}>{stockId}</Col>
+                <Col xs={2}>{user}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={3} style={{textAlign: 'right'}}>{totalPrice}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{totalPrice}</Col>
                 <Col xs={1}>
                     <div className={classes.buttons}>
                         {(status === PENDING || status === IN_PROGRESS)

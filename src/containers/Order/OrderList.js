@@ -382,6 +382,20 @@ const enhance = compose(
                         })
                     })
                     dispatch(orderListFetchAction(filter))
+                }).catch((error) => {
+                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
+                        return <p key={index}>{item}</p>
+                    })
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {notEnough && <p>{notEnough}</p>}
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -411,8 +425,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: false})})
                     dispatch(orderListFetchAction(filter))
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
                         return <p key={index}>{item}</p>
                     })
@@ -459,6 +472,20 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CLIENT_CREATE_DIALOG_OPEN]: false}))
+                }).catch((error) => {
+                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
+                        return <p key={index}>{item}</p>
+                    })
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {notEnough && <p>{notEnough}</p>}
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 

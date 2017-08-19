@@ -62,8 +62,12 @@ import DivisionSearchField from './DivisionSearchField'
 import Pagination from './Pagination'
 import ClientBalanceReturnTotalSum from './ClientBalance/ClientBalanceReturnTotalSum'
 import ClientBalanceReturnProductList from './ClientBalance/ClientBalanceReturnProductList'
+import ReturnStatusSearchField from './ReturnStatusSearchField'
+import ReturnTypeSearchField from './ReturnTypeSearchField'
 
 export {
+    ReturnStatusSearchField,
+    ReturnTypeSearchField,
     ZoneSearchField,
     PriceMainRadioButton,
     normalizeDiscount,
