@@ -4,6 +4,7 @@ import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
+import {reset} from 'redux-form'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
@@ -144,14 +145,16 @@ const enhance = compose(
                 })
         },
         handleOpenClientReturnDialog: props => (id) => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
+            dispatch(reset('ClientBalanceReturnForm'))
             hashHistory.push({
                 pathname,
                 query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: id})})
         },
 
         handleCloseClientReturnDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
+            dispatch(reset('ClientBalanceReturnForm'))
             hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: MINUS_ONE})})
         },
         handleSubmitClientReturnDialog: props => () => {
@@ -164,6 +167,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: MINUS_ONE})})
                     dispatch(clientBalanceListFetchAction(filter))
+                    dispatch(reset('ClientBalanceReturnForm'))
                 })
         }
     })

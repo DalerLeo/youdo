@@ -81,14 +81,16 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-            const status = _.get(filterForm, ['values', 'status', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeChild', 'value']) || null
+            const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
+            const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
+            const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
             filter.filterBy({
                 [REMAINDER_FILTER_OPEN]: false,
-                [REMAINDER_FILTER_KEY.TYPE]: type,
-                [REMAINDER_FILTER_KEY.STOCK]: stock,
-                [REMAINDER_FILTER_KEY.STATUS]: status
+                [REMAINDER_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [REMAINDER_FILTER_KEY.TYPE_CHILD]: typeChild,
+                [REMAINDER_FILTER_KEY.MEASUREMENT]: measurement,
+                [REMAINDER_FILTER_KEY.BRAND]: brand
             })
         },
         handleSubmitSearch: props => () => {
