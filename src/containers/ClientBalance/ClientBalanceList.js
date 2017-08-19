@@ -25,6 +25,7 @@ import {
     clientBalanceReturnAction
 } from '../../actions/clientBalance'
 import {openSnackbarAction} from '../../actions/snackbar'
+import {openErrorAction} from '../../actions/error'
 
 const MINUS_ONE = -1
 const enhance = compose(
@@ -110,13 +111,24 @@ const enhance = compose(
             const {filterItem} = props
             hashHistory.push({
                 pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
-                query: filterItem.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: true, 'division': division, 'type': type})
+                query: filterItem.getParams({
+                    [CLIENT_BALANCE_INFO_DIALOG_OPEN]: true,
+                    'division': division,
+                    'type': type
+                })
             })
         },
 
         handleCloseInfoDialog: props => () => {
             const {location: {pathname}, filterItem} = props
-            hashHistory.push({pathname, query: filterItem.getParams({[CLIENT_BALANCE_INFO_DIALOG_OPEN]: false, 'dPage': null, 'dPageSize': null})})
+            hashHistory.push({
+                pathname,
+                query: filterItem.getParams({
+                    [CLIENT_BALANCE_INFO_DIALOG_OPEN]: false,
+                    'dPage': null,
+                    'dPageSize': null
+                })
+            })
         },
         handleOpenCreateDialog: props => (id) => {
             const {filter} = props
@@ -142,6 +154,21 @@ const enhance = compose(
                         query: filter.getParams({[CLIENT_BALANCE_CREATE_DIALOG_OPEN]: false})
                     })
                     dispatch(clientBalanceListFetchAction(filter))
+                }).catch((error) => {
+                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
+                        return <p key={index}>{item}</p>
+                    })
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b
+                            style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {notEnough && <p>{notEnough}</p>}
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
         handleOpenClientReturnDialog: props => (id) => {
@@ -149,7 +176,8 @@ const enhance = compose(
             dispatch(reset('ClientBalanceReturnForm'))
             hashHistory.push({
                 pathname,
-                query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: id})})
+                query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: id})
+            })
         },
 
         handleCloseClientReturnDialog: props => () => {
@@ -165,9 +193,27 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: MINUS_ONE})})
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: MINUS_ONE})
+                    })
                     dispatch(clientBalanceListFetchAction(filter))
                     dispatch(reset('ClientBalanceReturnForm'))
+                }).catch((error) => {
+                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
+                        return <p key={index}>{item}</p>
+                    })
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b
+                            style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {notEnough && <p>{notEnough}</p>}
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         }
     })

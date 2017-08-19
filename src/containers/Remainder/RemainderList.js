@@ -120,18 +120,18 @@ const enhance = compose(
                     dispatch(remainderListFetchAction(filter))
                 })
                 .catch((error) => {
-                    const fromStock = _.get(error, ['from_stock', '0']) ? 'Выберите склад' : ''
-                    const toStock = _.get(error, ['to_stock', '0']) ? 'Выберите склад для отправки' : ''
-                    const err1 = _.get(error, ['non_field_errors']) || ''
-                    const err2 = (
-                                    <div>
-                                        <div>{fromStock}</div>
-                                        <div>{toStock}</div>
-                                        <div>{err1}</div>
-                                    </div>
-                                )
+                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
+                        return <p key={index}>{item}</p>
+                    })
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+
                     dispatch(openErrorAction({
-                        message: <div>{err2}</div>
+                        message: <div style={{padding: '0 30px'}}>
+                            {notEnough && <p>{notEnough}</p>}
+                            {errorWhole}
+                        </div>
                     }))
                 })
         },
@@ -153,15 +153,19 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: false})})
                     dispatch(remainderListFetchAction(filter))
-                })
-                .catch((error) => {
-                    const amountError = _.get(error, ['products', '0'])
-                    let errorText = 'Заполните все поля!'
-                    if (amountError) {
-                        errorText = 'Недостаточно товаров на складе'
-                    }
+                }).catch((error) => {
+                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
+                        return <p key={index}>{item}</p>
+                    })
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+
                     dispatch(openErrorAction({
-                        message: <div>{errorText}</div>
+                        message: <div style={{padding: '0 30px'}}>
+                            {notEnough && <p>{notEnough}</p>}
+                            {errorWhole}
+                        </div>
                     }))
                 })
         },
