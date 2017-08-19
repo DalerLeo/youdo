@@ -201,6 +201,7 @@ const OrderDetails = enhance((props) => {
     const READY = 1
     const GIVEN = 2
     const DELIVERED = 3
+    const CANCELED = 4
     const status = _.toInteger(_.get(data, 'status'))
 
     const zero = 0
@@ -234,7 +235,7 @@ const OrderDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Добавить возврат">
                         <IconButton
-                            disabled={!(status === REQUESTED || status === READY) && true}
+                            disabled={!(status === DELIVERED || status === GIVEN)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -244,7 +245,7 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Распечатать накладную">
                         <IconButton
-                            disabled={!(status === REQUESTED || status === READY) && true}
+                            disabled={(status === CANCELED)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -254,7 +255,7 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={!(status === REQUESTED || status === READY) && true}
+                            disabled={!(status === REQUESTED || status === READY)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -264,7 +265,7 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Отменить">
                         <IconButton
-                            disabled={!(status === REQUESTED || status === READY) && true}
+                            disabled={(status === CANCELED)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -366,7 +367,7 @@ const OrderDetails = enhance((props) => {
                                 <li>
                                     <span>Текущий статус:</span>
                                     {(status === REQUESTED) ? <span className={classes.yellow}>Запрос отправлен</span>
-                                        : (status === READY) ? <span className={classes.green}>Готов</span>
+                                        : (status === READY) ? <span className={classes.green}>Есть на складе</span>
                                             : (status === GIVEN) ? <span className={classes.yellow}>Передан доставщику</span>
                                             : (status === DELIVERED) ? <span className={classes.green}>Доставлен</span>
                                                 : <span className={classes.red}>Отменен</span>
