@@ -6,8 +6,9 @@ import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import {connect} from 'react-redux'
 import {reduxForm, Field} from 'redux-form'
-import {StockSearchField, ProductTypeSearchField, ProductSearchField, DivisionSearchField} from '../ReduxForm'
+import {StockSearchField, ProductTypeParentSearchField, ProductTypeChildSearchField} from '../ReduxForm'
 import StatRemainderDialog from './StatRemainderDialog'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
@@ -182,6 +183,12 @@ const enhance = compose(
         form: 'StatRemainderFilterForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'StatRemainderFilterForm', 'values', 'typeParent', 'value'])
+        return {
+            typeParent
+        }
+    })
 )
 
 const StatRemainderGridList = enhance((props) => {
@@ -194,7 +201,8 @@ const StatRemainderGridList = enhance((props) => {
         getDocument,
         handleSubmit,
         filterItem,
-        onSubmit
+        onSubmit,
+        typeParent
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -218,10 +226,11 @@ const StatRemainderGridList = enhance((props) => {
     }
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={4}>Товар</Col>
-            <Col xs={3}>Тип товара</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Всего товаров</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Брак</Col>
+            <Col xs={3}>Товар</Col>
+            <Col xs={2}>Тип товара</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Всего товаров</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Брак</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Забронировано</Col>
             <Col xs={1} style={{display: 'none'}}>|</Col>
 
         </Row>
@@ -234,15 +243,17 @@ const StatRemainderGridList = enhance((props) => {
         const measurement = _.get(item, ['measurement', 'name'])
         const defects = numberFormat(_.get(item, 'defects'), measurement)
         const balance = numberFormat(Number(_.get(item, 'balance')) + Number(_.get(item, 'defects')), measurement)
+        const reserved = numberFormat(Number(_.get(item, 'reserved')) + Number(_.get(item, 'reserved')), measurement)
         return (
             <Row key={id} className="dottedList">
-                <Col xs={4}>
+                <Col xs={3}>
                     <div>{product}</div>
                 </Col>
-                <Col xs={3}>{productType}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end', fontWeight: '600', fontSize: '15px'}}>{balance}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end', fontWeight: '600', fontSize: '15px'}}>{defects}</Col>
-                <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
+                <Col xs={2}>{productType}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{balance}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{defects}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{reserved}</Col>
+                <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right', paddingRight: '0'}}>
                     <IconButton
                         onTouchTap={() => { statRemainderDialog.handleOpenStatRemainderDialog(id) }}>
                         <List color="#12aaeb"/>
@@ -274,22 +285,16 @@ const StatRemainderGridList = enhance((props) => {
                                     fullWidth={true}/>
                                 <Field
                                     className={classes.inputFieldCustom}
+                                    name="typeParent"
+                                    component={ProductTypeParentSearchField}
+                                    label="Тип товара"
+                                    fullWidth={true}/>
+                                {typeParent && <Field
+                                    className={classes.inputFieldCustom}
                                     name="type"
-                                    component={ProductTypeSearchField}
-                                    label="Тип товаров"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="product"
-                                    component={ProductSearchField}
-                                    label="Товары"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="division"
-                                    component={DivisionSearchField}
-                                    label="Подразделение"
-                                    fullWidth={true}/>
+                                    component={ProductTypeChildSearchField}
+                                    label="Подкатегория"
+                                    fullWidth={true}/>}
                                 <IconButton
                                     className={classes.searchButton}
                                     iconStyle={iconStyle.icon}
