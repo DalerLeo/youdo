@@ -8,25 +8,22 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import {openErrorAction} from '../../actions/error'
 
 import {
     RETURN_FILTER_KEY,
     RETURN_FILTER_OPEN,
+    CANCEL_RETURN_DIALOG_OPEN,
     ReturnGridList,
     ReturnPrint
 } from '../../components/Return'
-const CLIENT_CREATE_DIALOG_OPEN = 'openClientCreate'
-const CANCEL_RETURN_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
 import {
     returnListFetchAction,
     returnDeleteAction,
     returnItemFetchAction,
     returnListPintFetchAction,
-    returnReturnCancelAction
+    returnCancelAction
 } from '../../actions/return'
-import {
-    clientCreateAction
-} from '../../actions/client'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -105,8 +102,15 @@ const enhance = compose(
                     dispatch(returnListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -155,53 +159,34 @@ const enhance = compose(
             })
         },
 
-        handleOpenCancelReturnReturnDialog: props => (id) => {
+        handleOpenCancelReturnDialog: props => (id) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CANCEL_RETURN_RETURN_DIALOG_OPEN]: id})})
+            hashHistory.push({pathname, query: filter.getParams({[CANCEL_RETURN_DIALOG_OPEN]: id})})
         },
 
-        handleCloseCancelReturnReturnDialog: props => () => {
+        handleCloseCancelReturnDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CANCEL_RETURN_RETURN_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[CANCEL_RETURN_DIALOG_OPEN]: false})})
         },
-
-        handleOpenCreateClientDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseCreateClientDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitCreateClientDialog: props => () => {
-            const {dispatch, clientCreateForm, filter} = props
-
-            return dispatch(clientCreateAction(_.get(clientCreateForm, ['values'])))
-                .then((data) => {
-                    const value = _.get(data, ['value', 'id'])
-                    dispatch({
-                        type: '@@redux-form/CHANGE',
-                        payload: {text: '', value: value},
-                        meta: {
-                            field: 'client',
-                            touch: false,
-                            form: 'ReturnCreateForm',
-                            persistentSubmitErrors: false
-                        }
-                    })
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+        handleSubmitCancelReturnDialog: props => () => {
+            const {dispatch, filter, params, location: {pathname, query}} = props
+            const orderReturnId = _.toInteger(_.get(query, CANCEL_RETURN_DIALOG_OPEN))
+            const orderId = _.toInteger(_.get(params, 'orderId'))
+            return dispatch(returnCancelAction(orderReturnId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно отменена'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[CLIENT_CREATE_DIALOG_OPEN]: false}))
+                    hashHistory.push({pathname, query: filter.getParams({[CANCEL_RETURN_DIALOG_OPEN]: false})})
+                    dispatch(returnListFetchAction(filter))
+                    dispatch(returnItemFetchAction(orderId))
                 })
         },
 
         handleGetDocument: props => (id) => {
-            const {dispatch, filter, setOpenPrint} = props
+            const {dispatch, setOpenPrint} = props
             setOpenPrint(true)
-            return dispatch(returnListPintFetchAction(filter, id))
+            return dispatch(returnListPintFetchAction(id))
                 .then(() => {
                     window.print()
                 })
@@ -234,7 +219,7 @@ const ReturnList = enhance((props) => {
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', RETURN_FILTER_OPEN]))
-    const openCancelReturnReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_RETURN_RETURN_DIALOG_OPEN]))
+    const openCancelDialog = _.toInteger(_.get(location, ['query', CANCEL_RETURN_DIALOG_OPEN]))
     const client = _.toInteger(filter.getParam(RETURN_FILTER_KEY.CLIENT))
     const zone = _.toInteger(filter.getParam(RETURN_FILTER_KEY.ZONE))
     const returnStatus = _.toInteger(filter.getParam(RETURN_FILTER_KEY.STATUS))
@@ -244,11 +229,11 @@ const ReturnList = enhance((props) => {
     const deliveryToDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_TO_DATE)
     const detailId = _.toInteger(_.get(params, 'returnId'))
 
-    const cancelReturnReturnDialog = {
-        openCancelReturnReturnDialog,
-        handleOpenCancelReturnReturnDialog: props.handleOpenCancelReturnReturnDialog,
-        handleCloseCancelReturnReturnDialog: props.handleCloseCancelReturnReturnDialog,
-        handleSubmitCancelReturnReturnDialog: props.handleSubmitCancelReturnReturnDialog
+    const cancelReturnDialog = {
+        openCancelDialog,
+        handleOpenCancelReturnDialog: props.handleOpenCancelReturnDialog,
+        handleCloseCancelReturnDialog: props.handleCloseCancelReturnDialog,
+        handleSubmitCancelReturnDialog: props.handleSubmitCancelReturnDialog
     }
 
     const getDocument = {
@@ -334,7 +319,7 @@ const ReturnList = enhance((props) => {
                 filterDialog={filterDialog}
                 products={products}
                 printDialog={printDialog}
-                cancelReturnReturnDialog={cancelReturnReturnDialog}
+                cancelReturnDialog={cancelReturnDialog}
             />
         </Layout>
     )

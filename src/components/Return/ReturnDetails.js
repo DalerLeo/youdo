@@ -126,7 +126,12 @@ const enhance = compose(
             padding: '15px 0 20px'
         },
         subBlock: {
-            padding: '20px 30px'
+            padding: '15px 30px',
+            borderBottom: '1px #efefef solid',
+            '&:last-child': {
+                borderBottom: 'none',
+                paddingBottom: '20px'
+            }
         },
         dataBox: {
             '& li': {
@@ -176,7 +181,7 @@ const ReturnDetails = enhance((props) => {
         classes,
         loading,
         data,
-        cancelReturnReturnDialog,
+        cancelReturnDialog,
         confirmDialog,
         handleOpenUpdateDialog,
         type,
@@ -309,10 +314,10 @@ const ReturnDetails = enhance((props) => {
             </div>
             {type && <ConfirmDialog
                 type="cancel"
-                message={'Возврат № ' + cancelReturnReturnDialog.openCancelReturnReturnDialog}
-                onClose={cancelReturnReturnDialog.handleCloseCancelReturnReturnDialog}
-                onSubmit={cancelReturnReturnDialog.handleSubmitCancelReturnReturnDialog}
-                open={cancelReturnReturnDialog.openCancelReturnReturnDialog > ZERO}/>
+                message={'Возврат № ' + cancelReturnDialog.openCancelDialog}
+                onClose={cancelReturnDialog.handleCloseCancelReturnDialog}
+                onSubmit={cancelReturnDialog.handleSubmitCancelReturnDialog}
+                open={cancelReturnDialog.openCancelDialog > ZERO}/>
             }
         </div>
     )
@@ -326,12 +331,12 @@ ReturnDetails.propTypes = {
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired
     }),
-    cancelReturnReturnDialog: PropTypes.shape({
-        handleOpenCancelReturnReturnDialog: PropTypes.func,
-        handleCloseCancelReturnReturnDialog: PropTypes.func,
-        handleSubmitCancelReturnReturnDialog: PropTypes.func,
-        openCancelReturnReturnDialog: PropTypes.number
-    })
+    cancelReturnDialog: PropTypes.shape({
+        openCancelDialog: PropTypes.number.isRequired,
+        handleOpenCancelReturnDialog: PropTypes.func.isRequired,
+        handleCloseCancelReturnDialog: PropTypes.func.isRequired,
+        handleSubmitCancelReturnDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default ReturnDetails

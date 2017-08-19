@@ -16,7 +16,7 @@ export const returnDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.RETURN_DELETE,
+        type: actionTypes.RETURN_CANCEL,
         payload
     }
 }
@@ -38,10 +38,9 @@ export const returnListFetchAction = (filter) => {
     }
 }
 
-export const returnListPintFetchAction = (filter, id) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), id)
+export const returnListPintFetchAction = (id) => {
     const payload = axios()
-        .get(API.RETURN_LIST_PRINT, {params})
+        .get(API.RETURN_PRINT, {'params': {'id': id}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,14 +49,14 @@ export const returnListPintFetchAction = (filter, id) => {
         })
 
     return {
-        type: actionTypes.RETURN_LIST_PRINT,
+        type: actionTypes.RETURN_PRINT,
         payload
     }
 }
 
 export const returnItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.RETURN_ITEM, id), {'params': {'view': true}})
+        .get(sprintf(API.RETURN_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,6 +66,22 @@ export const returnItemFetchAction = (id) => {
 
     return {
         type: actionTypes.RETURN_ITEM,
+        payload
+    }
+}
+
+export const returnCancelAction = (id) => {
+    const payload = axios()
+        .post(sprintf(API.RETURN_CANCEL, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.RETURN_CANCEL,
         payload
     }
 }

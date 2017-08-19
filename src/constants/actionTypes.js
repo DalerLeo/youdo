@@ -388,6 +388,7 @@ export const DIVISION_DELETE = 'DIVISION_DELETE'
 
 export const RETURN = 'RETURN'
 export const RETURN_LIST = 'RETURN_LIST'
+export const RETURN_PRINT = 'RETURN_PRINT'
 export const RETURN_ITEM = 'RETURN_ITEM'
 export const RETURN_UPDATE = 'RETURN_UPDATE'
 export const RETURN_DELETE = 'RETURN_DELETE'

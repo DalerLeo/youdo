@@ -7,9 +7,7 @@ import {compose} from 'recompose'
 import Close from 'material-ui/svg-icons/navigation/close'
 import CircularProgress from 'material-ui/CircularProgress'
 import numberFormat from '../../helpers/numberFormat'
-import dateFormat from '../../helpers/dateFormat'
-import paymentTypeFormat from '../../helpers/paymentTypeFormat'
-import dealTypeFormat from '../../helpers/dealTypeFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 import getConfig from '../../helpers/getConfig'
 import toBoolean from '../../helpers/toBoolean'
 
@@ -140,7 +138,6 @@ const enhance = compose(
 const OrderPrint = enhance((props) => {
     const {classes, printDialog, listPrintData} = props
     const loading = _.get(listPrintData, 'listPrintLoading')
-    let formattedAmount = true
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -153,26 +150,21 @@ const OrderPrint = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             {_.map(_.get(listPrintData, 'data'), (item) => {
-                let totalAmount = Number('0')
                 const id = _.get(item, 'id')
                 const marketName = _.get(item, ['market', 'name'])
-                const marketAddress = _.get(item, ['market', 'address'])
-                const marketGuide = _.get(item, ['market', 'guide'])
-                const marketPhone = _.get(item, ['market', 'phone'])
-                const agent = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
-                const totalPrice = _.get(item, ['totalPrice'])
-                const paymentDate = dateFormat(_.get(item, 'paymentDate'))
-                const createdDate = dateFormat(_.get(item, 'createdDate'))
-                const dateDelivery = dateFormat(_.get(item, 'dateDelivery'))
-                const paymentType = paymentTypeFormat(_.get(item, 'paymentType'))
-                const dealType = dealTypeFormat(_.get(item, 'dealType'))
-                const currentCurrency = getConfig('PRIMARY_CURRENCY')
-                const firstMeasure = _.get(item, ['products', '0', 'product', 'measurement', 'name'])
+                const marketAddress = _.get(item, ['market', 'address']) || 'Не указан'
+                const marketGuide = _.get(item, ['market', 'guide']) || 'Не указан'
+                const marketPhone = _.get(item, ['market', 'phone']) || 'Не указан'
+                const user = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName'])
+                const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
+                const comment = _.get(item, 'comment')
+                const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+                const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
 
                 return (
                     <div key={id} className="printItem">
                         <div className={classes.title}>
-                            <span>Заказ № {id}</span>
+                            <span>Возврат № {id}</span>
                             {toBoolean(getConfig('DIVISIONS')) && <div className={classes.kerasys}>KeraSys</div>}
                             <div>Добавлено: {createdDate}</div>
                         </div>
@@ -190,21 +182,15 @@ const OrderPrint = enhance((props) => {
                                     <li>{marketAddress}</li>
                                     <li>{marketGuide}</li>
                                     <li>{marketPhone}</li>
-                                    <li>{agent}</li>
+                                    <li>{user}</li>
                                 </ul>
                             </div>
                             <div className={classes.block}>
                                 <ul>
-                                    <li>Тип сделки:</li>
-                                    <li>Дата ожидаемой оплаты:</li>
-                                    <li>Дата доставки:</li>
-                                    <li>Тип оплаты:</li>
+                                    <li>Комментарий к возврату:</li>
                                 </ul>
                                 <ul>
-                                    <li>{dealType}</li>
-                                    <li>{paymentDate}</li>
-                                    <li>{dateDelivery}</li>
-                                    <li>{paymentType}</li>
+                                    <li>{comment}</li>
                                 </ul>
                             </div>
                         </div>
@@ -215,26 +201,20 @@ const OrderPrint = enhance((props) => {
                                 <Col xs={4}>Наименование</Col>
                                 <Col xs={1}>Код</Col>
                                 <Col xs={2}>Кол-во</Col>
-                                <Col xs={2}>Цена ({currentCurrency})</Col>
-                                <Col xs={2}>Сумма ({currentCurrency})</Col>
+                                <Col xs={2}>Цена ({primaryCurrency})</Col>
+                                <Col xs={2}>Сумма ({primaryCurrency})</Col>
                             </Row>
-                            {_.map(_.get(item, 'products'), (product, index) => {
-                                const totalProductPrice = numberFormat(_.get(product, 'totalPrice'))
+                            {_.map(_.get(item, 'returnedProducts'), (product, index) => {
                                 const productId = _.get(product, 'id')
                                 const code = _.get(product, ['product', 'code'])
-                                const measurment = _.get(product, ['product', 'measurement', 'name'])
-                                const name = _.get(product, ['product', 'name'])
-                                const isBonus = _.get(product, ['isBonus'])
-                                const price = numberFormat(_.get(product, 'price'))
-                                const amount = numberFormat(_.get(product, 'amount'), measurment)
-                                totalAmount += Number(_.get(product, 'amount'))
-                                if (formattedAmount) {
-                                    formattedAmount = (firstMeasure === measurment)
-                                }
+                                const name = _.get(product, 'product')
+                                const price = _.toNumber(_.get(product, 'price'))
+                                const amount = _.toNumber(_.get(product, 'amount'))
+                                const totalProductPrice = numberFormat(price * amount)
                                 return (
                                     <Row key={productId}>
                                         <Col xs={1}>{index + ONE}</Col>
-                                        <Col xs={4}>{!isBonus ? name : <div><span style={{fontWeight: '700'}}>БОНУС</span> {name}</div>}</Col>
+                                        <Col xs={4}>{name}</Col>
                                         <Col xs={1}>{code}</Col>
                                         <Col xs={2}>{amount}</Col>
                                         <Col xs={2}>{price}</Col>
@@ -246,9 +226,9 @@ const OrderPrint = enhance((props) => {
                                 <Col xs={1}></Col>
                                 <Col xs={1}></Col>
                                 <Col xs={4}></Col>
-                                <Col xs={2}>{formattedAmount && 'Итого: ' + numberFormat(totalAmount, firstMeasure)}</Col>
                                 <Col xs={2}></Col>
-                                <Col xs={2}>Итого: {numberFormat(totalPrice)}</Col>
+                                <Col xs={2}></Col>
+                                <Col xs={2}>Итого: {totalPrice}</Col>
                             </Row>
                         </div>
                         <div className={classes.sign}>Подпись клиента:<span> </span></div>
