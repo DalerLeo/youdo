@@ -207,9 +207,10 @@ const OrderPrint = enhance((props) => {
                             {_.map(_.get(item, 'returnedProducts'), (product, index) => {
                                 const productId = _.get(product, 'id')
                                 const code = _.get(product, ['product', 'code'])
-                                const name = _.get(product, 'product')
+                                const name = _.get(product, ['product', 'name'])
+                                const measurement = _.get(product, ['product', 'measurement', 'name'])
                                 const price = _.toNumber(_.get(product, 'price'))
-                                const amount = _.toNumber(_.get(product, 'amount'))
+                                const amount = _.toNumber(_.get(product, 'amount'), measurement)
                                 const totalProductPrice = numberFormat(price * amount)
                                 return (
                                     <Row key={productId}>
