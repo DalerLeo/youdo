@@ -118,6 +118,7 @@ const iconStyle = {
 }
 
 const MINUS_ONE = -1
+const ZERO = 0
 const ClientBalanceGridList = enhance((props) => {
     const {
         classes,
@@ -149,21 +150,21 @@ const ClientBalanceGridList = enhance((props) => {
                 <Col xs={2} className={classes.balance}>
                     <span onClick={() => {
                         infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA)
-                    }}>
+                    }} className={cosmeticsBalance > ZERO ? classes.green : (cosmeticsBalance < ZERO ? classes.red : classes.black)}>
                         {numberFormat(cosmeticsBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2} className={classes.balance}>
                     <span onClick={() => {
                         infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'cash')
-                    }}>
+                    }} className={shampooBalance > ZERO ? classes.green : (shampooBalance < ZERO ? classes.red : classes.black)}>
                         {numberFormat(shampooBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2} className={classes.balance}>
                     <span onClick={() => {
                         infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'bank')
-                    }}>
+                    }} className={shampooBank > ZERO ? classes.green : (shampooBank < ZERO ? classes.red : classes.black)}>
                         {numberFormat(shampooBank, currentCurrency)}
                     </span>
                 </Col>

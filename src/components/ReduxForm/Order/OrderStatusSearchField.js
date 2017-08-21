@@ -3,7 +3,7 @@ import React from 'react'
 import SearchField from '../Basic/SearchField'
 
 const Items = [
-    {id: 0, name: 'Запрос отправлен'},
+    {id: 5, name: 'Запрос отправлен'},
     {id: 1, name: 'Есть на складе'},
     {id: 2, name: 'Передан доставщику'},
     {id: 3, name: 'Доставлен'},

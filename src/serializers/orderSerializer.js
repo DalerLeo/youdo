@@ -5,6 +5,8 @@ import {orderingSnakeCase} from '../helpers/serializer'
 const ZERO = 0
 const ONE = 1
 const TWO = 2
+const FIVE = 5
+
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
     const paymentType = _.get(data, ['paymentType']) === 'cash' ? ZERO : ONE
@@ -41,7 +43,7 @@ export const listFilterSerializer = (data, id) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const dept = _.toInteger(_.get(defaultData, 'dept'))
-
+    const status = _.get(defaultData, 'status') ? (_.toInteger(_.get(defaultData, 'status')) === FIVE ? ZERO : _.toInteger(_.get(defaultData, 'status'))) : null
     if (id) {
         return {
             'id': id
@@ -58,7 +60,7 @@ export const listFilterSerializer = (data, id) => {
         'dateDelivery': _.get(defaultData, 'dateDelivery'),
         'totalCost': _.get(defaultData, 'totalCost'),
         'totalBalance': _.get(defaultData, 'totalBalance'),
-        'status': _.get(defaultData, 'status'),
+        'status': status,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate') || _.get(defaultData, 'fromDate'),
         'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
