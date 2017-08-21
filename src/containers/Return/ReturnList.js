@@ -19,9 +19,8 @@ import {
 } from '../../components/Return'
 import {
     returnListFetchAction,
-    returnDeleteAction,
     returnItemFetchAction,
-    returnListPintFetchAction,
+    returnListPrintFetchAction,
     returnCancelAction
 } from '../../actions/return'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -72,9 +71,9 @@ const enhance = compose(
 
     withHandlers({
         handleOpenPrintDialog: props => () => {
-            const {setOpenPrint, dispatch, filter} = props
+            const {dispatch, setOpenPrint} = props
             setOpenPrint(true)
-            dispatch(returnListPintFetchAction(filter))
+            return dispatch(returnListPrintFetchAction())
                 .then(() => {
                     window.print()
                 })
@@ -96,9 +95,11 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog, filter} = props
-            dispatch(returnDeleteAction(detail.id))
+            const id = _.get(detail, 'id')
+            dispatch(returnCancelAction(id))
                 .then(() => {
                     setOpenConfirmDialog(false)
+                    dispatch(returnItemFetchAction(id))
                     dispatch(returnListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
@@ -184,7 +185,7 @@ const enhance = compose(
         handleGetDocument: props => (id) => {
             const {dispatch, setOpenPrint} = props
             setOpenPrint(true)
-            return dispatch(returnListPintFetchAction(id))
+            return dispatch(returnListPrintFetchAction(id))
                 .then(() => {
                     window.print()
                 })

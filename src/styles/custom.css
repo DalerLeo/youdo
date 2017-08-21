@@ -237,7 +237,7 @@ hr.lineDote {
     animation-delay: 1.15s;
 }
 .printCloseBtn {
-    position: absolute !important;
+    position: fixed !important;
     top: 5px;
     right: 5px;
 }

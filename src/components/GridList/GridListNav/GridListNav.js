@@ -56,7 +56,7 @@ const GridListNav = ({classes, filter, filterDialog, addButton, actions, without
                                 <Print color="#666"/>
                             </IconButton>
                         </Tooltip>}
-                        {withInvoice &&
+                        {refreshAction &&
                         <Tooltip position="left" text={'Обновить'}>
                             <IconButton
                                 disabled={(listCount > MAX_COUNT) && true}

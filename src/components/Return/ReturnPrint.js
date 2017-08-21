@@ -76,7 +76,8 @@ const enhance = compose(
                     fontWeight: 'bold'
                 },
                 '& li': {
-                    lineHeight: '25px'
+                    lineHeight: '25px',
+                    minHeight: '25px'
                 }
             }
         },
@@ -150,16 +151,21 @@ const OrderPrint = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             {_.map(_.get(listPrintData, 'data'), (item) => {
+                const ORDER = 1
                 const id = _.get(item, 'id')
-                const marketName = _.get(item, ['market', 'name'])
+                const marketName = _.get(item, ['market', 'name']) || 'Не указано'
                 const marketAddress = _.get(item, ['market', 'address']) || 'Не указан'
                 const marketGuide = _.get(item, ['market', 'guide']) || 'Не указан'
                 const marketPhone = _.get(item, ['market', 'phone']) || 'Не указан'
                 const user = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName'])
                 const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
+                const stock = _.get(item, ['stock', 'name'])
+                const client = _.get(item, ['client', 'name'])
+                const order = _.get(item, 'order')
                 const comment = _.get(item, 'comment')
                 const primaryCurrency = getConfig('PRIMARY_CURRENCY')
                 const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
+                const type = _.toInteger(_.get(item, 'type'))
 
                 return (
                     <div key={id} className="printItem">
@@ -169,13 +175,14 @@ const OrderPrint = enhance((props) => {
                             <div>Добавлено: {createdDate}</div>
                         </div>
                         <div className={classes.info}>
-                            <div className={classes.block}>
+                            {(type === ORDER)
+                            ? <div className={classes.block}>
                                 <ul>
                                     <li>Название магазина:</li>
                                     <li>Адрес:</li>
                                     <li>Ориентир:</li>
                                     <li>Телефон:</li>
-                                    <li>Агент:</li>
+                                    <li>Добавил:</li>
                                 </ul>
                                 <ul>
                                     <li>{marketName}</li>
@@ -185,11 +192,25 @@ const OrderPrint = enhance((props) => {
                                     <li>{user}</li>
                                 </ul>
                             </div>
+                            : <div className={classes.block}>
+                                    <ul>
+                                        <li>Клиент:</li>
+                                        <li>Добавил:</li>
+                                    </ul>
+                                    <ul>
+                                        <li>{client}</li>
+                                        <li>{user}</li>
+                                    </ul>
+                                </div>}
                             <div className={classes.block}>
                                 <ul>
+                                    <li>Склад:</li>
+                                    {order && <li>Заказ:</li>}
                                     <li>Комментарий к возврату:</li>
                                 </ul>
                                 <ul>
+                                    <li>{stock}</li>
+                                    {order && <li>{order}</li>}
                                     <li>{comment}</li>
                                 </ul>
                             </div>
@@ -210,14 +231,14 @@ const OrderPrint = enhance((props) => {
                                 const name = _.get(product, ['product', 'name'])
                                 const measurement = _.get(product, ['product', 'measurement', 'name'])
                                 const price = _.toNumber(_.get(product, 'price'))
-                                const amount = _.toNumber(_.get(product, 'amount'), measurement)
+                                const amount = _.toNumber(_.get(product, 'amount'))
                                 const totalProductPrice = numberFormat(price * amount)
                                 return (
                                     <Row key={productId}>
                                         <Col xs={1}>{index + ONE}</Col>
                                         <Col xs={4}>{name}</Col>
                                         <Col xs={1}>{code}</Col>
-                                        <Col xs={2}>{amount}</Col>
+                                        <Col xs={2}>{numberFormat(amount, measurement)}</Col>
                                         <Col xs={2}>{price}</Col>
                                         <Col xs={2}>{totalProductPrice}</Col>
                                     </Row>

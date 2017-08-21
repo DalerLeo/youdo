@@ -144,7 +144,7 @@ const GridListHeader = enhance((props) => {
                     ) : (<ArrowDownIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>) : null
 
             if (withoutRow) {
-                return (<Col style={alignRight ? {textAlign: 'right', width: xs} : {width: xs}} key={index}>
+                return (<div style={alignRight ? {textAlign: 'right', width: xs} : {width: xs}} key={index}>
                     <Link
                         className={classes.sortingButton}
                         onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
@@ -155,7 +155,7 @@ const GridListHeader = enhance((props) => {
                             <span>{_.get(item, 'title')}</span> {Icon}
                         </FlatButton>
                     </Link>
-                </Col>)
+                </div>)
             }
             return (<Col xs={xs} key={index} style={alignRight && {textAlign: 'right'}}>
                         <Link
