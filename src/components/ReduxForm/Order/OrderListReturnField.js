@@ -152,6 +152,11 @@ const enhance = compose(
                         has = true
                     }
                 })
+                const fields = ['amount', 'product']
+                for (let i = 0; i < fields.length; i++) {
+                    let newChange = _.get(props, [fields[i], 'input', 'onChange'])
+                    props.dispatch(newChange(null))
+                }
                 const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(amount)
                 if (!has) {
                     onChange(_.union(products, [{product, amount, cost}]))

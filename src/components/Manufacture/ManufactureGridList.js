@@ -41,10 +41,10 @@ const enhance = compose(
         },
         productionLeftSide: {
             padding: '0',
-            flexBasis: '25%',
-            maxWidth: '25%'
+            width: '320px'
         },
         productionRightSide: {
+            width: 'calc(100% - 320px)',
             background: '#fff',
             padding: '0 30px',
             '& .row:first-child img': {

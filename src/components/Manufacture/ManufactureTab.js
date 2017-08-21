@@ -69,7 +69,7 @@ const ManufactureTab = enhance((props) => {
     } = props
     const tab = _.get(tabData, 'tab')
     return (
-        <Col className={classes.ManufactRightSide} xs={9} md={9}>
+        <div className={classes.ManufactRightSide}>
             <div>
                 <Paper zDepth={1}>
                     <Tabs
@@ -98,7 +98,7 @@ const ManufactureTab = enhance((props) => {
                 {TAB.MANUFACTURE_TAB_SHIPMENT === tab && <ManufactureShipment
                     shipmentData={shipmentData}/>}
             </div>
-        </Col>
+        </div>
     )
 })
 ManufactureTab.propTypes = {

@@ -22,6 +22,23 @@ export const planCreateAction = (formValues) => {
     }
 }
 
+export const planMonthlySetAction = (data, filter, user) => {
+    const requestData = serializers.monthlyPlanSerializer(data, filter.getParams(), user)
+    const payload = axios()
+        .post(API.PLAN_MONTHLY, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PLAN_MONTHLY,
+        payload
+    }
+}
+
 export const planAgentsListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()

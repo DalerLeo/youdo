@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withReducer, withHandlers, withState} from 'recompose'
 import injectSheet from 'react-jss'
+import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import Check from 'material-ui/svg-icons/navigation/check'
 import {Field} from 'redux-form'
@@ -169,46 +170,17 @@ const enhance = compose(
             display: 'flex',
             padding: '0 30px 10px',
             backgroundColor: '#f1f5f8',
-            alignItems: 'baseline',
+            margin: '0',
+            alignItems: 'flex-end',
             position: 'relative',
             zIndex: '2',
-            '& > div:first-child': {
+            '& > div': {
                 marginTop: '-7px !important',
-                width: '200px !important',
-                marginRight: '20px',
-                '& > div > div': {
-                    width: '200px !important'
+                display: 'flex',
+                '& > div': {
+                    overflow: 'hidden'
                 }
             },
-            '& > div:nth-child(2)': {
-                marginTop: '-7px !important',
-                width: '200px !important',
-                marginRight: '20px',
-                '& > div > div': {
-                    width: '200px !important'
-                }
-            },
-            '& > div:nth-child(3)': {
-                marginTop: '-7px !important',
-                width: '70px !important',
-                minWidth: '50px !important',
-                marginRight: '20px',
-                '& > div > div': {
-                    width: '70px !important',
-                    minWidth: '50px !important'
-
-                }
-            },
-            '& > div:nth-child(5)': {
-                marginTop: '-7px !important',
-                width: '100px !important',
-                marginRight: '20px',
-                '& > div > div': {
-                    width: '100px !important'
-
-                }
-            },
-
             '& > button > div > span': {
                 padding: '0 !important'
             },
@@ -306,43 +278,52 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
     return (
         <div className={classes.wrapper}>
             <div>
-                <div className={classes.background}>
-                    <Field
-                        name="productType"
-                        label="Отфильтровать по типу"
-                        fullWidth={true}
-                        className={classes.searchFieldCustom}
-                        component={RemainderProductTypeSearchField}
-                        {..._.get(defaultProps, 'productType')}
-                    />
+                <Row className={classes.background}>
+                    <Col xs={3}>
+                        <Field
+                            label="Тип товара"
+                            name="productType"
+                            className={classes.searchFieldCustom}
+                            fullWidth={true}
+                            component={RemainderProductTypeSearchField}
+                            {..._.get(defaultProps, 'productType')}
+                        />
+                    </Col>
 
-                    <ProductCustomSearchField
-                        name="product"
-                        label="Наименование товара"
-                        fullWidth={true}
-                        className={classes.searchFieldCustom}
-                        {..._.get(defaultProps, 'product')}
-                    />
-                    <TextField
-                        label="Кол-во"
-                        {..._.get(defaultProps, 'amount')}
-                    />
-                    <span style={{margin: '0 20px 0 -10px'}}>{measurement}</span>
-
-                    <Field
-                        label="Статус"
-                        name="isDefect"
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}
-                    component={RemainderStatusSearchField}
-                        {..._.get(defaultProps, 'isDefect')}
-                    />
-                    <IconButton
-                        label="Применить"
-                        onTouchTap={handleAdd}>
-                        <Check color="#12aaeb"/>
-                    </IconButton>
-                </div>
+                    <Col xs={4}>
+                        <ProductCustomSearchField
+                            label="Наименование"
+                            className={classes.searchFieldCustom}
+                            fullWidth={true}
+                            {..._.get(defaultProps, 'product')}
+                        />
+                    </Col>
+                    <Col xs={2}>
+                        <TextField
+                            label="Кол-во"
+                            fullWidth={true}
+                            {..._.get(defaultProps, 'amount')}
+                        />
+                        <span style={{margin: '15px 0 15px 15px', alignSelf: 'flex-end'}}>{measurement}</span>
+                    </Col>
+                    <Col xs={2}>
+                        <Field
+                            label="Статус"
+                            name="isDefect"
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}
+                            component={RemainderStatusSearchField}
+                            {..._.get(defaultProps, 'isDefect')}
+                        />
+                    </Col>
+                    <Col xs={1}>
+                        <IconButton
+                            label="Применить"
+                            onTouchTap={handleAdd}>
+                            <Check color="#12aaeb"/>
+                        </IconButton>
+                    </Col>
+                </Row>
             </div>
             {error && <div className={classes.error}>{error}</div>}
             <div className={classes.table}>

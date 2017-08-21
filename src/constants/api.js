@@ -361,6 +361,7 @@ export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
 
 export const PLAN_CREATE = `/${STAT_AGENT_LIST}/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
+export const PLAN_MONTHLY = 'sales/monthly_plan/'
 
 export const POSITION = 'main/position'
 export const POSITION_COURSE_CREATE = 'finance/currency_rate/'
