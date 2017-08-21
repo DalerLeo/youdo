@@ -36,7 +36,6 @@ export const itemFilterSerializer = (data, id, division, type) => {
         'client': id,
         'division': division,
         'payment_type': paymentType,
-        'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'dPage'),
         'page_size': _.get(defaultData, 'dPageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
