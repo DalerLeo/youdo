@@ -624,7 +624,6 @@ const OrderList = enhance((props) => {
     const withoutBonusProducts = _.filter(_.get(detail, 'products'), {'isBonus': false})
 
     const forUpdateProducts = _.map(withoutBonusProducts, (item) => {
-
         return {
             amount: _.get(item, 'amount'),
             cost: _.get(item, 'price'),
