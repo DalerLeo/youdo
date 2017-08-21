@@ -393,3 +393,5 @@ export const RETURN_ITEM = 'RETURN_ITEM'
 export const RETURN_UPDATE = 'RETURN_UPDATE'
 export const RETURN_DELETE = 'RETURN_DELETE'
 export const RETURN_CANCEL = 'RETURN_CANCEL'
+
+export const PLAN_MONTHLY = 'PLAN_MONTHLY'

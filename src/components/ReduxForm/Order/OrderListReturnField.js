@@ -157,6 +157,11 @@ const enhance = compose(
                         has = true
                     }
                 })
+                const fields = ['amount', 'product']
+                for (let i = 0; i < fields.length; i++) {
+                    let newChange = _.get(props, [fields[i], 'input', 'onChange'])
+                    props.dispatch(newChange(null))
+                }
                 const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(amount)
                 if (!has) {
                     onChange(_.union(products, [{product, amount, cost}]))
@@ -204,6 +209,12 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
 
         return value > normalizeAmount ? normalizeAmount : value
     }
+
+    const selectFieldScroll = {
+        scrollable: true,
+        maxHeight: '300px'
+    }
+
     const products = _.get(defaultProps, ['returned_products', 'input', 'value']) || []
     return (
         <div className={classes.wrapper}>
@@ -222,6 +233,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         <ReturnProductsSearchField
                             name="product"
                             label="Наименование товара"
+                            selectFieldScroll={selectFieldScroll}
                             className={classes.inputFieldCustom}
                             style={{width: '100%'}}
                             {..._.get(defaultProps, 'product')}

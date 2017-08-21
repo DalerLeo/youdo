@@ -3,7 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {Col} from 'react-flexbox-grid'
 import Paper from 'material-ui/Paper'
 import * as TAB from '../../constants/manufactureTab'
 import {Tabs, Tab} from 'material-ui/Tabs'
@@ -15,6 +14,7 @@ const enhance = compose(
     injectSheet({
         ManufactRightSide: {
             padding: '0px 25px',
+            width: 'calc(100% - 320px)',
             zIndex: '2'
         },
         colorCat: {
@@ -35,7 +35,7 @@ const enhance = compose(
                 marginTop: '0px !important',
                 marginBottom: '-1px',
                 backgroundColor: '#12aaeb !important',
-                height: '1px !important'
+                height: '3px !important'
             },
             '& button': {
                 color: '#333 !important',
@@ -69,7 +69,7 @@ const ManufactureTab = enhance((props) => {
     } = props
     const tab = _.get(tabData, 'tab')
     return (
-        <Col className={classes.ManufactRightSide} xs={9} md={9}>
+        <div className={classes.ManufactRightSide}>
             <div>
                 <Paper zDepth={1}>
                     <Tabs
@@ -98,7 +98,7 @@ const ManufactureTab = enhance((props) => {
                 {TAB.MANUFACTURE_TAB_SHIPMENT === tab && <ManufactureShipment
                     shipmentData={shipmentData}/>}
             </div>
-        </Col>
+        </div>
     )
 })
 ManufactureTab.propTypes = {

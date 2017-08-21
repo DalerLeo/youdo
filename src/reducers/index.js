@@ -379,6 +379,9 @@ const rootReducer = combineReducers({
         cancel: createThunkReducer(actionTypes.RETURN_CANCEL),
         listPrint: createThunkReducer(actionTypes.RETURN_PRINT)
     }),
+    plan: combineReducers({
+        monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY)
+    }),
     snackbar: snackbarReducer(),
     error: errorReducer(),
     form: formReducer,
