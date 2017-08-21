@@ -194,7 +194,7 @@ const OrderItemReturnDialog = enhance((props) => {
     const comment = _.get(returnListData, 'comment')
     const totalPrice = numberFormat(_.get(returnListData, 'totalPrice'), getConfig('PRIMARY_CURRENCY'))
     const productList = _.map(_.get(returnListData, 'returnedProducts'), (item) => {
-        const product = _.get(item, 'product')
+        const product = _.get(item, ['product', 'name'])
         const amount = _.toNumber(_.get(item, 'amount'))
         const returnId = _.get(item, 'id')
         const cost = _.toNumber(_.get(item, 'price'))

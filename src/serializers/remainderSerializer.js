@@ -13,6 +13,7 @@ export const listFilterSerializer = (data) => {
         'page_size': _.get(defaultData, 'pageSize'),
         type,
         'brand': _.get(defaultData, 'brand'),
+        'stock': _.get(defaultData, 'stock'),
         'measurement': _.get(defaultData, 'measurement'),
         'searching': _.get(defaultData, 'search'),
         'ordering': ordering && orderingSnakeCase(ordering)

@@ -257,7 +257,7 @@ const StockReceiveDetails = enhance((props) => {
                         </Row>
                         {_.map(products, (item) => {
                             const productId = _.get(item, 'id')
-                            const name = (type === 'order_return') ? _.get(item, ['product']) : _.get(item, ['product', 'name'])
+                            const name = _.get(item, ['product', 'name'])
                             const measurement = _.get(item, ['product', 'measurement', 'name'])
                             const productType = _.get(item, ['product', 'type', 'name'])
                             const amount = numberFormat(_.get(item, 'amount'), measurement)

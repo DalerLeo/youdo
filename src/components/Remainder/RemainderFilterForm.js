@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import PropTypes from 'prop-types'
 import {ProductTypeParentSearchField, ProductTypeChildSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
+import StockSearchField from '../ReduxForm/Stock/StockSearchField'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {Link} from 'react-router'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -17,6 +18,7 @@ export const REMAINDER_FILTER_OPEN = 'openFilterDialog'
 
 export const REMAINDER_FILTER_KEY = {
     BRAND: 'brand',
+    STOCK: 'stock',
     TYPE_PARENT: 'typeParent',
     TYPE_CHILD: 'typeChild',
     MEASUREMENT: 'measurement'
@@ -162,6 +164,12 @@ const RemainderFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="stock"
+                            component={StockSearchField}
+                            label="Склад"
+                            fullWidth={true}/>
                         <Field
                             name="typeParent"
                             className={classes.inputFieldCustom}
