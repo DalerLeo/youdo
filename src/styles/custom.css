@@ -61,12 +61,8 @@ a {
     cursor: pointer;
 }
 
-label, button, input {
+label, button, input, span {
     font-size: 13px !important;
-}
-
-span {
-    font-size: 13px;
 }
 
 ul {
