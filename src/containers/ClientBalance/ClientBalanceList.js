@@ -138,8 +138,9 @@ const enhance = compose(
             })
         },
         handleCloseCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_CREATE_DIALOG_OPEN]: false})})
+            dispatch(reset('ClientBalanceCreateForm'))
         },
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}, params} = props
@@ -154,6 +155,7 @@ const enhance = compose(
                         query: filter.getParams({[CLIENT_BALANCE_CREATE_DIALOG_OPEN]: false})
                     })
                     dispatch(clientBalanceListFetchAction(filter))
+                    dispatch(reset('ClientBalanceCreateForm'))
                 }).catch((error) => {
                     const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
                         return <p key={index}>{item}</p>

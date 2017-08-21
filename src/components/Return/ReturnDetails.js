@@ -303,7 +303,7 @@ const ReturnDetails = enhance((props) => {
                     <div className={classes.list}>
                         <Row className="dottedList">
                             <Col xs={4}>Товар</Col>
-                            <Col xs={2}>Код</Col>
+                            <Col xs={2}>Код товара</Col>
                             <Col xs={2}>Количество</Col>
                             <Col xs={2}>Цена ({primaryCurrency})</Col>
                             <Col xs={2}>Сумма ({primaryCurrency})</Col>

@@ -16,10 +16,8 @@ import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 export const PRICES_FILTER_OPEN = 'openFilterDialog'
 
 export const PRICES_FILTER_KEY = {
-    BEGIN_FROM_DATE: 'beginFromDate',
-    BEGIN_TO_DATE: 'beginToDate',
-    TILL_FROM_DATE: 'tillFromDate',
-    TILL_TO_DATE: 'tillToDate'
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate'
 }
 
 const enhance = compose(
@@ -124,7 +122,7 @@ const PricesFilterForm = enhance((props) => {
                     <div>Фильтр: {filterCounts} элемента</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
-                            <BorderColorIcon color="#8f8f8f" />
+                            <BorderColorIcon color="#8f8f8f"/>
                         </IconButton>
                         <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
                             <CloseIcon className={classes.icon}/>
@@ -139,7 +137,7 @@ const PricesFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb"/></div>
                 </Link>
             </div>
         )
@@ -151,16 +149,12 @@ const PricesFilterForm = enhance((props) => {
                 <div className={classes.header}>
                     <span className={classes.title}>Фильтр</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
-                        <CloseIcon className={classes.icon} />
+                        <CloseIcon className={classes.icon}/>
                     </IconButton>
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
-                    <div>
-                        <Field className={classes.inputField} name="beginDate" component={DateToDateField} label="Дата поставки" fullWidth={true}/>
-                    </div>
-                    <div>
-                        <Field className={classes.inputField} name="tillDate" component={DateToDateField} label="Дата создания" fullWidth={true}/>
-                    </div>
+                    <Field className={classes.inputField} name="date" component={DateToDateField}
+                           label="Дата создания" fullWidth={true}/>
                     <div>
                         <RaisedButton
                             type="submit"

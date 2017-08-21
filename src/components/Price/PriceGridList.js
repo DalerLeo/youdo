@@ -199,7 +199,6 @@ const PriceGridList = enhance((props) => {
     const pricePercent = (
         <form onSubmit={onSubmit} className={classes.pricePercent}>
             <div>
-                <span>Наценка за безнал</span>
                 <div>
                     {globalPrice && <Field
                         name='globalPrice'

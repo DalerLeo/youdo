@@ -112,17 +112,13 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const beginFromDate = _.get(filterForm, ['values', 'beginDate', 'fromDate']) || null
-            const beginToDate = _.get(filterForm, ['values', 'beginDate', 'toDate']) || null
-            const tillFromDate = _.get(filterForm, ['values', 'tillFromDate', 'fromDate']) || null
-            const tillToDate = _.get(filterForm, ['values', 'tillToDate', 'toDate']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 [PRICES_FILTER_OPEN]: false,
-                [PRICES_FILTER_KEY.BEGIN_FROM_DATE]: beginFromDate && beginFromDate.format('YYYY-MM-DD'),
-                [PRICES_FILTER_KEY.BEGIN_TO_DATE]: beginToDate && beginToDate.format('YYYY-MM-DD'),
-                [PRICES_FILTER_KEY.TILL_FROM_DATE]: tillFromDate && tillFromDate.format('YYYY-MM-DD'),
-                [PRICES_FILTER_KEY.TILL_TO_DATE]: tillToDate && tillToDate.format('YYYY-MM-DD')
+                [PRICES_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [PRICES_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
 

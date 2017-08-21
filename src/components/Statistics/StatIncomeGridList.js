@@ -347,13 +347,14 @@ const StatIncomeGridList = enhance((props) => {
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const date = moment(_.get(item, 'createdDate')).format('YY:MM:DD')
+        const client = _.get(item, ['client', 'name'])
         const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
 
         return (
             <Row key={id} className="dottedList">
                 <Col xs={2}>{id}</Col>
                 <Col xs={3}>{date}</Col>
-                <Col xs={4}>Имя Фамилия Клиента</Col>
+                <Col xs={4}>{client}</Col>
                 <Col xs={3} style={{justifyContent: 'flex-end'}}>{amount}</Col>
             </Row>
         )

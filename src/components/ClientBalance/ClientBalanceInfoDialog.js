@@ -231,7 +231,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                             </div>
                             <div>
                                 <span>Баланс {paymentType}</span>
-                                <div className={(balance >= ZERO) ? classes.green : classes.red}>{numberFormat(balance, currentCurrency)}</div>
+                                <div className={balance > ZERO ? classes.green : (balance < ZERO ? classes.red : classes.black)}>{numberFormat(balance, currentCurrency)}</div>
                             </div>
                         </div>
                         <Pagination filter={filterItem}/>
