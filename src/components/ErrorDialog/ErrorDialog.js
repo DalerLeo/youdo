@@ -52,15 +52,17 @@ const enhance = compose(
     connect((state) => {
         const open = _.get(state, ['error', 'open'])
         const message = _.get(state, ['error', 'message'])
+        const arrMessage = _.get(state, ['error', 'arrMessage'])
 
         return {
             open,
-            message
+            message,
+            arrMessage
         }
     })
 )
 
-const ErrorDialog = ({dispatch, message, open, classes, ...defaultProps}) => {
+const ErrorDialog = ({dispatch, message, open, classes, arrMessage, ...defaultProps}) => {
     const close = () => dispatch(closeErrorAction())
     return (
         <Dialog
@@ -80,6 +82,12 @@ const ErrorDialog = ({dispatch, message, open, classes, ...defaultProps}) => {
                 <div className={classes.inContent}>
                     <Error color="#fff" style={{width: '55px', height: '55px'}}/>
                     <div>{message}</div>
+                    {_.map(arrMessage, (item, index) => {
+                        return (
+                            <p key={index}><span style={{fontWeight: '600'}}>{index}</span> : {item}</p>
+                        )
+                    })}
+
                 </div>
             </div>
         </Dialog>

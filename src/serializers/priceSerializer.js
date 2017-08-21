@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 const ZERO = 0
 
@@ -53,8 +54,8 @@ export const createSerializer = (data, productId, priceList) => {
         'product': productId,
         'prices': newPrices,
         'custom_price': isCustomPrice,
-        'min_price': minPrice,
-        'max_price': maxPrice,
+        'min_price': numberWithoutSpaces(minPrice),
+        'max_price': numberWithoutSpaces(maxPrice),
         'currency': customCurrency
     }
 }

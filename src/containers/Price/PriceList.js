@@ -147,13 +147,9 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .catch((error) => {
-                    const nonField = _.get(error, ['non_field_error', '0'])
-                    let errorText = 'Заполните все поля!'
-                    if (nonField) {
-                        errorText = 'Минимальная цена не может быть больше максимальной!'
-                    }
                     dispatch(openErrorAction({
-                        message: <div>{errorText && errorText}</div>
+                        message: '',
+                        arrMessage: error
                     }))
                 })
         },
