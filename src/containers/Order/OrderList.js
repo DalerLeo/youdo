@@ -620,7 +620,10 @@ const OrderList = enhance((props) => {
         handleCloseCreateClientDialog: props.handleCloseCreateClientDialog,
         handleSubmitCreateClientDialog: props.handleSubmitCreateClientDialog
     }
-    const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
+
+    const withoutBonusProducts = _.filter(_.get(detail, 'products'), {'isBonus': false})
+
+    const forUpdateProducts = _.map(withoutBonusProducts, (item) => {
         return {
             amount: _.get(item, 'amount'),
             cost: _.get(item, 'price'),
