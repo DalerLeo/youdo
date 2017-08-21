@@ -50,10 +50,11 @@ const enhance = compose(
             minHeight: 'calc(100% - 59px)',
             borderRight: '1px #efefef solid'
         },
-        productionTypeLi: {
+        productionType: {
             background: '#f2f5f8',
             margin: '0',
-            padding: '15px 30px',
+            padding: '0 30px',
+            height: '50px',
             borderBottom: '1px solid #efefef',
             display: 'flex',
             position: 'relative',
@@ -120,7 +121,7 @@ const ManufactureGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         return (
-            <li key={id} className={classes.productionTypeLi}
+            <li key={id} className={classes.productionType}
                 onClick={() => {
                     listData.handleClickItem(id)
                 }}
