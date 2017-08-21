@@ -16,9 +16,11 @@ const enhance = compose(
 
 const ReturnProductsSearchField = enhance((props) => {
     const productItems = _.get(props, 'products')
+    const selectFieldScroll = _.get(props, 'selectFieldScroll')
 
     return (
         <SearchField
+            selectFieldScroll={selectFieldScroll}
             getValue={(value) => { return value }}
             getText={(value) => { return _.get(value, ['product', 'name']) }}
             getOptions={() => { return Promise.resolve(productItems) }}

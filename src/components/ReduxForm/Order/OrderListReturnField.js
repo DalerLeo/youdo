@@ -209,6 +209,12 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
 
         return value > normalizeAmount ? normalizeAmount : value
     }
+
+    const selectFieldScroll = {
+        scrollable: true,
+        maxHeight: '300px'
+    }
+
     const products = _.get(defaultProps, ['returned_products', 'input', 'value']) || []
     return (
         <div className={classes.wrapper}>
@@ -227,6 +233,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         <ReturnProductsSearchField
                             name="product"
                             label="Наименование товара"
+                            selectFieldScroll={selectFieldScroll}
                             className={classes.inputFieldCustom}
                             style={{width: '100%'}}
                             {..._.get(defaultProps, 'product')}

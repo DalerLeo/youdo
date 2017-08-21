@@ -43,54 +43,12 @@ const enhance = compose(
             padding: '0',
             width: '320px'
         },
-        productionRightSide: {
-            width: 'calc(100% - 320px)',
-            background: '#fff',
-            padding: '0 30px',
-            '& .row:first-child img': {
-                width: '18px',
-                height: '18px',
-                marginRight: '10px'
-            }
-        },
         productionUl: {
             listStyle: 'none',
             margin: '0',
             padding: '0',
             minHeight: 'calc(100% - 59px)',
             borderRight: '1px #efefef solid'
-        },
-        productionStaffUl: {
-            extend: 'productionUl',
-            '& .dottedList': {
-                margin: '0',
-                padding: '10px 0 10px 0',
-                display: 'flex',
-                alignItems: 'center',
-                position: 'relative',
-                '& div:first-child': {
-                    width: '30px',
-                    height: '30px',
-                    display: 'inline-block',
-                    borderRadius: '50%',
-                    marginRight: '10px',
-                    overflow: 'hidden'
-                },
-                '& div:first-child img': {
-                    width: '30px'
-                },
-                '& div:last-child': {
-                    display: 'inline-block',
-                    verticalAlign: 'top'
-                },
-                '& div:last-child span': {
-                    color: '#666'
-                }
-            },
-            '& .dottedList:last-child:after': {
-                content: '""',
-                backgroundImage: 'none'
-            }
         },
         productionTypeLi: {
             background: '#f2f5f8',
@@ -114,32 +72,6 @@ const enhance = compose(
             margin: '0',
             padding: '20px 30px'
         },
-        productionRightH2: {
-            fontSize: '13px',
-            fontWeight: '800',
-            margin: '0',
-            borderBottom: '1px solid #efefef',
-            padding: '20px 0',
-            display: 'flex',
-            alignItems: 'center'
-        },
-
-        productionStaffGroupTitle: {
-            margin: '0',
-            '& .dottedList': {
-                padding: '20px 0 10px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                '& p': {
-                    margin: '0',
-                    fontWeight: '600 !important'
-                },
-                '& span': {
-                    color: '#999',
-                    fontSize: '12px !important'
-                }
-            }
-        },
         productList: {
             width: '100%',
             '& li': {
@@ -157,83 +89,6 @@ const enhance = compose(
                 left: '0.7em',
                 right: '0.7em'
             }
-        },
-        deleteHideIco: {
-            display: 'none',
-            position: 'absolute',
-            right: '0'
-        },
-        productionEquipment: {
-            padding: '20px 0',
-            borderBottom: '1px solid #efefef'
-        },
-        productionEquipmentElement: {
-            background: '#f2f5f8',
-            textAlign: 'center',
-            padding: '20px 30px'
-        },
-        workerWrap: {
-            display: 'flex',
-            alignItems: 'center',
-            padding: '10px 0',
-            position: 'relative',
-            '&:hover > div:last-child': {
-                display: 'flex'
-            }
-        },
-        workerAvatar: {
-            width: '30px',
-            height: '30px',
-            borderRadius: '50%',
-            marginRight: '10px',
-            overflow: 'hidden',
-            '& img': {
-                width: '100%',
-                height: '100%'
-            }
-        },
-        workerPosition: {
-            '& span': {
-                display: 'block',
-                color: '#666',
-                fontSize: '11px !important'
-            }
-        },
-        tabNav: {
-            padding: '15px 0',
-            borderBottom: '1px #f2f5f8 solid',
-            '& a': {
-                margin: '-15px 0',
-                padding: '15px 0',
-                marginRight: '40px',
-                color: '#9b9b9b',
-                '&.active': {
-                    color: '#12aaeb',
-                    borderBottom: '1px solid'
-                }
-            }
-        },
-        tabContent: {
-            '& .row:first-child': {
-                fontWeight: '600'
-            },
-            '& .row': {
-                '& > div:first-child': {
-                    textAlign: 'left'
-                }
-            }
-        },
-        tabWrapper: {
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            height: 'calc(100vh - 120px)'
-        },
-        tableHeaderPN: {
-            width: '100%',
-            display: 'flex',
-            borderBottom: '1px solid #efefef',
-            height: '60px',
-            alignItems: 'center'
         }
     })
 )
