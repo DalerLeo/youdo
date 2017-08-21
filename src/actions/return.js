@@ -5,7 +5,7 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/returnSerializer'
 
-export const returnDeleteAction = (id) => {
+export const returnCancelAction = (id) => {
     const payload = axios()
         .post(sprintf(API.RETURN_CANCEL, id), {})
         .then((response) => {
@@ -38,7 +38,7 @@ export const returnListFetchAction = (filter) => {
     }
 }
 
-export const returnListPintFetchAction = (id) => {
+export const returnListPrintFetchAction = (id) => {
     const payload = axios()
         .get(API.RETURN_PRINT, {'params': {'id': id}})
         .then((response) => {
@@ -70,18 +70,3 @@ export const returnItemFetchAction = (id) => {
     }
 }
 
-export const returnCancelAction = (id) => {
-    const payload = axios()
-        .post(sprintf(API.RETURN_CANCEL, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.RETURN_CANCEL,
-        payload
-    }
-}

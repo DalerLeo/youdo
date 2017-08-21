@@ -5,7 +5,6 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
-import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
 import PrintIcon from 'material-ui/svg-icons/action/print'
@@ -102,24 +101,33 @@ const enhance = compose(
             width: 'calc(100% - 320px)'
         },
         list: {
+            maxHeight: '400px',
+            overflowX: 'hidden',
+            overflowY: 'auto',
+            paddingRight: '20px',
             '& .row': {
                 padding: '15px 0',
+                margin: '0',
                 '&:first-child': {
                     fontWeight: '600'
                 },
-                '&:after': {
-                    left: '0.5rem',
-                    right: '0.5rem'
+                '&:last-child:after': {
+                    display: 'none'
+                },
+                '& > div:first-child': {
+                    paddingLeft: '0'
                 },
                 '& > div:last-child': {
-                    textAlign: 'right'
+                    textAlign: 'right',
+                    paddingRight: '0'
                 },
-                '& > div:nth-child(3)': {
+                '& > div:nth-child(4)': {
                     textAlign: 'right'
                 }
             }
         },
         total: {
+            borderTop: '1px #efefef solid',
             textTransform: 'uppercase',
             fontWeight: '600',
             textAlign: 'right',
@@ -183,7 +191,6 @@ const ReturnDetails = enhance((props) => {
         data,
         cancelReturnDialog,
         confirmDialog,
-        handleOpenUpdateDialog,
         type,
         getDocument,
         handleCloseDetail
@@ -192,7 +199,10 @@ const ReturnDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const user = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
     const createdDate = dateTimeFormat(_.get(data, 'createdDate'))
+    const acceptedDate = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не установлена'
     const comment = _.get(data, 'comment')
+    const stock = _.get(data, ['stock', 'name'])
+    const order = _.get(data, 'order')
     const status = _.toInteger(_.get(data, 'status'))
     const PENDING = 0
     const IN_PROGRESS = 1
@@ -230,17 +240,9 @@ const ReturnDetails = enhance((props) => {
                             <PrintIcon />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Изменить">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={handleOpenUpdateDialog}>
-                            <Edit />
-                        </IconButton>
-                    </Tooltip>
                     <Tooltip position="bottom" text="Отменить">
                         <IconButton
+                            disabled={!(status === IN_PROGRESS || status === PENDING)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -258,6 +260,18 @@ const ReturnDetails = enhance((props) => {
                                 <li>
                                     <span>Добавил:</span>
                                     <span>{user}</span>
+                                </li>
+                                {order && <li>
+                                    <span>Заказ №:</span>
+                                    <span>{order}</span>
+                                </li>}
+                                <li>
+                                    <span>Склад:</span>
+                                    <span>{stock}</span>
+                                </li>
+                                <li>
+                                    <span>Дата приемки:</span>
+                                    <span>{acceptedDate}</span>
                                 </li>
                                 <li>
                                     <span>Дата возврата:</span>
@@ -312,8 +326,8 @@ const ReturnDetails = enhance((props) => {
                                 </Row>
                             )
                         })}
-                        <div className={classes.total}>Итого: {totalPrice}</div>
                     </div>
+                    <div className={classes.total}>Итого: {totalPrice}</div>
                 </div>
             </div>
             {type && <ConfirmDialog
