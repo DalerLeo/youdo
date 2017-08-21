@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer, withHandlers} from 'recompose'
+import {compose, withReducer, withHandlers, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
 import IconButton from 'material-ui/IconButton'
@@ -10,6 +10,7 @@ import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
+import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
 import {
     Table,
     TableBody,
@@ -24,6 +25,8 @@ import OrderReturnMeasurementField from './OrderReturnMeasurementField'
 import ReturnProductsSearchField from './ReturnProductsSearchField'
 import ProductReturnCostField from './ProductReturnCostField'
 import TextField from '../Basic/TextField'
+import Check from 'material-ui/svg-icons/navigation/check'
+import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 
 const ZERO = 0
 const enhance = compose(
@@ -137,6 +140,8 @@ const enhance = compose(
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
+    withState('editItem', 'setEditItem', null),
+
     withHandlers({
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
@@ -163,7 +168,26 @@ const enhance = compose(
                 }
             }
         },
-
+        handleEdit: props => (listIndex) => {
+            const {setEditItem} = props
+            const products = _.get(props, ['returned_products', 'input', 'value'])
+            const amount = numberWithoutSpaces(_.get(props, ['editAmount', 'input', 'value']))
+            _.map(products, (item, index) => {
+                if (index === listIndex && !_.isEmpty(amount)) {
+                    if (_.toNumber(_.get(item, ['product', 'value', 'amount'])) < _.toNumber(amount)) {
+                        item.amount = _.get(item, ['product', 'value', 'amount'])
+                    } else {
+                        item.amount = numberWithoutSpaces(amount)
+                    }
+                }
+            })
+            const fields = ['editAmount']
+            for (let i = 0; i < fields.length; i++) {
+                let newChange = _.get(props, [fields[i], 'input', 'onChange'])
+                props.dispatch(newChange(null))
+            }
+            setEditItem(null)
+        },
         handleRemove: props => (listIndex) => {
             const onChange = _.get(props, ['returned_products', 'input', 'onChange'])
             const products = _(props)
@@ -175,7 +199,7 @@ const enhance = compose(
     })
 )
 
-const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, productAmount, returnAmount, ...defaultProps}) => {
+const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, productAmount, returnAmount, editItem, setEditItem, handleEdit, ...defaultProps}) => {
     const normalizeAmount = productAmount - returnAmount
 
     const normalizeReturn = value => {
@@ -201,6 +225,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                 {state.open && <div className={classes.background}>
                     <div style={{width: '35%', paddingRight: '20px'}}>
                         <ReturnProductsSearchField
+                            name="product"
                             label="Наименование товара"
                             className={classes.inputFieldCustom}
                             style={{width: '100%'}}
@@ -231,6 +256,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
             </div>
             {!_.isEmpty(products) ? <div className={classes.table}>
                 <Table
+                    selectable={false}
                     fixedHeader={true}
                     fixedFooter={false}
                     multiSelectable={false}>
@@ -253,20 +279,51 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         deselectOnClickaway={false}
                         showRowHover={false}
                         stripedRows={false}>
-                        {_.map(products, (item, index) => (
-                            <TableRow key={index} className={classes.tableRow}>
-                                <TableRowColumn>{_.get(item, ['product', 'text'])}</TableRowColumn>
-                                <TableRowColumn>{_.get(item, 'amount')} {_.get(item, ['product', 'value', 'product', 'measurement', 'name'])}</TableRowColumn>
-                                <TableRowColumn>{
-                                    numberFormat((_.get(item, ['product', 'value', 'price']) * (_.get(item, 'amount'))), getConfig('PRIMARY_CURRENCY'))
-                                }</TableRowColumn>
-                                <TableRowColumn style={{textAlign: 'right'}}>
-                                    <IconButton onTouchTap={() => handleRemove(index)}>
-                                        <DeleteIcon color="#666666"/>
-                                    </IconButton>
-                                </TableRowColumn>
-                            </TableRow>
-                        ))}
+                        {_.map(products, (item, index) => {
+                            const product = _.get(item, ['product', 'text'])
+                            const amount = numberFormat(_.get(item, 'amount'))
+                            const measurement = _.get(item, ['product', 'value', 'product', 'measurement', 'name'])
+                            const price = numberFormat((_.get(item, ['product', 'value', 'price']) * (_.get(item, 'amount'))), getConfig('PRIMARY_CURRENCY'))
+                            if (editItem === index) {
+                                return (
+                                    <TableRow key={index} className={classes.tableRow}>
+                                        <TableRowColumn>{product}</TableRowColumn>
+                                        <TableRowColumn style={{padding: 0}}>
+                                            <TextField
+                                                placeholder={amount + ' ' + measurement}
+                                                className={classes.inputFieldEdit}
+                                                fullWidth={true}
+                                                {..._.get(defaultProps, 'editAmount')}
+                                            />
+                                        </TableRowColumn>
+                                        <TableRowColumn>{price}</TableRowColumn>
+                                        <TableRowColumn style={{textAlign: 'right'}}>
+                                            <IconButton
+                                                onTouchTap={() => { handleEdit(index) }}>
+                                                <Check color="#12aaeb"/>
+                                            </IconButton>
+                                        </TableRowColumn>
+                                    </TableRow>
+                                )
+                            }
+
+                            return (
+                                <TableRow key={index} className={classes.tableRow}>
+                                    <TableRowColumn>{product}</TableRowColumn>
+                                    <TableRowColumn>{amount} {measurement}</TableRowColumn>
+                                    <TableRowColumn>{price}</TableRowColumn>
+                                    <TableRowColumn style={{textAlign: 'right'}}>
+                                        <IconButton
+                                            onTouchTap={() => setEditItem(index)}>
+                                            <EditIcon color="#666666"/>
+                                        </IconButton>
+                                        <IconButton onTouchTap={() => handleRemove(index)}>
+                                            <DeleteIcon color="#666666"/>
+                                        </IconButton>
+                                    </TableRowColumn>
+                                </TableRow>
+                            )
+                        })}
                     </TableBody>
                 </Table>
             </div>

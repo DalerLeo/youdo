@@ -145,14 +145,13 @@ const enhance = compose(
             }
         },
         bottomButton: {
-            bottom: '0',
-            left: '0',
-            right: '0',
-            padding: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 14px 10px 20px',
             zIndex: '999',
             borderTop: '1px solid #efefef',
             background: '#fff',
-            textAlign: 'right',
             '& span': {
                 fontSize: '13px !important',
                 fontWeight: '600 !important',
@@ -178,10 +177,6 @@ const enhance = compose(
             flexBasis: '30%',
             padding: '20px 30px',
             borderRight: '1px #efefef solid'
-        },
-        summary: {
-            textAlign: 'right',
-            paddingTop: '20px'
         }
     }),
     reduxForm({
@@ -239,15 +234,15 @@ const OrderReturnDialog = enhance((props) => {
                             </div>
                             <div className={classes.rightOrderPart}>
                                 <Fields
-                                    names={['returned_products', 'product', 'amount', 'cost']}
+                                    names={['returned_products', 'product', 'amount', 'cost', 'editAmount']}
                                     component={OrderListReturnField}
                                     orderData={orderData}
                                 />
-                                <div className={classes.summary}>Общая сумма возврата: <OrderReturnTotalSum/></div>
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
+                        <div className={classes.summary}>Общая сумма возврата: <OrderReturnTotalSum/></div>
                         <FlatButton
                             label="Возврат"
                             className={classes.actionButton}

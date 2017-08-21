@@ -72,13 +72,12 @@ export const createReturnSerializer = (data, id) => {
     const paymentType = _.get(data, ['paymentType', 'value'])
     const products = _.map(_.get(data, ['products']), (item) => {
         const amount = numberWithoutSpaces(_.get(item, 'amount'))
-        const itemCost = numberWithoutSpaces(_.get(item, 'cost'))
-        const summary = numberWithoutSpaces(_.toNumber(amount) * _.toNumber(itemCost))
+        const cost = numberWithoutSpaces(_.get(item, 'cost'))
         const product = _.get(item, ['product', 'value', 'id'])
         return {
-            amount: amount,
-            cost: summary,
-            product: product
+            amount,
+            cost,
+            product
         }
     })
 
