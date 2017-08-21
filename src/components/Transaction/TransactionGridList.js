@@ -211,8 +211,8 @@ const TransactionGridList = enhance((props) => {
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
-        const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name')
-            : (_.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан')
+        const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name') : 'Не указан'
+        const clientName = _.get(item, ['client', 'name']) || 'Не указан'
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
 
         const iconButton = (
@@ -225,7 +225,7 @@ const TransactionGridList = enhance((props) => {
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
                 <div style={{flexBasis: '22%', maxWidth: '24%'}}>
                     {client}
-                    {showCashbox ? <div><span className={classes.label}>Клиент: </span> {_.get(item, ['clientTransaction', 'client', 'name']) || 'Не указан'}</div> : null}
+                    {!showCashbox ? <div><span className={classes.label}>Клиент: </span>{clientName}</div> : null}
                 </div>
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
                     {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : null}
@@ -243,6 +243,7 @@ const TransactionGridList = enhance((props) => {
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem
                             primaryText="Изменить"
+                            disabled={true}
                             leftIcon={<Edit />}
                             onTouchTap={() => {
                                 updateExpenseDialog.handleOpenUpdateDialog(id, _.get(item, 'amount'))
@@ -250,6 +251,7 @@ const TransactionGridList = enhance((props) => {
                         />
                         <MenuItem
                             primaryText="Удалить "
+                            disabled={true}
                             leftIcon={<DeleteIcon />}
                             onTouchTap={() => {
                                 confirmDialog.handleOpenConfirmDialog(id)

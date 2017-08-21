@@ -15,6 +15,7 @@ import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
+import Tooltip from '../ToolTip'
 
 const listHeader = [
     {
@@ -99,6 +100,9 @@ const enhance = compose(
             '&:hover > div:last-child > div ': {
                 opacity: '1'
             }
+        },
+        iconBtn: {
+            display: 'flex'
         }
     })
 )

@@ -15,7 +15,16 @@ import Pagination from '../ReduxForm/Pagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
-
+import {
+    PAYMENT,
+    CANCEL,
+    ORDER_RETURN,
+    CANCEL_ORDER,
+    CANCEL_ORDER_RETURN,
+    EXPENSE,
+    FIRST_BALANCE,
+    ORDER
+} from '../../constants/clientBalanceInfo'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -26,6 +35,12 @@ const enhance = compose(
             zIndex: '999',
             justifyContent: 'center',
             display: 'flex'
+        },
+        dialog: {
+            overflowY: 'auto !important',
+            '& > div:first-child > div:first-child': {
+                transform: 'translate(0px, 0px) !important'
+            }
         },
         red: {
             color: '#e57373 !important'
@@ -41,7 +56,8 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            marginBottom: '64px'
+            marginBottom: '64px',
+            maxHeight: '575px !important'
         },
         titleContent: {
             background: '#fff',
@@ -92,7 +108,7 @@ const enhance = compose(
             }
         },
         content: {
-            maxHeight: '310px',
+            maxHeight: '445px',
             overflowY: 'auto',
             overflowX: 'hidden',
             width: '100%',
@@ -153,9 +169,11 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const currency = _.get(item, ['currency', 'name'])
         const market = _.get(item, ['market', 'name'])
         const amount = _.toNumber(_.get(item, 'amount'))
-        const customRate = _.toNumber(_.get(item, 'customRate'))
+        const customRate = _.get(item, 'customRate') ? ' (' + _.toNumber(_.get(item, 'customRate')) + ')' : ''
         const internal = _.toNumber(_.get(item, 'internal'))
         const user = _.get(item, 'user') ? (_.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])) : 'Система'
+        const type = _.get(item, 'type')
+
         return (
             <Row key={index} className='dottedList'>
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>
@@ -167,10 +185,18 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 <div style={{flexBasis: '40%', maxWidth: '40%'}}>
                     <div>Магазин: <span>{market}</span></div>
                     <div>Коментария: <span>{comment}</span></div>
+                    <div>Тип: <span>{type === PAYMENT ? 'Оплата'
+                                        : type === CANCEL ? 'Отмена'
+                                            : type === CANCEL_ORDER ? 'Отмена заказа'
+                                                : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
+                                                    : type === ORDER ? 'Заказ'
+                                                        : type === EXPENSE ? 'Расходь'
+                                                            : type === ORDER_RETURN ? 'Возврат заказа'
+                                                                : type === FIRST_BALANCE ? 'Первый баланс' : null }</span></div>
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>
-                    <div>{currency !== currentCurrency ? numberFormat(internal, currentCurrency) + '(' + customRate + ')' : null} </div>
+                    <div>{currency !== currentCurrency ? numberFormat(internal, currentCurrency) + customRate : null} </div>
                 </div>
             </Row>)
     })
@@ -179,6 +205,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
         <Dialog
             modal={true}
             open={open}
+            className={classes.dialog}
             onRequestClose={onClose}
             contentStyle={loading ? {width: '500px'} : {width: '1000px', maxWidth: 'unset'}}
             bodyStyle={{minHeight: 'auto'}}
