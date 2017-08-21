@@ -8,10 +8,11 @@ import CircularProgress from 'material-ui/CircularProgress'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import ContentAdd from 'material-ui/svg-icons/content/add'
+import ContentAdd from 'material-ui/svg-icons/av/playlist-add'
 import Map from 'material-ui/svg-icons/maps/map'
 import Tooltip from '../ToolTip'
 import NotFound from '../Images/not-found.png'
+import numberFormat from '../../helpers/numberFormat'
 
 const ZERO = 0
 const iconStyle = {
@@ -20,12 +21,15 @@ const iconStyle = {
         width: 20,
         height: 20
     },
-    addButton: {
-        borderRadius: '50%',
-        background: '#666666',
-        height: 24,
+    iconCustom: {
+        color: '#666',
         width: 24,
-        padding: '2px 0 0 0'
+        height: 24
+    },
+    addButton: {
+        height: 48,
+        width: 48,
+        padding: 0
     },
     button: {
         width: 48,
@@ -55,13 +59,22 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             height: '65px',
+            position: 'relative',
             padding: '0 30px',
             borderBottom: '1px #efefef solid'
+        },
+        closeDetail: {
+            cursor: 'pointer',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0'
         },
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700',
+            fontWeight: '600',
             cursor: 'pointer'
         },
         materialsList: {
@@ -69,22 +82,31 @@ const enhance = compose(
         },
         rawMaterials: {
             '& .dottedList': {
-                padding: '10px 0'
+                padding: '10px 0',
+                margin: '0',
+                minHeight: '50px',
+                alignItems: 'center',
+                '& > div:first-child': {
+                    paddingLeft: '0'
+                },
+                '& > div:last-child': {
+                    paddingRight: '0'
+                }
             },
             '& .dottedList:last-child:after': {
-                backgroundImage: 'none'
+                display: 'none'
             }
         },
         titleButtons: {
             display: 'flex',
-            justifyContent: 'flex-end',
-            '& svg': {
-                color: '#fff !important'
-            }
+            justifyContent: 'flex-end'
         },
         listButtons: {
             display: 'flex',
             justifyContent: 'flex-end',
+            '& > div': {
+                marginLeft: '10px'
+            },
             '& button': {
                 height: '20px !important',
                 width: '25px !important'
@@ -133,12 +155,12 @@ const ManufactureDetails = enhance((props) => {
     const ingredientList = _.map(_.get(data, 'ingredient'), (item) => {
         const itemId = _.get(item, 'id')
         const ingredient = _.get(item, ['ingredient', 'name'])
-        const amount = _.get(item, 'amount')
         const measurement = _.get(item, ['ingredient', 'measurement', 'name'])
+        const amount = numberFormat(_.get(item, 'amount'), measurement)
         return (
             <li key={itemId} className="dottedList">
                 <Col xs={7}>{ingredient}</Col>
-                <Col xs={3}>{amount} {measurement}</Col>
+                <Col xs={3}>{amount}</Col>
                 <Col xs={2}>
                     <div className={classes.listButtons}>
                         <Tooltip position="bottom" text="Изменить">
@@ -146,6 +168,7 @@ const ManufactureDetails = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
+                                disableTouchRipple={true}
                                 onClick={() => {
                                     handleOpenEditMaterials(itemId)
                                 }}>
@@ -157,6 +180,7 @@ const ManufactureDetails = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
+                                disableTouchRipple={true}
                                 onClick={() => {
                                     handleOpenConfirmDialog(itemId)
                                 }}>
@@ -172,10 +196,10 @@ const ManufactureDetails = enhance((props) => {
     return (
         <div key={id} className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}
-                     onTouchTap={handleCloseDetail}>{productTitle}</div>
+                <div className={classes.closeDetail} onClick={handleCloseDetail}> </div>
+                <div className={classes.titleLabel}>{productTitle}</div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Изменение производитель">
+                    <Tooltip position="bottom" text="Изменить производителя">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
@@ -193,7 +217,7 @@ const ManufactureDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Добавить сырье">
                         <IconButton
-                            iconStyle={iconStyle.icon}
+                            iconStyle={iconStyle.iconCustom}
                             style={iconStyle.addButton} onClick={ createMaterials.handleOpen }>
                             <ContentAdd />
                         </IconButton>

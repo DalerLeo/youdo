@@ -24,6 +24,17 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%',
+            maxHeight: 'none !important',
+            marginBottom: '64px'
+        },
         titleContent: {
             background: '#fff',
             color: '#333',
@@ -40,6 +51,51 @@ const enhance = compose(
                 padding: '0 !important',
                 position: 'absolute !important'
             }
+        },
+        inContent: {
+            display: 'flex',
+            minHeight: '100px',
+            overflow: 'auto',
+            padding: '10px 30px 0',
+            color: '#333'
+        },
+        bodyContent: {
+            width: '100%'
+        },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
         }
     }),
     reduxForm({
@@ -62,13 +118,13 @@ const ManufactureChange = enhance((props) => {
             bodyClassName={classes.popUp}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.titleContent}>
-                    <span>Изменение производитель</span>
+                    <span>Изменение производителя</span>
                     <IconButton onTouchTap={onClose}>
                         <CloseIcon2 color="#666666"/>
                     </IconButton>
                 </div>
                 {error && <div className={classes.error}>Ошибка: {error}</div>}
-                <div>
+                <div className={classes.inContent}>
                     <Field
                         name="manufacture"
                         label="Производство"
