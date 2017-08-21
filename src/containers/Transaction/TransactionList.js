@@ -384,7 +384,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     dispatch(reset('AcceptClientTransactionForm'))
-                    cashboxId === _.toNumber(_.get(acceptForm, ['values', 'cashBox', 'value'])) && dispatch(cashboxListFetchAction(filter))
+                    dispatch(cashboxListFetchAction(filter))
                     dispatch(transactionListFetchAction(filter, cashboxId))
 
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_DIALOG_OPEN]: false})})

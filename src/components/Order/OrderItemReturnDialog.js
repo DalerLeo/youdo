@@ -195,6 +195,7 @@ const OrderItemReturnDialog = enhance((props) => {
     const totalPrice = numberFormat(_.get(returnListData, 'totalPrice'), getConfig('PRIMARY_CURRENCY'))
     const productList = _.map(_.get(returnListData, 'returnedProducts'), (item) => {
         const product = _.get(item, ['product', 'name'])
+        const measurement = _.get(item, ['product', 'measurement', 'name'])
         const amount = _.toNumber(_.get(item, 'amount'))
         const returnId = _.get(item, 'id')
         const cost = _.toNumber(_.get(item, 'price'))
@@ -202,7 +203,7 @@ const OrderItemReturnDialog = enhance((props) => {
         return (
             <Row key={returnId} className="dottedList">
                 <Col xs={4}>{product}</Col>
-                <Col xs={2}>{numberFormat(amount)}</Col>
+                <Col xs={2}>{numberFormat(amount, measurement)}</Col>
                 <Col xs={3}>{numberFormat(cost)}</Col>
                 <Col xs={3}>{numberFormat(summmary)}</Col>
             </Row>

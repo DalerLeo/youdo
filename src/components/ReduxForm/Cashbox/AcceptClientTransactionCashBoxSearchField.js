@@ -4,9 +4,9 @@ import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-
+const CASH = 2
 const getOptions = (search, currency) => {
-    return axios().get(`${PATH.CASHBOX_LIST}?search=${search || ''}`, {params: {currency}})
+    return axios().get(`${PATH.CASHBOX_LIST}?search=${search || ''}`, {params: {currency, type: CASH}})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
