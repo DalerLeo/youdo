@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import {connect} from 'react-redux'
-import SearchField from '../Basic/SearchField'
+import SearchFieldCustom from '../Basic/SearchFieldCustom'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 
@@ -19,7 +19,7 @@ const ReturnProductsSearchField = enhance((props) => {
     const selectFieldScroll = _.get(props, 'selectFieldScroll')
 
     return (
-        <SearchField
+        <SearchFieldCustom
             selectFieldScroll={selectFieldScroll}
             getValue={(value) => { return value }}
             getText={(value) => { return _.get(value, ['product', 'name']) }}

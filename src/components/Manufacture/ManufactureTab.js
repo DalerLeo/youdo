@@ -14,6 +14,7 @@ const enhance = compose(
     injectSheet({
         ManufactRightSide: {
             padding: '0px 25px',
+            width: 'calc(100% - 320px)',
             zIndex: '2'
         },
         colorCat: {
@@ -34,7 +35,7 @@ const enhance = compose(
                 marginTop: '0px !important',
                 marginBottom: '-1px',
                 backgroundColor: '#12aaeb !important',
-                height: '1px !important'
+                height: '3px !important'
             },
             '& button': {
                 color: '#333 !important',
