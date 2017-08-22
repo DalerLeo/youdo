@@ -110,7 +110,7 @@ const StatProductList = enhance((props) => {
         id: detailId,
         data: detail,
         detailLoading,
-        handleCloseDetail: props.handleCloseDetail,
+        handleCloseDetail: props.handleCloseDetail
     }
     const getDocument = {
         handleGetDocument: props.handleGetDocument
