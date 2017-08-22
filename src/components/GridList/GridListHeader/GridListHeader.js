@@ -150,6 +150,7 @@ const GridListHeader = enhance((props) => {
                         onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
                         <FlatButton
                             className={classes.button}
+                            labelStyle={{fontSize: '13px'}}
                             style={alignRight ? {paddingRight: '0', paddingLeft: '30px', textAlign: 'right'} : {paddingRight: '30px', textAlign: 'left'}}
                             disableTouchRipple={true}>
                             <span>{_.get(item, 'title')}</span> {Icon}
@@ -163,6 +164,7 @@ const GridListHeader = enhance((props) => {
                             onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
                             <FlatButton
                                 className={classes.button}
+                                labelStyle={{fontSize: '13px'}}
                                 style={alignRight ? {paddingRight: '0', paddingLeft: '30px', textAlign: 'right'} : {paddingRight: '30px', textAlign: 'left'}}
                                 disableTouchRipple={true}>
                                 {alignRight && Icon} <span>{_.get(item, 'title')}</span> {!alignRight && Icon}

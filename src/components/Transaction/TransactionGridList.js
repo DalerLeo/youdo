@@ -239,6 +239,7 @@ const TransactionGridList = enhance((props) => {
                 <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
+                        menuItemStyle={{fontSize: '13px'}}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem

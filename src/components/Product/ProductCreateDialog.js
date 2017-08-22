@@ -135,6 +135,7 @@ const ProductCreateDialog = enhance((props) => {
                     <div className={classes.bottomButton}>
                         <FlatButton
                             label="Сохранить"
+                            labelStyle={{fontSize: '13px'}}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

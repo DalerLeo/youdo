@@ -224,6 +224,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                     <FlatButton
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}
+                        labelStyle={{fontSize: '13px'}}
                         className={classes.span}
                         onTouchTap={() => dispatch({open: !state.open})}
                     />
@@ -257,7 +258,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         <ProductReturnCostField />
                     </div>
                     <div style={{width: '20%', textAlign: 'right', paddingTop: '9px'}}>
-                        <FlatButton label="Применить" onTouchTap={handleAdd} style={{color: '#12aaeb'}}/>
+                        <FlatButton label="Применить" onTouchTap={handleAdd} labelStyle={{fontSize: '13px'}} style={{color: '#12aaeb'}}/>
                     </div>
                 </div>}
             </div>

@@ -191,6 +191,7 @@ const TrackingDetails = enhance((props) => {
                             label="Пройденный маршрут агента"/>
                         <RaisedButton
                             label="Применить"
+                            labelStyle={{fontSize: '13px'}}
                             backgroundColor="#12aaeb"
                             labelColor="#fff"
                             type="submit"/>

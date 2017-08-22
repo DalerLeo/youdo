@@ -449,6 +449,7 @@ const SupplyDetails = enhance((props) => {
                         <div>
                             <FlatButton
                                 onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}
+                                labelStyle={{fontSize: '13px'}}
                                 className="expenseButton"
                                 label="+ добавить доп. расход"/>
                         </div>

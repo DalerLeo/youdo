@@ -183,7 +183,7 @@ const EquipmentGridList = enhance((props) => {
         <div className={classes.addButtonWrapper}>
             <FlatButton
                 backgroundColor="#fff"
-                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
                 label="добавить оборудование"
                 onTouchTap={createDialog.handleOpenCreateDialog}

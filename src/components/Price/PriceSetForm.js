@@ -196,6 +196,7 @@ const PriceSetForm = enhance((props) => {
                     <div className={classes.actionButton}>
                         <FlatButton
                             label="Сохранить"
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                             onTouchTap={onSubmit}

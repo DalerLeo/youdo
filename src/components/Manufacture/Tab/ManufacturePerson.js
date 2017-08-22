@@ -91,6 +91,7 @@ const ManufacturePerson = (props) => {
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
+                        menuItemStyle={{fontSize: '13px'}}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem

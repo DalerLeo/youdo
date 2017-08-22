@@ -186,6 +186,7 @@ const TabReceiveFilterForm = enhance((props) => {
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
+                        labelStyle={{fontSize: '13px'}}
                         label="Применить"
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

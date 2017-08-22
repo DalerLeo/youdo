@@ -346,12 +346,14 @@ const OrderCreateDialog = enhance((props) => {
                         </div>
                         {(notEnough) ? <FlatButton
                             label="Далее"
+                            labelStyle={{fontSize: '13px'}}
                             className={classes.actionButton}
                             primary={true}
                             onTouchTap={shortageDialog.handleOpenShortageDialog}/>
 
                             : <FlatButton
                                 label="Оформить заказ"
+                                labelStyle={{fontSize: '13px'}}
                                 className={classes.actionButton}
                                 primary={true}
                                 type="submit"/>

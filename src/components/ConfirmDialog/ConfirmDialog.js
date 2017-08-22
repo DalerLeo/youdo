@@ -163,6 +163,7 @@ const ConfirmDialog = enhance((props) => {
                     <FlatButton
                         className={classes.actionButton}
                         label={buttonLabel}
+                        labelStyle={{fontSize: '13px'}}
                         primary={true}
                         onTouchTap={onSubmit}
                     />

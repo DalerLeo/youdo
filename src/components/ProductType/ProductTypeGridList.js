@@ -306,6 +306,7 @@ const ProductTypeGridList = enhance((props) => {
                     <IconMenu
                         iconButtonElement={iconButton}
                         iconStyle={vertMenuStyle.icon}
+                        menuItemStyle={{fontSize: '13px'}}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem
@@ -333,7 +334,7 @@ const ProductTypeGridList = enhance((props) => {
         <div className={classes.addButtonWrapper}>
             <FlatButton
                 backgroundColor="#fff"
-                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
                 label="добавить тип продукта"
                 onTouchTap={createDialog.handleOpenCreateDialog}

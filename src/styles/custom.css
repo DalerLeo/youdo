@@ -61,9 +61,11 @@ a {
     cursor: pointer;
 }
 
-label, button, input, span {
+label, button, input {
     font-size: 13px !important;
 }
+
+
 
 ul {
     margin: 0;

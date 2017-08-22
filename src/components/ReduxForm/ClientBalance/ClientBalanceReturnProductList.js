@@ -248,6 +248,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                     <FlatButton
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}
+                        labelStyle={{fontSize: '13px'}}
                         className={classes.span}
                         onTouchTap={() => dispatch({open: !state.open})}
                     />

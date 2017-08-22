@@ -122,6 +122,7 @@ const StockCreateDialog = enhance((props) => {
                     <div className={classes.bottomButton}>
                         <FlatButton
                             label="Сохранить"
+                            labelStyle={{fontSize: '13px'}}
                             type="submit"
                         />
                     </div>

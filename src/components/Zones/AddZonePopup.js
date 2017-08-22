@@ -116,6 +116,7 @@ const AddZonePopup = enhance((props) => {
                     </div>
                     <FlatButton
                         label="Сохранить"
+                        labelStyle={{fontSize: '13px'}}
                         className={classes.actionButton}
                         primary={true}
                         type="submit"
