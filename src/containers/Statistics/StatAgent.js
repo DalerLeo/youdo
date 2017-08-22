@@ -24,7 +24,6 @@ import {
 } from '../../actions/statAgent'
 
 const ZERO = 0
-const ONE = 1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -143,11 +142,6 @@ const StatAgentList = enhance((props) => {
         'toDate': _.get(filterForm, ['values', 'date', 'toDate'])
     } : {}
 
-    const defaultDate = {
-        'fromDate': moment().subtract(ONE, 'month'),
-        'toDate': moment()
-    }
-
     const detailData = {
         filter: filterItem,
         id: detailId,
@@ -163,7 +157,6 @@ const StatAgentList = enhance((props) => {
     }
     const initialValues = {
         date: {
-            date: filterDateRange || defaultDate,
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)
         }
