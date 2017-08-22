@@ -10,39 +10,73 @@ import moment from 'moment'
 import PropTypes from 'prop-types'
 import RedPin from '../Images/person-pin-red.png'
 import GreenPin from '../Images/person-pin-green.png'
+import BluePin from '../Images/person-pin-blue.png'
 import Location from '../Images/market-location.png'
-import MarketOn from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
+import {connect} from 'react-redux'
 
 const ZERO = 0
 const enhance = compose(
     withScriptjs,
     withGoogleMap,
+    connect((state, props) => {
+        const agentId = _.get(props, 'agentId')
+        const timeValue = _.toInteger(_.get(state, ['form', 'TrackingFilterForm', 'values', 'time']))
+        const date = _.get(state, ['form', 'TrackingFilterForm', 'values', 'date'])
+        return {
+            agentId,
+            timeValue,
+            date
+        }
+    }),
     withState('openMarketInfo', 'setOpenMarketInfo', ZERO),
-    withState('openAgentInfo', 'setOpenAgentInfo', ZERO)
+    withState('openAgentInfo', 'setOpenAgentInfo', ZERO),
 )
-
 const GoogleMapWrapper = enhance(({
-          onMapLoad,
-          listData,
-          handleOpenDetails,
-          agentLocation,
-          marketsLocation,
-          isOpenTrack,
-          isOpenMarkets,
-          openMarketInfo,
-          setOpenMarketInfo,
-          openAgentInfo,
-          setOpenAgentInfo,
-          shopDetails,
-          ...props
-      }) => {
+    onMapLoad,
+    agentId,
+    listData,
+    handleOpenDetails,
+    agentLocation,
+    marketsLocation,
+    isOpenTrack,
+    isOpenMarkets,
+    openMarketInfo,
+    setOpenMarketInfo,
+    openAgentInfo,
+    setOpenAgentInfo,
+    shopDetails,
+    timeValue,
+    date,
+    ...props
+}) => {
+    const minutePerHour = 60
+    const TEN = 10
+    let hour = _.floor(timeValue / minutePerHour) || ZERO
+    if (hour < TEN) {
+        hour = '0' + hour
+    }
+    let minute = _.floor(timeValue % minutePerHour) || ZERO
+    if (minute < TEN) {
+        minute = '0' + minute
+    }
+    const filterDate = _.toInteger(moment(moment(date).format('YYYY-MM-DD ' + hour + ':' + minute)).format('x'))
+
+    const filterAgentLocation = _.filter(_.get(agentLocation, 'results'), (o) => {
+        const regDate = _.toInteger(moment(_.get(o, 'registeredDate')).format('x'))
+        return regDate <= filterDate
+    })
     const agentCoordinates = [
-        _.map(_.get(agentLocation, 'results'), (item) => {
+        _.map(filterAgentLocation, (item) => {
             const lat = _.get(item, ['point', 'lat'])
             const lng = _.get(item, ['point', 'lon'])
-            return {lat: lat, lng: lng}
+            const registeredDate = _.get(item, 'registeredDate')
+            return {
+                lat: lat,
+                lng: lng,
+                date: moment(registeredDate).format('HH:mm:ss')
+            }
         })
     ]
     const polyLineOptions = {
@@ -54,6 +88,11 @@ const GoogleMapWrapper = enhance(({
     const clickMarket = (id) => {
         shopDetails.handleOpenShopDetails(id)
         setOpenMarketInfo(id)
+    }
+
+    const clickAgent = (id) => {
+        handleOpenDetails(id)
+        setOpenAgentInfo(id)
     }
 
     return (
@@ -97,6 +136,7 @@ const GoogleMapWrapper = enhance(({
             </MarkerClusterer>
             {_.map(listData, (item) => {
                 const id = _.get(item, 'id')
+                const name = _.get(item, 'agent')
                 const lat = _.get(item, ['location', 'lat'])
                 const lng = _.get(item, ['location', 'lon'])
 
@@ -108,11 +148,34 @@ const GoogleMapWrapper = enhance(({
                 if (difference <= FIVE_MIN) {
                     isOnline = true
                 }
+                const lastLat = _.get(_.last(filterAgentLocation), ['point', 'lat'])
+                const lastLon = _.get(_.last(filterAgentLocation), ['point', 'lon'])
+                if (id === agentId) {
+                    return (
+                        <Marker
+                            key={id}
+                            onClick={() => { clickAgent(id) }}
+                            position={{lat: lastLat || lat, lng: lastLon || lng}}
+                            options={
+                            {
+                                icon: {
+                                    url: BluePin,
+                                    size: {width: 30, height: 30},
+                                    scaledSize: {width: 30, height: 30}
+                                }
+                            }}>
+                            <InfoWindow>
+                                <div>{name}</div>
+                            </InfoWindow>
+                        </Marker>
+                    )
+                }
 
                 return (
                     <Marker
                         key={id}
-                        onClick={() => { handleOpenDetails(id) }}
+                        title={name}
+                        onClick={() => { clickAgent(id) }}
                         position={{lat: lat, lng: lng}}
                         options={
                         {
@@ -135,15 +198,17 @@ const GoogleMapWrapper = enhance(({
                 {_.map(_.get(agentCoordinates, '0'), (point, index) => {
                     const lat = _.get(point, 'lat')
                     const lng = _.get(point, 'lng')
+                    const regDate = _.get(point, 'date')
                     return (
                         <Marker
                             key={index}
                             position={{lat: lat, lng: lng}}
+                            title={regDate}
                             options={
                             {
                                 icon: {
                                     url: Location,
-                                    size: {width: 8, height: 8},
+                                    size: {width: 30, height: 30},
                                     scaledSize: {width: 8, height: 8},
                                     anchor: {x: 4, y: 4}
                                 }
@@ -164,6 +229,8 @@ const Loader = () =>
 
 const GoogleMap = (props) => {
     const {
+        filter,
+        agentId,
         listData,
         handleOpenDetails,
         agentLocation,
@@ -183,6 +250,9 @@ const GoogleMap = (props) => {
             mapElement={<div style={{height: '100%'}}/>}
             defaultZoom={14}
             radius="500"
+
+            filter={filter}
+            agentId={agentId}
             listData={listData}
             handleOpenDetails={handleOpenDetails}
             agentLocation={agentLocation}

@@ -20,8 +20,6 @@ import {shopItemFetchAction} from '../../actions/shop'
 
 const TRACKING_FILTER_KEY = {
     DATE: 'date',
-    FROM_TIME: 'fromTime',
-    TO_TIME: 'toTime',
     SHOW_MARKETS: 'showMarkets',
     SHOW_ZONES: 'showZones',
     AGENT_TRACK: 'agentTrack'
@@ -74,15 +72,15 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const prevAgent = _.get(props, ['params', 'agentId'])
         const nextAgent = _.get(nextProps, ['params', 'agentId'])
+        const prevDate = _.get(props, ['query', 'date'])
+        const nextDate = _.get(nextProps, ['query', 'date'])
         const prevTrack = toBoolean(_.get(props, ['query', 'agentTrack']))
         const nextTrack = toBoolean(_.get(nextProps, ['query', 'agentTrack']))
-        return (prevAgent !== nextAgent || prevTrack !== nextTrack) && nextTrack === true
+        return (prevAgent !== nextAgent || prevTrack !== nextTrack || prevDate !== nextDate)
     }, ({dispatch, params, location}) => {
         const id = _.toInteger(_.get(params, 'agentId'))
         const serializerData = {
-            date: _.get(location, ['query', 'date']),
-            beginTime: _.get(location, ['query', 'fromTime']),
-            endTime: _.get(location, ['query', 'toTime'])
+            date: _.get(location, ['query', 'date'])
         }
         if (id > ZERO) {
             dispatch(locationListAction(id, serializerData))
@@ -142,13 +140,9 @@ const enhance = compose(
             const showMarkets = _.get(filterForm, ['values', 'showMarkets']) || null
             const agentTrack = _.get(filterForm, ['values', 'agentTrack']) || null
             const date = _.get(filterForm, ['values', 'date']) || null
-            const fromTime = _.get(filterForm, ['values', 'fromTime']) || null
-            const toTime = _.get(filterForm, ['values', 'toTime']) || null
 
             filter.filterBy({
                 [TRACKING_FILTER_KEY.DATE]: moment(date).format('YYYY-MM-DD'),
-                [TRACKING_FILTER_KEY.FROM_TIME]: moment(fromTime).format('HH-mm'),
-                [TRACKING_FILTER_KEY.TO_TIME]: moment(toTime).format('HH-mm'),
                 [TRACKING_FILTER_KEY.SHOW_MARKETS]: showMarkets,
                 [TRACKING_FILTER_KEY.SHOW_ZONES]: showZones,
                 [TRACKING_FILTER_KEY.AGENT_TRACK]: agentTrack
@@ -175,7 +169,6 @@ const Tracking = enhance((props) => {
         layout
     } = props
 
-    const split = 4
     const openToggle = toBoolean(_.get(location, ['query', TOGGLE_INFO]))
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
@@ -186,19 +179,10 @@ const Tracking = enhance((props) => {
     const agentTrack = toBoolean(filter.getParam(TRACKING_FILTER_KEY.AGENT_TRACK)) || false
     const date = filter.getParam(TRACKING_FILTER_KEY.DATE)
 
-    const fromDate = _.split(filter.getParam(TRACKING_FILTER_KEY.FROM_TIME), '-', split)
-    const toDate = _.split(filter.getParam(TRACKING_FILTER_KEY.TO_TIME), '-', split)
-    const fromHour = _.get(fromDate, '0') || '00'
-    const fromMinute = _.get(fromDate, '1') || '00'
-    const toHour = _.get(toDate, '0') || '23'
-    const toMinute = _.get(toDate, '1') || '59'
-
     let currentDate = moment().format('YYYY-MM-DD')
     if (date) {
         currentDate = date
     }
-    const fromTime = moment(moment(currentDate + ' ' + fromHour + ':' + fromMinute + ':00').format('YYYY-MM-DD HH:mm:ss')).toDate()
-    const toTime = moment(moment(currentDate + ' ' + toHour + ':' + toMinute + ':00').format('YYYY-MM-DD HH:mm:ss')).toDate()
 
     const listData = {
         data: _.get(list, 'results'),
@@ -216,8 +200,7 @@ const Tracking = enhance((props) => {
         initialValues: {
             agentTrack: agentTrack,
             date: moment(currentDate).toDate(),
-            fromTime: fromTime,
-            toTime: toTime,
+            time: 1440,
             showMarkets: showMarkets,
             showZones: showZones
         },
