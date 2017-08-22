@@ -283,6 +283,7 @@ const TransactionCashDialog = enhance((props) => {
                 onClose={cashBoxDialog.handleCloseCashBoxDialog}
                 onSubmit={cashBoxDialog.handleSubmitCashBoxDialog}
                 data={paymentData.currentCashBoxDetails}
+                currency={paymentData.currencyId}
                 loading={paymentData.paymentLoading}/>
 
         </Dialog>
