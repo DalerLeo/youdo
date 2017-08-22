@@ -208,6 +208,7 @@ const TransactionGridList = enhance((props) => {
         const comment = _.get(item, 'comment')
         const type = _.get(item, 'amount') || 'N/A'
         const cashbox = _.get(item, 'cashbox') || 'N/A'
+        const user = _.get(item, 'user')
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
@@ -228,7 +229,8 @@ const TransactionGridList = enhance((props) => {
                     {!showCashbox ? <div><span className={classes.label}>Клиент: </span>{clientName}</div> : null}
                 </div>
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
-                    {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : null}
+                    {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div>
+                        : ((!_.get(item, 'expanseCategory') && !_.get(item, 'client') && user) ? 'Оплата с ' + _.get(user, 'firstName') + ' ' + _.get(user, 'secondName') : null)}
                     <div>{comment}</div>
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{createdDate}</div>
