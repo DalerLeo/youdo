@@ -306,6 +306,7 @@ const ProductTypeGridList = enhance((props) => {
                     <IconMenu
                         iconButtonElement={iconButton}
                         iconStyle={vertMenuStyle.icon}
+                        menuItemStyle={{fontSize: '13px'}}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem

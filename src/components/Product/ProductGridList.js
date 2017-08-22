@@ -139,6 +139,7 @@ const ProductGridList = enhance((props) => {
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
+                        menuItemStyle={{fontSize: '13px'}}
                         iconButtonElement={iconButton}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
