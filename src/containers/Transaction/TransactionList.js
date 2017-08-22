@@ -621,7 +621,8 @@ const TransactionList = enhance((props) => {
     const paymentData = {
         data: _.get(payment, 'results'),
         paymentLoading,
-        currentCashBoxDetails
+        currentCashBoxDetails,
+        currencyId
     }
 
     return (

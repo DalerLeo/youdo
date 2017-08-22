@@ -4,6 +4,7 @@ import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
+import _ from 'lodash'
 const CASH = 2
 const getOptions = (search, currency) => {
     return axios().get(`${PATH.CASHBOX_LIST}?search=${search || ''}`, {params: {currency, type: CASH}})
@@ -26,7 +27,7 @@ const getItem = (id) => {
 }
 
 const AcceptClientTransactionCashBoxSearchField = (props) => {
-    const {currency} = props
+    const currency = _.get(props, 'data-currency')
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}

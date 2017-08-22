@@ -142,11 +142,10 @@ const enhance = compose(
 )
 
 const AcceptClientTransactionDialog = enhance((props) => {
-    const {open, onClose, classes, loading, handleSubmit, data} = props
+    const {open, onClose, classes, loading, handleSubmit, data, currency} = props
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(data, ['sum'])).catch(validate))
     const user = _.get(data, ['user', 'name'])
     const currencyName = _.get(data, ['currency', 'name'])
-    const currencyId = _.get(data, ['currency', 'id'])
     const amount = numberFormat(_.get(data, ['sum']), currencyName)
     return (
         <Dialog
@@ -174,7 +173,7 @@ const AcceptClientTransactionDialog = enhance((props) => {
                                 <Field
                                     name="cashBox"
                                     component={AcceptClientTransactionCashBoxSearchField}
-                                    currency={currencyId}
+                                    data-currency={currency}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}
                                     label="Кассы"
