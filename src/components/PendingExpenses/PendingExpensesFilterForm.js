@@ -162,6 +162,7 @@ const PendingExpensesFilterForm = enhance((props) => {
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         label="Применить"
+                        labelStyle={{fontSize: '13px'}}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

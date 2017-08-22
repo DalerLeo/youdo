@@ -100,6 +100,7 @@ const SignInForm = enhance((props) => {
                     <RaisedButton
                         type="submit"
                         label="Войти"
+                        labelStyle={{fontSize: '13px'}}
                         primary={true}
                         fullWidth={true}
                     />

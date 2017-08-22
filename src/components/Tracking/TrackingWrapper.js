@@ -245,6 +245,7 @@ const TrackingWrapper = enhance((props) => {
                             <RaisedButton
                                 label="Применить"
                                 backgroundColor="#12aaeb"
+                                labelStyle={{fontSize: '13px'}}
                                 labelColor="#fff"
                                 type="submit"/>
                         </form>
