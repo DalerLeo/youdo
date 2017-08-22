@@ -14,6 +14,7 @@ import moment from 'moment'
 import {DateField, TimeField} from '../ReduxForm'
 import Checkbox from '../ReduxForm/Basic/CheckBox'
 import RaisedButton from 'material-ui/RaisedButton'
+import TrackingTimeSlider from './TrackingTimeSlider'
 
 const enhance = compose(
     injectSheet({
@@ -130,6 +131,7 @@ const TrackingDetails = enhance((props) => {
         filterForm,
         agentLocation
     } = props
+
     const loading = _.get(detailData, 'detailLoading')
     const id = _.get(detailData, 'id')
     const agent = _.get(_.find(_.get(listData, 'data'), {'id': id}), 'agent')
@@ -174,6 +176,10 @@ const TrackingDetails = enhance((props) => {
                                 label="Время конца"
                                 fullWidth={true}/>
                         </div>
+                        <Field
+                            name="time"
+                            component={TrackingTimeSlider}
+                        />
                         <Field
                             name="showMarkets"
                             className={classes.checkbox}

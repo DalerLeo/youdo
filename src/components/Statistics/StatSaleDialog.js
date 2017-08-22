@@ -43,8 +43,13 @@ const enhance = compose(
                 width: 'auto',
                 border: 'none',
                 padding: '0',
-                overflowY: 'auto',
                 maxHeight: '573px',
+                '& > div > div:last-child > div > div:first-child': {
+                    maxHeight: '465px',
+                    overflowY: 'auto',
+                    margin: '0 -30px',
+                    padding: '0 30px'
+                },
                 '& > div > div:last-child > div > div:last-child': {
                     padding: '0'
                 }

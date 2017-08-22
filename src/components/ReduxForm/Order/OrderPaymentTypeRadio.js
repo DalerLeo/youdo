@@ -16,18 +16,18 @@ const OrderPaymentTypeRadio = enhance((props) => {
     const {input} = props
     return (
         <div style={{width: '205px', marginBottom: '20px'}}>
-        <RadioButtonGroup name="dealType" onChange={input.onChange} defaultSelected={input.value}>
-            <RadioButton
-                value={'cash'}
-                style={{margin: '10px 0'}}
-                label="Наличными"
-            />
-            <RadioButton
-                value={'bank'}
-                style={{margin: '10px 0'}}
-                label="Перечислением"
-            />
-        </RadioButtonGroup>
+            <RadioButtonGroup name="dealType" onChange={input.onChange} defaultSelected={input.value}>
+                <RadioButton
+                    value={'cash'}
+                    style={{margin: '10px 0'}}
+                    label="Наличными"
+                />
+                <RadioButton
+                    value={'bank'}
+                    style={{margin: '10px 0'}}
+                    label="Перечислением"
+                />
+            </RadioButtonGroup>
         </div>
     )
 })
