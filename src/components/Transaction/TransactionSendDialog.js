@@ -131,6 +131,7 @@ const TransactionSendDialog = enhance((props) => {
                         <FlatButton
                             label="Отправить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                         />

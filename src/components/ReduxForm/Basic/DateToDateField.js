@@ -106,7 +106,8 @@ class DateToDateField extends React.Component {
                             onClick={() => { input.onChange({startDate: undefined, endDate: undefined}) }}>
                             <FlatButton
                                 label="Очистить"
-                                />
+                                labelStyle={{fontSize: '13px'}}
+                            />
                         </div>
                         <DateRange
                             startDate={_.get(input, ['value', 'fromDate']) || moment()}

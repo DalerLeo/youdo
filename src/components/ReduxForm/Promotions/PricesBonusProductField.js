@@ -215,6 +215,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}
                         className={classes.span}
+                        labelStyle={{fontSize: '13px'}}
                         onTouchTap={() => dispatch({open: !state.open})}
                     />
                 </div>}

@@ -306,7 +306,7 @@ const PositionGridList = enhance((props) => {
                         <div>
                             <FlatButton
                                 label="создать должность"
-                                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                                 className={classes.addButton}
                                 onTouchTap={createDialog.handleOpenCreateDialog}
                                 icon={<ContentAdd color="#12aaeb"/>}

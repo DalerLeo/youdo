@@ -123,6 +123,7 @@ const ShiftCreateDialog = enhance((props) => {
                         <FlatButton
                             label="Применить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             type="submit"
                         />
                     </div>

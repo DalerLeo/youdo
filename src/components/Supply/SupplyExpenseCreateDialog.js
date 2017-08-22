@@ -123,6 +123,7 @@ const ExpenseCreateDialog = enhance((props) => {
                         <FlatButton
                             label="Применить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                         />

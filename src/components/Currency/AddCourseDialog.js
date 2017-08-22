@@ -82,6 +82,7 @@ const PrimaryCurrencyDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
+                            labelStyle={{fontSize: '13px'}}
                             label="Сохранить"
                             type="submit"
                         />
