@@ -189,6 +189,7 @@ const enhance = compose(
             }
         },
         searchFieldCustom: {
+            width: '250px !important',
             extend: 'inputFieldCustom',
             position: 'initial !important',
             '& label': {
