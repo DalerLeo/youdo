@@ -94,6 +94,7 @@ const SearchField = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <MUIAutoComplete
+                menuProps={{menuItemStyle: {fontSize: '13px'}}}
                 errorText={error}
                 searchText={state.text}
                 errorStyle={errorStyle}

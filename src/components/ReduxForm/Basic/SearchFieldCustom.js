@@ -101,6 +101,7 @@ const SearchFieldCustom = enhance((props) => {
             <MUIAutoComplete
                 errorText={error}
                 searchText={input.value ? state.text : ''}
+                menuProps={{menuItemStyle: {fontSize: '13px'}}}
                 errorStyle={errorStyle}
                 floatingLabelText={label}
                 filter={(searchText, key) => (searchText.length > ZERO ? key.toLowerCase().search(searchText.toLowerCase()) !== MINUS_ONE : true)}
