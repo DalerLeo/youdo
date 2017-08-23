@@ -1,41 +1,120 @@
+import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
-import {withGoogleMap, GoogleMap as DefaultGoogleMap} from 'react-google-maps'
+import {withGoogleMap, GoogleMap as DefaultGoogleMap, Polygon, OverlayView} from 'react-google-maps'
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs'
 import CircularProgress from 'material-ui/CircularProgress'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
 import DrawingManager from 'react-google-maps/lib/drawing/DrawingManager'
+import {googleMapStyle} from '../../constants/googleMapsStyle'
+import toBoolean from '../../helpers/toBoolean'
 
 const enhance = compose(
     withScriptjs,
     withGoogleMap
 )
 
-const GoogleMapWrapper = enhance(({onMapLoad, ...props}) => {
+const GoogleMapWrapper = enhance(({onMapLoad, isOpenAddZone, listData, filter, input, ...props}) => {
+    const isOpenDraw = toBoolean(_.get(filter.getParams(), 'draw'))
+
+    const handleOverlayComplete = (event) => {
+        const coordinates = event.overlay.getPath().getArray()
+        event.overlay.getPaths().forEach((path) => {
+            const change = () => {
+                return input.onChange(_.map(coordinates, (p) => {
+                    const polyLat = p.lat()
+                    const polyLng = p.lng()
+                    return [polyLat, polyLng]
+                }))
+            }
+            google.maps.event.addListener(path, 'insert_at', () => {
+                change()
+            })
+
+            google.maps.event.addListener(path, 'remove_at', () => {
+                return false
+            })
+
+            google.maps.event.addListener(path, 'set_at', () => {
+                change()
+            })
+        })
+        return input.onChange(_.map(coordinates, (p) => {
+            const polyLat = p.lat()
+            const polyLng = p.lng()
+            return [polyLat, polyLng]
+        }))
+    }
+
+    const polygonOptions = {
+        fillColor: '#199ee0',
+        fillOpacity: 0.2,
+        strokeWeight: 2,
+        strokeColor: '#113460'
+    }
+
     return (
-        <DefaultGoogleMap ref={onMapLoad} {...props}>
+        <DefaultGoogleMap ref={onMapLoad} {...props} >
+            {(isOpenDraw && isOpenAddZone) &&
             <DrawingManager
                 deftest="a"
                 defaultDrawingMode={google.maps.drawing.OverlayType.POLYGON}
+                onOverlayComplete={handleOverlayComplete}
                 defaultOptions={{
-                    drawingControl: true,
+                    drawingControl: false,
                     drawingControlOptions: {
                         position: google.maps.ControlPosition.TOP_CENTER,
-                        drawingModes: [
-                            google.maps.drawing.OverlayType.POLYGON
-                        ]
+                        drawingModes: [google.maps.drawing.OverlayType.POLYGON]
                     },
                     polygonOptions: {
-                        fillColor: '#ffff00',
-                        fillOpacity: 1,
-                        strokeWeight: 5,
+                        fillColor: '#199ee0',
+                        fillOpacity: 0.2,
+                        strokeWeight: 2,
+                        strokeColor: '#113460',
                         clickable: true,
-                        draggable: true,
+                        draggable: false,
                         editable: true,
                         zIndex: 1
                     }
                 }}
-            />
+            />}
+            {_.map(_.get(listData, 'data'), (item) => {
+                const id = _.get(item, 'id')
+                const point = _.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
+                    const lat = _.get(p, '0')
+                    const lng = _.get(p, '1')
+
+                    return {lat: lat, lng: lng}
+                })
+                const keyTen = 10
+                const meanLat = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
+                    return _.get(p, '0')
+                }))
+                const meanLng = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
+                    return _.get(p, '1')
+                }))
+                if (_.isEmpty(point)) {
+                    return false
+                }
+
+                return (
+                    <div>
+                        <Polygon
+                            key={id}
+                            paths={point}
+                            options={polygonOptions}
+                        />
+                        <OverlayView
+                            key={id * keyTen}
+                            position={{lat: meanLat, lng: meanLng}}
+                            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}>
+                            <div style={{fontSize: '24px', textAlign: 'center'}}>
+                                <div>Z-{id}</div>
+                            </div>
+                        </OverlayView>
+                    </div>
+                )
+            })}
             {props.children}
         </DefaultGoogleMap>
     )
@@ -48,6 +127,9 @@ const Loader = () =>
 
 const GoogleMap = (props) => {
     const {...defaultProps} = props
+    const isOpenAddZone = _.get(props, 'isOpenAddZone')
+    const filter = _.get(props, 'filter')
+    const listData = _.get(props, 'listData')
 
     return (
         <GoogleMapWrapper
@@ -56,8 +138,13 @@ const GoogleMap = (props) => {
             loadingElement={<Loader />}
             containerElement={<div style={{height: '100%'}} />}
             mapElement={<div style={{height: '100%'}} />}
-            defaultZoom={15}
+            defaultZoom={13}
             radius="500"
+            defaultOptions={{styles: googleMapStyle}}
+
+            listData={listData}
+            isOpenAddZone={isOpenAddZone}
+            filter={filter}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>

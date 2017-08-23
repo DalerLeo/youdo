@@ -6,7 +6,7 @@ import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
-import {reduxForm} from 'redux-form'
+import {reduxForm, Field} from 'redux-form'
 import CircularProgress from 'material-ui/CircularProgress'
 import TextFieldSearch from 'material-ui/TextField'
 import SearchIcon from 'material-ui/svg-icons/action/search'
@@ -23,7 +23,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Tooltip from '../ToolTip'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
-import ZoneMap from './ZoneMapCustom'
+import ZoneMap from './ZoneMap'
 import AddZonePopup from './AddZonePopup'
 import BindAgentDialog from './ZoneBindAgentDialog'
 import ConfirmDialog from '../ConfirmDialog'
@@ -484,12 +484,20 @@ const ZonesWrapper = enhance((props) => {
             </div>}
 
             <div className={classes.zonesWrapper}>
-                <ZoneMap />
+                <Field
+                    name="polygon"
+                    listData={listData}
+                    isOpenAddZone={isOpenAddZone}
+                    filter={filter}
+                    component={ZoneMap}
+                />
                 {isOpenAddZone && <AddZonePopup
+                    filter={filter}
                     onClose={addZone.handleCloseAddZone}
                     onSubmit={addZone.handleSubmitAddZone}
                 />}
                 {isOpenUpdateZone && <AddZonePopup
+                    filter={filter}
                     initialValues={updateZone.initialValues}
                     onClose={updateZone.handleCloseUpdateZone}
                     onSubmit={updateZone.handleSubmitUpdateZone}

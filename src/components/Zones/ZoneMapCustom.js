@@ -1,33 +1,53 @@
-import {
-    default as React,
-    Component
-} from 'react'
-
+import _ from 'lodash'
+import {default as React, Component} from 'react'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
-
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs'
 import CircularProgress from 'material-ui/CircularProgress'
+import {withGoogleMap, GoogleMap} from 'react-google-maps'
+import {googleMapStyle} from '../../constants/googleMapsStyle'
+import DrawingManager from 'react-google-maps/lib/drawing/DrawingManager'
 
-import {
-    withGoogleMap,
-    GoogleMap
-} from 'react-google-maps'
-
-/*
- * This is the modify version of:
- * https://developers.google.com/maps/documentation/javascript/examples/event-arguments
- *
- * Add <script src="https://maps.googleapis.com/maps/api/js"></script> to your HTML to provide google.maps reference
- */
 const Loader = () =>
     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
         <CircularProgress size={40} thickness={4} />
     </div>
 
+const handleOverlayComplete = (event) => {
+    const coordinates = event.overlay.getPath().getArray()
+    return _.map(coordinates, (p) => {
+        const polyLat = p.lat()
+        const polyLng = p.lng()
+
+        return {lat: polyLat, lng: polyLng}
+    })
+}
+
 const GettingStartedGoogleMap = withScriptjs(withGoogleMap(({...props}) => (
-    <GoogleMap
-        {...props}
-    >
+    <GoogleMap {...props}>
+        <DrawingManager
+            deftest="a"
+            defaultDrawingMode={google.maps.drawing.OverlayType.POLYGON}
+            onOverlayComplete={handleOverlayComplete}
+            defaultOptions={{
+                drawingControl: false,
+                drawingControlOptions: {
+                    position: google.maps.ControlPosition.TOP_CENTER,
+                    drawingModes: [
+                        google.maps.drawing.OverlayType.POLYGON
+                    ]
+                },
+                polygonOptions: {
+                    fillColor: '#199ee0',
+                    fillOpacity: 0.2,
+                    strokeWeight: 2,
+                    strokeColor: '#113460',
+                    clickable: true,
+                    draggable: true,
+                    editable: true,
+                    zIndex: 1
+                }
+            }}
+        />
     </GoogleMap>
 )))
 
@@ -58,6 +78,7 @@ class GettingStartedExample extends Component {
                         <div style={{height: '100%'}}/>
                     }
                     defaultZoom={15}
+                    defaultOptions={{styles: googleMapStyle}}
                     radius="500"
                     markers={this.state.markers}
                 />

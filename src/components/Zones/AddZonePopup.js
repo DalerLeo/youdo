@@ -9,12 +9,13 @@ import FlatButton from 'material-ui/FlatButton'
 import {TextField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withHandlers} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Tooltip from '../ToolTip'
 import CloseIcon2 from '../CloseIcon2'
-import Timeline from 'material-ui/svg-icons/action/timeline'
+import Draw from 'material-ui/svg-icons/action/timeline'
 import Touch from 'material-ui/svg-icons/action/touch-app'
+import {hashHistory} from 'react-router'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -25,7 +26,8 @@ const validate = (data) => {
         _error: nonFieldErrors
     })
 }
-
+const DRAW = 'draw'
+const pathname = 'zones'
 const enhance = compose(
     injectSheet({
         addZoneWrapper: {
@@ -81,9 +83,18 @@ const enhance = compose(
     reduxForm({
         form: 'ZoneCreateForm',
         enableReinitialize: true
+    }),
+    withHandlers({
+        clickDraw: props => () => {
+            const {filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[DRAW]: true})})
+        },
+        clickPoint: props => () => {
+            const {filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[DRAW]: false})})
+        }
     })
 )
-
 const AddZonePopup = enhance((props) => {
     const {
         classes,
@@ -91,6 +102,7 @@ const AddZonePopup = enhance((props) => {
         handleSubmit
     } = props
     const submitZone = handleSubmit(() => props.onSubmit().catch(validate))
+
     return (
         <div>
             <Paper zDepth={1} className={classes.addZoneWrapper}>
@@ -102,11 +114,13 @@ const AddZonePopup = enhance((props) => {
                         label="Наименование зоны"
                         fullWidth={true}/>
                     <div className={classes.buttons}>
-                        <IconButton>
-                            <Timeline color="#666"/>
+                        <IconButton
+                            onTouchTap={props.clickDraw}>
+                            <Draw color="#666"/>
                         </IconButton>
 
-                        <IconButton>
+                        <IconButton
+                            onTouchTap={props.clickPoint}>
                             <Touch color="#666"/>
                         </IconButton>
 

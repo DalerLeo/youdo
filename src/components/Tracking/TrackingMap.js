@@ -44,7 +44,6 @@ const GoogleMapWrapper = enhance(({
     isOpenMarkets,
     openMarketInfo,
     setOpenMarketInfo,
-    openAgentInfo,
     setOpenAgentInfo,
     shopDetails,
     timeValue,
