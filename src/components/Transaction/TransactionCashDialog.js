@@ -150,6 +150,10 @@ const enhance = compose(
             bottom: '0',
             cursor: 'pointer',
             zIndex: '1'
+        },
+        noData: {
+            textAlign: 'center',
+            padding: '20px'
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -178,12 +182,12 @@ const TransactionCashDialog = enhance((props) => {
                 const order = _.get(item, ['order'])
                 const amount = numberFormat(_.get(item, ['amount']), currency)
                 return (
-                <Row key={_.get(item, 'id')} className={classes.detailsRow}>
-                    <Col xs={3}>{clientName}</Col>
-                    <Col xs={3}>{marketName}</Col>
-                    <Col xs={3}>{order}</Col>
-                    <Col xs={3}>{amount} {customRate ? '(' + customRate + ')' : null }</Col>
-                </Row>
+                    <Row key={_.get(item, 'id')} className={classes.detailsRow}>
+                        <Col xs={3}>{clientName}</Col>
+                        <Col xs={3}>{marketName}</Col>
+                        <Col xs={3}>{order}</Col>
+                        <Col xs={3}>{amount} {customRate ? '(' + customRate + ')' : null}</Col>
+                    </Row>
 
                 )
             })
@@ -226,7 +230,9 @@ const TransactionCashDialog = enhance((props) => {
                                         <Row style={{position: 'relative'}}>
                                             <div
                                                 className={classes.closeDetail}
-                                                onClick={() => { acceptCashDialog.handleCloseAcceptCashDetail() }}>
+                                                onClick={() => {
+                                                    acceptCashDialog.handleCloseAcceptCashDetail()
+                                                }}>
                                             </div>
                                             <Col xs={6}>{user}</Col>
                                             <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
@@ -234,7 +240,9 @@ const TransactionCashDialog = enhance((props) => {
                                                 <div style={{marginRight: '-4px'}}>
                                                     <Tooltip position="bottom" text="Оплатить">
                                                         <IconButton
-                                                            onTouchTap={() => { cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId) }}>
+                                                            onTouchTap={() => {
+                                                                cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId)
+                                                            }}>
                                                             <PaymentIcon color="#666666"/>
                                                         </IconButton>
                                                     </Tooltip>
@@ -260,14 +268,18 @@ const TransactionCashDialog = enhance((props) => {
                                     style={{position: 'relative'}}>
                                     <div
                                         className={classes.closeDetail}
-                                        onClick={() => { acceptCashDialog.handleOpenAcceptCashDetail(userId, currencyId) }}>
+                                        onClick={() => {
+                                            acceptCashDialog.handleOpenAcceptCashDetail(userId, currencyId)
+                                        }}>
                                     </div>
                                     <Col xs={6}>{user}</Col>
                                     <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
                                     <Col xs={1}>
                                         <Tooltip position="bottom" text="Оплатить">
                                             <IconButton
-                                                onTouchTap={() => { cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId) }}>
+                                                onTouchTap={() => {
+                                                    cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId)
+                                                }}>
                                                 <PaymentIcon color="#666666"/>
                                             </IconButton>
                                         </Tooltip>
@@ -275,6 +287,8 @@ const TransactionCashDialog = enhance((props) => {
                                 </Row>
                             )
                         })}
+                        {_.isEmpty(_.get(acceptCashDialog, ['data'])) &&
+                        <div className={classes.noData}><h3>Никакой платеж не произведен</h3></div>}
                     </div>
                 </div>
             </div>
