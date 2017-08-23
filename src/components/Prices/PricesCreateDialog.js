@@ -14,7 +14,8 @@ import {
     PricesListProductField,
     PricesBonusProductField,
     TextField,
-    DateField
+    DateField,
+    ChipField
 } from '../ReduxForm'
 import PromotionsRadioButton from '../ReduxForm/Promotions/PromotionsRadioButton'
 import toCamelCase from '../../helpers/toCamelCase'
@@ -313,6 +314,10 @@ const PricesCreateDialog = enhance((props) => {
                                             label="Кол-во"
                                         />}
                                     </div>
+                                    <Field
+                                        name="marketTypes"
+                                        component={ChipField}
+                                    />
                                 </div>
                             </div>
                             <div className={classes.rightOrderPart}>

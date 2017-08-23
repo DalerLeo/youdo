@@ -57,7 +57,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.PRICES_CREATE),
         list: createThunkReducer(actionTypes.PRICES_LIST),
         item: createThunkReducer(actionTypes.PRICES_ITEM),
-        update: createThunkReducer(actionTypes.PRICES_UPDATE)
+        update: createThunkReducer(actionTypes.PRICES_UPDATE),
+        marketType: createThunkReducer(actionTypes.MARKET_TYPE_LIST)
     }),
     supplyExpense: combineReducers({
         create: createThunkReducer(actionTypes.SUPPLY_EXPENSE_CREATE),

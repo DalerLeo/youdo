@@ -263,6 +263,12 @@ const enhance = compose(
                     dispatch(stockTransferListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: 'Успешно принять'}))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: '',
+                        arrMessage: error
+                    }))
+                })
         },
         handleSubmitReceiveConfirmDialog: props => () => {
             const {dispatch, filter, location: {pathname, query}, params} = props

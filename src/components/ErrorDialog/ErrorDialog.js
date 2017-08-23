@@ -84,7 +84,7 @@ const ErrorDialog = ({dispatch, message, open, classes, arrMessage, ...defaultPr
                     <div>{message}</div>
                     {_.map(arrMessage, (item, index) => {
                         return (
-                            <p key={index}><span style={{fontWeight: '600'}}>{index}</span> : {item}</p>
+                            <p key={index}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}: </b>}{item}</p>
                         )
                     })}
 

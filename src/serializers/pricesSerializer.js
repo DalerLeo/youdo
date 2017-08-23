@@ -9,6 +9,9 @@ export const createSerializer = (data) => {
     const discount = _.get(data, ['discount']) || '0'
     const type = _.get(data, 'promotionType') || 'bonus'
     const totalAmount = _.get(data, 'amount')
+    const marketTypesArray = _.map(_.get(data, 'marketTypes'), (item) => {
+        return item.id
+    })
     const products = _.map(_.get(data, ['products']), (item) => {
         const product = _.get(item, ['product', 'value', 'id'])
         const amount = _.get(item, 'amount')
@@ -42,7 +45,8 @@ export const createSerializer = (data) => {
             name,
             'products': bonusProducts,
             'total_amount': totalAmount,
-            type
+            type,
+            'market_types': marketTypesArray
         }
     }
     return {
