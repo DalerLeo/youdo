@@ -291,6 +291,7 @@ const TrackingWrapper = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 filterForm={filterForm}
+                isOpenTrack={isOpenTrack}
                 agentLocation={agentLocation}
             />
             }
@@ -307,6 +308,8 @@ const TrackingWrapper = enhance((props) => {
             <SubMenu url={ROUTES.TRACKING_LIST_URL}/>
             <div className={classes.trackingWrapper}>
                 <TrackingMap
+                    filter={filter}
+                    agentId={_.get(detailData, 'id')}
                     listData={_.get(listData, 'data')}
                     handleOpenDetails={handleOpenDetails}
                     agentLocation={agentLocation}

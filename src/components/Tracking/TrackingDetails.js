@@ -10,10 +10,10 @@ import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import {reduxForm, Field} from 'redux-form'
-import moment from 'moment'
-import {DateField, TimeField} from '../ReduxForm'
+import {DateField} from '../ReduxForm'
 import Checkbox from '../ReduxForm/Basic/CheckBox'
 import RaisedButton from 'material-ui/RaisedButton'
+import TrackingTimeSlider from './TrackingTimeSlider'
 
 const enhance = compose(
     injectSheet({
@@ -128,8 +128,9 @@ const TrackingDetails = enhance((props) => {
         handleSubmit,
         detailData,
         filterForm,
-        agentLocation
+        isOpenTrack
     } = props
+
     const loading = _.get(detailData, 'detailLoading')
     const id = _.get(detailData, 'id')
     const agent = _.get(_.find(_.get(listData, 'data'), {'id': id}), 'agent')
@@ -160,20 +161,10 @@ const TrackingDetails = enhance((props) => {
                             component={DateField}
                             label="Посмотреть по дате"
                             fullWidth={true}/>
-                        <div className={classes.halfField}>
-                            <Field
-                                className={classes.inputDateCustom}
-                                name="fromTime"
-                                component={TimeField}
-                                label="Время начала"
-                                fullWidth={true}/>
-                            <Field
-                                className={classes.inputDateCustom}
-                                name="toTime"
-                                component={TimeField}
-                                label="Время конца"
-                                fullWidth={true}/>
-                        </div>
+                        {isOpenTrack && <Field
+                            name="time"
+                            component={TrackingTimeSlider}
+                        />}
                         <Field
                             name="showMarkets"
                             className={classes.checkbox}
@@ -197,15 +188,6 @@ const TrackingDetails = enhance((props) => {
                             type="submit"/>
                     </form>
                 </div>
-
-                {
-                    _.map(_.get(agentLocation, 'results'), (item, index) => {
-                        const registeredTime = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY, h:mm:ss')
-                        return (
-                            <div key={index}>{registeredTime}</div>
-                        )
-                    })
-                }
             </div>
         </div>
     )

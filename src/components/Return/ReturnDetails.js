@@ -101,7 +101,7 @@ const enhance = compose(
             width: 'calc(100% - 320px)'
         },
         list: {
-            maxHeight: '400px',
+            maxHeight: '384px',
             overflowX: 'hidden',
             overflowY: 'auto',
             paddingRight: '20px',
@@ -110,9 +110,6 @@ const enhance = compose(
                 margin: '0',
                 '&:first-child': {
                     fontWeight: '600'
-                },
-                '&:last-child:after': {
-                    display: 'none'
                 },
                 '& > div:first-child': {
                     paddingLeft: '0'
@@ -127,11 +124,10 @@ const enhance = compose(
             }
         },
         total: {
-            borderTop: '1px #efefef solid',
             textTransform: 'uppercase',
             fontWeight: '600',
             textAlign: 'right',
-            padding: '15px 0 20px'
+            padding: '15px 20px 20px 0'
         },
         subBlock: {
             padding: '15px 30px',

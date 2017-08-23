@@ -181,7 +181,7 @@ const ActivityList = enhance((props) => {
     const orderDetails = {
         id: orderId,
         openOrderDetails,
-        detailLoading: orderItemLoading,
+        orderItemLoading,
         data: orderItem,
         handleOpenOrderDetails: props.handleOpenOrderDetails,
         handleCloseOrderDetails: props.handleCloseOrderDetails

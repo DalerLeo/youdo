@@ -3,16 +3,9 @@ import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 export const agentLocationSerializer = (user, data) => {
-    const split = 4
     const date = _.get(data, 'date')
-    const begin = _.split(_.get(data, 'beginTime'), '-', split)
-    const end = _.split(_.get(data, 'endTime'), '-', split)
-    const beginH = _.get(begin, '0')
-    const beginM = _.get(begin, '1')
-    const endH = _.get(end, '0')
-    const endM = _.get(end, '1')
-    const beginDate = moment(date + ' ' + beginH + ':' + beginM + ':00').format('YYYY-MM-DD HH:mm:ss')
-    const endDate = moment(date + ' ' + endH + ':' + endM + ':00').format('YYYY-MM-DD HH:mm:ss')
+    const beginDate = moment(date).format('YYYY-MM-DD HH:mm:ss')
+    const endDate = moment(date).format('YYYY-MM-DD 23:59:59')
     return {
         'page_size': 6000,
         date,

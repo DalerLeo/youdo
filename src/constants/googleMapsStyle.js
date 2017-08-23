@@ -32,11 +32,78 @@ export const googleMapStyle = [
         ]
     },
     {
+        'featureType': 'administrative',
+        'elementType': 'geometry.stroke',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'administrative.country',
+        'elementType': 'geometry.stroke',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
         'featureType': 'administrative.land_parcel',
         'elementType': 'labels.text.fill',
         'stylers': [
             {
                 'color': '#bdbdbd'
+            }
+        ]
+    },
+    {
+        'featureType': 'administrative.locality',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'administrative.neighborhood',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'administrative.province',
+        'elementType': 'geometry.stroke',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'landscape.natural',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'landscape.natural.landcover',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'landscape.natural.terrain',
+        'stylers': [
+            {
+                'visibility': 'on'
             }
         ]
     },
@@ -59,6 +126,38 @@ export const googleMapStyle = [
         ]
     },
     {
+        'featureType': 'poi.attraction',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'poi.business',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'poi.government',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'poi.medical',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
         'featureType': 'poi.park',
         'elementType': 'geometry',
         'stylers': [
@@ -73,6 +172,30 @@ export const googleMapStyle = [
         'stylers': [
             {
                 'color': '#9e9e9e'
+            }
+        ]
+    },
+    {
+        'featureType': 'poi.place_of_worship',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'poi.school',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'poi.sports_complex',
+        'stylers': [
+            {
+                'visibility': 'on'
             }
         ]
     },
@@ -113,6 +236,14 @@ export const googleMapStyle = [
         ]
     },
     {
+        'featureType': 'road.highway.controlled_access',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
         'featureType': 'road.local',
         'elementType': 'labels.text.fill',
         'stylers': [
@@ -136,6 +267,30 @@ export const googleMapStyle = [
         'stylers': [
             {
                 'color': '#eeeeee'
+            }
+        ]
+    },
+    {
+        'featureType': 'transit.station.airport',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'transit.station.bus',
+        'stylers': [
+            {
+                'visibility': 'on'
+            }
+        ]
+    },
+    {
+        'featureType': 'transit.station.rail',
+        'stylers': [
+            {
+                'visibility': 'on'
             }
         ]
     },
