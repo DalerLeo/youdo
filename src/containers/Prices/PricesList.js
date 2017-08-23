@@ -289,7 +289,8 @@ const PricesList = enhance((props) => {
                     bonusProducts: forUpdateBonus && forUpdateBonus,
                     giftProducts: forUpdateGift && forUpdateGift,
                     promotionType: promotionType,
-                    amount: _.toNumber(_.get(detail, 'totalAmount'))
+                    amount: _.toNumber(_.get(detail, 'totalAmount')),
+                    marketTypes: _.get(detail, 'marketTypes')
                 }
             }
             return {
@@ -299,7 +300,8 @@ const PricesList = enhance((props) => {
                 tillDate: moment(_.get(detail, ['tillDate'])).toDate(),
                 products: forUpdateProducts,
                 promotionType: promotionType,
-                amount: _.get(detail, 'totalAmount')
+                amount: _.get(detail, 'totalAmount'),
+                marketTypes: _.get(detail, 'marketTypes')
             }
         })(),
         updateLoading,

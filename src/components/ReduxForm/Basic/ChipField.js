@@ -24,7 +24,7 @@ const enhance = compose(
 const ChipField = enhance(({input, classes, handleRequestDelete}) => {
     return (
         <div className={classes.wrapper}>
-            <span>Тып магазинов</span>
+            <span>Тип магазинов</span>
             <div className={classes.chipWrapper}>
             {_.map(input.value, (item) => {
                 return (

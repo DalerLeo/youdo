@@ -214,7 +214,8 @@ const enhance = compose(
         },
 
         handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
+            dispatch(reset('OrderFilterForm'))
             hashHistory.push({pathname, query: filter.getParams({[ORDER_FILTER_OPEN]: true})})
         },
 
@@ -236,6 +237,7 @@ const enhance = compose(
             const deliveryToDate = _.get(filterForm, ['values', 'deliveryDate', 'toDate']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const status = _.get(filterForm, ['values', 'status', 'value']) || null
+            const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const shop = _.get(filterForm, ['values', 'shop', 'value']) || null
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
@@ -246,6 +248,7 @@ const enhance = compose(
                 [ORDER_FILTER_OPEN]: false,
                 [ORDER_FILTER_KEY.CLIENT]: client,
                 [ORDER_FILTER_KEY.STATUS]: status,
+                [ORDER_FILTER_KEY.PRODUCT]: product,
                 [ORDER_FILTER_KEY.INITIATOR]: initiator,
                 [ORDER_FILTER_KEY.ZONE]: zone,
                 [ORDER_FILTER_KEY.SHOP]: shop,

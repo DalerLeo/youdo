@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-import {ProviderSearchField, StockSearchField} from '../ReduxForm'
+import {ProviderSearchField, StockSearchField, ProductSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 
@@ -18,6 +18,7 @@ export const SUPPLY_FILTER_OPEN = 'openFilterDialog'
 
 export const SUPPLY_FILTER_KEY = {
     PROVIDER: 'provider',
+    PRODUCT: 'product',
     STOCK: 'stock',
     DELIVERY_FROM_DATE: 'deliveryFromDate',
     DELIVERY_TO_DATE: 'deliveryToDate',
@@ -161,6 +162,7 @@ const SupplyFilterForm = enhance((props) => {
                     <div>
                         <Field className={classes.inputFieldCustom} name="provider" component={ProviderSearchField} label="Поставщик"/>
                         <Field className={classes.inputFieldCustom} name="stock" component={StockSearchField} label="Склад"/>
+                        <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Товар"/>
                     </div>
                     <div>
                         <Field className={classes.inputFieldCustom} name="dateDelivery" component={DateToDateField} label="Дата поставки" fullWidth={true}/>
