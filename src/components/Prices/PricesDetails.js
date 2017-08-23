@@ -2,8 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field} from 'redux-form'
-import {ChipField} from '../ReduxForm'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
@@ -16,6 +14,7 @@ import getConfig from '../../helpers/getConfig'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 
+const ZERO = 0
 const colorBlue = '#12aaeb'
 const enhance = compose(
     injectSheet({
@@ -308,7 +307,7 @@ const PricesDetails = enhance((props) => {
                             : <span><b>Бонусная акция</b></span>}
                     </div>
                 </div>
-                {_.get(data, 'marketTypes').length > 0 && <div className={classes.storeInfo}>
+                {_.get(data, 'marketTypes').length > ZERO && <div className={classes.storeInfo}>
                     <div className={classes.store} style={{display: 'flex'}}>
                         <span className={classes.market}><b>Действует для</b></span>
                         {_.map(_.get(data, 'marketTypes'), (item) => {
