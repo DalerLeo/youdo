@@ -64,6 +64,7 @@ import ClientBalanceReturnTotalSum from './ClientBalance/ClientBalanceReturnTota
 import ClientBalanceReturnProductList from './ClientBalance/ClientBalanceReturnProductList'
 import ReturnStatusSearchField from './ReturnStatusSearchField'
 import ReturnTypeSearchField from './ReturnTypeSearchField'
+import ChipField from './Basic/ChipField'
 
 export {
     ReturnStatusSearchField,
@@ -131,5 +132,6 @@ export {
     DivisionSearchField,
     Pagination,
     ClientBalanceReturnTotalSum,
-    ClientBalanceReturnProductList
+    ClientBalanceReturnProductList,
+    ChipField
 }
