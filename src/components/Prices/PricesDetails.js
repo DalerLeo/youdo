@@ -2,10 +2,13 @@ import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import {Field} from 'redux-form'
+import {ChipField} from '../ReduxForm'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
+import Chip from 'material-ui/Chip'
 import {Row, Col} from 'react-flexbox-grid'
 import Dot from '../Images/dot.png'
 import numberFormat from '../../helpers/numberFormat'
@@ -218,6 +221,10 @@ const enhance = compose(
             cursor: 'pointer',
             zIndex: '1',
             margin: '0 -30px'
+        },
+        market: {
+            paddingTop: '13px',
+            paddingRight: '10px'
         }
     }),
 )
@@ -301,6 +308,21 @@ const PricesDetails = enhance((props) => {
                             : <span><b>Бонусная акция</b></span>}
                     </div>
                 </div>
+                {_.get(data, 'marketTypes').length > 0 && <div className={classes.storeInfo}>
+                    <div className={classes.store} style={{display: 'flex'}}>
+                        <span className={classes.market}><b>Действует для</b></span>
+                        {_.map(_.get(data, 'marketTypes'), (item) => {
+                            return (
+                                <Chip
+                                    key={item.id}
+                                    style={{margin: 4}}
+                                >
+                                    {item.name}
+                                </Chip>
+                            )
+                        })}
+                    </div>
+                </div>}
                 <div className={classes.dateInfo}>
                     <div>Начало акции: <span style={{marginRight: '30px'}}>{beginDate}</span></div>
                     <div>Завершение акции: <span>{tillDate}</span></div>

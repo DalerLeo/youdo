@@ -52,6 +52,7 @@ export const listFilterSerializer = (data, id) => {
     return {
         'id': _.get(defaultData, 'id'),
         'client': _.get(defaultData, 'client'),
+        'product': _.get(defaultData, 'product'),
         'division': _.get(defaultData, 'division'),
         'zone': _.get(defaultData, 'zone'),
         'user': _.get(defaultData, 'initiator'),

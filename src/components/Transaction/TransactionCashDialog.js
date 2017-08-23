@@ -13,6 +13,7 @@ import numberFormat from '../../helpers/numberFormat'
 import AcceptClientTransactionDialog from './AcceptClientTransactionDialog'
 import PaymentIcon from 'material-ui/svg-icons/action/payment'
 import Tooltip from '../ToolTip'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet({
@@ -172,12 +173,14 @@ const TransactionCashDialog = enhance((props) => {
         acceptCashDialog
     } = props
 
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+
     const detailRow = (
         _.get(paymentData, 'paymentLoading') ? <LinearProgress/>
             : _.map(_.get(paymentData, 'data'), (item) => {
                 const clientName = _.get(item, ['client', 'name'])
                 const marketName = _.get(item, ['market', 'name'])
-                const customRate = _.get(item, ['customRate'])
+                const customRate = _.get(item, ['customRate']) ? _.toNumber(_.get(item, ['amount'])) / _.toNumber(_.get(item, ['internal'])) : null
                 const currency = _.get(item, ['currency', 'name'])
                 const order = _.get(item, ['order'])
                 const amount = numberFormat(_.get(item, ['amount']), currency)
@@ -186,7 +189,7 @@ const TransactionCashDialog = enhance((props) => {
                         <Col xs={3}>{clientName}</Col>
                         <Col xs={3}>{marketName}</Col>
                         <Col xs={3}>{order}</Col>
-                        <Col xs={3}>{amount} {customRate ? '(' + customRate + ')' : null}</Col>
+                        <Col xs={3}>{amount} {customRate ? ('=' + customRate + '(внутренний' + primaryCurrency) : null}</Col>
                     </Row>
 
                 )

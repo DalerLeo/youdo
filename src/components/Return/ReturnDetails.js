@@ -199,6 +199,8 @@ const ReturnDetails = enhance((props) => {
     const comment = _.get(data, 'comment')
     const stock = _.get(data, ['stock', 'name'])
     const order = _.get(data, 'order')
+    const client = _.get(data, 'client')
+    const market = _.get(data, 'market')
     const status = _.toInteger(_.get(data, 'status'))
     const PENDING = 0
     const IN_PROGRESS = 1
@@ -273,6 +275,14 @@ const ReturnDetails = enhance((props) => {
                                     <span>Дата возврата:</span>
                                     <span>{createdDate}</span>
                                 </li>
+                                {client && <li>
+                                    <span>Клиент:</span>
+                                    <span>{_.get(client, 'name')}</span>
+                                </li>}
+                                {market && <li>
+                                    <span>Магазин:</span>
+                                    <span>{_.get(market, 'name')}</span>
+                                </li>}
                                 <li>
                                     <span>Статус:</span>
                                     <span>

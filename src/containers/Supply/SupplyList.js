@@ -182,11 +182,13 @@ const enhance = compose(
             const createdFromDate = _.get(filterForm, ['values', 'dateCreated', 'fromDate']) || null
             const createdToDate = _.get(filterForm, ['values', 'dateCreated', 'toDate']) || null
             const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
+            const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
 
             filter.filterBy({
                 [SUPPLY_FILTER_OPEN]: false,
                 [SUPPLY_FILTER_KEY.PROVIDER]: provider,
+                [SUPPLY_FILTER_KEY.PRODUCT]: product,
                 [SUPPLY_FILTER_KEY.STOCK]: stock,
                 [SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
                 [SUPPLY_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD'),
@@ -283,8 +285,8 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: false})})
         },
         handleSupplyExpenseSubmitCreateDialog: props => () => {
-            const {dispatch, createSupplyExpenseForm, filter, detail, location: {pathname}} = props
-            const id = _.get(detail, 'id')
+            const {dispatch, createSupplyExpenseForm, filter, location: {pathname}} = props
+            const id = _.toInteger(_.get(props, ['params', 'supplyId']))
 
             return dispatch(supplyExpenseCreateAction(_.get(createSupplyExpenseForm, ['values']), id))
                 .then(() => {
@@ -292,7 +294,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: false})})
-                    dispatch(supplyExpenseListFetchAction(id))
+                    return dispatch(supplyExpenseListFetchAction(id, filter))
                 })
         }
     })

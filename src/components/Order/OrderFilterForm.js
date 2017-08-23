@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {ClientSearchField, MarketSearchField, UsersSearchField, DeptSearchField, ZoneSearchField, DivisionSearchField} from '../ReduxForm'
+import {ClientSearchField, MarketSearchField, UsersSearchField, DeptSearchField, ZoneSearchField, DivisionSearchField, ProductSearchField} from '../ReduxForm'
 import OrderStatusSearchField from '../ReduxForm/Order/OrderStatusSearchField'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -20,6 +20,7 @@ export const ORDER_FILTER_OPEN = 'openFilterDialog'
 export const ORDER_FILTER_KEY = {
     CLIENT: 'client',
     STATUS: 'status',
+    PRODUCT: 'product',
     INITIATOR: 'initiator',
     SHOP: 'shop',
     DIVISION: 'division',
@@ -190,6 +191,7 @@ const OrderFilterForm = enhance((props) => {
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
+                        <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Товар"/>
                         <Field className={classes.inputFieldCustom} name="status" component={OrderStatusSearchField} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
                         <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>
