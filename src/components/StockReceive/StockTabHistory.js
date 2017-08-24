@@ -96,7 +96,7 @@ const StockTabHistory = enhance((props) => {
         const amount = numberFormat(_.get(item, 'amount'))
         const measurement = _.get(item, ['product', 'measurement', 'name'])
         const date = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
-        const parent = _.get(item, 'd_parent_id')
+        const parent = _.get(item, 'dParentId')
         const genericType = stockTypeFormat(_.get(item, ['generic', 'type']), parent)
         const type = _.get(item, 'type')
         return (
