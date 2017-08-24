@@ -104,6 +104,16 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
+        const prevCashDetails = (_.get(props, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
+        const nextCashDetails = (_.get(nextProps, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
+        return (prevCashDetails !== nextCashDetails) && nextCashDetails !== 'false'
+    }, ({dispatch, location}) => {
+        const cashDetails = (_.get(location, ['query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
+        const user = _.get(location, ['query', 'openUser'])
+        const currency = _.get(location, ['query', 'openCurrency'])
+        cashDetails && dispatch(pendingTransactionFetchAction(user, currency))
+    }),
+    withPropsOnChange((props, nextProps) => {
         return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
             (_.get(props, ['location', 'query', 'cashboxId']) !== _.get(nextProps, ['location', 'query', 'cashboxId']))
     }, ({dispatch, filter, location}) => {

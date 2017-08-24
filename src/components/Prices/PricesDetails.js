@@ -307,7 +307,7 @@ const PricesDetails = enhance((props) => {
                             : <span><b>Бонусная акция</b></span>}
                     </div>
                 </div>
-                {_.get(data, 'marketTypes').length > ZERO && <div className={classes.storeInfo}>
+                {_.get(data, 'marketTypes') && _.get(data, 'marketTypes').length > ZERO && <div className={classes.storeInfo}>
                     <div className={classes.store} style={{display: 'flex'}}>
                         <span className={classes.market}><b>Действует для</b></span>
                         {_.map(_.get(data, 'marketTypes'), (item) => {
