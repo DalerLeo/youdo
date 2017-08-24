@@ -5,7 +5,11 @@ const groups = {
     'merch': 'Мерчендайзер',
     'collector': 'Инкассатор',
     'cashier': 'Кассир',
-    'supervisor': 'Супервайзер'
+    'supervisor': 'Супервайзер',
+    'changePrice': 'Может менять цену',
+    'changeRate': 'Может менять курс',
+    'change_price': 'Может менять цену',
+    'change_rate': 'Может менять курс'
 }
 
 const userGroupFormat = (key) => {

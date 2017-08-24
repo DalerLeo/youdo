@@ -178,7 +178,7 @@ const StockTabReceive = enhance((props) => {
                 onClick={() => { listData.handleOpenDetail(key, type) }}
                 style={{cursor: 'pointer'}}>
                 <Col xs={2}>{key}</Col>
-                <Col xs={3}>{by}asd</Col>
+                <Col xs={3}>{by}</Col>
                 <Col xs={2}>
                     {formattedType}
                 </Col>

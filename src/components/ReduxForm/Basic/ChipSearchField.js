@@ -16,19 +16,14 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
 
     getOptions(state.text)
         .then((data) => {
-            const list = _.map(data, (item) => {
+            return _.map(data, (item) => {
                 return {
                     text: getText(item),
                     value: getValue(item)
                 }
             })
-            console.warn(list)
-            console.warn(state.chips)
-            dispatch({dataBacup: data, loading: false})
-            return _.xorWith(list, state.chips, _.isEqual)
         })
         .then((data) => {
-        console.log('LAST THEN: ', data)
             dispatch({dataSource: data, loading: false})
         })
 }
@@ -69,13 +64,8 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return (!_.get(props, ['dataSource']) && _.get(nextProps, ['loading']) === false) ||
-            (_.get(nextProps, ['type']) && (_.get(props, ['type']) !== _.get(nextProps, ['type']))) ||
-            ((_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])) && (_.get(nextProps, ['state', 'text']).length === ZERO))
+        return (!_.get(props, ['dataSource']) && _.get(nextProps, ['loading']) === false)
     }, (props) => {
-        if (_.get(props, ['type']) && _.toInteger(_.get(props, ['type'])) > ZERO) {
-            props.dispatch({text: ''})
-        }
         _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
     }),
 
@@ -83,9 +73,7 @@ const enhance = compose(
 
 const changed = (val, props) => {
     const {dispatch, state} = props
-    if (val.value > 0) {
-        props.input.onChange(_.union(state.chips, _.filter(state.dataSource, {'value': val.value})))
-    }
+    props.input.onChange(_.union(state.chips, _.filter(state.dataSource, {'value': val.value})))
     dispatch({text: '', chips: _.union(state.chips, _.filter(state.dataSource, {'value': val.value}))})
 }
 
@@ -104,7 +92,6 @@ const ChipSearchField = enhance((props) => {
     const autoCompleteProps = excludeObjKey(defaultProps, [
         'sheet', 'getText', 'getValue', 'getOptions', 'getItem', 'getItemText'
     ])
-    const inputAutoComplete = excludeObjKey(input, ['value', 'onChange'])
     const MINUS_ONE = -1
 
     return (
@@ -117,7 +104,7 @@ const ChipSearchField = enhance((props) => {
                 errorStyle={errorStyle}
                 floatingLabelText={label}
                 filter={(searchText, key) => (searchText.length > ZERO ? key.toLowerCase().search(searchText.toLowerCase()) !== MINUS_ONE : true)}
-                dataSource={state.dataSource}
+                dataSource={_.xorWith(state.dataSource, state.chips, _.isEqual)}
                 dataSourceConfig={{text: 'text', value: 'value'}}
                 onUpdateInput={value => dispatch({text: value})}
                 onNewRequest={value => changed(value, props)}
@@ -127,7 +114,6 @@ const ChipSearchField = enhance((props) => {
                 textFieldStyle={{width: '400px'}}
                 listStyle={{}}
                 className="autocomplete"
-                {...inputAutoComplete}
                 {...autoCompleteProps}
             />
             {!state.loading && <div className={classes.icon}>
