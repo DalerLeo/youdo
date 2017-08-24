@@ -40,7 +40,6 @@ const GoogleMapWrapper = enhance(({
                                       handleOpenDetails,
                                       agentLocation,
                                       marketsLocation,
-                                      trackable,
                                       isOpenMarkets,
                                       openMarketInfo,
                                       setOpenMarketInfo,
@@ -158,8 +157,10 @@ const GoogleMapWrapper = enhance(({
                                 position={{lat: lastLat || lat, lng: lastLon || lng}}
                                 options={
                                 {
+                                    zIndex: 999,
                                     icon: {
                                         url: BluePin,
+                                        zIndex: 999,
                                         size: {width: 30, height: 30},
                                         scaledSize: {width: 30, height: 30}
                                     }
@@ -170,7 +171,7 @@ const GoogleMapWrapper = enhance(({
                             </Marker>
 
                             <Polyline
-                                path={trackable ? _.get(agentCoordinates, '0') : []}
+                                path={_.get(agentCoordinates, '0')}
                                 geodesic={true}
                                 options={polyLineOptions}
                             />

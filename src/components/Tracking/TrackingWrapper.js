@@ -13,7 +13,9 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import TrackingMap from './TrackingMap'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
-import TrackingDetails from './TrackingDetails'
+import TrackingTime from './TrackingTime'
+import TrackingAgentSearch from './TrackingAgentSearch'
+import TrakingDayFilter from './TrakingDayFilter'
 import ShopDetails from './TrackingShopDetails'
 import Man from 'material-ui/svg-icons/action/accessibility'
 import Loyalty from 'material-ui/svg-icons/action/loyalty'
@@ -71,8 +73,8 @@ const enhance = compose(
         trackingInfoTitle: {
             display: 'flex',
             alignItems: 'center',
-            padding: '20px 30px',
-            borderBottom: '1px #efefef solid',
+            padding: '0 30px',
+            minHeight: '70px',
             fontWeight: '600',
             '& span': {
                 textAlign: 'right',
@@ -90,8 +92,33 @@ const enhance = compose(
                 fontSize: 'inherit !important'
             }
         },
+        titleTabs: {
+            background: '#ccc',
+            display: 'flex',
+            justifyContent: 'center',
+            minHeight: '40px',
+            '& button': {
+                justifyContent: 'center',
+                alignItems: 'center'
+            }
+        },
+        activeTab: {
+            '& svg': {
+                color: '#666 !important'
+            },
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                bottom: '0',
+                borderBottom: '6px solid #fff',
+                borderLeft: '4px solid transparent',
+                borderRight: '4px solid transparent'
+            }
+        },
         content: {
-            padding: '20px 30px'
+            padding: '20px 30px',
+            overflowY: 'auto',
+            borderTop: '1px #efefef solid'
         },
         inputFieldCustom: {
             flexBasis: '200px',
@@ -129,7 +156,9 @@ const enhance = compose(
         agent: {
             display: 'flex',
             alignItems: 'center',
-            padding: '10px 0',
+            margin: '0 -30px',
+            padding: '10px 30px',
+            cursor: 'pointer',
             '& a': {
                 color: '#333',
                 marginRight: '5px'
@@ -144,6 +173,10 @@ const enhance = compose(
                 marginRight: '10px',
                 color: '#666'
             }
+        },
+        activeAgent: {
+            extend: 'agent',
+            background: '#f4f4f4'
         }
     })
 )
@@ -158,15 +191,17 @@ const TrackingWrapper = enhance((props) => {
         handleOpenDetails,
         agentLocation,
         marketsLocation,
-        isOpenTrack,
         isOpenMarkets,
-        filterForm,
+        initialValues,
+        tabData,
+        calendar,
         shopDetails
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
     const agentsCount = _.get(listData, ['data', 'length'])
     let agentsOnline = 0
+    const agentId = _.get(detailData, 'id')
 
     const openDetail = _.get(detailData, 'openDetail')
     let openShopDetail = false
@@ -207,35 +242,47 @@ const TrackingWrapper = enhance((props) => {
             icon: <Money/>
         }
     ]
+    const today = moment().format('YYYY-MM-DD')
+    const urlDate = _.get(filter.getParams(), 'date') || moment().format('YYYY-MM-DD')
 
     const zoneInfoToggle = (
         <div className={classes.trackingInfo}>
-            {!listLoading ? <div className={classes.wrapper}>
+            <div className={classes.wrapper}>
+                {openDetail && <TrakingDayFilter calendar={calendar}/>}
+                {(today === urlDate) &&
                 <div className={classes.trackingInfoTitle}>
                     <span>Сотрудников <br/> online</span>
-                    <div className={classes.online}>
-                        <div>
-                            {
-                                _.map(_.get(listData, 'data'), (item) => {
-                                    const FIVE_MIN = 350000
-                                    const dateNow = _.toInteger(moment().format('x'))
-                                    const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
-                                    let isOnline = false
-                                    if ((dateNow - registeredDate) <= FIVE_MIN) {
-                                        isOnline = true
-                                    }
-                                    if (isOnline) {
-                                        agentsOnline++
-                                    }
-                                })
-                            }
-                            <span className={agentsOnline > ZERO && classes.green}>{agentsOnline}</span>/<span>{agentsCount}</span>
+                    {listLoading
+                        ? <div className={classes.loader} style={{width: '65px'}}>
+                            <div>
+                                <CircularProgress size={25} thickness={3}/>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                        : <div className={classes.online}>
+                            <div>
+                                {
+                                    _.map(_.get(listData, 'data'), (item) => {
+                                        const FIVE_MIN = 350000
+                                        const dateNow = _.toInteger(moment().format('x'))
+                                        const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                                        let isOnline = false
+                                        if ((dateNow - registeredDate) <= FIVE_MIN) {
+                                            isOnline = true
+                                        }
+                                        if (isOnline) {
+                                            agentsOnline++
+                                        }
+                                    })
+                                }
+                                <span
+                                    className={agentsOnline > ZERO && classes.green}>{agentsOnline}</span>/<span>{agentsCount}</span>
+                            </div>
+                        </div>}
+                </div>}
                 <div className={classes.titleTabs}>
                     {_.map(buttons, (item) => {
                         const group = _.get(item, 'group')
+                        const groupId = _.get(tabData, 'groupId')
                         const icon = _.get(item, 'icon')
 
                         return (
@@ -243,7 +290,7 @@ const TrackingWrapper = enhance((props) => {
                                 key={group}
                                 disableTouchRipple={true}
                                 className={(group === groupId) && classes.activeTab}
-                                // onTouchTap={() => { handleClickTab(group) }}
+                                onTouchTap={() => { tabData.handleClickTab(group) }}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}>
                                 {icon}
@@ -251,23 +298,30 @@ const TrackingWrapper = enhance((props) => {
                         )
                     })}
                 </div>
+                <TrackingAgentSearch filter={filter}/>
                 <div className={classes.content}>
-                    <div className={classes.activeAgents}>
-                        {_.map(orderedData, (item) => {
-                            const id = _.get(item, 'id')
-                            const agent = _.get(item, 'agent')
-                            const FIVE_MIN = 350000
-                            const dateNow = _.toInteger(moment().format('x'))
-                            const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
-                            const difference = dateNow - registeredDate
-                            let isOnline = false
-                            if (difference <= FIVE_MIN) {
-                                isOnline = true
-                            }
-                            const lastSeen = moment(registeredDate).fromNow()
+                    {listLoading
+                        ? <div className={classes.loader}>
+                            <div>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                        </div>
+                        : <div className={classes.activeAgents}>
+                            {_.map(orderedData, (item) => {
+                                const id = _.get(item, 'id')
+                                const agent = _.get(item, 'agent')
+                                const FIVE_MIN = 350000
+                                const dateNow = _.toInteger(moment().format('x'))
+                                const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                                const difference = dateNow - registeredDate
+                                let isOnline = false
+                                if (difference <= FIVE_MIN) {
+                                    isOnline = true
+                                }
+                                const lastSeen = moment(registeredDate).fromNow()
 
-                            return (
-                                    <div key={id} className={classes.agent}>
+                                return (
+                                    <div key={id} className={(id === agentId) ? classes.activeAgent : classes.agent}>
                                         <Dot style={isOnline ? {color: '#81c784'} : {color: '#666'}}/>
                                         <Link to={{
                                             pathname: sprintf(ROUTES.TRACKING_ITEM_PATH, id),
@@ -275,28 +329,12 @@ const TrackingWrapper = enhance((props) => {
                                         }}>{agent}</Link>
                                         {!isOnline && <i>({lastSeen})</i>}
                                     </div>
-                            )
-                        })
-                        }
-                    </div>
+                                )
+                            })
+                            }
+                        </div>}
                 </div>
             </div>
-                : <div className={classes.loader}>
-                    <div>
-                        <CircularProgress size={40} thickness={4}/>
-                    </div>
-                </div>}
-            {openDetail &&
-            <TrackingDetails
-                initialValues={filterForm.initialValues}
-                filter={filter}
-                listData={listData}
-                detailData={detailData}
-                filterForm={filterForm}
-                isOpenTrack={isOpenTrack}
-                agentLocation={agentLocation}
-            />
-            }
             {openShopDetail &&
             <ShopDetails
                 shopDetails={shopDetails}
@@ -311,7 +349,7 @@ const TrackingWrapper = enhance((props) => {
             <div className={classes.trackingWrapper}>
                 <TrackingMap
                     filter={filter}
-                    agentId={_.get(detailData, 'id')}
+                    agentId={agentId}
                     listData={_.get(listData, 'data')}
                     handleOpenDetails={handleOpenDetails}
                     agentLocation={agentLocation}
@@ -321,6 +359,7 @@ const TrackingWrapper = enhance((props) => {
                 />
             </div>
             {zoneInfoToggle}
+            <TrackingTime initialValues={initialValues} openDetail={openDetail}/>
         </Container>
     )
 })
