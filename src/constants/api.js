@@ -295,6 +295,7 @@ export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
 export const REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
 export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
 export const REMAINDER_DISCARD = '/stock/writeoff/'
+export const REMAINDER_RESERVED = '/stock/reserved_product/'
 
 export const STAT_AGENT_LIST = 'stats/agents/'
 export const STAT_AGENT_ITEM = 'sales/order/'
