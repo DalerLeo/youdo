@@ -7,7 +7,7 @@ import Layout from '../../components/Layout'
 import sprintf from 'sprintf'
 import * as ROUTER from '../../constants/routes'
 import TrackingWrapper from '../../components/Tracking/TrackingWrapper'
-import {TOGGLE_INFO, OPEN_SHOP_DETAILS} from '../../components/Tracking'
+import {OPEN_SHOP_DETAILS} from '../../components/Tracking'
 import toBoolean from '../../helpers/toBoolean'
 import filterHelper from '../../helpers/filter'
 import moment from 'moment'
@@ -70,13 +70,13 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevAgent = _.get(props, ['params', 'agentId'])
-        const nextAgent = _.get(nextProps, ['params', 'agentId'])
+        const prevAgent = _.toInteger(_.get(props, ['params', 'agentId']))
+        const nextAgent = _.toInteger(_.get(nextProps, ['params', 'agentId']))
         const prevDate = _.get(props, ['query', 'date'])
         const nextDate = _.get(nextProps, ['query', 'date'])
         const prevTrack = toBoolean(_.get(props, ['query', 'agentTrack']))
         const nextTrack = toBoolean(_.get(nextProps, ['query', 'agentTrack']))
-        return (prevAgent !== nextAgent || prevTrack !== nextTrack || prevDate !== nextDate)
+        return (prevAgent !== nextAgent && nextAgent > ZERO) || (prevTrack !== nextTrack) || (prevDate !== nextDate)
     }, ({dispatch, params, location}) => {
         const id = _.toInteger(_.get(params, 'agentId'))
         const serializerData = {
@@ -108,8 +108,15 @@ const enhance = compose(
 
     withHandlers({
         handleOpenDetails: props => (id) => {
-            const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTER.TRACKING_ITEM_PATH, id), query: filter.getParams({[TOGGLE_INFO]: true})})
+            const {filter, filterForm} = props
+            const date = _.get(filterForm, ['values', 'date']) || null
+            hashHistory.push({
+                pathname: sprintf(ROUTER.TRACKING_ITEM_PATH, id),
+                query: filter.getParams({
+                    // [TRACKING_FILTER_KEY.AGENT_TRACK]: true,
+                    // [TRACKING_FILTER_KEY.DATE]: moment(date).format('YYYY-MM-DD')
+                })
+            })
         },
 
         handleOpenShopDetails: props => (id) => {
@@ -120,18 +127,6 @@ const enhance = compose(
         handleCloseShopDetails: props => () => {
             const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParams({[OPEN_SHOP_DETAILS]: ZERO})})
-        },
-
-        handleExpandInfo: props => () => {
-            const {location: {pathname}, dispatch, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TOGGLE_INFO]: true})})
-
-            return dispatch(trackingListFetchAction(filter))
-        },
-
-        handleCollapseInfo: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TOGGLE_INFO]: false})})
         },
 
         handleSubmitFilterDialog: props => () => {
@@ -169,7 +164,6 @@ const Tracking = enhance((props) => {
         layout
     } = props
 
-    const openToggle = toBoolean(_.get(location, ['query', TOGGLE_INFO]))
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
     const openShopDetails = _.toInteger(_.get(location, ['query', OPEN_SHOP_DETAILS]) || ZERO) > ZERO
@@ -207,12 +201,6 @@ const Tracking = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
-    const toggle = {
-        openToggle,
-        handleExpandInfo: props.handleExpandInfo,
-        handleCollapseInfo: props.handleCollapseInfo
-    }
-
     const shopDetails = {
         marketData,
         marketDataLoading,
@@ -226,7 +214,6 @@ const Tracking = enhance((props) => {
             <TrackingWrapper
                 filter={filter}
                 listData={listData}
-                toggle={toggle}
                 detailData={detailData}
                 shopDetails={shopDetails}
                 filterForm={filterForm}
