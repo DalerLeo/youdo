@@ -180,16 +180,18 @@ const TransactionCashDialog = enhance((props) => {
             : _.map(_.get(paymentData, 'data'), (item) => {
                 const clientName = _.get(item, ['client', 'name'])
                 const marketName = _.get(item, ['market', 'name'])
-                const customRate = _.get(item, ['customRate']) ? _.toNumber(_.get(item, ['amount'])) / _.toNumber(_.get(item, ['internal'])) : null
                 const currency = _.get(item, ['currency', 'name'])
                 const order = _.get(item, ['order'])
-                const amount = numberFormat(_.get(item, ['amount']), currency)
+                const customRate = _.get(item, ['customRate'])
+                const internal = _.get(item, 'internal')
+                const amount = _.get(item, ['amount'])
                 return (
                     <Row key={_.get(item, 'id')} className={classes.detailsRow}>
                         <Col xs={3}>{clientName}</Col>
                         <Col xs={3}>{marketName}</Col>
                         <Col xs={3}>{order}</Col>
-                        <Col xs={3}>{amount} {customRate ? ('=' + customRate + '(внутренний' + primaryCurrency) : null}</Col>
+                        <Col xs={3}>{amount} {currency} {currency !== primaryCurrency && customRate ? '(internal ' + customRate + ' ' + primaryCurrency + ')'
+                            : (!customRate ? '(internal ' + (amount / internal) + ' ' + primaryCurrency + ')' : null) }</Col>
                     </Row>
 
                 )
