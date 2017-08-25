@@ -3,7 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import LinearProgress from '../LinearProgress'
 import numberformat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import {Row, Col} from 'react-flexbox-grid'
@@ -11,6 +10,7 @@ import NotFound from '../Images/not-found.png'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
 const ACCEPT = 1
 
@@ -109,6 +109,7 @@ const enhance = compose(
                 color: '#999 !important'
             }
         },
+
         closeDetail: {
             position: 'absolute',
             left: '0',
@@ -155,20 +156,19 @@ const StockTransferDetails = enhance((props) => {
     const stockName = _.get(detailData, ['currentTransferDetail', 'stock', 'name'])
     const detailType = _.toInteger(_.get(detailData, 'type'))
     const tooltipText = 'Подтвердить Запрос № ' + id
-    if (_.isEmpty(products)) {
+    if (detailLoading) {
         return (
-            <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden'}}>
-                {detailLoading && <LinearProgress/>}
-                <div className={classes.emptyQuery}>
-                    <div>Товаров не найдено</div>
-                </div>
+            <div className={classes.loader}>
+                <CircularProgress size={40} thickness={4} />
             </div>
         )
     }
-
     return (
         <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
-            {detailLoading ? <LinearProgress/>
+            {_.isEmpty(products)
+                ? <div className={classes.emptyQuery}>
+                    <div>Товаров не найдено</div>
+                </div>
                 : <div style={{width: '100%'}}>
                     <div className={classes.header}>
                         <div className={classes.closeDetail}
