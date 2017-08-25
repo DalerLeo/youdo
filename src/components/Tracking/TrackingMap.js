@@ -8,13 +8,13 @@ import CircularProgress from 'material-ui/CircularProgress'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import RedPin from '../Images/person-pin-red.png'
-import GreenPin from '../Images/person-pin-green.png'
-import BluePin from '../Images/person-pin-blue.png'
+import AgentOnline from '../Images/agent-online.png'
+import AgentOffline from '../Images/agent-offline.png'
 import Location from '../Images/market-location.png'
 import MarketOff from '../Images/market-red.png'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
 import {connect} from 'react-redux'
+import toBoolean from '../../helpers/toBoolean'
 
 const ZERO = 0
 const enhance = compose(
@@ -34,21 +34,22 @@ const enhance = compose(
     withState('openAgentInfo', 'setOpenAgentInfo', ZERO),
 )
 const GoogleMapWrapper = enhance(({
-                                      onMapLoad,
-                                      agentId,
-                                      listData,
-                                      handleOpenDetails,
-                                      agentLocation,
-                                      marketsLocation,
-                                      isOpenMarkets,
-                                      openMarketInfo,
-                                      setOpenMarketInfo,
-                                      setOpenAgentInfo,
-                                      shopDetails,
-                                      timeValue,
-                                      date,
-                                      ...props
-                                  }) => {
+    onMapLoad,
+    agentId,
+    listData,
+    handleOpenDetails,
+    agentLocation,
+    marketsLocation,
+    openMarketInfo,
+    setOpenMarketInfo,
+    setOpenAgentInfo,
+    shopDetails,
+    timeValue,
+    date,
+    openMarkets,
+    filter,
+    ...props
+    }) => {
     const minutePerHour = 60
     const TEN = 10
     let hour = _.floor(timeValue / minutePerHour) || ZERO
@@ -93,8 +94,12 @@ const GoogleMapWrapper = enhance(({
         setOpenAgentInfo(id)
     }
 
+    const showMarkets = toBoolean(_.get(filter.getParams(), 'showMarkets')) || false
     return (
-        <DefaultGoogleMap ref={onMapLoad} {...props}>
+        <DefaultGoogleMap
+            ref={onMapLoad}
+            defaultCenter={GOOGLE_MAP.DEFAULT_LOCATION}
+            {...props}>
             <MarkerClusterer
                 averageCenter
                 enableRetinaIcons
@@ -126,97 +131,97 @@ const GoogleMapWrapper = enhance(({
                         </Marker>
                     )
 
-                    if (isOpenMarkets && !_.isEmpty(_.get(item, 'location'))) {
+                    if (showMarkets && !_.isEmpty(_.get(item, 'location'))) {
                         return marker
                     }
                     return false
                 })}
             </MarkerClusterer>
-            {_.map(listData, (item) => {
-                const id = _.get(item, 'id')
-                const name = _.get(item, 'agent')
-                const lat = _.get(item, ['location', 'lat'])
-                const lng = _.get(item, ['location', 'lon'])
+                {_.map(listData, (item) => {
+                    const id = _.get(item, 'id')
+                    const name = _.get(item, 'agent')
+                    const lat = _.get(item, ['location', 'lat'])
+                    const lng = _.get(item, ['location', 'lon'])
 
-                const FIVE_MIN = 300000
-                const dateNow = _.toInteger(moment().format('x'))
-                const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
-                const difference = dateNow - registeredDate
-                let isOnline = false
-                if (difference <= FIVE_MIN) {
-                    isOnline = true
-                }
-                const lastLat = _.get(_.last(filterAgentLocation), ['point', 'lat'])
-                const lastLon = _.get(_.last(filterAgentLocation), ['point', 'lon'])
-                if (id === agentId) {
-                    return (
-                        <div>
-                            <Marker
-                                key={id}
-                                onClick={() => { clickAgent(id) }}
-                                position={{lat: lastLat || lat, lng: lastLon || lng}}
-                                options={
-                                {
-                                    zIndex: 999,
-                                    icon: {
-                                        url: BluePin,
+                    const FIVE_MIN = 300000
+                    const dateNow = _.toInteger(moment().format('x'))
+                    const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                    const difference = dateNow - registeredDate
+                    let isOnline = false
+                    if (difference <= FIVE_MIN) {
+                        isOnline = true
+                    }
+                    const lastLat = _.get(_.last(filterAgentLocation), ['point', 'lat'])
+                    const lastLon = _.get(_.last(filterAgentLocation), ['point', 'lon'])
+                    if (id === agentId) {
+                        return (
+                            <div>
+                                <Marker
+                                    key={id}
+                                    onClick={() => { clickAgent(id) }}
+                                    position={{lat: lastLat || lat, lng: lastLon || lng}}
+                                    options={
+                                    {
                                         zIndex: 999,
-                                        size: {width: 30, height: 30},
-                                        scaledSize: {width: 30, height: 30}
-                                    }
-                                }}>
-                                <InfoWindow>
-                                    <div>{name}</div>
-                                </InfoWindow>
-                            </Marker>
+                                        icon: {
+                                            url: isOnline ? AgentOnline : AgentOffline,
+                                            zIndex: 999,
+                                            size: {width: 30, height: 30},
+                                            scaledSize: {width: 30, height: 30}
+                                        }
+                                    }}>
+                                    <InfoWindow>
+                                        <div>{name}</div>
+                                    </InfoWindow>
+                                </Marker>
 
-                            <Polyline
-                                path={_.get(agentCoordinates, '0')}
-                                geodesic={true}
-                                options={polyLineOptions}
-                            />
-                            {_.map(_.get(agentCoordinates, '0'), (point, index) => {
-                                const trackLat = _.get(point, 'lat')
-                                const trackLng = _.get(point, 'lng')
-                                const regDate = _.get(point, 'date')
-                                return (
-                                    <Marker
-                                        key={index}
-                                        position={{lat: trackLat, lng: trackLng}}
-                                        title={regDate}
-                                        options={
-                                        {
-                                            icon: {
-                                                url: Location,
-                                                size: {width: 30, height: 30},
-                                                scaledSize: {width: 8, height: 8},
-                                                anchor: {x: 4, y: 4}
-                                            }
-                                        }}>
-                                    </Marker>
-                                )
-                            })}
-                        </div>
+                                <Polyline
+                                    path={_.get(agentCoordinates, '0')}
+                                    geodesic={true}
+                                    options={polyLineOptions}
+                                />
+                                {_.map(_.get(agentCoordinates, '0'), (point, index) => {
+                                    const trackLat = _.get(point, 'lat')
+                                    const trackLng = _.get(point, 'lng')
+                                    const regDate = _.get(point, 'date')
+                                    return (
+                                        <Marker
+                                            key={index}
+                                            position={{lat: trackLat, lng: trackLng}}
+                                            title={regDate}
+                                            options={
+                                            {
+                                                icon: {
+                                                    url: Location,
+                                                    size: {width: 30, height: 30},
+                                                    scaledSize: {width: 8, height: 8},
+                                                    anchor: {x: 4, y: 4}
+                                                }
+                                            }}>
+                                        </Marker>
+                                    )
+                                })}
+                            </div>
+                        )
+                    }
+
+                    return (
+                        <Marker
+                            key={id}
+                            title={name}
+                            onClick={() => { clickAgent(id) }}
+                            position={{lat: lat, lng: lng}}
+                            options={
+                            {
+                                icon: {
+                                    url: isOnline ? AgentOnline : AgentOffline,
+                                    size: {width: 30, height: 30},
+                                    scaledSize: {width: 30, height: 30}
+                                }
+                            }}>
+                        </Marker>
                     )
-                }
-
-                return (
-                    <Marker
-                        key={id}
-                        title={name}
-                        onClick={() => { clickAgent(id) }}
-                        position={{lat: lat, lng: lng}}
-                        options={
-                        {
-                            icon: {
-                                url: isOnline ? GreenPin : RedPin,
-                                size: {width: 26, height: 30},
-                                scaledSize: {width: 26, height: 30}
-                            }
-                        }}>
-                    </Marker>
-                )
-            })}
+                })}
             {props.children}
         </DefaultGoogleMap>
     )
@@ -235,18 +240,27 @@ const GoogleMap = (props) => {
         handleOpenDetails,
         agentLocation,
         marketsLocation,
-        isOpenMarkets,
         shopDetails,
         ...defaultProps
     } = props
 
+    const mapOptions = {
+        styles: googleMapStyle,
+        mapTypeControl: false,
+        panControl: false,
+        streetViewControl: false,
+        zoomControl: false,
+        scaleControl: false,
+        fullscreenControl: false
+    }
+
     return (
         <GoogleMapWrapper
-            defaultCenter={GOOGLE_MAP.DEFAULT_LOCATION}
             googleMapURL={GOOGLE_MAP.GOOGLE_API_URL}
             loadingElement={<Loader />}
             containerElement={<div style={{height: '100%'}}/>}
             mapElement={<div style={{height: '100%'}}/>}
+            options={mapOptions}
             defaultZoom={13}
             radius="500"
 
@@ -256,9 +270,7 @@ const GoogleMap = (props) => {
             handleOpenDetails={handleOpenDetails}
             agentLocation={agentLocation}
             marketsLocation={marketsLocation}
-            isOpenMarkets={isOpenMarkets}
             shopDetails={shopDetails}
-            defaultOptions={{styles: googleMapStyle}}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>

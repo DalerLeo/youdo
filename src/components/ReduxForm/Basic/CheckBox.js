@@ -28,17 +28,18 @@ const enhance = compose(
     })
 )
 
-const Checkbox = ({classes, input, meta, label, ...defaultProps}) => (
-    <MUICheckbox
-        label={label}
-        className={classes.checkBox}
-        style={checkboxStyle}
-        iconStyle={{width: '20px', height: '20px'}}
-        labelStyle={{lineHeight: '20px', left: '-10px'}}
-        checked={Boolean(input.value)}
-        onCheck={input.onChange}
-        {...defaultProps}
-    />
-)
+const Checkbox = enhance((props) => {
+    const {classes, input, label} = props
+    return (
+        <MUICheckbox
+            label={label}
+            className={classes.checkBox}
+            style={checkboxStyle}
+            iconStyle={{width: '20px', height: '20px'}}
+            labelStyle={{lineHeight: '20px', left: '-10px'}}
+            checked={Boolean(input.value)}
+            onCheck={input.onChange}
+        />)
+})
 
-export default enhance(Checkbox)
+export default Checkbox
