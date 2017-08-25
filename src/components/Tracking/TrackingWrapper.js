@@ -12,6 +12,7 @@ import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import TrackingMap from './TrackingMap'
+import TrackingMarketsZones from './TrackingMarketsZones'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
 import TrackingTime from './TrackingTime'
 import TrackingAgentSearch from './TrackingAgentSearch'
@@ -68,7 +69,7 @@ const enhance = compose(
             bottom: '-28px',
             borderLeft: '1px #efefef solid',
             transition: 'all 0.3s ease',
-            zIndex: '3'
+            zIndex: '6'
         },
         trackingInfoTitle: {
             display: 'flex',
@@ -194,6 +195,7 @@ const TrackingWrapper = enhance((props) => {
         isOpenMarkets,
         initialValues,
         tabData,
+        filterForm,
         calendar,
         shopDetails
     } = props
@@ -359,6 +361,7 @@ const TrackingWrapper = enhance((props) => {
                 />
             </div>
             {zoneInfoToggle}
+            <TrackingMarketsZones filter={filter} filterForm={filterForm} openDetail={openDetail}/>
             <TrackingTime initialValues={initialValues} openDetail={openDetail}/>
         </Container>
     )

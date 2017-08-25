@@ -11,7 +11,7 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             display: 'flex',
-            alignItems: 'flex-end'
+            alignItems: 'center'
         },
         hours: {
             fontSize: '10px',

@@ -126,6 +126,11 @@ const enhance = compose(
             })
         },
 
+        handleOpenShopDetails: props => (id) => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_SHOP_DETAILS]: id})})
+        },
+
         handleCloseShopDetails: props => () => {
             const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParams({[OPEN_SHOP_DETAILS]: ZERO})})
