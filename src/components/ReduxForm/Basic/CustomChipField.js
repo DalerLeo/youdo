@@ -1,89 +1,35 @@
-/* eslint no-invalid-this: 0 */
-/* eslint no-undefined: 0 */
-
-import _ from 'lodash'
+import sprintf from 'sprintf'
 import React from 'react'
-import injectSheet from 'react-jss'
-import Chip from 'material-ui/Chip'
-import Popover from 'material-ui/Popover'
-import FlatButton from 'material-ui/FlatButton'
+import ChipSearchField from '../Basic/ChipSearchField'
+import axios from '../../../helpers/axios'
+import * as PATH from '../../../constants/api'
+import toCamelCase from '../../../helpers/toCamelCase'
 
-import {compose, withHandlers, withState} from 'recompose'
+const getOptions = (search) => {
+    return axios().get(`${PATH.MARKET_TYPE_LIST}?search=${search || ''}`)
+        .then(({data}) => {
+            return Promise.resolve(toCamelCase(data.results))
+        })
+}
 
-const enhance = compose(
-    withState('openList', 'setOpenList', false),
-    withHandlers({
-        handleRequestDelete: props => (key) => {
-            const onChange = _.get(props, ['input', 'onChange'])
-            const marketTypes = _(props)
-                .get(['input', 'value'])
-                .filter((item, index) => item.key !== key)
+const getItem = (id) => {
+    return axios().get(sprintf(PATH.MARKET_TYPE_ITEM, id))
+        .then(({data}) => {
+            return Promise.resolve(toCamelCase(data))
+        })
+}
 
-            onChange(marketTypes)
-        },
-        handleOpenList: props => (event, ...data) => {
-            const {setOpenList} = props
-            setOpenList(true)
-        },
-
-        handleCloseList: props => () => {
-            const {setOpenList} = props
-            setOpenList(false)
-        }
-    }),
-)
-
-const ChipField = enhance(({input, classes, handleRequestDelete, openList, handleOpenList, handleCloseList, anchorEl}) => {
+const MarketTypeSearchField = (props) => {
     return (
-        <div className={classes.wrapperChip}>
-            <FlatButton
-                label="hello"
-                onClick={() => { handleOpenList() }}
-            />
-            <Popover className={classes.popOver}
-                     open={openList}
-                     anchorEl={anchorEl}
-                     onRequestClose={handleCloseList}>
-                {_.map(input.value, (item) => {
-                    return (
-                        <Chip
-                            key={item.key}
-                            style={{margin: 4}}
-                            onRequestDelete={
-                                () => { handleRequestDelete(item.key) }
-                            }
-                            onChange={() => { input.onChange(input.value) }}
-                        >
-                            {item.label}
-                        </Chip>
-                    )
-                })}
-            </Popover>
-
-        </div>
+        <ChipSearchField
+            getValue={ChipSearchField.defaultGetValue('id')}
+            getText={ChipSearchField.defaultGetText('name')}
+            getOptions={getOptions}
+            getItem={getItem}
+            getItemText={ChipSearchField.defaultGetText('name')}
+            {...props}
+        />
     )
-})
+}
 
-export default injectSheet({
-    popOver: {
-        width: '200px',
-        height: '100px'
-    },
-    wrapperChip: {
-        position: 'relative',
-        width: '100%',
-        display: 'flex',
-        flexWrap: 'wrap'
-    },
-    button: {
-        display: 'flex',
-        border: 'solid 1px #efefef !important',
-        '& button': {
-            '& > div': {
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }
-        }
-    }
-})(ChipField)
+export default MarketTypeSearchField

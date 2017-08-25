@@ -15,7 +15,7 @@ import {
     PricesBonusProductField,
     TextField,
     DateField,
-    ChipField
+    CustomChipField
 } from '../ReduxForm'
 import PromotionsRadioButton from '../ReduxForm/Promotions/PromotionsRadioButton'
 import toCamelCase from '../../helpers/toCamelCase'
@@ -176,6 +176,7 @@ const enhance = compose(
             width: '50%'
         },
         inputFieldCustom: {
+            width: '100% !important',
             fontSize: '13px !important',
             height: '45px !important',
             marginTop: '7px',
@@ -316,7 +317,10 @@ const PricesCreateDialog = enhance((props) => {
                                     </div>
                                     <Field
                                         name="marketTypes"
-                                        component={ChipField}
+                                        component={CustomChipField}
+                                        className={classes.inputFieldCustom}
+                                        fullWidth={true}
+                                        label="Выберите тип магазинов "
                                     />
                                 </div>
                             </div>

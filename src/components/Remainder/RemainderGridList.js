@@ -28,7 +28,8 @@ import Tooltip from '../ToolTip'
 import Pagination from '../GridList/GridListNavPagination'
 import {reduxForm, Field} from 'redux-form'
 import NotFound from '../Images/not-found.png'
-
+import RemainderReservedDialog from './RemainderReservedDialog'
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         listWrapper: {
@@ -278,9 +279,9 @@ const RemainderGridList = enhance((props) => {
         filterItem,
         filterDialog,
         handleSubmit,
-        searchSubmit
+        searchSubmit,
+        reversedDialog
     } = props
-
     const listLoading = _.get(listData, 'listLoading')
     const detailId = _.get(detailData, 'id')
 
@@ -381,7 +382,10 @@ const RemainderGridList = enhance((props) => {
                             <Col xs={2}>{type}</Col>
                             <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
                             <Col xs={2} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
-                            <Col xs={2} className={classes.itemData}>{numberFormat(reserved, measurement)}</Col>
+                            <Col xs={2} className={classes.itemData}
+                                 onTouchTap={() => { reversedDialog.handleOpenRemainderReservedDialog(id) }}>
+                                {numberFormat(reserved, measurement)}
+                            </Col>
                             <Col xs={1} style={{textAlign: 'right'}}>
                                 <Link to={{
                                     pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
@@ -470,6 +474,12 @@ const RemainderGridList = enhance((props) => {
                 open={discardDialog.openDiscardDialog}
                 onClose={discardDialog.handleCloseDiscardDialog}
                 onSubmit={discardDialog.handleSubmitDiscardDialog}/>
+            <RemainderReservedDialog
+                loading={_.get(detailData.detailLoading)}
+                detailData={detailData}
+                open={reversedDialog.openReversedDialog > ZERO}
+                onClose={reversedDialog.handleCloseRemainderReservedDialog}
+                filterItem={filterItem}/>
         </Container>
     )
 })
@@ -497,6 +507,11 @@ RemainderGridList.propTypes = {
         handleOpenDiscardDialog: PropTypes.func.isRequired,
         handleCloseDiscardDialog: PropTypes.func.isRequired,
         handleSubmitDiscardDialog: PropTypes.func.isRequired
+    }).isRequired,
+    reversedDialog: PropTypes.shape({
+        openReversedDialog: PropTypes.number.isRequired,
+        handleOpenRemainderReservedDialog: PropTypes.func.isRequired,
+        handleCloseRemainderReservedDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
