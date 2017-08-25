@@ -118,10 +118,10 @@ const StockReceiveGridList = enhance((props) => {
         handleCloseDetail,
         confirmDialog,
         createDialog,
-        handleCheckedForm
+        handleCheckedForm,
+        historyDialog
     } = props
     const tab = _.get(tabData, 'tab')
-
     const tabList = (
         <div className={classes.tabWrapper}>
             <Tabs
@@ -162,6 +162,7 @@ const StockReceiveGridList = enhance((props) => {
                 filter={filter}
                 listData={historyData}
                 filterDialog={filterDialog}
+                historyDialog={historyDialog}
             />}
             {TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY === tab && <TabTransferHistory
                 filter={filter}
@@ -238,7 +239,13 @@ StockReceiveGridList.propTypes = {
         openUpdateDialog: PropTypes.bool.isRequired,
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    historyDialog: PropTypes.shape({
+        openHistoryInfoDialog: PropTypes.number.isRequired,
+        handleOpenHistoryDialog: PropTypes.func.isRequired,
+        handleCloseHistoryDialog: PropTypes.func.isRequired
     }).isRequired
+
 }
 
 export default StockReceiveGridList

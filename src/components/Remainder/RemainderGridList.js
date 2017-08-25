@@ -391,7 +391,7 @@ RemainderGridList.propTypes = {
     }).isRequired,
     reservedDialog: PropTypes.shape({
         reservedDetail: PropTypes.array,
-        data: PropTypes.object,
+        data: PropTypes.array,
         openReversedDialog: PropTypes.number.isRequired,
         handleOpenRemainderReservedDialog: PropTypes.func.isRequired,
         handleCloseRemainderReservedDialog: PropTypes.func.isRequired
