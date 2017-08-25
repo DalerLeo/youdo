@@ -59,7 +59,7 @@ const GridListNav = ({classes, filter, filterDialog, addButton, actions, without
                         {refreshAction &&
                         <Tooltip position="left" text={'Обновить'}>
                             <IconButton
-                                disabled={(listCount > MAX_COUNT) && true}
+                                disabled={false}
                                 onTouchTap={refreshAction}>
                                 <RefreshIcon color="#666"/>
                             </IconButton>
