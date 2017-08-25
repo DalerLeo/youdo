@@ -8,8 +8,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
-import Pagination from '../GridList/GridListNavPagination'
-import dateFormat from '../../helpers/dateFormat'
+import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
 export const REMAINDER_RESERVED_DIALOG_OPEN = 'openReservedDialog'
 const enhance = compose(
@@ -22,6 +21,11 @@ const enhance = compose(
             zIndex: '999',
             justifyContent: 'center',
             display: 'flex'
+        },
+        dialog: {
+            '& > div:first-child > div:first-child': {
+                transform: 'translate(0px, 0px) !important'
+            }
         },
         popUp: {
             color: '#333 !important',
@@ -37,8 +41,7 @@ const enhance = compose(
             width: '100%',
             display: 'block',
             '& > div:last-child': {
-                padding: '0 30px',
-                borderTop: '1px #efefef solid'
+                padding: '0 30px'
             }
         },
         titleSummary: {
@@ -105,13 +108,6 @@ const enhance = compose(
         },
         tableWrapper: {
             padding: '0 30px',
-            maxHeight: '424px',
-            overflowY: 'auto',
-            '& .row': {
-                '&:first-child': {
-                    fontWeight: '600'
-                }
-            },
             '& .dottedList': {
                 padding: '15px 0',
                 '& > div:last-child': {
@@ -120,6 +116,20 @@ const enhance = compose(
                 '&:last-child:after': {
                     display: 'none'
                 }
+            }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center 25px',
+            backgroundSize: '200px',
+            padding: '170px 0 30px',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#999',
+            width: '100%',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
             }
         }
     }),
@@ -130,26 +140,25 @@ const RemainderReservedDialog = enhance((props) => {
         open,
         onClose,
         classes,
-        detailData,
-        filterItem
+        data,
+        reservedDetail,
+        loading,
+        listLoading
     } = props
 
-    const loading = _.get(detailData, 'detailLoading')
-    const agentName = _.get(detailData, ['rowDetail', '0', 'title'])
-    const measurement = _.get(detailData, ['rowDetail', '0', 'measurement', 'name'])
-
-    const remainderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
-        const balance = numberFormat(_.get(item, ['balance']), measurement)
-        const barcode = _.get(item, 'barcode')
-        const createdDate = dateFormat(_.get(item, 'createdDate'))
-        const isDefect = _.get(item, 'isDefect') ? 'Брак' : 'OK'
+    const agentName = _.get(reservedDetail, ['0', 'title'])
+    const measurement = _.get(reservedDetail, ['0', 'measurement', 'name'])
+    const reservedList = _.map(data, (item) => {
+        const amount = numberFormat(_.get(item, ['amount']), measurement)
+        const orderId = _.get(item, ['order'])
+        const id = _.get(item, ['id'])
+        const stock = _.get(item, 'stock')
 
         return (
-            <Row key={barcode} className="dottedList">
-                <Col xs={3}>{barcode}</Col>
-                <Col xs={4}>{createdDate}</Col>
-                <Col xs={3}>{balance}</Col>
-                <Col xs={2} style={{textAlign: 'left'}}>{isDefect}</Col>
+            <Row key={id} className="dottedList">
+                <Col xs={4}>{orderId}</Col>
+                <Col xs={4}>{stock}</Col>
+                <Col xs={4}>{amount}</Col>
             </Row>
         )
     })
@@ -163,7 +172,7 @@ const RemainderReservedDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '700px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
-            {loading ? <div className={classes.loader}>
+            {loading || listLoading ? <div className={classes.loader}>
                 <CircularProgress/>
             </div>
                 : <div>
@@ -173,18 +182,22 @@ const RemainderReservedDialog = enhance((props) => {
                             <CloseIcon2 color="#666666"/>
                         </IconButton>
                     </div>
-                    <div className={classes.content}>
-                        <div className={classes.tableWrapper}>
-                            <Row className="dottedList">
-                                <Col xs={3}>Код</Col>
-                                <Col xs={4}>Дата приемки</Col>
-                                <Col xs={3}>Кол-во</Col>
-                                <Col xs={2} style={{textAlign: 'left'}}>Статус</Col>
-                            </Row>
-                            {remainderList}
+                    {_.isEmpty(data)
+                        ? <div className={classes.emptyQuery}>
+                            <div>Забронированые товары не найдено</div>
                         </div>
-                        <Pagination filter={filterItem}/>
-                    </div>
+                        : <div className={classes.content}>
+                            <div className={classes.tableWrapper}>
+                                <Row className="dottedList">
+                                    <Col xs={4}>№ заказа</Col>
+                                    <Col xs={4}>склад</Col>
+                                    <Col xs={4}>Кол-во</Col>
+                                </Row>
+                                <div>
+                                {reservedList}
+                                </div>
+                            </div>
+                          </div>}
                 </div>}
         </Dialog>
     )

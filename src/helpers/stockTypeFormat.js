@@ -10,10 +10,7 @@ const types = {
 
 }
 
-const stockTypeFormat = (type, id) => {
-    if (type === 'transfer' || type === 'stock_transfer' || type === 'order transfer product') {
-        return types[type] + (id ? ' ' + id : '')
-    }
+const stockTypeFormat = (type) => {
     return types[type]
 }
 

@@ -11,7 +11,9 @@ import numberFormat from '../../helpers/numberFormat'
 import ArrowUp from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-downward'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
+import InfoDialog from '../Statistics/StatSaleDialog'
 
+const ZERO = 0
 const listHeader = [
     {
         sorting: true,
@@ -66,6 +68,11 @@ const enhance = compose(
                 top: '3px',
                 marginRight: '5px'
             }
+        },
+        infoDialog: {
+            color: '#129fdd',
+            cursor: 'pointer',
+            textDecoration: 'underline;'
         }
     })
 )
@@ -75,7 +82,8 @@ const StockTabHistory = enhance((props) => {
         filter,
         filterDialog,
         listData,
-        classes
+        classes,
+        historyDialog
     } = props
 
     const usersFilterDialog = (
@@ -97,7 +105,7 @@ const StockTabHistory = enhance((props) => {
         const measurement = _.get(item, ['product', 'measurement', 'name'])
         const date = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
         const parent = _.get(item, 'dParentId')
-        const genericType = stockTypeFormat(_.get(item, ['generic', 'type']), parent)
+        const genericType = stockTypeFormat(_.get(item, ['generic', 'type']))
         const type = _.get(item, 'type')
         return (
             <Row key={id}>
@@ -107,7 +115,10 @@ const StockTabHistory = enhance((props) => {
                 <Col xs={1}>{amount} {measurement}</Col>
                 <Col xs={3}>{date}</Col>
                 <Col xs={2}>{stock}</Col>
-                <Col xs={2}>{genericType}</Col>
+                <Col xs={2}>{genericType} {_.get(item, ['generic', 'type']) === 'order transfer product'
+                                                    ? <span className={classes.infoDialog} onClick={() => { historyDialog.handleOpenHistoryDialog(parent) }}>{parent}</span>
+                                                        : null }
+                </Col>
             </Row>
         )
     })
@@ -126,6 +137,14 @@ const StockTabHistory = enhance((props) => {
                 detail={historyDetail}
                 filterDialog={usersFilterDialog}
             />
+
+            <InfoDialog
+                loading={_.get(listData, 'historyOrderLoading')}
+                detailData={_.get(listData, 'detailData')}
+                open={_.toNumber(historyDialog.openHistoryInfoDialog) > ZERO}
+                onClose={historyDialog.handleCloseHistoryDialog}
+                filter={filter}
+                type={false}/>
         </div>
     )
 })
@@ -140,6 +159,11 @@ StockTabHistory.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired,
+    historyDialog: PropTypes.shape({
+        openHistoryInfoDialog: PropTypes.number.isRequired,
+        handleOpenHistoryDialog: PropTypes.func.isRequired,
+        handleCloseHistoryDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

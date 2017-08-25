@@ -202,3 +202,19 @@ export const stockReceiveItemReturnAction = (id) => {
         payload
     }
 }
+export const historyOrderItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.ORDER_ITEM, id), {'params': {'view': true}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_ITEM,
+        payload
+    }
+}
+
