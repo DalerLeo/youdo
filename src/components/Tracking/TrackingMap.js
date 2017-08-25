@@ -34,22 +34,21 @@ const enhance = compose(
     withState('openAgentInfo', 'setOpenAgentInfo', ZERO),
 )
 const GoogleMapWrapper = enhance(({
-    onMapLoad,
-    agentId,
-    listData,
-    handleOpenDetails,
-    agentLocation,
-    marketsLocation,
-    isOpenTrack,
-    isOpenMarkets,
-    openMarketInfo,
-    setOpenMarketInfo,
-    setOpenAgentInfo,
-    shopDetails,
-    timeValue,
-    date,
-    ...props
-}) => {
+                                      onMapLoad,
+                                      agentId,
+                                      listData,
+                                      handleOpenDetails,
+                                      agentLocation,
+                                      marketsLocation,
+                                      isOpenMarkets,
+                                      openMarketInfo,
+                                      setOpenMarketInfo,
+                                      setOpenAgentInfo,
+                                      shopDetails,
+                                      timeValue,
+                                      date,
+                                      ...props
+                                  }) => {
     const minutePerHour = 60
     const TEN = 10
     let hour = _.floor(timeValue / minutePerHour) || ZERO
@@ -151,22 +150,53 @@ const GoogleMapWrapper = enhance(({
                 const lastLon = _.get(_.last(filterAgentLocation), ['point', 'lon'])
                 if (id === agentId) {
                     return (
-                        <Marker
-                            key={id}
-                            onClick={() => { clickAgent(id) }}
-                            position={{lat: lastLat || lat, lng: lastLon || lng}}
-                            options={
-                            {
-                                icon: {
-                                    url: BluePin,
-                                    size: {width: 30, height: 30},
-                                    scaledSize: {width: 30, height: 30}
-                                }
-                            }}>
-                            <InfoWindow>
-                                <div>{name}</div>
-                            </InfoWindow>
-                        </Marker>
+                        <div>
+                            <Marker
+                                key={id}
+                                onClick={() => { clickAgent(id) }}
+                                position={{lat: lastLat || lat, lng: lastLon || lng}}
+                                options={
+                                {
+                                    zIndex: 999,
+                                    icon: {
+                                        url: BluePin,
+                                        zIndex: 999,
+                                        size: {width: 30, height: 30},
+                                        scaledSize: {width: 30, height: 30}
+                                    }
+                                }}>
+                                <InfoWindow>
+                                    <div>{name}</div>
+                                </InfoWindow>
+                            </Marker>
+
+                            <Polyline
+                                path={_.get(agentCoordinates, '0')}
+                                geodesic={true}
+                                options={polyLineOptions}
+                            />
+                            {_.map(_.get(agentCoordinates, '0'), (point, index) => {
+                                const trackLat = _.get(point, 'lat')
+                                const trackLng = _.get(point, 'lng')
+                                const regDate = _.get(point, 'date')
+                                return (
+                                    <Marker
+                                        key={index}
+                                        position={{lat: trackLat, lng: trackLng}}
+                                        title={regDate}
+                                        options={
+                                        {
+                                            icon: {
+                                                url: Location,
+                                                size: {width: 30, height: 30},
+                                                scaledSize: {width: 8, height: 8},
+                                                anchor: {x: 4, y: 4}
+                                            }
+                                        }}>
+                                    </Marker>
+                                )
+                            })}
+                        </div>
                     )
                 }
 
@@ -188,35 +218,6 @@ const GoogleMapWrapper = enhance(({
                 )
             })}
             {props.children}
-            {isOpenTrack && <div>
-                <Polyline
-                    path={isOpenTrack ? _.get(agentCoordinates, '0') : []}
-                    geodesic={true}
-                    options={polyLineOptions}
-                />
-                {_.map(_.get(agentCoordinates, '0'), (point, index) => {
-                    const lat = _.get(point, 'lat')
-                    const lng = _.get(point, 'lng')
-                    const regDate = _.get(point, 'date')
-                    return (
-                        <Marker
-                            key={index}
-                            position={{lat: lat, lng: lng}}
-                            title={regDate}
-                            options={
-                            {
-                                icon: {
-                                    url: Location,
-                                    size: {width: 30, height: 30},
-                                    scaledSize: {width: 8, height: 8},
-                                    anchor: {x: 4, y: 4}
-                                }
-                            }}>
-                        </Marker>
-                    )
-                })}
-            </div>}
-
         </DefaultGoogleMap>
     )
 })
@@ -234,7 +235,6 @@ const GoogleMap = (props) => {
         handleOpenDetails,
         agentLocation,
         marketsLocation,
-        isOpenTrack,
         isOpenMarkets,
         shopDetails,
         ...defaultProps
@@ -247,7 +247,7 @@ const GoogleMap = (props) => {
             loadingElement={<Loader />}
             containerElement={<div style={{height: '100%'}}/>}
             mapElement={<div style={{height: '100%'}}/>}
-            defaultZoom={14}
+            defaultZoom={13}
             radius="500"
 
             filter={filter}
@@ -256,7 +256,6 @@ const GoogleMap = (props) => {
             handleOpenDetails={handleOpenDetails}
             agentLocation={agentLocation}
             marketsLocation={marketsLocation}
-            isOpenTrack={isOpenTrack}
             isOpenMarkets={isOpenMarkets}
             shopDetails={shopDetails}
             defaultOptions={{styles: googleMapStyle}}
@@ -271,7 +270,6 @@ GoogleMap.PropTypes = {
     handleOpenDetails: PropTypes.func,
     agentLocation: PropTypes.object,
     marketsLocation: PropTypes.object,
-    isOpenTrack: PropTypes.bool,
     isOpenMarkets: PropTypes.bool,
     shopDetails: PropTypes.shape({
         openShopDetails: PropTypes.number.isRequired,

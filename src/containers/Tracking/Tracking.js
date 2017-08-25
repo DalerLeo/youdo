@@ -7,7 +7,7 @@ import Layout from '../../components/Layout'
 import sprintf from 'sprintf'
 import * as ROUTER from '../../constants/routes'
 import TrackingWrapper from '../../components/Tracking/TrackingWrapper'
-import {TOGGLE_INFO, OPEN_SHOP_DETAILS} from '../../components/Tracking'
+import {OPEN_SHOP_DETAILS, USER_GROUP, DATE} from '../../components/Tracking'
 import toBoolean from '../../helpers/toBoolean'
 import filterHelper from '../../helpers/filter'
 import moment from 'moment'
@@ -26,6 +26,9 @@ const TRACKING_FILTER_KEY = {
 }
 
 const ZERO = 0
+const ONE = 1
+const defaultDate = moment().format('YYYY-MM-DD')
+
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -42,6 +45,7 @@ const enhance = compose(
         const isOpenMarkets = toBoolean(_.get(query, 'showMarkets'))
         const marketData = _.get(state, ['shop', 'item', 'data'])
         const marketDataLoading = _.get(state, ['shop', 'item', 'loading'])
+        const selectedDate = _.get(query, DATE) || defaultDate
 
         return {
             query,
@@ -57,26 +61,25 @@ const enhance = compose(
             isOpenTrack,
             isOpenMarkets,
             marketData,
-            marketDataLoading
+            marketDataLoading,
+            selectedDate
         }
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevToggle = toBoolean(_.get(props, ['query', 'openInfo']))
-        const nextToggle = toBoolean(_.get(nextProps, ['query', 'openInfo']))
-        return prevToggle !== nextToggle && nextToggle === true
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(trackingListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevAgent = _.get(props, ['params', 'agentId'])
-        const nextAgent = _.get(nextProps, ['params', 'agentId'])
-        const prevDate = _.get(props, ['query', 'date'])
-        const nextDate = _.get(nextProps, ['query', 'date'])
+        const prevAgent = _.toInteger(_.get(props, ['params', 'agentId']))
+        const nextAgent = _.toInteger(_.get(nextProps, ['params', 'agentId']))
+        const prevDate = _.get(props, ['query', DATE])
+        const nextDate = _.get(nextProps, ['query', DATE])
         const prevTrack = toBoolean(_.get(props, ['query', 'agentTrack']))
         const nextTrack = toBoolean(_.get(nextProps, ['query', 'agentTrack']))
-        return (prevAgent !== nextAgent || prevTrack !== nextTrack || prevDate !== nextDate)
+        return (prevAgent !== nextAgent && nextAgent > ZERO) || (prevTrack !== nextTrack) || (prevDate !== nextDate)
     }, ({dispatch, params, location}) => {
         const id = _.toInteger(_.get(params, 'agentId'))
         const serializerData = {
@@ -107,31 +110,25 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleOpenDetails: props => (id) => {
-            const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTER.TRACKING_ITEM_PATH, id), query: filter.getParams({[TOGGLE_INFO]: true})})
+        handleClickTab: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[USER_GROUP]: id})})
         },
 
-        handleOpenShopDetails: props => (id) => {
-            const {filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({[OPEN_SHOP_DETAILS]: id, [TOGGLE_INFO]: true})})
+        handleOpenDetails: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.TRACKING_ITEM_PATH, id),
+                query: filter.getParams({
+                    // [TRACKING_FILTER_KEY.AGENT_TRACK]: true,
+                    // [TRACKING_FILTER_KEY.DATE]: moment(date).format('YYYY-MM-DD')
+                })
+            })
         },
 
         handleCloseShopDetails: props => () => {
             const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParams({[OPEN_SHOP_DETAILS]: ZERO})})
-        },
-
-        handleExpandInfo: props => () => {
-            const {location: {pathname}, dispatch, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TOGGLE_INFO]: true})})
-
-            return dispatch(trackingListFetchAction(filter))
-        },
-
-        handleCollapseInfo: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TOGGLE_INFO]: false})})
         },
 
         handleSubmitFilterDialog: props => () => {
@@ -147,6 +144,20 @@ const enhance = compose(
                 [TRACKING_FILTER_KEY.SHOW_ZONES]: showZones,
                 [TRACKING_FILTER_KEY.AGENT_TRACK]: agentTrack
             })
+        },
+
+        handlePrevDay: props => () => {
+            const {location: {pathname}, filter, selectedDate} = props
+            const prevDay = moment(selectedDate).subtract(ONE, 'day')
+            const dateForURL = prevDay.format('YYYY-MM-DD')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
+        handleNextDay: props => () => {
+            const {location: {pathname}, filter, selectedDate} = props
+            const nextDay = moment(selectedDate).add(ONE, 'day')
+            const dateForURL = nextDay.format('YYYY-MM-DD')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
         }
     })
 )
@@ -166,14 +177,15 @@ const Tracking = enhance((props) => {
         isOpenMarkets,
         marketData,
         marketDataLoading,
+        selectedDate,
         layout
     } = props
 
-    const openToggle = toBoolean(_.get(location, ['query', TOGGLE_INFO]))
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
     const openShopDetails = _.toInteger(_.get(location, ['query', OPEN_SHOP_DETAILS]) || ZERO) > ZERO
 
+    const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
     const showZones = toBoolean(filter.getParam(TRACKING_FILTER_KEY.SHOW_ZONES)) || false
     const showMarkets = toBoolean(filter.getParam(TRACKING_FILTER_KEY.SHOW_MARKETS)) || false
     const agentTrack = toBoolean(filter.getParam(TRACKING_FILTER_KEY.AGENT_TRACK)) || false
@@ -182,6 +194,11 @@ const Tracking = enhance((props) => {
     let currentDate = moment().format('YYYY-MM-DD')
     if (date) {
         currentDate = date
+    }
+
+    const tabData = {
+        groupId,
+        handleClickTab: props.handleClickTab
     }
 
     const listData = {
@@ -196,21 +213,23 @@ const Tracking = enhance((props) => {
         detailLoading
     }
 
+    const minutePerHour = 60
+    const current = (_.toInteger(moment().format('H')) * minutePerHour) + _.toInteger(moment().format('m'))
     const filterForm = {
         initialValues: {
             agentTrack: agentTrack,
             date: moment(currentDate).toDate(),
-            time: 1440,
+            time: current,
             showMarkets: showMarkets,
             showZones: showZones
         },
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
-    const toggle = {
-        openToggle,
-        handleExpandInfo: props.handleExpandInfo,
-        handleCollapseInfo: props.handleCollapseInfo
+    const calendar = {
+        selectedDate,
+        handlePrevDay: props.handlePrevDay,
+        handleNextDay: props.handleNextDay
     }
 
     const shopDetails = {
@@ -226,11 +245,12 @@ const Tracking = enhance((props) => {
             <TrackingWrapper
                 filter={filter}
                 listData={listData}
-                toggle={toggle}
                 detailData={detailData}
                 shopDetails={shopDetails}
                 filterForm={filterForm}
                 agentLocation={agentLocation}
+                tabData={tabData}
+                calendar={calendar}
                 initialValues={filterForm.initialValues}
                 marketsLocation={marketsLocation}
                 handleOpenDetails={props.handleOpenDetails}

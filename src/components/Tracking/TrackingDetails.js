@@ -123,7 +123,6 @@ const enhance = compose(
 const TrackingDetails = enhance((props) => {
     const {
         classes,
-        filter,
         listData,
         handleSubmit,
         detailData,
@@ -143,8 +142,7 @@ const TrackingDetails = enhance((props) => {
             <div className={classes.title}>
                 <span>{agent}</span>
                 <Link to={{
-                    pathname: sprintf(ROUTES.TRACKING_LIST_URL),
-                    query: filter.getParams()
+                    pathname: sprintf(ROUTES.TRACKING_LIST_URL)
                 }}>
                     <IconButton>
                         <CloseIcon2 color="#666666"/>

@@ -4,9 +4,10 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/trackingSerializer'
 
-export const trackingListFetchAction = () => {
+export const trackingListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.TRACKING_LIST)
+        .get(API.TRACKING_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
