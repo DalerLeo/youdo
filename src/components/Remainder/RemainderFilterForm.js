@@ -60,12 +60,11 @@ const enhance = compose(
             color: '#8f8f8f !important'
         },
         arrow: {
-            display: 'flex',
-            alignItems: 'center',
             color: '#12aaeb',
             paddingRight: '14px',
             position: 'relative',
             '& svg': {
+                position: 'absolute',
                 width: '13px !important',
                 height: '20px !important'
             }
@@ -131,26 +130,28 @@ const RemainderFilterForm = enhance((props) => {
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
             return (
-                    <div className={classes.afterFilter}>
-                        <div>Фильтр: {filterCounts} элемента</div>
-                        <div>
-                            <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
-                                <BorderColorIcon color="#8f8f8f" />
-                            </IconButton>
-                            <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
-                                <CloseIcon className={classes.icon}/>
-                            </IconButton>
-                        </div>
+                <div className={classes.afterFilter}>
+                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>
+                        <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
+                            <BorderColorIcon color="#8f8f8f" />
+                        </IconButton>
+                        <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
+                            <CloseIcon className={classes.icon}/>
+                        </IconButton>
                     </div>
+                </div>
             )
         }
 
         return (
+            <div>
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр</div> <KeyboardArrowDown color="#12aaeb" />
+                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
+            </div>
         )
     }
     return (

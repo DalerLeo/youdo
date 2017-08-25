@@ -1,19 +1,13 @@
 import _ from 'lodash'
 import React from 'react'
-import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
-import {Link, hashHistory} from 'react-router'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down-circle'
-import Paper from 'material-ui/Paper'
 import RemainderDetails from './RemainderDetails'
-import CircularProgress from 'material-ui/CircularProgress'
 import numberFormat from '../../helpers/numberFormat'
 import RemainderTransferDialog from './RemainderTransferDialog'
 import RemainderFilterForm from './RemainderFilterForm'
@@ -22,13 +16,12 @@ import MoreHortIcon from 'material-ui/svg-icons/navigation/more-horiz'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import RemoveIcon from 'material-ui/svg-icons/content/remove'
 import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz'
-import {TextField} from '../ReduxForm'
-import Search from 'material-ui/svg-icons/action/search'
 import Tooltip from '../ToolTip'
-import Pagination from '../GridList/GridListNavPagination'
-import {reduxForm, Field} from 'redux-form'
+import {reduxForm} from 'redux-form'
 import NotFound from '../Images/not-found.png'
 import RemainderReservedDialog from './RemainderReservedDialog'
+import GridList from '../GridList'
+
 const ZERO = 0
 const enhance = compose(
     injectSheet({
@@ -98,6 +91,12 @@ const enhance = compose(
             textAlign: 'left',
             fontWeight: '700',
             fontSize: '16px'
+        },
+        itemOpenData: {
+            extend: 'itemData',
+            zIndex: '2',
+            color: '#129fdd',
+            cursor: 'pointer'
         },
         dropDown: {
             position: 'absolute !important',
@@ -172,17 +171,6 @@ const enhance = compose(
             marginBottom: '0px',
             zIndex: '999'
         },
-        closeDetail: {
-            position: 'absolute',
-            left: '0',
-            top: '0',
-            right: '0',
-            bottom: '0',
-            cursor: 'pointer',
-            zIndex: '1',
-            margin: '0 -22px',
-            borderBottom: 'solid 1px #efefef'
-        },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
             backgroundSize: '225px',
@@ -190,6 +178,15 @@ const enhance = compose(
             textAlign: 'center',
             fontSize: '13px',
             color: '#666'
+        },
+        openDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
     }),
     reduxForm({
@@ -198,30 +195,6 @@ const enhance = compose(
     }),
 )
 
-const iconStyle = {
-    icon: {
-        color: '#61a8e8',
-        width: 25,
-        height: 25
-    },
-    button: {
-        width: 45,
-        height: 45,
-        padding: 0
-    }
-}
-const iconSearchStyle = {
-    icon: {
-        color: '#333',
-        width: 25,
-        height: 25
-    },
-    button: {
-        width: 40,
-        height: 40,
-        padding: 0
-    }
-}
 const actionIconStyle = {
     icon: {
         width: 30,
@@ -258,7 +231,7 @@ const headerItems = [
     {
         sorting: false,
         title: 'Бракованные товары',
-        xs: 2
+        xs: 3
     },
     {
         sorting: false,
@@ -276,138 +249,59 @@ const RemainderGridList = enhance((props) => {
         transferDialog,
         discardDialog,
         handleCloseDetail,
+        handleOpenDetail,
         filterItem,
         filterDialog,
-        handleSubmit,
-        searchSubmit,
-        reversedDialog
+        reservedDialog
     } = props
     const listLoading = _.get(listData, 'listLoading')
-    const detailId = _.get(detailData, 'id')
 
-    const listHeader = _.map(headerItems, (item, index) => {
-        const name = _.get(item, 'name')
-        const title = _.get(item, 'title')
-        const size = _.get(item, 'xs')
-        const sorting = _.get(item, 'sorting')
+    const remainderFilterDialog = (
+        <RemainderFilterForm
+            filterDialog={filterDialog}
+            filter={filter}
+            initialValues={filterDialog.initialValues}/>
+    )
 
-        if (sorting) {
-            return (
-                <Col
-                    key={index}
-                    xs={size}
-                    style={{cursor: 'pointer'}}
-                    onClick={() => hashHistory.push(filter.sortingURL(name))}>
-                    {title}
-                </Col>
-            )
-        }
+    const remainderDetail = (
+        <RemainderDetails
+            key={_.get(detailData, 'id')}
+            detailData={detailData || {}}
+            filterItem={filterItem}
+            reservedOpen={reservedDialog.handleOpenRemainderReservedDialog}
+            handleCloseDetail={handleCloseDetail}
+        />
 
+    )
+
+    const remainderList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const product = _.get(item, 'title')
+        const balance = Number(_.get(item, 'balance')) + Number(_.get(item, 'defects'))
+        const defects = _.get(item, 'defects')
+        const reserved = _.get(item, 'reserved')
+        const measurement = _.get(item, ['measurement', 'name'])
+        const type = _.get(item, ['type', 'name'])
         return (
-            <Col key={index} xs={size}>
-                {title}
-            </Col>
+                <Row key={id} style={{position: 'relative'}}>
+                    <div className={classes.openDetail} onClick={() => { handleOpenDetail(id) }}> </div>
+                    <Col xs={3}>{product}</Col>
+                    <Col xs={2}>{type}</Col>
+                    <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
+                    <Col xs={3} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
+                    <Col xs={2} className={classes.itemOpenData}
+                         onClick={() => { reservedDialog.handleOpenRemainderReservedDialog(id) }}>
+                        {numberFormat(reserved, measurement)}
+                    </Col>
+                </Row>
         )
     })
-    const search = (
-            <form onSubmit={handleSubmit(searchSubmit)} className={classes.search}>
-                <Field
-                    className={classes.inputFieldCustom}
-                    name="search"
-                    fullWidth={true}
-                    component={TextField}
-                    hintText="Товар"/>
-                <IconButton
-                    iconStyle={iconSearchStyle.icon}
-                    style={iconSearchStyle.button}
-                    type="submit">
-                    <Search/>
-                </IconButton>
-            </form>
-    )
-    const listLoader = (
-        <Paper className={classes.loader}>
-            <CircularProgress size={40} thickness={4}/>
-        </Paper>
-    )
-    const list = (
-        <div className={classes.listWrapper}>
-            {_.map(_.get(listData, 'data'), (item) => {
-                const id = _.get(item, 'id')
-                const product = _.get(item, 'title')
-                const balance = Number(_.get(item, 'balance')) + Number(_.get(item, 'defects'))
-                const defects = _.get(item, 'defects')
-                const reserved = _.get(item, 'reserved')
-                const measurement = _.get(item, ['measurement', 'name'])
-                const type = _.get(item, ['type', 'name'])
-                if (id === detailId) {
-                    return (
-                        <Paper key={id} className={classes.wrapperBold}>
-                            <Row key={id} style={{position: 'relative'}}>
-                                <div className={classes.closeDetail}
-                                    onClick={handleCloseDetail}>
-                                </div>
-                                <Col xs={3}>{product}</Col>
-                                <Col xs={2}>{type}</Col>
-                                <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
-                                <Col xs={2} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
-                                <Col xs={2} className={classes.itemData}>{numberFormat(reserved, measurement)}</Col>
-                                <Col xs={1} style={{textAlign: 'right'}}>
-                                    <IconButton
-                                        className={classes.dropUp}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        disableTouchRipple={true}
-                                        onTouchTap={handleCloseDetail}>
-                                        <ArrowDown/>
-                                    </IconButton>
-                                </Col>
-                            </Row>
-                            <RemainderDetails
-                                filterItem={filterItem}
-                                detailData={detailData}
-                                handleCloseDetail={handleCloseDetail}
-                            />
-                        </Paper>
-                    )
-                }
-                return (
-                <Paper key={id} className={classes.wrapper}>
-                    <Link key={id} to={{
-                        pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>
-                        <Row style={{position: 'relative'}}>
-                            <Col xs={3}>{product}</Col>
-                            <Col xs={2}>{type}</Col>
-                            <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
-                            <Col xs={2} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
-                            <Col xs={2} className={classes.itemData}
-                                 onTouchTap={() => { reversedDialog.handleOpenRemainderReservedDialog(id) }}>
-                                {numberFormat(reserved, measurement)}
-                            </Col>
-                            <Col xs={1} style={{textAlign: 'right'}}>
-                                <Link to={{
-                                    pathname: sprintf(ROUTES.REMAINDER_ITEM_PATH, id),
-                                    query: filter.getParams()
-                                }}>
-                                    <IconButton
-                                        className={classes.dropDown}
-                                        iconStyle={iconStyle.icon}
-                                        disableTouchRipple={true}
-                                        style={iconStyle.button}>
-                                        <ArrowDown/>
-                                    </IconButton>
-                                </Link>
-                            </Col>
-                        </Row>
-                    </Link>
-                </Paper>
-                )
-            })}
 
-        </div>
-    )
+    const list = {
+        header: headerItems,
+        list: remainderList,
+        loading: listLoading
+    }
 
     return (
         <Container>
@@ -444,28 +338,13 @@ const RemainderGridList = enhance((props) => {
                     </li>
                 </ul>
             </div>
-            <Paper zDepth={1} className={classes.nav}>
-                <div className={classes.filterHolder}>
-                    <RemainderFilterForm
-                        filterDialog={filterDialog}
-                        filter={filter}
-                        initialValues={filterDialog.initialValues}/>
-                </div>
-                {search}
-                <div>
-                    <Pagination filter={filter}/>
-                </div>
-            </Paper>
-            <div className={classes.headers}>
-                <Row>
-                    {listHeader}
-                </Row>
-            </div>
-            {listLoading ? listLoader
-                : (_.isEmpty(_.get(listData, 'data')) && !listLoading) ? <Paper className={classes.emptyQuery}>
-                    <div>По вашему запросу ничего не найдено</div>
-                </Paper> : list}
 
+            <GridList
+                filter={filter}
+                list={list}
+                detail={remainderDetail}
+                filterDialog={remainderFilterDialog}
+            />
             <RemainderTransferDialog
                 open={transferDialog.openTransferDialog}
                 onClose={transferDialog.handleCloseTransferDialog}
@@ -475,11 +354,13 @@ const RemainderGridList = enhance((props) => {
                 onClose={discardDialog.handleCloseDiscardDialog}
                 onSubmit={discardDialog.handleSubmitDiscardDialog}/>
             <RemainderReservedDialog
-                loading={_.get(detailData.detailLoading)}
-                detailData={detailData}
-                open={reversedDialog.openReversedDialog > ZERO}
-                onClose={reversedDialog.handleCloseRemainderReservedDialog}
-                filterItem={filterItem}/>
+                listLoading={listLoading}
+                loading={reservedDialog.loading}
+                reservedDetail={reservedDialog.reservedDetail}
+                data={reservedDialog.data}
+                open={reservedDialog.openReversedDialog > ZERO}
+                onClose={reservedDialog.handleCloseRemainderReservedDialog}
+                filterItem={reservedDialog.dialogFilter}/>
         </Container>
     )
 })
@@ -508,7 +389,9 @@ RemainderGridList.propTypes = {
         handleCloseDiscardDialog: PropTypes.func.isRequired,
         handleSubmitDiscardDialog: PropTypes.func.isRequired
     }).isRequired,
-    reversedDialog: PropTypes.shape({
+    reservedDialog: PropTypes.shape({
+        reservedDetail: PropTypes.array,
+        data: PropTypes.object,
         openReversedDialog: PropTypes.number.isRequired,
         handleOpenRemainderReservedDialog: PropTypes.func.isRequired,
         handleCloseRemainderReservedDialog: PropTypes.func.isRequired
