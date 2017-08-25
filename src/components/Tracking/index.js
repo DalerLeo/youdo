@@ -1,11 +1,13 @@
 import TrackingWrapper from './TrackingWrapper'
 const ADD_TRACKING = 'openAddTracking'
-const TOGGLE_INFO = 'openInfo'
 const OPEN_SHOP_DETAILS = 'openShop'
+const USER_GROUP = 'group'
+const DATE = 'date'
 
 export {
     ADD_TRACKING,
-    TOGGLE_INFO,
     OPEN_SHOP_DETAILS,
-    TrackingWrapper
+    TrackingWrapper,
+    USER_GROUP,
+    DATE
 }

@@ -15,6 +15,7 @@ import PaymentIcon from 'material-ui/svg-icons/action/payment'
 import Tooltip from '../ToolTip'
 import getConfig from '../../helpers/getConfig'
 
+const ONE = 1
 const enhance = compose(
     injectSheet({
         loader: {
@@ -187,7 +188,7 @@ const TransactionCashDialog = enhance((props) => {
                 const amount = _.get(item, ['amount'])
                 return (
                     <Row key={_.get(item, 'id')} className={classes.detailsRow}>
-                        <Col xs={3}>{clientName}</Col>
+                        <Col xs={4}>{clientName}</Col>
                         <Col xs={3}>{marketName}</Col>
                         <Col xs={3}>{order}</Col>
                         <Col xs={3}>{amount} {currency} {currency !== primaryCurrency && customRate ? '(internal ' + customRate + ' ' + primaryCurrency + ')'
@@ -256,9 +257,9 @@ const TransactionCashDialog = enhance((props) => {
                                         </Row>
                                         <div>
                                             <Row className={classes.detailsRow}>
-                                                <Col xs={3}>Клиент</Col>
+                                                <Col xs={4}>Клиент</Col>
                                                 <Col xs={3}>Магазин</Col>
-                                                <Col xs={3}>№ заказа</Col>
+                                                <Col xs={2}>№ заказа</Col>
                                                 <Col xs={3}>Сумма</Col>
                                             </Row>
                                             {detailRow}

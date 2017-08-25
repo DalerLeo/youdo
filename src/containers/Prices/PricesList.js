@@ -70,6 +70,7 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const pricesId = _.toInteger(_.get(params, 'pricesId'))
         pricesId && dispatch(pricesItemFetchAction(pricesId))
+        dispatch(pricesMarketTypeFetchAction())
     }),
     withPropsOnChange((props, nextProps) => {
         const prevDialog = toBoolean(_.get(nextProps, ['location', 'query', PRICES_CREATE_DIALOG_OPEN]))

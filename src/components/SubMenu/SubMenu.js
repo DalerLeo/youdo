@@ -17,7 +17,16 @@ const enhance = compose(
             width: '100%',
             height: '60px',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            zIndex: '2'
+        },
+        transparentWrapper: {
+            extend: 'wrapper',
+            background: 'rgba(255, 255, 255, 0.7)',
+            margin: '0 -28px',
+            padding: '0 28px',
+            borderBottom: '1px #efefef solid',
+            width: 'auto'
         },
         item: {
             color: '#44637e',
@@ -45,7 +54,7 @@ const enhance = compose(
 )
 
 const SubMenu = enhance((props) => {
-    const {classes, url} = props
+    const {classes, url, opacity} = props
 
     const parent = _
         .chain(MenuItems)
@@ -63,7 +72,7 @@ const SubMenu = enhance((props) => {
     })
 
     return (
-        <div className={classes.wrapper}>
+        <div className={opacity ? classes.transparentWrapper : classes.wrapper}>
                 <ToolTip position="right" text={parent.name}>
                     <div className={classes.subParentIco}>
                         {parent.icon}

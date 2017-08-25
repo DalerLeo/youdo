@@ -174,6 +174,7 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openSupplyExpenseCreateDialog: null,
             openReturnDialog: null,
             openSetCurrencyDialog: null,
+            openReservedDialog: null,
             openHistoryDialog: null,
             openDeleteDialog: null,
             openUpdateDialog: null,

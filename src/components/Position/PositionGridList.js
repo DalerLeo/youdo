@@ -202,6 +202,14 @@ const accessList = [
     {
         id: 7,
         name: 'supervisor'
+    },
+    {
+        id: 8,
+        name: 'changePrice'
+    },
+    {
+        id: 9,
+        name: 'changeRate'
     }
 ]
 const PositionGridList = enhance((props) => {
@@ -235,7 +243,7 @@ const PositionGridList = enhance((props) => {
                     <div className={classes.permission}>
                         {_.map(_.get(item, ['groups']), (perm) => {
                             const access = _.find(accessList, {'id': _.toInteger(perm)})
-                            if (access.id !== MINUS_ONE) {
+                            if (_.get(access, 'id') !== MINUS_ONE) {
                                 return (
                                     <span key={perm}>{userGroupFormat(_.get(access, 'name'))}</span>
                                 )

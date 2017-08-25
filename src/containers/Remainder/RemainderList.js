@@ -16,13 +16,15 @@ import {
     REMAINDER_TRANSFER_DIALOG_OPEN,
     REMAINDER_FILTER_OPEN,
     REMAINDER_FILTER_KEY,
-    REMAINDER_DISCARD_DIALOG_OPEN
+    REMAINDER_DISCARD_DIALOG_OPEN,
+    REMAINDER_RESERVED_DIALOG_OPEN
 } from '../../components/Remainder'
 import {
     remainderListFetchAction,
     remainderItemFetchAction,
     remainderTransferAction,
-    remainderDiscardAction
+    remainderDiscardAction,
+    remainderReversedListFetchAction
 } from '../../actions/remainder'
 
 const enhance = compose(
@@ -32,6 +34,7 @@ const enhance = compose(
         const detail = _.get(state, ['remainder', 'item', 'data'])
         const detailLoading = _.get(state, ['remainder', 'item', 'loading'])
         const list = _.get(state, ['remainder', 'list', 'data'])
+        const reserved = _.get(state, ['remainder', 'reserved', 'data'])
         const listLoading = _.get(state, ['remainder', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'RemainderFilterForm'])
         const searchForm = _.get(state, ['form', 'RemainderSearchForm'])
@@ -50,7 +53,8 @@ const enhance = compose(
             transferForm,
             discardForm,
             searchForm,
-            filterItem
+            filterItem,
+            reserved
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -67,6 +71,16 @@ const enhance = compose(
         remainderId && dispatch(remainderItemFetchAction(remainderId, filter))
     }),
     withHandlers({
+        handleOpenRemainderReservedDialog: props => (id) => {
+            const {filter, location: {pathname}, dispatch} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_RESERVED_DIALOG_OPEN]: id})})
+            return dispatch(remainderReversedListFetchAction(filter, id))
+        },
+
+        handleCloseRemainderReservedDialog: props => () => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_RESERVED_DIALOG_OPEN]: false})})
+        },
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_FILTER_OPEN]: true})})
@@ -189,7 +203,8 @@ const RemainderList = enhance((props) => {
         filter,
         layout,
         params,
-        filterItem
+        filterItem,
+        reserved
     } = props
 
     const stock = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.STOCK))
@@ -197,8 +212,16 @@ const RemainderList = enhance((props) => {
     const status = filter.getParam(REMAINDER_FILTER_KEY.STATUS)
     const openFilterDialog = toBoolean(_.get(location, ['query', REMAINDER_FILTER_OPEN]))
     const openTransferDialog = toBoolean(_.get(location, ['query', REMAINDER_TRANSFER_DIALOG_OPEN]))
+    const openReversedDialog = _.toNumber(_.get(location, ['query', REMAINDER_RESERVED_DIALOG_OPEN]))
     const openDiscardDialog = toBoolean(_.get(location, ['query', REMAINDER_DISCARD_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'remainderId'))
+
+    const reversedDialog = {
+        data: _.get(reserved, 'results'),
+        openReversedDialog,
+        handleCloseRemainderReservedDialog: props.handleCloseRemainderReservedDialog,
+        handleOpenRemainderReservedDialog: props.handleOpenRemainderReservedDialog
+    }
 
     const filterDialog = {
         initialValues: {
@@ -260,6 +283,7 @@ const RemainderList = enhance((props) => {
                 discardDialog={discardDialog}
                 searchSubmit={props.handleSubmitSearch}
                 filterItem={filterItem}
+                reversedDialog={reversedDialog}
             />
         </Layout>
     )
