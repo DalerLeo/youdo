@@ -49,7 +49,8 @@ const enhance = compose(
         },
         wrapper: {
             padding: '20px 30px',
-            height: 'calc(100% - 40px)',
+            overflowY: 'auto',
+            height: '100%',
             '& > div:nth-child(3)': {
                 marginTop: '10px',
                 borderTop: '1px #efefef solid'
@@ -295,6 +296,7 @@ const StatProductMoveGridList = enhance((props) => {
         classes,
         statProductMoveDialog,
         listData,
+        sumData,
         filter,
         handleSubmitFilterDialog,
         detailData,
@@ -302,6 +304,13 @@ const StatProductMoveGridList = enhance((props) => {
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
+    const sumListLoading = _.get(sumData, 'sumListLoading')
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+
+    const beginBalance = numberFormat(_.get(sumData, ['data', 'beginBalance']), primaryCurrency)
+    const endBalance = numberFormat(_.get(sumData, ['data', 'endBalance']), primaryCurrency)
+    const inBalance = numberFormat(_.get(sumData, ['data', 'inBalance']), primaryCurrency)
+    const outBalance = numberFormat(_.get(sumData, ['data', 'outBalance']), primaryCurrency)
 
     const iconStyle = {
         icon: {
@@ -326,18 +335,29 @@ const StatProductMoveGridList = enhance((props) => {
 
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const code = _.get(item, 'code') || 'неизвестна'
+        const code = _.get(item, 'code') || 'неизвестно'
+        const beginBalancePr = numberFormat(_.get(item, 'beginBalance'))
+        const beginPricePr = numberFormat(_.get(item, 'beginPrice'), primaryCurrency)
+
+        const inBalancePr = numberFormat(_.get(item, 'inBalance'))
+        const inPricePr = numberFormat(_.get(item, 'inPrice'), primaryCurrency)
+
+        const outBalancePr = numberFormat(_.get(item, 'outBalance'))
+        const outPricePr = numberFormat(_.get(item, 'outPrice'), primaryCurrency)
+
+        const endBalancePr = numberFormat(_.get(item, 'endBalance'))
+        const endPricePr = numberFormat(_.get(item, 'endPrice'), primaryCurrency)
         return (
             <tr key={id} className={classes.tableRow}>
                 <td>{code}</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
-                <td>300 00 шт</td>
-                <td>20 000 000 UZS</td>
+                <td>{beginBalancePr}</td>
+                <td>{beginPricePr}</td>
+                <td>{inBalancePr}</td>
+                <td>{inPricePr}</td>
+                <td>{outBalancePr}</td>
+                <td>{outPricePr}</td>
+                <td>{endBalancePr}</td>
+                <td>{endPricePr}</td>
             </tr>
         )
     })
@@ -349,7 +369,7 @@ const StatProductMoveGridList = enhance((props) => {
         const plan = _.get(item, 'plan')
         const paidFor = _.get(item, 'paidFor')
         const balance = _.get(item, 'balance')
-        const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
+        const income = numberFormat(_.get(item, 'income'), primaryCurrency)
 
         return (
             <Row key={id} className="dottedList">
@@ -431,19 +451,25 @@ const StatProductMoveGridList = enhance((props) => {
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>
-                            <div className={classes.summary}>
-                                <div>Остаток на начало периода
-                                    <div>50 0000 UZS</div>
-                                </div>
-                                <div>Остаток на конец периода
-                                    <div>50 0000 UZS</div>
-                                </div>
-                                <div>Поступило товара на сумму
-                                    <div>50 0000 UZS</div>
-                                </div>
-                                <div>Выдано товара на сумму
-                                    <div>50 0000 UZS</div>
-                                </div>
+                            <div>
+                                {sumListLoading
+                                    ? <div className={classes.loader}>
+                                        <CircularProgress size={40} thickness={4}/>
+                                    </div>
+                                    : <div className={classes.summary}>
+                                        <div>Остаток на начало периода
+                                            <div>{beginBalance}</div>
+                                        </div>
+                                        <div>Поступило товара на сумму
+                                            <div>{inBalance}</div>
+                                        </div>
+                                        <div>Выдано товара на сумму
+                                            <div>{outBalance}</div>
+                                        </div>
+                                        <div>Остаток на конец периода
+                                            <div>{endBalance}</div>
+                                        </div>
+                                    </div>}
                             </div>
                             <div className={classes.pagination}>
                                 <div>Движение товаров на складе</div>
@@ -482,8 +508,8 @@ const StatProductMoveGridList = enhance((props) => {
                             </div>
 
                             {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
-                                </div>
+                                <div>По вашему запросу ничего не найдено</div>
+                            </div>
                                 : null}
                         </div>
                     }

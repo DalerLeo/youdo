@@ -9,7 +9,7 @@ import * as serializers from '../serializers/Statistics/statProductMoveSerialize
 export const statProductMoveListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get((API.PRODUCT_LIST), {params})
+        .get((API.STAT_PRODUCT_MOVE_LIST), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -23,10 +23,10 @@ export const statProductMoveListFetchAction = (filter) => {
     }
 }
 
-export const statProductMoveItemFetchAction = (filter, filterItem, id) => {
-    const params = serializers.itemSerializer(filter.getParams(), filterItem.getParams(), id)
+export const statProductMoveSumFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(sprintf(API.STAT_PRODUCT_MOVE_ITEM, id), {params})
+        .get(API.STAT_PRODUCT_MOVE_SUM, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -35,7 +35,7 @@ export const statProductMoveItemFetchAction = (filter, filterItem, id) => {
         })
 
     return {
-        type: actionTypes.STAT_PRODUCT_MOVE_ITEM,
+        type: actionTypes.STAT_PRODUCT_MOVE_SUM,
         payload
     }
 }

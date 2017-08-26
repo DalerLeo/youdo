@@ -89,8 +89,7 @@ const enhance = compose(
         },
         itemData: {
             textAlign: 'left',
-            fontWeight: '700',
-            fontSize: '16px'
+            fontWeight: '600'
         },
         itemOpenData: {
             extend: 'itemData',
@@ -279,21 +278,25 @@ const RemainderGridList = enhance((props) => {
         const product = _.get(item, 'title')
         const balance = Number(_.get(item, 'balance')) + Number(_.get(item, 'defects'))
         const defects = _.get(item, 'defects')
-        const reserved = _.get(item, 'reserved')
+        const reserved = _.toNumber(_.get(item, 'reserved'))
         const measurement = _.get(item, ['measurement', 'name'])
         const type = _.get(item, ['type', 'name'])
         return (
-                <Row key={id} style={{position: 'relative'}}>
-                    <div className={classes.openDetail} onClick={() => { handleOpenDetail(id) }}> </div>
-                    <Col xs={3}>{product}</Col>
-                    <Col xs={2}>{type}</Col>
-                    <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
-                    <Col xs={3} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
-                    <Col xs={2} className={classes.itemOpenData}
-                         onClick={() => { reservedDialog.handleOpenRemainderReservedDialog(id) }}>
+            <Row key={id} style={{position: 'relative'}}>
+                <div className={classes.openDetail} onClick={() => { handleOpenDetail(id) }}> </div>
+                <Col xs={3}>{product}</Col>
+                <Col xs={2}>{type}</Col>
+                <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
+                <Col xs={3} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
+                {(reserved > ZERO)
+                    ? <Col xs={2} className={classes.itemOpenData}
+                           onClick={() => { reservedDialog.handleOpenRemainderReservedDialog(id) }}>
                         {numberFormat(reserved, measurement)}
                     </Col>
-                </Row>
+                    : <Col xs={2} className={classes.itemData}>
+                        {numberFormat(reserved, measurement)}
+                    </Col>}
+            </Row>
         )
     })
 
@@ -320,14 +323,14 @@ const RemainderGridList = enhance((props) => {
                             <FloatingActionButton
                                 iconStyle={actionIconStyle.icon}
                                 style={actionIconStyle.button}
-                            onTouchTap={discardDialog.handleOpenDiscardDialog}>
-                            <RemoveIcon
-                                style={{width: '20px', height: '30px', margin: 'auto'}}/>
+                                onTouchTap={discardDialog.handleOpenDiscardDialog}>
+                                <RemoveIcon
+                                    style={{width: '20px', height: '30px', margin: 'auto'}}/>
                             </FloatingActionButton>
                         </Tooltip>
                     </li>
                     <li style={{left: '70px'}}>
-                        <Tooltip position="bottom" text="Передача товаров" >
+                        <Tooltip position="bottom" text="Передача товаров">
                             <FloatingActionButton
                                 iconStyle={actionIconStyle.icon}
                                 style={actionIconStyle.button}

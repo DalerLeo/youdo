@@ -152,7 +152,7 @@ const RemainderReservedDialog = enhance((props) => {
         const amount = numberFormat(_.get(item, ['amount']), measurement)
         const orderId = _.get(item, ['order'])
         const id = _.get(item, ['id'])
-        const stock = _.get(item, 'stock')
+        const stock = _.get(item, ['stock', 'name'])
 
         return (
             <Row key={id} className="dottedList">
@@ -184,13 +184,13 @@ const RemainderReservedDialog = enhance((props) => {
                     </div>
                     {_.isEmpty(data)
                         ? <div className={classes.emptyQuery}>
-                            <div>Забронированые товары не найдено</div>
+                            <div>Забронированных товаров не найдено</div>
                         </div>
                         : <div className={classes.content}>
                             <div className={classes.tableWrapper}>
                                 <Row className="dottedList">
                                     <Col xs={4}>№ заказа</Col>
-                                    <Col xs={4}>склад</Col>
+                                    <Col xs={4}>Склад</Col>
                                     <Col xs={4}>Кол-во</Col>
                                 </Row>
                                 <div>

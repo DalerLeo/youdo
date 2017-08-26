@@ -20,10 +20,9 @@ import {
 import {STAT_PRODUCT_MOVE_FILTER_KEY} from '../../components/Statistics/StatProductMoveGridList'
 import {
     statProductMoveListFetchAction,
-    statProductMoveItemFetchAction
+    statProductMoveSumFetchAction
 } from '../../actions/statProductMove'
 
-const ZERO = 0
 const ONE = 1
 const enhance = compose(
     connect((state, props) => {
@@ -33,18 +32,20 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statProductMove', 'item', 'loading'])
         const list = _.get(state, ['statProductMove', 'list', 'data'])
         const listLoading = _.get(state, ['statProductMove', 'list', 'loading'])
+        const sumList = _.get(state, ['statProductMove', 'sum', 'data'])
+        const sumListLoading = _.get(state, ['statProductMove', 'sum', 'loading'])
         const filterForm = _.get(state, ['form', 'StatProductMoveFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(detail, pathname, query)
         return {
             list,
             listLoading,
+            sumList,
+            sumListLoading,
             detail,
             detailLoading,
             filter,
             query,
-            filterForm,
-            filterItem
+            filterForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -53,16 +54,7 @@ const enhance = compose(
             (!_.get(nextProps, ['params', 'statProductMoveId']))
     }, ({dispatch, filter}) => {
         dispatch(statProductMoveListFetchAction(filter))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const statProductMoveId = _.get(nextProps, ['params', 'statProductMoveId']) || ZERO
-        return statProductMoveId > ZERO && _.get(props, ['params', 'statProductMoveId']) !== statProductMoveId
-    }, ({dispatch, params, filter, filterItem}) => {
-        const statProductMoveId = _.toInteger(_.get(params, 'statProductMoveId'))
-        if (statProductMoveId > ZERO) {
-            dispatch(statProductMoveItemFetchAction(filter, filterItem, statProductMoveId))
-        }
+        dispatch(statProductMoveSumFetchAction(filter))
     }),
 
     withHandlers({
@@ -113,6 +105,8 @@ const StatProductMoveList = enhance((props) => {
         listLoading,
         detail,
         detailLoading,
+        sumList,
+        sumListLoading,
         filter,
         layout,
         filterItem,
@@ -134,6 +128,10 @@ const StatProductMoveList = enhance((props) => {
     const listData = {
         data: _.get(list, 'results'),
         listLoading
+    }
+    const sumData = {
+        data: sumList,
+        sumListLoading
     }
     const productMoveDetail = _.filter(_.get(list, 'results'), (item) => {
         return _.get(item, 'id') === detailId
@@ -175,6 +173,7 @@ const StatProductMoveList = enhance((props) => {
                 filter={filter}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 listData={listData}
+                sumData={sumData}
                 detailData={detailData}
                 statProductMoveDialog={statProductMoveDialog}
                 getDocument={getDocument}
