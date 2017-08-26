@@ -41,7 +41,8 @@ class TrackingDateField extends React.Component {
             const dateTime = moment(date).locale('ru').format('DD MMMM YYYY')
             return (date && time) ? dateTime : (date) ? moment(date).locale('ru').format('DD MMMM YYYY') : defaultText
         }
-        const date = _.get(input, ['value']) ? dateFormat(_.get(input, ['value'])) : dateFormat(moment())
+        const selectedDate = moment(_.get(filter.getParams(), 'date')).toDate()
+        const date = dateFormat(selectedDate)
         const dateLabel = error || (!date)
             ? '' : date
 
@@ -50,7 +51,7 @@ class TrackingDateField extends React.Component {
             hashHistory.push(filter.createURL({date: moment(inputDate).format('YYYY-MM-DD')}))
         }
 
-        const defaultDate = moment(_.get(input, ['value'])) || moment()
+        const defaultDate = moment(selectedDate)
 
         return (
             <div className={classes.button}>

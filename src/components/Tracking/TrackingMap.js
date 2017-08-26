@@ -22,11 +22,9 @@ const enhance = compose(
     withGoogleMap,
     connect((state, props) => {
         const agentId = _.get(props, 'agentId')
-        const timeValue = _.toInteger(_.get(state, ['form', 'TrackingFilterForm', 'values', 'time']))
         const date = _.get(state, ['form', 'TrackingFilterForm', 'values', 'date'])
         return {
             agentId,
-            timeValue,
             date
         }
     }),
@@ -44,18 +42,18 @@ const GoogleMapWrapper = enhance(({
     setOpenMarketInfo,
     setOpenAgentInfo,
     shopDetails,
-    timeValue,
+    sliderValue,
     date,
     filter,
     ...props
     }) => {
     const minutePerHour = 60
     const TEN = 10
-    let hour = _.floor(timeValue / minutePerHour) || ZERO
+    let hour = _.floor(sliderValue / minutePerHour) || ZERO
     if (hour < TEN) {
         hour = '0' + hour
     }
-    let minute = _.floor(timeValue % minutePerHour) || ZERO
+    let minute = _.floor(sliderValue % minutePerHour) || ZERO
     if (minute < TEN) {
         minute = '0' + minute
     }
@@ -263,6 +261,7 @@ const GoogleMap = (props) => {
         agentLocation,
         marketsLocation,
         shopDetails,
+        sliderValue,
         ...defaultProps
     } = props
 
@@ -293,6 +292,7 @@ const GoogleMap = (props) => {
             agentLocation={agentLocation}
             marketsLocation={marketsLocation}
             shopDetails={shopDetails}
+            sliderValue={sliderValue}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>

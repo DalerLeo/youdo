@@ -7,7 +7,7 @@ import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
@@ -22,6 +22,9 @@ import Man from 'material-ui/svg-icons/action/accessibility'
 import Loyalty from 'material-ui/svg-icons/action/loyalty'
 import Van from 'material-ui/svg-icons/maps/local-shipping'
 import Money from 'material-ui/svg-icons/maps/local-atm'
+
+const minutePerHour = 60
+const current = (_.toInteger(moment().format('H')) * minutePerHour) + _.toInteger(moment().format('m'))
 
 const enhance = compose(
     injectSheet({
@@ -192,7 +195,9 @@ const enhance = compose(
             extend: 'agent',
             background: '#f4f4f4'
         }
-    })
+    }),
+    withState('sliderValue', 'setSliderValue', current)
+
 )
 
 const TrackingWrapper = enhance((props) => {
@@ -211,7 +216,9 @@ const TrackingWrapper = enhance((props) => {
         tabData,
         filterForm,
         calendar,
-        shopDetails
+        shopDetails,
+        sliderValue,
+        setSliderValue
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -382,6 +389,7 @@ const TrackingWrapper = enhance((props) => {
                     marketsLocation={marketsLocation}
                     isOpenMarkets={isOpenMarkets}
                     shopDetails={shopDetails}
+                    sliderValue={sliderValue}
                 />
             </div>
             {zoneInfoToggle}
@@ -390,7 +398,11 @@ const TrackingWrapper = enhance((props) => {
                 filterForm={filterForm}
                 agentId={agentId}
                 openDetail={openDetail}/>
-            <TrackingTime initialValues={initialValues} openDetail={openDetail}/>
+            <TrackingTime
+                sliderValue={sliderValue}
+                setSliderValue={setSliderValue}
+                initialValues={initialValues}
+                openDetail={openDetail}/>
         </Container>
     )
 })
