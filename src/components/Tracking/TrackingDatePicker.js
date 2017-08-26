@@ -1,25 +1,19 @@
 import React from 'react'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import Calendar from 'material-ui/svg-icons/action/today'
 import {Field, reduxForm} from 'redux-form'
-import PlanDateToDateField from '../ReduxForm/TrackingDateField'
+import TrackingDateField from '../ReduxForm/TrackingDateField'
 
 const enhance = compose(
     injectSheet({
         padding: {
-            padding: '20px 30px'
+            padding: '0px 30px'
         },
         titleDate: {
             display: 'flex',
             alignItems: 'center',
+            height: '55px',
             extend: 'padding',
-            '& svg': {
-                minWidth: '32px',
-                width: '32px !important',
-                height: '32px !important',
-                marginRight: '10px'
-            },
             '& a': {
                 fontWeight: '600'
             }
@@ -39,25 +33,23 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'PlanDatePicker',
+        form: 'TrackingFilterForm',
         enableReinitialize: true
     }),
 )
 
-const PlanDatePicker = enhance((props) => {
-    const {classes, PlanDateInitialValues} = props
+const TrackingDatePicker = enhance((props) => {
+    const {classes} = props
     return (
         <div className={classes.titleDate}>
-            <Calendar color="#666"/>
             <Field
-                name="period"
+                name="date"
                 className={classes.inputDateCustom}
-                component={PlanDateToDateField}
-                initialValues={PlanDateInitialValues.initialValues}
+                component={TrackingDateField}
                 fullWidth={true}
                 />
         </div>
     )
 })
 
-export default PlanDatePicker
+export default TrackingDatePicker

@@ -46,7 +46,6 @@ const GoogleMapWrapper = enhance(({
     shopDetails,
     timeValue,
     date,
-    openMarkets,
     filter,
     ...props
     }) => {

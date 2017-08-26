@@ -13,6 +13,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import TrackingMap from './TrackingMap'
 import TrackingMarketsZones from './TrackingMarketsZones'
+import TrackingDatePicker from './TrackingDatePicker'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
 import TrackingTime from './TrackingTime'
 import TrackingAgentSearch from './TrackingAgentSearch'
@@ -251,6 +252,7 @@ const TrackingWrapper = enhance((props) => {
         <div className={classes.trackingInfo}>
             <div className={classes.wrapper}>
                 {openDetail && <TrakingDayFilter calendar={calendar}/>}
+                <TrackingDatePicker/>
                 {(today === urlDate) &&
                 <div className={classes.trackingInfoTitle}>
                     <span>Сотрудников <br/> online</span>

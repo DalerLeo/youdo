@@ -5,13 +5,12 @@ import _ from 'lodash'
 import React from 'react'
 import injectSheet from 'react-jss'
 import PropTypes from 'prop-types'
-import {DateRange} from 'react-date-range-ru'
+import {Calendar} from 'react-date-range-ru'
 import {Popover} from 'material-ui'
-import dateFormat from '../../../helpers/dateFormat'
 import MUITextField from 'material-ui/TextField'
 import moment from 'moment'
 
-class PlanDateToDateField extends React.Component {
+class TrackingDateField extends React.Component {
     constructor (props) {
         super(props)
         this.state = {
@@ -35,21 +34,21 @@ class PlanDateToDateField extends React.Component {
     }
 
     render () {
-        const WEEK = 7
         const {classes, input, meta: {error}} = this.props
         const {open, anchorEl} = this.state
-        const startDate = dateFormat(_.get(input, ['value', 'fromDate'])) || dateFormat(moment())
-        const endDate = dateFormat(_.get(input, ['value', 'toDate'])) || dateFormat(moment().add(WEEK, 'days'))
-        const dateLabel = error || (!startDate)
-            ? '' : startDate === endDate
-                ? startDate : startDate + ' - ' + endDate
+        const dateFormat = (date, time, defaultText) => {
+            const dateTime = moment(date).locale('ru').format('DD MMMM YYYY')
+            return (date && time) ? dateTime : (date) ? moment(date).locale('ru').format('DD MMMM YYYY') : defaultText
+        }
+        const date = _.get(input, ['value', 'fromDate']) ? dateFormat(_.get(input, ['value', 'fromDate'])) : dateFormat(moment())
+        const dateLabel = error || (!date)
+            ? '' : date
 
         const onChange = (which) => {
             input.onChange({fromDate: which.startDate, toDate: which.endDate})
         }
 
-        const defaultStart = _.get(input, ['value', 'fromDate']) || moment()
-        const defaultEnd = _.get(input, ['value', 'toDate']) || moment().add(WEEK, 'days')
+        const defaultDate = _.get(input, ['value', 'fromDate']) || moment()
 
         return (
             <div className={classes.button}>
@@ -62,14 +61,13 @@ class PlanDateToDateField extends React.Component {
                      open={open}
                      anchorEl={anchorEl}
                      onRequestClose={this.handleOnRequestClose}>
-                    <DateRange
-                        startDate={defaultStart}
-                        endDate={defaultEnd}
+                    <Calendar
                         lang={'ru'}
+                        date={defaultDate}
                         calendars={1}
                         onChange={onChange}
                         theme={{
-                            Calendar: {width: 300},
+                            Calendar: {width: 289},
                             PredefinedRangesItemActive: {
                                 background: '#98a1b7',
                                 color: '#fff'
@@ -124,11 +122,11 @@ class PlanDateToDateField extends React.Component {
     }
 }
 
-PlanDateToDateField.defaultProps = {
+TrackingDateField.defaultProps = {
     format: 'DD.MM.YYYY'
 }
 
-PlanDateToDateField.propTypes = {
+TrackingDateField.propTypes = {
     format: PropTypes.string
 }
 
@@ -153,8 +151,11 @@ export default injectSheet({
         },
         '& input': {
             marginTop: '0 !important',
+            textAlign: 'center !important',
+            textTransform: 'capitalize',
             fontWeight: '600 !important',
-            color: '#12aaeb !important'
+            fontSize: '16px !important',
+            color: '#333 !important'
         },
         '& div:first-child': {
             height: '30px !important'
@@ -178,4 +179,4 @@ export default injectSheet({
             }
         }
     }
-})(PlanDateToDateField)
+})(TrackingDateField)
