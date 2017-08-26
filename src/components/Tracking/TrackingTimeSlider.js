@@ -115,8 +115,8 @@ const TrackingTimeSlider = enhance((props) => {
                         max={max}
                         step={5}
                         style={{cursor: 'pointer', width: '100%'}}
-                        value={input.value}
-                        defaultValue={input.value}
+                        value={_.toInteger(input.value)}
+                        defaultValue={_.toInteger(input.value)}
                         onChange={handleSlider}
                     />
                 </MuiThemeProvider>

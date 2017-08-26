@@ -9,6 +9,7 @@ import {Calendar} from 'react-date-range-ru'
 import {Popover} from 'material-ui'
 import MUITextField from 'material-ui/TextField'
 import moment from 'moment'
+import {hashHistory} from 'react-router'
 
 class TrackingDateField extends React.Component {
     constructor (props) {
@@ -34,21 +35,22 @@ class TrackingDateField extends React.Component {
     }
 
     render () {
-        const {classes, input, meta: {error}} = this.props
+        const {classes, input, meta: {error}, filter} = this.props
         const {open, anchorEl} = this.state
         const dateFormat = (date, time, defaultText) => {
             const dateTime = moment(date).locale('ru').format('DD MMMM YYYY')
             return (date && time) ? dateTime : (date) ? moment(date).locale('ru').format('DD MMMM YYYY') : defaultText
         }
-        const date = _.get(input, ['value', 'fromDate']) ? dateFormat(_.get(input, ['value', 'fromDate'])) : dateFormat(moment())
+        const date = _.get(input, ['value']) ? dateFormat(_.get(input, ['value'])) : dateFormat(moment())
         const dateLabel = error || (!date)
             ? '' : date
 
-        const onChange = (which) => {
-            input.onChange({fromDate: which.startDate, toDate: which.endDate})
+        const onChange = (inputDate) => {
+            input.onChange({inputDate})
+            hashHistory.push(filter.createURL({date: moment(inputDate).format('YYYY-MM-DD')}))
         }
 
-        const defaultDate = _.get(input, ['value', 'fromDate']) || moment()
+        const defaultDate = moment(_.get(input, ['value'])) || moment()
 
         return (
             <div className={classes.button}>
@@ -127,7 +129,8 @@ TrackingDateField.defaultProps = {
 }
 
 TrackingDateField.propTypes = {
-    format: PropTypes.string
+    format: PropTypes.string,
+    filter: PropTypes.object
 }
 
 export default injectSheet({

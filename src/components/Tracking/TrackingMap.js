@@ -204,23 +204,46 @@ const GoogleMapWrapper = enhance(({
                         )
                     }
 
-                    return (
-                        <Marker
-                            key={id}
-                            title={name}
-                            onClick={() => { clickAgent(id) }}
-                            position={{lat: lat, lng: lng}}
-                            options={
-                            {
-                                icon: {
-                                    url: isOnline ? AgentOnline : AgentOffline,
-                                    size: {width: 30, height: 30},
-                                    scaledSize: {width: 30, height: 30}
-                                }
-                            }}>
-                        </Marker>
-                    )
+                    return false
                 })}
+            <MarkerClusterer>
+                {_.map(listData, (item) => {
+                    const id = _.get(item, 'id')
+                    const name = _.get(item, 'agent')
+                    const lat = _.get(item, ['location', 'lat'])
+                    const lng = _.get(item, ['location', 'lon'])
+
+                    const FIVE_MIN = 300000
+                    const dateNow = _.toInteger(moment().format('x'))
+                    const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                    const difference = dateNow - registeredDate
+                    let isOnline = false
+                    if (difference <= FIVE_MIN) {
+                        isOnline = true
+                    }
+                    if (id !== agentId) {
+                        return (
+                            <Marker
+                                key={id}
+                                title={name}
+                                onClick={() => { clickAgent(id) }}
+                                position={{lat: lat, lng: lng}}
+                                options={
+                                {
+                                    opacity: 0.7,
+                                    icon: {
+                                        url: isOnline ? AgentOnline : AgentOffline,
+                                        size: {width: 30, height: 30},
+                                        scaledSize: {width: 30, height: 30}
+                                    }
+                                }}>
+                            </Marker>
+                        )
+                    }
+
+                    return false
+                })}
+            </MarkerClusterer>
             {props.children}
         </DefaultGoogleMap>
     )

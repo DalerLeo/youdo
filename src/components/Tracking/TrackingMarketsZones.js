@@ -11,6 +11,7 @@ import RightArrow from 'material-ui/svg-icons/navigation/chevron-right'
 import {hashHistory} from 'react-router'
 import * as ROUTER from '../../constants/routes'
 import toBoolean from '../../helpers/toBoolean'
+import sprintf from 'sprintf'
 
 const wrapperWidth = 150
 const two = 2
@@ -85,18 +86,18 @@ const enhance = compose(
     withState('isZoneChecked', 'setZoneCheck', false),
     withHandlers({
         marketCheck: props => () => {
-            const {isMarketChecked, setMarketCheck} = props
+            const {isMarketChecked, setMarketCheck, agentId, openDetail} = props
             setMarketCheck(!isMarketChecked)
             hashHistory.push({
-                pathname: ROUTER.TRACKING_LIST_URL,
+                pathname: openDetail ? sprintf(ROUTER.TRACKING_ITEM_PATH, agentId) : ROUTER.TRACKING_LIST_URL,
                 query: props.filter.getParams({showMarkets: !isMarketChecked})
             })
         },
         zoneCheck: props => () => {
-            const {isZoneChecked, setZoneCheck} = props
+            const {isZoneChecked, setZoneCheck, agentId, openDetail} = props
             setZoneCheck(!isZoneChecked)
             hashHistory.push({
-                pathname: ROUTER.TRACKING_LIST_URL,
+                pathname: openDetail ? sprintf(ROUTER.TRACKING_ITEM_PATH, agentId) : ROUTER.TRACKING_LIST_URL,
                 query: props.filter.getParams({showZones: !isZoneChecked})
             })
         }

@@ -17,7 +17,6 @@ import TrackingDatePicker from './TrackingDatePicker'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
 import TrackingTime from './TrackingTime'
 import TrackingAgentSearch from './TrackingAgentSearch'
-import TrakingDayFilter from './TrakingDayFilter'
 import ShopDetails from './TrackingShopDetails'
 import Man from 'material-ui/svg-icons/action/accessibility'
 import Loyalty from 'material-ui/svg-icons/action/loyalty'
@@ -33,6 +32,18 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        mapLoader: {
+            background: '#fcfcfc',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            left: '-28px',
+            top: '60px',
+            right: '322px',
+            bottom: '-28px',
+            zIndex: '2'
         },
         red: {
             color: '#e57373 !important'
@@ -75,6 +86,7 @@ const enhance = compose(
         trackingInfoTitle: {
             display: 'flex',
             alignItems: 'center',
+            borderTop: '1px #efefef solid',
             padding: '0 30px',
             minHeight: '70px',
             fontWeight: '600',
@@ -192,6 +204,7 @@ const TrackingWrapper = enhance((props) => {
         detailData,
         handleOpenDetails,
         agentLocation,
+        agentLocationLoading,
         marketsLocation,
         isOpenMarkets,
         initialValues,
@@ -251,8 +264,11 @@ const TrackingWrapper = enhance((props) => {
     const zoneInfoToggle = (
         <div className={classes.trackingInfo}>
             <div className={classes.wrapper}>
-                {openDetail && <TrakingDayFilter calendar={calendar}/>}
-                <TrackingDatePicker/>
+                {openDetail && <TrackingDatePicker
+                    filter={filter}
+                    calendar={calendar}
+                    filterForm={filterForm}/>}
+
                 {(today === urlDate) &&
                 <div className={classes.trackingInfoTitle}>
                     <span>Сотрудников <br/> online</span>
@@ -350,6 +366,12 @@ const TrackingWrapper = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.TRACKING_LIST_URL} opacity={true}/>
+            {(listLoading || agentLocationLoading) &&
+            <div className={classes.mapLoader}>
+                <div>
+                    <CircularProgress size={40} thickness={4}/>
+                </div>
+            </div>}
             <div className={classes.trackingWrapper}>
                 <TrackingMap
                     filter={filter}
@@ -363,7 +385,11 @@ const TrackingWrapper = enhance((props) => {
                 />
             </div>
             {zoneInfoToggle}
-            <TrackingMarketsZones filter={filter} filterForm={filterForm} openDetail={openDetail}/>
+            <TrackingMarketsZones
+                filter={filter}
+                filterForm={filterForm}
+                agentId={agentId}
+                openDetail={openDetail}/>
             <TrackingTime initialValues={initialValues} openDetail={openDetail}/>
         </Container>
     )
