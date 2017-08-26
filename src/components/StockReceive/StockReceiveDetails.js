@@ -172,7 +172,7 @@ const StockReceiveDetails = enhance((props) => {
                         className={classes.semibold}
                         style={history ? {lineHeight: '48px'} : {}}>
                         <Col xs={2}>{id}</Col>
-                        <Col xs={3}>{by}</Col>
+                        {by ? <Col xs={3}>{by}</Col> : null}
                         <Col xs={2}>{formattedType}</Col>
                         <Col xs={2}>{date}</Col>
                         <Col xs={2}>

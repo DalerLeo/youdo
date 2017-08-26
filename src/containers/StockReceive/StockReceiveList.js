@@ -21,6 +21,7 @@ import {
     HISTORY_FILTER_KEY,
     STOCK_RETURN_DIALOG_OPEN,
     STOCK_SUPPLY_DIALOG_OPEN,
+    SROCK_POPVER_DIALOG_OPEN,
     TAB,
     STOCK_CONFIRM_DIALOG_OPEN,
     TAB_RECEIVE_FILTER_KEY
@@ -57,15 +58,15 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const stockReceiveType = _.get(props, ['location', 'query', 'openType'])
         const detail = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'data'])
-                        : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'data'])
-                            : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
-                                : _.get(state, ['order', 'returnList', 'data'])
+            : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'data'])
+                : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
+                    : _.get(state, ['order', 'returnList', 'data'])
 
         const detailProducts = _.get(state, ['stockReceive', 'item', 'data'])
         const detailLoading = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'loading'])
-                                : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'loading'])
-                                    : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'loading'])
-                                        : _.get(state, ['order', 'returnList', 'loading'])
+            : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'loading'])
+                : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'loading'])
+                    : _.get(state, ['order', 'returnList', 'loading'])
 
         const list = _.get(state, ['stockReceive', 'list', 'data'])
         const listLoading = _.get(state, ['stockReceive', 'list', 'loading'])
@@ -89,14 +90,19 @@ const enhance = compose(
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
         const productId = _.toNumber(_.get(state, ['form', 'StockReceiveCreateForm', 'values', 'product', 'value', 'id']))
         const filter = filterHelper((_.get(query, 'tab') === 'receive' || _.get(query, 'tab') === 'receiveHistory')
-                                                            ? list : (_.get(query, 'tab') === 'transfer' || _.get(query, 'tab') === 'transferHistory')
-                                                              ? transferList : (_.get(query, 'tab') === 'outHistory')
-                                                                ? historyList : list, pathname, query)
+            ? list : (_.get(query, 'tab') === 'transfer' || _.get(query, 'tab') === 'transferHistory')
+                ? transferList : (_.get(query, 'tab') === 'outHistory')
+                    ? historyList : list, pathname, query)
         const returnDialogData = _.get(state, ['return', 'item', 'data'])
         const returnDialogDataLoading = _.get(state, ['return', 'item', 'loading'])
         const supplyDialogData = _.get(state, ['supply', 'item', 'data'])
         const supplyDialogDataLoading = _.get(state, ['supply', 'item', 'loading'])
-        const supplyDialogFilter = filterHelper(supplyDialogData, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
+        const supplyDialogFilter = filterHelper(supplyDialogData, pathname, query, {
+            'page': 'dPage',
+            'pageSize': 'dPageSize'
+        })
+        const stockTransferDialogData = _.get(state, ['cashbox', 'pending', 'data'])
+        const stockTransferDialogDataLoading = _.get(state, ['cashbox', 'pending', 'loading'])
 
         return {
             list,
@@ -128,7 +134,9 @@ const enhance = compose(
             returnDialogDataLoading,
             supplyDialogData,
             supplyDialogDataLoading,
-            supplyDialogFilter
+            supplyDialogFilter,
+            stockTransferDialogData,
+            stockTransferDialogDataLoading
         }
     }),
 
@@ -347,8 +355,9 @@ const enhance = compose(
                     const comment = _.map(error, (item, index) => {
                         return (
                             <div key={index}>
-                                <p>{_.get(item, 'amount') }</p>
-                                {_.get(item, 'amount or defect_amount') || <p>{_.get(item, 'amount or defect_amount')}</p>}
+                                <p>{_.get(item, 'amount')}</p>
+                                {_.get(item, 'amount or defect_amount') ||
+                                <p>{_.get(item, 'amount or defect_amount')}</p>}
                             </div>
                         )
                     })
@@ -431,6 +440,23 @@ const enhance = compose(
         handleCloseStockSupplyDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_SUPPLY_DIALOG_OPEN]: false})})
+        },
+
+        handleOpenPopoverDialog: props => (id, type) => {
+            const {dispatch, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SROCK_POPVER_DIALOG_OPEN]: id, [TYPE]: type})})
+            if (type === 'transfer') {
+                dispatch(stockReceiveOrderItemFetchAction(id))
+            } else if (type === 'order_return') {
+                dispatch(orderReturnListAction(id))
+            } else if (type === 'delivery_return') {
+                dispatch(stockTransferItemFetchAction(id))
+            }
+        },
+
+        handleClosePopoverDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SROCK_POPVER_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -463,7 +489,9 @@ const StockReceiveList = enhance((props) => {
         returnDialogDataLoading,
         supplyDialogData,
         supplyDialogDataLoading,
-        supplyDialogFilter
+        supplyDialogFilter,
+        stockTransferDialogData,
+        stockTransferDialogDataLoading
     } = props
     const detailType = _.get(location, ['query', TYPE])
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
@@ -484,6 +512,7 @@ const StockReceiveList = enhance((props) => {
 
     const returnDialogDataOpen = _.toNumber(_.get(location, ['query', STOCK_RETURN_DIALOG_OPEN]))
     const supplyDialogOpen = _.toNumber(_.get(location, ['query', STOCK_SUPPLY_DIALOG_OPEN]))
+    const popoverDialogOpen = _.toNumber(_.get(location, ['query', SROCK_POPVER_DIALOG_OPEN]))
 
     const listData = {
         data: _.get(list, 'results'),
@@ -626,7 +655,6 @@ const StockReceiveList = enhance((props) => {
         handleOpenStockReturnDialog: props.handleOpenStockReturnDialog,
         handleCloseStockReturnDialog: props.handleCloseStockReturnDialog
     }
-
     const supplyDialog = {
         data: supplyDialogData,
         open: supplyDialogOpen,
@@ -635,7 +663,49 @@ const StockReceiveList = enhance((props) => {
         handleCloseStockSupplyDialog: props.handleCloseStockSupplyDialog,
         filter: supplyDialogFilter
     }
+    const stockTransferDialog = {
+        data: stockTransferDialogData,
+        open: popoverDialogOpen,
+        loading: stockTransferDialogDataLoading,
+        handleOpenStockTransferDialog: props.handleOpenStockTransferDialog,
+        handleCloseStockTransferDialog: props.handleCloseStockTransferDialog,
+        filter: supplyDialogFilter
+    }
+    const orderReturnDialog = {
+        data: stockTransferDialogData,
+        open: popoverDialogOpen,
+        loading: stockTransferDialogDataLoading,
+        handleOpenStockTransferDialog: props.handleOpenStockTransferDialog,
+        handleCloseStockTransferDialog: props.handleCloseStockTransferDialog,
+        filter: supplyDialogFilter
+    }
+    const writeOfDialog = {
+        data: stockTransferDialogData,
+        open: popoverDialogOpen,
+        loading: stockTransferDialogDataLoading,
+        handleOpenStockTransferDialog: props.handleOpenStockTransferDialog,
+        handleCloseStockTransferDialog: props.handleCloseStockTransferDialog,
+        filter: supplyDialogFilter
+    }
+    const deliveryReturnDialog = {
+        data: stockTransferDialogData,
+        open: popoverDialogOpen,
+        loading: stockTransferDialogDataLoading,
+        handleOpenStockTransferDialog: props.handleOpenStockTransferDialog,
+        handleCloseStockTransferDialog: props.handleCloseStockTransferDialog,
+        filter: supplyDialogFilter
+    }
 
+    const popoverDialog = {
+        detailData,
+        type: detailType,
+        data: detail,
+        products: detailProducts,
+        loading: detailLoading,
+        open: popoverDialogOpen,
+        handleOpenDialog: props.handleOpenPopoverDialog,
+        onClose: props.handleClosePopoverDialog
+    }
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 
@@ -665,6 +735,11 @@ const StockReceiveList = enhance((props) => {
                 historyDialog={historyDialog}
                 returnDialog={returnDialog}
                 supplyDialog={supplyDialog}
+                stockTransferDialog={stockTransferDialog}
+                orderReturnDialog={orderReturnDialog}
+                writeOfDialog={writeOfDialog}
+                deliveryReturnDialog={deliveryReturnDialog}
+                popoverDialog={popoverDialog}
             />
         </Layout>
     )
