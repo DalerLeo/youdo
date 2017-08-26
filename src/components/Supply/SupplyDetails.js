@@ -355,7 +355,7 @@ const SupplyDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Изменить">
+                    {updateDialog && <Tooltip position="bottom" text="Изменить">
                         <IconButton
                             disabled={isFinished && true}
                             iconStyle={iconStyle.icon}
@@ -364,8 +364,8 @@ const SupplyDetails = enhance((props) => {
                             onTouchTap={updateDialog.handleOpenUpdateDialog}>
                             <Edit />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text="Отменить">
+                    </Tooltip>}
+                    {confirmDialog && <Tooltip position="bottom" text="Отменить">
                         <IconButton
                             disabled={isFinished && true}
                             iconStyle={iconStyle.icon}
@@ -374,7 +374,7 @@ const SupplyDetails = enhance((props) => {
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                             <Cancel />
                         </IconButton>
-                    </Tooltip>
+                    </Tooltip>}
                 </div>
             </div>
 
@@ -502,7 +502,7 @@ SupplyDetails.propTypes = {
         openDefectDialog: PropTypes.bool.isRequired,
         handleOpenDefectDialog: PropTypes.func.isRequired,
         handleCloseDefectDialog: PropTypes.func.isRequired
-    }).isRequired
+    })
 }
 
 export default SupplyDetails
