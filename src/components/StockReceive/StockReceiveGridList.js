@@ -119,7 +119,8 @@ const StockReceiveGridList = enhance((props) => {
         confirmDialog,
         createDialog,
         handleCheckedForm,
-        historyDialog
+        historyDialog,
+        returnDialog
     } = props
     const tab = _.get(tabData, 'tab')
     const tabList = (
@@ -163,6 +164,7 @@ const StockReceiveGridList = enhance((props) => {
                 listData={historyData}
                 filterDialog={filterDialog}
                 historyDialog={historyDialog}
+                returnDialog={returnDialog}
             />}
             {TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY === tab && <TabTransferHistory
                 filter={filter}

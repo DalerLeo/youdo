@@ -10,6 +10,7 @@ import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 import ArrowUp from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-downward'
+import StockReturnDialog from '../StockReceive/StockReturnDialog'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import InfoDialog from '../Statistics/StatSaleDialog'
 
@@ -83,7 +84,8 @@ const StockTabHistory = enhance((props) => {
         filterDialog,
         listData,
         classes,
-        historyDialog
+        historyDialog,
+        returnDialog
     } = props
 
     const usersFilterDialog = (
@@ -117,7 +119,9 @@ const StockTabHistory = enhance((props) => {
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{genericType} {_.get(item, ['generic', 'type']) === 'order transfer product'
                                                     ? <span className={classes.infoDialog} onClick={() => { historyDialog.handleOpenHistoryDialog(parent) }}>{parent}</span>
-                                                        : null }
+                                                        : (_.get(item, ['generic', 'type']) === 'order return accept'
+                    ? <span className={classes.infoDialog} onClick={() => { returnDialog.handleOpenStockReturnDialog(parent) }}>{parent}</span>
+                    : null)}
                 </Col>
             </Row>
         )
@@ -128,7 +132,7 @@ const StockTabHistory = enhance((props) => {
         list: historyList,
         loading: _.get(listData, 'historyListLoading')
     }
-
+    console.log(_.get(returnDialog, 'open'))
     return (
         <div className={classes.wrapper}>
             <GridList
@@ -145,6 +149,12 @@ const StockTabHistory = enhance((props) => {
                 onClose={historyDialog.handleCloseHistoryDialog}
                 filter={filter}
                 type={false}/>
+            <StockReturnDialog
+                open={_.toNumber(_.get(returnDialog, 'open')) > ZERO}
+                onClose={_.get(returnDialog, 'handleCloseStockReturnDialog')}
+                key={_.get(returnDialog, 'open')}
+                data={_.get(returnDialog, 'data') || {}}
+                loading={_.get(returnDialog, 'loading')}/>
         </div>
     )
 })

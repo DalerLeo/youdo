@@ -19,6 +19,7 @@ import {
     STOCK_RECEIVE_UPDATE_DIALOG_OPEN,
     HISTORY_FILTER_OPEN,
     HISTORY_FILTER_KEY,
+    STOCK_RETURN_DIALOG_OPEN,
     TAB,
     STOCK_CONFIRM_DIALOG_OPEN,
     TAB_RECEIVE_FILTER_KEY
@@ -41,9 +42,8 @@ import {
 import {
     orderListPintFetchAction,
     orderReturnListAction
-}
-
-from '../../actions/order'
+} from '../../actions/order'
+import {returnItemFetchAction} from '../../actions/return'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
@@ -80,6 +80,8 @@ const enhance = compose(
         const createLoading = _.get(state, ['stockReceive', 'create', 'loading'])
         const createForm = _.get(state, ['form', 'StockReceiveCreateForm'])
         const printList = _.get(state, ['stockReceive', 'print', 'data'])
+        const returnDialogData = _.get(state, ['return', 'item', 'data'])
+        const returnDialogDataLoading = _.get(state, ['return', 'item', 'loading'])
         const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
         const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
         const tabTransferFilterForm = _.get(state, ['form', 'TabTransferFilterForm'])
@@ -116,7 +118,9 @@ const enhance = compose(
             tabTransferFilterForm,
             tabReceiveFilterForm,
             historyOrderLoading,
-            historyOrderDetail
+            historyOrderDetail,
+            returnDialogData,
+            returnDialogDataLoading
         }
     }),
 
@@ -398,6 +402,17 @@ const enhance = compose(
         handleCloseHistoryDialog: props => () => {
             const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false})})
+        },
+
+        handleOpenStockReturnDialog: props => (id) => {
+            const {dispatch, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_RETURN_DIALOG_OPEN]: id})})
+            dispatch(returnItemFetchAction(id))
+        },
+
+        handleCloseStockReturnDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_RETURN_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -425,12 +440,15 @@ const StockReceiveList = enhance((props) => {
         printLoading,
         params,
         historyOrderDetail,
-        historyOrderLoading
+        historyOrderLoading,
+        returnDialogData,
+        returnDialogDataLoading
     } = props
     const detailType = _.get(location, ['query', TYPE])
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_CREATE_DIALOG_OPEN]))
+    const returnDialogDataOpen = _.toNumber(_.get(location, ['query', STOCK_RETURN_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_UPDATE_DIALOG_OPEN]))
     const openHistoryInfoDialog = _.toNumber(_.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]))
@@ -578,6 +596,15 @@ const StockReceiveList = enhance((props) => {
         handleClosePrintDialog: props.handleClosePrintDialog
     }
 
+    const returnDialog = {
+        id: detailId,
+        data: returnDialogData,
+        open: returnDialogDataOpen,
+        loading: returnDialogDataLoading,
+        handleOpenStockReturnDialog: props.handleOpenStockReturnDialog,
+        handleCloseStockReturnDialog: props.handleCloseStockReturnDialog
+    }
+
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 
@@ -605,6 +632,7 @@ const StockReceiveList = enhance((props) => {
                 updateDialog={updateDialog}
                 handleCheckedForm={props.handleCheckedForm}
                 historyDialog={historyDialog}
+                returnDialog={returnDialog}
             />
         </Layout>
     )

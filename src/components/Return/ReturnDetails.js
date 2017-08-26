@@ -229,7 +229,7 @@ const ReturnDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Распечатать накладную">
+                    {getDocument && <Tooltip position="bottom" text="Распечатать накладную">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -237,8 +237,8 @@ const ReturnDetails = enhance((props) => {
                             onTouchTap={() => { getDocument.handleGetDocument(id) }}>
                             <PrintIcon />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text="Отменить">
+                    </Tooltip>}
+                    {confirmDialog && <Tooltip position="bottom" text="Отменить">
                         <IconButton
                             disabled={!(status === IN_PROGRESS || status === PENDING)}
                             iconStyle={iconStyle.icon}
@@ -247,7 +247,7 @@ const ReturnDetails = enhance((props) => {
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                             <Delete />
                         </IconButton>
-                    </Tooltip>
+                    </Tooltip>}
                 </div>
             </div>
             <div className={classes.content}>
@@ -360,7 +360,7 @@ ReturnDetails.propTypes = {
         handleOpenCancelReturnDialog: PropTypes.func.isRequired,
         handleCloseCancelReturnDialog: PropTypes.func.isRequired,
         handleSubmitCancelReturnDialog: PropTypes.func.isRequired
-    }).isRequired
+    })
 }
 
 export default ReturnDetails
