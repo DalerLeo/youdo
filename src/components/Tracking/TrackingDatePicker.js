@@ -3,33 +3,29 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field, reduxForm} from 'redux-form'
 import TrackingDateField from '../ReduxForm/TrackingDateField'
+import IconButton from 'material-ui/IconButton'
+import LeftArrow from 'material-ui/svg-icons/navigation/chevron-left'
+import RightArrow from 'material-ui/svg-icons/navigation/chevron-right'
 
 const enhance = compose(
     injectSheet({
-        padding: {
-            padding: '0px 30px'
-        },
         titleDate: {
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'space-between',
             height: '55px',
-            extend: 'padding',
-            '& a': {
-                fontWeight: '600'
+            padding: '0px 30px',
+            position: 'relative',
+            '& nav': {
+                height: '34px',
+                position: 'absolute'
             }
         },
-        datePicker: {
-            background: '#fff',
-            padding: '10px 0 20px',
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            zIndex: '2',
-            '& > div': {
-                textAlign: 'center'
-            }
+        prev: {
+            left: '30px'
+        },
+        next: {
+            right: '30px'
         }
     }),
     reduxForm({
@@ -38,16 +34,49 @@ const enhance = compose(
     }),
 )
 
+const navArrow = {
+    icon: {
+        color: '#666',
+        width: 34,
+        height: 34
+    },
+    button: {
+        width: 34,
+        height: 34,
+        padding: 0
+    }
+}
+
 const TrackingDatePicker = enhance((props) => {
-    const {classes} = props
+    const {classes, filter, filterForm, calendar} = props
     return (
         <div className={classes.titleDate}>
+            <nav className={classes.prev}>
+                <IconButton
+                    onTouchTap={calendar.handlePrevDay}
+                    iconStyle={navArrow.icon}
+                    style={navArrow.button}
+                    disableTouchRipple={true}>
+                    <LeftArrow/>
+                </IconButton>
+            </nav>
             <Field
                 name="date"
                 className={classes.inputDateCustom}
+                filter={filter}
+                initialValues={filterForm.initialValues}
                 component={TrackingDateField}
                 fullWidth={true}
-                />
+            />
+            <nav className={classes.next}>
+                <IconButton
+                    onTouchTap={calendar.handleNextDay}
+                    iconStyle={navArrow.icon}
+                    style={navArrow.button}
+                    disableTouchRipple={true}>
+                    <RightArrow/>
+                </IconButton>
+            </nav>
         </div>
     )
 })
