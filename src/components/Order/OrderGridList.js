@@ -57,7 +57,7 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'totalCost',
+        name: 'totalPrice',
         alignRight: true,
         title: 'Сумма заказа',
         xs: '15%'
@@ -75,7 +75,7 @@ const listHeader = [
         xs: '15%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'acceptedCost',
         title: 'Статус',
         xs: '5%'
