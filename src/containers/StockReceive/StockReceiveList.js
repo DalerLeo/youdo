@@ -20,6 +20,7 @@ import {
     HISTORY_FILTER_OPEN,
     HISTORY_FILTER_KEY,
     STOCK_RETURN_DIALOG_OPEN,
+    STOCK_SUPPLY_DIALOG_OPEN,
     TAB,
     STOCK_CONFIRM_DIALOG_OPEN,
     TAB_RECEIVE_FILTER_KEY
@@ -44,6 +45,7 @@ import {
     orderReturnListAction
 } from '../../actions/order'
 import {returnItemFetchAction} from '../../actions/return'
+import {supplyItemFetchAction} from '../../actions/supply'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
@@ -80,8 +82,6 @@ const enhance = compose(
         const createLoading = _.get(state, ['stockReceive', 'create', 'loading'])
         const createForm = _.get(state, ['form', 'StockReceiveCreateForm'])
         const printList = _.get(state, ['stockReceive', 'print', 'data'])
-        const returnDialogData = _.get(state, ['return', 'item', 'data'])
-        const returnDialogDataLoading = _.get(state, ['return', 'item', 'loading'])
         const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
         const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
         const tabTransferFilterForm = _.get(state, ['form', 'TabTransferFilterForm'])
@@ -92,6 +92,11 @@ const enhance = compose(
                                                             ? list : (_.get(query, 'tab') === 'transfer' || _.get(query, 'tab') === 'transferHistory')
                                                               ? transferList : (_.get(query, 'tab') === 'outHistory')
                                                                 ? historyList : list, pathname, query)
+        const returnDialogData = _.get(state, ['return', 'item', 'data'])
+        const returnDialogDataLoading = _.get(state, ['return', 'item', 'loading'])
+        const supplyDialogData = _.get(state, ['supply', 'item', 'data'])
+        const supplyDialogDataLoading = _.get(state, ['supply', 'item', 'loading'])
+        const supplyDialogFilter = filterHelper(supplyDialogData, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 
         return {
             list,
@@ -120,7 +125,10 @@ const enhance = compose(
             historyOrderLoading,
             historyOrderDetail,
             returnDialogData,
-            returnDialogDataLoading
+            returnDialogDataLoading,
+            supplyDialogData,
+            supplyDialogDataLoading,
+            supplyDialogFilter
         }
     }),
 
@@ -413,6 +421,16 @@ const enhance = compose(
         handleCloseStockReturnDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_RETURN_DIALOG_OPEN]: false})})
+        },
+        handleOpenStockSupplyDialog: props => (id) => {
+            const {dispatch, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_SUPPLY_DIALOG_OPEN]: id})})
+            dispatch(supplyItemFetchAction(id))
+        },
+
+        handleCloseStockSupplyDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_SUPPLY_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -442,13 +460,15 @@ const StockReceiveList = enhance((props) => {
         historyOrderDetail,
         historyOrderLoading,
         returnDialogData,
-        returnDialogDataLoading
+        returnDialogDataLoading,
+        supplyDialogData,
+        supplyDialogDataLoading,
+        supplyDialogFilter
     } = props
     const detailType = _.get(location, ['query', TYPE])
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_CREATE_DIALOG_OPEN]))
-    const returnDialogDataOpen = _.toNumber(_.get(location, ['query', STOCK_RETURN_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_UPDATE_DIALOG_OPEN]))
     const openHistoryInfoDialog = _.toNumber(_.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]))
@@ -461,6 +481,9 @@ const StockReceiveList = enhance((props) => {
     const toDate = filter.getParam(HISTORY_FILTER_KEY.TO_DATE)
     const tab = _.get(location, ['query', TAB]) || STOCK_TAB.STOCK_RECEIVE_DEFAULT_TAB
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
+
+    const returnDialogDataOpen = _.toNumber(_.get(location, ['query', STOCK_RETURN_DIALOG_OPEN]))
+    const supplyDialogOpen = _.toNumber(_.get(location, ['query', STOCK_SUPPLY_DIALOG_OPEN]))
 
     const listData = {
         data: _.get(list, 'results'),
@@ -597,12 +620,20 @@ const StockReceiveList = enhance((props) => {
     }
 
     const returnDialog = {
-        id: detailId,
         data: returnDialogData,
         open: returnDialogDataOpen,
         loading: returnDialogDataLoading,
         handleOpenStockReturnDialog: props.handleOpenStockReturnDialog,
         handleCloseStockReturnDialog: props.handleCloseStockReturnDialog
+    }
+
+    const supplyDialog = {
+        data: supplyDialogData,
+        open: supplyDialogOpen,
+        loading: supplyDialogDataLoading,
+        handleOpenStockSupplyDialog: props.handleOpenStockSupplyDialog,
+        handleCloseStockSupplyDialog: props.handleCloseStockSupplyDialog,
+        filter: supplyDialogFilter
     }
 
     if (openPrint) {
@@ -633,6 +664,7 @@ const StockReceiveList = enhance((props) => {
                 handleCheckedForm={props.handleCheckedForm}
                 historyDialog={historyDialog}
                 returnDialog={returnDialog}
+                supplyDialog={supplyDialog}
             />
         </Layout>
     )

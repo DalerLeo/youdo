@@ -15,7 +15,6 @@ import PaymentIcon from 'material-ui/svg-icons/action/payment'
 import Tooltip from '../ToolTip'
 import getConfig from '../../helpers/getConfig'
 
-const ONE = 1
 const enhance = compose(
     injectSheet({
         loader: {

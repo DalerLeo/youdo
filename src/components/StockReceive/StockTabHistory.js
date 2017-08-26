@@ -11,6 +11,7 @@ import numberFormat from '../../helpers/numberFormat'
 import ArrowUp from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-downward'
 import StockReturnDialog from '../StockReceive/StockReturnDialog'
+import StockSupplyDialog from '../StockReceive/StockSupplyDialog'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import InfoDialog from '../Statistics/StatSaleDialog'
 
@@ -85,7 +86,8 @@ const StockTabHistory = enhance((props) => {
         listData,
         classes,
         historyDialog,
-        returnDialog
+        returnDialog,
+        supplyDialog
     } = props
 
     const usersFilterDialog = (
@@ -121,7 +123,8 @@ const StockTabHistory = enhance((props) => {
                                                     ? <span className={classes.infoDialog} onClick={() => { historyDialog.handleOpenHistoryDialog(parent) }}>{parent}</span>
                                                         : (_.get(item, ['generic', 'type']) === 'order return accept'
                     ? <span className={classes.infoDialog} onClick={() => { returnDialog.handleOpenStockReturnDialog(parent) }}>{parent}</span>
-                    : null)}
+                    : (_.get(item, ['generic', 'type']) === 'supply' ? <span className={classes.infoDialog} onClick={() => { supplyDialog.handleOpenStockSupplyDialog(parent) }}>{parent}</span>
+                    : null))}
                 </Col>
             </Row>
         )
@@ -132,7 +135,6 @@ const StockTabHistory = enhance((props) => {
         list: historyList,
         loading: _.get(listData, 'historyListLoading')
     }
-    console.log(_.get(returnDialog, 'open'))
     return (
         <div className={classes.wrapper}>
             <GridList
@@ -155,6 +157,13 @@ const StockTabHistory = enhance((props) => {
                 key={_.get(returnDialog, 'open')}
                 data={_.get(returnDialog, 'data') || {}}
                 loading={_.get(returnDialog, 'loading')}/>
+            <StockSupplyDialog
+                open={_.toNumber(_.get(supplyDialog, 'open')) > ZERO}
+                onClose={_.get(supplyDialog, 'handleCloseStockSupplyDialog')}
+                key={_.get(supplyDialog, 'open')}
+                data={_.get(supplyDialog, 'data') || {}}
+                loading={_.get(supplyDialog, 'loading')}
+                filter={_.get(supplyDialog, 'filter')}/>
         </div>
     )
 })

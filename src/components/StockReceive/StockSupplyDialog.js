@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import ReturnDetails from '../Return/ReturnDetails'
+import SupplyDetails from '../Supply/SupplyDetails'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -145,7 +145,8 @@ const StatSaleDialog = enhance((props) => {
         classes,
         data,
         loading,
-        key
+        key,
+        filter
     } = props
     return (
         <Dialog
@@ -165,12 +166,13 @@ const StatSaleDialog = enhance((props) => {
             {loading ? <div className={classes.loader}>
                     <CircularProgress/>
                 </div>
-                : <ReturnDetails
+                : <SupplyDetails
                     open={true}
                     key={key}
                     data={data || {}}
                     loading={loading}
                     handleCloseDetail={onClose}
+                    filter={filter}
                 />}
         </Dialog>
     )
