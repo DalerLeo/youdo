@@ -59,14 +59,16 @@ const enhance = compose(
         const stockReceiveType = _.get(props, ['location', 'query', 'openType'])
         const detail = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'data'])
             : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'data'])
-                : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
-                    : _.get(state, ['order', 'returnList', 'data'])
+                : (stockReceiveType === 'stock_transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'data'])
+                    : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
+                        : _.get(state, ['order', 'returnList', 'data'])
 
         const detailProducts = _.get(state, ['stockReceive', 'item', 'data'])
         const detailLoading = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'loading'])
-            : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'loading'])
-                : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'loading'])
-                    : _.get(state, ['order', 'returnList', 'loading'])
+            : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'transfer', 'loading'])
+                : (stockReceiveType === 'stock_transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'loading'])
+                    : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'loading'])
+                        : _.get(state, ['order', 'returnList', 'loading'])
 
         const list = _.get(state, ['stockReceive', 'list', 'data'])
         const listLoading = _.get(state, ['stockReceive', 'list', 'loading'])
@@ -97,12 +99,12 @@ const enhance = compose(
         const returnDialogDataLoading = _.get(state, ['return', 'item', 'loading'])
         const supplyDialogData = _.get(state, ['supply', 'item', 'data'])
         const supplyDialogDataLoading = _.get(state, ['supply', 'item', 'loading'])
+        const stockTransferDialogData = _.get(state, ['stockReceive', 'stockTransfer', 'data'])
+        const stockTransferDialogDataLoading = _.get(state, ['cashbox', 'pending', 'loading'])
         const supplyDialogFilter = filterHelper(supplyDialogData, pathname, query, {
             'page': 'dPage',
             'pageSize': 'dPageSize'
         })
-        const stockTransferDialogData = _.get(state, ['cashbox', 'pending', 'data'])
-        const stockTransferDialogDataLoading = _.get(state, ['cashbox', 'pending', 'loading'])
 
         return {
             list,
@@ -195,6 +197,7 @@ const enhance = compose(
     }),
 
     withState('openPrint', 'setOpenPrint', false),
+    withState('popoverType', 'setType', ''),
 
     withHandlers({
         handleOpenPrintDialog: props => (id) => {
@@ -259,13 +262,17 @@ const enhance = compose(
             const {filter, tabReceiveFilterForm} = props
             const stock = _.get(tabReceiveFilterForm, ['values', 'stock', 'value']) || null
             const type = _.get(tabReceiveFilterForm, ['values', 'type', 'value']) || null
+            const transferFromDate = _.get(tabReceiveFilterForm, ['values', 'transferDate', 'fromDate']) || null
             const fromDate = _.get(tabReceiveFilterForm, ['values', 'date', 'fromDate']) || null
+            const transferToDate = _.get(tabReceiveFilterForm, ['values', 'transferDate', 'toDate']) || null
             const toDate = _.get(tabReceiveFilterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
                 [TAB_RECEIVE_FILTER_KEY.STOCK]: stock,
                 [TAB_RECEIVE_FILTER_KEY.TYPE]: type,
+                [TAB_RECEIVE_FILTER_KEY.TRANSFER_FROM_DATE]: transferFromDate && moment(transferFromDate).format('YYYY-MM-DD'),
                 [TAB_RECEIVE_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
+                [TAB_RECEIVE_FILTER_KEY.TRANSFER_TO_DATE]: transferToDate && moment(transferToDate).format('YYYY-MM-DD'),
                 [TAB_RECEIVE_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
             })
@@ -443,9 +450,12 @@ const enhance = compose(
         },
 
         handleOpenPopoverDialog: props => (id, type) => {
-            const {dispatch, location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SROCK_POPVER_DIALOG_OPEN]: id, [TYPE]: type})})
+            const {dispatch, location: {pathname}, filter, setType} = props
+            hashHistory.push({pathname, query: filter.getParams({[SROCK_POPVER_DIALOG_OPEN]: id})})
+            setType(type)
             if (type === 'transfer') {
+                dispatch(stockReceiveOrderItemFetchAction(id))
+            } else if (type === 'stock_transfer') {
                 dispatch(stockReceiveOrderItemFetchAction(id))
             } else if (type === 'order_return') {
                 dispatch(orderReturnListAction(id))
@@ -491,7 +501,8 @@ const StockReceiveList = enhance((props) => {
         supplyDialogDataLoading,
         supplyDialogFilter,
         stockTransferDialogData,
-        stockTransferDialogDataLoading
+        stockTransferDialogDataLoading,
+        popoverType
     } = props
     const detailType = _.get(location, ['query', TYPE])
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
@@ -697,15 +708,14 @@ const StockReceiveList = enhance((props) => {
     }
 
     const popoverDialog = {
-        detailData,
-        type: detailType,
-        data: detail,
-        products: detailProducts,
-        loading: detailLoading,
+        type: popoverType,
+        data: popoverType === 'stock_transfer' ? stockTransferDialogData : null,
+        loading: stockTransferDialogDataLoading,
         open: popoverDialogOpen,
         handleOpenDialog: props.handleOpenPopoverDialog,
         onClose: props.handleClosePopoverDialog
     }
+
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 

@@ -102,7 +102,7 @@ const listHeader = [
         xs: 2
     },
     {
-        name: 'market',
+        name: 'by',
         sorting: true,
         title: 'От кого',
         xs: 3
@@ -114,8 +114,8 @@ const listHeader = [
         xs: 2
     },
     {
-        name: 'date',
         sorting: true,
+        name: 'date',
         title: 'Дата приемки',
         xs: 2
     },

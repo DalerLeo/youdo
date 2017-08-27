@@ -25,13 +25,14 @@ const listHeader = [
         xs: 4
     },
     {
+        sorting: true,
         name: 'amount',
         title: 'Кол-во',
         xs: 1
     },
     {
         sorting: true,
-        name: 'date',
+        name: 'createdDate',
         title: 'Дата',
         xs: 3
     },
@@ -134,7 +135,8 @@ const StockTabHistory = enhance((props) => {
                             ? <span className={classes.infoDialog} onClick={() => {
                                 supplyDialog.handleOpenStockSupplyDialog(parent)
                             }}>{parent}</span>
-                            : ((genericTypeUse === 'transfer' || genericTypeUse === 'delivery_return' || genericTypeUse === 'order_return')
+                            : ((genericTypeUse === 'stock_transfer' || genericTypeUse === 'transfer' ||
+                                genericTypeUse === 'delivery_return' || genericTypeUse === 'order_return')
                                 ? <span className={classes.infoDialog} onClick={() => {
                                     popoverDialog.handleOpenDialog(parent, genericTypeUse)
                                 }}>{parent}</span> : null)))}

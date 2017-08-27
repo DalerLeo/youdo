@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import GridList from '../GridList'
-import ReceiveFilterForm from './TabReceiveFilterForm'
+import TabTransferFilterForm from './TabTransferFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
@@ -15,12 +15,13 @@ const ZERO = 0
 const listHeader = [
     {
         sorting: true,
-        name: 'product',
+        name: 'id',
         title: '№ запроса',
         xs: 2
     },
     {
-        name: 'amount',
+        sorting: true,
+        name: 'dateRequest',
         title: 'Дата запроса',
         xs: 2
     },
@@ -37,7 +38,7 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'type',
+        name: 'dateDelivery',
         title: 'Дата передачи',
         xs: 2
     }
@@ -83,7 +84,7 @@ const StockTabTransfer = enhance((props) => {
     } = props
 
     const usersFilterDialog = (
-        <ReceiveFilterForm
+        <TabTransferFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
