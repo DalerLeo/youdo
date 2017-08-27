@@ -7,7 +7,6 @@ import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import CloseIcon2 from '../CloseIcon2'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
-import {Tabs, Tab} from 'material-ui/Tabs'
 
 const enhance = compose(
     injectSheet({
@@ -33,37 +32,16 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        content: {
+            padding: '15px 30px'
+        },
         image: {
             backgroundSize: 'cover !important',
             height: '250px',
+            margin: '-15px -30px 15px',
             '& img': {
                 width: '100%'
             }
-        },
-        tabs: {
-            '& > div': {
-                '&:first-child': {
-                    borderRadius: '2px',
-                    height: '52px',
-                    alignItems: 'center',
-                    '& button': {
-                        color: '#333 !important'
-                    }
-                },
-                '&:nth-child(2)': {
-                    marginTop: '-3px'
-                },
-                '&:last-child': {
-                    width: '100% !important'
-                }
-            },
-            '& button div div': {
-                textTransform: 'initial',
-                height: '52px !important'
-            }
-        },
-        tabContent: {
-            padding: '15px 30px'
         },
         title: {
             background: '#fff',
@@ -157,53 +135,42 @@ const TrackingShopDetails = enhance((props) => {
             </div>
             <div className={classes.content}>
                 {image}
-                <Tabs
-                    inkBarStyle={{backgroundColor: '#12aaeb', height: '3px'}}
-                    tabItemContainerStyle={{backgroundColor: '#fff', color: '#333'}}
-                    className={classes.tabs}
-                    contentContainerClassName={classes.tabContent}>
-                    <Tab label="Детали">
-                        <div className={classes.block}>
-                            <div className={classes.subtitle}>Детали</div>
-                            <div>
-                                <span>Клиент:</span>
-                                <span>{client}</span>
-                            </div>
-                            <div>
-                                <span>Тип заведения:</span>
-                                <span>{marketType}</span>
-                            </div>
-                            <div>
-                                <span>Частота посещений:</span>
-                                <span>{ freq === EVERY_DAY ? 'Каждый день' : (
-                                    freq === ONCE_IN_A_WEEK ? 'Раз в неделю' : (
-                                        freq === TWICE_IN_A_WEEK ? '2 раза в неделю' : (
-                                            freq === IN_A_DAY ? 'Через день' : ''
-                                        )
-                                    )
-                                )}</span>
-                            </div>
-                        </div>
-                        <div className={classes.block}>
-                            <div className={classes.subtitle}>Контакты</div>
-                            <div>
-                                <span>{contactName}</span>
-                                <span>{phone}</span>
-                            </div>
-                            <div>
-                                <span>Адрес:</span>
-                                <span>{address}</span>
-                            </div>
-                            <div>
-                                <span>Ориентир:</span>
-                                <span>{guide}</span>
-                            </div>
-                        </div>
-                    </Tab>
-                    <Tab label="Активность">
-
-                    </Tab>
-                </Tabs>
+                <div className={classes.block}>
+                    <div className={classes.subtitle}>Детали</div>
+                    <div>
+                        <span>Клиент:</span>
+                        <span>{client}</span>
+                    </div>
+                    <div>
+                        <span>Тип заведения:</span>
+                        <span>{marketType}</span>
+                    </div>
+                    <div>
+                        <span>Частота посещений:</span>
+                        <span>{ freq === EVERY_DAY ? 'Каждый день' : (
+                            freq === ONCE_IN_A_WEEK ? 'Раз в неделю' : (
+                                freq === TWICE_IN_A_WEEK ? '2 раза в неделю' : (
+                                    freq === IN_A_DAY ? 'Через день' : ''
+                                )
+                            )
+                        )}</span>
+                    </div>
+                </div>
+                <div className={classes.block}>
+                    <div className={classes.subtitle}>Контакты</div>
+                    <div>
+                        <span>{contactName}</span>
+                        <span>{phone}</span>
+                    </div>
+                    <div>
+                        <span>Адрес:</span>
+                        <span>{address}</span>
+                    </div>
+                    <div>
+                        <span>Ориентир:</span>
+                        <span>{guide}</span>
+                    </div>
+                </div>
             </div>
         </div>
     )
