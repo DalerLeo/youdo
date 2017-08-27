@@ -106,7 +106,7 @@ class TrackingDateField extends React.Component {
                                 background: '#5d6474'
                             },
                             DayActive: {
-                                background: '#8e44ad',
+                                background: '#98a1b7',
                                 boxShadow: 'none'
                             },
                             DayInRange: {

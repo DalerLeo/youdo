@@ -281,7 +281,7 @@ const TrackingWrapper = enhance((props) => {
                 {openDetail && <TrackingDatePicker
                     filter={filter}
                     calendar={calendar}
-                    filterForm={filterForm}/>}
+                    initialValues={filterForm.initialValues}/>}
 
                 {(today === urlDate) &&
                 <div className={classes.trackingInfoTitle}>

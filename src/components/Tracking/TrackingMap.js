@@ -57,7 +57,7 @@ const GoogleMapWrapper = enhance(({
     if (minute < TEN) {
         minute = '0' + minute
     }
-    const filterDate = _.toInteger(moment(moment(date).format('DD' + hour + ':' + minute)).format('x'))
+    const filterDate = _.toInteger(moment(moment(date).format('YYYY-MM-DD ' + hour + ':' + minute)).format('x'))
 
     const filterAgentLocation = _.filter(_.get(agentLocation, 'results'), (o) => {
         const regDate = _.toInteger(moment(_.get(o, 'registeredDate')).format('x'))

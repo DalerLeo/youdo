@@ -48,7 +48,7 @@ const navArrow = {
 }
 
 const TrackingDatePicker = enhance((props) => {
-    const {classes, filter, filterForm, calendar} = props
+    const {classes, filter, calendar} = props
     return (
         <div className={classes.titleDate}>
             <nav className={classes.prev}>
@@ -64,7 +64,6 @@ const TrackingDatePicker = enhance((props) => {
                 name="date"
                 className={classes.inputDateCustom}
                 filter={filter}
-                initialValues={filterForm.initialValues}
                 component={TrackingDateField}
                 fullWidth={true}
             />
