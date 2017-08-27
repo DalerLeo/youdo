@@ -14,6 +14,7 @@ import StockReturnDialog from '../StockReceive/StockReturnDialog'
 import StockSupplyDialog from '../StockReceive/StockSupplyDialog'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import InfoDialog from '../Statistics/StatSaleDialog'
+import PopoverDialog from './PopoverDialog'
 
 const ZERO = 0
 const listHeader = [
@@ -87,7 +88,8 @@ const StockTabHistory = enhance((props) => {
         classes,
         historyDialog,
         returnDialog,
-        supplyDialog
+        supplyDialog,
+        popoverDialog
     } = props
 
     const usersFilterDialog = (
@@ -110,6 +112,7 @@ const StockTabHistory = enhance((props) => {
         const date = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
         const parent = _.get(item, 'dParentId')
         const genericType = stockTypeFormat(_.get(item, ['generic', 'type']))
+        const genericTypeUse = _.get(item, ['generic', 'type'])
         const type = _.get(item, 'type')
         return (
             <Row key={id}>
@@ -120,11 +123,21 @@ const StockTabHistory = enhance((props) => {
                 <Col xs={3}>{date}</Col>
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{genericType} {_.get(item, ['generic', 'type']) === 'order transfer product'
-                                                    ? <span className={classes.infoDialog} onClick={() => { historyDialog.handleOpenHistoryDialog(parent) }}>{parent}</span>
-                                                        : (_.get(item, ['generic', 'type']) === 'order return accept'
-                    ? <span className={classes.infoDialog} onClick={() => { returnDialog.handleOpenStockReturnDialog(parent) }}>{parent}</span>
-                    : (_.get(item, ['generic', 'type']) === 'supply' ? <span className={classes.infoDialog} onClick={() => { supplyDialog.handleOpenStockSupplyDialog(parent) }}>{parent}</span>
-                    : null))}
+                        ? <span className={classes.infoDialog} onClick={() => {
+                            historyDialog.handleOpenHistoryDialog(parent)
+                        }}>{parent}</span>
+                        : (_.get(item, ['generic', 'type']) === 'order return accept'
+                        ? <span className={classes.infoDialog} onClick={() => {
+                            returnDialog.handleOpenStockReturnDialog(parent)
+                        }}>{parent}</span>
+                        : (_.get(item, ['generic', 'type']) === 'supply'
+                            ? <span className={classes.infoDialog} onClick={() => {
+                                supplyDialog.handleOpenStockSupplyDialog(parent)
+                            }}>{parent}</span>
+                            : ((genericTypeUse === 'transfer' || genericTypeUse === 'delivery_return' || genericTypeUse === 'order_return')
+                                ? <span className={classes.infoDialog} onClick={() => {
+                                    popoverDialog.handleOpenDialog(parent, genericTypeUse)
+                                }}>{parent}</span> : null)))}
                 </Col>
             </Row>
         )
@@ -141,8 +154,7 @@ const StockTabHistory = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={historyDetail}
-                filterDialog={usersFilterDialog}
-            />
+                filterDialog={usersFilterDialog}/>
 
             <InfoDialog
                 loading={_.get(listData, 'historyOrderLoading')}
@@ -164,6 +176,11 @@ const StockTabHistory = enhance((props) => {
                 data={_.get(supplyDialog, 'data') || {}}
                 loading={_.get(supplyDialog, 'loading')}
                 filter={_.get(supplyDialog, 'filter')}/>
+            <PopoverDialog
+                open={_.toNumber(_.get(popoverDialog, 'open')) > ZERO}
+                onClose={_.get(popoverDialog, 'onClose')}
+                popoverDialog={popoverDialog}
+                loading={_.get(popoverDialog, 'loading')}/>
         </div>
     )
 })
