@@ -199,10 +199,7 @@ const Tracking = enhance((props) => {
     const agentTrack = toBoolean(filter.getParam(TRACKING_FILTER_KEY.AGENT_TRACK)) || false
     const date = filter.getParam(TRACKING_FILTER_KEY.DATE)
 
-    let currentDate = moment().format('YYYY-MM-DD')
-    if (date) {
-        currentDate = date
-    }
+    const currentDate = !_.isEmpty(date) ? date : moment().format('YYYY-MM-DD')
 
     const tabData = {
         groupId,
