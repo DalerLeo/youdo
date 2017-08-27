@@ -365,7 +365,7 @@ const rootReducer = combineReducers({
     }),
     statProductMove: combineReducers({
         list: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_LIST),
-        item: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_ITEM)
+        sum: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_SUM)
     }),
     division: combineReducers({
         create: createThunkReducer(actionTypes.DIVISION_CREATE),

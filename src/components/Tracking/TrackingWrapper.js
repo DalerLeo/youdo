@@ -174,14 +174,22 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             margin: '0 -30px',
+            height: '40px',
             padding: '10px 30px',
             cursor: 'pointer',
+            position: 'relative',
             '& a': {
-                color: '#333',
-                marginRight: '5px'
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                bottom: '0',
+                right: '0',
+                padding: '0 30px',
+                color: '#333'
             },
             '& i': {
                 fontSize: '10px',
+                marginLeft: '5px',
                 color: '#999'
             },
             '& svg': {
@@ -197,7 +205,6 @@ const enhance = compose(
         }
     }),
     withState('sliderValue', 'setSliderValue', current)
-
 )
 
 const TrackingWrapper = enhance((props) => {
@@ -349,11 +356,13 @@ const TrackingWrapper = enhance((props) => {
 
                                 return (
                                     <div key={id} className={(id === agentId) ? classes.activeAgent : classes.agent}>
-                                        <Dot style={isOnline ? {color: '#81c784'} : {color: '#666'}}/>
                                         <Link to={{
                                             pathname: sprintf(ROUTES.TRACKING_ITEM_PATH, id),
                                             query: filter.getParams()
-                                        }}>{agent}</Link>
+                                        }}>
+                                        </Link>
+                                        <Dot style={isOnline ? {color: '#81c784'} : {color: '#666'}}/>
+                                        <span>{agent}</span>
                                         {!isOnline && <i>({lastSeen})</i>}
                                     </div>
                                 )
