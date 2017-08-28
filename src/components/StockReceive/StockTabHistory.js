@@ -127,7 +127,7 @@ const StockTabHistory = enhance((props) => {
                         ? <span className={classes.infoDialog} onClick={() => {
                             historyDialog.handleOpenHistoryDialog(parent)
                         }}>{parent}</span>
-                        : (_.get(item, ['generic', 'type']) === 'order return accept'
+                        : (_.get(item, ['generic', 'type']) === 'order return accept' || _.get(item, ['generic', 'type']) === 'order_return'
                         ? <span className={classes.infoDialog} onClick={() => {
                             returnDialog.handleOpenStockReturnDialog(parent)
                         }}>{parent}</span>

@@ -177,9 +177,7 @@ const StockReceiveDetails = enhance((props) => {
                         <div className={classes.closeDetail}
                              onClick={handleCloseDetail}>
                         </div>
-                        <Row
-                            className={classes.semibold}
-                            style={history ? {lineHeight: '48px'} : {}}>
+                        <Row className={classes.semibold} tyle={history ? {lineHeight: '48px'} : {}}>
                             <Col xs={2}>{id}</Col>
                             {by ? <Col xs={3}>{by}</Col> : null}
                             <Col xs={2}>{formattedType}</Col>
@@ -188,92 +186,84 @@ const StockReceiveDetails = enhance((props) => {
                                 {stockName}
                             </Col>
                             <Col xs={1}>
-                                {popover ? <IconButton onTouchTap={onClose}><CloseIcon2 color="#666666"/></IconButton>
-                                    : <div className={classes.titleButtons}>
-                                        {!history && (type === 'transfer')
+                                <div className={classes.titleButtons}>
+                                    {!history && (type === 'transfer')
+                                        ? <Tooltip position="right" text={tooltipText}>
+                                            <IconButton
+                                                iconStyle={iconStyle.icon}
+                                                style={iconStyle.button}
+                                                touch={true}
+                                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(APPROVE) }}>
+                                                <CheckCircleIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                        : (!history && type === 'delivery_return')
                                             ? <Tooltip position="right" text={tooltipText}>
                                                 <IconButton
                                                     iconStyle={iconStyle.icon}
                                                     style={iconStyle.button}
                                                     touch={true}
-                                                    onTouchTap={() => {
-                                                        confirmDialog.handleOpenConfirmDialog(APPROVE)
-                                                    }}>
-                                                    <CheckCircleIcon/>
+                                                    onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(DELIVERY) }}>
+                                                    <CheckCircleIcon />
                                                 </IconButton>
                                             </Tooltip>
-                                            : (!history && type === 'delivery_return')
+                                            : (!history && type === 'order_return')
                                                 ? <Tooltip position="right" text={tooltipText}>
                                                     <IconButton
                                                         iconStyle={iconStyle.icon}
                                                         style={iconStyle.button}
                                                         touch={true}
-                                                        onTouchTap={() => {
-                                                            confirmDialog.handleOpenConfirmDialog(DELIVERY)
-                                                        }}>
-                                                        <CheckCircleIcon/>
+                                                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(RETURN) }}>
+                                                        <CheckCircleIcon />
                                                     </IconButton>
                                                 </Tooltip>
-                                                : (!history && type === 'order_return')
-                                                    ? <Tooltip position="right" text={tooltipText}>
-                                                        <IconButton
-                                                            iconStyle={iconStyle.icon}
-                                                            style={iconStyle.button}
-                                                            touch={true}
-                                                            onTouchTap={() => {
-                                                                confirmDialog.handleOpenConfirmDialog(RETURN)
-                                                            }}>
-                                                            <CheckCircleIcon/>
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    : (type === 'supply')
-                                                        ? (!history
-                                                            ? <Tooltip position="right" text={tooltipText}>
-                                                                <IconButton
-                                                                    iconStyle={iconStyle.icon}
-                                                                    style={iconStyle.button}
-                                                                    touch={true}
-                                                                    onTouchTap={() => {
-                                                                        createDialog.handleOpenCreateDialog()
-                                                                    }}>
-                                                                    <CheckCircleIcon/>
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                            : <Tooltip position="right" text={tooltipUpdateText}>
-                                                                <IconButton
-                                                                    iconStyle={iconStyle.icon}
-                                                                    style={iconStyle.button}
-                                                                    touch={true}
-                                                                    onTouchTap={() => {
-                                                                        updateDialog.handleOpenUpdateDialog()
-                                                                    }}>
-                                                                    <EditIcon/>
-                                                                </IconButton>
-                                                            </Tooltip>)
-                                                        : null
-                                        }
+                                                : (type === 'supply')
+                                                    ? (!history
+                                                        ? <Tooltip position="right" text={tooltipText}>
+                                                            <IconButton
+                                                                iconStyle={iconStyle.icon}
+                                                                style={iconStyle.button}
+                                                                touch={true}
+                                                                onTouchTap={() => { createDialog.handleOpenCreateDialog() }}>
+                                                                <CheckCircleIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        : <Tooltip position="right" text={tooltipUpdateText}>
+                                                            <IconButton
+                                                                iconStyle={iconStyle.icon}
+                                                                style={iconStyle.button}
+                                                                touch={true}
+                                                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
+                                                                <EditIcon />
+                                                            </IconButton>
+                                                        </Tooltip>)
+                                                    : null
+                                    }
 
-                                        {!history && type === 'transfer' &&
-                                        <Tooltip position="right" text={tooltipCancelText}>
-                                            <IconButton
-                                                iconStyle={iconStyle.icon}
-                                                style={iconStyle.button}
-                                                onTouchTap={() => {
-                                                    confirmDialog.handleOpenConfirmDialog(CANCEL)
-                                                }}
-                                                touch={true}>
-                                                <RemoveCircleIcon/>
-                                            </IconButton>
-                                        </Tooltip>
-                                        }
-                                    </div>}
-
+                                    {!history && type === 'transfer' &&
+                                    <Tooltip position="right" text={tooltipCancelText}>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
+                                            touch={true}>
+                                            <RemoveCircleIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    }
+                                    {
+                                        popover && <IconButton onTouchTap={onClose}>
+                                            <CloseIcon2 color="#666666"/>
+                                        </IconButton>
+                                    }
+                                </div>
                             </Col>
+
                         </Row>
                     </div>
                     <div className={classes.content}>
                         <div className={classes.leftSide}>
-                            <Row className='dottedList'>
+                            <Row className='dottedList' style={{padding: '15px 30px'}}>
                                 <Col xs={6}>Товар</Col>
                                 <Col xs={4}>Тип товара</Col>
                                 <Col xs={2}>Кол-во</Col>

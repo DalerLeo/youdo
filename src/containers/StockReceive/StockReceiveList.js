@@ -100,7 +100,9 @@ const enhance = compose(
         const supplyDialogData = _.get(state, ['supply', 'item', 'data'])
         const supplyDialogDataLoading = _.get(state, ['supply', 'item', 'loading'])
         const stockTransferDialogData = _.get(state, ['stockReceive', 'stockTransfer', 'data'])
-        const stockTransferDialogDataLoading = _.get(state, ['cashbox', 'pending', 'loading'])
+        const stockTransferDialogDataLoading = _.get(state, ['stockReceive', 'stockTransfer', 'loading'])
+        const stockDeliveryReturnDialogData = _.get(state, ['stockReceive', 'transferItem', 'data'])
+        const stockDeliveryReturnDialogDataLoading = _.get(state, ['stockReceive', 'transferItem', 'loading'])
         const supplyDialogFilter = filterHelper(supplyDialogData, pathname, query, {
             'page': 'dPage',
             'pageSize': 'dPageSize'
@@ -138,7 +140,9 @@ const enhance = compose(
             supplyDialogDataLoading,
             supplyDialogFilter,
             stockTransferDialogData,
-            stockTransferDialogDataLoading
+            stockTransferDialogDataLoading,
+            stockDeliveryReturnDialogData,
+            stockDeliveryReturnDialogDataLoading
         }
     }),
 
@@ -502,6 +506,8 @@ const StockReceiveList = enhance((props) => {
         supplyDialogFilter,
         stockTransferDialogData,
         stockTransferDialogDataLoading,
+        stockDeliveryReturnDialogData,
+        stockDeliveryReturnDialogDataLoading,
         popoverType
     } = props
     const detailType = _.get(location, ['query', TYPE])
@@ -709,8 +715,10 @@ const StockReceiveList = enhance((props) => {
 
     const popoverDialog = {
         type: popoverType,
-        data: popoverType === 'stock_transfer' ? stockTransferDialogData : null,
-        loading: stockTransferDialogDataLoading,
+        data: popoverType === 'stock_transfer' || popoverType === 'transfer' ? stockTransferDialogData
+            : (popoverType === 'delivery_return' ? stockDeliveryReturnDialogData : null),
+        loading: popoverType === 'stock_transfer' || popoverType === 'transfer' ? stockTransferDialogDataLoading
+            : (popoverType === 'delivery_return' ? stockDeliveryReturnDialogDataLoading : null),
         open: popoverDialogOpen,
         handleOpenDialog: props.handleOpenPopoverDialog,
         onClose: props.handleClosePopoverDialog
