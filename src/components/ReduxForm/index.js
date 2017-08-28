@@ -55,7 +55,7 @@ import PriceMainRadioButton from './PriceMainRadioButton'
 import normalizeDiscount from './normalizers/normalizeDiscount'
 import normalizeNumber from './normalizers/normalizeNumber'
 import ZoneSearchField from './ZoneSearchField'
-import InOutTypeSearchFiled from './InOutTypeSearchFiled'
+import InOutTypeSearchField from './InOutTypeSearchFiled'
 import RemainderProductTypeSearchField from './Remainder/RemainderProductTypeSearchField'
 import PositionSearchField from './PositionSearchField'
 import DivisionSearchField from './DivisionSearchField'
@@ -66,6 +66,7 @@ import ReturnStatusSearchField from './ReturnStatusSearchField'
 import ReturnTypeSearchField from './ReturnTypeSearchField'
 import ChipField from './Basic/ChipField'
 import CustomChipField from './Basic/CustomChipField'
+import OrderTransferTypeSearchField from './OrderTransferTypeSearchFiled'
 
 export {
     ReturnStatusSearchField,
@@ -127,7 +128,7 @@ export {
     PricesBonusProductField,
     ProductTypeParentSearchField,
     ProductTypeChildSearchField,
-    InOutTypeSearchFiled,
+    InOutTypeSearchField,
     RemainderProductTypeSearchField,
     PositionSearchField,
     DivisionSearchField,
@@ -135,5 +136,6 @@ export {
     ClientBalanceReturnTotalSum,
     ClientBalanceReturnProductList,
     ChipField,
-    CustomChipField
+    CustomChipField,
+    OrderTransferTypeSearchField
 }

@@ -4,8 +4,6 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../CloseIcon2'
-import IconButton from 'material-ui/IconButton'
 import StockReceiveDetails from './StockReceiveDetails'
 import CircularProgress from 'material-ui/CircularProgress'
 
@@ -147,7 +145,6 @@ const PopoverDialog = enhance((props) => {
         loading,
         popoverDialog
     } = props
-    const id = _.get(popoverDialog, 'id')
     return (
         <Dialog
             modal={true}
@@ -160,22 +157,13 @@ const PopoverDialog = enhance((props) => {
             {loading ? <div className={classes.loader}>
                     <CircularProgress/>
                 </div>
-                : <div>
-                    <div className={classes.titleContent}>
-                        <div>
-                            <div>№{id}</div>
-                        </div>
-                        <IconButton onTouchTap={onClose}>
-                            <CloseIcon2 color="#666666"/>
-                        </IconButton>
-                    </div>
-                    <div className={classes.content}>
-                        <StockReceiveDetails
-                            detailData={_.get(popoverDialog, 'detailData')}
-                            loading={_.get(popoverDialog, 'loading')}
-                            history={false}
-                        />
-                    </div>
+                : <div className={classes.content}>
+                    <StockReceiveDetails
+                        detailData={popoverDialog}
+                        loading={_.get(popoverDialog, 'loading')}
+                        history={false}
+                        popover={true}
+                    />
                 </div>}
         </Dialog>
     )

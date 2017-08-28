@@ -11,8 +11,8 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     DateToDateField,
-    InOutTypeSearchFiled,
-    StockSearchField
+    StockSearchField,
+    OrderTransferTypeSearchField
 } from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -20,6 +20,8 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 export const TAB_TRANSFER_FILTER_KEY = {
     TYPE: 'type',
     FROM_DATE: 'fromDate',
+    TRANSFER_FROM_DATE: 'transferFromData',
+    TRANSFER_TO_DATE: 'transferToData',
     TO_DATE: 'toDate',
     STOCK: 'stock'
 }
@@ -156,7 +158,7 @@ const TabTransferFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitTabReceiveFilterDialog)}>
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
@@ -169,8 +171,16 @@ const TabTransferFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="type"
-                            component={InOutTypeSearchFiled}
+                            component={OrderTransferTypeSearchField}
                             label="Тип"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="transferDate"
+                            component={DateToDateField}
+                            label="Дата передачи"
                             fullWidth={true}/>
                     </div>
                     <div>
