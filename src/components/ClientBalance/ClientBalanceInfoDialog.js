@@ -15,6 +15,10 @@ import Pagination from '../ReduxForm/Pagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
+import * as ROUTES from '../../constants/routes'
+import {Link} from 'react-router'
+import sprintf from 'sprintf'
+
 import {
     PAYMENT,
     CANCEL,
@@ -120,7 +124,10 @@ const enhance = compose(
                 margin: '0',
                 padding: '15px 0',
                 '& > div': {
-                    padding: '0 0.5rem'
+                    padding: '0 0.5rem',
+                    '& a': {
+                        fontWeight: '600'
+                    }
                 },
                 '& > div:first-child': {
                     display: 'flex',
@@ -156,7 +163,6 @@ const iconStyle = {
         }
     }
 }
-
 const ClientBalanceInfoDialog = enhance((props) => {
     const {open, filterItem, onClose, classes, detailData, name, balance, paymentType} = props
     const ZERO = 0
@@ -179,20 +185,22 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>
                     {(amount > ZERO) ? <ArrowUpIcon color="#92ce95"/> : <ArrowDownIcon color="#e27676"/>}
                 </div>
-                <div style={{flexBasis: '7%', maxWidth: '7%'}}>{(_.get(item, 'order')) ? 'З-' : 'Т-'}{id}</div>
                 <div style={{flexBasis: '16%', maxWidth: '16%'}}>{createdDate}</div>
-                <div style={{flexBasis: '18%', maxWidth: '18%'}}>{user}</div>
-                <div style={{flexBasis: '40%', maxWidth: '40%'}}>
+                <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
+                <div style={{flexBasis: '45%', maxWidth: '45%'}}>
                     <div>Магазин: <span>{market}</span></div>
                     <div>Коментария: <span>{comment}</span></div>
                     <div>Тип: <span>{type === PAYMENT ? 'Оплата'
-                                        : type === CANCEL ? 'Отмена'
-                                            : type === CANCEL_ORDER ? 'Отмена заказа'
-                                                : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
-                                                    : type === ORDER ? 'Заказ'
-                                                        : type === EXPENSE ? 'Расход'
-                                                            : type === ORDER_RETURN ? 'Возврат заказа'
-                                                                : type === FIRST_BALANCE ? 'Первый баланс' : null }</span></div>
+                        : type === CANCEL ? 'Отмена'
+                            : type === CANCEL_ORDER ? 'Отмена заказа'
+                                : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
+                                    : type === ORDER ? <Link to={{
+                                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                                        query: {startsWith: id}
+                                    }} target="_blank">Заказ {id}</Link>
+                                        : type === EXPENSE ? 'Расход'
+                                            : type === ORDER_RETURN ? 'Возврат заказа'
+                                                : type === FIRST_BALANCE ? 'Первый баланс' : null }</span></div>
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>
@@ -220,8 +228,8 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 </IconButton>
             </div>
             {loading ? <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
-                </div>
+                <CircularProgress size={40} thickness={4}/>
+            </div>
                 : <div className={classes.bodyContent}>
                     <div className={classes.infoBlock}>
                         <div className={classes.info}>
@@ -231,7 +239,8 @@ const ClientBalanceInfoDialog = enhance((props) => {
                             </div>
                             <div>
                                 <span>Баланс {paymentType}</span>
-                                <div className={balance > ZERO ? classes.green : (balance < ZERO ? classes.red : classes.black)}>{numberFormat(balance, currentCurrency)}</div>
+                                <div
+                                    className={balance > ZERO ? classes.green : (balance < ZERO ? classes.red : classes.black)}>{numberFormat(balance, currentCurrency)}</div>
                             </div>
                         </div>
                         <Pagination filter={filterItem}/>
@@ -240,14 +249,14 @@ const ClientBalanceInfoDialog = enhance((props) => {
                         <Row>
                             <div style={{flexBasis: '4%', maxWidth: '4%'}}>
                             </div>
-                            <div style={{flexBasis: '7%', maxWidth: '7%'}}>Код</div>
                             <div style={{flexBasis: '16%', maxWidth: '16%'}}>Дата</div>
-                            <div style={{flexBasis: '18%', maxWidth: '18%'}}>Кто</div>
-                            <div style={{flexBasis: '40%', maxWidth: '40%'}}>Описание</div>
+                            <div style={{flexBasis: '20%', maxWidth: '20%'}}>Кто</div>
+                            <div style={{flexBasis: '45%', maxWidth: '45%'}}>Описание</div>
                             <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Сумма</div>
                         </Row>
 
-                        {!_.isEmpty(_.get(detailData, 'data')) ? detailList : <div style={{padding: '20px 30px', textAlign: 'center'}}>Пока транзакции нет</div>}
+                        {!_.isEmpty(_.get(detailData, 'data')) ? detailList
+                            : <div style={{padding: '20px 30px', textAlign: 'center'}}>Пока транзакции нет</div>}
                     </div>
                 </div>
             }
