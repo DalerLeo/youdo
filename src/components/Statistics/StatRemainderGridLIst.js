@@ -18,6 +18,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat.js'
+import NotFound from '../Images/not-found.png'
 
 export const STAT_REMAINDER_FILTER_KEY = {
     STOCK: 'stock',
@@ -177,6 +178,19 @@ const enhance = compose(
             '& input': {
                 marginTop: '0 !important'
             }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
     reduxForm({
@@ -270,11 +284,7 @@ const StatRemainderGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_REMAINDER_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    {listLoading
-                    ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4} />
-                    </div>
-                    : <div className={classes.wrapper}>
+                    <div className={classes.wrapper}>
                         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                             <div className={classes.filter}>
                                 <Field
@@ -308,12 +318,24 @@ const StatRemainderGridList = enhance((props) => {
                                 <Excel color="#fff"/> <span>Excel</span>
                             </a>
                         </form>
-                        <Pagination filter={filter}/>
-                        <div className={classes.tableWrapper}>
-                            {headers}
-                            {list}
+                        {listLoading
+                        ? <div className={classes.loader}>
+                            <CircularProgress size={40} thickness={4} />
                         </div>
-                    </div>}
+                        : (_.isEmpty(list) && !listLoading)
+                            ? <div className={classes.emptyQuery}>
+                                <div>По вашему запросу ничего не найдено</div>
+                            </div>
+                            : <div>
+                                <Pagination filter={filter}/>
+
+                                <div className={classes.tableWrapper}>
+                                {headers}
+                                {list}
+                                </div>
+                              </div>
+                        }
+                    </div>
                 </div>
             </Row>
         </div>

@@ -52,9 +52,7 @@ const enhance = compose(
             height: 'calc(100% - 40px)',
             padding: '20px 30px',
             '& > div:nth-child(2)': {
-                marginTop: '10px',
-                borderTop: '1px #efefef solid',
-                borderBottom: '1px #efefef solid'
+                marginTop: '10px'
             },
             '& .row': {
                 margin: '0 !important'
@@ -178,6 +176,8 @@ const enhance = compose(
             }
         },
         summary: {
+            borderTop: 'solid 1px #efefef',
+            borderBottom: 'solid 1px #efefef',
             padding: '14px 0',
             color: '#666',
             '& > div': {
@@ -403,64 +403,67 @@ const StatMarketGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_MARKET_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    {listLoading
-                        ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
-                        </div>
-                        : <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={ handleSubmitFilterDialog }>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Подразделение"
-                                        fullWidth={true}
-                                    />
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="search"
-                                        component={TextField}
-                                        label="Магазин"
-                                        fullWidth={true}/>
+                     <div className={classes.wrapper}>
+                        <form className={classes.form} onSubmit={ handleSubmitFilterDialog }>
+                            <div className={classes.filter}>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="date"
+                                    component={DateToDateField}
+                                    label="Диапазон дат"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="division"
+                                    component={DivisionSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Подразделение"
+                                    fullWidth={true}
+                                />
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="search"
+                                    component={TextField}
+                                    label="Магазин"
+                                    fullWidth={true}/>
 
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
-                                </div>
-                                <a className={classes.excel}
-                                   onClick={getDocument.handleGetDocument}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
-                            <div className={classes.summary}>Сумма от продаж
-                                <div>
-                                    {numberFormat(sumData, getConfig('PRIMARY_CURRENCY'))}
-                                </div>
+                                <IconButton
+                                    className={classes.searchButton}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    type="submit">
+                                    <Search/>
+                                </IconButton>
                             </div>
-                            <div className={classes.pagination}>
-                                <div>Продажи по магазинам в зоне</div>
-                                <Pagination filter={filter}/>
-                            </div>
-                            {(_.isEmpty(list) && !listLoading && sumLoading) ? <div className={classes.emptyQuery}>
-                                <div>По вашему запросу ничего не найдено</div>
-                            </div>
-                                : <div className={classes.tableWrapper}>
-                                    {headers}
-                                    {list}
+                            <a className={classes.excel}
+                               onClick={getDocument.handleGetDocument}>
+                                <Excel color="#fff"/> <span>Excel</span>
+                            </a>
+                        </form>
+
+                        {listLoading
+                             ? <div className={classes.loader}>
+                                 <CircularProgress size={40} thickness={4}/>
+                             </div>
+                             : (_.isEmpty(list) && sumLoading && !listLoading)
+                                ? <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                  </div>
+                                : <div>
+                                    <div className={classes.summary}>Сумма от продаж
+                                        <div>
+                                            {numberFormat(sumData, getConfig('PRIMARY_CURRENCY'))}
+                                        </div>
+                                    </div>
+                                    <div className={classes.pagination}>
+                                        <div>Продажи по магазинам в зоне</div>
+                                        <Pagination filter={filter}/>
+                                    </div>
+                                    <div className={classes.tableWrapper}>
+                                        {headers}
+                                        {list}
+                                    </div>
                                 </div>}
-                        </div>
-                    }
+                     </div>
                 </div>
             </Row>
         </div>

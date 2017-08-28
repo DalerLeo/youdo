@@ -12,7 +12,7 @@ import * as serializers from '../../serializers/Statistics/statProductSerializer
 import getDocuments from '../../helpers/getDocument'
 
 import {StatProductGridList} from '../../components/Statistics'
-import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/StatProductGridList'
+import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/StatProductFilterForm'
 import {
     statProductListFetchAction
 } from '../../actions/statProduct'

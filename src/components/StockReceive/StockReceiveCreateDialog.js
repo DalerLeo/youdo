@@ -255,10 +255,9 @@ const OrderCreateDialog = enhance((props) => {
                                             <Col xs={3}>{name}</Col>
                                             <Col xs={2}>{type}</Col>
                                             <Col xs={2}>{amount} {measurement}</Col>
-                                            <Col xs={1}>
+                                            <Col xs={1} onTouchTap={() => { handleCheckedForm(index, _.get(item, 'amount'), disable) }}>
                                                 <Tooltip position="left" text='Без браков'>
                                                     <Field
-                                                        onTouchTap={() => { handleCheckedForm(index, _.get(item, 'amount'), disable) }}
                                                         key={id}
                                                         name={'stocks[' + index + '][selected]'}
                                                         component={CheckBox}/>
