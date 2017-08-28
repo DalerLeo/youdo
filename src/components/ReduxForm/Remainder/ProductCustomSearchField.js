@@ -10,7 +10,7 @@ import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
 const getOptions = (search, type, stock) => {
-    return axios().get(`${PATH.PRODUCT_MOBILE}?type=${type || ''}&page_size=1000&stock=${stock || ''}&search=${search || ''}`)
+    return axios().get(`${PATH.PRODUCT_FOR_SELECT_LIST}?type=${type || ''}&page_size=1000&stock=${stock || ''}&search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
