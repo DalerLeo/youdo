@@ -6,6 +6,7 @@ export const AUTH_CONFIRM = 'AUTH_CONFIRM'
 
 export const SHOP_LIST = 'SHOP_LIST'
 export const SHOP_ITEM = 'SHOP_ITEM'
+export const SHOP_EXTRA = 'SHOP_EXTRA'
 export const SHOP_UPDATE = 'SHOP_UPDATE'
 export const SHOP_CREATE = 'SHOP_CREATE'
 export const SHOP_DELETE = 'SHOP_DELETE'

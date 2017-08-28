@@ -61,6 +61,7 @@ import {StockReceiveList} from '../containers/StockReceive'
 import {PlanList} from '../containers/Plan'
 import {ActivityList} from '../containers/Activity'
 import {DivisionList} from '../containers/Division'
+import {JoinList} from '../containers/Join'
 
 export default {
     path: '/',
@@ -633,6 +634,17 @@ export default {
                 {
                     path: ROUTES.DIVISION_ITEM_URL,
                     component: userIsAuth(DivisionList)
+                }
+            ]
+        },
+        // Join
+        {
+            path: ROUTES.JOIN_LIST_URL,
+            component: userIsAuth(JoinList),
+            childRoutes: [
+                {
+                    path: ROUTES.JOIN_ITEM_URL,
+                    component: userIsAuth(JoinList)
                 }
             ]
         },

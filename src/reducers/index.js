@@ -18,6 +18,7 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.SHOP_CREATE),
         list: createThunkReducer(actionTypes.SHOP_LIST),
         item: createThunkReducer(actionTypes.SHOP_ITEM),
+        extra: createStandardReducer(actionTypes.SHOP_EXTRA),
         update: createThunkReducer(actionTypes.SHOP_UPDATE),
         image: createThunkReducer(actionTypes.SHOP_ITEM_ADD_IMAGE),
         gallery: createThunkReducer(actionTypes.SHOP_ITEM_SHOW_IMAGE)
