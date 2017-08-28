@@ -190,7 +190,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                                             : type === CANCEL_ORDER ? 'Отмена заказа'
                                                 : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
                                                     : type === ORDER ? 'Заказ'
-                                                        : type === EXPENSE ? 'Расходь'
+                                                        : type === EXPENSE ? 'Расход'
                                                             : type === ORDER_RETURN ? 'Возврат заказа'
                                                                 : type === FIRST_BALANCE ? 'Первый баланс' : null }</span></div>
                 </div>

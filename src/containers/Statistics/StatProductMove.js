@@ -49,9 +49,7 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() &&
-            (!_.get(props, ['params', 'statProductMoveId'])) &&
-            (!_.get(nextProps, ['params', 'statProductMoveId']))
+        return props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statProductMoveListFetchAction(filter))
         dispatch(statProductMoveSumFetchAction(filter))
@@ -76,15 +74,13 @@ const enhance = compose(
             event.preventDefault()
             const {filter, filterForm} = props
 
-            const search = _.get(filterForm, ['values', 'search']) || null
-            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
-                [STAT_PRODUCT_MOVE_FILTER_KEY.SEARCH]: search,
-                [STAT_PRODUCT_MOVE_FILTER_KEY.DIVISION]: division,
-                [STAT_PRODUCT_MOVE_FILTER_KEY.ZONE]: zone,
+                [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE]: type,
+                [STAT_PRODUCT_MOVE_FILTER_KEY.STOCK]: stock,
                 [STAT_PRODUCT_MOVE_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_PRODUCT_MOVE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
