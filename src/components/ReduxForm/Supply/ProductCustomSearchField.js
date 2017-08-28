@@ -18,7 +18,7 @@ const getOptions = (search, type) => {
 
 const setMeasurementAction = (data, loading) => {
     return {
-        type: actionTypes.PRODUCT_MEASUREMENT,
+        type: actionTypes.SHOP_ITEM,
         data: data,
         loading: loading
     }
@@ -28,7 +28,7 @@ const getItem = (id, dispatch) => {
     dispatch(setMeasurementAction(null, true))
     return axios().get(sprintf(PATH.PRODUCT_MOBILE_ITEM, _.get(id, 'id')))
         .then(({data}) => {
-            dispatch(setMeasurementAction(_.get(data, ['measurement', 'name']), false))
+            dispatch(setMeasurementAction(data, false))
             return Promise.resolve(toCamelCase(data))
         })
 }

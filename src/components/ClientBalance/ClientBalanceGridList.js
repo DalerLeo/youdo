@@ -228,6 +228,7 @@ const ClientBalanceGridList = enhance((props) => {
                 detailData={detailData}
                 onClose={infoDialog.handleCloseInfoDialog}
                 filterItem={filterItem}
+                filter={filter}
                 name={_.get(client, 'name')}
                 paymentType={paymentType}
                 balance={balance}

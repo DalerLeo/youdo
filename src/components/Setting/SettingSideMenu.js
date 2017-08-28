@@ -74,7 +74,8 @@ const SettingSideMenu = enhance((props) => {
                 {name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL},
                 {name: 'Склады', url: ROUTES.STOCK_LIST_URL},
                 {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL},
-                {name: 'Подразделение', url: ROUTES.DIVISION_LIST_URL}
+                {name: 'Подразделение', url: ROUTES.DIVISION_LIST_URL},
+                {name: 'Объединение', url: ROUTES.JOIN_LIST_URL}
 
             ]
         }
