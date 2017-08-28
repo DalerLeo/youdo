@@ -6,28 +6,14 @@ import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
-import {TextField, DivisionSearchField} from '../ReduxForm'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import ZoneSearchField from '../ReduxForm/ZoneSearchField'
 import StatAgentDialog from './StatAgentDialog'
 import StatSideMenu from './StatSideMenu'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat.js'
 import getConfig from '../../helpers/getConfig'
 import NotFound from '../Images/not-found.png'
-
-export const STAT_AGENT_FILTER_KEY = {
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate',
-    ZONE: 'zone',
-    DIVISION: 'division',
-    SEARCH: 'search'
-}
+import StatAgentFilterForm from './StatAgentFilterForm'
 
 const enhance = compose(
     injectSheet({
@@ -199,10 +185,6 @@ const enhance = compose(
             cursor: 'pointer'
         }
     }),
-    reduxForm({
-        form: 'StatAgentFilterForm',
-        enableReinitialize: true
-    }),
 )
 
 const StatAgentGridList = enhance((props) => {
@@ -213,7 +195,8 @@ const StatAgentGridList = enhance((props) => {
         filter,
         handleSubmitFilterDialog,
         detailData,
-        getDocument
+        getDocument,
+        initialValues
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -222,18 +205,6 @@ const StatAgentGridList = enhance((props) => {
         backgroundColor: '#fff',
         fontWeight: '600',
         color: '#666'
-    }
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
     }
 
     const headers = (
@@ -293,46 +264,10 @@ const StatAgentGridList = enhance((props) => {
                             <CircularProgress size={40} thickness={4}/>
                         </div>
                         : <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="zone"
-                                        component={ZoneSearchField}
-                                        label="Зона"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Подразделение"
-                                        fullWidth={true}
-                                    />
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="search"
-                                        component={TextField}
-                                        label="Поиск"
-                                        fullWidth={true}/>
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
-                                </div>
-                                <a className={classes.excel}
-                                   onClick={getDocument.handleGetDocument}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
+                            <StatAgentFilterForm
+                                onSubmit={handleSubmitFilterDialog}
+                                initialValues={initialValues}
+                                getDocument={getDocument}/>
                             <Pagination filter={filter}/>
                             {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
                                 <div>По вашему запросу ничего не найдено</div>
