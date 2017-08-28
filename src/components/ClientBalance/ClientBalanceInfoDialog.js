@@ -112,7 +112,7 @@ const enhance = compose(
             overflowY: 'auto',
             overflowX: 'hidden',
             width: '100%',
-            padding: '0 30px 10px',
+            padding: '0 30px',
             '& span': {
                 fontWeight: '600'
             },
@@ -247,7 +247,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                             <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Сумма</div>
                         </Row>
 
-                        {balance ? detailList : <div style={{padding: '20px 30px', textAlign: 'center'}}>Пока транзакции нет</div>}
+                        {!_.isEmpty(_.get(detailData, 'data')) ? detailList : <div style={{padding: '20px 30px', textAlign: 'center'}}>Пока транзакции нет</div>}
                     </div>
                 </div>
             }
