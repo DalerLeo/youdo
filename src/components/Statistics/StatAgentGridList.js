@@ -256,28 +256,28 @@ const StatAgentGridList = enhance((props) => {
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_AGENT_URL}/>
+                     <StatSideMenu currentUrl={ROUTES.STATISTICS_AGENT_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
+                    <div className={classes.wrapper}>
+                        <StatAgentFilterForm
+                            onSubmit={handleSubmitFilterDialog}
+                            initialValues={initialValues}
+                            getDocument={getDocument}/>
+                        <Pagination filter={filter}/>
                     {listLoading
                         ? <div className={classes.loader}>
                             <CircularProgress size={40} thickness={4}/>
                         </div>
-                        : <div className={classes.wrapper}>
-                            <StatAgentFilterForm
-                                onSubmit={handleSubmitFilterDialog}
-                                initialValues={initialValues}
-                                getDocument={getDocument}/>
-                            <Pagination filter={filter}/>
-                            {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                        : (_.isEmpty(list))
+                            ? <div className={classes.emptyQuery}>
                                 <div>По вашему запросу ничего не найдено</div>
                             </div>
-                                : <div className={classes.tableWrapper}>
-                                    {headers}
-                                    {list}
-                                </div>}
-                        </div>
-                    }
+                            : <div className={classes.tableWrapper}>
+                                {headers}
+                                {list}
+                            </div>}
+                    </div>
                 </div>
             </Row>
         </div>

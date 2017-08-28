@@ -409,11 +409,7 @@ const StatCashboxGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_CASHBOX_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    {listLoading
-                        ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
-                        </div>
-                        : <div className={classes.wrapper}>
+                     <div className={classes.wrapper}>
                             <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
                                 <div className={classes.filter}>
                                     <Field
@@ -448,31 +444,38 @@ const StatCashboxGridList = enhance((props) => {
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>
-                            <div className={classes.balances}>
-                                <div className={classes.balanceItem}>
-                                    <span>Баланс на начало периода</span>
-                                    <div>{numberFormat(startBalance, primaryCurrency)}</div>
-                                </div>
-                                <div className={classes.balanceItem}>
-                                    <span>Расход за период</span>
-                                    <div>{numberFormat(expense, primaryCurrency)}</div>
-                                </div>
-                                <div className={classes.balanceItem}>
-                                    <span>Доход за период</span>
-                                    <div>{numberFormat(income, primaryCurrency)}</div>
-                                </div>
-                                <div className={classes.balanceItem}>
-                                    <span>Баланс на конец периода</span>
-                                    <div>{numberFormat(endBalance, primaryCurrency)}</div>
-                                </div>
-                            </div>
-                            {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
-                                <div>По вашему запросу ничего не найдено</div>
-                            </div>
-                                : <div className={classes.cashboxWrapper}>
-                                    {list}
-                                </div>}
-                        </div>}
+                            {listLoading
+                            ? <div className={classes.loader}>
+                                 <CircularProgress size={40} thickness={4}/>
+                              </div>
+                            : _.isEmpty(list)
+                                 ? <div className={classes.emptyQuery}>
+                                     <div>По вашему запросу ничего не найдено</div>
+                                   </div>
+                                 : <div>
+                                     <div className={classes.balances}>
+                                         <div className={classes.balanceItem}>
+                                             <span>Баланс на начало периода</span>
+                                             <div>{numberFormat(startBalance, primaryCurrency)}</div>
+                                         </div>
+                                         <div className={classes.balanceItem}>
+                                             <span>Расход за период</span>
+                                             <div>{numberFormat(expense, primaryCurrency)}</div>
+                                         </div>
+                                         <div className={classes.balanceItem}>
+                                             <span>Доход за период</span>
+                                             <div>{numberFormat(income, primaryCurrency)}</div>
+                                         </div>
+                                         <div className={classes.balanceItem}>
+                                             <span>Баланс на конец периода</span>
+                                             <div>{numberFormat(endBalance, primaryCurrency)}</div>
+                                         </div>
+                                     </div>
+                                     <div className={classes.cashboxWrapper}>
+                                        {list}
+                                     </div>
+                                 </div>}
+                        </div>
 
                     {openDetails && <CashboxDetails
                         filter={filter}
