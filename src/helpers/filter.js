@@ -188,7 +188,9 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             ingId: null,
             openDeleteProductDialog: null,
             openChangeManufacture: null,
-            editMaterials: null
+            editMaterials: null,
+            joinMarket: null,
+            joinClient: null
         }))
     }
 

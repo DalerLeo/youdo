@@ -8,10 +8,13 @@ import filterHelper from '../../helpers/filter'
 import * as JOIN_TAB from '../../constants/joinTab'
 import {
     JoinGridList,
-    TAB
+    TAB, JOIN_CLIENT, JOIN_MARKET
 } from '../../components/Join'
+import {openSnackbarAction} from '../../actions/snackbar'
 import {shopListFetchAction} from '../../actions/shop'
 import {clientListFetchAction} from '../../actions/client'
+import {joinMarketsAction, joinClientsAction} from '../../actions/join'
+import {reset} from 'redux-form'
 
 const enhance = compose(
     connect((state, props) => {
@@ -21,8 +24,8 @@ const enhance = compose(
         const marketsListLoading = _.get(state, ['shop', 'list', 'loading'])
         const clientsList = _.get(state, ['client', 'list', 'data'])
         const clientsListLoading = _.get(state, ['client', 'list', 'loading'])
-        const createLoading = _.get(state, ['join', 'create', 'loading'])
-        const createForm = _.get(state, ['form', 'JoinCreateForm'])
+        const joinLoading = _.get(state, ['join', 'joinMarkets', 'loading']) || _.get(state, ['join', 'joinClients', 'loading'])
+        const createForm = _.get(state, ['form', 'JoinForm'])
         const marketFilter = filterHelper(marketsList, pathname, query)
         const clientFilter = filterHelper(clientsList, pathname, query)
 
@@ -32,7 +35,7 @@ const enhance = compose(
             clientsList,
             clientsListLoading,
             pathname,
-            createLoading,
+            joinLoading,
             marketFilter,
             clientFilter,
             createForm
@@ -60,6 +63,54 @@ const enhance = compose(
                 pathname: 'join',
                 query: {[TAB]: tab}
             })
+        },
+
+        handleOpenJoinMarkets: props => (id) => {
+            const {dispatch, location: {pathname}, marketFilter} = props
+            hashHistory.push({pathname, query: marketFilter.getParams({[JOIN_MARKET]: id})})
+            dispatch(reset('JoinForm'))
+        },
+
+        handleCloseJoinMarkets: props => () => {
+            const {location: {pathname}, marketFilter} = props
+            hashHistory.push({pathname, query: marketFilter.getParams({[JOIN_MARKET]: false})})
+        },
+
+        handleSubmitJoinMarkets: props => () => {
+            const {dispatch, createForm, marketFilter, location: {pathname}} = props
+
+            return dispatch(joinMarketsAction(_.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Данные успешно объединены'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: marketFilter.getParams({[JOIN_MARKET]: false})})
+                    dispatch(shopListFetchAction(marketFilter))
+                })
+        },
+
+        handleOpenJoinClients: props => (id) => {
+            const {dispatch, location: {pathname}, clientFilter} = props
+            hashHistory.push({pathname, query: clientFilter.getParams({[JOIN_CLIENT]: id})})
+            dispatch(reset('JoinForm'))
+        },
+
+        handleCloseJoinClients: props => () => {
+            const {location: {pathname}, clientFilter} = props
+            hashHistory.push({pathname, query: clientFilter.getParams({[JOIN_CLIENT]: false})})
+        },
+
+        handleSubmitJoinClients: props => () => {
+            const {dispatch, createForm, clientFilter, location: {pathname}} = props
+
+            return dispatch(joinClientsAction(_.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Данные успешно объединены'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: clientFilter.getParams({[JOIN_CLIENT]: false})})
+                    dispatch(clientListFetchAction(clientFilter))
+                })
         }
     })
 )
@@ -72,12 +123,15 @@ const JoinList = enhance((props) => {
         marketsListLoading,
         clientsList,
         clientsListLoading,
+        joinLoading,
         location,
         layout
     } =
     props
 
     const tab = _.get(location, ['query', TAB]) || JOIN_TAB.JOIN_DEFAULT_TAB
+    const openJoinMarket = _.get(location, ['query', JOIN_MARKET])
+    const openJoinClient = _.get(location, ['query', JOIN_CLIENT])
 
     const tabData = {
         tab,
@@ -94,6 +148,22 @@ const JoinList = enhance((props) => {
         clientsListLoading
     }
 
+    const joinMarketDialog = {
+        joinLoading,
+        openJoinMarket,
+        handleOpenJoinMarkets: props.handleOpenJoinMarkets,
+        handleCloseJoinMarkets: props.handleCloseJoinMarkets,
+        handleSubmitJoinMarkets: props.handleSubmitJoinMarkets
+    }
+
+    const joinClientDialog = {
+        joinLoading,
+        openJoinClient,
+        handleOpenJoinClients: props.handleOpenJoinClients,
+        handleCloseJoinClients: props.handleCloseJoinClients,
+        handleSubmitJoinClients: props.handleSubmitJoinClients
+    }
+
     return (
         <Layout {...layout}>
             <JoinGridList
@@ -103,6 +173,8 @@ const JoinList = enhance((props) => {
                 marketsData={marketsData}
                 clientsData={clientsData}
                 handleCheckedForm={props.handleCheckedForm}
+                joinMarketDialog={joinMarketDialog}
+                joinClientDialog={joinClientDialog}
             />
         </Layout>
     )

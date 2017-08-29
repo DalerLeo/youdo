@@ -389,6 +389,10 @@ const rootReducer = combineReducers({
     plan: combineReducers({
         monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY)
     }),
+    join: combineReducers({
+        joinMarkets: createThunkReducer(actionTypes.JOIN_MARKETS),
+        joinClients: createThunkReducer(actionTypes.JOIN_CLIENTS)
+    }),
     snackbar: snackbarReducer(),
     error: errorReducer(),
     form: formReducer,

@@ -1,15 +1,21 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import GridList from '../GridList'
 import moment from 'moment'
+import IconButton from 'material-ui/IconButton'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import Tooltip from '../ToolTip'
+import Join from 'material-ui/svg-icons/content/link'
+import JoinDialog from './JoinDialog'
 
 const enhance = compose(
     injectSheet({
         wrapper: {
-            marginTop: '20px',
+            position: 'relative',
             '& .row > div > svg': {
                 position: 'relative',
                 width: '16px !important',
@@ -17,6 +23,11 @@ const enhance = compose(
                 top: '3px',
                 marginRight: '5px'
             }
+        },
+        mainButton: {
+            position: 'absolute',
+            top: -50,
+            right: 18
         },
         loader: {
             position: 'absolute',
@@ -43,43 +54,24 @@ const enhance = compose(
                 color: 'inherit'
             }
         },
-        expandedList: {
-            margin: '20px -15px',
-            transition: 'all 400ms ease-out !important',
-            position: 'relative',
-            '& > a': {
-                color: 'inherit'
-            }
-        },
-        semibold: {
-            fontWeight: '600',
-            cursor: 'pointer'
-        },
-        headers: {
-            color: '#666',
-            fontWeight: '600',
-            padding: '15px 30px',
-            '& .row': {
+        iconBtn: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            opacity: '0',
+            transition: 'all 200ms ease-out',
+            '& button > div': {
+                display: 'flex',
+                justifyContent: 'center',
                 alignItems: 'center'
             }
         },
-        actionButton: {
-            background: '#12aaeb',
-            borderRadius: '2px',
-            color: '#fff',
-            padding: '5px 10px'
-        },
-        success: {
-            color: '#81c784'
-        },
-        begin: {
-            color: '#f0ad4e'
-        },
-        error: {
-            color: '#e57373'
-        },
-        waiting: {
-            color: '#64b5f6'
+        listRow: {
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            }
         }
     })
 )
@@ -88,14 +80,19 @@ const listHeader = [
     {
         sorting: true,
         name: 'id',
-        xs: 2,
+        xs: 1,
         title: 'Id'
     },
     {
         sorting: true,
         name: 'name',
-        xs: 6,
+        xs: 5,
         title: 'Наименование'
+    },
+    {
+        sorting: true,
+        title: 'Похожие',
+        xs: 2
     },
     {
         sorting: true,
@@ -111,11 +108,25 @@ const listHeader = [
     }
 ]
 
+const iconStyle = {
+    icon: {
+        color: '#5d6474',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 40,
+        height: 40,
+        padding: 0
+    }
+}
+
 const JoinTabClients = enhance((props) => {
     const {
         listData,
         filter,
-        classes
+        classes,
+        joinClientDialog
     } = props
     const listLoading = _.get(listData, 'clientsListLoading')
     const clientDetails = (<div>2</div>)
@@ -126,9 +137,22 @@ const JoinTabClients = enhance((props) => {
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={6}>{name}</Col>
+                <Col xs={1}>{id}</Col>
+                <Col xs={5}>{name}</Col>
+                <Col xs={2}>2</Col>
                 <Col xs={3}>{createdDate}</Col>
+                <Col xs={1}>
+                    <div className={classes.iconBtn}>
+                        <Tooltip position="bottom" text="Объединить">
+                            <IconButton
+                                onTouchTap={() => { joinClientDialog.handleOpenJoinClients(id) }}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}>
+                                <Join/>
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                </Col>
             </Row>
         )
     })
@@ -141,16 +165,41 @@ const JoinTabClients = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
+            <div className={classes.mainButton}>
+                <Tooltip position="left" text="Объединить">
+                    <FloatingActionButton
+                        onTouchTap={() => { joinClientDialog.handleOpenJoinClients(true) }}
+                        backgroundColor="#12aaeb"
+                        mini={true}
+                        zDepth={1}>
+                        <Join/>
+                    </FloatingActionButton>
+                </Tooltip>
+            </div>
             <GridList
                 filter={filter}
                 list={list}
+                listShadow={false}
                 detail={clientDetails}/>
+            <JoinDialog
+                isClient={true}
+                open={joinClientDialog.openJoinClient}
+                loading={joinClientDialog.joinLoading}
+                onClose={joinClientDialog.handleCloseJoinClients}
+                onSubmit={joinClientDialog.handleSubmitJoinClients}
+            />
         </div>
     )
 })
 
 JoinTabClients.propTypes = {
-
+    joinClientDialog: PropTypes.shape({
+        joinLoading: PropTypes.bool.isRequired,
+        openJoinClient: PropTypes.bool.isRequired,
+        handleOpenJoinClients: PropTypes.func.isRequired,
+        handleCloseJoinClients: PropTypes.func.isRequired,
+        handleSubmitJoinClients: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default JoinTabClients

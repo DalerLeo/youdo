@@ -8,7 +8,6 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/joinTab'
 import TabClients from './JoinTabClients'
 import TabMarkets from './JoinTabMarkets'
-import JoinDialog from './JoinDialog'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 
 const enhance = compose(
@@ -57,6 +56,8 @@ const enhance = compose(
             '& > div': {
                 boxSizing: 'content-box',
                 width: '400px !important',
+                paddingRight: 'calc(100% - 400px)',
+                background: '#efefef',
                 '&:first-child': {
                     borderRadius: '2px',
                     height: '52px',
@@ -113,7 +114,9 @@ const JoinGridList = enhance((props) => {
         tabData,
         classes,
         marketsData,
-        clientsData
+        clientsData,
+        joinMarketDialog,
+        joinClientDialog
     } = props
     const tab = _.get(tabData, 'tab')
     const tabList = (
@@ -131,11 +134,13 @@ const JoinGridList = enhance((props) => {
             <TabMarkets
                 filter={marketFilter}
                 listData={marketsData}
+                joinMarketDialog={joinMarketDialog}
             />}
             {TAB.JOIN_TAB_CLIENTS === tab &&
             <TabClients
                 filter={clientFilter}
                 listData={clientsData}
+                joinClientDialog={joinClientDialog}
             />}
         </div>
     )
@@ -147,8 +152,6 @@ const JoinGridList = enhance((props) => {
                     {tabList}
                 </div>
             </div>
-
-            <JoinDialog/>
         </Container>
     )
 })

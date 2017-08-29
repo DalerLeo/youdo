@@ -7,9 +7,9 @@ import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import {connect} from 'react-redux'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import MarketSearchFieldCustom from './MarketSearchFieldCustom'
-import TargetRadio from './TargetRadio'
+import ClientSearchFieldCustom from './ClientSearchFieldCustom'
 import {Field} from 'redux-form'
+import TargetRadio from './TargetRadio'
 
 const enhance = compose(
     injectSheet({
@@ -119,10 +119,8 @@ const enhance = compose(
     }),
     connect((state) => {
         const address = _.get(state, ['shop', 'extra', 'data', 'address'])
-        const client = _.get(state, ['shop', 'extra', 'data', 'client', 'name'])
         return {
-            address,
-            client
+            address
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -132,28 +130,26 @@ const enhance = compose(
 
     withHandlers({
         handleAdd: props => () => {
-            const market = _.get(props, ['market', 'input', 'value'])
-            const onChange = _.get(props, ['markets', 'input', 'onChange'])
-            const markets = _.get(props, ['markets', 'input', 'value'])
-            const address = _.get(props, 'address')
-            const client = _.get(props, 'client')
+            const client = _.get(props, ['client', 'input', 'value'])
+            const onChange = _.get(props, ['clients', 'input', 'onChange'])
+            const clients = _.get(props, ['clients', 'input', 'value'])
 
-            if (_.get(market, 'value')) {
+            if (_.get(client, 'value')) {
                 let has = false
-                _.map(markets, (item) => {
-                    if (_.get(item, 'market') === market) {
+                _.map(clients, (item) => {
+                    if (_.get(item, 'client') === client) {
                         has = true
                     }
                 })
-                const fields = ['market']
+                const fields = ['client']
                 for (let i = 0; i < fields.length; i++) {
                     let newChange = _.get(props, [fields[i], 'input', 'onChange'])
                     props.dispatch(newChange(null))
                 }
 
                 if (!has) {
-                    let newArray = [{market, address, client}]
-                    _.map(markets, (obj) => {
+                    let newArray = [{client}]
+                    _.map(clients, (obj) => {
                         newArray.push(obj)
                     })
                     onChange(newArray)
@@ -163,12 +159,12 @@ const enhance = compose(
         },
 
         handleRemove: props => (listIndex) => {
-            const onChange = _.get(props, ['markets', 'input', 'onChange'])
-            const markets = _(props)
-                .get(['markets', 'input', 'value'])
+            const onChange = _.get(props, ['clients', 'input', 'onChange'])
+            const clients = _(props)
+                .get(['clients', 'input', 'value'])
                 .filter((item, index) => index !== listIndex)
 
-            onChange(markets)
+            onChange(clients)
         }
     })
 )
@@ -194,19 +190,19 @@ const flatButton = {
     }
 }
 
-const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) => {
-    const markets = _.get(defaultProps, ['markets', 'input', 'value']) || []
-    const error = _.get(defaultProps, ['markets', 'meta', 'error'])
+const JoinClientListField = ({classes, handleAdd, handleRemove, ...defaultProps}) => {
+    const clients = _.get(defaultProps, ['clients', 'input', 'value']) || []
+    const error = _.get(defaultProps, ['clients', 'meta', 'error'])
     return (
         <div className={classes.wrapper}>
             <div>
                 <Row className={classes.background}>
                     <Col xs={5}>
-                        <MarketSearchFieldCustom
-                            label="Магазин"
+                        <ClientSearchFieldCustom
+                            label="Клиент"
                             className={classes.searchFieldCustom}
                             fullWidth={true}
-                            {..._.get(defaultProps, 'market')}
+                            {..._.get(defaultProps, 'client')}
                         />
                     </Col>
                     <Col xs={7} style={{textAlign: 'right'}}>
@@ -219,28 +215,24 @@ const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) 
                 </Row>
             </div>
             {error && <div className={classes.error}>{error}</div>}
-            {!_.isEmpty(markets) && <div className={classes.table}>
+            {!_.isEmpty(clients) && <div className={classes.table}>
                 <Field
                     name="target"
-                    data={markets}
+                    data={clients}
                     component={TargetRadio}
                 />
                 <div className={classes.list}>
                     <Row>
-                        <Col xs={5}>Наименование</Col>
-                        <Col xs={3}>Клиент</Col>
-                        <Col xs={3}>Адрес</Col>
+                        <Col xs={11}>Наименование</Col>
                     </Row>
-                    {_.map(markets, (item, index) => {
-                        const name = _.get(item, ['market', 'text'])
-                        const client = _.get(item, 'client')
-                        const address = _.get(item, 'address')
+                    {_.map(clients, (item, index) => {
+                        const million = 1000000
+                        const id = _.get(item, ['client', 'value'])
+                        const name = _.get(item, ['client', 'text'])
 
                         return (
-                            <Row key={index} className={classes.tableRow}>
-                                <Col xs={5}>{name}</Col>
-                                <Col xs={3}>{client}</Col>
-                                <Col xs={3}>{address}</Col>
+                            <Row key={id * million} className={classes.tableRow}>
+                                <Col xs={11}>{name}</Col>
                                 <Col xs={1} style={{textAlign: 'right', width: '40px'}}>
                                     <IconButton
                                         onTouchTap={() => handleRemove(index)}
@@ -258,4 +250,4 @@ const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) 
     )
 }
 
-export default enhance(JoinShopListField)
+export default enhance(JoinClientListField)
