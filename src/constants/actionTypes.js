@@ -396,3 +396,6 @@ export const RETURN_DELETE = 'RETURN_DELETE'
 export const RETURN_CANCEL = 'RETURN_CANCEL'
 
 export const PLAN_MONTHLY = 'PLAN_MONTHLY'
+
+export const JOIN_MARKETS = 'JOIN_MARKETS'
+export const JOIN_CLIENTS = 'JOIN_CLIENTS'

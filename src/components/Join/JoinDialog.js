@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer} from 'recompose'
+import {compose, withReducer, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import {Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
 import JoinShopListField from '../ReduxForm/Join/JoinShopListField'
+import JoinClientListField from '../ReduxForm/Join/JoinClientListField'
 import toCamelCase from '../../helpers/toCamelCase'
 
 const validate = (data) => {
@@ -83,12 +84,33 @@ const enhance = compose(
             height: '100%',
             justifyContent: 'space-between'
         },
+        confirm: {
+            background: '#fff',
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '9999'
+        },
+        confirmButtons: {
+            marginTop: '-35px',
+            '& > div:first-child': {
+                fontWeight: '600',
+                fontSize: '15px',
+                textAlign: 'center',
+                marginBottom: '15px'
+            }
+        },
         bottomButton: {
             bottom: '0',
             left: '0',
             right: '0',
             padding: '10px',
-            zIndex: '999',
+            zIndex: '10',
             borderTop: '1px solid #efefef',
             background: '#fff',
             textAlign: 'right',
@@ -106,7 +128,8 @@ const enhance = compose(
         wrapper: {
             width: '100%',
             padding: '20px 30px',
-            maxHeight: '694px',
+            minHeight: '350px',
+            maxHeight: '600px',
             overflowY: 'auto',
             overflowX: 'hidden'
         }
@@ -118,21 +141,35 @@ const enhance = compose(
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
+    withState('openConfirm', 'setOpenConfirm', false)
 )
 
 const customContentStyle = {
-    width: '1000px',
+    width: '700px',
     maxWidth: 'none'
 }
+const flatButton = {
+    label: {
+        color: '#12aaeb',
+        fontWeight: 600,
+        fontSize: '13px'
+    }
+}
 const JoinDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, isClient} = props
+    const {open, handleSubmit, onClose, classes, isClient, openConfirm, setOpenConfirm} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const ZERO = 0
+
+    const customSubmit = () => {
+        onSubmit()
+        setOpenConfirm(false)
+    }
     return (
         <Dialog
             modal={true}
             className={classes.podlojkaScroll}
             contentStyle={customContentStyle}
-            open={open}
+            open={open > ZERO || open === 'true'}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
@@ -144,25 +181,47 @@ const JoinDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
+                    {openConfirm && <div className={classes.confirm}>
+                        <div className={classes.confirmButtons}>
+                            <div>Вы уверены?</div>
+                            <FlatButton
+                                label="Нет"
+                                labelStyle={flatButton.label}
+                                onTouchTap={() => { setOpenConfirm(false) }}
+                                className={classes.actionButton}
+                                primary={true}
+                            />
+                            <FlatButton
+                                label="Да"
+                                labelStyle={flatButton.label}
+                                className={classes.actionButton}
+                                primary={true}
+                                onTouchTap={customSubmit}
+                            />
+                        </div>
+                    </div>}
                     <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent}>
                             <div className={classes.wrapper}>
-                                <Fields
-                                    names={['markets', 'market']}
-                                    component={JoinShopListField}
-                                />
+                                {isClient
+                                ? <Fields
+                                        names={['clients', 'client', 'target']}
+                                        component={JoinClientListField}/>
+                                : <Fields
+                                        names={['markets', 'market', 'target']}
+                                        component={JoinShopListField}/>}
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
                             label="Объединить"
+                            onTouchTap={() => { setOpenConfirm(true) }}
                             className={classes.actionButton}
                             primary={true}
-                            type="submit"
                         />
                     </div>
                 </form>
@@ -171,7 +230,7 @@ const JoinDialog = enhance((props) => {
     )
 })
 JoinDialog.propTyeps = {
-    isUpdate: PropTypes.bool,
+    isClient: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,

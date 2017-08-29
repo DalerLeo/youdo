@@ -405,3 +405,6 @@ export const RETURN_ITEM = `${RETURN}/%d/`
 export const RETURN_UPDATE = `${RETURN}/%d/`
 export const RETURN_DELETE = `${RETURN}/%d/`
 export const RETURN_CANCEL = `${RETURN}/%d/cancel/`
+
+export const JOIN_MARKETS = 'market/merge/'
+export const JOIN_CLIENTS = 'sales/merge_clients/'
