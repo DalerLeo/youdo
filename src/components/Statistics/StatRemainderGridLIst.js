@@ -19,6 +19,7 @@ import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat.js'
 import NotFound from '../Images/not-found.png'
+import getConfig from '../../helpers/getConfig'
 
 export const STAT_REMAINDER_FILTER_KEY = {
     STOCK: 'stock',
@@ -44,6 +45,7 @@ const enhance = compose(
             display: 'flex'
         },
         wrapper: {
+            minWidth: '946px',
             padding: '20px 30px',
             height: 'calc(100% - 40px)',
             overflowY: 'auto',
@@ -241,10 +243,11 @@ const StatRemainderGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={3}>Товар</Col>
-            <Col xs={2}>Тип товара</Col>
+            <Col xs={1}>Тип товара</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Всего товаров</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Брак</Col>
+            <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Брак</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Забронировано</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Цена</Col>
             <Col xs={1} style={{display: 'none'}}>|</Col>
 
         </Row>
@@ -256,6 +259,7 @@ const StatRemainderGridList = enhance((props) => {
         const product = _.get(item, 'title')
         const measurement = _.get(item, ['measurement', 'name'])
         const defects = numberFormat(_.get(item, 'defects'), measurement)
+        const price = numberFormat(_.get(item, 'price'), getConfig('PRIMARY_CURRENCY'))
         const balance = numberFormat(Number(_.get(item, 'balance')) + Number(_.get(item, 'defects')), measurement)
         const reserved = numberFormat(Number(_.get(item, 'reserved')) + Number(_.get(item, 'reserved')), measurement)
         return (
@@ -263,10 +267,11 @@ const StatRemainderGridList = enhance((props) => {
                 <Col xs={3}>
                     <div>{product}</div>
                 </Col>
-                <Col xs={2}>{productType}</Col>
+                <Col xs={1}>{productType}</Col>
                 <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{balance}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{defects}</Col>
+                <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{defects}</Col>
                 <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{reserved}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{price}</Col>
                 <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right', paddingRight: '0'}}>
                     <IconButton
                         onTouchTap={() => { statRemainderDialog.handleOpenStatRemainderDialog(id) }}>
