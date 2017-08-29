@@ -40,9 +40,7 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() &&
-            (!_.get(props, ['params', 'statReportId'])) &&
-            (!_.get(nextProps, ['params', 'statReportId']))
+        return props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statReportListFetchAction(filter))
     }),
@@ -61,15 +59,14 @@ const enhance = compose(
     withHandlers({
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
-                [STAT_REPORT_FILTER_KEY.PRODUCT]: product,
-                [STAT_REPORT_FILTER_KEY.TYPE]: type,
-                [STAT_REPORT_FILTER_KEY.STOCK]: stock
-
+                [STAT_REPORT_FILTER_KEY.DIVISION]: division,
+                [STAT_REPORT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [STAT_REPORT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         }
     })

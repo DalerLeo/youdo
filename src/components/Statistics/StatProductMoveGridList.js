@@ -409,11 +409,7 @@ const StatProductMoveGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_PRODUCT_MOVE_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    {listLoading
-                        ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
-                        </div>
-                        : <div className={classes.wrapper}>
+                    <div className={classes.wrapper}>
                             <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
                                 <div className={classes.filter}>
                                     <Field
@@ -457,68 +453,72 @@ const StatProductMoveGridList = enhance((props) => {
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>
-                            <div>
-                                {sumListLoading
-                                    ? <div className={classes.loader}>
-                                        <CircularProgress size={40} thickness={4}/>
+                        {listLoading
+                            ? <div className={classes.loader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                            : (_.isEmpty(list) && !listLoading)
+                                ? <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>
+                                : <div>
+                                    <div>
+                                        {sumListLoading
+                                            ? <div className={classes.loader}>
+                                                <CircularProgress size={40} thickness={4}/>
+                                            </div>
+                                            : <div className={classes.summary}>
+                                                <div>Остаток на начало периода
+                                                    <div>{beginBalance}</div>
+                                                </div>
+                                                <div>Поступило товара на сумму
+                                                    <div>{inBalance}</div>
+                                                </div>
+                                                <div>Выдано товара на сумму
+                                                    <div>{outBalance}</div>
+                                                </div>
+                                                <div>Остаток на конец периода
+                                                    <div>{endBalance}</div>
+                                                </div>
+                                            </div>}
                                     </div>
-                                    : <div className={classes.summary}>
-                                        <div>Остаток на начало периода
-                                            <div>{beginBalance}</div>
+                                    <div className={classes.pagination}>
+                                        <div>Движение товаров на складе</div>
+                                        <Pagination filter={filter}/>
+                                    </div>
+                                    <div className={classes.tableWrapper}>
+                                        <div className={classes.leftTable}>
+                                            <div><span>Товар</span></div>
+                                            {tableLeft}
                                         </div>
-                                        <div>Поступило товара на сумму
-                                            <div>{inBalance}</div>
+                                        <div>
+                                            <table className={classes.mainTable}>
+                                                <tbody className={classes.tableBody}>
+                                                <tr className={classes.title}>
+                                                    <td rowSpan={2}>ID товара</td>
+                                                    <td colSpan={2}>Остаток на начало периода</td>
+                                                    <td colSpan={2}>Поступивший товара за период</td>
+                                                    <td colSpan={2}>Выданный товара за период</td>
+                                                    <td colSpan={2}>Остаток на конец</td>
+                                                </tr>
+                                                <tr className={classes.subTitle}>
+                                                    <td>Кол-во</td>
+                                                    <td>Стоимость</td>
+                                                    <td>Кол-во</td>
+                                                    <td>Стоимость</td>
+                                                    <td>Кол-во</td>
+                                                    <td>Стоимость</td>
+                                                    <td>Кол-во</td>
+                                                    <td>Стоимость</td>
+                                                </tr>
+                                                {tableList}
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <div>Выдано товара на сумму
-                                            <div>{outBalance}</div>
-                                        </div>
-                                        <div>Остаток на конец периода
-                                            <div>{endBalance}</div>
-                                        </div>
-                                    </div>}
-                            </div>
-                            <div className={classes.pagination}>
-                                <div>Движение товаров на складе</div>
-                                <Pagination filter={filter}/>
-                            </div>
-                            <div className={classes.tableWrapper}>
-                                <div className={classes.leftTable}>
-                                    <div><span>Товар</span></div>
-                                    {tableLeft}
+                                    </div>
                                 </div>
-                                <div>
-                                    <table className={classes.mainTable}>
-                                        <tbody className={classes.tableBody}>
-                                        <tr className={classes.title}>
-                                            <td rowSpan={2}>ID товара</td>
-                                            <td colSpan={2}>Остаток на начало периода</td>
-                                            <td colSpan={2}>Поступивший товара за период</td>
-                                            <td colSpan={2}>Выданный товара за период</td>
-                                            <td colSpan={2}>Остаток на конец</td>
-
-                                        </tr>
-                                        <tr className={classes.subTitle}>
-                                            <td>Кол-во</td>
-                                            <td>Стоимость</td>
-                                            <td>Кол-во</td>
-                                            <td>Стоимость</td>
-                                            <td>Кол-во</td>
-                                            <td>Стоимость</td>
-                                            <td>Кол-во</td>
-                                            <td>Стоимость</td>
-                                        </tr>
-                                        {tableList}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
-                                <div>По вашему запросу ничего не найдено</div>
-                            </div>
-                                : null}
+                            }
                         </div>
-                    }
                 </div>
             </Row>
         </div>

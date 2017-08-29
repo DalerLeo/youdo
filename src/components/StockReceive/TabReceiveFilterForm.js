@@ -11,8 +11,8 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     DateToDateField,
-    InOutTypeSearchFiled,
-    StockSearchField
+    StockSearchField,
+    InOutTypeSearchField
 } from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -20,6 +20,8 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 export const TAB_RECEIVE_FILTER_KEY = {
     TYPE: 'type',
     FROM_DATE: 'fromDate',
+    TRANSFER_FROM_DATE: 'transferFromData',
+    TRANSFER_TO_DATE: 'transferToData',
     TO_DATE: 'toDate',
     STOCK: 'stock'
 }
@@ -169,7 +171,7 @@ const TabReceiveFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="type"
-                            component={InOutTypeSearchFiled}
+                            component={InOutTypeSearchField}
                             label="Тип"
                             fullWidth={true}/>
                     </div>

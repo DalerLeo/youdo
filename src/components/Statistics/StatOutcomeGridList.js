@@ -372,67 +372,71 @@ const StatOutcomeGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_OUTCOME_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    {listLoading
-                        ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
-                        </div>
-                        : <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Подразделение"
-                                        fullWidth={true}
-                                    />
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="search"
-                                        component={TextField}
-                                        label="Поиск"
-                                        fullWidth={true}/>
+                    <div className={classes.wrapper}>
+                        <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+                            <div className={classes.filter}>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="date"
+                                    component={DateToDateField}
+                                    label="Диапазон дат"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="division"
+                                    component={DivisionSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Подразделение"
+                                    fullWidth={true}
+                                />
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="search"
+                                    component={TextField}
+                                    label="Поиск"
+                                    fullWidth={true}/>
 
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
+                                <IconButton
+                                    className={classes.searchButton}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    type="submit">
+                                    <Search/>
+                                </IconButton>
+                            </div>
+                            <a className={classes.excel}>
+                                <Excel color="#fff" onTouchTap={() => { getDocument.handleGetDocument() }}/>
+                                <span>Excel</span>
+                            </a>
+                        </form>
+                        {listLoading
+                            ? <div className={classes.loader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                            : (_.isEmpty(list) && !listLoading)
+                                ? <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                  </div>
+                                : <div>
+                                    <Row className={classes.diagram}>
+                                        <Col xs={3} className={classes.salesSummary}>
+                                            <div>Сумма продаж за период</div>
+                                            <div>{numberFormat(sum)} {primaryCurrency}</div>
+                                        </Col>
+                                        <Col xs={9}>
+                                            <ReactHighcharts config={config}/>
+                                        </Col>
+                                    </Row>
+                                    <div className={classes.pagination}>
+                                        <div><b>История расходов</b></div>
+                                        <Pagination filter={filter}/>
+                                    </div>
+                                    <div className={classes.tableWrapper}>
+                                        {headers}
+                                        {list}
+                                  </div>
                                 </div>
-                                <a className={classes.excel}>
-                                    <Excel color="#fff" onTouchTap={() => { getDocument.handleGetDocument() }}/>
-                                    <span>Excel</span>
-                                </a>
-                            </form>
-                            <Row className={classes.diagram}>
-                                <Col xs={3} className={classes.salesSummary}>
-                                    <div>Сумма продаж за период</div>
-                                    <div>{numberFormat(sum)} {primaryCurrency}</div>
-                                </Col>
-                                <Col xs={9}>
-                                    <ReactHighcharts config={config}/>
-                                </Col>
-                            </Row>
-                            <div className={classes.pagination}>
-                                <div><b>История расходов</b></div>
-                                <Pagination filter={filter}/>
-                            </div>
-                            {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
-                                <div>По вашему запросу ничего не найдено</div>
-                            </div>
-                                : <div className={classes.tableWrapper}>
-                                    {headers}
-                                    {list}
-                                </div>}
-                        </div>}
+                        }
+                        </div>
                 </div>
             </Row>
         </div>

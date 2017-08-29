@@ -3,18 +3,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
+import IconButton from 'material-ui/IconButton'
+import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
+import RemoveCircleIcon from 'material-ui/svg-icons/content/remove-circle'
+import EditIcon from 'material-ui/svg-icons/image/edit'
 import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import dateFormat from '../../helpers/dateFormat'
+import toBoolean from '../../helpers/toBoolean'
 import Tooltip from '../ToolTip'
-import IconButton from 'material-ui/IconButton'
-import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
-import RemoveCircleIcon from 'material-ui/svg-icons/content/remove-circle'
-import EditIcon from 'material-ui/svg-icons/image/edit'
-
+import CloseIcon2 from '../CloseIcon2'
+import getConfig from '../../helpers/getConfig'
 const RETURN = 3
 const APPROVE = 1
 const CANCEL = 2
@@ -66,6 +68,7 @@ const enhance = compose(
             }
         },
         subtitle: {
+            marginTop: '10px',
             fontWeight: '600'
         },
         titleButtons: {
@@ -97,6 +100,7 @@ const enhance = compose(
             }
         },
         semibold: {
+            height: 'inherit',
             fontWeight: '600',
             cursor: 'pointer',
             position: 'relative'
@@ -109,6 +113,13 @@ const enhance = compose(
             bottom: '0',
             cursor: 'pointer',
             zIndex: '1'
+        },
+        details: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            '& span': {
+                fontWeight: '600'
+            }
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -135,23 +146,34 @@ const StockReceiveDetails = enhance((props) => {
         confirmDialog,
         createDialog,
         updateDialog,
-        history
+        history,
+        popover
     } = props
+    const useBarcode = toBoolean(getConfig('USE_BARCODE'))
+    const onClose = _.get(detailData, 'onClose')
     const type = _.get(detailData, 'type')
-    const by = _.get(detailData, ['currentDetail', 'by'])
+    const by = _.get(detailData, ['currentDetail', 'by']) || _.get(detailData, ['data', 'fromStock', 'name'])
     const formattedType = stockTypeFormat(type)
-    const date = _.get(detailData, ['currentDetail', 'date']) ? dateFormat(_.get(detailData, ['currentDetail', 'date'])) : 'Не указана'
-    const stockName = _.get(detailData, ['currentDetail', 'stock', 'name'])
-    const id = _.get(detailData, 'id')
+    const finishedTime = dateFormat(_.get(detailData, ['data', 'finishedTime']), true)
+    const acceptedTime = dateFormat(_.get(detailData, ['data', 'acceptedTime']), true)
+    const acceptedBy = _.get(detailData, ['data', 'acceptedBy'])
+    const date = _.get(detailData, ['currentDetail', 'date']) ? dateFormat(_.get(detailData, ['currentDetail', 'date']))
+        : (_.get(detailData, ['data', 'createdDate']) ? dateFormat(_.get(detailData, ['data', 'createdDate'])) : 'Не указана')
+    const stockName = _.get(detailData, ['currentDetail', 'stock', 'name']) || _.get(detailData, ['data', 'toStock', 'name'])
+    const id = _.get(detailData, 'id') || _.get(detailData, ['data', 'id'])
     const tooltipText = 'Подтвердить Запрос № ' + id
     const tooltipCancelText = 'Отменить Запрос № ' + id
     const tooltipUpdateText = 'Изменить Запрос № ' + id
-    const detailLoading = _.get(detailData, 'detailLoading')
+    const detailLoading = _.get(detailData, 'detailLoading') || _.get(detailData, 'loading')
     const products = (type === 'order_return') ? _.get(detailData, ['data', 'returnedProducts']) : _.get(detailData, ['data', 'products'])
     const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
     if (_.isEmpty(products)) {
         return (
-            <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden'}}>
+            <div className={classes.wrapper}
+                 style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {
+                     maxHeight: '250px',
+                     overflowY: 'hidden'
+                 }}>
                 {detailLoading && <LinearProgress/>}
                 <div className={classes.emptyQuery}>
                     <div>Товаров не найдено</div>
@@ -161,27 +183,26 @@ const StockReceiveDetails = enhance((props) => {
     }
 
     return (
-        <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
+        <div className={classes.wrapper}
+             style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
             {detailLoading ? <LinearProgress/>
-            : <div style={{width: '100%'}}>
-                <div className={classes.header}>
-                    <div className={classes.closeDetail}
-                         onClick={handleCloseDetail}>
-                    </div>
-                    <Row
-                        className={classes.semibold}
-                        style={history ? {lineHeight: '48px'} : {}}>
-                        <Col xs={2}>{id}</Col>
-                        {by ? <Col xs={3}>{by}</Col> : null}
-                        <Col xs={2}>{formattedType}</Col>
-                        <Col xs={2}>{date}</Col>
-                        <Col xs={2}>
-                            {stockName}
-                        </Col>
-                        <Col xs={1}>
-                            <div className={classes.titleButtons}>
-                                {!history && (type === 'transfer')
-                                    ? <Tooltip position="right" text={tooltipText}>
+                : <div style={{width: '100%'}}>
+                    <div className={classes.header}>
+                        <div className={classes.closeDetail}
+                             onClick={handleCloseDetail}>
+                        </div>
+                        <Row className={classes.semibold} tyle={history ? {lineHeight: '48px'} : {}}>
+                            <Col xs={2}>{id}</Col>
+                            {by ? <Col xs={3}>{by}</Col> : null}
+                            <Col xs={2}>{formattedType}</Col>
+                            <Col xs={2}>{date}</Col>
+                            <Col xs={2}>
+                                {stockName}
+                            </Col>
+                            <Col xs={1}>
+                                <div className={classes.titleButtons}>
+                                    {!history && (type === 'transfer')
+                                        ? <Tooltip position="right" text={tooltipText}>
                                             <IconButton
                                                 iconStyle={iconStyle.icon}
                                                 style={iconStyle.button}
@@ -200,40 +221,40 @@ const StockReceiveDetails = enhance((props) => {
                                                     <CheckCircleIcon />
                                                 </IconButton>
                                             </Tooltip>
-                                        : (!history && type === 'order_return')
-                                            ? <Tooltip position="right" text={tooltipText}>
-                                                <IconButton
-                                                    iconStyle={iconStyle.icon}
-                                                    style={iconStyle.button}
-                                                    touch={true}
-                                                    onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(RETURN) }}>
-                                                    <CheckCircleIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                        : (type === 'supply')
-                                            ? (!history
+                                            : (!history && type === 'order_return')
                                                 ? <Tooltip position="right" text={tooltipText}>
                                                     <IconButton
                                                         iconStyle={iconStyle.icon}
                                                         style={iconStyle.button}
                                                         touch={true}
-                                                        onTouchTap={() => { createDialog.handleOpenCreateDialog() }}>
+                                                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(RETURN) }}>
                                                         <CheckCircleIcon />
                                                     </IconButton>
-                                                  </Tooltip>
-                                                : <Tooltip position="right" text={tooltipUpdateText}>
-                                                    <IconButton
-                                                        iconStyle={iconStyle.icon}
-                                                        style={iconStyle.button}
-                                                        touch={true}
-                                                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                  </Tooltip>)
-                                            : null
-                                }
+                                                </Tooltip>
+                                                : (type === 'supply')
+                                                    ? (!history
+                                                        ? <Tooltip position="right" text={tooltipText}>
+                                                            <IconButton
+                                                                iconStyle={iconStyle.icon}
+                                                                style={iconStyle.button}
+                                                                touch={true}
+                                                                onTouchTap={() => { createDialog.handleOpenCreateDialog() }}>
+                                                                <CheckCircleIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        : <Tooltip position="right" text={tooltipUpdateText}>
+                                                            <IconButton
+                                                                iconStyle={iconStyle.icon}
+                                                                style={iconStyle.button}
+                                                                touch={true}
+                                                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
+                                                                <EditIcon />
+                                                            </IconButton>
+                                                        </Tooltip>)
+                                                    : null
+                                    }
 
-                                {!history && type === 'transfer' &&
+                                    {!history && type === 'transfer' &&
                                     <Tooltip position="right" text={tooltipCancelText}>
                                         <IconButton
                                             iconStyle={iconStyle.icon}
@@ -243,39 +264,57 @@ const StockReceiveDetails = enhance((props) => {
                                             <RemoveCircleIcon />
                                         </IconButton>
                                     </Tooltip>
-                                }
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
-                <div className={classes.content}>
-                    <div className={classes.leftSide}>
-                        <Row className='dottedList'>
-                            <Col xs={6}>Товар</Col>
-                            <Col xs={4}>Тип товара</Col>
-                            <Col xs={2}>Кол-во</Col>
+                                    }
+                                    {
+                                        popover && <IconButton onTouchTap={onClose}>
+                                            <CloseIcon2 color="#666666"/>
+                                        </IconButton>
+                                    }
+                                </div>
+                            </Col>
+
                         </Row>
-                        {_.map(products, (item) => {
-                            const productId = _.get(item, 'id')
-                            const name = _.get(item, ['product', 'name'])
-                            const measurement = _.get(item, ['product', 'measurement', 'name'])
-                            const productType = _.get(item, ['product', 'type', 'name'])
-                            const amount = numberFormat(_.get(item, 'amount'), measurement)
-                            return (
-                                <Row key={productId} className='dottedList'>
-                                    <Col xs={6}>{name}</Col>
-                                    <Col xs={4}>{productType}</Col>
-                                    <Col xs={2}>{amount}</Col>
-                                </Row>
-                            )
-                        })}
                     </div>
-                    <div className={classes.rightSide}>
-                        <div className={classes.subtitle}>Комментарий:</div>
-                        <div>{comment}</div>
+                    <div className={classes.content}>
+                        <div className={classes.leftSide}>
+                            <Row className='dottedList' style={{padding: '15px 30px'}}>
+                                <Col xs={6}>Товар</Col>
+                                <Col xs={4}>Тип товара</Col>
+                                <Col xs={2}>Кол-во</Col>
+                            </Row>
+                            {_.map(products, (item) => {
+                                const productId = _.get(item, 'id')
+                                const name = _.get(item, ['product', 'name'])
+                                const measurement = _.get(item, ['product', 'measurement', 'name'])
+                                const productType = _.get(item, ['product', 'type', 'name'])
+                                const amount = numberFormat(_.get(item, 'amount'), measurement)
+                                return (
+                                    <Row key={productId} className='dottedList'>
+                                        <Col xs={6}>{name}</Col>
+                                        <Col xs={4}>{productType}</Col>
+                                        <Col xs={2}>{amount}</Col>
+                                    </Row>
+                                )
+                            })}
+                        </div>
+                        <div className={classes.rightSide}>
+                            {history && useBarcode &&
+                                 <div>
+                                    <div className={classes.details}>Начало приемки: <span>{acceptedTime}</span></div>
+                                    <div className={classes.details}>Конец приемки: <span>{finishedTime}</span></div>
+                                     <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
+                                 </div>
+                            }
+                            {history && !useBarcode &&
+                                <div>
+                                    <div className={classes.details}>Дата приемки: <span>{acceptedTime}</span></div>
+                                    <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
+                                </div>}
+                            <div className={classes.subtitle}>Комментарий:</div>
+                            <div>{comment}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
             }
         </div>
     )

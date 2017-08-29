@@ -20,6 +20,7 @@ import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import StatSaleDialog from './StatSaleDialog'
+import NotFound from '../Images/not-found.png'
 
 export const STAT_DEBTORS_FILTER_KEY = {
     DIVISION: 'division',
@@ -244,6 +245,19 @@ const enhance = compose(
                 fontSize: '24px',
                 fontWeight: '600'
             }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
     reduxForm({
@@ -319,7 +333,7 @@ const StatDebtorsGridList = enhance((props) => {
         const expectSum = numberFormat(_.get(item, 'expectSum'), getConfig('PRIMARY_CURRENCY'))
         if (_.get(detailData, 'openDetailId') === id) {
             return (
-                <div className={classes.expandedList}>
+                <div key={id} className={classes.expandedList}>
                     <Row>
                         <Col xs={5}>{client}</Col>
                         <Col xs={3}>{deptSum}</Col>
@@ -378,11 +392,7 @@ const StatDebtorsGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_DEBTORS_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    {listLoading
-                    ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4} />
-                    </div>
-                    : <div className={classes.wrapper}>
+                    <div className={classes.wrapper}>
                         <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
                             <div className={classes.filter}>
                                 <Field
@@ -412,35 +422,46 @@ const StatDebtorsGridList = enhance((props) => {
                                 <Excel color="#fff"/> <span>Excel</span>
                             </a>
                         </form>
-                        <div className={classes.debtors}>
-                            <div>
-                                <span>Всего должников</span>
-                                <div>{countDebtors} клиентов</div>
+                        {listLoading
+                            ? <div className={classes.loader}>
+                                <CircularProgress size={40} thickness={4} />
                             </div>
-                            <div>
-                                <span>Просроченные платежи</span>
-                                <div>{deptSum}</div>
-                            </div>
-                            <div>
-                                <span>Ожидаемые поступления</span>
-                                <div>{expectSum}</div>
-                            </div>
-                        </div>
-                        <div className={classes.pagination}>
-                            <div><b>Отчет по задолжностям</b></div>
-                            <Pagination filter={filter}/>
-                        </div>
-                        <div className={classes.tableWrapper}>
-                            {headers}
-                            {list}
-                        </div>
-                    </div>}
+                            : (_.isEmpty(list) && !listLoading)
+                                ? <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>
+                                : <div>
+                                    <div className={classes.debtors}>
+                                        <div>
+                                            <span>Всего должников</span>
+                                            <div>{countDebtors} клиентов</div>
+                                        </div>
+                                        <div>
+                                            <span>Просроченные платежи</span>
+                                            <div>{deptSum}</div>
+                                        </div>
+                                        <div>
+                                            <span>Ожидаемые поступления</span>
+                                            <div>{expectSum}</div>
+                                        </div>
+                                    </div>
+                                    <div className={classes.pagination}>
+                                        <div><b>Отчет по задолжностям</b></div>
+                                        <Pagination filter={filter}/>
+                                    </div>
+                                    <div className={classes.tableWrapper}>
+                                        {headers}
+                                        {list}
+                                    </div>
+                                  </div>
+                        }
+                    </div>
                 </div>
             </Row>
         </div>
     )
     const data = {
-        data: _.get(detailData, ['detailOrder', 'data']),
+        data: _.get(detailData, ['detailOrder']),
         id: _.get(detailData, 'openDetailId')
     }
     return (

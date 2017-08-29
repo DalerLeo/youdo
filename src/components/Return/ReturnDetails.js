@@ -195,6 +195,8 @@ const ReturnDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const user = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
     const createdDate = dateTimeFormat(_.get(data, 'createdDate'))
+    const finishedTime = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'finishedTime'), true) : 'Не установлена'
+    const acceptedBy = _.get(data, 'acceptedBy')
     const acceptedDate = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не установлена'
     const comment = _.get(data, 'comment')
     const stock = _.get(data, ['stock', 'name'])
@@ -268,8 +270,16 @@ const ReturnDetails = enhance((props) => {
                                     <span>{stock}</span>
                                 </li>
                                 <li>
-                                    <span>Дата приемки:</span>
+                                    <span>Начало приемки:</span>
                                     <span>{acceptedDate}</span>
+                                </li>
+                                <li>
+                                    <span>Конец приемки:</span>
+                                    <span>{finishedTime}</span>
+                                </li>
+                                <li>
+                                    <span>Принял:</span>
+                                    <span>{acceptedBy}</span>
                                 </li>
                                 <li>
                                     <span>Дата возврата:</span>

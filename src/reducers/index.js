@@ -303,6 +303,10 @@ const rootReducer = combineReducers({
         data: createThunkReducer(actionTypes.STAT_OUTCOME_DATA),
         list: createThunkReducer(actionTypes.STAT_OUTCOME_LIST)
     }),
+    statReport: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_REPORT_DATA),
+        list: createThunkReducer(actionTypes.STAT_REPORT_LIST)
+    }),
     statisticsDebtors: combineReducers({
         data: createThunkReducer(actionTypes.STAT_DEBTORS_DATA),
         list: createThunkReducer(actionTypes.STAT_DEBTORS_LIST),
