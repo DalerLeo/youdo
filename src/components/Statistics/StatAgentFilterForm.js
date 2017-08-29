@@ -151,7 +151,7 @@ const StatAgentFilterForm = enhance((props) => {
 
 StatAgentFilterForm.propTypes = {
     onSubmit: PropTypes.func.isRequired,
-    getDocument: PropTypes.func.isRequired
+    getDocument: PropTypes.object.isRequired
 }
 
 export default StatAgentFilterForm

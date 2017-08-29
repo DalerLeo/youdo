@@ -249,7 +249,10 @@ const StatProductGridList = enhance((props) => {
 
 StatProductGridList.propTypes = {
     listData: PropTypes.object,
-    detailData: PropTypes.object
+    detailData: PropTypes.object,
+    filter: PropTypes.object.isRequired,
+    getDocument: PropTypes.object.isRequired
+
 }
 
 export default StatProductGridList

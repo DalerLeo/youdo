@@ -333,7 +333,7 @@ const StatDebtorsGridList = enhance((props) => {
         const expectSum = numberFormat(_.get(item, 'expectSum'), getConfig('PRIMARY_CURRENCY'))
         if (_.get(detailData, 'openDetailId') === id) {
             return (
-                <div className={classes.expandedList}>
+                <div key={id} className={classes.expandedList}>
                     <Row>
                         <Col xs={5}>{client}</Col>
                         <Col xs={3}>{deptSum}</Col>
@@ -461,7 +461,7 @@ const StatDebtorsGridList = enhance((props) => {
         </div>
     )
     const data = {
-        data: _.get(detailData, ['detailOrder', 'data']),
+        data: _.get(detailData, ['detailOrder']),
         id: _.get(detailData, 'openDetailId')
     }
     return (

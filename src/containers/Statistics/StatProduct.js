@@ -125,7 +125,6 @@ const StatProductList = enhance((props) => {
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 getDocument={getDocument}
                 initialValues={filterForm.initialValues}
-                filterForm={filterForm}
             />
         </Layout>
     )

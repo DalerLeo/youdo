@@ -142,7 +142,7 @@ const StatDebtorsList = enhance((props) => {
         id: detailId,
         data: _.get(detail, 'results') || {},
         detailLoading,
-        detailOrder,
+        detailOrder: _.get(detailOrder, 'data') || {},
         detailOrderLoading
     }
     const handleOpenCloseDetail = {

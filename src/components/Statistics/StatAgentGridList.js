@@ -300,6 +300,7 @@ StatAgentGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
+    getDocument: PropTypes.object.isRequired,
     statAgentDialog: PropTypes.shape({
         openStatAgentDialog: PropTypes.bool.isRequired,
         handleOpenStatAgentDialog: PropTypes.func.isRequired,

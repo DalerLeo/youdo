@@ -158,7 +158,7 @@ const StatProductFilterForm = enhance((props) => {
 
 StatProductFilterForm.propTypes = {
     onSubmit: PropTypes.func.isRequired,
-    getDocument: PropTypes.func.isRequired
+    getDocument: PropTypes.object.isRequired
 }
 
 export default StatProductFilterForm
