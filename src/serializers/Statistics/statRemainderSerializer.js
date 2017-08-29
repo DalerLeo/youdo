@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
-
+const ONE = 1
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
@@ -12,7 +12,8 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering),
         'type': _.get(defaultData, 'type'),
         'product': _.get(defaultData, 'product'),
-        'stock': _.get(defaultData, 'stock')
+        'stock': _.get(defaultData, 'stock'),
+        'with_price': ONE
     }
 }
 

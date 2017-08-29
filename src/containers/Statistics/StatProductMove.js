@@ -141,7 +141,6 @@ const StatProductMoveList = enhance((props) => {
         'fromDate': moment().subtract(ONE, 'month'),
         'toDate': moment()
     }
-
     const detailData = {
         filter: filterItem,
         id: detailId,

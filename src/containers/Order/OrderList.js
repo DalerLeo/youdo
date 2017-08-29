@@ -731,7 +731,7 @@ const OrderList = enhance((props) => {
         listPrintLoading
     }
     const listData = {
-        data: _.get(list, 'results'),
+        data: _.get(list, 'results') || {},
         listLoading
     }
 
@@ -742,15 +742,15 @@ const OrderList = enhance((props) => {
 
     const detailData = {
         id: detailId,
-        data: detail,
-        return: returnData,
+        data: detail || {},
+        return: returnData || [],
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
 
     const paymentData = {
         id: detailId,
-        data: payment,
+        data: payment || {},
         paymentLoading
     }
 
@@ -777,7 +777,7 @@ const OrderList = enhance((props) => {
                 listData={listData}
                 tabData={tabData}
                 detailData={detailData}
-                returnListData={orderReturnList}
+                returnListData={orderReturnList || {}}
                 paymentData={paymentData}
                 createDialog={createDialog}
                 getDocument={getDocument}

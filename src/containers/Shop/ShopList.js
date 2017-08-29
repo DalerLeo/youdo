@@ -408,7 +408,7 @@ const ShopList = enhance((props) => {
     }
 
     const slideShowDialog = {
-        gallery,
+        gallery: gallery || {},
         galleryLoading,
         openSlideShowDialog,
         handleOpenSlideShowDialog: props.handleOpenSlideShowDialog,
@@ -435,7 +435,6 @@ const ShopList = enhance((props) => {
 
     const deleteDialog = {
         openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
         handleCloseDeleteDialog: props.handleCloseDeleteDialog
     }
 

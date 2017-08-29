@@ -195,7 +195,7 @@ const enhance = compose(
         return prevDialog !== nextDialog && nextDialog !== 'false'
     }, ({dispatch, location}) => {
         const dialog = _.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
-        if (dialog !== 'false') {
+        if (dialog !== 'false' && dialog) {
             dispatch(historyOrderItemFetchAction(_.toNumber(dialog)))
         }
     }),

@@ -107,7 +107,7 @@ const StatSalesList = enhance((props) => {
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
 
     const listData = {
-        data: _.get(list, 'results'),
+        data: _.get(list, 'results') || {},
         listLoading
     }
     const statSaleDialog = {
@@ -117,8 +117,8 @@ const StatSalesList = enhance((props) => {
     }
     const detailData = {
         id: detailId,
-        data: detail,
-        return: returnData,
+        data: detail || {},
+        return: returnData || {},
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
@@ -133,7 +133,7 @@ const StatSalesList = enhance((props) => {
     }
 
     const graphData = {
-        data: graphList,
+        data: graphList || {},
         graphLoading
     }
     const order = false
