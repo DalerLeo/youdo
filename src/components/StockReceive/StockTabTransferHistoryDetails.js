@@ -62,7 +62,8 @@ const enhance = compose(
         semibold: {
             fontWeight: '600',
             cursor: 'pointer',
-            position: 'relative'
+            position: 'relative',
+            height: 'inherit'
         },
         header: {
             position: 'relative',

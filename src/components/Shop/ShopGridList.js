@@ -300,7 +300,6 @@ ShopGridList.propTypes = {
     }).isRequired,
     deleteDialog: PropTypes.shape({
         openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
         handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({

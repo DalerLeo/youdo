@@ -13,9 +13,10 @@ import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import dateFormat from '../../helpers/dateFormat'
+import toBoolean from '../../helpers/toBoolean'
 import Tooltip from '../ToolTip'
 import CloseIcon2 from '../CloseIcon2'
-
+import getConfig from '../../helpers/getConfig'
 const RETURN = 3
 const APPROVE = 1
 const CANCEL = 2
@@ -67,6 +68,7 @@ const enhance = compose(
             }
         },
         subtitle: {
+            marginTop: '10px',
             fontWeight: '600'
         },
         titleButtons: {
@@ -98,6 +100,7 @@ const enhance = compose(
             }
         },
         semibold: {
+            height: 'inherit',
             fontWeight: '600',
             cursor: 'pointer',
             position: 'relative'
@@ -110,6 +113,13 @@ const enhance = compose(
             bottom: '0',
             cursor: 'pointer',
             zIndex: '1'
+        },
+        details: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            '& span': {
+                fontWeight: '600'
+            }
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -139,10 +149,14 @@ const StockReceiveDetails = enhance((props) => {
         history,
         popover
     } = props
+    const useBarcode = toBoolean(getConfig('USE_BARCODE'))
     const onClose = _.get(detailData, 'onClose')
     const type = _.get(detailData, 'type')
     const by = _.get(detailData, ['currentDetail', 'by']) || _.get(detailData, ['data', 'fromStock', 'name'])
     const formattedType = stockTypeFormat(type)
+    const finishedTime = dateFormat(_.get(detailData, ['data', 'finishedTime']), true)
+    const acceptedTime = dateFormat(_.get(detailData, ['data', 'acceptedTime']), true)
+    const acceptedBy = _.get(detailData, ['data', 'acceptedBy'])
     const date = _.get(detailData, ['currentDetail', 'date']) ? dateFormat(_.get(detailData, ['currentDetail', 'date']))
         : (_.get(detailData, ['data', 'createdDate']) ? dateFormat(_.get(detailData, ['data', 'createdDate'])) : 'Не указана')
     const stockName = _.get(detailData, ['currentDetail', 'stock', 'name']) || _.get(detailData, ['data', 'toStock', 'name'])
@@ -284,6 +298,18 @@ const StockReceiveDetails = enhance((props) => {
                             })}
                         </div>
                         <div className={classes.rightSide}>
+                            {history && useBarcode &&
+                                 <div>
+                                    <div className={classes.details}>Начало приемки: <span>{acceptedTime}</span></div>
+                                    <div className={classes.details}>Конец приемки: <span>{finishedTime}</span></div>
+                                     <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
+                                 </div>
+                            }
+                            {history && !useBarcode &&
+                                <div>
+                                    <div className={classes.details}>Дата приемки: <span>{acceptedTime}</span></div>
+                                    <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
+                                </div>}
                             <div className={classes.subtitle}>Комментарий:</div>
                             <div>{comment}</div>
                         </div>
