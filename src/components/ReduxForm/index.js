@@ -67,6 +67,8 @@ import ReturnTypeSearchField from './ReturnTypeSearchField'
 import ChipField from './Basic/ChipField'
 import CustomChipField from './Basic/CustomChipField'
 import OrderTransferTypeSearchField from './OrderTransferTypeSearchFiled'
+import ProductParentSearchField from './Product/ProductParentSearchField'
+import ProductChildSearchField from './Product/ProductChildSearchField'
 
 export {
     ReturnStatusSearchField,
@@ -137,5 +139,7 @@ export {
     ClientBalanceReturnProductList,
     ChipField,
     CustomChipField,
-    OrderTransferTypeSearchField
+    OrderTransferTypeSearchField,
+    ProductParentSearchField,
+    ProductChildSearchField
 }

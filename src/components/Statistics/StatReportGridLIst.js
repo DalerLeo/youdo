@@ -7,18 +7,13 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {ProductSearchField, DateToDateFieldCustom} from '../ReduxForm'
+import {DateToDateFieldCustom, DivisionSearchField} from '../ReduxForm'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 
-export const STAT_REPORT_FILTER_KEY = {
-    STOCK: 'stock',
-    TYPE: 'type',
-    PRODUCT: 'product'
-}
 const enhance = compose(
     injectSheet({
         mainWrapper: {
@@ -173,18 +168,24 @@ const enhance = compose(
     reduxForm({
         form: 'StatReportFilterForm',
         enableReinitialize: true
-    }),
+    })
 )
+
+export const STAT_REPORT_FILTER_KEY = {
+    FROM_DATE: 'fromData',
+    TO_DATE: 'toData',
+    DIVISION: 'division'
+
+}
 
 const StatReportGridList = enhance((props) => {
     const {
         classes,
         listData,
         getDocument,
-        handleSubmit,
-        onSubmit
+        onSubmit,
+        handleSubmit
     } = props
-
     const listLoading = _.get(listData, 'listLoading')
 
     const iconStyle = {
@@ -341,11 +342,12 @@ const StatReportGridList = enhance((props) => {
                                         label="Диапазон дат"
                                         fullWidth={true}/>
                                     <Field
+                                        name="division"
                                         className={classes.inputFieldCustom}
-                                        name="product"
-                                        component={ProductSearchField}
-                                        label="Товары"
-                                        fullWidth={true}/>
+                                        component={DivisionSearchField}
+                                        label="Подразделение"
+                                        fullWidth={true}
+                                    />
                                     <IconButton
                                         className={classes.searchButton}
                                         iconStyle={iconStyle.icon}
