@@ -4,14 +4,13 @@ import {orderingSnakeCase} from '../../helpers/serializer'
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-
     return {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
-        'type': _.get(defaultData, 'type'),
-        'product': _.get(defaultData, 'typeChild'),
-        'stock': _.get(defaultData, 'stock')
+        'division': _.get(defaultData, 'division'),
+        'created_date_0': _.get(defaultData, 'fromDate'),
+        'created_date_1': _.get(defaultData, 'toDate')
     }
 }
 

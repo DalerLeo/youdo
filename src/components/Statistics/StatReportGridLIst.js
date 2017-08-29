@@ -7,20 +7,12 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {connect} from 'react-redux'
-import {DateToDateFieldCustom, ProductParentSearchField, ProductChildSearchField} from '../ReduxForm'
+import {DateToDateFieldCustom, DivisionSearchField} from '../ReduxForm'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-
-export const STAT_REPORT_FILTER_KEY = {
-    STOCK: 'stock',
-    TYPE: 'type',
-    TYPE_PARENT: 'typeParent',
-    TYPE_CHILD: 'typeChild'
-}
 
 const enhance = compose(
     injectSheet({
@@ -176,23 +168,23 @@ const enhance = compose(
     reduxForm({
         form: 'StatReportFilterForm',
         enableReinitialize: true
-    }),
-    connect((state) => {
-        const typeParent = _.get(state, ['form', 'StatReportFilterForm', 'values', 'typeParent', 'value'])
-        return {
-            typeParent
-        }
     })
 )
+
+export const STAT_REPORT_FILTER_KEY = {
+    FROM_DATE: 'fromData',
+    TO_DATE: 'toData',
+    DIVISION: 'division'
+
+}
 
 const StatReportGridList = enhance((props) => {
     const {
         classes,
         listData,
         getDocument,
-        handleSubmit,
         onSubmit,
-        typeParent
+        handleSubmit
     } = props
     const listLoading = _.get(listData, 'listLoading')
 
@@ -350,20 +342,12 @@ const StatReportGridList = enhance((props) => {
                                         label="Диапазон дат"
                                         fullWidth={true}/>
                                     <Field
-                                        name="typeParent"
+                                        name="division"
                                         className={classes.inputFieldCustom}
-                                        component={ProductParentSearchField}
-                                        label="Тип продукта"
+                                        component={DivisionSearchField}
+                                        label="Подразделение"
                                         fullWidth={true}
                                     />
-                                    {typeParent ? <Field
-                                        name="typeChild"
-                                        className={classes.inputFieldCustom}
-                                        component={ProductChildSearchField}
-                                        parentType={typeParent}
-                                        label="Товары"
-                                        fullWidth={true}
-                                    /> : null}
                                     <IconButton
                                         className={classes.searchButton}
                                         iconStyle={iconStyle.icon}
