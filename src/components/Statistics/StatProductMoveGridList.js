@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import {Row, Col} from 'react-flexbox-grid'
+import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
 import injectSheet from 'react-jss'
@@ -9,7 +9,6 @@ import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import {connect} from 'react-redux'
 import {DateToDateField, StockSearchField, ProductTypeParentSearchField, ProductTypeChildSearchField} from '../ReduxForm'
-import StatProductMoveDialog from './StatProductMoveDialog'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
@@ -218,7 +217,8 @@ const enhance = compose(
                 height: '40px'
             },
             '& td': {
-                padding: '0 20px'
+                padding: '0 20px',
+                minWidth: '140px'
             }
         },
         title: {
@@ -297,12 +297,10 @@ const enhance = compose(
 const StatProductMoveGridList = enhance((props) => {
     const {
         classes,
-        statProductMoveDialog,
         listData,
         sumData,
         filter,
         handleSubmitFilterDialog,
-        detailData,
         getDocument,
         typeParent
     } = props
@@ -339,17 +337,18 @@ const StatProductMoveGridList = enhance((props) => {
 
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
+        const measurement = _.get(item, ['measurement', 'name'])
         const code = _.get(item, 'code') || 'неизвестно'
-        const beginBalancePr = numberFormat(_.get(item, 'beginBalance'))
+        const beginBalancePr = numberFormat(_.get(item, 'beginBalance'), measurement)
         const beginPricePr = numberFormat(_.get(item, 'beginPrice'), primaryCurrency)
 
-        const inBalancePr = numberFormat(_.get(item, 'inBalance'))
+        const inBalancePr = numberFormat(_.get(item, 'inBalance'), measurement)
         const inPricePr = numberFormat(_.get(item, 'inPrice'), primaryCurrency)
 
-        const outBalancePr = numberFormat(_.get(item, 'outBalance'))
+        const outBalancePr = numberFormat(_.get(item, 'outBalance'), measurement)
         const outPricePr = numberFormat(_.get(item, 'outPrice'), primaryCurrency)
 
-        const endBalancePr = numberFormat(_.get(item, 'endBalance'))
+        const endBalancePr = numberFormat(_.get(item, 'endBalance'), measurement)
         const endPricePr = numberFormat(_.get(item, 'endPrice'), primaryCurrency)
         return (
             <tr key={id} className={classes.tableRow}>
@@ -358,47 +357,13 @@ const StatProductMoveGridList = enhance((props) => {
                 <td>{beginPricePr}</td>
                 <td>{inBalancePr}</td>
                 <td>{inPricePr}</td>
+                <td>{inBalancePr}</td>
+                <td>{inPricePr}</td>
                 <td>{outBalancePr}</td>
                 <td>{outPricePr}</td>
                 <td>{endBalancePr}</td>
                 <td>{endPricePr}</td>
             </tr>
-        )
-    })
-
-    const list = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const zone = _.get(item, ['zone', 'name'])
-        const plan = _.get(item, 'plan')
-        const paidFor = _.get(item, 'paidFor')
-        const balance = _.get(item, 'balance')
-        const income = numberFormat(_.get(item, 'income'), primaryCurrency)
-
-        return (
-            <Row key={id} className="dottedList">
-                <Col xs={2}>
-                    <div className={classes.pointer} onClick={() => {
-                        statProductMoveDialog.handleOpenStatProductMoveDialog(id)
-                    }}>{name}</div>
-                </Col>
-                <Col xs={2}>
-                    <div>{zone}</div>
-                </Col>
-                <Col xs={2}>
-                    <div>{plan}</div>
-                </Col>
-
-                <Col xs={2}>
-                    <div>{income}</div>
-                </Col>
-                <Col xs={2}>
-                    <div>{paidFor}</div>
-                </Col>
-                <Col xs={2}>
-                    <div>{balance}</div>
-                </Col>
-            </Row>
         )
     })
 
@@ -457,7 +422,7 @@ const StatProductMoveGridList = enhance((props) => {
                             ? <div className={classes.loader}>
                                 <CircularProgress size={40} thickness={4}/>
                             </div>
-                            : (_.isEmpty(list) && !listLoading)
+                            : (_.isEmpty(tableList) && !listLoading)
                                 ? <div className={classes.emptyQuery}>
                                     <div>По вашему запросу ничего не найдено</div>
                                 </div>
@@ -472,6 +437,9 @@ const StatProductMoveGridList = enhance((props) => {
                                                     <div>{beginBalance}</div>
                                                 </div>
                                                 <div>Поступило товара на сумму
+                                                    <div>{inBalance}</div>
+                                                </div>
+                                                <div>Возврат за период
                                                     <div>{inBalance}</div>
                                                 </div>
                                                 <div>Выдано товара на сумму
@@ -498,10 +466,13 @@ const StatProductMoveGridList = enhance((props) => {
                                                     <td rowSpan={2}>ID товара</td>
                                                     <td colSpan={2}>Остаток на начало периода</td>
                                                     <td colSpan={2}>Поступивший товара за период</td>
+                                                    <td colSpan={2}>Возврать</td>
                                                     <td colSpan={2}>Выданный товара за период</td>
                                                     <td colSpan={2}>Остаток на конец</td>
                                                 </tr>
                                                 <tr className={classes.subTitle}>
+                                                    <td>Кол-во</td>
+                                                    <td>Стоимость</td>
                                                     <td>Кол-во</td>
                                                     <td>Стоимость</td>
                                                     <td>Кол-во</td>
@@ -527,12 +498,6 @@ const StatProductMoveGridList = enhance((props) => {
     return (
         <Container>
             {page}
-            <StatProductMoveDialog
-                loading={_.get(detailData.detailLoading)}
-                detailData={detailData}
-                open={statProductMoveDialog.openStatProductMoveDialog}
-                onClose={statProductMoveDialog.handleCloseStatProductMoveDialog}
-                filter={filter}/>
         </Container>
     )
 })
@@ -540,12 +505,7 @@ const StatProductMoveGridList = enhance((props) => {
 StatProductMoveGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
-    detailData: PropTypes.object,
-    statProductMoveDialog: PropTypes.shape({
-        openStatProductMoveDialog: PropTypes.bool.isRequired,
-        handleOpenStatProductMoveDialog: PropTypes.func.isRequired,
-        handleCloseStatProductMoveDialog: PropTypes.func.isRequired
-    }).isRequired
+    detailData: PropTypes.object
 }
 
 export default StatProductMoveGridList

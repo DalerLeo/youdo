@@ -161,7 +161,6 @@ const StatProductMoveList = enhance((props) => {
             toDate: moment(lastDayOfMonth)
         }
     }
-
     return (
         <Layout {...layout}>
             <StatProductMoveGridList
