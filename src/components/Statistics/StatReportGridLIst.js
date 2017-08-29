@@ -7,7 +7,7 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {DateToDateFieldCustom, DivisionSearchField} from '../ReduxForm'
+import {DateToDateField, DivisionSearchField} from '../ReduxForm'
 import StatSideMenu from './StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
@@ -172,8 +172,8 @@ const enhance = compose(
 )
 
 export const STAT_REPORT_FILTER_KEY = {
-    FROM_DATE: 'fromData',
-    TO_DATE: 'toData',
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate',
     DIVISION: 'division'
 
 }
@@ -338,7 +338,7 @@ const StatReportGridList = enhance((props) => {
                                     <Field
                                         className={classes.inputFieldCustom}
                                         name="date"
-                                        component={DateToDateFieldCustom}
+                                        component={DateToDateField}
                                         label="Диапазон дат"
                                         fullWidth={true}/>
                                     <Field

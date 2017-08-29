@@ -67,10 +67,10 @@ import ReturnTypeSearchField from './ReturnTypeSearchField'
 import ChipField from './Basic/ChipField'
 import CustomChipField from './Basic/CustomChipField'
 import OrderTransferTypeSearchField from './OrderTransferTypeSearchFiled'
-import ProductParentSearchField from './Product/ProductParentSearchField'
-import ProductChildSearchField from './Product/ProductChildSearchField'
+import StockHistoryTypeSearchField from '../ReduxForm/StockHistoryTypeSearchField'
 
 export {
+    StockHistoryTypeSearchField,
     ReturnStatusSearchField,
     ReturnTypeSearchField,
     ZoneSearchField,
@@ -139,7 +139,5 @@ export {
     ClientBalanceReturnProductList,
     ChipField,
     CustomChipField,
-    OrderTransferTypeSearchField,
-    ProductParentSearchField,
-    ProductChildSearchField
+    OrderTransferTypeSearchField
 }

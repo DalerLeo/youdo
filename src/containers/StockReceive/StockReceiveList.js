@@ -24,7 +24,7 @@ import {
     SROCK_POPVER_DIALOG_OPEN,
     TAB,
     STOCK_CONFIRM_DIALOG_OPEN,
-    TAB_RECEIVE_FILTER_KEY
+    TAB_TRANSFER_FILTER_KEY
 } from '../../components/StockReceive'
 import {
     stockReceiveListFetchAction,
@@ -88,13 +88,13 @@ const enhance = compose(
         const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
         const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
         const tabTransferFilterForm = _.get(state, ['form', 'TabTransferFilterForm'])
-        const tabReceiveFilterForm = _.get(state, ['form', 'TabReceiveFilterForm'])
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
         const productId = _.toNumber(_.get(state, ['form', 'StockReceiveCreateForm', 'values', 'product', 'value', 'id']))
-        const filter = filterHelper((_.get(query, 'tab') === 'receive' || _.get(query, 'tab') === 'receiveHistory')
-            ? list : (_.get(query, 'tab') === 'transfer' || _.get(query, 'tab') === 'transferHistory')
-                ? transferList : (_.get(query, 'tab') === 'outHistory')
-                    ? historyList : list, pathname, query)
+        const filter = filterHelper(
+            (_.get(query, 'tab') === 'receive' || _.get(query, 'tab') === 'receiveHistory')
+                ? list : ((_.get(query, 'tab') === 'transfer' || _.get(query, 'tab') === 'transferHistory')
+                ? transferList : ((_.get(query, 'tab') === 'outHistory')
+                    ? historyList : list)), pathname, query)
         const returnDialogData = _.get(state, ['return', 'item', 'data'])
         const returnDialogDataLoading = _.get(state, ['return', 'item', 'loading'])
         const supplyDialogData = _.get(state, ['supply', 'item', 'data'])
@@ -131,7 +131,6 @@ const enhance = compose(
             printLoading,
             historyFilterForm,
             tabTransferFilterForm,
-            tabReceiveFilterForm,
             historyOrderLoading,
             historyOrderDetail,
             returnDialogData,
@@ -154,7 +153,7 @@ const enhance = compose(
         const currentTab = _.get(location, ['query', 'tab']) || 'receive'
         if (currentTab === 'receive') {
             dispatch(stockReceiveListFetchAction(filter))
-        } else if (currentTab === 'transfer') {
+        } else if (currentTab === 'transfer' || currentTab === 'stock_transfer') {
             dispatch(stockTransferListFetchAction(filter))
         } else if (currentTab === 'outHistory') {
             dispatch(stockHistoryListFetchAction(filter))
@@ -241,21 +240,21 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, historyFilterForm} = props
-            const brand = _.get(historyFilterForm, ['values', 'brand', 'value']) || null
             const stock = _.get(historyFilterForm, ['values', 'stock', 'value']) || null
             const type = _.get(historyFilterForm, ['values', 'type', 'value']) || null
-            const productType = _.get(historyFilterForm, ['values', 'productType', 'value']) || null
+            const status = _.get(historyFilterForm, ['values', 'status', 'value']) || null
             const product = _.get(historyFilterForm, ['values', 'product', 'value']) || null
             const fromDate = _.get(historyFilterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(historyFilterForm, ['values', 'date', 'toDate']) || null
+            const typeChild = _.get(historyFilterForm, ['values', 'typeChild', 'value']) || null
 
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
-                [HISTORY_FILTER_KEY.BRAND]: brand,
                 [HISTORY_FILTER_KEY.STOCK]: stock,
                 [HISTORY_FILTER_KEY.TYPE]: type,
-                [HISTORY_FILTER_KEY.PRODUCT_TYPE]: productType,
+                [HISTORY_FILTER_KEY.STATUS]: status,
                 [HISTORY_FILTER_KEY.PRODUCT]: product,
+                [HISTORY_FILTER_KEY.TYPE_CHILD]: typeChild,
                 [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [HISTORY_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -263,21 +262,17 @@ const enhance = compose(
         },
 
         handleSubmitTabReceiveFilterDialog: props => () => {
-            const {filter, tabReceiveFilterForm} = props
-            const stock = _.get(tabReceiveFilterForm, ['values', 'stock', 'value']) || null
-            const type = _.get(tabReceiveFilterForm, ['values', 'type', 'value']) || null
-            const transferFromDate = _.get(tabReceiveFilterForm, ['values', 'transferDate', 'fromDate']) || null
-            const fromDate = _.get(tabReceiveFilterForm, ['values', 'date', 'fromDate']) || null
-            const transferToDate = _.get(tabReceiveFilterForm, ['values', 'transferDate', 'toDate']) || null
-            const toDate = _.get(tabReceiveFilterForm, ['values', 'date', 'toDate']) || null
+            const {filter, tabTransferFilterForm} = props
+            const stock = _.get(tabTransferFilterForm, ['values', 'stock', 'value']) || null
+            const type = _.get(tabTransferFilterForm, ['values', 'type', 'value']) || null
+            const fromDate = _.get(tabTransferFilterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(tabTransferFilterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
-                [TAB_RECEIVE_FILTER_KEY.STOCK]: stock,
-                [TAB_RECEIVE_FILTER_KEY.TYPE]: type,
-                [TAB_RECEIVE_FILTER_KEY.TRANSFER_FROM_DATE]: transferFromDate && moment(transferFromDate).format('YYYY-MM-DD'),
-                [TAB_RECEIVE_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
-                [TAB_RECEIVE_FILTER_KEY.TRANSFER_TO_DATE]: transferToDate && moment(transferToDate).format('YYYY-MM-DD'),
-                [TAB_RECEIVE_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
+                [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,
+                [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
+                [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
+                [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
             })
         },

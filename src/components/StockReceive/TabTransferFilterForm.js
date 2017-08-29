@@ -20,8 +20,6 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 export const TAB_TRANSFER_FILTER_KEY = {
     TYPE: 'type',
     FROM_DATE: 'fromDate',
-    TRANSFER_FROM_DATE: 'transferFromData',
-    TRANSFER_TO_DATE: 'transferToData',
     TO_DATE: 'toDate',
     STOCK: 'stock'
 }
@@ -120,7 +118,6 @@ const enhance = compose(
 const TabTransferFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
-
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
             return (
@@ -178,17 +175,9 @@ const TabTransferFilterForm = enhance((props) => {
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
-                            name="transferDate"
-                            component={DateToDateField}
-                            label="Дата передачи"
-                            fullWidth={true}/>
-                    </div>
-                    <div>
-                        <Field
-                            className={classes.inputFieldCustom}
                             name="date"
                             component={DateToDateField}
-                            label="Дата приемки"
+                            label="Дата передачи"
                             fullWidth={true}/>
                     </div>
 

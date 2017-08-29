@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withHandlers} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
@@ -12,11 +13,12 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 
 import {
     ProductSearchField,
-    BrandSearchField,
     DateToDateField,
-    ProductTypeSearchField,
+    StockHistoryTypeSearchField,
     StockStatusSearchField,
-    StockSearchField
+    StockSearchField,
+    ProductTypeParentSearchField,
+    ProductTypeChildSearchField
 } from '../ReduxForm'
 
 import CloseIcon from '../CloseIcon'
@@ -25,6 +27,8 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 export const HISTORY_FILTER_KEY = {
     PRODUCT: 'product',
     TYPE: 'type',
+    STATUS: 'status',
+    TYPE_CHILD: 'typeChild',
     PRODUCT_TYPE: 'productType',
     BRAND: 'brand',
     FROM_DATE: 'fromDate',
@@ -107,6 +111,12 @@ const enhance = compose(
             }
         }
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'HistoryFilterForm', 'values', 'typeParent', 'value'])
+        return {
+            typeParent
+        }
+    }),
     reduxForm({
         form: 'HistoryFilterForm',
         enableReinitialize: true
@@ -125,7 +135,7 @@ const enhance = compose(
 )
 
 const HistoryFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, handleSubmit} = props
+    const {classes, filterDialog, getCount, handleSubmit, typeParent} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -168,19 +178,31 @@ const HistoryFilterForm = enhance((props) => {
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field
+                            name="typeParent"
                             className={classes.inputFieldCustom}
-                            name="brand"
-                            component={BrandSearchField}
-                            label="Бренд"
-                            fullWidth={true}/>
+                            component={ProductTypeParentSearchField}
+                            label="Тип продукта"
+                            fullWidth={true}
+                        />
+                    </div>
+                    <div>
+                        {typeParent ? <Field
+                            name="typeChild"
+                            className={classes.inputFieldCustom}
+                            component={ProductTypeChildSearchField}
+                            parentType={typeParent}
+                            label="Подкатегория"
+                            fullWidth={true}
+                        /> : null}
                     </div>
                     <div>
                         <Field
+                            name="type"
                             className={classes.inputFieldCustom}
-                            name="productType"
-                            component={ProductTypeSearchField}
-                            label="Тип товара"
-                            fullWidth={true}/>
+                            component={StockHistoryTypeSearchField}
+                            label="Тип"
+                            fullWidth={true}
+                        />
                     </div>
                     <div>
                         <Field
@@ -201,7 +223,7 @@ const HistoryFilterForm = enhance((props) => {
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
-                            name="type"
+                            name="status"
                             component={StockStatusSearchField}
                             label="Статус"
                             fullWidth={true}/>

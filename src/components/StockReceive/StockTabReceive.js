@@ -9,7 +9,7 @@ import StockReceiveDetails from './StockReceiveDetails'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
 import CreateDialog from './StockReceiveCreateDialog'
-import ReceiveFilterForm from './TabReceiveFilterForm'
+import TabTransferFilterForm from './TabTransferFilterForm'
 import GridList from '../GridList'
 
 const ZERO = 0
@@ -143,7 +143,7 @@ const StockTabReceive = enhance((props) => {
     } = props
     const listLoading = _.get(listData, 'listLoading')
     const stockReceiveFilterDialog = (
-        <ReceiveFilterForm
+        <TabTransferFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
