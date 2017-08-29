@@ -269,49 +269,50 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_OUTCOME_CATEGORY_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    {listLoading
+                    <div className={classes.wrapper}>
+                        <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+                            <div className={classes.filter}>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="date"
+                                    component={DateToDateField}
+                                    label="Диапазон дат"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="division"
+                                    component={DivisionSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Подразделение"
+                                    fullWidth={true}
+                                />
+
+                                <IconButton
+                                    className={classes.searchButton}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    type="submit">
+                                    <Search/>
+                                </IconButton>
+                            </div>
+                            <a className={classes.excel}
+                               onClick={getDocument.handleGetDocument}>
+                                <Excel color="#fff"/> <span>Excel</span>
+                            </a>
+                        </form>
+                            <Pagination filter={filter}/>
+                        {listLoading
                         ? <div className={classes.loader}>
                             <CircularProgress size={40} thickness={4}/>
                         </div>
-                        : <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Подразделение"
-                                        fullWidth={true}
-                                    />
-
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
-                                </div>
-                                <a className={classes.excel}
-                                   onClick={getDocument.handleGetDocument}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
-                            <Pagination filter={filter}/>
-                            {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                        : (_.isEmpty(list) && !listLoading)
+                            ? <div className={classes.emptyQuery}>
                                 <div>По вашему запросу ничего не найдено</div>
-                            </div>
-                                : <div className={classes.tableWrapper}>
-                                    {headers}
-                                    {list}
-                                </div>}
-                        </div>}
+                              </div>
+                            : <div className={classes.tableWrapper}>
+                                {headers}
+                                {list}
+                              </div>}
+                    </div>
                 </div>
             </Row>
         </div>

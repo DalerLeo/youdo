@@ -8,27 +8,13 @@ import LinearProgress from 'material-ui/LinearProgress'
 import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm, Field} from 'redux-form'
-import {TextField, DivisionSearchField} from '../ReduxForm'
-import ProductTypeSearchField from '../ReduxForm/Product/ProductTypeSearchField'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from './StatSideMenu'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../GridList/GridListNavPagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat.js'
 import NotFound from '../Images/not-found.png'
+import StatProductFilterForm from './StatProductFilterForm'
 
-export const STAT_PRODUCT_FILTER_KEY = {
-    SEARCH: 'search',
-    PRODUCT: 'product',
-    DIVISION: 'division',
-    PRODUCT_TYPE: 'productType',
-    TO_DATE: 'toDate',
-    FROM_DATE: 'fromDate'
-}
 const enhance = compose(
     injectSheet({
         loader: {
@@ -174,10 +160,6 @@ const enhance = compose(
             }
         }
     }),
-    reduxForm({
-        form: 'StatProductFilterForm',
-        enableReinitialize: true
-    }),
 )
 
 const StatProductGridList = enhance((props) => {
@@ -196,19 +178,6 @@ const StatProductGridList = enhance((props) => {
         fontWeight: '600',
         color: '#666'
     }
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
-    }
-
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={3}>Товар</Col>
@@ -251,59 +220,21 @@ const StatProductGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_PRODUCT_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    {listLoading
-                    ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4} />
-                    </div>
-                    : <div className={classes.wrapper}>
-                        <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                            <div className={classes.filter}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="date"
-                                    component={DateToDateField}
-                                    label="Диапазон дат"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="productType"
-                                    component={ProductTypeSearchField}
-                                    label="Тип товара"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="division"
-                                    component={DivisionSearchField}
-                                    className={classes.inputFieldCustom}
-                                    label="Подразделение"
-                                    fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="search"
-                                    component={TextField}
-                                    label="Поиск"
-                                    fullWidth={true}/>
-                                <IconButton
-                                    className={classes.searchButton}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    type="submit">
-                                    <Search/>
-                                </IconButton>
-                            </div>
-                            <a className={classes.excel}
-                               onClick={getDocument.handleGetDocument}>
-                                <Excel color="#fff"/> <span>Excel</span>
-                            </a>
-                        </form>
+                    <div className={classes.wrapper}>
+                        <StatProductFilterForm onSubmit={handleSubmitFilterDialog} getDocument={getDocument}/>
                         <Pagination filter={filter}/>
-                        {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                        {listLoading
+                        ? <div className={classes.loader}>
+                            <CircularProgress size={40} thickness={4} />
+                        </div>
+                        : _.isEmpty(list) ? <div className={classes.emptyQuery}>
                             <div>По вашему запросу ничего не найдено</div>
                         </div>
                         : <div className={classes.tableWrapper}>
                             {headers}
                             {list}
                         </div>}
-                    </div>}
+                    </div>
                 </div>
             </Row>
         </div>

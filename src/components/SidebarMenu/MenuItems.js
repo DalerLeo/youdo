@@ -113,7 +113,8 @@ const defaultMenu = [
             {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL},
             {name: 'Смена', url: ROUTES.SHIFT_LIST_URL},
             {name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL},
-            {name: 'Должности', url: ROUTES.POSITION_LIST_URL}
+            {name: 'Должности', url: ROUTES.POSITION_LIST_URL},
+            {name: 'Объединение', url: ROUTES.JOIN_LIST_URL}
         ]
     }
 ]

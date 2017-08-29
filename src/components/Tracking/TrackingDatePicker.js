@@ -1,47 +1,37 @@
-import _ from 'lodash'
 import React from 'react'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import moment from 'moment'
+import {Field, reduxForm} from 'redux-form'
+import TrackingDateField from '../ReduxForm/TrackingDateField'
 import IconButton from 'material-ui/IconButton'
 import LeftArrow from 'material-ui/svg-icons/navigation/chevron-left'
 import RightArrow from 'material-ui/svg-icons/navigation/chevron-right'
 
 const enhance = compose(
     injectSheet({
-        padding: {
-            padding: '20px 30px'
-        },
         titleDate: {
-            minHeight: '55px',
             display: 'flex',
-            borderBottom: '1px #efefef solid',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0 30px',
-            fontSize: '16px',
-            fontWeight: '600',
-            '& > div': {
-                display: 'flex',
-                height: '36px',
-                alignItems: 'center',
-                textTransform: 'capitalize'
+            height: '55px',
+            padding: '0px 30px',
+            position: 'relative',
+            '& nav': {
+                height: '34px',
+                position: 'absolute'
             }
         },
-        datePicker: {
-            background: '#fff',
-            padding: '10px 0 20px',
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            zIndex: '2',
-            '& > div': {
-                textAlign: 'center'
-            }
+        prev: {
+            left: '30px'
+        },
+        next: {
+            right: '30px'
         }
-    })
+    }),
+    reduxForm({
+        form: 'TrackingFilterForm',
+        enableReinitialize: true
+    }),
 )
 
 const navArrow = {
@@ -57,16 +47,11 @@ const navArrow = {
     }
 }
 
-const TrakingDayFilter = enhance((props) => {
-    const {classes, calendar} = props
-    const dateFormat = (date, time, defaultText) => {
-        const dateTime = moment(date).locale('ru').format('DD MMMM YYYY')
-        return (date && time) ? dateTime : (date) ? moment(date).locale('ru').format('DD MMMM YYYY') : defaultText
-    }
-    const selectedDate = dateFormat(_.get(calendar, 'selectedDate'))
+const TrackingDatePicker = enhance((props) => {
+    const {classes, filter, calendar} = props
     return (
         <div className={classes.titleDate}>
-            <nav>
+            <nav className={classes.prev}>
                 <IconButton
                     onTouchTap={calendar.handlePrevDay}
                     iconStyle={navArrow.icon}
@@ -75,8 +60,14 @@ const TrakingDayFilter = enhance((props) => {
                     <LeftArrow/>
                 </IconButton>
             </nav>
-            <div>{selectedDate}</div>
-            <nav>
+            <Field
+                name="date"
+                className={classes.inputDateCustom}
+                filter={filter}
+                component={TrackingDateField}
+                fullWidth={true}
+            />
+            <nav className={classes.next}>
                 <IconButton
                     onTouchTap={calendar.handleNextDay}
                     iconStyle={navArrow.icon}
@@ -89,4 +80,4 @@ const TrakingDayFilter = enhance((props) => {
     )
 })
 
-export default TrakingDayFilter
+export default TrackingDatePicker

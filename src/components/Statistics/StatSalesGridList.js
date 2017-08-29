@@ -22,6 +22,7 @@ import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
 import dateFormat from '../../helpers/dateFormat'
 import getConfig from '../../helpers/getConfig'
+import NotFound from '../Images/not-found.png'
 
 export const STAT_SALES_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -197,6 +198,19 @@ const enhance = compose(
             '& > div:last-child': {
                 fontSize: '24px',
                 fontWeight: '600'
+            }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
             }
         }
     }),
@@ -386,11 +400,7 @@ const StatSalesGridList = enhance((props) => {
                         <StatSideMenu currentUrl={ROUTES.STATISTICS_SALES_URL}/>
                     </div>
                     <div className={classes.rightPanel}>
-                        {loading
-                        ? <div className={classes.loader}>
-                            <CircularProgress size={70} thickness={4} />
-                        </div>
-                        : <div className={classes.wrapper}>
+                        <div className={classes.wrapper}>
                             <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                                 <div className={classes.filter}>
                                     <Field
@@ -417,29 +427,39 @@ const StatSalesGridList = enhance((props) => {
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>
-                            <Row className={classes.diagram}>
-                                <Col xs={3} className={classes.salesSummary}>
-                                    <div>Сумма продаж за период</div>
-                                    <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                </Col>
-                                <Col xs={9}>
-                                    {_.get(graphData, 'graphLoading') && <div className={classes.loader}>
-                                        <CircularProgress size={50} thickness={4} />
-                                    </div>}
-
-                                    {!_.get(graphData, 'graphLoading') &&
-                                    <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>}
-                                </Col>
-                            </Row>
-                            <div className={classes.pagination}>
-                                <div><b>История продаж</b></div>
-                                <Pagination filter={filter}/>
+                            {loading
+                            ? <div className={classes.loader}>
+                                <CircularProgress size={70} thickness={4} />
                             </div>
-                            <div className={classes.tableWrapper}>
-                                {headers}
-                                {list}
-                            </div>
-                        </div>}
+                            : (_.isEmpty(list) && !loading)
+                                ? <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>
+                                : <div>
+                                    <Row className={classes.diagram}>
+                                        <Col xs={3} className={classes.salesSummary}>
+                                            <div>Сумма продаж за период</div>
+                                            <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                        </Col>
+                                        <Col xs={9}>
+                                            {_.get(graphData, 'graphLoading') && <div className={classes.loader}>
+                                                <CircularProgress size={50} thickness={4} />
+                                            </div>}
+                                            {!_.get(graphData, 'graphLoading') &&
+                                            <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>}
+                                        </Col>
+                                    </Row>
+                                    <div className={classes.pagination}>
+                                        <div><b>История продаж</b></div>
+                                        <Pagination filter={filter}/>
+                                    </div>
+                                    <div className={classes.tableWrapper}>
+                                        {headers}
+                                        {list}
+                                    </div>
+                                  </div>
+                            }
+                        </div>
                     </div>
                 </Row>
             </div>

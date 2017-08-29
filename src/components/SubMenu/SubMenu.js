@@ -17,8 +17,7 @@ const enhance = compose(
             width: '100%',
             height: '60px',
             display: 'flex',
-            alignItems: 'center',
-            zIndex: '2'
+            alignItems: 'center'
         },
         transparentWrapper: {
             extend: 'wrapper',
@@ -26,6 +25,7 @@ const enhance = compose(
             margin: '0 -28px',
             padding: '0 28px',
             borderBottom: '1px #efefef solid',
+            zIndex: '2',
             width: 'auto'
         },
         item: {

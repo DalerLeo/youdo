@@ -22,11 +22,9 @@ const enhance = compose(
     withGoogleMap,
     connect((state, props) => {
         const agentId = _.get(props, 'agentId')
-        const timeValue = _.toInteger(_.get(state, ['form', 'TrackingFilterForm', 'values', 'time']))
         const date = _.get(state, ['form', 'TrackingFilterForm', 'values', 'date'])
         return {
             agentId,
-            timeValue,
             date
         }
     }),
@@ -44,19 +42,18 @@ const GoogleMapWrapper = enhance(({
     setOpenMarketInfo,
     setOpenAgentInfo,
     shopDetails,
-    timeValue,
+    sliderValue,
     date,
-    openMarkets,
     filter,
     ...props
     }) => {
     const minutePerHour = 60
     const TEN = 10
-    let hour = _.floor(timeValue / minutePerHour) || ZERO
+    let hour = _.floor(sliderValue / minutePerHour) || ZERO
     if (hour < TEN) {
         hour = '0' + hour
     }
-    let minute = _.floor(timeValue % minutePerHour) || ZERO
+    let minute = _.floor(sliderValue % minutePerHour) || ZERO
     if (minute < TEN) {
         minute = '0' + minute
     }
@@ -205,23 +202,46 @@ const GoogleMapWrapper = enhance(({
                         )
                     }
 
-                    return (
-                        <Marker
-                            key={id}
-                            title={name}
-                            onClick={() => { clickAgent(id) }}
-                            position={{lat: lat, lng: lng}}
-                            options={
-                            {
-                                icon: {
-                                    url: isOnline ? AgentOnline : AgentOffline,
-                                    size: {width: 30, height: 30},
-                                    scaledSize: {width: 30, height: 30}
-                                }
-                            }}>
-                        </Marker>
-                    )
+                    return false
                 })}
+            <MarkerClusterer>
+                {_.map(listData, (item) => {
+                    const id = _.get(item, 'id')
+                    const name = _.get(item, 'agent')
+                    const lat = _.get(item, ['location', 'lat'])
+                    const lng = _.get(item, ['location', 'lon'])
+
+                    const FIVE_MIN = 300000
+                    const dateNow = _.toInteger(moment().format('x'))
+                    const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                    const difference = dateNow - registeredDate
+                    let isOnline = false
+                    if (difference <= FIVE_MIN) {
+                        isOnline = true
+                    }
+                    if (id !== agentId) {
+                        return (
+                            <Marker
+                                key={id}
+                                title={name}
+                                onClick={() => { clickAgent(id) }}
+                                position={{lat: lat, lng: lng}}
+                                options={
+                                {
+                                    opacity: 0.7,
+                                    icon: {
+                                        url: isOnline ? AgentOnline : AgentOffline,
+                                        size: {width: 30, height: 30},
+                                        scaledSize: {width: 30, height: 30}
+                                    }
+                                }}>
+                            </Marker>
+                        )
+                    }
+
+                    return false
+                })}
+            </MarkerClusterer>
             {props.children}
         </DefaultGoogleMap>
     )
@@ -241,6 +261,7 @@ const GoogleMap = (props) => {
         agentLocation,
         marketsLocation,
         shopDetails,
+        sliderValue,
         ...defaultProps
     } = props
 
@@ -271,6 +292,7 @@ const GoogleMap = (props) => {
             agentLocation={agentLocation}
             marketsLocation={marketsLocation}
             shopDetails={shopDetails}
+            sliderValue={sliderValue}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>

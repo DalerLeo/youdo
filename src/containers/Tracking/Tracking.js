@@ -38,6 +38,7 @@ const enhance = compose(
         const detail = _.get(state, ['tracking', 'item', 'data'])
         const detailLoading = _.get(state, ['tracking', 'item', 'loading'])
         const agentLocation = _.get(state, ['tracking', 'location', 'data'])
+        const agentLocationLoading = _.get(state, ['tracking', 'location', 'loading'])
         const marketsLocation = _.get(state, ['tracking', 'markets', 'data'])
         const filterForm = _.get(state, ['form', 'TrackingFilterForm'])
         const filter = filterHelper(list, pathname, query)
@@ -56,6 +57,7 @@ const enhance = compose(
             detail,
             detailLoading,
             agentLocation,
+            agentLocationLoading,
             marketsLocation,
             filterForm,
             isOpenTrack,
@@ -177,6 +179,7 @@ const Tracking = enhance((props) => {
         detail,
         detailLoading,
         agentLocation,
+        agentLocationLoading,
         marketsLocation,
         isOpenTrack,
         isOpenMarkets,
@@ -196,10 +199,7 @@ const Tracking = enhance((props) => {
     const agentTrack = toBoolean(filter.getParam(TRACKING_FILTER_KEY.AGENT_TRACK)) || false
     const date = filter.getParam(TRACKING_FILTER_KEY.DATE)
 
-    let currentDate = moment().format('YYYY-MM-DD')
-    if (date) {
-        currentDate = date
-    }
+    const currentDate = !_.isEmpty(date) ? date : moment().format('YYYY-MM-DD')
 
     const tabData = {
         groupId,
@@ -254,6 +254,7 @@ const Tracking = enhance((props) => {
                 shopDetails={shopDetails}
                 filterForm={filterForm}
                 agentLocation={agentLocation}
+                agentLocationLoading={agentLocationLoading}
                 tabData={tabData}
                 calendar={calendar}
                 initialValues={filterForm.initialValues}

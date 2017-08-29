@@ -3,7 +3,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Calendar from 'material-ui/svg-icons/action/today'
 import {Field, reduxForm} from 'redux-form'
-import PlanDateToDateField from '../ReduxForm/Basic/PlanDateToDateField'
+import PlanDateToDateField from '../ReduxForm/TrackingDateField'
 
 const enhance = compose(
     injectSheet({

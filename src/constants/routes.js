@@ -264,3 +264,8 @@ export const RETURN = 'return'
 export const RETURN_LIST_URL = `/${RETURN}`
 export const RETURN_ITEM_URL = `/${RETURN}/:returnId`
 export const RETURN_ITEM_PATH = `/${RETURN}/%d`
+
+export const JOIN = 'join'
+export const JOIN_LIST_URL = `/${JOIN}`
+export const JOIN_ITEM_URL = `/${JOIN}/:itemId`
+export const JOIN_ITEM_PATH = `/${JOIN}/%d`
