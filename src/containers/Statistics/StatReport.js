@@ -64,11 +64,15 @@ const enhance = compose(
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeChild', 'value']) || null
+            const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
 
             filter.filterBy({
                 [STAT_REPORT_FILTER_KEY.PRODUCT]: product,
                 [STAT_REPORT_FILTER_KEY.TYPE]: type,
-                [STAT_REPORT_FILTER_KEY.STOCK]: stock
+                [STAT_REPORT_FILTER_KEY.STOCK]: stock,
+                [STAT_REPORT_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [STAT_REPORT_FILTER_KEY.TYPE_CHILD]: typeChild
 
             })
         }
