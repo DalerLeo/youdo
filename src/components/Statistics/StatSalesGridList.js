@@ -189,15 +189,16 @@ const enhance = compose(
             }
         },
         diagram: {
-            marginTop: '30px'
+            marginTop: '20px'
         },
         salesSummary: {
-            '& > div:first-child': {
+            '& > div:nth-child(odd)': {
                 color: '#666'
             },
-            '& > div:last-child': {
-                fontSize: '24px',
-                fontWeight: '600'
+            '& > div:nth-child(even)': {
+                fontSize: '20px',
+                fontWeight: '600',
+                marginBottom: '15px'
             }
         },
         emptyQuery: {
@@ -235,8 +236,10 @@ const StatSalesGridList = enhance((props) => {
 
     const loading = _.get(listData, 'listLoading')
     let sum = 0
+    let returnSum = 0
     const value = _.map(_.get(graphData, 'data'), (item) => {
         sum += _.toInteger(_.get(item, 'amount'))
+        returnSum += _.toInteger(_.get(item, 'amount'))
         return _.toInteger(_.get(item, 'amount'))
     })
 
@@ -247,7 +250,7 @@ const StatSalesGridList = enhance((props) => {
     const config = {
         chart: {
             type: 'areaspline',
-            height: 100
+            height: 180
         },
         title: {
             text: '',
@@ -351,10 +354,11 @@ const StatSalesGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={2}>№ Сделки</Col>
+            <Col xs={1}>№ Сделки</Col>
             <Col xs={2}>Дата</Col>
             <Col xs={3}>Магазин</Col>
             <Col xs={2}>Агент</Col>
+            <Col xs={1}>Возврать</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
             <Col xs={1} style={{display: 'none'}}>|</Col>
         </Row>
@@ -373,12 +377,13 @@ const StatSalesGridList = enhance((props) => {
 
             return (
                 <Row key={id} className="dottedList">
-                    <Col xs={2}>{id}</Col>
+                    <Col xs={1}>{id}</Col>
                     <Col xs={2}>{createdDate}</Col>
                     <Col xs={3}>{marketName}</Col>
                     <Col xs={2}>
                         <div>{firstName} {secondName}</div>
                     </Col>
+                    <Col xs={1}>{numberFormat(totalPrice)} {currentCurrency}</Col>
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice)} {currentCurrency}</Col>
                     <Col xs={1}>
                         <IconButton
@@ -440,6 +445,10 @@ const StatSalesGridList = enhance((props) => {
                                         <Col xs={3} className={classes.salesSummary}>
                                             <div>Сумма продаж за период</div>
                                             <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                            <div>Сумма возврата за период</div>
+                                            <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                            <div>Сумма чистый прибыли за период</div>
+                                            <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                         </Col>
                                         <Col xs={9}>
                                             {_.get(graphData, 'graphLoading') && <div className={classes.loader}>

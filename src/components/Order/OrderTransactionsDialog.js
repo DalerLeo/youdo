@@ -14,6 +14,7 @@ import moment from 'moment'
 import noPayment from '../Images/noPayment.png'
 import dateFormat from '../../helpers/dateFormat'
 import getConfig from '../../helpers/getConfig'
+import NotFound from '../Images/not-found.png'
 
 export const ORDER_TRANSACTIONS_DIALOG_OPEN = 'openTransactionsDialog'
 const enhance = compose(
@@ -89,11 +90,12 @@ const enhance = compose(
             color: '#333'
         },
         noPayment: {
-            background: 'url(' + noPayment + ') no-repeat center 70px',
+            background: 'url(' + noPayment + ') no-repeat center 15px',
             backgroundSize: '270px',
             height: '100%',
             display: 'flex',
             alignItems: 'center',
+            minHeight: '270px',
             justifyContent: 'center',
             paddingTop: '25px',
             '& > div': {
@@ -108,6 +110,19 @@ const enhance = compose(
         },
         bodyContent: {
             width: '100%'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
     reduxForm({
@@ -132,7 +147,7 @@ const OrderTransactionsDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Список оплат по заказу №{orderId}</span>
+                <span>Список оплат по заказу № {orderId}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -144,7 +159,7 @@ const OrderTransactionsDialog = enhance((props) => {
                 </div>
                     : <div className={classes.inContent}>
                         <div className={classes.field}>
-                            {data ? <div className={classes.transactions}>
+                            {!_.isEmpty(data) ? <div className={classes.transactions}>
                                 <Row className="dottedList">
                                     <Col xs={3}>Описание</Col>
                                     <Col xs={2}>Касса</Col>
