@@ -218,7 +218,6 @@ const enhance = compose(
 
         handleSubmitCreateDialog: props => () => {
             const {location: {pathname}, dispatch, createForm, mapLocation, filter} = props
-
             return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))

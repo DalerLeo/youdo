@@ -196,7 +196,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                                 : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
                                     : type === ORDER ? <Link to={{
                                         pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
-                                        query: {startsWith: id}
+                                        query: {search: id}
                                     }} target="_blank">Заказ {id}</Link>
                                         : type === EXPENSE ? 'Расход'
                                             : type === ORDER_RETURN ? 'Возврат заказа'
