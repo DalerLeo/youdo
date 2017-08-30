@@ -62,6 +62,7 @@ import {PlanList} from '../containers/Plan'
 import {ActivityList} from '../containers/Activity'
 import {DivisionList} from '../containers/Division'
 import {JoinList} from '../containers/Join'
+import {PermissionList} from '../containers/Permission'
 
 export default {
     path: '/',
@@ -645,6 +646,18 @@ export default {
                 {
                     path: ROUTES.JOIN_ITEM_URL,
                     component: userIsAuth(JoinList)
+                }
+            ]
+        },
+
+        // Permission
+        {
+            path: ROUTES.PERMISSION_LIST_URL,
+            component: userIsAuth(PermissionList),
+            childRoutes: [
+                {
+                    path: ROUTES.PERMISSION_ITEM_URL,
+                    component: userIsAuth(PermissionList)
                 }
             ]
         },

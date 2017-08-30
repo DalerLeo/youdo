@@ -44,11 +44,6 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
-            }
-        },
         addPerson: {
             boxShadow: 'none !important',
             '& button': {
@@ -322,7 +317,7 @@ const ZonesWrapper = enhance((props) => {
     const isLoadingList = _.get(listData, 'listLoading')
     const isListEmpty = _.isEmpty(_.get(listData, 'data'))
 
-    const openDetail = _.get(detailData, 'openDetail')
+    const openDetail = (_.get(detailData, 'openDetail') > ZERO)
 
     const isLoadingStat = _.get(statData, 'statLoading')
     const activeZones = _.get(statData, ['data', 'activeBorders'])
@@ -476,6 +471,8 @@ const ZonesWrapper = enhance((props) => {
                 <Tooltip position="left" text="Добавить зону">
                     <FloatingActionButton
                         mini={true}
+                        zDepth={1}
+                        backgroundColor="#12aaeb"
                         className={classes.addButton}
                         onTouchTap={addZone.handleOpenAddZone}>
                         <ContentAdd />
@@ -489,6 +486,7 @@ const ZonesWrapper = enhance((props) => {
                     listData={listData}
                     isOpenAddZone={isOpenAddZone}
                     filter={filter}
+                    zoneId={_.get(detailData, 'openDetail')}
                     component={ZoneMap}
                 />
                 {isOpenAddZone && <AddZonePopup

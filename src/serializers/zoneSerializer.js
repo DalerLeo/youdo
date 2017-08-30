@@ -15,6 +15,13 @@ export const createSerializer = (data) => {
     }
 }
 
+export const updateSerializer = (data) => {
+    const title = _.get(data, ['zoneName'])
+    return {
+        title
+    }
+}
+
 export const bindAgentSerializer = (data) => {
     const agent = _.get(data, ['user', 'value'])
 

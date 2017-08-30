@@ -16,9 +16,9 @@ const enhance = compose(
             height: '120px',
             margin: '0 auto',
             padding: '15px',
+            alignItems: 'center',
             justifyContent: 'center',
-            display: 'flex',
-            alignItems: 'center'
+            display: 'flex'
         },
 
         wrapper: {
@@ -95,7 +95,7 @@ const SignInForm = enhance((props) => {
 
                     <Field className={classes.loginForm} name="username" component={TextField} label="Логин" fullWidth={true} />
                     <Field className={classes.loginForm} name="password" component={TextField} label="Пароль" type="password" fullWidth={true} />
-                    <Field name="rememberMe" component={CheckBox} label="Запомнить меня" className={classes.rememberMe} />
+                    <div style={{margin: '20px 0'}}><Field name="rememberMe" component={CheckBox} label="Запомнить меня" className={classes.rememberMe} /></div>
 
                     <RaisedButton
                         type="submit"

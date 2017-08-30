@@ -7,16 +7,15 @@ import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
-import Search from 'material-ui/svg-icons/action/search'
 import PositionCreateDialog from './PositionCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import Container from '../Container'
 import Tooltip from '../ToolTip'
-import {Pagination, TextField} from '../ReduxForm'
+import {Pagination} from '../ReduxForm'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 import EditIcon from 'material-ui/svg-icons/image/edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import {Field, reduxForm} from 'redux-form'
+import {reduxForm} from 'redux-form'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import CircularProgress from 'material-ui/CircularProgress'
 import userGroupFormat from '../../helpers/userGroupFormat'
@@ -149,19 +148,6 @@ const enhance = compose(
 )
 const MINUS_ONE = -1
 
-const iconSearchStyle = {
-    icon: {
-        color: '#333',
-        width: 25,
-        height: 25
-    },
-    button: {
-        width: 40,
-        height: 40,
-        padding: 0
-    }
-}
-
 const iconStyle = {
     icon: {
         color: '#666',
@@ -288,23 +274,6 @@ const PositionGridList = enhance((props) => {
 
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
     const confirmMessage = 'Валюта: ' + _.get(currentDetail, 'name')
-
-    const search = (
-        <form className={classes.search}>
-            <Field
-                className={classes.inputFieldCustom}
-                name="search"
-                fullWidth={true}
-                component={TextField}
-                hintText="Товар"/>
-            <IconButton
-                iconStyle={iconSearchStyle.icon}
-                style={iconSearchStyle.button}
-                type="submit">
-                <Search/>
-            </IconButton>
-        </form>
-    )
     return (
         <Container>
             <div className={classes.wrapper}>
@@ -321,7 +290,6 @@ const PositionGridList = enhance((props) => {
                                 primary={true}
                             />
                         </div>
-                        <div>{search}</div>
                         <Pagination filter={filter}/>
 
                     </div>

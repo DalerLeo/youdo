@@ -269,3 +269,8 @@ export const JOIN = 'join'
 export const JOIN_LIST_URL = `/${JOIN}`
 export const JOIN_ITEM_URL = `/${JOIN}/:itemId`
 export const JOIN_ITEM_PATH = `/${JOIN}/%d`
+
+export const PERMISSION = 'permission'
+export const PERMISSION_LIST_URL = `/${PERMISSION}`
+export const PERMISSION_ITEM_URL = `/${PERMISSION}/:itemId`
+export const PERMISSION_ITEM_PATH = `/${PERMISSION}/%d`

@@ -75,7 +75,8 @@ const SettingSideMenu = enhance((props) => {
                 {name: 'Склады', url: ROUTES.STOCK_LIST_URL},
                 {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL},
                 {name: 'Подразделение', url: ROUTES.DIVISION_LIST_URL},
-                {name: 'Объединение', url: ROUTES.JOIN_LIST_URL}
+                {name: 'Объединение', url: ROUTES.JOIN_LIST_URL},
+                {name: 'Доступы', url: ROUTES.PERMISSION_LIST_URL}
 
             ]
         }
