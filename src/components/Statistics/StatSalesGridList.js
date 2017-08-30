@@ -239,8 +239,12 @@ const StatSalesGridList = enhance((props) => {
     let returnSum = 0
     const value = _.map(_.get(graphData, 'data'), (item) => {
         sum += _.toInteger(_.get(item, 'amount'))
-        returnSum += _.toInteger(_.get(item, 'amount'))
         return _.toInteger(_.get(item, 'amount'))
+    })
+
+    const returnedValue = _.map(_.get(graphData, 'data'), (item) => {
+        returnSum += _.toInteger(_.get(item, 'returnAmount'))
+        return _.toInteger(_.get(item, 'returnAmount'))
     })
 
     const valueName = _.map(_.get(graphData, 'data'), (item) => {
@@ -316,20 +320,31 @@ const StatSalesGridList = enhance((props) => {
             borderRadius: 2,
             borderWidth: 0,
             enabled: true,
-            shadow: false,
+            shadow: true,
             useHTML: true,
-            crosshairs: false,
-            pointFormat: '{series.name}: <b>{point.y}</b>'
+            crosshairs: true,
+            pointFormat: '<div class="diagramTooltip">' +
+                                '{series.name}: {point.y}' +
+                        '</div>'
         },
         series: [{
             marker: {
                 enabled: false,
                 symbol: 'circle'
             },
-            name: 'Сумма',
+            name: 'Продажа',
             data: value,
             color: '#6cc6de'
 
+        },
+        {
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
+            name: 'Возврат',
+            data: returnedValue,
+            color: '#EB9696'
         }]
     }
 

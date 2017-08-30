@@ -309,10 +309,11 @@ const StatProductMoveGridList = enhance((props) => {
     const sumListLoading = _.get(sumData, 'sumListLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
-    const beginBalance = numberFormat(_.get(sumData, ['data', 'beginBalance']), primaryCurrency)
-    const endBalance = numberFormat(_.get(sumData, ['data', 'endBalance']), primaryCurrency)
-    const inBalance = numberFormat(_.get(sumData, ['data', 'inBalance']), primaryCurrency)
-    const outBalance = numberFormat(_.get(sumData, ['data', 'outBalance']), primaryCurrency)
+    const beginBalance = numberFormat(_.get(sumData, ['data', 'beginPriceSum']), primaryCurrency)
+    const endBalance = numberFormat(_.get(sumData, ['data', 'endPriceSum']), primaryCurrency)
+    const inBalance = numberFormat(_.get(sumData, ['data', 'inPriceSum']), primaryCurrency)
+    const outBalance = numberFormat(_.get(sumData, ['data', 'outPriceSum']), primaryCurrency)
+    const returnBalance = numberFormat(_.get(sumData, ['data', 'returnPriceSum']), primaryCurrency)
 
     const iconStyle = {
         icon: {
@@ -440,7 +441,7 @@ const StatProductMoveGridList = enhance((props) => {
                                                     <div>{inBalance}</div>
                                                 </div>
                                                 <div>Возврат за период
-                                                    <div>{inBalance}</div>
+                                                    <div>{returnBalance}</div>
                                                 </div>
                                                 <div>Выдано товара на сумму
                                                     <div>{outBalance}</div>

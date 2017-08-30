@@ -12,8 +12,8 @@ import {
     TAB, JOIN_CLIENT, JOIN_MARKET
 } from '../../components/Join'
 import {openSnackbarAction} from '../../actions/snackbar'
-import {shopListFetchAction, shopJoinListFetchAction} from '../../actions/shop'
-import {clientJoinListFetchAction, clientListFetchAction} from '../../actions/client'
+import {shopDublicateListFetchAction, shopJoinListFetchAction} from '../../actions/shop'
+import {clientJoinListFetchAction, clientDublicateListFetchAction} from '../../actions/client'
 import {joinMarketsAction, joinClientsAction} from '../../actions/join'
 import {reset} from 'redux-form'
 
@@ -60,9 +60,9 @@ const enhance = compose(
     }, ({dispatch, marketFilter, clientFilter, location}) => {
         const currentTab = _.get(location, ['query', 'tab']) || JOIN_TAB.JOIN_DEFAULT_TAB
         if (currentTab === JOIN_TAB.JOIN_TAB_MARKETS) {
-            dispatch(shopListFetchAction(marketFilter))
+            dispatch(shopDublicateListFetchAction(marketFilter))
         } else if (currentTab === JOIN_TAB.JOIN_TAB_CLIENTS) {
-            dispatch(clientListFetchAction(clientFilter))
+            dispatch(clientDublicateListFetchAction(clientFilter))
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -109,7 +109,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: marketFilter.getParams({[JOIN_MARKET]: false})})
-                    dispatch(shopListFetchAction(marketFilter))
+                    dispatch(shopDublicateListFetchAction(marketFilter))
                 })
         },
 
@@ -133,7 +133,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: clientFilter.getParams({[JOIN_CLIENT]: false})})
-                    dispatch(clientListFetchAction(clientFilter))
+                    dispatch(clientDublicateListFetchAction(clientFilter))
                 })
         }
     })
@@ -169,18 +169,10 @@ const JoinList = enhance((props) => {
         data: _.get(marketsList, 'results'),
         marketsListLoading
     }
-    const marketsItemData = {
-        data: _.get(marketsItem, 'results'),
-        marketsItemLoading
-    }
 
     const clientsData = {
         data: _.get(clientsList, 'results'),
         clientsListLoading
-    }
-    const clientsItemData = {
-        data: _.get(clientsItem, 'results'),
-        clientsItemLoading
     }
     const joinMarketDialog = {
         initialValues: (() => {
@@ -241,9 +233,7 @@ const JoinList = enhance((props) => {
                 clientFilter={clientFilter}
                 tabData={tabData}
                 marketsData={marketsData}
-                marketsItemData={marketsItemData}
                 clientsData={clientsData}
-                clientsItemData={clientsItemData}
                 joinMarketDialog={joinMarketDialog}
                 joinClientDialog={joinClientDialog}
             />
