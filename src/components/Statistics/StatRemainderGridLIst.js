@@ -20,6 +20,7 @@ import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat.js'
 import NotFound from '../Images/not-found.png'
 import getConfig from '../../helpers/getConfig'
+import Tooltip from '../ToolTip'
 
 export const STAT_REMAINDER_FILTER_KEY = {
     STOCK: 'stock',
@@ -243,10 +244,9 @@ const StatRemainderGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={3}>Товар</Col>
-            <Col xs={1}>Тип товара</Col>
+            <Col xs={2}>Тип товара</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Всего товаров</Col>
-            <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Брак</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Забронировано</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Доступно</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Цена</Col>
             <Col xs={1} style={{display: 'none'}}>|</Col>
 
@@ -261,17 +261,22 @@ const StatRemainderGridList = enhance((props) => {
         const defects = numberFormat(_.get(item, 'defects'), measurement)
         const price = numberFormat(_.get(item, 'price'), getConfig('PRIMARY_CURRENCY'))
         const balance = numberFormat(Number(_.get(item, 'balance')) + Number(_.get(item, 'defects')), measurement)
-        const reserved = numberFormat(Number(_.get(item, 'reserved')) + Number(_.get(item, 'reserved')), measurement)
+        const reserved = numberFormat(Number(_.get(item, 'reserved')), measurement)
+        const available = numberFormat(Number(_.get(item, 'balance')) - Number(_.get(item, 'reserved')), measurement)
+
         return (
             <Row key={id} className="dottedList">
                 <Col xs={3}>
                     <div>{product}</div>
                 </Col>
-                <Col xs={1}>{productType}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{balance}</Col>
-                <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{defects}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{reserved}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{price}</Col>
+                <Col xs={2}>{productType}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', whiteSpace: 'nowrap'}}>
+                    <Tooltip position="top" text="Всего / Забронировано / Брак">
+                        {balance} / <span style={{color: '#90a4ae'}}> {reserved} </span> / <span style={{color: '#e57373'}}> {defects} </span>
+                    </Tooltip>
+                </Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{available}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{price}</Col>
                 <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right', paddingRight: '0'}}>
                     <IconButton
                         onTouchTap={() => { statRemainderDialog.handleOpenStatRemainderDialog(id) }}>

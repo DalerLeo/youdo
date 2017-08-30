@@ -135,7 +135,7 @@ const ShopGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const client = _.get(item, ['client', 'name'])
         const marketType = _.get(item, ['marketType', 'name'])
-        const zone = _.get(item, 'border') || 'Не определена'
+        const zone = _.get(item, ['border', 'title']) || 'Не определена'
         const isActive = _.get(item, 'isActive')
         return (
             <Row key={id} className={classes.listRow}>

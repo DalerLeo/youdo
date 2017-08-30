@@ -58,6 +58,22 @@ export const clientUpdateAction = (id, formValues) => {
 export const clientListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
+        .get(API.CLIENT_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.CLIENT_LIST,
+        payload
+    }
+}
+export const clientDublicateListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
         .get(API.CLIENT_LIST_REPETITION, {params})
         .then((response) => {
             return _.get(response, 'data')
