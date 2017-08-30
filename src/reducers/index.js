@@ -17,7 +17,9 @@ const rootReducer = combineReducers({
     shop: combineReducers({
         create: createThunkReducer(actionTypes.SHOP_CREATE),
         list: createThunkReducer(actionTypes.SHOP_LIST),
+        listRepetition: createThunkReducer(actionTypes.SHOP_LIST_REPETITION),
         item: createThunkReducer(actionTypes.SHOP_ITEM),
+        itemRepetition: createThunkReducer(actionTypes.SHOP_ITEM_REPETITION),
         extra: createStandardReducer(actionTypes.SHOP_EXTRA),
         update: createThunkReducer(actionTypes.SHOP_UPDATE),
         image: createThunkReducer(actionTypes.SHOP_ITEM_ADD_IMAGE),
@@ -160,8 +162,10 @@ const rootReducer = combineReducers({
     client: combineReducers({
         create: createThunkReducer(actionTypes.CLIENT_CREATE),
         list: createThunkReducer(actionTypes.CLIENT_LIST),
+        listRepetition: createThunkReducer(actionTypes.CLIENT_LIST_REPETETION),
         update: createThunkReducer(actionTypes.CLIENT_UPDATE),
         item: createThunkReducer(actionTypes.CLIENT_ITEM),
+        itemRepetition: createThunkReducer(actionTypes.CLIENT_ITEM_REPETITION),
         contacts: createStandardReducer(actionTypes.CLIENT_CONTACTS)
     }),
     brand: combineReducers({

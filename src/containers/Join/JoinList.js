@@ -11,8 +11,8 @@ import {
     TAB, JOIN_CLIENT, JOIN_MARKET
 } from '../../components/Join'
 import {openSnackbarAction} from '../../actions/snackbar'
-import {shopListFetchAction} from '../../actions/shop'
-import {clientListFetchAction} from '../../actions/client'
+import {shopItemFetchAction, shopListFetchAction} from '../../actions/shop'
+import {clientItemFetchAction, clientListFetchAction} from '../../actions/client'
 import {joinMarketsAction, joinClientsAction} from '../../actions/join'
 import {reset} from 'redux-form'
 
@@ -20,10 +20,14 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const marketsList = _.get(state, ['shop', 'list', 'data'])
-        const marketsListLoading = _.get(state, ['shop', 'list', 'loading'])
-        const clientsList = _.get(state, ['client', 'list', 'data'])
-        const clientsListLoading = _.get(state, ['client', 'list', 'loading'])
+        const marketsList = _.get(state, ['shop', 'listRepetition', 'data'])
+        const marketsListLoading = _.get(state, ['shop', 'listRepetition', 'loading'])
+        const marketsItem = _.get(state, ['shop', 'itemRepetition', 'data'])
+        const marketsItemLoading = _.get(state, ['shop', 'itemRepetition', 'loading'])
+        const clientsList = _.get(state, ['client', 'listRepetition', 'data'])
+        const clientsListLoading = _.get(state, ['client', 'listRepetition', 'loading'])
+        const clientsItem = _.get(state, ['client', 'itemRepetition', 'data'])
+        const clientsItemLoading = _.get(state, ['client', 'itemRepetition', 'loading'])
         const joinLoading = _.get(state, ['join', 'joinMarkets', 'loading']) || _.get(state, ['join', 'joinClients', 'loading'])
         const createForm = _.get(state, ['form', 'JoinForm'])
         const marketFilter = filterHelper(marketsList, pathname, query)
@@ -32,8 +36,12 @@ const enhance = compose(
         return {
             marketsList,
             marketsListLoading,
+            marketsItem,
+            marketsItemLoading,
             clientsList,
             clientsListLoading,
+            clientsItem,
+            clientsItemLoading,
             pathname,
             joinLoading,
             marketFilter,
@@ -54,6 +62,19 @@ const enhance = compose(
             dispatch(shopListFetchAction(marketFilter))
         } else if (currentTab === JOIN_TAB.JOIN_TAB_CLIENTS) {
             dispatch(clientListFetchAction(clientFilter))
+        }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const prevPop = _.get(props, ['location', 'query', 'joinMarket'])
+        const nextPop = _.get(nextProps, ['location', 'query', 'joinMarket'])
+        return (prevPop !== nextPop && nextPop)
+    }, ({dispatch, location}) => {
+        const currentTab = _.get(location, ['query', 'tab']) || JOIN_TAB.JOIN_DEFAULT_TAB
+        const currentId = _.get(location, ['query', 'joinMarket']) || _.get(location, ['query', 'joinClient'])
+        if (currentTab === JOIN_TAB.JOIN_TAB_MARKETS) {
+            dispatch(shopItemFetchAction(currentId))
+        } else if (currentTab === JOIN_TAB.JOIN_TAB_CLIENTS) {
+            dispatch(clientItemFetchAction(currentId))
         }
     }),
 
@@ -121,8 +142,12 @@ const JoinList = enhance((props) => {
         clientFilter,
         marketsList,
         marketsListLoading,
+        marketsItem,
+        marketsItemLoading,
         clientsList,
         clientsListLoading,
+        clientsItem,
+        clientsItemLoading,
         joinLoading,
         location,
         layout
@@ -137,15 +162,22 @@ const JoinList = enhance((props) => {
         tab,
         handleTabChange: props.handleTabChange
     }
-
     const marketsData = {
         data: _.get(marketsList, 'results'),
         marketsListLoading
+    }
+    const marketsItemData = {
+        data: _.get(marketsItem, 'results'),
+        marketsItemLoading
     }
 
     const clientsData = {
         data: _.get(clientsList, 'results'),
         clientsListLoading
+    }
+    const clientsItemData = {
+        data: _.get(clientsItem, 'results'),
+        clientsItemLoading
     }
 
     const joinMarketDialog = {
@@ -171,7 +203,9 @@ const JoinList = enhance((props) => {
                 clientFilter={clientFilter}
                 tabData={tabData}
                 marketsData={marketsData}
+                marketsItemData={marketsItemData}
                 clientsData={clientsData}
+                clientsItemData={clientsItemData}
                 handleCheckedForm={props.handleCheckedForm}
                 joinMarketDialog={joinMarketDialog}
                 joinClientDialog={joinClientDialog}

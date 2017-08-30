@@ -58,7 +58,7 @@ export const clientUpdateAction = (id, formValues) => {
 export const clientListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.CLIENT_LIST, {params})
+        .get(API.CLIENT_LIST_REPETITION, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,7 +67,7 @@ export const clientListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.CLIENT_LIST,
+        type: actionTypes.CLIENT_LIST_REPETITION,
         payload
     }
 }

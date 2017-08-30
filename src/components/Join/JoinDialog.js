@@ -156,7 +156,7 @@ const flatButton = {
     }
 }
 const JoinDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, isClient, openConfirm, setOpenConfirm} = props
+    const {open, handleSubmit, onClose, classes, isClient, openConfirm, setOpenConfirm, itemData} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ZERO = 0
 

@@ -117,6 +117,7 @@ const JoinTabMarkets = enhance((props) => {
     const {
         filter,
         listData,
+        itemData,
         classes,
         joinMarketDialog
     } = props
@@ -128,6 +129,7 @@ const JoinTabMarkets = enhance((props) => {
     const shopList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const repetition = _.get(item, 'repetition')
         const client = _.get(item, ['client', 'name'])
         const address = _.get(item, 'address') || 'Не известен'
         const phone = _.get(item, 'phone') || '-'
@@ -135,7 +137,7 @@ const JoinTabMarkets = enhance((props) => {
             <Row key={id} className={classes.listRow}>
                 <div style={{width: '20%'}}>{name}</div>
                 <div style={{width: '25%'}}>{client}</div>
-                <div style={{width: '15%'}}>3</div>
+                <div style={{width: '15%'}}>{repetition}</div>
                 <div style={{width: '20%'}}>{address}</div>
                 <div style={{width: '15%'}}>{phone}</div>
                 <div style={{width: '5%'}}>
@@ -185,6 +187,7 @@ const JoinTabMarkets = enhance((props) => {
                 loading={joinMarketDialog.joinLoading}
                 onClose={joinMarketDialog.handleCloseJoinMarkets}
                 onSubmit={joinMarketDialog.handleSubmitJoinMarkets}
+                item={itemData}
             />
         </div>
     )
