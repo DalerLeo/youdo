@@ -34,7 +34,7 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             justifyContent: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            display: 'flex'
         },
         podlojkaScroll: {
             overflowY: 'auto !important'
@@ -144,10 +144,6 @@ const enhance = compose(
     withState('openConfirm', 'setOpenConfirm', false)
 )
 
-const customContentStyle = {
-    width: '700px',
-    maxWidth: 'none'
-}
 const flatButton = {
     label: {
         color: '#12aaeb',
@@ -156,7 +152,7 @@ const flatButton = {
     }
 }
 const JoinDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, isClient, openConfirm, setOpenConfirm, itemData} = props
+    const {open, handleSubmit, onClose, classes, isClient, openConfirm, setOpenConfirm, loading} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ZERO = 0
 
@@ -168,7 +164,7 @@ const JoinDialog = enhance((props) => {
         <Dialog
             modal={true}
             className={classes.podlojkaScroll}
-            contentStyle={customContentStyle}
+            contentStyle={loading ? {width: '500px', height: '300px'} : {width: '700px', maxWidth: 'none'}}
             open={open > ZERO || open === 'true'}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
@@ -180,6 +176,9 @@ const JoinDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
+                {loading && <div className={classes.loader}>
+                    <CircularProgress size={40} thickness={4}/>
+                </div>}
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                     {openConfirm && <div className={classes.confirm}>
                         <div className={classes.confirmButtons}>
@@ -200,9 +199,6 @@ const JoinDialog = enhance((props) => {
                             />
                         </div>
                     </div>}
-                    <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
-                    </div>
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent}>
                             <div className={classes.wrapper}>

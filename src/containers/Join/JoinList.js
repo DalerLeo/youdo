@@ -6,13 +6,14 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import * as JOIN_TAB from '../../constants/joinTab'
+import toBoolean from '../../helpers/toBoolean'
 import {
     JoinGridList,
     TAB, JOIN_CLIENT, JOIN_MARKET
 } from '../../components/Join'
 import {openSnackbarAction} from '../../actions/snackbar'
-import {shopItemFetchAction, shopListFetchAction} from '../../actions/shop'
-import {clientItemFetchAction, clientListFetchAction} from '../../actions/client'
+import {shopListFetchAction, shopJoinListFetchAction} from '../../actions/shop'
+import {clientJoinListFetchAction, clientListFetchAction} from '../../actions/client'
 import {joinMarketsAction, joinClientsAction} from '../../actions/join'
 import {reset} from 'redux-form'
 
@@ -67,14 +68,16 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const prevPop = _.get(props, ['location', 'query', 'joinMarket'])
         const nextPop = _.get(nextProps, ['location', 'query', 'joinMarket'])
-        return (prevPop !== nextPop && nextPop)
+        const prevShop = _.get(props, ['location', 'query', 'joinClient'])
+        const nextShop = _.get(nextProps, ['location', 'query', 'joinClient'])
+        return ((prevPop !== nextPop && nextPop) || (prevShop !== nextShop && nextShop))
     }, ({dispatch, location}) => {
         const currentTab = _.get(location, ['query', 'tab']) || JOIN_TAB.JOIN_DEFAULT_TAB
         const currentId = _.get(location, ['query', 'joinMarket']) || _.get(location, ['query', 'joinClient'])
-        if (currentTab === JOIN_TAB.JOIN_TAB_MARKETS) {
-            dispatch(shopItemFetchAction(currentId))
-        } else if (currentTab === JOIN_TAB.JOIN_TAB_CLIENTS) {
-            dispatch(clientItemFetchAction(currentId))
+        if (currentTab === JOIN_TAB.JOIN_TAB_MARKETS && (currentId !== 'false' && currentId)) {
+            dispatch(shopJoinListFetchAction(_.toNumber(currentId)))
+        } else if (currentTab === JOIN_TAB.JOIN_TAB_CLIENTS && (currentId !== 'false' && currentId)) {
+            dispatch(clientJoinListFetchAction(_.toNumber(currentId)))
         }
     }),
 
@@ -179,18 +182,53 @@ const JoinList = enhance((props) => {
         data: _.get(clientsItem, 'results'),
         clientsItemLoading
     }
-
     const joinMarketDialog = {
+        initialValues: (() => {
+            if (toBoolean(openJoinMarket)) {
+                return {}
+            }
+            return {
+                markets: _.map(marketsItem, (item) => {
+                    return {
+                        address: _.get(item, 'address'),
+                        client: _.get(item, ['client', 'name']),
+                        market: {
+                            value: _.get(item, 'id'),
+                            text: _.get(item, 'name')
+                        }
+                    }
+                }),
+                target: openJoinMarket
+            }
+        })(),
         joinLoading,
-        openJoinMarket,
+        marketsItemLoading,
+        openJoinMarket: openJoinMarket || '',
         handleOpenJoinMarkets: props.handleOpenJoinMarkets,
         handleCloseJoinMarkets: props.handleCloseJoinMarkets,
         handleSubmitJoinMarkets: props.handleSubmitJoinMarkets
     }
 
     const joinClientDialog = {
+        initialValues: (() => {
+            if (toBoolean(openJoinMarket)) {
+                return {}
+            }
+            return {
+                clients: _.map(clientsItem, (item) => {
+                    return {
+                        client: {
+                            value: _.get(item, 'id'),
+                            text: _.get(item, 'name')
+                        }
+                    }
+                }),
+                target: openJoinClient
+            }
+        })(),
+        clientsItemLoading,
         joinLoading,
-        openJoinClient,
+        openJoinClient: openJoinClient || '',
         handleOpenJoinClients: props.handleOpenJoinClients,
         handleCloseJoinClients: props.handleCloseJoinClients,
         handleSubmitJoinClients: props.handleSubmitJoinClients
@@ -206,7 +244,6 @@ const JoinList = enhance((props) => {
                 marketsItemData={marketsItemData}
                 clientsData={clientsData}
                 clientsItemData={clientsItemData}
-                handleCheckedForm={props.handleCheckedForm}
                 joinMarketDialog={joinMarketDialog}
                 joinClientDialog={joinClientDialog}
             />

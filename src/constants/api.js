@@ -46,7 +46,7 @@ export const CLIENT_DELETE = `/${CLIENT}/%d/`
 export const CLIENT_LIST = `/${CLIENT}/`
 export const CLIENT_LIST_REPETITION = `/${CLIENT}/repetitions/`
 export const CLIENT_ITEM = `/${CLIENT}/%d/`
-export const CLIENT_ITEM_REPETITON = `/${CLIENT}/%d/repetitions/`
+export const CLIENT_ITEM_REPETITION = `/${CLIENT}/%d/repetition/`
 
 export const CURRENCY = 'finance/currencies'
 export const CURRENCY_COURSE_CREATE = 'finance/currency_rate/'
@@ -62,7 +62,7 @@ export const SHOP_CREATE = `/${SHOP}/`
 export const SHOP_LIST = `/${SHOP}/`
 export const SHOP_LIST_REPETITION = `/${SHOP}/repetitions/`
 export const SHOP_ITEM = `/${SHOP}/%d/`
-export const SHOP_ITEM_REPETITION = `/${SHOP}/%d/repetitions/`
+export const SHOP_ITEM_REPETITION = `/${SHOP}/%d/repetition/`
 export const SHOP_ITEM_ADD_IMAGE = `/${SHOP}/%d/images/`
 export const SHOP_SET_PRIMARY_IMAGE = `/${SHOP}/%d/set_primary_image/`
 export const SHOP_ITEM_SHOW_IMAGE = 'main/file/%d/'

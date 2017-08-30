@@ -87,3 +87,19 @@ export const clientItemFetchAction = (id) => {
         payload
     }
 }
+
+export const clientJoinListFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.CLIENT_ITEM_REPETITION, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.CLIENT_ITEM_REPETITION,
+        payload
+    }
+}

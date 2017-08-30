@@ -162,7 +162,7 @@ const rootReducer = combineReducers({
     client: combineReducers({
         create: createThunkReducer(actionTypes.CLIENT_CREATE),
         list: createThunkReducer(actionTypes.CLIENT_LIST),
-        listRepetition: createThunkReducer(actionTypes.CLIENT_LIST_REPETETION),
+        listRepetition: createThunkReducer(actionTypes.CLIENT_LIST_REPETITION),
         update: createThunkReducer(actionTypes.CLIENT_UPDATE),
         item: createThunkReducer(actionTypes.CLIENT_ITEM),
         itemRepetition: createThunkReducer(actionTypes.CLIENT_ITEM_REPETITION),

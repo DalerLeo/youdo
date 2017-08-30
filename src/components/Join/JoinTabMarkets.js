@@ -117,7 +117,6 @@ const JoinTabMarkets = enhance((props) => {
     const {
         filter,
         listData,
-        itemData,
         classes,
         joinMarketDialog
     } = props
@@ -184,10 +183,10 @@ const JoinTabMarkets = enhance((props) => {
             </div>
             <JoinDialog
                 open={joinMarketDialog.openJoinMarket}
-                loading={joinMarketDialog.joinLoading}
+                loading={joinMarketDialog.marketsItemLoading}
                 onClose={joinMarketDialog.handleCloseJoinMarkets}
                 onSubmit={joinMarketDialog.handleSubmitJoinMarkets}
-                item={itemData}
+                initialValues={joinMarketDialog.initialValues}
             />
         </div>
     )
@@ -196,7 +195,7 @@ const JoinTabMarkets = enhance((props) => {
 JoinTabMarkets.propTypes = {
     joinMarketDialog: PropTypes.shape({
         joinLoading: PropTypes.bool.isRequired,
-        openJoinMarket: PropTypes.bool.isRequired,
+        openJoinMarket: PropTypes.string.isRequired,
         handleOpenJoinMarkets: PropTypes.func.isRequired,
         handleCloseJoinMarkets: PropTypes.func.isRequired,
         handleSubmitJoinMarkets: PropTypes.func.isRequired

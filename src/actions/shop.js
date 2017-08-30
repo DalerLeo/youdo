@@ -128,6 +128,20 @@ export const shopItemFetchAction = (id) => {
         payload
     }
 }
+export const shopJoinListFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.SHOP_ITEM_REPETITION, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.SHOP_ITEM_REPETITION,
+        payload
+    }
+}
 
 export const slideShowFetchAction = (id) => {
     const payload = axios()
