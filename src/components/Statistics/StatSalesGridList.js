@@ -389,6 +389,7 @@ const StatSalesGridList = enhance((props) => {
             const firstName = _.get(item, ['user', 'firstName'])
             const secondName = _.get(item, ['user', 'secondName '])
             const totalPrice = _.get(item, 'totalPrice')
+            const returnPrice = _.get(item, 'totalReturnedPrice')
 
             return (
                 <Row key={id} className="dottedList">
@@ -398,7 +399,7 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2}>
                         <div>{firstName} {secondName}</div>
                     </Col>
-                    <Col xs={1}>{numberFormat(totalPrice)} {currentCurrency}</Col>
+                    <Col xs={1}>{numberFormat(returnPrice)} {currentCurrency}</Col>
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice)} {currentCurrency}</Col>
                     <Col xs={1}>
                         <IconButton
@@ -462,7 +463,7 @@ const StatSalesGridList = enhance((props) => {
                                             <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
                                             <div>Сумма возврата за период</div>
                                             <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                            <div>Сумма чистый прибыли за период</div>
+                                            <div>Выручка за период</div>
                                             <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                         </Col>
                                         <Col xs={9}>

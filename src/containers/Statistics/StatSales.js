@@ -48,7 +48,7 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(orderListFetchAction(filter))
+        dispatch(orderListFetchAction(filter, true))
         dispatch(statSalesDataFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {

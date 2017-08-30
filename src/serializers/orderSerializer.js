@@ -39,7 +39,7 @@ export const createSerializer = (data) => {
     }
 }
 
-export const listFilterSerializer = (data, id) => {
+export const listFilterSerializer = (data, id, withOrderReturn) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const dept = _.toInteger(_.get(defaultData, 'dept'))
@@ -71,6 +71,7 @@ export const listFilterSerializer = (data, id) => {
 
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
+        'with_order_return': withOrderReturn,
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
