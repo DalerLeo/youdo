@@ -8,9 +8,9 @@ const enhance = compose(
 )
 
 const TargetRadio = enhance((props) => {
-    const {input, data} = props
+    const {input, data, target} = props
     return (
-        <RadioButtonGroup name="target" onChange={input.onChange}>
+        <RadioButtonGroup name="target" onChange={input.onChange} defaultSelected={Number(target)}>
             {_.map(data, (item) => {
                 const id = _.get(item, ['market', 'value']) || _.get(item, ['client', 'value'])
                 return (

@@ -134,12 +134,13 @@ const JoinTabClients = enhance((props) => {
     const clientList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const repetition = _.get(item, 'repetition')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={5}>{name}</Col>
-                <Col xs={2}>2</Col>
+                <Col xs={2}>{repetition}</Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1}>
                     <div className={classes.iconBtn}>
@@ -182,9 +183,10 @@ const JoinTabClients = enhance((props) => {
                 listShadow={false}
                 detail={clientDetails}/>
             <JoinDialog
+                initialValues={joinClientDialog.initialValues}
                 isClient={true}
                 open={joinClientDialog.openJoinClient}
-                loading={joinClientDialog.joinLoading}
+                loading={joinClientDialog.clientsItemLoading}
                 onClose={joinClientDialog.handleCloseJoinClients}
                 onSubmit={joinClientDialog.handleSubmitJoinClients}
             />
@@ -195,7 +197,7 @@ const JoinTabClients = enhance((props) => {
 JoinTabClients.propTypes = {
     joinClientDialog: PropTypes.shape({
         joinLoading: PropTypes.bool.isRequired,
-        openJoinClient: PropTypes.bool.isRequired,
+        openJoinClient: PropTypes.string.isRequired,
         handleOpenJoinClients: PropTypes.func.isRequired,
         handleCloseJoinClients: PropTypes.func.isRequired,
         handleSubmitJoinClients: PropTypes.func.isRequired

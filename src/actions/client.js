@@ -58,7 +58,7 @@ export const clientUpdateAction = (id, formValues) => {
 export const clientListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.CLIENT_LIST, {params})
+        .get(API.CLIENT_LIST_REPETITION, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,7 +67,7 @@ export const clientListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.CLIENT_LIST,
+        type: actionTypes.CLIENT_LIST_REPETITION,
         payload
     }
 }
@@ -84,6 +84,22 @@ export const clientItemFetchAction = (id) => {
 
     return {
         type: actionTypes.CLIENT_ITEM,
+        payload
+    }
+}
+
+export const clientJoinListFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.CLIENT_ITEM_REPETITION, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.CLIENT_ITEM_REPETITION,
         payload
     }
 }

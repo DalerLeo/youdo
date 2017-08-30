@@ -192,6 +192,7 @@ const flatButton = {
 
 const JoinClientListField = ({classes, handleAdd, handleRemove, ...defaultProps}) => {
     const clients = _.get(defaultProps, ['clients', 'input', 'value']) || []
+    const target = _.get(defaultProps, ['target', 'input', 'value']) || false
     const error = _.get(defaultProps, ['clients', 'meta', 'error'])
     return (
         <div className={classes.wrapper}>
@@ -219,6 +220,7 @@ const JoinClientListField = ({classes, handleAdd, handleRemove, ...defaultProps}
                 <Field
                     name="target"
                     data={clients}
+                    target={target}
                     component={TargetRadio}
                 />
                 <div className={classes.list}>

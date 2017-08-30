@@ -101,7 +101,7 @@ export const shopUpdateAction = (id, formValues, location, detail) => {
 export const shopListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.SHOP_LIST, {params})
+        .get(API.SHOP_LIST_REPETITION, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -109,7 +109,7 @@ export const shopListFetchAction = (filter) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {
-        type: actionTypes.SHOP_LIST,
+        type: actionTypes.SHOP_LIST_REPETITION,
         payload
     }
 }
@@ -125,6 +125,20 @@ export const shopItemFetchAction = (id) => {
         })
     return {
         type: actionTypes.SHOP_ITEM,
+        payload
+    }
+}
+export const shopJoinListFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.SHOP_ITEM_REPETITION, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.SHOP_ITEM_REPETITION,
         payload
     }
 }

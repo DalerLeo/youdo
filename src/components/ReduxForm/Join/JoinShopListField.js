@@ -197,6 +197,7 @@ const flatButton = {
 const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) => {
     const markets = _.get(defaultProps, ['markets', 'input', 'value']) || []
     const error = _.get(defaultProps, ['markets', 'meta', 'error'])
+    const target = _.get(defaultProps, ['target', 'input', 'value']) || false
     return (
         <div className={classes.wrapper}>
             <div>
@@ -223,6 +224,7 @@ const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) 
                 <Field
                     name="target"
                     data={markets}
+                    target={target}
                     component={TargetRadio}
                 />
                 <div className={classes.list}>
