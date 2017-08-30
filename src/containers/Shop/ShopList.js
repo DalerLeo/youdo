@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
+import {reset} from 'redux-form'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
@@ -17,17 +18,21 @@ import {
     SHOP_UPDATE_MAP_DIALOG_OPEN,
     ADD_PHOTO_DIALOG_OPEN,
     SHOP_SLIDESHOW_DIALOG_OPEN,
+    DELETE_IMAGE_OPEN,
     ShopGridList
 } from '../../components/Shop'
 import {
     shopCreateAction,
     imageCreateAction,
+    setPrimaryImageAction,
+    imageDeleteAction,
     shopUpdateAction,
     shopDeleteAction,
     shopItemFetchAction,
     shopListFetchAction,
     slideShowFetchAction
 } from '../../actions/shop'
+import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
@@ -95,13 +100,14 @@ const enhance = compose(
     }, ({dispatch, location, detail}) => {
         const images = _.get(detail, 'images')
         const index = _.toNumber(_.get(location, ['query', 'openImagesDialog']))
-        const imgId = _.toInteger(_.get(_.nth(images, index), 'id'))
-        if (imgId > ZERO) {
-            dispatch(slideShowFetchAction(imgId))
+        const fileId = _.toInteger(_.get(_.nth(images, index), 'fileId'))
+        if (index > MINUS_ONE) {
+            dispatch(slideShowFetchAction(fileId))
         }
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openDeleteImage', 'setOpenDeleteImage', false),
 
     withHandlers({
         handleOpenConfirmDialog: props => () => {
@@ -126,6 +132,46 @@ const enhance = compose(
                 })
         },
 
+        handleSetPrimaryImage: props => () => {
+            const {dispatch, params, detail, location} = props
+            const images = _.get(detail, 'images')
+            const index = _.toNumber(_.get(location, ['query', 'openImagesDialog']))
+            const fileId = _.toInteger(_.get(_.nth(images, index), 'fileId'))
+            const imgId = _.toInteger(_.get(_.nth(images, index), 'id'))
+            const shopId = _.toInteger(_.get(params, 'shopId'))
+            dispatch(setPrimaryImageAction(shopId, imgId))
+                .then(() => {
+                    dispatch(slideShowFetchAction(fileId))
+                    dispatch(shopItemFetchAction(shopId))
+                })
+        },
+
+        handleOpenDeleteImageDialog: props => (id) => {
+            const {setOpenDeleteImage, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[DELETE_IMAGE_OPEN]: id})})
+            setOpenDeleteImage(true)
+        },
+
+        handleCloseDeleteImageDialog: props => () => {
+            const {setOpenDeleteImage, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[DELETE_IMAGE_OPEN]: ZERO})})
+            setOpenDeleteImage(false)
+        },
+        handleSendDeleteImageDialog: props => () => {
+            const {dispatch, setOpenDeleteImage} = props
+            const imgId = _.toInteger(_.get(props, ['location', 'query', 'openDeleteImageDialog']))
+            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
+            dispatch(imageDeleteAction(shopId, imgId))
+                .then(() => {
+                    setOpenDeleteImage(false)
+                    dispatch(shopItemFetchAction(shopId))
+                    return dispatch(openSnackbarAction({message: 'Изображение успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                })
+        },
+
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_FILTER_OPEN]: true})})
@@ -143,17 +189,26 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
+            const createdBy = _.get(filterForm, ['values', 'createdBy', 'value']) || null
             const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
+            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
+            const isActive = _.get(filterForm, ['values', 'isActive', 'value'])
+            const frequency = _.get(filterForm, ['values', 'frequency', 'value']) || null
 
             filter.filterBy({
                 [SHOP_FILTER_OPEN]: false,
                 [SHOP_FILTER_KEY.CLIENT]: client,
-                [SHOP_FILTER_KEY.MARKET_TYPE]: marketType
+                [SHOP_FILTER_KEY.CREATED_BY]: createdBy,
+                [SHOP_FILTER_KEY.MARKET_TYPE]: marketType,
+                [SHOP_FILTER_KEY.STATUS]: isActive,
+                [SHOP_FILTER_KEY.FREQUENCY]: frequency,
+                [SHOP_FILTER_KEY.ZONE]: zone
             })
         },
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('ShopCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -163,7 +218,6 @@ const enhance = compose(
 
         handleSubmitCreateDialog: props => () => {
             const {location: {pathname}, dispatch, createForm, mapLocation, filter} = props
-
             return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
@@ -256,19 +310,8 @@ const enhance = compose(
         },
 
         handleSubmitMapUpdateDialog: props => () => {
-            const {dispatch, mapForm, filter} = props
-            const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
-
-            return dispatch(shopUpdateAction(shopId, _.get(mapForm, ['values'])))
-                .then(() => {
-                    return dispatch(shopItemFetchAction(shopId))
-                })
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false}))
-                })
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_UPDATE_MAP_DIALOG_OPEN]: false})})
         },
 
         handleOpenUpdateDialog: props => () => {
@@ -282,10 +325,10 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, mapLocation, detail} = props
             const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
 
-            return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values'])))
+            return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values']), mapLocation, detail))
                 .then(() => {
                     return dispatch(shopItemFetchAction(shopId))
                 })
@@ -295,11 +338,26 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[SHOP_UPDATE_DIALOG_OPEN]: false}))
                 })
+                .catch((error) => {
+                    const phoneError = _.get(error, ['phone', '0'])
+                    const contactNameError = _.get(error, ['contact_name', '0'])
+                    const guideError = _.get(error, ['guide', '0'])
+                    const marketTypeError = _.get(error, ['market_type', '0'])
+                    const nameError = _.get(error, ['name', '0'])
+                    const clientNameError = _.get(error, ['new_client_name', '0'])
+                    const locationError = _.get(error, ['location', 'lat', '0']) || _.get(error, ['location', 'lon', '0'])
+                    return dispatch(openErrorAction({message:
+                        <div style={{padding: '0 20px'}}>
+                            {phoneError && <p>Номер телефона должен содержать только цифры и "+"!</p>}
+                            {locationError && <p>Отметьте местоположение на карте!</p>}
+                            {(contactNameError || guideError || marketTypeError || nameError || clientNameError) && <p>Заполните все поля!</p>}
+                        </div>}))
+                })
         },
 
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.SHOP_LIST_URL, query: filter.getParam()})
+            hashHistory.push({pathname: ROUTER.SHOP_LIST_URL, query: filter.getParams()})
         }
     })
 )
@@ -349,7 +407,7 @@ const ShopList = enhance((props) => {
     }
 
     const slideShowDialog = {
-        gallery,
+        gallery: gallery || {},
         galleryLoading,
         openSlideShowDialog,
         handleOpenSlideShowDialog: props.handleOpenSlideShowDialog,
@@ -357,6 +415,17 @@ const ShopList = enhance((props) => {
     }
 
     const mapDialog = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            }
+            return {
+                latLng: {
+                    lat: _.get(detail, ['location', 'lat']),
+                    lng: _.get(detail, ['location', 'lon'])
+                }
+            }
+        })(),
         openMapDialog,
         handleOpenMapDialog: props.handleOpenMapDialog,
         handleCloseMapDialog: props.handleCloseMapDialog,
@@ -365,7 +434,6 @@ const ShopList = enhance((props) => {
 
     const deleteDialog = {
         openDeleteDialog,
-        handleOpenDeleteDialog: props.handleOpenDeleteDialog,
         handleCloseDeleteDialog: props.handleCloseDeleteDialog
     }
 
@@ -376,6 +444,13 @@ const ShopList = enhance((props) => {
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
 
+    const imageDeleteDialog = {
+        openDeleteImage: props.openDeleteImage,
+        handleOpenDeleteImageDialog: props.handleOpenDeleteImageDialog,
+        handleCloseDeleteImageDialog: props.handleCloseDeleteImageDialog,
+        handleSendDeleteImageDialog: props.handleSendDeleteImageDialog
+    }
+
     const navigationButtons = {
         handlePrevImage: props.handlePrevImage,
         handleNextImage: props.handleNextImage
@@ -384,7 +459,7 @@ const ShopList = enhance((props) => {
     const updateDialog = {
         initialValues: (() => {
             const NOT_ACTIVE = 2
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
             const status = _.get(detail, 'status')
@@ -395,10 +470,7 @@ const ShopList = enhance((props) => {
             return {
                 name: _.get(detail, 'name'),
                 address: _.get(detail, 'address'),
-                client: {
-                    value: _.get(detail, ['client', 'id']),
-                    text: _.get(detail, ['client', 'name'])
-                },
+                client: _.get(detail, ['client', 'name']),
                 contactName: _.get(detail, 'contactName'),
                 frequency: {
                     value: _.toNumber(_.get(detail, 'visitFrequency'))
@@ -406,8 +478,8 @@ const ShopList = enhance((props) => {
                 guide: _.get(detail, 'guide'),
                 phone: _.get(detail, 'phone'),
                 latLng: {
-                    lat: _.get(detail, ['location', 'coordinates', '0']),
-                    lng: _.get(detail, ['location', 'coordinates', '1'])
+                    lat: _.get(detail, ['location', 'lat']),
+                    lng: _.get(detail, ['location', 'lon'])
                 },
                 marketType: {
                     value: _.get(detail, ['marketType', 'id']),
@@ -469,7 +541,8 @@ const ShopList = enhance((props) => {
         id: detailId,
         data: detail,
         detailLoading,
-        handleCloseDetail: props.handleCloseDetail
+        handleCloseDetail: props.handleCloseDetail,
+        handleSetPrimaryImage: props.handleSetPrimaryImage
     }
 
     return (
@@ -485,6 +558,7 @@ const ShopList = enhance((props) => {
                 updateMapDialog={updateMapDialog}
                 deleteDialog={deleteDialog}
                 confirmDialog={confirmDialog}
+                imageDeleteDialog={imageDeleteDialog}
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
                 mapLocation={mapLocation}

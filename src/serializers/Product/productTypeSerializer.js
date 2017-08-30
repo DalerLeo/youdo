@@ -3,9 +3,11 @@ import {orderingSnakeCase} from '../../helpers/serializer'
 
 export const createSerializer = (data) => {
     const name = _.get(data, ['name'])
+    const parent = _.get(data, ['parent', 'value'])
 
     return {
-        name
+        name,
+        parent
     }
 }
 
@@ -22,11 +24,3 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

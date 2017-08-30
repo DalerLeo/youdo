@@ -5,7 +5,6 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/orderSerializer'
 import * as returnSerializers from '../serializers/orderReturnSerializer'
-import fileDownload from 'react-file-download'
 
 export const orderCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
@@ -21,6 +20,22 @@ export const orderCreateAction = (formValues) => {
 
     return {
         type: actionTypes.ORDER_CREATE,
+        payload
+    }
+}
+
+export const orderReturnCancelAction = (id) => {
+    const payload = axios()
+        .post(sprintf(API.ORDER_RETURN_CANCEL, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_RETURN_CANCEL,
         payload
     }
 }
@@ -60,7 +75,7 @@ export const orderReturnListAction = (id) => {
 
 export const orderDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.ORDER_DELETE, id))
+        .post(sprintf(API.ORDER_CANCEL, id), {})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -108,9 +123,10 @@ export const orderListFetchAction = (filter) => {
     }
 }
 
-export const orderTransactionFetchAction = (orderId) => {
+export const orderListPintFetchAction = (filter, id) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), id)
     const payload = axios()
-        .get(API.ORDER_TRANSACTION, {params: {'order': orderId}})
+        .get(API.ORDER_LIST_PRINT, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -119,7 +135,35 @@ export const orderTransactionFetchAction = (orderId) => {
         })
 
     return {
-        type: actionTypes.ORDER_TRANSACTION,
+        type: actionTypes.ORDER_LIST_PRINT,
+        payload
+    }
+}
+
+export const orderTransactionFetchAction = (orderId) => {
+    let params = ''
+
+    if (orderId === 'trans') {
+        params = {
+            transaction: 0
+        }
+    } else {
+        params = {
+            'order': orderId
+        }
+    }
+
+    const payload = axios()
+        .get(sprintf(API.ORDER_PAYMENTS, orderId), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_PAYMENTS,
         payload
     }
 }
@@ -142,7 +186,7 @@ export const orderItemReturnFetchAction = (orderId) => {
 
 export const orderItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.ORDER_ITEM, id))
+        .get(sprintf(API.ORDER_ITEM, id), {'params': {'view': true}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -156,11 +200,10 @@ export const orderItemFetchAction = (id) => {
     }
 }
 
-export const getDocumentAction = (id) => {
+export const orderProductMobileAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.GET_DOCUMENT, id))
+        .get(API.PRODUCT_MOBILE, {'params': {'order': id}})
         .then((response) => {
-            fileDownload(response.data, 'договор.pdf')
             return _.get(response, 'data')
         })
         .catch((error) => {
@@ -168,7 +211,7 @@ export const getDocumentAction = (id) => {
         })
 
     return {
-        type: actionTypes.GET_DOCUMENT,
+        type: actionTypes.PRODUCT_MOBILE,
         payload
     }
 }

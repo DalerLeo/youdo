@@ -37,7 +37,7 @@ const listHeader = [
     {
         xs: 2,
         sorting: true,
-        name: 'marketType',
+        name: 'market_type',
         title: 'Тип'
     },
     {
@@ -49,7 +49,7 @@ const listHeader = [
     {
         xs: 2,
         sorting: true,
-        name: 'isActive',
+        name: 'is_active',
         title: 'Статус'
     }
 ]
@@ -65,6 +65,27 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        listRow: {
+            position: 'relative',
+            '& > a': {
+                display: 'flex',
+                alignItems: 'center',
+                position: 'absolute',
+                top: '0',
+                left: '-30px',
+                right: '-30px',
+                bottom: '0',
+                padding: '0 30px',
+                '& > div': {
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0'
+                    }
+                }
+            }
         }
     })
 )
@@ -79,6 +100,7 @@ const ShopGridList = enhance((props) => {
         filterDialog,
         slideShowDialog,
         confirmDialog,
+        imageDeleteDialog,
         deleteDialog,
         listData,
         detailData,
@@ -100,6 +122,7 @@ const ShopGridList = enhance((props) => {
             data={_.get(detailData, 'data') || {}}
             deleteDialog={deleteDialog}
             confirmDialog={confirmDialog}
+            imageDeleteDialog={imageDeleteDialog}
             loading={_.get(detailData, 'detailLoading')}
             updateDialog={updateDialog}
             addPhotoDialog={addPhotoDialog}
@@ -115,20 +138,20 @@ const ShopGridList = enhance((props) => {
         const zone = _.get(item, 'border') || 'Не определена'
         const isActive = _.get(item, 'isActive')
         return (
-            <Row key={id}>
-                <Col xs={3}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
-                        query: ''
-                    }}>{name}</Link>
-                </Col>
-                <Col xs={3}>{client}</Col>
-                <Col xs={2}>{marketType}</Col>
-                <Col xs={2}>{zone}</Col>
-                <Col xs={2}>
-                    {isActive ? <span className="greenFont">Активен</span>
-                        : <span className="redFont">Не активен</span>}
-                </Col>
+            <Row key={id} className={classes.listRow}>
+                <Link to={{
+                    pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
+                    query: filter.getParams()
+                }}>
+                    <Col xs={3}>{name}</Col>
+                    <Col xs={3}>{client}</Col>
+                    <Col xs={2}>{marketType}</Col>
+                    <Col xs={2}>{zone}</Col>
+                    <Col xs={2}>
+                        {isActive ? <span className="greenFont">Активен</span>
+                            : <span className="redFont">Не активен</span>}
+                    </Col>
+                </Link>
             </Row>
         )
     })
@@ -166,6 +189,7 @@ const ShopGridList = enhance((props) => {
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
             <MapDialog
+                initialValues={mapDialog.initialValues}
                 open={mapDialog.openMapDialog}
                 onClose={mapDialog.handleCloseMapDialog}
                 onSubmit={mapDialog.handleSubmitMapDialog}
@@ -183,6 +207,7 @@ const ShopGridList = enhance((props) => {
                 onClose={slideShowDialog.handleCloseSlideShowDialog}
                 prevBtn={navigationButtons.handlePrevImage}
                 nextBtn={navigationButtons.handleNextImage}
+                handleSetPrimaryImage={_.get(detailData, 'handleSetPrimaryImage')}
             />
             <MapDialog
                 isUpdate={true}
@@ -213,6 +238,13 @@ const ShopGridList = enhance((props) => {
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
+            />}
+            {detailData.data && <ConfirmDialog
+                type="delete"
+                message=""
+                onClose={imageDeleteDialog.handleCloseDeleteImageDialog}
+                onSubmit={imageDeleteDialog.handleSendDeleteImageDialog}
+                open={imageDeleteDialog.openDeleteImage}
             />}
         </Container>
     )
@@ -260,9 +292,14 @@ ShopGridList.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
+    imageDeleteDialog: PropTypes.shape({
+        openDeleteImage: PropTypes.bool.isRequired,
+        handleOpenDeleteImageDialog: PropTypes.func.isRequired,
+        handleCloseDeleteImageDialog: PropTypes.func.isRequired,
+        handleSendDeleteImageDialog: PropTypes.func.isRequired
+    }).isRequired,
     deleteDialog: PropTypes.shape({
         openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
         handleCloseDeleteDialog: PropTypes.func.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({

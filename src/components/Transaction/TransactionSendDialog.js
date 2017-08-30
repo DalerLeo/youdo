@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxSearchField} from '../ReduxForm'
+import {TextField, CashboxTypeSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
@@ -73,7 +73,6 @@ const TransactionSendDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, cashboxData} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
-
     return (
         <Dialog
             modal={true}
@@ -90,9 +89,9 @@ const TransactionSendDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '325px'}}>
+                    <div className={classes.inContent} style={{minHeight: '235px'}}>
                         <div className={classes.loader}>
-                            <CircularProgress size={80} thickness={5}/>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
                         <div className={classes.field}>
                             <div className={classes.itemList}>
@@ -101,29 +100,30 @@ const TransactionSendDialog = enhance((props) => {
                             </div>
                             <Field
                                 name="categoryId"
-                                component={CashboxSearchField}
-                                label="Касса получатель"
+                                className={classes.inputFieldCustom}
+                                component={CashboxTypeSearchField}
+                                cashbox={cashbox}
+                                label="Касса получатель аыыав"
                                 fullWidth={true}/>
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
-                                <Field
+                                {cashbox && <Field
                                     name="amount"
+                                    className={classes.inputFieldCustom}
                                     component={TextField}
                                     label="Сумма"
                                     normalize={normalizeNumber}
                                     style={{width: '50%'}}
-                                    fullWidth={false}/>
+                                    fullWidth={false}/>}
                                 <div style={{marginLeft: '20px'}}>
                                    {_.get(cashbox, ['currency', 'name'])}
                                 </div>
                             </div>
                             <Field
                                 name="comment"
+                                className={classes.inputFieldCustom}
                                 style={{lineHeight: '20px', fontSize: '13px'}}
                                 component={TextField}
                                 label="Комментарий..."
-                                multiLine={true}
-                                rows={1}
-                                rowsMax={3}
                                 fullWidth={true}/>
                         </div>
                     </div>
@@ -131,6 +131,7 @@ const TransactionSendDialog = enhance((props) => {
                         <FlatButton
                             label="Отправить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                         />

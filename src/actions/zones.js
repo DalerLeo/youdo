@@ -22,6 +22,39 @@ export const zoneCreateAction = (formValues) => {
     }
 }
 
+export const zoneUpdateAction = (id, formValues) => {
+    const requestData = serializers.createSerializer(formValues)
+    const payload = axios()
+        .put(sprintf(API.ZONE_UPDATE, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ZONE_UPDATE,
+        payload
+    }
+}
+
+export const zoneDeleteAction = (id) => {
+    const payload = axios()
+        .delete(sprintf(API.ZONE_DELETE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ZONE_DELETE,
+        payload
+    }
+}
+
 export const zoneListFetchAction = () => {
     const payload = axios()
         .get(API.ZONE_LIST)
@@ -78,6 +111,37 @@ export const zoneStatisticsFetchAction = () => {
         })
     return {
         type: actionTypes.ZONE_STAT,
+        payload
+    }
+}
+
+export const zoneBindAgentAction = (id, formValues) => {
+    const requestData = serializers.bindAgentSerializer(formValues)
+    const payload = axios()
+        .post(sprintf(API.ZONE_BIND_AGENT, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.ZONE_BIND_AGENT,
+        payload
+    }
+}
+
+export const zoneUnbindAgentAction = (detailId, agentId) => {
+    const payload = axios()
+        .post(sprintf(API.ZONE_UNBIND_AGENT, detailId), {'user_id': agentId})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.ZONE_BIND_AGENT,
         payload
     }
 }

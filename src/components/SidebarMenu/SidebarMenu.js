@@ -4,7 +4,7 @@ import _ from 'lodash'
 import {connect} from 'react-redux'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
 import ToolTip from '../ToolTip'
 import {MenuItems} from './MenuItems'
@@ -13,39 +13,51 @@ import Badge from 'material-ui/Badge'
 import Logo from '../Images/logo.png'
 
 const style = {
-    iconStyle: {
-        width: 30,
-        height: 30
-    },
     style: {
-        width: 66,
-        height: 66,
-        padding: 16
+        width: 84,
+        height: 60,
+        minWidth: 'none'
     }
 }
 
-const touch = true
-
 const enhance = compose(
-    connect((state, props) => {
-        const count = _.get(state, ['notifications', 'timeInterval', 'data'])
-        return count
+    connect((state) => {
+        return _.get(state, ['notifications', 'timeInterval', 'data'])
     })
 )
 
 const SideBarMenu = enhance((props) => {
     const {classes, handleSignOut, handleOpenNotificationBar, count} = props
     const items = _.map(MenuItems, (item, index) => {
+        const atBottom = _.get(item, 'bottom')
+        if (atBottom) {
+            return false
+        }
         return (
             <Link to={item.url} key={index}>
                 <ToolTip position="right" text={item.name}>
-                    <IconButton
-                        iconStyle={style.iconStyle}
-                        style={style.style}
-                        disableTouchRipple={true}
-                        touch={touch}>
+                    <FlatButton
+                        rippleColor="#fff"
+                        style={style.style}>
                         {item.icon}
-                    </IconButton>
+                    </FlatButton>
+                </ToolTip>
+            </Link>
+        )
+    })
+    const bottomItems = _.map(MenuItems, (item, index) => {
+        const atBottom = _.get(item, 'bottom')
+        if (!atBottom) {
+            return false
+        }
+        return (
+            <Link to={item.url} key={index}>
+                <ToolTip position="right" text={item.name}>
+                    <FlatButton
+                        rippleColor="#fff"
+                        style={style.style}>
+                        {item.icon}
+                    </FlatButton>
                 </ToolTip>
             </Link>
         )
@@ -57,50 +69,47 @@ const SideBarMenu = enhance((props) => {
                 <div className={classes.logo}>
                     <img src={Logo}/>
                 </div>
-                {count ? <Badge
-                    className={classes.badge}
-                    badgeContent={count}
-                    badgeStyle={{top: 8, right: 10}}>
-                    <ToolTip position="right" text="Уведомления">
-                        <IconButton
-                            iconStyle={style.iconStyle}
-                            style={style.style}
-                            className="ass23"
-                            touch={touch}
-                            onTouchTap={() => {
-                                handleOpenNotificationBar(true)
-                            }}
-                            disableTouchRipple={true}>
-                            <Notification />
-                        </IconButton>
-                    </ToolTip>
-                </Badge>
-                    : <ToolTip position="right" text="Уведомления">
-                        <IconButton
-                            iconStyle={style.iconStyle}
-                            style={style.style}
-                            className="ass23"
-                            touch={touch}
-                            onTouchTap={() => {
-                                handleOpenNotificationBar(true)
-                            }}
-                            disableTouchRipple={true}>
-                            <Notification />
-                        </IconButton>
-                    </ToolTip>
-                }
+                <div className={classes.notifications}>
+                    {count ? <Badge
+                        className={classes.badge}
+                        badgeContent={count}
+                        badgeStyle={{top: 8, right: 10}}>
+                        <ToolTip position="right" text="Уведомления">
+                            <FlatButton
+                                rippleColor="#fff"
+                                style={style.style}
+                                onTouchTap={() => {
+                                    handleOpenNotificationBar(true)
+                                }}>
+                                <Notification />
+                            </FlatButton>
+                        </ToolTip>
+                    </Badge>
+                        : <ToolTip position="right" text="Уведомления">
+                            <FlatButton
+                                rippleColor="#fff"
+                                style={style.style}
+                                onTouchTap={() => {
+                                    handleOpenNotificationBar(true)
+                                }}>
+                                <Notification />
+                            </FlatButton>
+                        </ToolTip>
+                    }
+                </div>
                 {items}
+                {!_.isEmpty(bottomItems) && <div className={classes.bottom}>
+                    {bottomItems}
+                </div>}
 
                 <div className={classes.logout}>
                     <ToolTip position="right" text="Выйти">
-                        <IconButton
-                            iconStyle={style.iconStyle}
+                        <FlatButton
+                            rippleColor="#fff"
                             style={style.style}
-                            touch={touch}
-                            disableTouchRipple={true}
                             onClick={handleSignOut}>
                             <SettingsPower />
-                        </IconButton>
+                        </FlatButton>
                     </ToolTip>
                 </div>
             </div>
@@ -127,9 +136,14 @@ export default injectSheet({
         position: 'relative',
         width: '100%',
         '& button': {
-            width: '100% !important',
-            height: '60px !important',
             opacity: '0.5',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                width: '100%'
+            },
             '&:hover': {
                 opacity: '1'
             }
@@ -138,6 +152,22 @@ export default injectSheet({
             color: '#fff !important',
             width: '25px !important',
             height: '25px !important'
+        }
+    },
+
+    bottom: {
+        marginTop: '10px',
+        paddingTop: '10px',
+        borderTop: '1px rgba(255,255,255, 0.1) solid',
+        position: 'relative',
+        '&:before': {
+            background: 'rgba(0,0,0, 0.25)',
+            content: '""',
+            position: 'absolute',
+            height: '1px',
+            top: '-2px',
+            left: '0',
+            right: '0'
         }
     },
 
@@ -150,7 +180,7 @@ export default injectSheet({
     badge: {
         padding: '0 !important',
         width: '100%',
-        '& span': {
+        '& > span': {
             fontSize: '11px !important',
             backgroundColor: '#009688 !important',
             color: '#fff !important',

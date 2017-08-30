@@ -6,9 +6,11 @@ import createThunkReducer from '../helpers/createThunkReducer'
 import createStandardReducer from '../helpers/createStandardReducer'
 import * as actionTypes from '../constants/actionTypes'
 import snackbarReducer from './snackbarReducer'
+import errorReducer from './errorReducer'
 
 const rootReducer = combineReducers({
     signIn: createThunkReducer(actionTypes.SIGN_IN),
+    authConfirm: createThunkReducer(actionTypes.AUTH_CONFIRM),
     config: combineReducers({
         primaryCurrency: createThunkReducer(actionTypes.CONFIG)
     }),
@@ -16,76 +18,72 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.SHOP_CREATE),
         list: createThunkReducer(actionTypes.SHOP_LIST),
         item: createThunkReducer(actionTypes.SHOP_ITEM),
+        extra: createStandardReducer(actionTypes.SHOP_EXTRA),
         update: createThunkReducer(actionTypes.SHOP_UPDATE),
         image: createThunkReducer(actionTypes.SHOP_ITEM_ADD_IMAGE),
-        gallery: createThunkReducer(actionTypes.SHOP_ITEM_SHOW_IMAGE),
-        csv: createThunkReducer(actionTypes.SHOP_LIST_CSV)
+        gallery: createThunkReducer(actionTypes.SHOP_ITEM_SHOW_IMAGE)
     }),
     cashbox: combineReducers({
         create: createThunkReducer(actionTypes.CASHBOX_CREATE),
         list: createThunkReducer(actionTypes.CASHBOX_LIST),
         item: createThunkReducer(actionTypes.CASHBOX_ITEM),
         update: createThunkReducer(actionTypes.CASHBOX_UPDATE),
-        csv: createThunkReducer(actionTypes.CASHBOX_LIST_CSV)
+        pending: createThunkReducer(actionTypes.ORDER_TRANSACTION)
     }),
     shipment: combineReducers({
         list: createThunkReducer(actionTypes.SHIPMENT_LIST),
-        item: createThunkReducer(actionTypes.SHIPMENT_ITEM),
-        csv: createThunkReducer(actionTypes.SHIPMENT_LIST_CSV)
+        item: createThunkReducer(actionTypes.SHIPMENT_ITEM)
     }),
     transaction: combineReducers({
         create: createThunkReducer(actionTypes.TRANSACTION_CREATE),
         list: createThunkReducer(actionTypes.TRANSACTION_LIST),
         item: createThunkReducer(actionTypes.TRANSACTION_ITEM),
         update: createThunkReducer(actionTypes.TRANSACTION_UPDATE),
-        csv: createThunkReducer(actionTypes.TRANSACTION_LIST_CSV)
+        acceptCash: createThunkReducer(actionTypes.TRANSACTION_ACCEPT_CASH)
     }),
     clientTransaction: combineReducers({
         create: createThunkReducer(actionTypes.CLIENT_TRANSACTION_CREATE),
         item: createThunkReducer(actionTypes.CLIENT_TRANSACTION_ITEM),
         update: createThunkReducer(actionTypes.CLIENT_TRANSACTION_UPDATE),
-        list: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST),
-        csv: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST_CSV)
+        list: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST)
     }),
     supply: combineReducers({
         create: createThunkReducer(actionTypes.SUPPLY_CREATE),
         list: createThunkReducer(actionTypes.SUPPLY_LIST),
         item: createThunkReducer(actionTypes.SUPPLY_ITEM),
         update: createThunkReducer(actionTypes.SUPPLY_UPDATE),
-        defect: createThunkReducer(actionTypes.SUPPLY_DEFECT),
-        csv: createThunkReducer(actionTypes.SUPPLY_LIST_CSV)
+        defect: createThunkReducer(actionTypes.SUPPLY_DEFECT)
     }),
     prices: combineReducers({
         create: createThunkReducer(actionTypes.PRICES_CREATE),
         list: createThunkReducer(actionTypes.PRICES_LIST),
         item: createThunkReducer(actionTypes.PRICES_ITEM),
         update: createThunkReducer(actionTypes.PRICES_UPDATE),
-        csv: createThunkReducer(actionTypes.PRICES_LIST_CSV)
+        marketType: createThunkReducer(actionTypes.MARKET_TYPE_LIST)
     }),
     supplyExpense: combineReducers({
         create: createThunkReducer(actionTypes.SUPPLY_EXPENSE_CREATE),
         list: createThunkReducer(actionTypes.SUPPLY_EXPENSE_LIST),
         item: createThunkReducer(actionTypes.SUPPLY_EXPENSE_ITEM),
-        update: createThunkReducer(actionTypes.SUPPLY_EXPENSE_UPDATE),
-        csv: createThunkReducer(actionTypes.SUPPLY_EXPENSE_LIST_CSV)
+        update: createThunkReducer(actionTypes.SUPPLY_EXPENSE_UPDATE)
     }),
     order: combineReducers({
         create: createThunkReducer(actionTypes.ORDER_CREATE),
         list: createThunkReducer(actionTypes.ORDER_LIST),
-        payment: createThunkReducer(actionTypes.ORDER_TRANSACTION),
+        listPrint: createThunkReducer(actionTypes.ORDER_LIST_PRINT),
+        payment: createThunkReducer(actionTypes.ORDER_PAYMENTS),
         item: createThunkReducer(actionTypes.ORDER_ITEM),
         document: createThunkReducer(actionTypes.GET_DOCUMENT),
         return: createThunkReducer(actionTypes.ORDER_RETURN),
         returnList: createThunkReducer(actionTypes.ORDER_RETURN_LIST),
         update: createThunkReducer(actionTypes.ORDER_UPDATE),
-        csv: createThunkReducer(actionTypes.ORDER_LIST_CSV)
+        updateProducts: createThunkReducer(actionTypes.PRODUCT_MOBILE)
     }),
     product: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_CREATE),
         list: createThunkReducer(actionTypes.PRODUCT_LIST),
         update: createThunkReducer(actionTypes.PRODUCT_UPDATE),
         item: createThunkReducer(actionTypes.PRODUCT_ITEM),
-        csv: createThunkReducer(actionTypes.PRODUCT_LIST_CSV),
         measurement: createStandardReducer(actionTypes.PRODUCT_MEASUREMENT),
         extra: createStandardReducer(actionTypes.PRODUCT_EXTRA)
     }),
@@ -97,7 +95,7 @@ const rootReducer = combineReducers({
     }),
     productType: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_TYPE_CREATE),
-        list: createThunkReducer(actionTypes.PRODUCT_TYPE_LIST),
+        list: createThunkReducer(actionTypes.PRODUCT_TYPE_H_LIST),
         update: createThunkReducer(actionTypes.PRODUCT_TYPE_UPDATE),
         item: createThunkReducer(actionTypes.PRODUCT_TYPE_ITEM)
     }),
@@ -105,8 +103,7 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_PRICE_CREATE),
         list: createThunkReducer(actionTypes.PRODUCT_PRICE_LIST),
         update: createThunkReducer(actionTypes.PRODUCT_PRICE_UPDATE),
-        item: createThunkReducer(actionTypes.PRODUCT_PRICE_ITEM),
-        csv: createThunkReducer(actionTypes.PRODUCT_PRICE_LIST_CSV)
+        item: createThunkReducer(actionTypes.PRODUCT_PRICE_ITEM)
     }),
     category: combineReducers({
         create: createThunkReducer(actionTypes.CATEGORY_CREATE),
@@ -150,7 +147,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.USERS_CREATE),
         list: createThunkReducer(actionTypes.USERS_LIST),
         update: createThunkReducer(actionTypes.USERS_UPDATE),
-        item: createThunkReducer(actionTypes.USERS_ITEM)
+        item: createThunkReducer(actionTypes.USERS_ITEM),
+        groupList: createThunkReducer(actionTypes.USERS_GROUP)
     }),
     provider: combineReducers({
         create: createThunkReducer(actionTypes.PROVIDER_CREATE),
@@ -239,13 +237,16 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.STAT_CASHBOX_CREATE),
         list: createThunkReducer(actionTypes.STAT_CASHBOX_LIST),
         update: createThunkReducer(actionTypes.STAT_CASHBOX_UPDATE),
-        item: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM)
+        item: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM),
+        sumData: createThunkReducer(actionTypes.STAT_CASHBOX_SUM),
+        itemGraph: createThunkReducer(actionTypes.STAT_CASHBOX_DATA_ITEM)
     }),
     pendingPayments: combineReducers({
         create: createThunkReducer(actionTypes.PENDING_PAYMENTS_CREATE),
         list: createThunkReducer(actionTypes.PENDING_PAYMENTS_LIST),
         update: createThunkReducer(actionTypes.PENDING_PAYMENTS_UPDATE),
-        item: createThunkReducer(actionTypes.PENDING_PAYMENTS_ITEM)
+        item: createThunkReducer(actionTypes.PENDING_PAYMENTS_ITEM),
+        convert: createThunkReducer(actionTypes.PENDING_PAYMENTS_CONVERT)
     }),
     marketType: combineReducers({
         create: createThunkReducer(actionTypes.MARKET_TYPE_CREATE),
@@ -256,22 +257,144 @@ const rootReducer = combineReducers({
     price: combineReducers({
         list: createThunkReducer(actionTypes.PRICE_LIST),
         item: createThunkReducer(actionTypes.PRICE_ITEM),
-        price: createThunkReducer(actionTypes.PRICE_LIST_ITEM_LIST)
+        price: createThunkReducer(actionTypes.PRICE_LIST_ITEM_LIST),
+        history: createThunkReducer(actionTypes.PRICE_LIST_ITEM_HISTORY),
+        expense: createThunkReducer(actionTypes.PRICE_LIST_ITEM_EXPENSES)
     }),
     zone: combineReducers({
         create: createThunkReducer(actionTypes.ZONE_CREATE),
         list: createThunkReducer(actionTypes.ZONE_LIST),
         update: createThunkReducer(actionTypes.ZONE_UPDATE),
         item: createThunkReducer(actionTypes.ZONE_ITEM),
-        statistics: createThunkReducer(actionTypes.ZONE_STAT)
+        statistics: createThunkReducer(actionTypes.ZONE_STAT),
+        bindAgent: createThunkReducer(actionTypes.ZONE_BIND_AGENT)
+    }),
+    tracking: combineReducers({
+        list: createThunkReducer(actionTypes.TRACKING_LIST),
+        item: createThunkReducer(actionTypes.TRACKING_ITEM),
+        location: createThunkReducer(actionTypes.LOCATION_LIST),
+        markets: createThunkReducer(actionTypes.MARKETS_LOCATION)
     }),
     remainder: combineReducers({
         create: createThunkReducer(actionTypes.REMAINDER_CREATE),
         list: createThunkReducer(actionTypes.REMAINDER_LIST),
         update: createThunkReducer(actionTypes.REMAINDER_UPDATE),
+        item: createThunkReducer(actionTypes.REMAINDER_ITEM),
+        reserved: createThunkReducer(actionTypes.REMAINDER_RESERVED)
+    }),
+    statAgent: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_AGENT_LIST),
+        item: createThunkReducer(actionTypes.STAT_AGENT_ITEM)
+    }),
+    statProduct: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_PRODUCT_LIST)
+    }),
+    statMarket: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_MARKET_LIST),
+        item: createThunkReducer(actionTypes.STAT_MARKET_ITEM),
+        data: createThunkReducer(actionTypes.STAT_MARKET_DATA),
+        sum: createThunkReducer(actionTypes.STAT_MARKET_SUM)
+    }),
+    statIncome: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_INCOME_DATA),
+        list: createThunkReducer(actionTypes.STAT_INCOME_LIST)
+    }),
+    statOutcome: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_OUTCOME_DATA),
+        list: createThunkReducer(actionTypes.STAT_OUTCOME_LIST)
+    }),
+    statReport: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_REPORT_DATA),
+        list: createThunkReducer(actionTypes.STAT_REPORT_LIST)
+    }),
+    statisticsDebtors: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_DEBTORS_DATA),
+        list: createThunkReducer(actionTypes.STAT_DEBTORS_LIST),
+        item: createThunkReducer(actionTypes.STAT_DEBTORS_ITEM)
+    }),
+    statOutcomeCategory: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_OUTCOME_CATEGORY_LIST)
+    }),
+    stockReceive: combineReducers({
+        list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
+        history: createThunkReducer(actionTypes.STOCK_HISTORY_LIST),
+        print: createThunkReducer(actionTypes.ORDER_LIST_PRINT),
+        transfer: createThunkReducer(actionTypes.STOCK_TRANSFER_LIST),
+        transferItem: createThunkReducer(actionTypes.STOCK_TRANSFER_ITEM),
+        stockTransfer: createThunkReducer(actionTypes.STOCK_RECEIVE_ORDER_ITEM),
+        item: createThunkReducer(actionTypes.STOCK_RECEIVE_ITEM),
+        create: createThunkReducer(actionTypes.STOCK_RECEIVE_CREATE),
+        barcodeList: createThunkReducer(actionTypes.STOCK_BARCODE_LIST)
+    }),
+    statistics: combineReducers({
+        list: createThunkReducer(actionTypes.REMAINDER_LIST),
         item: createThunkReducer(actionTypes.REMAINDER_ITEM)
     }),
+    clientBalance: combineReducers({
+        create: createThunkReducer(actionTypes.CLIENT_BALANCE_CREATE),
+        list: createThunkReducer(actionTypes.CLIENT_BALANCE_LIST),
+        update: createThunkReducer(actionTypes.CLIENT_BALANCE_UPDATE),
+        item: createThunkReducer(actionTypes.CLIENT_BALANCE_ITEM)
+    }),
+    statRemainder: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_REMAINDER_LIST),
+        item: createThunkReducer(actionTypes.STAT_REMAINDER_ITEM)
+    }),
+    position: combineReducers({
+        create: createThunkReducer(actionTypes.POSITION_CREATE),
+        list: createThunkReducer(actionTypes.POSITION_LIST),
+        update: createThunkReducer(actionTypes.POSITION_UPDATE),
+        item: createThunkReducer(actionTypes.POSITION_ITEM),
+        primary: createThunkReducer(actionTypes.POSITION_PRIMARY),
+        primaryUpdate: createThunkReducer(actionTypes.POSITION_PRIMARY_UPDATE),
+        permission: createThunkReducer(actionTypes.POSITION_PERMISSION)
+    }),
+
+    statSales: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_SALES_DATA)
+    }),
+    statFinance: combineReducers({
+        dataIn: createThunkReducer(actionTypes.STAT_FINANCE_DATA_IN),
+        dataOut: createThunkReducer(actionTypes.STAT_FINANCE_DATA_OUT),
+        list: createThunkReducer(actionTypes.STAT_FINANCE_LIST)
+    }),
+    activity: combineReducers({
+        orderList: createThunkReducer(actionTypes.ACTIVITY_ORDER_LIST),
+        orderItem: createThunkReducer(actionTypes.ACTIVITY_ORDER_ITEM),
+        visitList: createThunkReducer(actionTypes.ACTIVITY_VISIT_LIST),
+        reportList: createThunkReducer(actionTypes.ACTIVITY_REPORT_LIST),
+        reportImage: createThunkReducer(actionTypes.ACTIVITY_REPORT_SHOW_IMAGE),
+        returnList: createThunkReducer(actionTypes.ACTIVITY_ORDER_RETURN_LIST),
+        paymentList: createThunkReducer(actionTypes.ACTIVITY_PAYMENT_LIST),
+        deliveryList: createThunkReducer(actionTypes.ACTIVITY_DELIVERY_LIST)
+    }),
+    statProductMove: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_LIST),
+        sum: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_SUM)
+    }),
+    division: combineReducers({
+        create: createThunkReducer(actionTypes.DIVISION_CREATE),
+        list: createThunkReducer(actionTypes.DIVISION_LIST),
+        update: createThunkReducer(actionTypes.DIVISION_UPDATE),
+        item: createThunkReducer(actionTypes.DIVISION_ITEM)
+    }),
+    return: combineReducers({
+        list: createThunkReducer(actionTypes.RETURN_LIST),
+        item: createThunkReducer(actionTypes.RETURN_ITEM),
+        document: createThunkReducer(actionTypes.GET_DOCUMENT),
+        update: createThunkReducer(actionTypes.RETURN_UPDATE),
+        cancel: createThunkReducer(actionTypes.RETURN_CANCEL),
+        listPrint: createThunkReducer(actionTypes.RETURN_PRINT)
+    }),
+    plan: combineReducers({
+        monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY)
+    }),
+    join: combineReducers({
+        joinMarkets: createThunkReducer(actionTypes.JOIN_MARKETS),
+        joinClients: createThunkReducer(actionTypes.JOIN_CLIENTS)
+    }),
     snackbar: snackbarReducer(),
+    error: errorReducer(),
     form: formReducer,
     toastr: toastrReducer,
     routing: routerReducer

@@ -110,7 +110,7 @@ const enhance = compose(
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter, detail} = props
 
-            return dispatch(pendingExpensesUpdateAction(detail.id, _.get(createForm, ['values'])))
+            return dispatch(pendingExpensesUpdateAction(detail, _.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -150,7 +150,7 @@ const PendingExpensesList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openUpdateDialog) {
                 return {}
             }
 

@@ -8,6 +8,7 @@ import SideBarMenu from '../SidebarMenu'
 import SnakeBar from '../Snackbar'
 import {connect} from 'react-redux'
 import ConfirmDialog from '../ConfirmDialog'
+import ErrorDialog from '../ErrorDialog'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
@@ -22,7 +23,7 @@ import {
     notificationGetNotViewed
 } from '../../actions/notifications'
 import {openSnackbarAction} from '../../actions/snackbar'
-import NotFound from '../Images/not-found.png'
+import Notifications from '../Images/Notification.png'
 
 const iconStyle = {
     icon: {
@@ -101,14 +102,20 @@ const enhance = compose(
             display: 'flex'
         },
         sidenav: {
+            position: 'fixed',
             width: '84px',
+            top: '0',
+            left: '0',
+            bottom: '0',
             zIndex: '6'
         },
         content: {
             background: '#f2f5f8',
-            width: 'calc(100% - 140px)',
+            width: 'calc(100% - 84px)',
+            marginLeft: '84px',
             padding: '0 28px 28px',
-            overflow: 'auto'
+            overflowY: 'auto',
+            overflowX: 'hidden'
         },
         notifications: {
             background: 'rgba(0,0,0,0.3)',
@@ -117,7 +124,7 @@ const enhance = compose(
             left: '0',
             width: '100%',
             height: '100%',
-            zIndex: '5'
+            transition: 'all 300ms ease'
         },
         notificationsWrapper: {
             background: '#fff',
@@ -233,14 +240,16 @@ const enhance = compose(
             position: 'relative !important'
         },
         emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '215px',
-            padding: '215px 0 0',
+            background: 'url(' + Notifications + ') no-repeat center center',
+            backgroundSize: '115px',
+            padding: '200px 0 20px',
             textAlign: 'center',
-            color: '#999'
+            color: '#999',
+            fontWeight: 'bold'
         }
     })
 )
+
 const Layout = enhance((props) => {
     const {
         classes,
@@ -304,7 +313,7 @@ const Layout = enhance((props) => {
     })
     return (
         <div className={classes.wrapper}>
-            <div className={classes.notifications} style={openNotifications ? {} : {display: 'none'}}>
+            <div className={classes.notifications} style={openNotifications ? {opacity: '1', zIndex: '4'} : {opacity: '0', zIndex: '-99'}}>
                 <Paper className={classes.notificationsWrapper} zDepth={4}>
                     <div className={classes.header}>
                         <div>Уведомления</div>
@@ -322,11 +331,11 @@ const Layout = enhance((props) => {
                     <div className={classes.notifBody}>
                         {
                             notificationsLoading ? <div className={classes.loading}>
-                                <CircularProgress size={100} thickness={6}/>
+                                <CircularProgress size={40} thickness={4}/>
                             </div>
                                 : (notificationListExp.length > ZERO ? notificationListExp
                                 : <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
+                                    <div>Нет уведомлений</div>
                                 </div>)
                         }
                     </div>
@@ -341,6 +350,7 @@ const Layout = enhance((props) => {
             </div>
 
             <SnakeBar />
+            <ErrorDialog />
             {notificationsList && <ConfirmDialog
                 type="delete"
                 message={_.get(_.find(notificationsList, {'id': notificationId}), 'title')}

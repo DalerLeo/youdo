@@ -31,7 +31,7 @@ const enhance = compose(
             alignItems: 'center',
             '& span': {
                 color: '#333',
-                fontWeight: '700',
+                fontWeight: '600',
                 fontSize: '24px !important'
             },
             '&:first-child': {
@@ -68,7 +68,7 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700'
+            fontWeight: '600'
         },
         bodyTitle: {
             fontWeight: '600',
@@ -97,7 +97,9 @@ const enhance = compose(
         tab: {
             cursor: 'pointer',
             padding: '20px',
-            height: '100%'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center'
         },
         activeTab: {
             paddingBottom: '20px',
@@ -316,7 +318,7 @@ const StatCashboxGridList = enhance((props) => {
     const config = {
         chart: {
             type: 'areaspline',
-            height: 245
+            height: 145
         },
         title: {
             text: '',

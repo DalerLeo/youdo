@@ -20,6 +20,8 @@ import {
     getDocumentAction
 } from '../../actions/statDebtors'
 import {orderItemFetchAction} from '../../actions/order'
+import * as ROUTER from '../../constants/routes'
+
 const ONE = 1
 
 const enhance = compose(
@@ -139,6 +141,10 @@ const enhance = compose(
         handleGetDocument: props => () => {
             const {dispatch, filter} = props
             return dispatch(getDocumentAction(filter))
+        },
+        handleCloseDetail: props => () => {
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.STATDEBTORS_LIST_URL, query: filter.getParams()})
         }
     })
 )

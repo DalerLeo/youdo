@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import MarketTypeField from '../ReduxForm/Shop/MarketTypeSearchField'
-import {ClientSearchField} from '../ReduxForm'
+import {ClientSearchField, ShopStatusSearchField, FrequencySearchField, UsersSearchField, ZoneSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -18,7 +18,11 @@ export const SHOP_FILTER_OPEN = 'openFilterDialog'
 
 export const SHOP_FILTER_KEY = {
     CLIENT: 'client',
-    MARKET_TYPE: 'marketType'
+    MARKET_TYPE: 'marketType',
+    STATUS: 'isActive',
+    FREQUENCY: 'frequency',
+    ZONE: 'zone',
+    CREATED_BY: 'createdBy'
 }
 
 const enhance = compose(
@@ -34,7 +38,6 @@ const enhance = compose(
             padding: '10px 20px 10px 20px'
         },
         afterFilter: {
-            width: '268px',
             alignItems: 'center',
             display: 'flex',
             backgroundColor: '#efefef',
@@ -157,22 +160,42 @@ const ShopFilterForm = enhance((props) => {
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <Field
                         className={classes.inputFieldCustom}
-                        name="client"
-                        component={ClientSearchField}
-                        label="Клиент"/>
-
-                    <Field
-                        className={classes.inputFieldCustom}
                         name="marketType"
                         component={MarketTypeField}
                         label="Тип магазина"
                         fullWidth={true}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="isActive"
+                        component={ShopStatusSearchField}
+                        label="Статус"
+                        fullWidth={true}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="createdBy"
+                        component={UsersSearchField}
+                        label="Создал"/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="client"
+                        component={ClientSearchField}
+                        label="Клиент"/>
+                    <Field className={classes.inputFieldCustom}
+                           name="zone"
+                           component={ZoneSearchField}
+                           label="Зона"/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="frequency"
+                        component={FrequencySearchField}
+                        label="Частота посещений"/>
 
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         label="Применить"
+                        labelStyle={{fontSize: '13px'}}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

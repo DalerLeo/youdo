@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-import {ProviderSearchField, StockSearchField} from '../ReduxForm'
+import {ProviderSearchField, StockSearchField, ProductSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 
@@ -18,6 +18,7 @@ export const SUPPLY_FILTER_OPEN = 'openFilterDialog'
 
 export const SUPPLY_FILTER_KEY = {
     PROVIDER: 'provider',
+    PRODUCT: 'product',
     STOCK: 'stock',
     DELIVERY_FROM_DATE: 'deliveryFromDate',
     DELIVERY_TO_DATE: 'deliveryToDate',
@@ -38,7 +39,6 @@ const enhance = compose(
             padding: '10px 20px 10px 20px'
         },
         afterFilter: {
-            width: '268px',
             alignItems: 'center',
             display: 'flex',
             backgroundColor: '#efefef',
@@ -84,8 +84,20 @@ const enhance = compose(
         submit: {
             color: '#fff !important'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     }),
     reduxForm({
@@ -148,19 +160,21 @@ const SupplyFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="provider" component={ProviderSearchField} label="Поставщик"/>
-                        <Field className={classes.inputField} name="stock" component={StockSearchField} label="Склад"/>
+                        <Field className={classes.inputFieldCustom} name="provider" component={ProviderSearchField} label="Поставщик"/>
+                        <Field className={classes.inputFieldCustom} name="stock" component={StockSearchField} label="Склад"/>
+                        <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Товар"/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="dateDelivery" component={DateToDateField} label="Дата поставки" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="dateDelivery" component={DateToDateField} label="Дата поставки" fullWidth={true}/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="dateCreated" component={DateToDateField} label="Дата создания" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="dateCreated" component={DateToDateField} label="Дата создания" fullWidth={true}/>
                     </div>
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
+                        labelStyle={{fontSize: '13px'}}
                         label="Применить"
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

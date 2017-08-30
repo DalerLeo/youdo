@@ -3,6 +3,8 @@ import {userIsAuth} from '../permissions'
 import {getToken} from '../helpers/storage'
 import * as ROUTES from '../constants/routes'
 import App from '../containers/App'
+import {MainList} from '../containers/Main'
+import {AccessList} from '../containers/Access'
 import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
 import {CashboxList} from '../containers/Cashbox'
@@ -10,11 +12,13 @@ import {TransactionList} from '../containers/Transaction'
 import {ClientTransactionList} from '../containers/ClientTransaction'
 import {SupplyList} from '../containers/Supply'
 import {OrderList} from '../containers/Order'
+import {ReturnList} from '../containers/Return'
 import {ProductList} from '../containers/Product'
 import {ProductTypeList} from '../containers/ProductType'
 import {ProductPriceList} from '../containers/ProductPrice'
 import {StockList} from '../containers/Stock'
 import {CurrencyList} from '../containers/Currency'
+import {PositionList} from '../containers/Position'
 import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
@@ -37,12 +41,33 @@ import {PricesList} from '../containers/Prices'
 import {PriceList} from '../containers/Price'
 import NotFound from '../containers/NotFound'
 import {RemainderList} from '../containers/Remainder'
+import {
+    StatSalesList,
+    StatAgentList,
+    StatProductList,
+    StatMarketList,
+    StatFinanceList,
+    StatIncomeList,
+    StatOutcomeList,
+    StatDebtorsList,
+    StatOutcomeCategoryList,
+    StatRemainderList,
+    StatCashboxList,
+    StatProductMoveList,
+    StatReportList
+} from '../containers/Statistics'
+import {ClientBalanceList} from '../containers/ClientBalance'
+import {StockReceiveList} from '../containers/StockReceive'
+import {PlanList} from '../containers/Plan'
+import {ActivityList} from '../containers/Activity'
+import {DivisionList} from '../containers/Division'
+import {JoinList} from '../containers/Join'
 
 export default {
     path: '/',
     component: App,
     indexRoute: {
-        component: userIsAuth(StatStock)
+        component: userIsAuth(MainList)
     },
     childRoutes: [
         {
@@ -55,6 +80,12 @@ export default {
             }
         },
 
+        // Access Denied
+        {
+            path: ROUTES.ACCESS_DENIED_URL,
+            component: userIsAuth(AccessList),
+            childRoutes: []
+        },
         // Shop
         {
             path: ROUTES.SHOP_LIST_URL,
@@ -156,6 +187,17 @@ export default {
                 {
                     path: ROUTES.ORDER_ITEM_URL,
                     component: userIsAuth(OrderList)
+                }
+            ]
+        },
+        // Return
+        {
+            path: ROUTES.RETURN_LIST_URL,
+            component: userIsAuth(ReturnList),
+            childRoutes: [
+                {
+                    path: ROUTES.RETURN_ITEM_URL,
+                    component: userIsAuth(ReturnList)
                 }
             ]
         },
@@ -371,7 +413,7 @@ export default {
             path: ROUTES.TRACKING_LIST_URL,
             component: userIsAuth(Tracking),
             childRoutes: [{
-                path: ROUTES.TRACKING_LIST_URL,
+                path: ROUTES.TRACKING_ITEM_URL,
                 component: userIsAuth(Tracking)
             }]
         },
@@ -408,9 +450,208 @@ export default {
                 }
             ]
         },
+        // Statistics
+        {
+            path: ROUTES.STATISTICS_LIST_URL,
+            component: userIsAuth(StatSalesList),
+            childRoutes: [
+            ]
+        },
+        // Statistics/sales all
+        {
+            path: ROUTES.STATISTICS_SALES_URL,
+            component: userIsAuth(StatSalesList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_SALES_ITEM_URL,
+                    component: userIsAuth(StatSalesList)
+                }
+            ]
+        },
+        // Statistics/agent
+        {
+            path: ROUTES.STATISTICS_AGENT_URL,
+            component: userIsAuth(StatAgentList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_AGENT_ITEM_URL,
+                    component: userIsAuth(StatAgentList)
+                }
+            ]
+        },
+        // Statistics/product
+        {
+            path: ROUTES.STATISTICS_PRODUCT_URL,
+            component: userIsAuth(StatProductList),
+            childRoutes: []
+        },
+        // Statistics/market
+        {
+            path: ROUTES.STATISTICS_MARKET_URL,
+            component: userIsAuth(StatMarketList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_MARKET_ITEM_URL,
+                    component: userIsAuth(StatMarketList)
+                }
+            ]
+        },
+        // Statistics/finance
+        {
+            path: ROUTES.STATISTICS_FINANCE_URL,
+            component: userIsAuth(StatFinanceList),
+            childRoutes: []
+        },
+        // Statistics/income
+        {
+            path: ROUTES.STATISTICS_INCOME_URL,
+            component: userIsAuth(StatIncomeList),
+            childRoutes: []
+        },
+        // Statistics/outcome
+        {
+            path: ROUTES.STATISTICS_OUTCOME_URL,
+            component: userIsAuth(StatOutcomeList),
+            childRoutes: []
+        },
+        // Statistics/debtors
+        {
+            path: ROUTES.STATISTICS_DEBTORS_URL,
+            component: userIsAuth(StatDebtorsList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_DEBTORS_ITEM_URL,
+                    component: userIsAuth(StatDebtorsList)
+                }
+            ]
+        },
+        // Statistics/outcomeCategory
+        {
+            path: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL,
+            component: userIsAuth(StatOutcomeCategoryList),
+            childRoutes: []
+        },
+        // Stock Receive Transfer
+        {
+            path: ROUTES.STOCK_RECEIVE_LIST_URL,
+            component: userIsAuth(StockReceiveList),
+            childRoutes: [
+                {
+                    path: ROUTES.STOCK_RECEIVE_ITEM_URL,
+                    component: userIsAuth(StockReceiveList)
+                }
+            ]
+        },
+        // ClientBalance
+        {
+            path: ROUTES.CLIENT_BALANCE_LIST_URL,
+            component: userIsAuth(ClientBalanceList),
+            childRoutes: [
+                {
+                    path: ROUTES.CLIENT_BALANCE_ITEM_URL,
+                    component: userIsAuth(ClientBalanceList)
+                }
+            ]
+        },
+        // Plan
+        {
+            path: ROUTES.PLAN_LIST_URL,
+            component: userIsAuth(PlanList),
+            childRoutes: [
+                {
+                    path: ROUTES.PLAN_ITEM_URL,
+                    component: userIsAuth(PlanList)
+                }
+            ]
+        },
+        // Statistics/remainder
+        {
+            path: ROUTES.STATISTICS_REMAINDER_URL,
+            component: userIsAuth(StatRemainderList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_REMAINDER_ITEM_URL,
+                    component: userIsAuth(StatRemainderList)
+                }
+            ]
+        },
+        // Statistics/cashbox
+        {
+            path: ROUTES.STATISTICS_CASHBOX_URL,
+            component: userIsAuth(StatCashboxList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_CASHBOX_ITEM_URL,
+                    component: userIsAuth(StatCashboxList)
+                }
+            ]
+        },
+
+        // Position
+        {
+            path: ROUTES.POSITION_LIST_URL,
+            component: userIsAuth(PositionList),
+            childRoutes: [
+                {
+                    path: ROUTES.POSITION_ITEM_URL,
+                    component: userIsAuth(PositionList)
+                }
+            ]
+        },
+        // Activity
+        {
+            path: ROUTES.ACTIVITY_LIST_URL,
+            component: userIsAuth(ActivityList),
+            childRoutes: [
+                {
+                    path: ROUTES.ACTIVITY_ITEM_URL,
+                    component: userIsAuth(ActivityList)
+                }
+            ]
+        },
+        // Statistics/productMove
+        {
+            path: ROUTES.STATISTICS_PRODUCT_MOVE_URL,
+            component: userIsAuth(StatProductMoveList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_PRODUCT_MOVE_ITEM_URL,
+                    component: userIsAuth(StatProductMoveList)
+                }
+            ]
+        },
+        // Statistics/report
+        {
+            path: ROUTES.STATISTICS_REPORT_URL,
+            component: userIsAuth(StatReportList),
+            childRoutes: []
+        },
+        // Statistics/report
+        {
+            path: ROUTES.DIVISION_LIST_URL,
+            component: userIsAuth(DivisionList),
+            childRoutes: [
+                {
+                    path: ROUTES.DIVISION_ITEM_URL,
+                    component: userIsAuth(DivisionList)
+                }
+            ]
+        },
+        // Join
+        {
+            path: ROUTES.JOIN_LIST_URL,
+            component: userIsAuth(JoinList),
+            childRoutes: [
+                {
+                    path: ROUTES.JOIN_ITEM_URL,
+                    component: userIsAuth(JoinList)
+                }
+            ]
+        },
         {
             path: '*',
             component: NotFound
         }
     ]
 }
+

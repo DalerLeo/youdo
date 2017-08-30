@@ -33,7 +33,6 @@ const enhance = compose(
             padding: '10px 20px 10px 20px'
         },
         afterFilter: {
-            width: '268px',
             alignItems: 'center',
             display: 'flex',
             backgroundColor: '#efefef',
@@ -113,13 +112,14 @@ const enhance = compose(
 )
 
 const UsersFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, addButton} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
+                    {addButton}
                     <div>Фильтр: {filterCounts} элемента</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
@@ -134,12 +134,16 @@ const UsersFilterForm = enhance((props) => {
         }
 
         return (
-            <div>
+            <div style={{display: 'flex'}}>
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div style={{display: 'flex'}}>
+                        <span>Показать фильтр</span>
+                        <KeyboardArrowDown color="#12aaeb" />
+                    </div>
                 </Link>
+                {addButton}
             </div>
         )
     }
@@ -165,6 +169,7 @@ const UsersFilterForm = enhance((props) => {
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
+                        labelStyle={{fontSize: '13px'}}
                         label="Применить"
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

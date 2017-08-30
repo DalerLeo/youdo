@@ -40,10 +40,9 @@ export const statStockDataFetchAction = (id) => {
     }
 }
 
-export const getDocumentAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
+export const getDocumentAction = () => {
     const payload = axios()
-        .get(sprintf(API.STATSTOCK_GET_DOCUMENT), {params})
+        .get(sprintf(API.STATSTOCK_GET_DOCUMENT))
         .then((response) => {
             fileDownload(response.data, 'договор.xls')
             return _.get(response, 'data')

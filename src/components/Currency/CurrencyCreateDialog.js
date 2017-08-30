@@ -64,7 +64,7 @@ const CurrencyCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
                     <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.inContent} style={{minHeight: '120px', paddingTop: '15px'}}>
                         <div className={classes.field}>
@@ -75,19 +75,28 @@ const CurrencyCreateDialog = enhance((props) => {
                                 label="Наименование"
                                 fullWidth={true}
                             />
-                            <Field
-                                name="rate"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="Курс"
-                                fullWidth={true}
-                            />
+                            {isUpdate
+                                ? <Field
+                                    name="rate"
+                                    disabled={true}
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Курс"
+                                    fullWidth={true}/>
+                                : <Field
+                                        name="rate"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Курс"
+                                        fullWidth={true}/>
+                            }
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
                             label="Сохранить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                         />

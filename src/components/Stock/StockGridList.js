@@ -11,15 +11,12 @@ import GridList from '../GridList'
 import Container from '../Container'
 import StockCreateDialog from './StockCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
+import SettingSideMenu from '../Setting/SettingSideMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
+import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
 
 const listHeader = [
@@ -63,19 +60,69 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
-            }
+        wrapper: {
+            display: 'flex',
+            margin: '0 -28px',
+            height: 'calc(100% + 28px)'
         },
         addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '-18px'
+        },
+        addButton: {
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
+            }
+        },
+        rightPanel: {
+            background: '#fff',
+            flexBasis: 'calc(100% - 225px)',
+            maxWidth: 'calc(100% - 225px)',
+            paddingTop: '10px',
+            overflowY: 'auto',
+            overflowX: 'hidden'
+        },
+        verticalButton: {
+            border: '2px #dfdfdf solid !important',
+            borderRadius: '50%',
+            opacity: '0',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
+        },
+        listRow: {
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            }
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0',
+            transition: 'all 200ms ease-out'
         }
     })
 )
+
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 30,
+        height: 25,
+        padding: 0
+    }
+}
 
 const StockGridList = enhance((props) => {
     const {
@@ -113,38 +160,36 @@ const StockGridList = enhance((props) => {
         const manager = _.get(item, ['manager', 'firstName']) + ' ' + _.get(item, ['manager', 'secondName'])
         const stockType = _.toInteger(_.get(item, 'stockType')) === main ? 'Производственный' : 'Основной'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
         return (
-            <Row key={id}>
+            <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={3}>{name}</Col>
                 <Col xs={3}>{manager}</Col>
                 <Col xs={2}>{stockType}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => {
-                                updateDialog.handleOpenUpdateDialog(id)
-                            }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => {
-                                confirmDialog.handleOpenConfirmDialog(id)
-                            }}
-                        />
-                    </IconMenu>
+                    <div className={classes.iconBtn}>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                touch={true}
+                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Удалить">
+                            <IconButton
+                                disableTouchRipple={true}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                touch={true}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </Col>
             </Row>
         )
@@ -156,26 +201,34 @@ const StockGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const addButton = (
+        <div className={classes.addButtonWrapper}>
+            <FlatButton
+                backgroundColor="#fff"
+                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                className={classes.addButton}
+                label="добавить склад"
+                onTouchTap={createDialog.handleOpenCreateDialog}
+                icon={<ContentAdd color="#12aaeb"/>}>
+            </FlatButton>
+        </div>
+    )
+
     return (
         <Container>
-            <SubMenu url={ROUTES.STOCK_LIST_URL}/>
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить склад">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
+            <div className={classes.wrapper}>
+                <SettingSideMenu currentUrl={ROUTES.STOCK_LIST_URL}/>
+                <div className={classes.rightPanel}>
+                    <GridList
+                        filter={filter}
+                        list={list}
+                        detail={stockDetail}
+                        addButton={addButton}
+                        actionsDialog={actions}
+                        listShadow={false}
+                    />
+                </div>
             </div>
-
-            <GridList
-                filter={filter}
-                list={list}
-                detail={stockDetail}
-                actionsDialog={actions}
-            />
 
             <StockCreateDialog
                 open={createDialog.openCreateDialog}

@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -21,6 +22,7 @@ import {
     cashboxDeleteAction,
     cashboxItemFetchAction
 } from '../../actions/cashbox'
+import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -105,8 +107,9 @@ const enhance = compose(
         },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('CashboxCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -124,6 +127,17 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: false})})
                     dispatch(cashboxListFetchAction(filter))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -201,14 +215,14 @@ const CashboxList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
 
             return {
                 name: _.get(detail, 'name'),
                 currency: {
-                    value: _.get(detail, 'currency')
+                    value: _.get(detail, ['currency', 'id'])
                 },
                 cashier: {
                     value: _.get(detail, 'cashier')

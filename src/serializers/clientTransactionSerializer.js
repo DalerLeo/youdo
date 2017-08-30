@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 const MINUS_ONE = -1
 const ZERO = 0
@@ -9,7 +10,7 @@ export const createIncomeSerializer = (data, client) => {
     const currency = _.get(data, ['currency', 'value'])
 
     return {
-        'amount': amount,
+        'amount': numberWithoutSpaces(amount),
         'comment': comment,
         'client': client,
         'currency': currency
@@ -23,7 +24,7 @@ export const createExpenseSerializer = (data, client) => {
     const category = _.get(data, ['category', 'value'])
 
     return {
-        'amount': amount,
+        'amount': numberWithoutSpaces(amount),
         'comment': comment,
         'client': client,
         'currency': currency,
@@ -46,11 +47,3 @@ export const listFilterSerializer = (data, client) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

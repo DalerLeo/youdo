@@ -17,7 +17,8 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            height: '100%'
+            height: '100%',
+            marginBottom: '64px'
         },
         titleContent: {
             background: '#fff',
@@ -52,8 +53,20 @@ const enhance = compose(
         field: {
             width: '100%'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
         bottomButton: {
             bottom: '0',
@@ -77,6 +90,7 @@ const enhance = compose(
         },
         background: {
             background: '#f1f5f8',
+            boxSizing: 'content-box',
             fontWeight: '600',
             padding: '20px 30px',
             margin: '0 -30px',
@@ -109,6 +123,9 @@ const ConfirmDialog = enhance((props) => {
         },
         cancel: {
             name: 'Подтверждение отмены', submitName: 'Отменить', text: 'Вы уверены что хотите отменить эти данные?'
+        },
+        submit: {
+            name: 'Выполнить', submitName: 'Да', text: 'Вы уверены что хотите подтвердить?'
         }
     }
     const title = _.get(typesList, [type, 'name'])
@@ -138,14 +155,15 @@ const ConfirmDialog = enhance((props) => {
                     <div className={classes.confirm}>
                         {text}
                     </div>
-                    <div className={classes.background}>
+                    {message && <div className={classes.background}>
                         {message}
-                    </div>
+                    </div>}
                 </div>
                 <div className={classes.bottomButton}>
                     <FlatButton
                         className={classes.actionButton}
                         label={buttonLabel}
+                        labelStyle={{fontSize: '13px'}}
                         primary={true}
                         onTouchTap={onSubmit}
                     />
@@ -156,9 +174,9 @@ const ConfirmDialog = enhance((props) => {
 })
 
 ConfirmDialog.propTypes = {
-    type: PropTypes.oneOf(['delete', 'cancel']).isRequired,
+    type: PropTypes.oneOf(['delete', 'cancel', 'submit']).isRequired,
     message: PropTypes.string.isRequired,
-    loading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired

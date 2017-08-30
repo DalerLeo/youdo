@@ -2,17 +2,18 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
+import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import getConfig from '../../helpers/getConfig'
+import {TextField, PriceMainRadioButton, CurrencySearchField, CheckBox} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
-import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
-export const PRICE_SET_FORM_OPEN = 'openSetForm'
 import Tooltip from '../ToolTip'
+
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -24,7 +25,7 @@ const validate = (data) => {
     })
 }
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
             position: 'absolute',
             width: '100%',
@@ -39,7 +40,7 @@ const enhance = compose(
         },
         bodyTitle: {
             display: 'flex',
-            fontWeight: '700',
+            fontWeight: '600',
             marginBottom: '25px',
             fontSize: '14px',
             justifyContent: 'space-between',
@@ -61,16 +62,24 @@ const enhance = compose(
                 fontWeight: '600'
             },
             '& .row': {
-                padding: '10px 0 !important',
-                '& > div': {
-                    textAlign: 'right'
+                padding: '0 !important',
+                '& > div:last-child': {
+                    '& > div > div:last-child': {
+                        top: '10px'
+                    }
                 },
                 '& > div:first-child': {
                     textAlign: 'left'
+                },
+                '& .dottedList': {
+                    padding: '0px!important',
+                    '& > div:last-child': {
+                        padding: '100px'
+                    }
                 }
             },
-            overflowY: 'hidden',
-            overflowX: 'hidden'
+            overflow: 'hidden',
+            width: 'calc(100% - 86px)'
         },
         actionButton: {
             display: 'flex',
@@ -89,6 +98,11 @@ const enhance = compose(
                 verticalAlign: 'inherit !important'
             }
         },
+        inputField: {
+            fontSize: '13px !important',
+            marginTop: '0px!important',
+            height: '40px!important'
+        },
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
@@ -104,27 +118,46 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
+        agentTableContent: {
+            width: '100%',
+            '& .row': {
+                fontWeight: 'normal !important'
+            }
+        },
+        agentPrices: {
+            position: 'relative'
+        },
+        checkbox: {
+            width: '100%',
+            left: '0'
+        },
         priceRow: {
             display: 'flex',
             alignItems: 'center',
             height: '40px'
         },
-        dottedList: {
-            extend: 'priceRow',
-            '&:after': {
-                content: '',
-                backgroundImage: 'url(../components/Images/dot.png)',
-                position: 'absolute',
-                bottom: '0',
-                height: '2px',
-                left: '0',
-                right: '0'
+        radios: {
+            '& > div': {
+                '&:first-child': {
+                    fontWeight: '600'
+                },
+                lineHeight: '40px',
+                paddingRight: '20px'
+            },
+            '& .dottedList': {
+                padding: '8px 20px 8px 0px !important'
             }
         }
-    })),
+    }),
     reduxForm({
         form: 'PriceCreateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const agentCan = _.get(state, ['form', 'PriceCreateForm', 'values', 'agentCanChange']) || false
+        return {
+            agentCan
+        }
     })
 )
 const PriceSetForm = enhance((props) => {
@@ -132,9 +165,13 @@ const PriceSetForm = enhance((props) => {
         handleSubmit,
         classes,
         mergedList,
-        onClose
+        onClose,
+        priceUpdatedDate,
+        agentCan
     } = props
+
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const iconStyle = {
         icon: {
             color: '#666',
@@ -142,9 +179,11 @@ const PriceSetForm = enhance((props) => {
             height: 20
         },
         button: {
-            width: 48,
-            height: 48,
-            padding: 0
+            width: 20,
+            height: 20,
+            padding: '0',
+            top: '2px',
+            marginLeft: '10px'
         }
     }
     return (
@@ -152,18 +191,21 @@ const PriceSetForm = enhance((props) => {
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.bodyTitle}>
                     <div>Цены на товар
-                        <span className={classes.rightSideTitleDate}> (23 апр, 2017)</span>
+                        <span className={classes.rightSideTitleDate}> ({priceUpdatedDate})</span>
                     </div>
                     <div className={classes.actionButton}>
                         <FlatButton
                             label="Сохранить"
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                             onTouchTap={onSubmit}
                         />
                         <Tooltip position="bottom" text="Закрыть">
                             <IconButton
+                                className={classes.closeBtn}
                                 iconStyle={iconStyle.icon}
+                                disableTouchRipple={true}
                                 style={iconStyle.button}
                                 touch={true}
                                 onTouchTap={onClose}>
@@ -172,36 +214,101 @@ const PriceSetForm = enhance((props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className={classes.tableContent}>
-                    <Row className={classes.priceRow}>
-                        <Col xs={6}>Тип обьекта</Col>
-                        <Col style={{textAlign: 'left'}} xs={3}>Нал</Col>
-                        <Col style={{textAlign: 'left'}} xs={3}>Безнал</Col>
-                    </Row>
-                    {_.map(mergedList, (item, index) => {
-                        const marketName = _.get(item, 'marketTypeName')
-                        return (
-                            <Row className={classes.dottedList} key={index}>
-                                <Col xs={6}> {marketName}</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>
-                                    <Field
-                                        name={'prices[' + index + '][cash_price]'}
-                                        className={classes.inputFieldCustom}
-                                        component={TextField}
-                                        fullWidth={true}
-                                    />
-                                </Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>
-                                    <Field
-                                        name={'prices[' + index + '][transfer_price]'}
-                                        className={classes.inputFieldCustom}
-                                        component={TextField}
-                                        fullWidth={true}
-                                    />
-                                </Col>
-                            </Row>
-                        )
-                    })}
+                <div className={classes.agentPrices}>
+                    <div className={classes.checkbox}>
+                        <Field
+                            name="agentCanChange"
+                            label="Агент может устанавливать цены"
+                            component={CheckBox}
+                        />
+                    </div>
+                    {agentCan && <div className={classes.agentTableContent}>
+                        <Row>
+                            <Col xs={4}>
+                                <Field
+                                    name="minPrice"
+                                    className={classes.inputFieldCustom}
+                                    component={TextField}
+                                    label="Мин"
+                                    fullWidth={true}
+                                />
+                            </Col>
+                            <Col xs={4}>
+                                <Field
+                                    name="maxPrice"
+                                    className={classes.inputFieldCustom}
+                                    component={TextField}
+                                    label="Макс"
+                                    fullWidth={true}
+                                />
+                            </Col>
+                            <Col xs={4}>
+                                <Field
+                                    name="priceCurrency"
+                                    className={classes.inputFieldCustom}
+                                    component={CurrencySearchField}
+                                    label="Валюта"
+                                    hintText={currentCurrency}
+                                    fullWidth={true}/>
+                            </Col>
+                        </Row>
+                    </div>}
+                </div>
+                <div style={{display: 'flex'}}>
+                    <div className={classes.radios}>
+                        <div>Основной</div>
+                        <div>
+                            <Field
+                                name='isPrimary'
+                                component={PriceMainRadioButton}
+                                mergedList={mergedList}
+                                fullWidth={true}>
+                            </Field>
+                        </div>
+                    </div>
+                    <div className={classes.tableContent}>
+                        <Row className={classes.priceRow}>
+                            <Col xs={6}>Тип обьекта</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>Нал</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>Безнал</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
+                        </Row>
+                        {_.map(mergedList, (item, index) => {
+                            const marketName = _.get(item, 'marketTypeName')
+                            const cashPrice = _.get(item, 'cash_price')
+                            const transferPrice = _.get(item, 'transfer_price')
+                            return (
+                                <Row className='dottedList' key={index}>
+                                    <Col xs={6}> {marketName}</Col>
+                                    <Col style={{textAlign: 'left'}} xs={2}>
+                                        <Field
+                                            name={'prices[' + index + '][cash_price]'}
+                                            className={classes.inputField}
+                                            component={TextField}
+                                            placeholder={cashPrice}
+                                            fullWidth={true}
+                                        />
+                                    </Col>
+                                    <Col style={{textAlign: 'left'}} xs={2}>
+                                        <Field
+                                            name={'prices[' + index + '][transfer_price]'}
+                                            className={classes.inputField}
+                                            component={TextField}
+                                            placeholder={transferPrice}
+                                            fullWidth={true}
+                                        />
+                                    </Col>
+                                    <Col xs={2}>
+                                        <Field
+                                            name={'prices[' + index + '][currency]'}
+                                            className={classes.inputField}
+                                            component={CurrencySearchField}
+                                            fullWidth={true}/>
+                                    </Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
                 </div>
             </form>
         </div>
@@ -210,6 +317,7 @@ const PriceSetForm = enhance((props) => {
 PriceSetForm.propTyeps = {
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    mergedList: PropTypes.object.isRequired,
+    priceUpdatedDate: PropTypes.string.isRequired
 }
 export default PriceSetForm

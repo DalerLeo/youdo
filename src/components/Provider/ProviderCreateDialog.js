@@ -43,14 +43,16 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-        inputField: {
+        inputFieldCustom: {
             fontSize: '13px !important',
-            height: '50px !important',
+            height: '45px !important',
+            marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
             },
             '& label': {
-                top: '20px !important'
+                top: '20px !important',
+                lineHeight: '5px !important'
             },
             '& input': {
                 marginTop: '0 !important'
@@ -92,7 +94,7 @@ const ProviderCreateDialog = enhance((props) => {
                 <form onSubmit={onSubmit} className={classes.form} style={{width: '100%'}}>
                     <div className={classes.inContent} style={{minHeight: '300px'}}>
                         <div className={classes.loader}>
-                            <CircularProgress size={80} thickness={5}/>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
                         <div className={classes.field} style={{padding: '10px 0 0'}}>
                             <Field
@@ -121,6 +123,7 @@ const ProviderCreateDialog = enhance((props) => {
                         <FlatButton
                             label="Сохранить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                         />

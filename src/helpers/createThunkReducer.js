@@ -2,7 +2,7 @@ import createReducer from './createReducer'
 import toCamelCase from './toCamelCase'
 
 const defaultState = {
-    data: null,
+    data: '',
     error: null,
     loading: false,
     failed: false

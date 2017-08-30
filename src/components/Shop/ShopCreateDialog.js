@@ -56,7 +56,8 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            maxHeight: 'inherit !important'
+            maxHeight: 'inherit !important',
+            marginBottom: '64px'
         },
         titleContent: {
             background: '#fff',
@@ -106,7 +107,6 @@ const enhance = compose(
         fields: {
             width: '100%',
             padding: '20px 30px',
-            boxSizing: 'border-box',
             maxHeight: '622px',
             overflowY: 'auto'
         },
@@ -244,7 +244,7 @@ const ShopCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.titleContent}>
                         <span>{isUpdate ? 'Изменение магазина' : 'Добавление магазина'}</span>
@@ -255,21 +255,28 @@ const ShopCreateDialog = enhance((props) => {
                     <div className={classes.inContent}>
                         <div className={classes.leftSide}>
                             <div className={classes.divider}>
-                                {!openClient ? <Field
+                                {!isUpdate ? (!openClient ? <Field
                                     name="client"
                                     component={ClientSearchField}
                                     className={classes.inputFieldCustom}
                                     label="Клиент"
                                     fullWidth={true}/>
-                                : <Field
-                                    name="newClientName"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label="Имя клиента"
-                                    fullWidth={true}/>
-                                }
+                                    : <Field
+                                        name="newClientName"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Имя клиента"
+                                        fullWidth={true}/>)
+                                    : <Field
+                                        name="client"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Имя клиента"
+                                        fullWidth={true}/>}
                                 <div className={classes.add}>
-                                    {!openClient && <a onClick={() => { setOpenClient(true) }}>+ добавить клиента</a>}
+                                    {!openClient && !isUpdate && <a onClick={() => {
+                                        setOpenClient(true)
+                                    }}>+ добавить клиента</a>}
                                 </div>
                             </div>
                             <div className={classes.divider}>
@@ -324,8 +331,10 @@ const ShopCreateDialog = enhance((props) => {
                                     label="Ориентир"
                                     fullWidth={true}/>
                                 <div className={classes.addPlace}>
-                                    {!mapLocation ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/> отметить местоположение на карте</a>
-                                    : <div className={classes.flex}>
+                                    {!(lat && lng)
+                                        ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/> отметить
+                                            местоположение на карте</a>
+                                        : <div className={classes.flex}>
                                             <div>
                                                 <Place color="#999"/> <span>{lat}</span> <span>{lng}</span>
                                             </div>

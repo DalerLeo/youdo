@@ -2,13 +2,21 @@ import _ from 'lodash'
 import {hashHistory} from 'react-router'
 import sprintf from 'sprintf'
 
-const filter = (data, pathname, query = {}) => {
+const filter = (data, pathname, query = {}, newKeys = {}) => {
+    const getKey = (key) => {
+        const newItemKey = _.get(newKeys, key)
+        if (newItemKey) {
+            return newItemKey
+        }
+        return key
+    }
+
     const params = query
     const first = 1
     const defaultPageRange = 10
-    const currentPage = _.toInteger(_.get(params, 'page') || first)
-    const pageRange = _.toInteger(_.get(params, 'pageSize') || defaultPageRange)
-    const itemsCount = _.get(data, 'count')
+    const currentPage = _.toInteger(_.get(params, getKey('page')) || first)
+    const pageRange = _.toInteger(_.get(params, getKey('pageSize')) || defaultPageRange)
+    const itemsCount = _.get(data, getKey('count'))
 
     const pageCount = Math.ceil(itemsCount / pageRange)
 
@@ -62,7 +70,7 @@ const filter = (data, pathname, query = {}) => {
             return null
         }
 
-        return createURL({page: prevPageNumber})
+        return createURL({[getKey('page')]: prevPageNumber})
     }
 
     const nextPage = () => {
@@ -70,7 +78,7 @@ const filter = (data, pathname, query = {}) => {
         if (pageCount < nextPageNumber) {
             return null
         }
-        return createURL({page: nextPageNumber})
+        return createURL({[getKey('page')]: nextPageNumber})
     }
 
     const getSortingType = (columnSortingName) => {
@@ -134,13 +142,27 @@ const filter = (data, pathname, query = {}) => {
             select: null,
             openFilterDialog: null,
             openCreateDialog: null,
+            openStatSalesDialog: null,
+            openCancelConfirmDialog: null,
             openSendDialog: null,
             openDefectDialog: null,
+            openAcceptMarketDialog: null,
+            openAcceptCashDetail: null,
             openPriceSupplyDialog: null,
             openMapDialog: null,
+            openCurrency: null,
+            openUser: null,
+            openAcceptTransactionDialog: null,
+            openUpdateMapDialog: null,
             openAddPhoto: null,
             openImagesDialog: null,
+            openTransferDialog: null,
+            openDeleteImageDialog: null,
+            openClientCreate: null,
+            openInfoDialog: null,
             tab: null,
+            openConfirmDialog: null,
+            openType: null,
             openCreateIncomeDialog: null,
             openPriceSetFrom: null,
             shipmentId: null,
@@ -152,9 +174,23 @@ const filter = (data, pathname, query = {}) => {
             openSupplyExpenseCreateDialog: null,
             openReturnDialog: null,
             openSetCurrencyDialog: null,
+            openReservedDialog: null,
             openHistoryDialog: null,
             openDeleteDialog: null,
-            openUpdateDialog: null
+            openUpdateDialog: null,
+            openStatDebtorsDialog: null,
+            openAcceptCashDialog: null,
+            openCreateExpenseDialog: null,
+            openAddCourseDialog: null,
+            openClientReturnDialog: null,
+            detailId: null,
+            orderId: null,
+            ingId: null,
+            openDeleteProductDialog: null,
+            openChangeManufacture: null,
+            editMaterials: null,
+            joinMarket: null,
+            joinClient: null
         }))
     }
 
@@ -172,6 +208,7 @@ const filter = (data, pathname, query = {}) => {
     return {
         getParam,
         getParams,
+        getKey,
         getCounts,
         getPageRange,
         getCurrentPage,

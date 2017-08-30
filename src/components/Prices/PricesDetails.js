@@ -6,13 +6,15 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
+import Chip from 'material-ui/Chip'
 import {Row, Col} from 'react-flexbox-grid'
 import Dot from '../Images/dot.png'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import Tooltip from '../ToolTip'
-import moment from 'moment'
+import dateFormat from '../../helpers/dateFormat'
 
+const ZERO = 0
 const colorBlue = '#12aaeb'
 const enhance = compose(
     injectSheet({
@@ -56,12 +58,13 @@ const enhance = compose(
             alignItems: 'center',
             width: '100%',
             height: '65px',
-            margin: '-20px 0 0'
+            margin: '-20px 0 0',
+            position: 'relative'
         },
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '600',
+            fontWeight: 'bold',
             cursor: 'pointer'
         },
         titleButtons: {
@@ -123,6 +126,7 @@ const enhance = compose(
         details: {
             display: 'flex',
             justifyContent: 'space-between',
+            boxSizing: 'content-box',
             alignItems: 'center',
             width: '100%',
             background: '#f2f5f8',
@@ -138,7 +142,11 @@ const enhance = compose(
         },
         dateInfo: {
             textAlign: 'right',
-            display: 'flex'
+            display: 'flex',
+            '& span': {
+                fontWeight: 'bold',
+                color: '#999'
+            }
         },
         data: {
             width: '100%',
@@ -156,90 +164,66 @@ const enhance = compose(
                     }
                 }
             },
-            '& .summary': {
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                textAlign: 'right',
-                padding: '20px 30px',
-                margin: '0 -30px',
-                borderBottom: '1px #efefef solid'
-            },
             '& .dottedList': {
+                '&:last-child:after': {
+                    display: 'none'
+                },
                 '&:after': {
                     left: '0.5rem',
                     right: '0.5rem'
                 }
             },
-            '& .addExpenses': {
-                padding: '20px 30px 0',
-                margin: '0 -30px',
-                borderBottom: '1px #efefef solid',
-                '& .addExpense': {
-                    display: 'flex',
-                    alignItems: 'center',
-                    paddingBottom: '20px',
-                    width: '100%',
-                    justifyContent: 'space-between',
-                    fontWeight: 'bold',
-                    '& .expenseButton > div > span ': {
-                        color: '#12aaeb !important',
-                        textTransform: 'inherit !important'
-                    }
-                }
-            },
-            '& .expenseInfo': {
-                padding: '0 !important',
-                display: 'block',
-                '&:last-child': {
-                    position: 'static'
-                },
-                '& .row': {
-                    alignItems: 'center'
-                }
-            },
-            '& .comment': {
-                display: 'flex',
-                padding: '20px 0 0',
-                alignItems: 'center',
-                '& .personImage': {
-                    borderRadius: '50%',
+            '& .dataInfo': {
+                height: '50px',
+                padding: '0',
+                '& > div': {
                     overflow: 'hidden',
-                    flexBasis: '35px',
-                    flexGrow: '1',
-                    height: '35px',
-                    width: '35px',
-                    '& img': {
-                        display: 'block',
-                        height: '100%',
-                        width: '100%'
-                    }
-                },
-                '& .personText': {
-                    background: '#f2f5f8',
-                    borderRadius: '2px',
-                    marginLeft: '15px',
-                    padding: '15px',
-                    position: 'relative',
-                    width: 'calc(100% - 50px)',
-                    '&:after': {
-                        content: '""',
-                        position: 'absolute',
-                        borderRightColor: '#f2f5f8',
-                        borderRightStyle: 'solid',
-                        borderRightWidth: '7px',
-                        borderTop: '7px solid transparent',
-                        borderBottom: '7px solid transparent',
-                        left: '-7px',
-                        top: '50%',
-                        marginTop: '-7px'
-                    }
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
                 }
+            }
+        },
+        bonusData: {
+            extend: 'data',
+            width: 'calc(100% + 60px)',
+            display: 'flex',
+            margin: '0 -30px -20px'
+        },
+        half: {
+            width: '50%',
+            padding: '0 30px 10px',
+            '&:last-child': {
+                borderLeft: '1px #efefef solid',
+                '& .row > div:last-child': {
+                    textAlign: 'right'
+                }
+            }
+        },
+        totalAmount: {
+            padding: '10px 0',
+            textAlign: 'right',
+            '& strong': {
+                fontWeight: 'bold'
             }
         },
         expenseSum: {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-end'
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1',
+            margin: '0 -30px'
+        },
+        market: {
+            paddingTop: '13px',
+            paddingRight: '10px'
         }
     }),
 )
@@ -269,15 +253,19 @@ const PricesDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const products = _.get(data, 'products')
-    const beginDate = moment(_.get(data, 'beginDate')).format('YY:MM:DD')
-    const tillDate = moment(_.get(data, 'tillDate')).format('YY:MM:DD')
-    const discount = _.get(data, 'discount')
+    const beginDate = dateFormat(_.get(data, 'beginDate'))
+    const tillDate = dateFormat(_.get(data, 'tillDate'))
+    const discount = _.toNumber(_.get(data, 'discount'))
+    const totalAmount = numberFormat(_.get(data, 'totalAmount'))
+    const type = _.get(data, 'type')
+    const CONDITIONAL = 1
+    const BONUS = 2
 
     if (loading) {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -286,8 +274,10 @@ const PricesDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}
-                     onTouchTap={() => { handleCloseDetail() }}>№ {id} {name}</div>
+                <div className={classes.titleLabel}>№ {id} | {name}</div>
+                <div className={classes.closeDetail}
+                     onClick={() => { handleCloseDetail() }}>
+                </div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
@@ -312,42 +302,108 @@ const PricesDetails = enhance((props) => {
 
             <div className={classes.details}>
                 <div className={classes.storeInfo}>
-                    <div className={classes.store}>Размер <b>акции - {discount} %</b></div>
+                    <div className={classes.store}>
+                        {(type === 'discount') ? <span>Размер <b>акции - {discount}%</b></span>
+                            : <span><b>Бонусная акция</b></span>}
+                    </div>
                 </div>
+                {_.get(data, 'marketTypes') && _.get(data, 'marketTypes').length > ZERO && <div className={classes.storeInfo}>
+                    <div className={classes.store} style={{display: 'flex'}}>
+                        <span className={classes.market}><b>Действует для</b></span>
+                        {_.map(_.get(data, 'marketTypes'), (item) => {
+                            return (
+                                <Chip
+                                    key={item.id}
+                                    style={{margin: 4}}
+                                >
+                                    {item.name}
+                                </Chip>
+                            )
+                        })}
+                    </div>
+                </div>}
                 <div className={classes.dateInfo}>
-                    <div>Начало акции: <span style={{fontWeight: '600', marginRight: '30px'}}>{beginDate}</span></div>
-                    <div>Завершение акции: <span style={{fontWeight: '600'}}>{tillDate}</span></div>
+                    <div>Начало акции: <span style={{marginRight: '30px'}}>{beginDate}</span></div>
+                    <div>Завершение акции: <span>{tillDate}</span></div>
                 </div>
             </div>
 
-            <div className={classes.data}>
-                <div className="dataHeader">
-                    <Row>
-                        <Col xs={3}>Товар</Col>
-                        <Col xs={3}>Кол-во</Col>
-                        <Col xs={3}>Реальная стоимость</Col>
-                        <Col xs={3}>Стоимость по акции</Col>
-                    </Row>
-                </div>
-                <div>
-                    {_.map(products, (item) => {
-                        const product = _.get(item, 'product')
-                        const productId = _.get(product, 'id')
-                        const productName = _.get(product, 'name')
-                        const amount = _.get(product, 'id')
-                        const realCost = 1000
-                        const priceCost = 900
-                        return (
-                            <Row className="dataInfo dottedList" key={productId}>
-                                <Col xs={3}>{productName}</Col>
-                                <Col xs={3}>{numberFormat(amount)}</Col>
-                                <Col xs={3}>{numberFormat(realCost)} {currency}</Col>
-                                <Col xs={3}>{numberFormat(priceCost)} {currency}</Col>
+            {(type === 'bonus')
+                ? <div className={classes.bonusData}>
+                    <div className={classes.half}>
+                        <div className="dataHeader">
+                            <Row>
+                                <Col xs={12}>Бонусный товар</Col>
                             </Row>
-                        )
-                    })}
+                        </div>
+                        <div>
+                            {_.map(products, (item, index) => {
+                                const product = _.get(item, ['product', 'name'])
+                                const productType = _.toInteger(_.get(item, 'type'))
+                                if (productType === CONDITIONAL) {
+                                    return (
+                                        <Row className="dataInfo dottedList" key={index}>
+                                            <Col xs={12}>{product}</Col>
+                                        </Row>
+                                    )
+                                }
+                                return false
+                            })}
+                        </div>
+                        <div className={classes.totalAmount}>Общее количество: <strong>{totalAmount}</strong></div>
+                    </div>
+                    <div className={classes.half}>
+                        <div className="dataHeader">
+                            <Row>
+                                <Col xs={9}>Подарок</Col>
+                                <Col xs={3}>Кол-во</Col>
+                            </Row>
+                        </div>
+                        <div>
+                            {_.map(products, (item, index) => {
+                                const product = _.get(item, ['product', 'name'])
+                                const productType = _.toInteger(_.get(item, 'type'))
+                                const measurement = _.get(item, ['product', 'measurement', 'name'])
+                                const amount = _.toNumber(_.get(item, 'amount'))
+                                if (productType === BONUS) {
+                                    return (
+                                        <Row className="dataInfo dottedList" key={index}>
+                                            <Col xs={9}>{product}</Col>
+                                            <Col xs={3}>{numberFormat(amount, measurement)}</Col>
+                                        </Row>
+                                    )
+                                }
+                                return false
+                            })}
+                        </div>
+                    </div>
                 </div>
-            </div>
+                : <div className={classes.data}>
+                    <div className="dataHeader">
+                        <Row>
+                            <Col xs={5}>Товар</Col>
+                            <Col xs={3}>Кол-во</Col>
+                            <Col xs={2}>Реальная стоимость</Col>
+                            <Col xs={2}>Стоимость по акции</Col>
+                        </Row>
+                    </div>
+                    <div>
+                        {_.map(products, (item) => {
+                            const productId = _.get(item, ['product', 'id'])
+                            const productName = _.get(item, ['product', 'name'])
+                            const amount = _.get(item, 'amount')
+                            const measurement = _.get(item, ['product', 'measurement', 'name'])
+                            return (
+                                <Row className="dataInfo dottedList" key={productId}>
+                                    <Col xs={5}>{productName}</Col>
+                                    <Col xs={3}>{numberFormat(amount, measurement)}</Col>
+                                    <Col xs={2}>10 000 / 20 000 {currency}</Col>
+                                    <Col xs={2}>7 000 / 14 000 {currency}</Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
+                </div>}
         </div>
     )
 })

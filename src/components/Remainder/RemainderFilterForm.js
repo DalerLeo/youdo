@@ -1,63 +1,88 @@
 import React from 'react'
-import {compose} from 'recompose'
+import _ from 'lodash'
+import {compose, withHandlers} from 'recompose'
+import {connect} from 'react-redux'
 import {reduxForm, Field} from 'redux-form'
 import injectSheet from 'react-jss'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
-import TextField from 'material-ui/TextField'
-import SearchIcon from 'material-ui/svg-icons/action/search'
-import CloseIcon2 from '../CloseIcon2'
+import RaisedButton from 'material-ui/RaisedButton'
+import PropTypes from 'prop-types'
+import {ProductTypeParentSearchField, ProductTypeChildSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
 import StockSearchField from '../ReduxForm/Stock/StockSearchField'
-import ProductTypeSearchField from '../ReduxForm/Product/ProductTypeSearchField'
-import DateField from '../ReduxForm/RemainderDateField'
-import CheckBox from '../ReduxForm/Basic/CheckBox'
-import {RaisedButton} from 'material-ui'
+import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
+import {Link} from 'react-router'
+import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import CloseIcon from '../CloseIcon'
 export const REMAINDER_FILTER_OPEN = 'openFilterDialog'
+
+export const REMAINDER_FILTER_KEY = {
+    BRAND: 'brand',
+    STOCK: 'stock',
+    TYPE_PARENT: 'typeParent',
+    TYPE_CHILD: 'typeChild',
+    MEASUREMENT: 'measurement'
+}
 
 const enhance = compose(
     injectSheet({
-        filterWrapper: {
-            width: '330px',
-            zIndex: '99',
+        wrapper: {
             position: 'absolute',
-            right: '-28px',
-            top: '0',
-            bottom: '-28px'
+            minWidth: '300px',
+            background: '#fff',
+            zIndex: 99,
+            top: 0,
+            left: 0,
+            borderRadius: 0,
+            padding: '10px 20px 10px 20px'
         },
-        filterBtnWrapper: {
-            position: 'absolute',
-            top: '15px',
-            right: '0',
-            marginBottom: '0px'
-        },
-        filterBtn: {
-            backgroundColor: '#12aaeb !important',
-            color: '#fff',
-            fontWeight: '600',
-            padding: '7px 7px',
-            borderRadius: '3px',
-            lineHeight: '12px'
-        },
-        filterTitle: {
-            display: 'flex',
-            justifyContent: 'space-between',
+        afterFilter: {
             alignItems: 'center',
-            padding: '20px 30px',
-            borderBottom: '1px #efefef solid',
-            lineHeight: '0',
-            fontWeight: '600'
-        },
-        search: {
-            position: 'relative',
             display: 'flex',
-            maxWidth: '300px'
+            backgroundColor: '#efefef',
+            position: 'absolute',
+            width: '100%',
+            padding: '0 30px',
+            height: '48px',
+            marginLeft: '-30px',
+            '& > div:nth-child(2)': {
+                position: 'absolute',
+                right: '0'
+            },
+            '& > div:nth-child(1)': {
+                color: '#666666'
+            },
+            '& button': {
+                borderLeft: '1px solid white !important'
+            }
         },
-        searchField: {
-            fontSize: '13px !important'
+        icon: {
+            color: '#8f8f8f !important'
         },
-        searchButton: {
-            position: 'absolute !important',
-            right: '-10px'
+        arrow: {
+            color: '#12aaeb',
+            paddingRight: '14px',
+            position: 'relative',
+            '& svg': {
+                position: 'absolute',
+                width: '13px !important',
+                height: '20px !important'
+            }
+        },
+        header: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            '& button': {
+                marginRight: '-12px !important'
+            }
+        },
+        title: {
+            fontSize: '15px',
+            color: '#5d6474'
+        },
+        submit: {
+            color: '#fff !important'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -73,140 +98,132 @@ const enhance = compose(
             '& input': {
                 marginTop: '0 !important'
             }
-        },
-        subTitle: {
-            fontWeight: '600',
-            padding: '15px 0 10px 0'
-        },
-        dateLabel: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            height: '40px',
-            marginTop: '10px',
-            '&:first-child': {
-                margin: '0'
-            },
-            alignItems: 'baseline'
-        },
-        submitBtn: {
-            '& button': {
-                backgroundColor: '#61a7e7!important',
-                height: '32px!important',
-                lineHeight: '32px!important',
-                '& div': {
-                    '& div': {
-                        padding: '0 10px'
-                    }
-                }
-            }
-        },
-        inputDateCustom: {
-            '& input': {
-                width: '140px'
-            }
         }
     }),
     reduxForm({
         form: 'RemainderFilterForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'RemainderFilterForm', 'values', 'typeParent', 'value'])
+        return {
+            typeParent
+        }
+    }),
+    withHandlers({
+        getCount: props => () => {
+            const {filter} = props
+            return _(REMAINDER_FILTER_KEY)
+                .values()
+                .filter(item => item !== REMAINDER_FILTER_KEY.FROM_DATE)
+                .filter(item => filter.getParam(item))
+                .value()
+                .length
+        }
+    })
 )
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 20,
-        height: 20
-    },
-    button: {
-        width: 20,
-        height: 20,
-        padding: 0
-    }
-}
 
 const RemainderFilterForm = enhance((props) => {
-    const {classes} = props
-    return (
-        <div className={classes.filterWrapper}>
-            <Paper zDepth={1} style={{height: '100%'}}>
-                <div className={classes.filterTitle}>
-                    <div>Фильтры</div>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}>
-                        <CloseIcon2 color="#666666"/>
-                    </IconButton>
-                </div>
-                <form style={{padding: '0 30px'}}>
-                    <div className={classes.search}>
-                        <TextField
-                            fullWidth={true}
-                            hintText="Поиск товара"
-                            className={classes.searchField}
+    const {classes, filterDialog, getCount, typeParent} = props
+    const filterCounts = getCount()
 
-                        />
-                        <IconButton
-                            iconStyle={{color: '#ccc'}}
-                            className={classes.searchButton}>
-                            <SearchIcon />
+    if (!filterDialog.openFilterDialog) {
+        if (filterCounts) {
+            return (
+                <div className={classes.afterFilter}>
+                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>
+                        <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
+                            <BorderColorIcon color="#8f8f8f" />
+                        </IconButton>
+                        <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
+                            <CloseIcon className={classes.icon}/>
                         </IconButton>
                     </div>
+                </div>
+            )
+        }
+
+        return (
+            <div>
+                <Link
+                    className={classes.arrow}
+                    onTouchTap={filterDialog.handleOpenFilterDialog}>
+                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                </Link>
+            </div>
+        )
+    }
+    return (
+        <div>
+            <Paper className={classes.wrapper} zDepth={2}>
+                <div className={classes.header}>
+                    <span className={classes.title}>Фильтр</span>
+                    <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
+                        <CloseIcon className={classes.icon} />
+                    </IconButton>
+                </div>
+                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
                             name="stock"
                             component={StockSearchField}
-                            label="Укажите нужный склад"
+                            label="Склад"
                             fullWidth={true}/>
                         <Field
+                            name="typeParent"
                             className={classes.inputFieldCustom}
-                            name="orderStatus"
-                            component={ProductTypeSearchField}
-                            label="Выберите тип товара"
-                            fullWidth={true}/>
-                        <div className={classes.subTitle}>Статус товаров</div>
-                        <Field
-                            name="currentProducts"
-                            component={CheckBox}
-                            label="Действующие товары"/>
-                        <Field
-                            name="defectiveProducts"
-                            component={CheckBox}
-                            label="Бракованные товары"/>
-                        <Field
-                            name="outdatedProducts"
-                            component={CheckBox}
-                            label="Просроченные товары"/>
-                        <div className={classes.subTitle}>Фильтр по сроку годности</div>
-                        <div className={classes.dateLabel} style={{margin: '0'}}>
-                            <div>Больше чем:</div>
+                            component={ProductTypeParentSearchField}
+                            label="Тип продукта"
+                            fullWidth={true}
+                        />
+                        {typeParent ? <Field
+                            name="typeChild"
+                            className={classes.inputFieldCustom}
+                            component={ProductTypeChildSearchField}
+                            parentType={typeParent}
+                            label="Подкатегория"
+                            fullWidth={true}
+                        /> : null}
+                        <div>
                             <Field
-                                name="createDate"
-                                component={DateField}
-                                fullWidth={true}/>
+                                className={classes.inputFieldCustom}
+                                name="measurement"
+                                component={MeasurementSearchField}
+                                label="Мера"/>
                         </div>
-                        <div className={classes.dateLabel}>
-                            <div>Меньше чем:</div>
+                        <div>
                             <Field
-                                name="dostDate"
-                                component={DateField}
-                                fullWidth={true}/>
+                                className={classes.inputFieldCustom}
+                                name="brand"
+                                component={BrandSearchField}
+                                label="Бренд"/>
                         </div>
                     </div>
-                    <div style={{textAlign: 'center', paddingTop: '20px'}}>
-                        <RaisedButton
-                            className={classes.submitBtn}
-                            type="submit"
-                            primary={true}
-                            buttonStyle={{color: '#fff'}}>
-                            Применить фильтр
-                        </RaisedButton>
-                    </div>
+
+                    <RaisedButton
+                        type="submit"
+                        primary={true}
+                        buttonStyle={{color: '#fff'}}
+                        labelStyle={{fontSize: '13px'}}
+                        label="Применить"
+                        style={{marginTop: '15px'}}>
+                    </RaisedButton>
                 </form>
             </Paper>
         </div>
     )
 })
+
+RemainderFilterForm.propTypes = {
+    filterDialog: PropTypes.shape({
+        openFilterDialog: PropTypes.bool.isRequired,
+        handleCloseFilterDialog: PropTypes.func.isRequired,
+        handleOpenFilterDialog: PropTypes.func.isRequired,
+        handleSubmitFilterDialog: PropTypes.func.isRequired,
+        handleClearFilterDialog: PropTypes.func.isRequired
+    }).isRequired
+}
 
 export default RemainderFilterForm

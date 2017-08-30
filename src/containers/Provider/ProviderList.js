@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
+import {reset} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -63,10 +64,6 @@ const enhance = compose(
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
         handleOpenConfirmDialog: props => () => {
             const {setOpenConfirmDialog} = props
             setOpenConfirmDialog(true)
@@ -89,22 +86,10 @@ const enhance = compose(
                 })
         },
 
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
-
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PROVIDER_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('ProviderCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -157,7 +142,7 @@ const enhance = compose(
 
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.PROVIDER_LIST_URL, query: filter.getParam()})
+            hashHistory.push({pathname: ROUTER.PROVIDER_LIST_URL, query: filter.getParams()})
         }
     })
 )
@@ -180,11 +165,6 @@ const ProviderList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', PROVIDER_UPDATE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'providerId'))
 
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
-
     const createDialog = {
         createLoading,
         openCreateDialog,
@@ -202,7 +182,7 @@ const ProviderList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {
                     contacts: [{}]
                 }
@@ -212,10 +192,10 @@ const ProviderList = enhance((props) => {
                 return {
                     name: _.get(contact, 'name'),
                     email: _.get(contact, 'email'),
-                    phone: _.get(contact, 'phone')
+                    phone: _.get(contact, 'phone'),
+                    id: _.get(contact, 'id')
                 }
             })
-
             return {
                 name: _.get(detail, 'name'),
                 address: _.get(detail, 'address'),
@@ -250,7 +230,6 @@ const ProviderList = enhance((props) => {
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
             />
         </Layout>
     )

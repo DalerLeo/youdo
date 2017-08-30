@@ -131,25 +131,25 @@ const enhance = compose(
         },
         personalWrap: {
             display: 'flex',
-            flexWrap: 'wrap'
-        },
-        person: {
-            width: '30px',
-            height: '30px',
-            display: 'inline-block',
-            marginRight: '10px',
-            marginBottom: '5px',
-            position: 'relative',
-            '& img': {
-                height: '100%',
-                width: '100%',
-                borderRadius: '50%'
-            },
-            '&:hover > div': {
-                display: 'flex'
-            },
-            '&:nth-child(10n)': {
-                margin: '0 !important'
+            flexWrap: 'wrap',
+            '& > div': {
+                width: '30px',
+                height: '30px',
+                display: 'inline-block',
+                marginRight: '10px',
+                marginBottom: '5px',
+                position: 'relative',
+                '& img': {
+                    height: '100%',
+                    width: '100%',
+                    borderRadius: '50%'
+                },
+                '&:hover > div > div > div': {
+                    display: 'flex'
+                },
+                '&:nth-child(10n)': {
+                    margin: '0 !important'
+                }
             }
         },
         deletePers: {
@@ -236,8 +236,11 @@ const ZoneDetails = enhance((props) => {
     const {
         classes,
         filter,
-        detailData
+        detailData,
+        bindAgent,
+        unbindAgent
     } = props
+
     const loading = _.get(detailData, 'detailLoading')
     const id = _.get(detailData, ['data', 'id'])
     const name = _.get(detailData, ['data', 'properties', 'title'])
@@ -275,41 +278,29 @@ const ZoneDetails = enhance((props) => {
                 <div className={classes.personal}>
                     <span>Ответственный персонал:</span>
                     <div className={classes.personalWrap}>
-                        <div className={classes.person}>
-                            <img src={Person} alt=""/>
-                            <div className={classes.deletePers}>
-                                <CloseIcon2 color="#fff"/>
-                            </div>
-                        </div>
-                        <div className={classes.person}>
-                            <img src={Person} alt=""/>
-                            <div className={classes.deletePers}>
-                                <CloseIcon2 color="#fff"/>
-                            </div>
-                        </div>
-                        <div className={classes.person}>
-                            <img src={Person} alt=""/>
-                            <div className={classes.deletePers}>
-                                <CloseIcon2 color="#fff"/>
-                            </div>
-                        </div>
-                        <div className={classes.person}>
-                            <img src={Person} alt=""/>
-                            <div className={classes.deletePers}>
-                                <CloseIcon2 color="#fff"/>
-                            </div>
-                        </div>
-                        <div className={classes.person}>
-                            <img src={Person} alt=""/>
-                            <div className={classes.deletePers}>
-                                <CloseIcon2 color="#fff"/>
-                            </div>
-                        </div>
+                        {_.map(_.get(detailData, ['data', 'properties', 'agents']), (item) => {
+                            const agentId = _.get(item, 'id')
+                            const username = _.get(item, 'username')
+
+                            return (
+                                <Tooltip key={agentId} position="top" text={username}>
+                                    <div className={classes.person}>
+                                        <img src={Person} alt=""/>
+                                        <div className={classes.deletePers}>
+                                            <CloseIcon2
+                                                onClick={() => { unbindAgent.handleOpenConfirmDialog(agentId) }}
+                                                color="#fff"/>
+                                        </div>
+                                    </div>
+                                </Tooltip>
+                            )
+                        })}
                         <div className={classes.person} style={{overflow: 'hidden'}}>
                             <Tooltip position="bottom" text="Добавить">
                                 <FloatingActionButton
                                     mini={true}
-                                    className={classes.addPerson}>
+                                    className={classes.addPerson}
+                                    onTouchTap={bindAgent.handleOpenBindAgent}>
                                     <ContentAdd />
                                 </FloatingActionButton>
                             </Tooltip>
@@ -337,7 +328,20 @@ const ZoneDetails = enhance((props) => {
 
 ZoneDetails.PropTypes = {
     filter: PropTypes.object,
-    detailData: PropTypes.object
+    detailData: PropTypes.object,
+    bindAgent: PropTypes.shape({
+        openBindAgent: PropTypes.bool.isRequired,
+        bindAgentLoading: PropTypes.bool.isRequired,
+        handleOpenBindAgent: PropTypes.func.isRequired,
+        handleCloseBindAgent: PropTypes.func.isRequired,
+        handleSubmitBindAgent: PropTypes.func.isRequired
+    }).isRequired,
+    unbindAgent: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default ZoneDetails

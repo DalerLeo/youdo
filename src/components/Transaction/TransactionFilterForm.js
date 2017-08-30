@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {TransactionTypeSearchField, ExpensiveCategorySearchField} from '../ReduxForm'
+import {TransactionTypeSearchField, ExpensiveCategorySearchField, ClientSearchField, DivisionSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -20,7 +20,9 @@ export const TRANSACTION_FILTER_KEY = {
     TYPE: 'type',
     CATEGORY_EXPENSE: 'categoryExpense',
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    TO_DATE: 'toDate',
+    CLIENT: 'client',
+    DIVISION: 'division'
 }
 
 const enhance = compose(
@@ -36,7 +38,6 @@ const enhance = compose(
             padding: '10px 20px 10px 20px'
         },
         afterFilter: {
-            width: '268px',
             alignItems: 'center',
             display: 'flex',
             backgroundColor: '#efefef',
@@ -75,8 +76,20 @@ const enhance = compose(
                 marginRight: '-12px !important'
             }
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
         title: {
             fontSize: '15px',
@@ -146,19 +159,26 @@ const TransactionFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов"/>
+                        <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов"/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="type" component={TransactionTypeSearchField} label="Тип"/>
+                        <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип"/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение" fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
                     </div>
 
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
+                        labelStyle={{fontSize: '13px'}}
                         label="Применить"
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

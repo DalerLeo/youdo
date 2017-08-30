@@ -235,6 +235,7 @@ const ManufactureShowBom = enhance((props) => {
                                 <Col xs={1}>
                                     <IconMenu
                                         iconButtonElement={iconButton}
+                                        menuItemStyle={{fontSize: '13px'}}
                                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                                         <MenuItem
@@ -292,6 +293,7 @@ const ManufactureShowBom = enhance((props) => {
                                 <Col xs={1}>
                                     <IconMenu
                                         iconButtonElement={iconButton}
+                                        menuItemStyle={{fontSize: '13px'}}
                                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                                         <MenuItem

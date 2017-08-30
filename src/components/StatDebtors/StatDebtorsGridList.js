@@ -5,6 +5,7 @@ import React from 'react'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 import CircularProgress from 'material-ui/CircularProgress'
+import Paper from 'material-ui/Paper'
 import {Row, Col} from 'react-flexbox-grid'
 import StatDebtorsFilterForm from './StatDebtorsFilterForm'
 import GridList from '../GridList'
@@ -282,7 +283,7 @@ const StatDebtorsGridList = enhance((props) => {
                         </div>
                     </div>
                     { _.get(orderData, 'orderLoading')
-                        ? <CircularProgress size={100} thickness={6}
+                        ? <CircularProgress size={40} thickness={4}
                                             style={{marginLeft: 'calc(50% - 50px)', padding: '30px 0'}}/>
                         : <div style={{paddingBottom: '20px'}}>
                             <div>{orderListHeader}</div>
@@ -309,11 +310,10 @@ const StatDebtorsGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.STATDEBTORS_LIST_URL}/>
-            <Row style={{
+            <Paper zDepth={1} style={{
                 margin: '0 0 20px',
                 padding: '8px 30px',
-                background: '#fff',
-                boxShadow: 'rgba(0, 0, 0, 0.1) 0 3px 10px'
+                display: 'flex'
             }}>
                 <Col xs={3}>
                     <div className={classes.typeListStock}
@@ -332,7 +332,7 @@ const StatDebtorsGridList = enhance((props) => {
                 <Col xs={9} style={{textAlign: 'right'}}>
                     {_.get(sumData, 'sumLoading')
                         ? <div>
-                            <CircularProgress size={100} thickness={6}
+                            <CircularProgress size={40} thickness={4}
                                               style={{marginLeft: 'calc(50% - 50px)', padding: '30px 0'}}/>
                         </div>
                         : <div>
@@ -350,7 +350,7 @@ const StatDebtorsGridList = enhance((props) => {
                             </div>
                         </div>}
                 </Col>
-            </Row>
+            </Paper>
 
             <GridList
                 filter={filter}

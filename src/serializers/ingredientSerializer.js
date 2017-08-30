@@ -2,11 +2,16 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data, id) => {
-    const ingredient = _.get(data, ['ingredient', 'value'])
+    const ingredients = _.map(_.get(data, ['ingredients']), (item) => {
+        return {
+            amount: item.amount,
+            ingredient: item.ingredient.value
+        }
+    })
     const amount = _.get(data, 'amount')
     return {
         'product': id,
-        'ingredient': ingredient,
+        'ingredients': ingredients,
         'amount': amount
     }
 }
@@ -24,11 +29,3 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

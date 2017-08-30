@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {ClientSearchField} from '../ReduxForm'
+import {ClientSearchField, MarketSearchField, UsersSearchField, DeptSearchField, ZoneSearchField, DivisionSearchField, ProductSearchField} from '../ReduxForm'
 import OrderStatusSearchField from '../ReduxForm/Order/OrderStatusSearchField'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -19,10 +19,17 @@ export const ORDER_FILTER_OPEN = 'openFilterDialog'
 
 export const ORDER_FILTER_KEY = {
     CLIENT: 'client',
-    ORDERSTATUS: 'orderStatus',
-    DOSTDATE: 'dostDate',
+    STATUS: 'status',
+    PRODUCT: 'product',
+    INITIATOR: 'initiator',
+    SHOP: 'shop',
+    DIVISION: 'division',
+    DEPT: 'dept',
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    TO_DATE: 'toDate',
+    DELIVERY_FROM_DATE: 'deliveryFromDate',
+    DELIVERY_TO_DATE: 'deliveryToDate',
+    ZONE: 'zone'
 }
 
 const enhance = compose(
@@ -38,7 +45,6 @@ const enhance = compose(
             padding: '10px 20px 10px 20px'
         },
         afterFilter: {
-            width: '268px',
             alignItems: 'center',
             display: 'flex',
             backgroundColor: '#efefef',
@@ -185,15 +191,22 @@ const OrderFilterForm = enhance((props) => {
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
-                        <Field className={classes.inputFieldCustom} name="orderStatus" component={OrderStatusSearchField} label="Статус"/>
-                        <Field className={classes.inputDateCustom} name="createDate" component={DateToDateField} label="Период создания"/>
-                        <Field className={classes.inputDateCustom} name="dostDate" component={DateToDateField} label="Дата доставки"/>
+                        <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Товар"/>
+                        <Field className={classes.inputFieldCustom} name="status" component={OrderStatusSearchField} label="Статус"/>
+                        <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
+                        <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>
+                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersSearchField} label="Инициатор "/>
+                        <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Оплаченный "/>
+                        <Field className={classes.inputFieldCustom} name="zone" component={ZoneSearchField} label="Зона"/>
+                        <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
+                        <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label="Дата доставки"/>
                     </div>
 
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
+                        labelStyle={{fontSize: '13px'}}
                         label="Применить"
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

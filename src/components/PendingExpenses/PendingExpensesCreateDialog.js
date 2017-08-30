@@ -14,8 +14,6 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
-export const PENDING_EXPENSES_CREATE_DIALOG_OPEN = 'openCreateDialog'
-
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -70,8 +68,9 @@ const PendingExpensesCreateDialog = enhance((props) => {
 
     const supply = _.get(detailData, ['data', 'supply'])
     const currency = _.get(detailData, ['data', 'currency'])
+    const comment = _.get(detailData, ['data', 'comment'])
     const currencyName = _.get(currency, 'name')
-    const summary = numberFormat(_.get(detailData, ['data', 'amount']))
+    const summary = _.get(detailData, ['data', 'amount'])
     const supplyId = _.get(supply, 'id')
     const supplier = _.get(supply, ['provider', 'name'])
 
@@ -94,7 +93,7 @@ const PendingExpensesCreateDialog = enhance((props) => {
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: '220px'}}>
                         <div className={classes.loader}>
-                            <CircularProgress size={80} thickness={5}/>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
                         <div className={classes.field}>
                             <div className={classes.info}>
@@ -103,7 +102,8 @@ const PendingExpensesCreateDialog = enhance((props) => {
                                     <div>Поставка №{supplyId}</div>
                                 </div>
                                 <div className={classes.infoSummary}>
-                                    <div>Сумма заказа: <span style={{marginLeft: '10px'}}>{summary} {currencyName}</span></div>
+                                    <div>Сумма расхода: <span style={{marginLeft: '10px'}}>{numberFormat(summary, currencyName)}</span></div>
+                                    <div>Описание: <span style={{marginLeft: '10px'}}>{comment}</span></div>
                                 </div>
                             </div>
                             <div className={classes.cashbox}>
@@ -127,6 +127,7 @@ const PendingExpensesCreateDialog = enhance((props) => {
                         <FlatButton
                             label="Сохранить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                         />

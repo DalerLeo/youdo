@@ -22,12 +22,15 @@ const MainStyles = {
         minHeight: '317px !important'
     },
     popUp: {
+        color: '#333 !important',
         overflowY: 'hidden !important',
         fontSize: '13px !important',
         position: 'relative',
         padding: '0 !important',
         overflowX: 'hidden',
-        height: '100%'
+        height: '100%',
+        maxHeight: 'none !important',
+        marginBottom: '64px'
     },
     titleContent: {
         background: '#fff',

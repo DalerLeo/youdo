@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, ProductTypeParentSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -70,15 +70,22 @@ const ProductTypeCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
                     <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
                         <div className={classes.field}>
                             <Field
+                                name="parent"
+                                component={ProductTypeParentSearchField}
+                                className={classes.inputFieldCustom}
+                                label="Родительская категория"
+                                fullWidth={true}
+                            />
+                            <Field
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Наименование"
+                                label="Наименование категории"
                                 fullWidth={true}
                             />
                         </div>
@@ -87,6 +94,7 @@ const ProductTypeCreateDialog = enhance((props) => {
                         <FlatButton
                             label="Сохранить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                         />

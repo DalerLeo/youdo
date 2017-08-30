@@ -5,26 +5,48 @@ import PropTypes from 'prop-types'
 import {Link} from 'react-router'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {TextField} from '../ReduxForm'
+import Tooltip from '../ToolTip'
 import Container from '../Container'
 import PriceFilterForm from './PriceFilterForm'
 import PriceSupplyDialog from './PriceSupplyDialog'
 import SubMenu from '../SubMenu'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import PriceDetails from './PriceDetails'
+import getConfig from '../../helpers/getConfig'
+import numberFormat from '../../helpers/numberFormat'
+import DoneIcon from 'material-ui/svg-icons/action/done'
+import Person from 'material-ui/svg-icons/social/person'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import toCamelCase from '../../helpers/toCamelCase'
+
+const validate = (data) => {
+    const errors = toCamelCase(data)
+    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
+    throw new SubmissionError({
+        ...errors,
+        latLng,
+        _error: nonFieldErrors
+    })
+}
+
 const listHeader = [
     {
         sorting: true,
         name: 'name',
-        title: 'Названия',
-        xs: 5
+        title: 'Название',
+        xs: 3
+    },
+    {
+        sorting: true,
+        name: 'code',
+        title: 'Код товара',
+        xs: 2
     },
     {
         sorting: true,
@@ -36,7 +58,7 @@ const listHeader = [
         sorting: true,
         name: 'price',
         title: 'Цена',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -58,6 +80,19 @@ const enhance = compose(
             right: '0',
             marginBottom: '0px'
         },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            marginTop: '0px!important',
+            height: '20px!important',
+            width: '50px!important',
+            '& hr': {
+                bottom: '0!important'
+            },
+            '& input': {
+                top: '-2px',
+                textAlign: 'right'
+            }
+        },
         priceImg: {
             width: '30px',
             height: '30px',
@@ -69,20 +104,75 @@ const enhance = compose(
             '& img': {
                 height: '30px'
             }
+        },
+        pricePercent: {
+            position: 'absolute',
+            top: '0',
+            right: 0,
+            display: 'flex',
+            alignItems: 'center',
+            height: '60px',
+            '& > div:first-child': {
+                padding: '0 10px',
+                '& > div': {
+                    textAlign: 'right'
+                }
+            },
+            '& span': {
+                fontSize: '12px !important',
+                fontWeight: '600'
+            }
+        },
+        listRow: {
+            position: 'relative',
+            '& > a': {
+                display: 'flex',
+                alignItems: 'center',
+                position: 'absolute',
+                top: '0',
+                left: '-30px',
+                right: '-30px',
+                bottom: '0',
+                padding: '0 30px',
+                '& > div:first-child': {
+                    fontWeight: '600'
+                },
+                '& > div': {
+                    fontWeight: '400'
+                }
+            }
+        },
+        icon: {
+            textAlign: 'right',
+            '& > div > div:first-child': {
+                width: '22px',
+                marginLeft: 'auto'
+            }
         }
-    })
+    }),
+    withState('globalPrice', 'setGlobalPrice', true),
+
+reduxForm({
+    form: 'PriceGlobalForm',
+    enableReinitialize: true
+})
 )
 const PriceGridList = enhance((props) => {
     const {
+        classes,
         filter,
+        globalPrice,
+        setGlobalPrice,
         filterDialog,
-        confirmDialog,
         priceSupplyDialog,
         priceSetForm,
         listData,
-        detailData
+        detailData,
+        handleSubmit
     } = props
-
+    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const expenseList = _.get(detailData, 'priceItemExpenseList')
+    const expenseLoading = _.get(detailData, 'priceItemExpenseLoading')
     const priceFilterDialog = (
         <PriceFilterForm
             initialValues={filterDialog.initialValues}
@@ -90,50 +180,92 @@ const PriceGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
+    const listDetailData = _.filter(_.get(listData, 'data'), (o) => {
+        return o.id === _.get(detailData, 'id')
+    })
+
     const priceDetail = (
         <PriceDetails
             key={_.get(detailData, 'id')}
             detailData={detailData}
+            listDetailData={listDetailData}
             priceSupplyDialog={priceSupplyDialog}
             priceSetForm = {priceSetForm}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
-            mergedList={_.get(detailData.mergedList())}>
+            mergedList={(detailData.mergedList())}>
         </PriceDetails>
+    )
+
+    const pricePercent = (
+        <form onSubmit={onSubmit} className={classes.pricePercent}>
+            <div>
+                <div>
+                    {globalPrice && <Field
+                        name='globalPrice'
+                        className={classes.inputFieldCustom}
+                        component={TextField}
+                        fullWidth={true}
+                    />}
+                    {!globalPrice && <Link onClick={() => { setGlobalPrice(true) }} >10 %</Link>}
+                </div>
+            </div>
+            <div>
+                {globalPrice &&
+                <Tooltip position="bottom" text="">
+                    <FloatingActionButton
+                        mini={true}
+                        type="submit"
+                        className={classes.addButton}
+                        onTouchTap={() => {
+                            onSubmit().then(() => {
+                                setGlobalPrice(false)
+                            })
+                        }}>
+
+                        <DoneIcon/>
+                    </FloatingActionButton>
+                </Tooltip>}
+            </div>
+        </form>
     )
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const type = _.get(item, ['type', 'name']) || 'N/A'
-        const price = _.get(item, ['measurement', 'name']) || ''
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
+        const currency = getConfig('PRIMARY_CURRENCY')
+        const codeProduct = _.get(item, 'code') || 'не установлен'
+        const netCost = _.get(item, 'netCost') ? numberFormat(_.get(item, 'netCost'), currency) : 'Не установлено'
+        const minPrice = _.get(item, 'minPrice')
+        const maxPrice = _.get(item, 'maxPrice')
+        const price = (minPrice && maxPrice) ? numberFormat(minPrice) + ' - ' + numberFormat(maxPrice, getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
+        const priceUpdate = _.get(item, 'priceUpdated') ? moment(_.get(item, 'priceUpdated')).format('DD.MM.YYYY') : 'Не установлено'
+        const customPrice = _.get(item, 'customPrice')
+
+        const internalMinPrice = numberFormat(_.get(item, 'internalMinPrice'))
+        const internalMaxPrice = numberFormat(_.get(item, 'internalMaxPrice'), currency)
+        const tooltipText = 'Агент может устанавливать цены <br/>' + internalMinPrice + ' - ' + internalMaxPrice
+        const tooltipText2 = 'Агент не может устанавливать цены'
+
         return (
-            <Row key={id}>
-                <Col xs={5} style={{display: 'flex', alignItems: 'center'}}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id),
-                        query: filter.getParams()
-                    }}>{name}</Link>
-                </Col>
-                <Col xs={2}>{type}</Col>
-                <Col xs={2}>{price}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        />
-                    </IconMenu>
-                </Col>
+            <Row key={id} className={classes.listRow}>
+                <Link to={{
+                    pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id),
+                    query: filter.getParams()
+                }}>
+                    <Col xs={3}>{name}</Col>
+                    <Col xs={2}>{codeProduct}</Col>
+                    <Col xs={2}>{netCost}</Col>
+                    <Col xs={2}>{price}</Col>
+                    <Col xs={2}>{priceUpdate}</Col>
+                    <Col xs={1} className={classes.icon}>
+                        {customPrice
+                        ? <Tooltip position="bottom" text={tooltipText}>
+                            <Person style={{width: 22, color: '#81c784'}}/>
+                        </Tooltip>
+                        : <Tooltip position="bottom" text={tooltipText2}>
+                            <Person style={{width: 22, color: '#999'}}/>
+                        </Tooltip>}
+                    </Col>
+                </Link>
             </Row>
         )
     })
@@ -142,9 +274,11 @@ const PriceGridList = enhance((props) => {
         list: priceList,
         loading: _.get(listData, 'listLoading')
     }
+
     return (
         <Container>
             <SubMenu url={ROUTES.PRICE_LIST_URL}/>
+            {pricePercent}
             <GridList
                 filter={filter}
                 list={list}
@@ -154,6 +288,8 @@ const PriceGridList = enhance((props) => {
             <PriceSupplyDialog
                 open={priceSupplyDialog.openPriceSupplyDialog}
                 onClose={priceSupplyDialog.handleCloseSupplyDialog}
+                list={expenseList}
+                loading={expenseLoading}
             />
         </Container>
     )
@@ -172,7 +308,7 @@ PriceGridList.propTypes = {
         handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired,
     priceSupplyDialog: PropTypes.shape({
-        openPriceSupplyDialog: PropTypes.bool.isRequired,
+        openPriceSupplyDialog: PropTypes.number.isRequired,
         handleOpenSupplyDialog: PropTypes.func.isRequired,
         handleCloseSupplyDialog: PropTypes.func.isRequired
     }).isRequired,

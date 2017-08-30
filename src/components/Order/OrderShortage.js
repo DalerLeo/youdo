@@ -44,7 +44,8 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            height: '100%'
+            height: '100%',
+            marginBottom: '64px'
         },
         titleContent: {
             background: '#fff',
@@ -93,11 +94,19 @@ const enhance = compose(
             height: '40px',
             fontWeight: '600'
         },
-        inputField: {
+        inputFieldCustom: {
             fontSize: '13px !important',
-            marginLeft: '20px',
+            height: '45px !important',
+            marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
             }
         },
         bottomButton: {
@@ -188,7 +197,7 @@ const OrderShortageDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <div className={classes.loader}>
-                    <CircularProgress size={80} thickness={5}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
                 <div className={classes.innerWrap}>
                     <div className={classes.inContent}>
@@ -212,7 +221,7 @@ const OrderShortageDialog = enhance((props) => {
                         <Field
                             name="request_dedline"
                             component={DateField}
-                            className={classes.inputField}
+                            className={classes.inputFieldCustom}
                             hintText="Срок запроса"
                             fullWidth={true}/>
                         <div className={classes.specialModalButton}>

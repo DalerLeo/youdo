@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from '../../constants/routes'
@@ -34,14 +33,14 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'type',
-        title: 'Тип товара',
+        name: 'code',
+        title: 'Код товара',
         xs: 2
     },
     {
         sorting: true,
-        name: 'brand',
-        title: 'Бренд',
+        name: 'type',
+        title: 'Тип товара',
         xs: 2
     },
     {
@@ -62,7 +61,7 @@ const enhance = compose(
     injectSheet({
         addButton: {
             '& button': {
-                backgroundColor: '#275482 !important'
+                backgroundColor: '#12aaeb !important'
             }
         },
         addButtonWrapper: {
@@ -73,9 +72,10 @@ const enhance = compose(
         },
         productImg: {
             width: '30px',
+            minWidth: '30px',
             height: '30px',
             overflow: 'hidden',
-            marginRight: '5px',
+            marginRight: '15px',
             display: 'inline-block',
             borderRadius: '4px',
             textAlign: 'center',
@@ -92,25 +92,12 @@ const ProductGridList = enhance((props) => {
         createDialog,
         updateDialog,
         filterDialog,
-        actionsDialog,
         showBigImg,
         confirmDialog,
         listData,
         detailData,
         classes
     } = props
-
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
 
     const productFilterDialog = (
         <ProductFilterForm
@@ -127,8 +114,8 @@ const ProductGridList = enhance((props) => {
     const productList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const codeProduct = _.get(item, 'code') || 'не установлен'
         const type = _.get(item, ['type', 'name']) || 'N/A'
-        const brand = _.get(item, ['brand', 'name']) || 'N/A'
         const image = _.get(item, ['image', 'file'])
         const measurement = _.get(item, ['measurement', 'name']) || ''
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
@@ -146,12 +133,13 @@ const ProductGridList = enhance((props) => {
                     </div>
                     <div style={{display: 'inline-block'}}>{name}</div>
                 </Col>
+                <Col xs={2}>{codeProduct}</Col>
                 <Col xs={2}>{type}</Col>
-                <Col xs={2}>{brand}</Col>
                 <Col xs={2}>{measurement}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
+                        menuItemStyle={{fontSize: '13px'}}
                         iconButtonElement={iconButton}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
@@ -185,6 +173,7 @@ const ProductGridList = enhance((props) => {
                 <Tooltip position="left" text="Добавить продукт">
                     <FloatingActionButton
                         mini={true}
+                        zDepth={1}
                         className={classes.addButton}
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
@@ -196,7 +185,6 @@ const ProductGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={productDetail}
-                actionsDialog={actions}
                 filterDialog={productFilterDialog}
             />
 
@@ -260,10 +248,6 @@ ProductGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,

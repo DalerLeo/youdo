@@ -4,8 +4,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -13,22 +11,24 @@ import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
 import OrderCreateDialog from './OrderCreateDialog'
 import OrderShortageDialog from './OrderShortage'
-import DeleteDialog from '../DeleteDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import ClientCreateDialog from '../Client/ClientCreateDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import moment from 'moment'
+import getConfig from '../../helpers/getConfig'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import MapsLocalShipping from 'material-ui/svg-icons/maps/local-shipping'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
-import Home from 'material-ui/svg-icons/action/home'
-import AccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet'
-import VisibilityOff from 'material-ui/svg-icons/action/visibility-off'
-import moment from 'moment'
-import CachedIcon from 'material-ui/svg-icons/action/cached'
+import Delivered from 'material-ui/svg-icons/action/done-all'
+import Available from 'material-ui/svg-icons/av/playlist-add-check'
+import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
+import Transfered from 'material-ui/svg-icons/action/motorcycle'
+import Payment from 'material-ui/svg-icons/action/credit-card'
+import InProcess from 'material-ui/svg-icons/action/cached'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -41,12 +41,25 @@ const listHeader = [
         sorting: true,
         name: 'client',
         title: 'Клиент',
-        xs: '20%'
+        xs: '17.5%'
+    },
+    {
+        sorting: true,
+        name: 'market',
+        title: 'Магазин',
+        xs: '17.5%'
     },
     {
         sorting: true,
         name: 'user',
         title: 'Инициатор',
+        xs: '10%'
+    },
+    {
+        sorting: true,
+        name: 'totalPrice',
+        alignRight: true,
+        title: 'Сумма заказа',
         xs: '15%'
     },
     {
@@ -57,21 +70,15 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'totalCost',
-        title: 'Сумма заказа',
-        xs: '15%'
-    },
-    {
-        sorting: true,
         name: 'createdDate',
         title: 'Дата создания',
         xs: '15%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'acceptedCost',
         title: 'Статус',
-        xs: '10%'
+        xs: '5%'
     }
 ]
 
@@ -87,6 +94,33 @@ const enhance = compose(
             top: '10px',
             right: '0',
             marginBottom: '0px'
+        },
+        listWrapper: {
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            margin: '0 -30px',
+            padding: '0 30px',
+            position: 'relative',
+            '& > div': {
+                padding: '0 0.5rem',
+                '&:last-child': {
+                    padding: '0'
+                }
+            }
+        },
+        listWrapperNew: {
+            extend: 'listWrapper',
+            fontWeight: '600',
+            '&:before': {
+                content: '""',
+                position: 'absolute',
+                left: '0',
+                bottom: '0',
+                top: '0',
+                width: '3px',
+                background: '#12aaeb'
+            }
         },
         dot: {
             display: 'inline-block',
@@ -105,7 +139,15 @@ const enhance = compose(
         },
         buttons: {
             display: 'flex',
-            justifyContent: 'flex-end'
+            justifyContent: 'space-around'
+        },
+        openDetails: {
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            right: '0',
+            left: '0',
+            cursor: 'pointer'
         }
     })
 )
@@ -116,7 +158,6 @@ const OrderGridList = enhance((props) => {
         createDialog,
         updateDialog,
         filterDialog,
-        actionsDialog,
         getDocument,
         transactionsDialog,
         returnDialog,
@@ -124,7 +165,6 @@ const OrderGridList = enhance((props) => {
         products,
         confirmDialog,
         itemReturnDialog,
-        deleteDialog,
         listData,
         detailData,
         returnListData,
@@ -132,26 +172,18 @@ const OrderGridList = enhance((props) => {
         tabData,
         classes,
         createClientDialog,
-        returnDataLoading
+        returnDataLoading,
+        printDialog,
+        type,
+        cancelOrderReturnDialog,
+        refreshAction
     } = props
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
 
     const orderFilterDialog = (
         <OrderFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
-            filterDialog={filterDialog}
-        />
+            filterDialog={filterDialog}/>
     )
     const iconStyle = {
         icon: {
@@ -160,8 +192,8 @@ const OrderGridList = enhance((props) => {
             height: 20
         },
         button: {
-            width: 48,
-            height: 48,
+            width: 30,
+            height: 30,
             padding: 0,
             zIndex: 0
         }
@@ -171,7 +203,6 @@ const OrderGridList = enhance((props) => {
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             returnData={_.get(detailData, 'return')}
-            deleteDialog={deleteDialog}
             transactionsDialog={transactionsDialog}
             tabData={tabData}
             getDocument={getDocument}
@@ -184,89 +215,123 @@ const OrderGridList = enhance((props) => {
             returnDataLoading={returnDataLoading}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+            cancelOrderReturnDialog={cancelOrderReturnDialog}
+            type={type}
         />
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
+        const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const client = _.get(item, ['client', 'name'])
+        const market = _.get(item, ['market', 'name'])
+        const paymentDate = moment(_.get(item, 'paymentDate'))
+        const now = moment()
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
-        const dateDelivery = _.get(item, 'dateDelivery') || 'N/A'
+        const dateDelivery = dateFormat((_.get(item, 'dateDelivery')), '')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
         const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
-        const totalPrice = numberFormat(_.get(item, 'totalPrice'), 'SUM')
+        const balanceTooltip = numberFormat(totalBalance, currentCurrency)
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
+        const isNew = _.get(item, 'isNew')
         const REQUESTED = 0
+        const PAY_PENDING = 'Оплата ожидается: ' +
+                            paymentDate.locale('ru').format('DD MMM YYYY') +
+                            '<br/>Ожидаемый платеж: ' + balanceTooltip
+
+        const PAY_DELAY = 'Оплата ожидалась: ' +
+                            paymentDate.locale('ru').format('DD MMM YYYY') +
+                            '<br/>Долг: ' + balanceTooltip
+
         const READY = 1
-        const DELIVERED = 2
+        const GIVEN = 2
+        const DELIVERED = 3
+        const CANCELED = 4
         const ZERO = 0
         return (
-        <div style={{width: '100%', display: 'flex', alignItems: 'center'}} key={id}>
-            <div style={{width: '10%'}}>
-                {id}
-            </div>
-            <div style={{width: '20%'}}>
-                <Link to={{
+            <div className={isNew ? classes.listWrapperNew : classes.listWrapper} key={id}>
+                <Link className={classes.openDetails} to={{
                     pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                     query: filter.getParams()
-                }}>{client}</Link>
-            </div>
-            <div style={{width: '15%'}}>
-                {user}
-            </div>
-            <div style={{width: '15%'}}>
-                {dateDelivery}
-            </div>
-            <div style={{width: '15%'}}>
-                {totalPrice}
-            </div>
-            <div style={{width: '15%'}}>
-                {createdDate}
-            </div>
-            <div style={{width: '10%'}} className={classes.buttons}>
-                {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
+                }}>
+                </Link>
+                <div style={{width: '10%'}}>{id}</div>
+                <div style={{width: '17.5%'}}>{client}</div>
+                <div style={{width: '17.5%'}}>{market}</div>
+                <div style={{width: '10%'}}>{user}</div>
+                <div style={{width: '15%', textAlign: 'right'}}>{totalPrice}</div>
+                <div style={{width: '15%'}}>{dateDelivery}</div>
+                <div style={{width: '15%'}}>{createdDate}</div>
+                <div style={{width: '5%'}} className={classes.buttons}>
+                    {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
                         <IconButton
+                            disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}>
-                            <CachedIcon color="#666"/>
+                            <InProcess color="#f0ad4e"/>
                         </IconButton>
                     </Tooltip>
-                    : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
+                        : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
                             <IconButton
+                                disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}>
-                                <Home color="#81c784"/>
+                                <Available color="#f0ad4e"/>
                             </IconButton>
                         </Tooltip>
 
-                        : (status === DELIVERED) ? <Tooltip position="bottom" text="Забрали товар">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}>
-                                <MapsLocalShipping color="#81c784" />
-                            </IconButton>
-                        </Tooltip>
-                            : <Tooltip position="bottom" text="Заказ отменен">
+                            : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
                                 <IconButton
+                                    disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
                                     touch={true}>
-                                    <VisibilityOff color='#e57373'/>
+                                    <Delivered color="#81c784"/>
                                 </IconButton>
                             </Tooltip>
-                }
-               <Tooltip position="bottom" text="Есть долг">
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}>
-                        <AccountBalanceWallet color={totalBalance > ZERO ? '#e57373' : '#4db6ac'}/>
-                    </IconButton>
-                </Tooltip>
+                                : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
+                                    <IconButton
+                                        disableTouchRipple={true}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        touch={true}>
+                                        <Transfered color="#f0ad4e"/>
+                                    </IconButton>
+                                </Tooltip>
+                                    : <Tooltip position="bottom" text="Заказ отменен">
+                                        <IconButton
+                                            disableTouchRipple={true}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            touch={true}>
+                                            <Canceled color='#e57373'/>
+                                        </IconButton>
+                                    </Tooltip>
+                    }
+                    {!(status === CANCELED) &&
+                    <Tooltip position="bottom" text={(totalBalance > ZERO) && ((paymentDate.diff(now, 'days') <= ZERO))
+                        ? PAY_DELAY
+                        : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
+                            ? PAY_PENDING
+                            : 'Оплачено'}>
+                        <IconButton
+                            disableTouchRipple={true}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
+                            <Payment color={(totalBalance > ZERO) && ((paymentDate.diff(now, 'days') <= ZERO))
+                                ? '#e57373'
+                                : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
+                                    ? '#B7BBB7'
+                                    : '#81c784'
+                            }/>
+                        </IconButton>
+                    </Tooltip>
+                    }
+                </div>
             </div>
-        </div>
         )
     })
 
@@ -280,7 +345,7 @@ const OrderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
 
-            <div className={classes.addButtonWrapper}>
+            {false && <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить заказ">
                     <FloatingActionButton
                         mini={true}
@@ -289,15 +354,17 @@ const OrderGridList = enhance((props) => {
                         <ContentAdd />
                     </FloatingActionButton>
                 </Tooltip>
-            </div>
+            </div>}
 
             <GridList
                 filter={filter}
                 list={list}
                 detail={orderDetail}
                 withoutRow={true}
-                actionsDialog={actions}
+                withInvoice={true}
                 filterDialog={orderFilterDialog}
+                printDialog={printDialog}
+                refreshAction={refreshAction}
             />
 
             <OrderCreateDialog
@@ -325,12 +392,6 @@ const OrderGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
-
-            <DeleteDialog
-                filter={filter}
-                open={deleteDialog.openDeleteDialog}
-                onClose={deleteDialog.handleCloseDeleteDialog}
             />
 
             <ClientCreateDialog
@@ -376,11 +437,6 @@ OrderGridList.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
-    deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleOpenDeleteDialog: PropTypes.func.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
-    }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,
         openUpdateDialog: PropTypes.bool.isRequired,
@@ -388,12 +444,7 @@ OrderGridList.propTypes = {
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
-    }).isRequired,
     transactionsDialog: PropTypes.shape({
-        transactionsLoading: PropTypes.bool.isRequired,
         openTransactionsDialog: PropTypes.bool.isRequired,
         handleOpenTransactionsDialog: PropTypes.func.isRequired,
         handleCloseTransactionsDialog: PropTypes.func.isRequired
@@ -434,7 +485,18 @@ OrderGridList.propTypes = {
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired
     }),
-    returnDataLoading: PropTypes.bool
+    returnDataLoading: PropTypes.bool,
+    printDialog: PropTypes.shape({
+        openPrint: PropTypes.bool.isRequired,
+        handleOpenPrintDialog: PropTypes.func.isRequired,
+        handleClosePrintDialog: PropTypes.func.isRequired
+    }).isRequired,
+    cancelOrderReturnDialog: PropTypes.shape({
+        handleOpenCancelOrderReturnDialog: PropTypes.func.isRequired,
+        handleCloseCancelOrderReturnDialog: PropTypes.func.isRequired,
+        handleSubmitCancelOrderReturnDialog: PropTypes.func.isRequired,
+        openCancelOrderReturnDialog: PropTypes.number.isRequired
+    }).isRequired
 }
 
 export default OrderGridList

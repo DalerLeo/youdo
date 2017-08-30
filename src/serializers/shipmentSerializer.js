@@ -23,11 +23,3 @@ export const listFilterSerializer = (data, manufacture) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

@@ -22,6 +22,22 @@ export const transactionCreateIncomeAction = (formValues, cashboxId) => {
     }
 }
 
+export const acceptCashListFetchAction = () => {
+    const payload = axios()
+        .get(API.TRANSACTION_ACCEPT_CASH)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.TRANSACTION_ACCEPT_CASH,
+        payload
+    }
+}
+
 export const transactionCreateExpenseAction = (formValues, cashboxId) => {
     const requestData = serializers.createExpenseSerializer(formValues, cashboxId)
     const payload = axios()
@@ -35,6 +51,29 @@ export const transactionCreateExpenseAction = (formValues, cashboxId) => {
 
     return {
         type: actionTypes.TRANSACTION_EXPENSE,
+        payload
+    }
+}
+
+export const pendingTransactionFetchAction = (user, currency) => {
+    const params = {
+        transaction: 0,
+        type: 'in',
+        user: user,
+        currency: currency
+    }
+
+    const payload = axios()
+        .get(API.ORDER_TRANSACTION, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_TRANSACTION,
         payload
     }
 }
@@ -55,7 +94,21 @@ export const transactionCreateSendAction = (formValues, cashboxId) => {
         payload
     }
 }
+export const acceptClientTransactionAction = (data) => {
+    const payload = axios()
+        .post(API.ACCEPT_CLIENT_TRANSACTION, data)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
 
+    return {
+        type: actionTypes.ACCEPT_CLIENT_TRANSACTION,
+        payload
+    }
+}
 export const transactionDeleteAction = (id) => {
     const payload = axios()
         .delete(sprintf(API.TRANSACTION_DELETE, id))

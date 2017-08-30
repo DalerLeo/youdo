@@ -11,7 +11,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import CloseIcon2 from '../CloseIcon2'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ImageUploadField, UsersGroupSearchField} from '../ReduxForm'
+import {TextField, ImageUploadField, CheckBox, PositionSearchField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -31,7 +31,7 @@ const validate = (data) => {
 const validateForm = values => {
     const errors = {}
     if (values.password && values.passwordExp && values.password !== values.passwordExp) {
-        errors.password = 'Правильно введите'
+        errors.password = 'Пароли не совпадают'
     }
     return errors
 }
@@ -52,9 +52,6 @@ const enhance = compose(
         },
         dialogAddUser: {
             overflowY: 'auto !important',
-            '& div:first-child div:first-child': {
-                transform: 'translate(0px, 0px) !important'
-            },
             '& .imageDropZone': {
                 width: '150px !important',
                 height: '145px !important',
@@ -63,6 +60,56 @@ const enhance = compose(
                     height: '30px !important'
                 }
             }
+        },
+        groupLoader: {
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
+        inContent: {
+            '& .dottedList': {
+                padding: '5px'
+            }
+        },
+        bottomButtonUsers: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '59px',
+            borderTop: '1px #efefef solid',
+            padding: '0 10px 0 30px',
+            zIndex: '999',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        stocksCheckList: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            marginBottom: '10px',
+            '& > div': {
+                flexBasis: 'calc(100% / 3)',
+                maxWidth: 'calc(100% / 3)',
+                overflowX: 'hidden !important',
+                '& label': {
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    maxWidth: 'calc(100% - 60px)'
+                }
+            }
+        },
+        line: {
+            background: '#efefef',
+            height: '1px',
+            margin: '25px -30px 10px'
         }
     })),
     reduxForm({
@@ -73,8 +120,7 @@ const enhance = compose(
 )
 
 const UsersCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData} = props
-
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData, stockListData, marketTypeData} = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -95,9 +141,9 @@ const UsersCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
-                    <div className={classes.inContent} style={{display: 'block', minHeight: '350px'}}>
+                    <div className={classes.inContent} style={{display: 'block', minHeight: '350px', maxHeight: 'none'}}>
                         <Row className={classes.field}>
                             <Col xs={7} style={{paddingTop: '15px'}}>
                                 <Field
@@ -113,23 +159,25 @@ const UsersCreateDialog = enhance((props) => {
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
-                                    name="group"
-                                    component={UsersGroupSearchField}
-                                    label="Тип Пользователя"
+                                    name="position"
+                                    component={PositionSearchField}
+                                    label="Должность"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                             </Col>
                             <Col xs={5}>
                                 <Field
                                     name="image"
-                                    className={classes.imageUpload}
                                     component={ImageUploadField}
                                     fullWidth={true}
                                 />
                             </Col>
                         </Row>
-                        <div className="dottedList"></div>
-                        <Row className={classes.field} style={{paddingTop: '15px'}}>
+
+                        <div className={classes.line}>
+                        </div>
+
+                        <Row className={classes.field}>
                             <Col xs={6}>
                                 <Field
                                     name="username"
@@ -149,7 +197,7 @@ const UsersCreateDialog = enhance((props) => {
                                     name="password"
                                     component={TextField}
                                     type="password"
-                                    label="Пароль"
+                                    label={isUpdate ? 'Изменить пароль' : 'Пароль'}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
@@ -162,11 +210,56 @@ const UsersCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </Col>
                         </Row>
+                        <div className={classes.subTitle} style={{marginTop: '15px'}}>Связанные склады</div>
+                        {(!loading) && _.get(stockListData, 'stockListLoading')
+                        ? <div className={classes.groupLoader}>
+                            <CircularProgress size={40} thickness={4}/>
+                        </div>
+                        : <div className={classes.stocksCheckList}>
+                            {_.map(_.get(stockListData, 'data'), (item, index) => {
+                                const name = _.get(item, 'name')
+                                const id = _.get(item, 'id')
+                                return (
+                                    <Field
+                                        key={id}
+                                        name={'stocks[' + index + '][selected]'}
+                                        component={CheckBox}
+                                        label={name}/>
+                                )
+                            })}
+                        </div>}
+                        <div className={classes.subTitle} style={{marginTop: '15px'}}>Поддерживаемый типа магазинов</div>
+                        <Row>
+                            {(!loading) && _.get(marketTypeData, 'marketTypeLoading') &&
+                            <div className={classes.groupLoader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>}
+                            {!_.get(marketTypeData, 'marketTypeLoading') &&
+                            _.map(_.get(marketTypeData, 'data'), (item, index) => {
+                                const id = _.get(item, 'id')
+                                const name = _.get(item, 'name')
+                                return (
+                                    <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
+                                        <Field
+                                            name={'types[' + index + '][selected]'}
+                                            component={CheckBox}
+                                            label={name}/>
+                                    </div>
+                                )
+                            })}
+                        </Row>
                     </div>
-                    <div className={classes.bottomButton}>
+                    <div className={classes.bottomButtonUsers}>
+                        <div>
+                            <Field
+                                name="isActive"
+                                component={CheckBox}
+                                label="Активный"/>
+                        </div>
                         <FlatButton
                             label="Сохранить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                         />

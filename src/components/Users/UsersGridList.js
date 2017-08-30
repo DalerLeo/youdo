@@ -11,17 +11,14 @@ import Container from '../Container'
 import UsersFilterForm from './UsersFilterForm'
 import UsersCreateDialog from './UsersCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
+import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
+import SettingSideMenu from '../Setting/SettingSideMenu'
 import Tooltip from '../ToolTip'
-const ZERO = 0
+
 const listHeader = [
     {
         sorting: true,
@@ -55,27 +52,73 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'createdDate',
-        title: 'Дата создания',
+        name: 'status',
+        title: 'Статус',
         xs: 1
     }
 ]
 
 const enhance = compose(
     injectSheet({
+        wrapper: {
+            display: 'flex',
+            margin: '0 -28px',
+            height: 'calc(100% + 28px)'
+        },
         addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
             }
         },
         addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '-18px'
+        },
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '250px',
+            maxWidth: '250px'
+
+        },
+        rightPanel: {
+            background: '#fff',
+            flexBasis: 'calc(100% - 225px)',
+            maxWidth: 'calc(100% - 225px)',
+            paddingTop: '10px',
+            overflowY: 'auto',
+            overflowX: 'hidden'
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0',
+            transition: 'all 200ms ease-out'
+        },
+        listRow: {
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            }
         }
     })
 )
+
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 30,
+        height: 25,
+        padding: 0
+    }
+}
 
 const UsersGridList = enhance((props) => {
     const {
@@ -85,6 +128,9 @@ const UsersGridList = enhance((props) => {
         filterDialog,
         actionsDialog,
         confirmDialog,
+        groupListData,
+        stockListData,
+        marketTypeData,
         listData,
         detailData,
         classes
@@ -102,14 +148,6 @@ const UsersGridList = enhance((props) => {
         </div>
     )
 
-    const usersFilterDialog = (
-        <UsersFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-        />
-    )
-
     const usersDetail = (
         <span>a</span>
     )
@@ -119,38 +157,39 @@ const UsersGridList = enhance((props) => {
         const firstName = _.get(item, 'firstName')
         const secondName = _.get(item, 'secondName')
         const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
-        const groups = _.get(item, ['groups', ZERO, 'name']) || 'N/A'
-
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
-
+        const position = _.get(item, ['position', 'name']) || 'Не выбрано'
+        const isActive = _.get(item, 'isActive')
         return (
-            <Row key={id}>
+            <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{firstName} {secondName}</Col>
                 <Col xs={2}>{username}</Col>
-                <Col xs={2}>{groups}</Col>
+                <Col xs={2}>{position}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
-                <Col xs={2}>12.05.2016</Col>
+                <Col xs={2}>{isActive ? 'Активный' : 'Неактивный'}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        />
-                    </IconMenu>
+                    <div className={classes.iconBtn}>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                touch={true}
+                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Удалить">
+                            <IconButton
+                                disableTouchRipple={true}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                touch={true}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </Col>
             </Row>
         )
@@ -162,37 +201,56 @@ const UsersGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const addButton = (
+        <div className={classes.addButtonWrapper}>
+            <FlatButton
+                backgroundColor="#fff"
+                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                className={classes.addButton}
+                label="добавить пользователя"
+                onTouchTap={createDialog.handleOpenCreateDialog}
+                icon={<ContentAdd color="#12aaeb"/>}>
+            </FlatButton>
+        </div>
+    )
+
+    const usersFilterDialog = (
+        <UsersFilterForm
+            initialValues={filterDialog.initialValues}
+            filter={filter}
+            filterDialog={filterDialog}
+            addButton={addButton}
+        />
+    )
+
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
     const currentName = _.get(currentDetail, 'firstName') + ' ' + _.get(currentDetail, 'secondName')
     return (
         <Container>
-            <SubMenu url={ROUTES.USERS_LIST_URL}/>
-
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить пользователя">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
+            <div className={classes.wrapper}>
+                <SettingSideMenu currentUrl={ROUTES.USERS_LIST_URL} usersFilterDialog={usersFilterDialog}/>
+                <div className={classes.rightPanel}>
+                    <GridList
+                        filter={filter}
+                        list={list}
+                        listShadow={false}
+                        detail={usersDetail}
+                        actionsDialog={actions}
+                        addButton={addButton}
+                    />
+                </div>
             </div>
 
-            <GridList
-                filter={filter}
-                list={list}
-                detail={usersDetail}
-                actionsDialog={actions}
-                filterDialog={usersFilterDialog}
-            />
-
             <UsersCreateDialog
+                initialValues={createDialog.initialValues}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 errorData={createDialog.errorData}
+                groupListData={groupListData}
+                stockListData={stockListData}
+                marketTypeData={marketTypeData}
             />
 
             <UsersCreateDialog
@@ -202,6 +260,9 @@ const UsersGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+                groupListData={groupListData}
+                stockListData={stockListData}
+                marketTypeData={marketTypeData}
                 errorData={updateDialog.errorData}
             />
 

@@ -6,11 +6,13 @@ export const createSerializer = (data) => {
     const currency = _.get(data, ['currency', 'value'])
     const cashier = _.get(data, ['cashier', 'value'])
     const type = _.get(data, ['type', 'value'])
+    const division = _.get(data, ['division', 'value'])
 
     return {
         name,
         currency,
         cashier,
+        division,
         type
     }
 }
@@ -20,7 +22,6 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'currency': _.get(defaultData, 'currency'),
         'name': _.get(defaultData, 'name'),
         'cashier': _.get(defaultData, 'cashier'),
         'type': _.get(defaultData, 'type'),
@@ -33,11 +34,3 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

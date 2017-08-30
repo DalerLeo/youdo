@@ -1,11 +1,7 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -19,7 +15,7 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-import numberFormat from '../../helpers/numberFormat'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -99,24 +95,11 @@ const PricesGridList = enhance((props) => {
         createDialog,
         updateDialog,
         filterDialog,
-        actionsDialog,
         confirmDialog,
         listData,
         detailData,
         classes
     } = props
-
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
 
     const pricesFilterDialog = (
         <PricesFilterForm
@@ -140,17 +123,20 @@ const PricesGridList = enhance((props) => {
     const pricesList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const beginDate = moment(_.get(_.get(item, 'beginDate'), 'name')).format('YY:MM:DD')
-        const tillDate = _.get(item, 'tillDate') || 'Не указано'
-        const discount = numberFormat(_.get(item, 'discount'), '%')
+        const beginDate = dateFormat(_.get(item, 'beginDate'))
+        const tillDate = dateFormat(_.get(item, 'tillDate'))
+        const type = _.get(item, 'type')
+        const discount = _.toNumber(_.get(item, 'discount'))
 
         return (
-            <Row key={id}>
+            <Row key={id} style={{cursor: 'pointer'}} onTouchTap = {() => { listData.handleClickDetail(id) }}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={5} onTouchTap = {() => { listData.handleClickDetail(id) }}>{name}</Col>
+                <Col xs={5} >{name}</Col>
                 <Col xs={2}>{beginDate}</Col>
                 <Col xs={2}>{tillDate}</Col>
-                <Col xs={2}>{discount}</Col>
+                <Col xs={2}>
+                    {(type === 'bonus') ? <span>Бонус</span> : <span>Скидка - {discount}%</span>}
+                </Col>
             </Row>
         )
     })
@@ -166,7 +152,7 @@ const PricesGridList = enhance((props) => {
             <SubMenu url={ROUTES.PRICES_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить поставку">
+                <Tooltip position="left" text="Добавить акцию">
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
@@ -180,7 +166,6 @@ const PricesGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={pricesDetail}
-                actionsDialog={actions}
                 filterDialog={pricesFilterDialog}
             />
 
@@ -235,10 +220,6 @@ PricesGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,

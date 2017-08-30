@@ -31,28 +31,31 @@ const enhance = compose(
     connect((state) => {
         const contacts = _.get(state, ['provider', 'contacts', 'data'])
         const contactsLoading = _.get(state, ['provider', 'contacts', 'loading'])
+        const detail = _.get(state, ['supply', 'item', 'data'])
         return {
             contacts,
-            contactsLoading
+            contactsLoading,
+            detail
         }
     })
 )
 
 const ProviderContactsField = enhance((props) => {
-    const {classes, contacts, contactsLoading, input, meta: {error}} = props
+    const {classes, contacts, contactsLoading, input, meta: {error}, detail} = props
     return (
         <div>
-            { contactsLoading && <div>Загрузка  ...</div> }
+            { contactsLoading && <div>Загрузка ...</div> }
             {error && <div className={classes.error}>{error}</div>}
             {!contactsLoading && <RadioButtonGroup name="contact" className={classes.radioButton}
-                                                   onChange={input.onChange} defaultSelected={input.value}>
+                                                   onChange={input.onChange} defaultSelected={_.toInteger(input.value)}>
                 {_.map(contacts, (item) => {
-                    const id = _.get(item, 'id')
-                    const value = _.get(item, 'name') + ' ' + _.get(item, 'phone') + ' ' + _.get(item, 'email')
+                    const id = _.toInteger(_.get(item, 'id'))
+                    const forLabel = _.get(item, 'name') + ' ' + _.get(item, 'phone') + ' ' + _.get(item, 'email')
                     return (
                         <RadioButton key={id}
-                            value={id}
-                            label={value}
+                                     value={id}
+                                     label={forLabel}
+                                     checked={!_.get(detail, ['contact', 'id']) === _.get(item, 'id')}
                         />
                     )
                 })}

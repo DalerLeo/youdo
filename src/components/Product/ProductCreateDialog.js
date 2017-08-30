@@ -3,12 +3,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import {connect} from 'react-redux'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ProductTypeSearchField, BrandSearchField, MeasurementSearchField, ImageUploadField} from '../ReduxForm'
+import {
+    TextField,
+    ProductTypeParentSearchField,
+    ProductTypeChildSearchField,
+    MeasurementSearchField,
+    ImageUploadField
+} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -44,11 +51,17 @@ const enhance = compose(
     reduxForm({
         form: 'ProductCreateForm',
         enableReinitialize: true
-    })
+    }),
+    connect((state) => {
+        const type = _.get(state, ['form', 'ProductCreateForm', 'values', 'productTypeParent', 'value'])
+        return {
+            type
+        }
+    }),
 )
 
 const ProductCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, type} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -70,7 +83,7 @@ const ProductCreateDialog = enhance((props) => {
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: '250px'}}>
                         <div className={classes.loader}>
-                            <CircularProgress size={80} thickness={5}/>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
                         <div className={classes.field} style={{marginTop: '10px'}}>
                             <Field
@@ -81,19 +94,27 @@ const ProductCreateDialog = enhance((props) => {
                                 fullWidth={true}
                             />
                             <Field
-                                name="type"
+                                name="code"
                                 className={classes.inputFieldCustom}
-                                component={ProductTypeSearchField}
-                                label="Тип продукта"
+                                component={TextField}
+                                label="Код товара"
                                 fullWidth={true}
                             />
                             <Field
-                                name="brand"
+                                name="productTypeParent"
                                 className={classes.inputFieldCustom}
-                                component={BrandSearchField}
-                                label="Бренд"
+                                component={ProductTypeParentSearchField}
+                                label="Тип продукта"
                                 fullWidth={true}
                             />
+                            {type && <Field
+                                name="type"
+                                className={classes.inputFieldCustom}
+                                component={ProductTypeChildSearchField}
+                                parentType={type}
+                                label="Подкатегория"
+                                fullWidth={true}
+                            />}
                             <Field
                                 name="measurement"
                                 className={classes.inputFieldCustom}
@@ -105,7 +126,6 @@ const ProductCreateDialog = enhance((props) => {
                         <div className={classes.field} style={{maxWidth: '224px'}}>
                             <Field
                                 name="image"
-                                className={classes.imageUpload}
                                 component={ImageUploadField}
                                 label="Изображения"
                                 fullWidth={true}
@@ -115,6 +135,7 @@ const ProductCreateDialog = enhance((props) => {
                     <div className={classes.bottomButton}>
                         <FlatButton
                             label="Сохранить"
+                            labelStyle={{fontSize: '13px'}}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

@@ -35,14 +35,18 @@ const listHeader = [
 ]
 const enhance = compose(
     injectSheet({
-
+        listRow: {
+            cursor: 'pointer',
+            width: 'auto !important',
+            margin: '0 -30px !important',
+            padding: '0 30px'
+        },
         imgContent: {
             '& img': {
                 width: '33%',
                 margin: '1px'
             },
             height: '390px',
-            boxSizing: 'border-box',
             overflowY: 'scroll'
         },
         cursor: {
@@ -97,16 +101,8 @@ const ManufactureProduct = enhance((props) => {
         const type = _.get(item, ['type', 'name']) || 'N/A'
         const brand = _.get(item, ['brand', 'name']) || 'N/A'
         return (
-            <Row key={id}>
-                <Col xs={5}>
-                    <span
-                        className={classes.cursor}
-                        onTouchTap={ () => {
-                            productData.handleItemClick(id)
-                        }}>
-                        {name}
-                    </span>
-                </Col>
+            <Row className={classes.listRow} key={id} onClick={ () => { productData.handleItemClick(id) }}>
+                <Col xs={5}>{name}</Col>
                 <Col xs={4}>{type}</Col>
                 <Col xs={3}>{brand}</Col>
             </Row>
@@ -119,8 +115,8 @@ const ManufactureProduct = enhance((props) => {
     }
     const createDialog = _.get(productData, 'createDialog')
     return (
-        <Row>
-            <Col xs={12}>
+        <div>
+            <div>
                 <div style={{padding: '10px 0', textAlign: 'right'}}>
                     <FloatButton onClick={createDialog.handleOpenCreateDialog} style={{color: '#12aaeb'}}>
                         <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
@@ -128,8 +124,8 @@ const ManufactureProduct = enhance((props) => {
                         добавить продукцию
                     </FloatButton>
                 </div>
-            </Col>
-            <Col xs={12}>
+            </div>
+            <div>
                 <GridList
                     filter={filter}
                     list={productListExp}
@@ -137,8 +133,8 @@ const ManufactureProduct = enhance((props) => {
                     actionsDialog={actions}
                     filterDialog={productFilterDialog}
                 />
-            </Col>
-        </Row>
+            </div>
+        </div>
     )
 })
 ManufactureProduct.propTypes = {

@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -25,6 +26,7 @@ import {
     productItemFetchAction
 } from '../../actions/product'
 
+import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -118,33 +120,24 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
+            const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
             const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
             const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
 
             filter.filterBy({
                 [PRODUCT_FILTER_OPEN]: false,
-                [PRODUCT_FILTER_KEY.TYPE]: type,
+                [PRODUCT_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [PRODUCT_FILTER_KEY.TYPE_CHILD]: typeChild,
                 [PRODUCT_FILTER_KEY.MEASUREMENT]: measurement,
                 [PRODUCT_FILTER_KEY.BRAND]: brand
             })
         },
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRODUCT_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('ProductCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -176,6 +169,17 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[PRODUCT_CREATE_DIALOG_OPEN]: false})})
                     dispatch(productListFetchAction(filter))
                 })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -196,9 +200,6 @@ const enhance = compose(
             const productId = _.toInteger(_.get(props, ['params', 'productId']))
 
             return dispatch(productUpdateAction(productId, _.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(productItemFetchAction(productId))
-                })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -231,14 +232,10 @@ const ProductList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', PRODUCT_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', PRODUCT_DELETE_DIALOG_OPEN]))
     const brand = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.BRAND))
-    const type = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.TYPE))
+    const typeParent = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.TYPE_PARENT))
+    const typeChild = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.TYPE_CHILD))
     const measurement = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.MEASUREMENT))
     const detailId = _.toInteger(_.get(params, 'productId'))
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
 
     const createDialog = {
         createLoading,
@@ -272,22 +269,27 @@ const ProductList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
+            const childType = _.get(detail, ['type', 'id'])
+            const parentType = _.get(detail, ['type', 'parent'])
 
             return {
                 name: _.get(detail, 'name'),
-                type: {
-                    value: _.get(detail, ['type', 'id'])
+                code: _.get(detail, 'code'),
+                productTypeParent: {
+                    value: parentType || childType
                 },
-                brand: {
-                    value: _.get(detail, ['brand', 'id'])
+                type: {
+                    text: _.get(detail, ['type', 'name']),
+                    value: parentType && childType
                 },
                 measurement: {
+                    text: _.get(detail, ['measurement', 'name']),
                     value: _.get(detail, ['measurement', 'id'])
                 },
-                image: _.get(detail, 'image')
+                image: _.get(detail, ['image'])
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -300,7 +302,8 @@ const ProductList = enhance((props) => {
     const filterDialog = {
         initialValues: {
             brand: {value: brand},
-            type: {value: type},
+            typeParent: {value: typeParent},
+            typeChild: {value: typeChild},
             measurement: {value: measurement}
         },
         filterLoading: false,
@@ -332,7 +335,6 @@ const ProductList = enhance((props) => {
                 showBigImg={showBigImg}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
             />
         </Layout>

@@ -2,7 +2,6 @@ import _ from 'lodash'
 import axios from '../helpers/axios'
 import * as storageHelper from '../helpers/storage'
 import * as API from '../constants/api'
-import {TOKEN_KEY} from '../constants/storage'
 import * as actionTypes from '../constants/actionTypes'
 
 export const setTokenAction = () => {
@@ -41,8 +40,8 @@ export const signInAction = (params) => {
 export const signOutAction = () => {
     const payload = axios().delete(API.SIGN_OUT)
         .then(() => {
-            localStorage.removeItem(TOKEN_KEY)
-            sessionStorage.removeItem(TOKEN_KEY)
+            localStorage.clear()
+            sessionStorage.clear()
         })
         .catch((error) => {
             const errorData = _.get(error, ['response', 'data'])
@@ -51,6 +50,18 @@ export const signOutAction = () => {
 
     return {
         type: `${actionTypes.SIGN_IN}_CLEAR`,
+        payload
+    }
+}
+
+export const authConfirmAction = () => {
+    const payload = axios().get(API.AUTH_CONFIRM)
+        .then((response) => {
+            const userData = _.get(response, 'data')
+            storageHelper.setUser(userData)
+        })
+    return {
+        type: actionTypes.AUTH_CONFIRM,
         payload
     }
 }

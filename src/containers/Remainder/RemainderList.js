@@ -1,29 +1,32 @@
 import React from 'react'
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import sprintf from 'sprintf'
+import {reset} from 'redux-form'
+import {openSnackbarAction} from '../../actions/snackbar'
+import {openErrorAction} from '../../actions/error'
+
 import {
-    REMAINDER_CREATE_DIALOG_OPEN,
-    REMAINDER_UPDATE_DIALOG_OPEN,
-    REMAINDER_DELETE_DIALOG_OPEN,
     RemainderGridList,
-    REMAINDER_FILTER_OPEN
+    REMAINDER_TRANSFER_DIALOG_OPEN,
+    REMAINDER_FILTER_OPEN,
+    REMAINDER_FILTER_KEY,
+    REMAINDER_DISCARD_DIALOG_OPEN,
+    REMAINDER_RESERVED_DIALOG_OPEN
 } from '../../components/Remainder'
 import {
-    remainderCreateAction,
-    remainderUpdateAction,
     remainderListFetchAction,
-    remainderCSVFetchAction,
-    remainderDeleteAction,
-    remainderItemFetchAction
+    remainderItemFetchAction,
+    remainderTransferAction,
+    remainderDiscardAction,
+    remainderReversedListFetchAction
 } from '../../actions/remainder'
-import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
@@ -31,26 +34,32 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['remainder', 'item', 'data'])
         const detailLoading = _.get(state, ['remainder', 'item', 'loading'])
-        const createLoading = _.get(state, ['remainder', 'create', 'loading'])
-        const updateLoading = _.get(state, ['remainder', 'update', 'loading'])
         const list = _.get(state, ['remainder', 'list', 'data'])
+        const reserved = _.get(state, ['remainder', 'reserved', 'data'])
+        const reservedLoading = _.get(state, ['remainder', 'reserved', 'loading'])
         const listLoading = _.get(state, ['remainder', 'list', 'loading'])
-        const csvData = _.get(state, ['remainder', 'csv', 'data'])
-        const csvLoading = _.get(state, ['remainder', 'csv', 'loading'])
-        const createForm = _.get(state, ['form', 'RemainderCreateForm'])
+        const filterForm = _.get(state, ['form', 'RemainderFilterForm'])
+        const searchForm = _.get(state, ['form', 'RemainderSearchForm'])
+        const transferForm = _.get(state, ['form', 'RemainderTransferForm'])
+        const discardForm = _.get(state, ['form', 'RemainderDiscardForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
+        const dialogFilter = filterHelper(reserved, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 
         return {
             list,
             listLoading,
             detail,
             detailLoading,
-            createLoading,
-            updateLoading,
-            csvData,
-            csvLoading,
             filter,
-            createForm
+            filterForm,
+            transferForm,
+            discardForm,
+            searchForm,
+            filterItem,
+            reserved,
+            reservedLoading,
+            dialogFilter
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -58,71 +67,35 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(remainderListFetchAction(filter))
     }),
-
     withPropsOnChange((props, nextProps) => {
         const remainderId = _.get(nextProps, ['params', 'remainderId'])
-        return remainderId && _.get(props, ['params', 'remainderId']) !== remainderId
-    }, ({dispatch, params}) => {
+        return (remainderId && _.get(props, ['params', 'remainderId']) !== remainderId) ||
+            (props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
+    }, ({dispatch, params, filter}) => {
         const remainderId = _.toInteger(_.get(params, 'remainderId'))
-        remainderId && dispatch(remainderItemFetchAction(remainderId))
+        remainderId && dispatch(remainderItemFetchAction(remainderId, filter))
     }),
-
-    withState('openCSVDialog', 'setOpenCSVDialog', false),
-
+    withPropsOnChange((props, nextProps) => {
+        const nextDialog = _.get(nextProps, ['location', 'query', REMAINDER_RESERVED_DIALOG_OPEN])
+        const prevDialog = _.get(props, ['location', 'query', REMAINDER_RESERVED_DIALOG_OPEN])
+        return prevDialog !== nextDialog && nextDialog !== 'false'
+    }, ({dispatch, location}) => {
+        const dialog = _.get(location, ['query', REMAINDER_RESERVED_DIALOG_OPEN])
+        if (dialog !== 'false') {
+            dispatch(remainderReversedListFetchAction(dialog))
+        }
+    }),
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
+        handleOpenRemainderReservedDialog: props => (id) => {
+            const {filter, location: {pathname}, dispatch} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_RESERVED_DIALOG_OPEN]: id})})
+            return dispatch(remainderReversedListFetchAction(id))
         },
 
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(remainderCSVFetchAction(props.filter))
+        handleCloseRemainderReservedDialog: props => () => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_RESERVED_DIALOG_OPEN]: false})})
         },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
-        handleOpenConfirmDialog: props => (id) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.REMAINDER_ITEM_PATH, id),
-                query: filter.getParams({[REMAINDER_DELETE_DIALOG_OPEN]: true})
-            })
-        },
-
-        handleCloseConfirmDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DELETE_DIALOG_OPEN]: false})})
-        },
-        handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, filter, location: {pathname}} = props
-            dispatch(remainderDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DELETE_DIALOG_OPEN]: false})})
-                    dispatch(remainderListFetchAction(filter))
-                })
-        },
-
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
-
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_FILTER_OPEN]: true})})
@@ -131,60 +104,110 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_FILTER_OPEN]: false})})
         },
-        handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_CREATE_DIALOG_OPEN]: true})})
+        handleClearFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
         },
-
-        handleCloseCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_CREATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}} = props
-
-            return dispatch(remainderCreateAction(_.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[REMAINDER_CREATE_DIALOG_OPEN]: false})})
-                    dispatch(remainderListFetchAction(filter))
-                })
-        },
-
-        handleOpenUpdateDialog: props => (id) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.REMAINDER_ITEM_PATH, id),
-                query: filter.getParams({[REMAINDER_UPDATE_DIALOG_OPEN]: true})
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeChild', 'value']) || null
+            const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
+            const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
+            const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
+            filter.filterBy({
+                [REMAINDER_FILTER_OPEN]: false,
+                [REMAINDER_FILTER_KEY.STOCK]: stock,
+                [REMAINDER_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [REMAINDER_FILTER_KEY.TYPE_CHILD]: typeChild,
+                [REMAINDER_FILTER_KEY.MEASUREMENT]: measurement,
+                [REMAINDER_FILTER_KEY.BRAND]: brand
             })
         },
-
-        handleCloseUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_UPDATE_DIALOG_OPEN]: false})})
+        handleSubmitSearch: props => () => {
+            const {filter, searchForm} = props
+            const search = _.get(searchForm, ['values', 'search']) || null
+            filter.filterBy({
+                'search': search
+            })
         },
-
-        handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-            const remainderId = _.toInteger(_.get(props, ['params', 'remainderId']))
-            return dispatch(remainderUpdateAction(remainderId, _.get(createForm, ['values'])))
+        handleOpenTransferDialog: props => () => {
+            const {location: {pathname}, filter, dispatch} = props
+            dispatch(reset('RemainderTransferForm'))
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: true})})
+        },
+        handleCloseTransferDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: false})})
+        },
+        handleSubmitTransferDialog: props => () => {
+            const {location: {pathname}, dispatch, transferForm, filter} = props
+            return dispatch(remainderTransferAction(_.get(transferForm, ['values'])))
                 .then(() => {
-                    return dispatch(remainderItemFetchAction(remainderId))
+                    return dispatch(openSnackbarAction({message: 'Успешно отправлено'}))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[REMAINDER_UPDATE_DIALOG_OPEN]: false}))
+                    hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: false})})
                     dispatch(remainderListFetchAction(filter))
                 })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
+        },
+        handleOpenDiscardDialog: props => () => {
+            const {location: {pathname}, filter, dispatch} = props
+            dispatch(reset('RemainderDiscardForm'))
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: true})})
+        },
+        handleCloseDiscardDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: false})})
+        },
+        handleSubmitDiscardDialog: props => () => {
+            const {location: {pathname}, dispatch, discardForm, filter} = props
+            return dispatch(remainderDiscardAction(_.get(discardForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно списано'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: false})})
+                    dispatch(remainderListFetchAction(filter))
+                }).catch((error) => {
+                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
+                        return <p key={index}>{item}</p>
+                    })
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {notEnough && <p>{notEnough}</p>}
+                            {errorWhole}
+                        </div>
+                    }))
+                })
+        },
+        handleResetFilter: props => () => {
+            const {dispatch, location: {pathname}} = props
+            dispatch(reset('RemainderFilterForm'))
+            hashHistory.push({pathname})
         },
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.REMAINDER_LIST_URL, query: filter.getParam()})
+            hashHistory.push({pathname: ROUTER.REMAINDER_LIST_URL, query: filter.getParams()})
+        },
+        handleOpenDetail: props => (id) => {
+            const {filter} = props
+            hashHistory.push({pathname: sprintf(ROUTER.REMAINDER_ITEM_PATH, id), query: filter.getParams()})
         }
     })
 )
@@ -196,83 +219,81 @@ const RemainderList = enhance((props) => {
         listLoading,
         detail,
         detailLoading,
-        createLoading,
-        updateLoading,
         filter,
         layout,
-        params
+        params,
+        filterItem,
+        reserved,
+        reservedLoading,
+        dialogFilter
     } = props
 
-    const openCreateDialog = toBoolean(_.get(location, ['query', REMAINDER_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', REMAINDER_UPDATE_DIALOG_OPEN]))
-    const openConfirmDialog = toBoolean(_.get(location, ['query', REMAINDER_DELETE_DIALOG_OPEN]))
+    const stock = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.STOCK))
+    const type = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.TYPE))
+    const status = filter.getParam(REMAINDER_FILTER_KEY.STATUS)
     const openFilterDialog = toBoolean(_.get(location, ['query', REMAINDER_FILTER_OPEN]))
-
+    const openTransferDialog = toBoolean(_.get(location, ['query', REMAINDER_TRANSFER_DIALOG_OPEN]))
+    const openReversedDialog = _.toNumber(_.get(location, ['query', REMAINDER_RESERVED_DIALOG_OPEN]))
+    const openDiscardDialog = toBoolean(_.get(location, ['query', REMAINDER_DISCARD_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'remainderId'))
 
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
+    const reservedDetail = _.filter(_.get(list, 'results'), (item) => {
+        return _.get(item, 'id') === openReversedDialog
+    })
+    const reservedDialog = {
+        reservedDetail,
+        data: _.get(reserved, 'results'),
+        loading: reservedLoading,
+        dialogFilter,
+        openReversedDialog,
+        handleCloseRemainderReservedDialog: props.handleCloseRemainderReservedDialog,
+        handleOpenRemainderReservedDialog: props.handleOpenRemainderReservedDialog
     }
 
-    const createDialog = {
-        createLoading,
-        openCreateDialog,
-        handleOpenCreateDialog: props.handleOpenCreateDialog,
-        handleCloseCreateDialog: props.handleCloseCreateDialog,
-        handleSubmitCreateDialog: props.handleSubmitCreateDialog
-    }
     const filterDialog = {
+        initialValues: {
+            stock: {
+                value: stock
+            },
+            type: {
+                value: type
+            },
+            status: {
+                value: status
+            }
+        },
         openFilterDialog: openFilterDialog,
-        handleOpentFilterDialog: props.handleOpenFilterDialog,
-        handleCloseFilterDialog: props.handleCloseFilterDialog
+        handleOpenFilterDialog: props.handleOpenFilterDialog,
+        handleCloseFilterDialog: props.handleCloseFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog,
+        handleClearFilterDialog: props.handleClearFilterDialog
     }
 
-    const confirmDialog = {
-        openConfirmDialog: openConfirmDialog,
-        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
-        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
-        handleSendConfirmDialog: props.handleSendConfirmDialog
+    const discardDialog = {
+        openDiscardDialog,
+        handleOpenDiscardDialog: props.handleOpenDiscardDialog,
+        handleCloseDiscardDialog: props.handleCloseDiscardDialog,
+        handleSubmitDiscardDialog: props.handleSubmitDiscardDialog
     }
-    const updateDialog = {
-        initialValues: (() => {
-            if (!detail) {
-                return {}
-            }
-            return {
-                name: _.get(detail, 'name'),
-                manager: {
-                    value: _.get(detail, ['manager', 'id'])
-                },
-                remainderType: {
-                    value: _.toInteger(_.get(detail, 'remainderType'))
-                }
-            }
-        })(),
-        updateLoading: detailLoading || updateLoading,
-        openUpdateDialog,
-        handleOpenUpdateDialog: props.handleOpenUpdateDialog,
-        handleCloseUpdateDialog: props.handleCloseUpdateDialog,
-        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
+    const transferDialog = {
+        openTransferDialog: openTransferDialog,
+        handleOpenTransferDialog: props.handleOpenTransferDialog,
+        handleCloseTransferDialog: props.handleCloseTransferDialog,
+        handleSubmitTransferDialog: props.handleSubmitTransferDialog
     }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
-    }
-
     const listData = {
         data: _.get(list, 'results'),
         listLoading
     }
+    const currentRow = _.filter(_.get(list, 'results'), (item) => {
+        return _.get(item, 'id') === detailId
+    })
 
     const detailData = {
         id: detailId,
         data: detail,
-        detailLoading
+        detailLoading,
+        currentRow
     }
 
     return (
@@ -281,12 +302,15 @@ const RemainderList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
-                createDialog={createDialog}
-                confirmDialog={confirmDialog}
-                updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
-                csvDialog={csvDialog}
                 filterDialog={filterDialog}
+                handleCloseDetail={props.handleCloseDetail}
+                handleOpenDetail={props.handleOpenDetail}
+                transferDialog={transferDialog}
+                resetFilter={props.handleResetFilter}
+                discardDialog={discardDialog}
+                searchSubmit={props.handleSubmitSearch}
+                filterItem={filterItem}
+                reservedDialog={reservedDialog}
             />
         </Layout>
     )

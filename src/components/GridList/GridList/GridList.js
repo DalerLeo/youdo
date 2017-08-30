@@ -4,6 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
+import Paper from 'material-ui/Paper'
 import GridListNav from '../GridListNav'
 import GridListHeader from '../GridListHeader'
 import GridListBody from '../GridListBody'
@@ -29,7 +30,26 @@ const enhance = compose(
 )
 
 const GridList = enhance((props) => {
-    const {classes, list, customData, detail, filter, filterDialog, actionsDialog, withoutCheckboxes, withoutRow, withoutSearch} = props
+    const {
+        classes,
+        list,
+        customData,
+        detail,
+        filter,
+        filterDialog,
+        addButton,
+        actionsDialog,
+        withoutCheckboxes,
+        withoutRow,
+        withInvoice,
+        withoutSearch,
+        printDialog,
+        flexibleRow,
+        withoutPagination,
+        refreshAction,
+        listShadow
+    } = props
+
     const header = _.get(list, 'header')
     const listItems = _.get(list, 'list')
     const loading = _.get(list, 'loading')
@@ -37,9 +57,9 @@ const GridList = enhance((props) => {
     const loaderOrList = (listLoading) => {
         if (listLoading) {
             return (
-                <div className={classes.loader}>
-                    <CircularProgress size={100} thickness={6} />
-                </div>
+                <Paper zDepth={1} className={classes.loader} style={!listShadow ? {boxShadow: 'none'} : {} }>
+                    <CircularProgress size={40} thickness={4} />
+                </Paper>
             )
         }
 
@@ -48,20 +68,27 @@ const GridList = enhance((props) => {
                 filter={filter}
                 list={listItems}
                 detail={detail}
+                flexibleRow={flexibleRow}
                 withoutCheckboxes={withoutCheckboxes}
+                listShadow={listShadow}
             />
         )
     }
 
     return (
         <div className={classes.wrapper}>
-            <div className={classes.header}>
+            <Paper zDepth={1} className={classes.header} style={!listShadow ? {boxShadow: 'none'} : {}}>
                 <GridListNav
                     filter={filter}
                     customData={customData}
                     filterDialog={filterDialog}
+                    addButton={addButton}
                     actions={actionsDialog}
                     withoutSearch={withoutSearch}
+                    withInvoice={withInvoice}
+                    printDialog={printDialog}
+                    withoutPagination={withoutPagination}
+                    refreshAction={refreshAction}
                 />
                 <GridListHeader
                     filter={filter}
@@ -69,8 +96,9 @@ const GridList = enhance((props) => {
                     withoutCheckboxes={withoutCheckboxes}
                     withoutRow={withoutRow}
                     column={header}
+                    listShadow={listShadow}
                 />
-            </div>
+            </Paper>
             {loaderOrList(loading)}
         </div>
     )
@@ -81,6 +109,7 @@ GridList.propTypes = {
     withoutCheckboxes: PropTypes.bool,
     withoutSearch: PropTypes.bool,
     withoutRow: PropTypes.bool,
+    withInvoice: PropTypes.bool,
     list: PropTypes.shape({
         header: PropTypes.array.isRequired,
         list: PropTypes.array.isRequired,
@@ -92,12 +121,24 @@ GridList.propTypes = {
     }),
     detail: PropTypes.node.isRequired,
     actionsDialog: PropTypes.node,
-    filterDialog: PropTypes.node
+    filterDialog: PropTypes.node,
+    addButton: PropTypes.node,
+    printDialog: PropTypes.shape({
+        openPrint: PropTypes.bool,
+        handleOpenPrintDialog: PropTypes.func,
+        handleClosePrintDialog: PropTypes.func
+    }),
+    refreshAction: PropTypes.func
 }
 
 GridList.defaultProps = {
     withoutCheckboxes: false,
     withoutSearch: false,
+    withInvoice: false,
+    withRefreshBtn: false,
+    flexibleRow: false,
+    withoutPagination: false,
+    listShadow: true,
     actionsDialog: (<div>no</div>)
 }
 

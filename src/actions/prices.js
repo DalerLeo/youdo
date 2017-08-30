@@ -73,23 +73,6 @@ export const pricesListFetchAction = (filter) => {
     }
 }
 
-export const pricesCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get(API.PRICES_LIST, {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.PRICES_LIST_CSV,
-        payload
-    }
-}
-
 export const pricesItemFetchAction = (id) => {
     const payload = axios()
         .get(sprintf(API.PRICES_ITEM, id))
@@ -106,3 +89,18 @@ export const pricesItemFetchAction = (id) => {
     }
 }
 
+export const pricesMarketTypeFetchAction = () => {
+    const payload = axios()
+        .get(API.MARKET_TYPE_LIST)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.MARKET_TYPE_LIST,
+        payload
+    }
+}

@@ -8,6 +8,7 @@ import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import ArrowLeftIcon from './ArrowLeftIcon'
 import ArrowRightIcon from './ArrowRightIcon'
+import * as storageHelper from '../../../helpers/storage'
 
 const enhance = compose(
     injectSheet({
@@ -17,13 +18,21 @@ const enhance = compose(
             justifyContent: 'flex-end',
             color: '#5d6474'
         },
+        customWrapper: {
+            extend: 'wrapper',
+            position: 'absolute',
+            right: '30px',
+            top: '-52px',
+            height: '52px'
+        },
 
         count: {
             marginRight: '15px',
-            height: '54px !important',
+            height: '50px !important',
             '& > div': {
                 fontSize: '13px !important',
-                marginTop: '3px !important'
+                marginTop: '0 !important',
+                height: '100% !important'
             }
         },
 
@@ -47,24 +56,23 @@ const enhance = compose(
         onChange: props => (event, index, value) => {
             const {filter} = props
             event.preventDefault()
-
-            hashHistory.push(filter.createURL({pageSize: value, page: 1}))
+            hashHistory.push(filter.createURL({[filter.getKey('pageSize')]: value, [filter.getKey('page')]: 1}))
+            storageHelper.setPageSize(value)
         }
     })
 )
-const GridListNavPagination = enhance(({classes, onChange, filter}) => {
+const GridListNavPagination = enhance(({classes, onChange, filter, customPagination}) => {
     const prev = filter.prevPage()
     const next = filter.nextPage()
     const firstPage = 1
     const startPage = (filter.getPageRange() * (filter.getCurrentPage() - firstPage)) + firstPage
     const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
-
     return (
-        <div className={classes.wrapper}>
+        <div className={customPagination ? classes.customWrapper : classes.wrapper}>
             <div className={classes.count}>
                 <SelectField
                     value={filter.getPageRange()}
-                    style={{width: '60px', marginTop: '10px'}}
+                    style={{width: '52px', marginTop: '10px'}}
                     underlineStyle={{border: '0px solid'}}
                     onChange={onChange}>
                     <MenuItem value={10} primaryText="10" />
@@ -77,6 +85,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter}) => {
                 <div className={classes.gridPagination}>
                     <IconButton
                         disabled={Boolean(!prev)}
+                        disableTouchRipple={true}
                         iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}
                         onTouchTap={() => prev && hashHistory.push(prev)}>
                         <ArrowLeftIcon />
@@ -84,6 +93,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter}) => {
 
                     <IconButton
                         disabled={Boolean(!next)}
+                        disableTouchRipple={true}
                         iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}
                         onTouchTap={() => next && hashHistory.push(next)}>
                         <ArrowRightIcon />
@@ -96,6 +106,9 @@ const GridListNavPagination = enhance(({classes, onChange, filter}) => {
 
 GridListNavPagination.propTypes = {
     filter: PropTypes.object.isRequired
+}
+GridListNavPagination.defaultProps = {
+    customPagination: false
 }
 
 export default GridListNavPagination

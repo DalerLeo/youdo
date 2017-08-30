@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import Layout from '../../components/Layout'
@@ -32,6 +33,7 @@ import {
     supplyExpenseDeleteAction,
     supplyExpenseListFetchAction
 } from '../../actions/supplyExpense'
+import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const MINUS_ONE = -1
@@ -50,11 +52,11 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'SupplyFilterForm'])
         const createForm = _.get(state, ['form', 'SupplyCreateForm'])
         const filter = filterHelper(list, pathname, query)
-
         const supplyExpenseLoading = _.get(state, ['supplyExpense', 'create', 'loading'])
         const createSupplyExpenseForm = _.get(state, ['form', 'SupplyExpenseCreateForm'])
         const supplyExpenseList = _.get(state, ['supplyExpense', 'list', 'data'])
         const supplyExpenseListLoading = _.get(state, ['supplyExpense', 'list', 'loading'])
+        const filterItem = filterHelper(supplyExpenseList, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 
         return {
             list,
@@ -70,7 +72,8 @@ const enhance = compose(
             supplyExpenseLoading,
             createSupplyExpenseForm,
             supplyExpenseList,
-            supplyExpenseListLoading
+            supplyExpenseListLoading,
+            filterItem
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -93,11 +96,12 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const supplyId = _.get(nextProps, ['params', 'supplyId'])
-        return supplyId && _.get(props, ['params', 'supplyId']) !== supplyId
-    }, ({dispatch, params}) => {
+        return supplyId && (_.get(props, ['params', 'supplyId']) !== supplyId ||
+            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
+    }, ({dispatch, params, filterItem}) => {
         const supplyId = _.toInteger(_.get(params, 'supplyId'))
         supplyId && dispatch(supplyItemFetchAction(supplyId))
-        supplyId && dispatch(supplyExpenseListFetchAction(supplyId))
+        supplyId && dispatch(supplyExpenseListFetchAction(supplyId, filterItem))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -119,14 +123,18 @@ const enhance = compose(
             setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog, filter} = props
-            dispatch(supplyDeleteAction(detail.id))
+            const {dispatch, params, setOpenConfirmDialog, filter} = props
+            const detailId = _.toInteger(_.get(params, 'supplyId'))
+            dispatch(supplyDeleteAction(detailId))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                 })
                 .then(() => {
                     setOpenConfirmDialog(false)
-                    dispatch(supplyListFetchAction(filter))
+                    return dispatch(supplyItemFetchAction(detailId))
+                })
+                .then(() => {
+                    return dispatch(supplyListFetchAction(filter))
                 })
         },
 
@@ -175,11 +183,13 @@ const enhance = compose(
             const createdFromDate = _.get(filterForm, ['values', 'dateCreated', 'fromDate']) || null
             const createdToDate = _.get(filterForm, ['values', 'dateCreated', 'toDate']) || null
             const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
+            const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
 
             filter.filterBy({
                 [SUPPLY_FILTER_OPEN]: false,
                 [SUPPLY_FILTER_KEY.PROVIDER]: provider,
+                [SUPPLY_FILTER_KEY.PRODUCT]: product,
                 [SUPPLY_FILTER_KEY.STOCK]: stock,
                 [SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
                 [SUPPLY_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD'),
@@ -219,6 +229,17 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
                     dispatch(supplyListFetchAction(filter))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -260,14 +281,15 @@ const enhance = compose(
         },
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.SUPPLY_LIST_URL, query: filter.getParam()})
+            hashHistory.push({pathname: ROUTER.SUPPLY_LIST_URL, query: filter.getParams()})
         }
     }),
 
     withHandlers({
         handleSupplyExpenseOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('SupplyExpenseCreateForm'))
         },
 
         handleSupplyExpenseCloseCreateDialog: props => () => {
@@ -275,8 +297,8 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: false})})
         },
         handleSupplyExpenseSubmitCreateDialog: props => () => {
-            const {dispatch, createSupplyExpenseForm, filter, detail, location: {pathname}} = props
-            const id = _.get(detail, 'id')
+            const {dispatch, createSupplyExpenseForm, filter, location: {pathname}} = props
+            const id = _.toInteger(_.get(props, ['params', 'supplyId']))
 
             return dispatch(supplyExpenseCreateAction(_.get(createSupplyExpenseForm, ['values']), id))
                 .then(() => {
@@ -284,7 +306,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: false})})
-                    dispatch(supplyExpenseListFetchAction(id))
+                    return dispatch(supplyExpenseListFetchAction(id, filter))
                 })
         }
     })
@@ -304,7 +326,7 @@ const SupplyList = enhance((props) => {
         layout,
         params,
         expenseRemoveId,
-
+        filterItem,
         supplyExpenseLoading,
         supplyExpenseList,
         supplyExpenseListLoading
@@ -363,9 +385,13 @@ const SupplyList = enhance((props) => {
         handleSendConfirmExpenseDialog: props.handleSendConfirmExpenseDialog
     }
     const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const cost = _.toNumber(_.get(item, 'cost'))
+        const summary = cost / amount
         return {
-            amount: _.get(item, 'amount'),
-            cost: _.get(item, 'cost'),
+            amount: amount,
+            id: _.get(item, 'id'),
+            cost: summary,
             product: {
                 value: {
                     id: _.get(item, ['product', 'id']),
@@ -391,6 +417,7 @@ const SupplyList = enhance((props) => {
                 currency: {
                     value: _.get(detail, ['currency', 'id'])
                 },
+                contact: _.get(detail, ['contact', 'id']),
                 date_delivery: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 products: forUpdateProducts,
                 comment: _.get(detail, 'comment')
@@ -463,6 +490,7 @@ const SupplyList = enhance((props) => {
         <Layout {...layout}>
             <SupplyGridList
                 filter={filter}
+                filterItem={filterItem}
                 listData={listData}
                 detailData={detailData}
                 createDialog={createDialog}

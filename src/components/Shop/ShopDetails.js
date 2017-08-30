@@ -22,7 +22,7 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             justifyContent: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            display: 'flex'
         },
         wrapper: {
             width: '100%',
@@ -40,7 +40,9 @@ const enhance = compose(
             width: '100%',
             height: '65px',
             margin: '0 -30px',
-            padding: '0 30px'
+            padding: '0 30px',
+            position: 'relative',
+            boxSizing: 'content-box'
         },
         titleLabel: {
             fontSize: '18px',
@@ -67,6 +69,7 @@ const enhance = compose(
             color: '#fff',
             fontWeight: '600',
             padding: '20px 17px',
+            height: '65px',
             lineHeight: '1',
             textAlign: 'center'
         },
@@ -101,13 +104,6 @@ const enhance = compose(
             height: '165px',
             marginRight: 'calc(7% + 36px) !important',
             position: 'relative',
-            '& span:first-child': {
-                width: '230px',
-                height: '165px',
-                display: 'block',
-                marginRight: '7px',
-                marginBottom: '0'
-            },
             '& span:nth-child(4)': {
                 position: 'relative',
                 zIndex: '1'
@@ -124,20 +120,32 @@ const enhance = compose(
         },
         imageWrapper: {
             height: '100%',
-            marginRight: '36px',
             display: 'flex',
             flexDirection: 'column',
             flexWrap: 'wrap',
-            '& span': {
+            '& img': {
+                width: '100%',
+                height: '100%',
+                cursor: 'pointer'
+            }
+        },
+        otherImages: {
+            order: '2',
+            '& div': {
                 cursor: 'pointer',
                 width: '36px',
                 height: '36px',
                 marginBottom: '7px',
                 position: 'relative',
+                zIndex: '1',
+                '&:last-child strong': {
+                    display: 'flex !important'
+                },
                 '& strong': {
+                    background: 'rgba(0,0,0, 0.35)',
+                    display: 'none',
                     color: '#fff',
                     position: 'absolute',
-                    display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     top: '0',
@@ -146,11 +154,15 @@ const enhance = compose(
                     bottom: '0',
                     zIndex: '99'
                 }
-            },
-            '& img': {
-                width: '100%',
-                height: '100%'
             }
+        },
+        firstImage: {
+            width: '230px !important',
+            height: '165px !important',
+            display: 'block',
+            marginRight: '7px',
+            marginBottom: '0 !important',
+            order: '1 !important'
         },
         addImg: {
             background: '#999',
@@ -159,7 +171,9 @@ const enhance = compose(
             height: '36px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            marginBottom: '0 !important',
+            order: '3'
         },
         noImage: {
             background: '#efefef',
@@ -193,6 +207,15 @@ const enhance = compose(
                     marginLeft: '-32px'
                 }
             }
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
     })
 )
@@ -209,16 +232,35 @@ const iconStyle = {
     }
 }
 const ShopDetails = enhance((props) => {
-    const {classes, loading, data, confirmDialog, updateDialog, addPhotoDialog, slideShowDialog, handleCloseDetail} = props
+    const {
+        classes,
+        loading,
+        data,
+        confirmDialog,
+        updateDialog,
+        addPhotoDialog,
+        slideShowDialog,
+        handleCloseDetail
+    } = props
+
     const ZERO = 0
     const MAX_IMAGE_COUNT = 4
+    const THREE = 3
+
     const EVERY_DAY = '1'
     const ONCE_IN_A_WEEK = '2'
     const TWICE_IN_A_WEEK = '3'
     const IN_A_DAY = '4'
+
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'name'])
+    const firstName = _.get(data, ['createdBy', 'firstName'])
+    const secondName = _.get(data, ['createdBy', 'secondName'])
+    let createdBy = firstName + ' ' + secondName
+    if (!firstName && !secondName) {
+        createdBy = 'Неизвестно'
+    }
     const shopType = _.get(data, ['marketType', 'name'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
@@ -232,21 +274,52 @@ const ShopDetails = enhance((props) => {
     if (images.length > MAX_IMAGE_COUNT) {
         slicedImages = _.slice(images, ZERO, MAX_IMAGE_COUNT)
     }
-    const lastImage = _.last(slicedImages)
     const moreImages = images.length - slicedImages.length
+
     if (loading) {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6} />
+                    <CircularProgress size={40} thickness={4} />
                 </div>
             </div>
         )
     }
+
+    const primaryImage = _.map(images, (item, index) => {
+        const src = _.get(item, 'file')
+        const isPrimary = _.get(item, 'isPrimary')
+        if (isPrimary) {
+            return (
+                <span key={index} className={classes.firstImage}>
+                    <img src={src} alt="" onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}/>
+                </span>
+            )
+        }
+        return false
+    })
+    let count = 0
+    const otherImages = _.map(images, (item, index) => {
+        const src = _.get(item, 'file')
+        const isPrimary = _.get(item, 'isPrimary')
+        if (!isPrimary && (count++) < THREE) {
+            return (
+                <div key={index} className="smallImages">
+                    {moreImages > ZERO && <strong onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}>{moreImages}+</strong>}
+                    <img src={src} alt="" onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}/>
+                </div>
+            )
+        }
+        return false
+    })
+
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel} onClick={handleCloseDetail}>{name}</div>
+                <div className={classes.titleLabel}>{name}</div>
+                <div className={classes.closeDetail}
+                    onClick={handleCloseDetail}>
+                </div>
                 <div className={classes.titleButtons}>
                     <div className={classes.frequency}>
                         <span>Частота посещений:</span>
@@ -289,19 +362,11 @@ const ShopDetails = enhance((props) => {
                             <a onClick={addPhotoDialog.handleOpenAddPhotoDialog}>добавить фото</a>
                         </div>
                     </div>
-                        : <div className={classes.imageWrapper}> {
-                            _.map(slicedImages, (item, index) => {
-                                const src = _.get(item, 'image')
-                                const imgId = _.get(item, 'id')
-                                const isLastImage = (imgId === lastImage.id)
-                                return (
-                                    <span key={index} onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}>
-                                        {isLastImage && moreImages !== ZERO && <strong>{moreImages}+</strong>}
-                                        <img src={src} alt=""/>
-                                    </span>
-                                )
-                            })
-                        }
+                        : <div className={classes.imageWrapper}>
+                            {primaryImage}
+                            <div className={classes.otherImages}>
+                                {otherImages}
+                            </div>
                             <div onClick={addPhotoDialog.handleOpenAddPhotoDialog} className={classes.addImg}>
                                 <Add color="#fff"/>
                             </div>
@@ -311,26 +376,28 @@ const ShopDetails = enhance((props) => {
                     <div className={classes.infoTitle}>Детали</div>
                     <ul className={classes.details}>
                         <li>Клиент</li>
+                        <li>Создал</li>
                         <li>Тип заведения</li>
                         <li>Зона</li>
-                        <li>Адрес</li>
-                        <li>Ориентир</li>
                     </ul>
                     <ul className={classes.details}>
                         <li>{client}</li>
+                        <li>{createdBy}</li>
                         <li>{shopType}</li>
                         <li>{!zone ? <span className="redFont">Не определена</span> : {zone}}</li>
-                        <li>{address}</li>
-                        <li>{guide}</li>
                     </ul>
                 </div>
                 <div className={classes.infoBlock}>
                     <div className={classes.infoTitle}>Контакты</div>
                     <ul className={classes.details}>
                         <li>{contactName}</li>
+                        <li>Адрес</li>
+                        <li>Ориентир</li>
                     </ul>
                     <ul className={classes.details}>
                         <li>{phone}</li>
+                        <li>{address}</li>
+                        <li>{guide}</li>
                     </ul>
                 </div>
             </div>

@@ -3,7 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {Col} from 'react-flexbox-grid'
 import Paper from 'material-ui/Paper'
 import * as TAB from '../../constants/manufactureTab'
 import {Tabs, Tab} from 'material-ui/Tabs'
@@ -14,35 +13,35 @@ import ManufactureShipment from './Tab/ManufactureShipment'
 const enhance = compose(
     injectSheet({
         ManufactRightSide: {
-            padding: '0px 25px',
+            padding: '0px 30px',
+            width: 'calc(100% - 320px)',
             zIndex: '2'
         },
         colorCat: {
             marginBottom: '0',
             width: '100%',
             '& > div': {
-                width: '40% !important',
-                paddingRight: '60%',
+                paddingRight: 'calc(100% - 450px)',
                 background: '#fff !important'
             },
             '& > div:first-child': {
-                borderBottom: '1px #transparent solid'
+                borderBottom: 'none !important'
             },
             '& > div:last-child': {
                 width: '100% !important',
                 padding: '0'
             },
             '& > div:nth-child(2) > div': {
-                marginTop: '0px !important',
-                marginBottom: '-1px',
+                marginTop: '-3px !important',
                 backgroundColor: '#12aaeb !important',
-                height: '1px !important'
+                height: '3px !important',
+                zIndex: '3'
             },
             '& button': {
                 color: '#333 !important',
                 backgroundColor: '#fefefe !important',
                 '& > div > div': {
-                    height: '57px !important'
+                    height: '50px !important'
                 }
             },
             '& button > span:first-line': {
@@ -70,7 +69,7 @@ const ManufactureTab = enhance((props) => {
     } = props
     const tab = _.get(tabData, 'tab')
     return (
-        <Col className={classes.ManufactRightSide} xs={9} md={9}>
+        <div className={classes.ManufactRightSide}>
             <div>
                 <Paper zDepth={1}>
                     <Tabs
@@ -99,7 +98,7 @@ const ManufactureTab = enhance((props) => {
                 {TAB.MANUFACTURE_TAB_SHIPMENT === tab && <ManufactureShipment
                     shipmentData={shipmentData}/>}
             </div>
-        </Col>
+        </div>
     )
 })
 ManufactureTab.propTypes = {

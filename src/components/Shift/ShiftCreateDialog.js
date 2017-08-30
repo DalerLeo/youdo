@@ -93,7 +93,7 @@ const ShiftCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit}>
                     <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.inContent} style={{minHeight: '150px'}}>
                         <div className={classes.field} style={{paddingTop: '15px'}}>
@@ -123,6 +123,7 @@ const ShiftCreateDialog = enhance((props) => {
                         <FlatButton
                             label="Применить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             type="submit"
                         />
                     </div>

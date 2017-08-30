@@ -9,16 +9,9 @@ const ZERO = 0
 
 const enhance = compose(
     connect((state) => {
-        const ONE = 1
-        const extra = _.get(state, ['product', 'extra', 'data'])
-        const extraLoading = _.get(state, ['product', 'extra', 'loading'])
-        const count = _.get(state, ['form', 'OrderReturnForm', 'values', 'amount']) || ONE
         const products = _.get(state, ['form', 'OrderReturnForm', 'values', 'returned_products'])
         return {
-            extra,
-            count,
-            products,
-            extraLoading
+            products
         }
     })
 )

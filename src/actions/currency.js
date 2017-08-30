@@ -5,6 +5,23 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/currencySerializer'
 
+export const courseCreateAction = (formValues, currency) => {
+    const requestData = serializers.courseSerializer(formValues, currency)
+    const payload = axios()
+        .post(API.CURRENCY_COURSE_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.CURRENCY_COURSE_CREATE,
+        payload
+    }
+}
+
 export const currencyCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
@@ -87,54 +104,3 @@ export const currencyItemFetchAction = (filter, id) => {
         payload
     }
 }
-
-export const currencyPrimaryFetchAction = () => {
-    const payload = axios()
-        .get(API.CURRENCY_PRIMARY)
-        .then((response) => {
-            return response
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response']))
-        })
-
-    return {
-        type: actionTypes.CURRENCY_PRIMARY,
-        payload
-    }
-}
-
-export const currencyPrimaryCreateAction = (formValues) => {
-    const requestData = serializers.createPrimarySerializer(formValues)
-    const payload = axios()
-        .post(sprintf(API.CURRENCY_PRIMARY_CREATE), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.CURRENCY_PRIMARY_UPDATE,
-        payload
-    }
-}
-
-export const setCurrencyCreateAction = (formValues, currency) => {
-    const requestData = serializers.setCurrencySerializer(formValues, currency)
-    const payload = axios()
-        .post(sprintf(API.SET_CURRENCY_CREATE), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.SET_CURRENCY_UPDATE,
-        payload
-    }
-}
-

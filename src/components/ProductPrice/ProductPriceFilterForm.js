@@ -34,7 +34,6 @@ const enhance = compose(
             padding: '10px 20px 10px 20px'
         },
         afterFilter: {
-            width: '268px',
             alignItems: 'center',
             display: 'flex',
             backgroundColor: '#efefef',
@@ -80,8 +79,20 @@ const enhance = compose(
         submit: {
             color: '#fff !important'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     }),
     reduxForm({
@@ -144,18 +155,19 @@ const ProductPriceFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputField} name="type" component={ProductTypeSearchField} label="Тип продукта"/>
+                        <Field className={classes.inputFieldCustom} name="type" component={ProductTypeSearchField} label="Тип продукта"/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="measurement" component={MeasurementSearchField} label="Мера"/>
+                        <Field className={classes.inputFieldCustom} name="measurement" component={MeasurementSearchField} label="Мера"/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="brand" component={BrandSearchField} label="Бренд"/>
+                        <Field className={classes.inputFieldCustom} name="brand" component={BrandSearchField} label="Бренд"/>
                     </div>
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
+                        labelStyle={{fontSize: '13px'}}
                         label="Применить"
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

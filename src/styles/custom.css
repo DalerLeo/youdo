@@ -26,6 +26,9 @@ input:-webkit-autofill {
     width: 4px;
     height: 4px;
 }
+* {
+    box-sizing: border-box;
+}
 
 html {
     height: 100%;
@@ -35,6 +38,7 @@ html {
 }
 
 body {
+    background: #f2f5f8;
     margin: 0;
     padding: 0;
     height: 100%;
@@ -57,9 +61,11 @@ a {
     cursor: pointer;
 }
 
-label, button, input, span {
+label, button, input {
     font-size: 13px !important;
 }
+
+
 
 ul {
     margin: 0;
@@ -68,7 +74,11 @@ ul {
 }
 
 strong {
-        font-weight: 600;
+    font-weight: 600;
+}
+
+body > div object {
+    display: none;
 }
 
 .dottedList {
@@ -123,3 +133,190 @@ hr.lineDote {
 .greenFont svg {color:#81c784 !important;}
 .redFont {color:#e57373 !important;}
 .redFont svg {color:#e57373 !important;}
+
+/*Linear progress*/
+.progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    display: block;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.progress .indeterminate {
+    background-color: #12aaeb;
+}
+
+.progress .indeterminate:before {
+    content: '';
+    position: absolute;
+    background-color: inherit;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    will-change: left, right;
+    -webkit-animation: indeterminate 1.5s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+    animation: indeterminate 1.5s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+.sendButtonWrapper {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 10px;
+    right: 0;
+    margin-bottom: 0;
+    border-radius: 100%;
+    z-index: 999;
+}
+
+.sendButtonWrapper ul {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    right: 40px;
+    height: 100%;
+    top: 50%;
+    margin: 0;
+    /*right: calc(100% + 10px);*/
+    -webkit-transform: translate(0, -50%);
+    -moz-transform: translate(0, -50%);
+    -ms-transform: translate(0, -50%);
+    -o-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+
+}
+
+.sendButtonWrapper ul li{
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    opacity: 0;
+    position: relative;
+    -webkit-transform: scale(0.4);
+    -moz-transform: scale(0.4);
+    -ms-transform: scale(0.4);
+    -o-transform: scale(0.4);
+    transform: scale(0.4);
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.sendButtonWrapper ul li button div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.sendButtonWrapper:hover ul li {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+    left: 0 !important;
+    opacity: 1;
+}
+
+.progress .indeterminate:after {
+    content: '';
+    position: absolute;
+    background-color: inherit;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    will-change: left, right;
+    -webkit-animation: indeterminate-short 1.5s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+    animation: indeterminate-short 1.5s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+    -webkit-animation-delay: 1.15s;
+    animation-delay: 1.15s;
+}
+.printCloseBtn {
+    position: fixed !important;
+    top: 5px;
+    right: 5px;
+}
+.printItem {
+    width: 100%;
+    padding: 20px 30px 40px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #212121;
+}
+@media print {
+    .printCloseBtn {
+        display: none !important;
+    }
+    .printItem {
+        page-break-inside: avoid;
+    }
+    .printItem > div:first-child > div {
+        margin: 0;
+    }
+}
+
+@-webkit-keyframes indeterminate {
+    0% {
+        left: -35%;
+        right: 100%;
+    }
+    60% {
+        left: 100%;
+        right: -90%;
+    }
+    100% {
+        left: 100%;
+        right: -90%;
+    }
+}
+
+@keyframes indeterminate {
+    0% {
+        left: -35%;
+        right: 100%;
+    }
+    60% {
+        left: 100%;
+        right: -90%;
+    }
+    100% {
+        left: 100%;
+        right: -90%;
+    }
+}
+
+@-webkit-keyframes indeterminate-short {
+    0% {
+        left: -200%;
+        right: 100%;
+    }
+    60% {
+        left: 107%;
+        right: -8%;
+    }
+    100% {
+        left: 107%;
+        right: -8%;
+    }
+}
+
+@keyframes indeterminate-short {
+    0% {
+        left: -200%;
+        right: 100%;
+    }
+    60% {
+        left: 107%;
+        right: -8%;
+    }
+    100% {
+        left: 107%;
+        right: -8%;
+    }
+}

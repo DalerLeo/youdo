@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withHandlers} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
@@ -9,7 +10,12 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {ProductTypeSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
+import {
+    BrandSearchField,
+    MeasurementSearchField,
+    ProductTypeChildSearchField,
+    ProductTypeParentSearchField
+} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -17,7 +23,8 @@ export const PRODUCT_FILTER_OPEN = 'openFilterDialog'
 
 export const PRODUCT_FILTER_KEY = {
     BRAND: 'brand',
-    TYPE: 'type',
+    TYPE_PARENT: 'typeParent',
+    TYPE_CHILD: 'typeChild',
     MEASUREMENT: 'measurement'
 }
 
@@ -34,7 +41,6 @@ const enhance = compose(
             padding: '10px 20px 10px 20px'
         },
         afterFilter: {
-            width: '268px',
             alignItems: 'center',
             display: 'flex',
             backgroundColor: '#efefef',
@@ -80,13 +86,31 @@ const enhance = compose(
         submit: {
             color: '#fff !important'
         },
-        inputField: {
-            fontSize: '13px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     }),
     reduxForm({
         form: 'ProductFilterForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'ProductFilterForm', 'values', 'typeParent', 'value'])
+        return {
+            typeParent
+        }
     }),
     withHandlers({
         getCount: props => () => {
@@ -102,9 +126,8 @@ const enhance = compose(
 )
 
 const ProductFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, typeParent, handleSubmit} = props
     const filterCounts = getCount()
-
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
             return (
@@ -142,20 +165,41 @@ const ProductFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
+                    <Field
+                        name="typeParent"
+                        className={classes.inputFieldCustom}
+                        component={ProductTypeParentSearchField}
+                        label="Тип продукта"
+                        fullWidth={true}
+                    />
+                    {typeParent ? <Field
+                        name="typeChild"
+                        className={classes.inputFieldCustom}
+                        component={ProductTypeChildSearchField}
+                        parentType={typeParent}
+                        label="Подкатегория"
+                        fullWidth={true}
+                    /> : null}
                     <div>
-                        <Field className={classes.inputField} name="type" component={ProductTypeSearchField} label="Тип продукта"/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="measurement"
+                            component={MeasurementSearchField}
+                            label="Мера"/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="measurement" component={MeasurementSearchField} label="Мера"/>
-                    </div>
-                    <div>
-                        <Field className={classes.inputField} name="brand" component={BrandSearchField} label="Бренд"/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="brand"
+                            component={BrandSearchField}
+                            label="Бренд"/>
                     </div>
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
+                        labelStyle={{fontSize: '13px'}}
                         label="Применить"
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

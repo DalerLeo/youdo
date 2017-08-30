@@ -41,7 +41,7 @@ export const usersDeleteAction = (id) => {
 export const usersUpdateAction = (id, formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
-        .put(sprintf(API.USERS_ITEM, id), requestData)
+        .patch(sprintf(API.USERS_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -84,6 +84,22 @@ export const usersItemFetchAction = (id) => {
 
     return {
         type: actionTypes.USERS_ITEM,
+        payload
+    }
+}
+
+export const userGroupListFetchAction = () => {
+    const payload = axios()
+        .get(API.USERS_GROUP)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.USERS_GROUP,
         payload
     }
 }

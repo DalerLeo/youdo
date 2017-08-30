@@ -3,6 +3,9 @@ export const DASHBOARD_URL = '/'
 export const SIGN_IN = 'sign-in'
 export const SIGN_IN_URL = '/sign-in'
 
+export const MAIN_PAGE = 'main'
+export const MAIN_PAGE_URL = `/${MAIN_PAGE}`
+
 export const SHOP = 'shop'
 export const SHOP_LIST_URL = `/${SHOP}`
 export const SHOP_ITEM_URL = `${SHOP_LIST_URL}/:shopId`
@@ -158,6 +161,8 @@ export const ZONES_ITEM_PATH = `/${ZONES}/%d`
 
 export const TRACKING = 'tracking'
 export const TRACKING_LIST_URL = `/${TRACKING}`
+export const TRACKING_ITEM_URL = `${TRACKING_LIST_URL}/:agentId`
+export const TRACKING_ITEM_PATH = `/${TRACKING}/%d`
 
 export const MARKET_TYPE = 'marketType'
 export const MARKET_TYPE_LIST_URL = `/${MARKET_TYPE}`
@@ -173,3 +178,94 @@ export const REMAINDER = 'remainder'
 export const REMAINDER_LIST_URL = `/${REMAINDER}`
 export const REMAINDER_ITEM_URL = `${REMAINDER_LIST_URL}/:remainderId`
 export const REMAINDER_ITEM_PATH = `/${REMAINDER}/%d`
+
+export const STATISTICS = 'statistics'
+export const STATISTICS_LIST_URL = `/${STATISTICS}`
+
+export const STATISTICS_SALES_URL = `/${STATISTICS}/sales`
+export const STATISTICS_SALES_ITEM_URL = `${STATISTICS_SALES_URL}/:statSaleId`
+export const STATISTICS_SALES_ITEM_PATH = `${STATISTICS_SALES_URL}/%d`
+
+export const STATISTICS_AGENT = 'statistics/agent'
+export const STATISTICS_AGENT_URL = `/${STATISTICS_AGENT}`
+export const STATISTICS_AGENT_ITEM_URL = `/${STATISTICS_AGENT}/:statAgentId`
+export const STATISTICS_AGENT_ITEM_PATH = `/${STATISTICS_AGENT}/%d`
+export const STATISTICS_PRODUCT_URL = `/${STATISTICS}/product`
+export const STATISTICS_MARKET = 'statistics/market'
+export const STATISTICS_MARKET_URL = `/${STATISTICS_MARKET}`
+export const STATISTICS_MARKET_ITEM_URL = `/${STATISTICS_MARKET}/:statMarketId`
+export const STATISTICS_MARKET_ITEM_PATH = `/${STATISTICS_MARKET}/%d`
+
+export const STATISTICS_FINANCE_URL = `/${STATISTICS}/finance`
+export const STATISTICS_INCOME = 'statistics/income'
+export const STATISTICS_INCOME_URL = `/${STATISTICS_INCOME}`
+export const STATISTICS_OUTCOME = 'statistics/outcome'
+export const STATISTICS_OUTCOME_URL = `/${STATISTICS_OUTCOME}`
+export const STATISTICS_DEBTORS = 'statistics/debtors'
+export const STATISTICS_DEBTORS_URL = `/${STATISTICS_DEBTORS}`
+export const STATISTICS_DEBTORS_ITEM_URL = `/${STATISTICS_DEBTORS}/:statDebtorsId`
+export const STATISTICS_DEBTORS_ITEM_PATH = `/${STATISTICS_DEBTORS}/%d`
+export const STATISTICS_OUTCOME_CATEGORY = 'statistics/outcomeCategory'
+export const STATISTICS_OUTCOME_CATEGORY_URL = `/${STATISTICS_OUTCOME_CATEGORY}`
+
+// ------------------------------------------------------------------------
+export const STATISTICS_STOCK_URL = `/${STATISTICS}/stock`
+
+export const STATISTICS_REMAINDER_URL = `${STATISTICS}/remainder`
+export const STATISTICS_REMAINDER_ITEM_URL = `/${STATISTICS_REMAINDER_URL}/:statRemainderId`
+export const STATISTICS_REMAINDER_ITEM_PATH = `/${STATISTICS_REMAINDER_URL}/%d`
+
+export const STATISTICS_CASHBOX_URL = `${STATISTICS}/cashbox`
+export const STATISTICS_CASHBOX_ITEM_URL = `/${STATISTICS_CASHBOX_URL}/:cashboxId`
+export const STATISTICS_CASHBOX_ITEM_PATH = `/${STATISTICS_CASHBOX_URL}/%d`
+
+export const STOCK_RECEIVE = 'stockReceive'
+export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`
+export const STOCK_RECEIVE_ITEM_URL = `${STOCK_RECEIVE_LIST_URL}/:stockReceiveId`
+export const STOCK_RECEIVE_ITEM_PATH = `/${STOCK_RECEIVE}/%d`
+
+export const CLIENT_BALANCE = 'clientBalance'
+export const CLIENT_BALANCE_LIST_URL = `/${CLIENT_BALANCE}`
+export const CLIENT_BALANCE_ITEM_URL = `${CLIENT_BALANCE_LIST_URL}/:clientBalanceId`
+export const CLIENT_BALANCE_ITEM_PATH = `${CLIENT_BALANCE}/%d`
+
+export const PLAN = 'plan'
+export const PLAN_LIST_URL = `${PLAN}`
+export const PLAN_ITEM_URL = `/${PLAN}/:agentId`
+export const PLAN_ITEM_PATH = `${PLAN}/%d`
+
+export const POSITION = 'position'
+export const POSITION_LIST_URL = `/${POSITION}`
+export const POSITION_ITEM_URL = `${POSITION_LIST_URL}/:positionId`
+export const POSITION_ITEM_PATH = `${POSITION}/%d`
+
+export const ACTIVITY = 'activity'
+export const ACTIVITY_LIST_URL = `${ACTIVITY}`
+export const ACTIVITY_ITEM_URL = `/${ACTIVITY}/:activityId`
+export const ACTIVITY_ITEM_PATH = `${ACTIVITY}/%d`
+
+export const STATISTICS_PRODUCT_MOVE = 'statistics/productMove'
+export const STATISTICS_PRODUCT_MOVE_URL = `/${STATISTICS_PRODUCT_MOVE}`
+export const STATISTICS_PRODUCT_MOVE_ITEM_URL = `/${STATISTICS_PRODUCT_MOVE}/:statProductMoveId`
+export const STATISTICS_PRODUCT_MOVE_ITEM_PATH = `/${STATISTICS_PRODUCT_MOVE}/%d`
+
+export const STATISTICS_REPORT = 'statistics/report'
+export const STATISTICS_REPORT_URL = `/${STATISTICS_REPORT}`
+
+export const ACCESS_DENIED = 'access_denied'
+export const ACCESS_DENIED_URL = `/${ACCESS_DENIED}`
+
+export const DIVISION = 'division'
+export const DIVISION_LIST_URL = `/${DIVISION}`
+export const DIVISION_ITEM_URL = `${DIVISION_LIST_URL}/:divisionId`
+export const DIVISION_ITEM_PATH = `${DIVISION}/%d`
+
+export const RETURN = 'return'
+export const RETURN_LIST_URL = `/${RETURN}`
+export const RETURN_ITEM_URL = `/${RETURN}/:returnId`
+export const RETURN_ITEM_PATH = `/${RETURN}/%d`
+
+export const JOIN = 'join'
+export const JOIN_LIST_URL = `/${JOIN}`
+export const JOIN_ITEM_URL = `/${JOIN}/:itemId`
+export const JOIN_ITEM_PATH = `/${JOIN}/%d`

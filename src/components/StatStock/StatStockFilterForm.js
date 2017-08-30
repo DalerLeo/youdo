@@ -37,7 +37,6 @@ const enhance = compose(
             padding: '10px 20px 10px 20px'
         },
         afterFilter: {
-            width: '268px',
             alignItems: 'center',
             display: 'flex',
             backgroundColor: '#efefef',
@@ -152,18 +151,19 @@ const StatStockFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     {isBalance === TWO && <div>
-                        <Field className={classes.inputField} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
                     </div>}
                     <div>
-                        <Field className={classes.inputField} name="brand" component={BrandSearchField} label="Бренд" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="brand" component={BrandSearchField} label="Бренд" fullWidth={true}/>
                     </div>
                     <div>
-                        <Field className={classes.inputField} name="type" component={ProductTypeSearchField} label="Тип продукта" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="type" component={ProductTypeSearchField} label="Тип продукта" fullWidth={true}/>
                     </div>
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
+                        labelStyle={{fontSize: '13px'}}
                         label="Применить"
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

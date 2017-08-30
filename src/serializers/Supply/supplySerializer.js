@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import moment from 'moment'
 
 export const createSerializer = (data) => {
@@ -9,10 +10,45 @@ export const createSerializer = (data) => {
     const comment = _.get(data, ['comment'])
     const contact = _.get(data, ['contact'])
     const products = _.map(_.get(data, ['products']), (item) => {
+        const amount = numberWithoutSpaces(_.get(item, 'amount'))
+        const itemCost = numberWithoutSpaces(_.get(item, 'cost'))
+        const summary = numberWithoutSpaces(_.toNumber(amount) * _.toNumber(itemCost))
+        const product = _.get(item, ['product', 'value', 'id'])
         return {
-            amount: item.amount,
-            cost: item.cost,
-            product: item.product.value.id
+            amount: amount,
+            cost: summary,
+            product: product
+        }
+    })
+
+    return {
+        provider,
+        stock,
+        contact,
+        comment,
+        'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
+        currency,
+        products
+    }
+}
+
+export const updateSerializer = (data, id) => {
+    const provider = _.get(data, ['provider', 'value'])
+    const stock = _.get(data, ['stock', 'value'])
+    const currency = _.get(data, ['currency', 'value'])
+    const comment = _.get(data, ['comment'])
+    const contact = _.get(data, ['contact'])
+    const products = _.map(_.get(data, ['products']), (item) => {
+        const spId = _.get(item, 'id')
+        const amount = numberWithoutSpaces(_.get(item, 'amount'))
+        const itemCost = numberWithoutSpaces(_.get(item, 'cost'))
+        const summary = numberWithoutSpaces(_.toNumber(amount) * _.toNumber(itemCost))
+        const product = _.get(item, ['product', 'value', 'id'])
+        return {
+            id: spId,
+            amount: amount,
+            cost: summary,
+            product: product
         }
     })
 
@@ -32,6 +68,7 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
     return {
         'provider': _.get(defaultData, 'provider'),
+        'product': _.get(defaultData, 'product'),
         'stock': _.get(defaultData, 'stock'),
         'date_delivery_0': _.get(defaultData, 'deliveryFromDate'),
         'date_delivery_1': _.get(defaultData, 'deliveryToDate'),
@@ -44,11 +81,3 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

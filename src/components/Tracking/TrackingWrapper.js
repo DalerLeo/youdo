@@ -1,22 +1,53 @@
+import _ from 'lodash'
 import React from 'react'
+import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
-import {reduxForm, Field} from 'redux-form'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
+import sprintf from 'sprintf'
+import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
-import DateToDateField from '../ReduxForm/Basic/DateToDateFieldCustom'
-import MarketTypeSearch from '../ReduxForm/Shop/MarketTypeSearchField'
-import AgentSearch from '../ReduxForm/Users/UsersSearchField'
-import Checkbox from '../ReduxForm/Basic/CheckBox'
-import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
+import moment from 'moment'
+import CircularProgress from 'material-ui/CircularProgress'
+import IconButton from 'material-ui/IconButton'
 import TrackingMap from './TrackingMap'
-import More from 'material-ui/svg-icons/navigation/expand-more'
-import Less from 'material-ui/svg-icons/navigation/expand-less'
+import TrackingMarketsZones from './TrackingMarketsZones'
+import TrackingDatePicker from './TrackingDatePicker'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
+import TrackingTime from './TrackingTime'
+import TrackingAgentSearch from './TrackingAgentSearch'
+import ShopDetails from './TrackingShopDetails'
+import Man from 'material-ui/svg-icons/action/accessibility'
+import Loyalty from 'material-ui/svg-icons/action/loyalty'
+import Van from 'material-ui/svg-icons/maps/local-shipping'
+import Money from 'material-ui/svg-icons/maps/local-atm'
+
+const minutePerHour = 60
+const current = (_.toInteger(moment().format('H')) * minutePerHour) + _.toInteger(moment().format('m'))
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            width: '100%',
+            background: '#fff',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        mapLoader: {
+            background: '#fcfcfc',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            left: '-28px',
+            top: '60px',
+            right: '322px',
+            bottom: '-28px',
+            zIndex: '2'
+        },
         red: {
             color: '#e57373 !important'
         },
@@ -27,8 +58,9 @@ const enhance = compose(
             background: '#f2f5f8',
             position: 'relative',
             overflowX: 'hidden',
-            margin: '0 -28px',
-            minHeight: 'calc(100% - 4px)',
+            margin: '-60px -28px 0',
+            minHeight: 'calc(100% + 28px)',
+            zIndex: '1',
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -2px 5px, rgba(0, 0, 0, 0.05) 0px -2px 6px',
             '& > div:first-child': {
                 position: 'absolute',
@@ -38,64 +70,72 @@ const enhance = compose(
                 bottom: '0'
             }
         },
+        wrapper: {
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+        },
         trackingInfo: {
             background: '#fff',
             position: 'absolute',
-            width: '450px',
-            top: '0',
-            bottom: '0',
+            width: '350px',
+            top: '60px',
+            right: '-28px',
+            bottom: '-28px',
+            borderLeft: '1px #efefef solid',
             transition: 'all 0.3s ease',
-            zIndex: '2'
-        },
-        toggleButton: {
-            position: 'absolute',
-            left: '-24px',
-            top: '18px',
-            padding: '8px 0',
-            background: '#fff',
-            cursor: 'pointer'
-        },
-        expanded: {
-            display: 'flex',
-            alignItems: 'center',
-            '& svg': {
-                transform: 'rotate(-90deg)',
-                position: 'relative',
-                left: '1px'
-            }
-        },
-        collapsed: {
-            extend: 'expanded',
-            '& svg': {
-                transform: 'rotate(90deg)',
-                position: 'relative',
-                left: '1px'
-            }
+            zIndex: '6'
         },
         trackingInfoTitle: {
             display: 'flex',
             alignItems: 'center',
-            padding: '20px 30px',
-            borderBottom: '1px #efefef solid',
+            borderTop: '1px #efefef solid',
+            padding: '0 30px',
+            minHeight: '70px',
             fontWeight: '600',
             '& span': {
                 textAlign: 'right',
-                lineHeight: '1'
+                lineHeight: '14px'
             }
         },
         online: {
             color: '#666',
-            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            fontSize: '30px',
+            fontSize: '28px',
+            lineHeight: '28px',
             marginLeft: '10px',
             '& span': {
                 fontSize: 'inherit !important'
             }
         },
+        titleTabs: {
+            background: '#ccc',
+            display: 'flex',
+            justifyContent: 'center',
+            minHeight: '40px',
+            '& button': {
+                justifyContent: 'center',
+                alignItems: 'center'
+            }
+        },
+        activeTab: {
+            '& svg': {
+                color: '#666 !important'
+            },
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                bottom: '0',
+                borderBottom: '6px solid #fff',
+                borderLeft: '4px solid transparent',
+                borderRight: '4px solid transparent'
+            }
+        },
         content: {
-            padding: '20px 30px'
+            padding: '20px 30px',
+            overflowY: 'auto',
+            borderTop: '1px #efefef solid'
         },
         inputFieldCustom: {
             flexBasis: '200px',
@@ -120,6 +160,9 @@ const enhance = compose(
                 left: '-10px !important'
             }
         },
+        filter: {
+            marginBottom: '20px'
+        },
         title: {
             fontWeight: '600',
             marginBottom: '15px'
@@ -130,9 +173,23 @@ const enhance = compose(
         agent: {
             display: 'flex',
             alignItems: 'center',
-            padding: '10px 0',
-            '& span i': {
+            margin: '0 -30px',
+            height: '40px',
+            padding: '10px 30px',
+            cursor: 'pointer',
+            position: 'relative',
+            '& a': {
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                bottom: '0',
+                right: '0',
+                padding: '0 30px',
+                color: '#333'
+            },
+            '& i': {
                 fontSize: '10px',
+                marginLeft: '5px',
                 color: '#999'
             },
             '& svg': {
@@ -141,115 +198,241 @@ const enhance = compose(
                 marginRight: '10px',
                 color: '#666'
             }
+        },
+        activeAgent: {
+            extend: 'agent',
+            background: '#f4f4f4'
         }
     }),
-    reduxForm({
-        form: 'TrackingCreateForm',
-        enableReinitialize: true
-    }),
-    withState('expandInfo', 'setExpandInfo', true),
-    withState('onlineAgents', 'setOnlineAgents', false)
+    withState('sliderValue', 'setSliderValue', current)
 )
 
 const TrackingWrapper = enhance((props) => {
     const ZERO = 0
     const {
         classes,
-        expandInfo,
-        setExpandInfo,
-        onlineAgents,
-        setOnlineAgents
+        filter,
+        listData,
+        detailData,
+        handleOpenDetails,
+        agentLocation,
+        agentLocationLoading,
+        marketsLocation,
+        isOpenMarkets,
+        initialValues,
+        tabData,
+        filterForm,
+        calendar,
+        shopDetails,
+        sliderValue,
+        setSliderValue
     } = props
-    const online = 30
+
+    const listLoading = _.get(listData, 'listLoading')
+    const agentsCount = _.get(listData, ['data', 'length'])
+    let agentsOnline = 0
+    const agentId = _.get(detailData, 'id')
+
+    const openDetail = _.get(detailData, 'openDetail')
+    let openShopDetail = false
+    if (_.get(shopDetails, 'openShopDetails') > ZERO) {
+        openShopDetail = true
+    }
+    const orderedData = _.orderBy(_.get(listData, 'data'), ['registeredDate'], ['desc'])
+
+    const iconStyle = {
+        icon: {
+            color: '#fff',
+            width: 22,
+            height: 22
+        },
+        button: {
+            width: 40,
+            height: 40,
+            padding: 0,
+            display: 'flex',
+            margin: '0 10px'
+        }
+    }
+    const buttons = [
+        {
+            group: 1,
+            icon: <Man/>
+        },
+        {
+            group: 2,
+            icon: <Loyalty/>
+        },
+        {
+            group: 3,
+            icon: <Van/>
+        },
+        {
+            group: 4,
+            icon: <Money/>
+        }
+    ]
+    const today = moment().format('YYYY-MM-DD')
+    const urlDate = _.get(filter.getParams(), 'date') || moment().format('YYYY-MM-DD')
+
     const zoneInfoToggle = (
-        <div className={classes.trackingInfo} style={expandInfo ? {right: '0'} : {right: '-450px'}}>
-            <div className={classes.toggleButton}>
-                {expandInfo ? <div className={classes.expanded} onClick={() => { setExpandInfo(false) }}><Arrow/></div>
-                    : <div className={classes.collapsed} onClick={() => { setExpandInfo(true) }}><Arrow/></div>}
-            </div>
+        <div className={classes.trackingInfo}>
+            <div className={classes.wrapper}>
+                {openDetail && <TrackingDatePicker
+                    filter={filter}
+                    calendar={calendar}
+                    initialValues={filterForm.initialValues}/>}
+
+                {(today === urlDate) &&
                 <div className={classes.trackingInfoTitle}>
-                    <span>Агентов <br/> online</span>
-                    <div className={classes.online} onClick={() => { setOnlineAgents(!onlineAgents) }}>
-                        <div>
-                            <span className={online > ZERO && classes.green}>{online}</span>/<span>45</span>
+                    <span>Сотрудников <br/> online</span>
+                    {listLoading
+                        ? <div className={classes.loader} style={{width: '65px'}}>
+                            <div>
+                                <CircularProgress size={25} thickness={3}/>
+                            </div>
                         </div>
-                        {onlineAgents ? <Less color="#666"/> : <More color="#666"/>}
-                    </div>
+                        : <div className={classes.online}>
+                            <div>
+                                {
+                                    _.map(_.get(listData, 'data'), (item) => {
+                                        const FIVE_MIN = 350000
+                                        const dateNow = _.toInteger(moment().format('x'))
+                                        const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                                        let isOnline = false
+                                        if ((dateNow - registeredDate) <= FIVE_MIN) {
+                                            isOnline = true
+                                        }
+                                        if (isOnline) {
+                                            agentsOnline++
+                                        }
+                                    })
+                                }
+                                <span
+                                    className={agentsOnline > ZERO && classes.green}>{agentsOnline}</span>/<span>{agentsCount}</span>
+                            </div>
+                        </div>}
+                </div>}
+                <div className={classes.titleTabs}>
+                    {_.map(buttons, (item) => {
+                        const group = _.get(item, 'group')
+                        const groupId = _.get(tabData, 'groupId')
+                        const icon = _.get(item, 'icon')
+
+                        return (
+                            <IconButton
+                                key={group}
+                                disableTouchRipple={true}
+                                className={(group === groupId) && classes.activeTab}
+                                onTouchTap={() => { tabData.handleClickTab(group) }}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}>
+                                {icon}
+                            </IconButton>
+                        )
+                    })}
                 </div>
+                <TrackingAgentSearch filter={filter}/>
                 <div className={classes.content}>
-                    {onlineAgents &&
-                        <div className={classes.activeAgents}>
-                            <div className={classes.agent}>
-                                <Dot color="#81c784"/>
-                                <span>Трололоев Хабибулла</span>
-                            </div>
-                            <div className={classes.agent}>
-                                <Dot color="#81c784"/>
-                                <span>Трололоев Хабибулла</span>
-                            </div>
-                            <div className={classes.agent}>
-                                <Dot/>
-                                <span>Трололоев Хабибулла</span>
-                            </div>
-                            <div className={classes.agent}>
-                                <Dot/>
-                                <span>Трололоев Хабибулла</span>
-                            </div>
-                            <div className={classes.agent}>
-                                <Dot/>
-                                <span>Трололоев Хабибулла <i>(2 часа назад)</i></span>
+                    {listLoading
+                        ? <div className={classes.loader}>
+                            <div>
+                                <CircularProgress size={40} thickness={4}/>
                             </div>
                         </div>
-                    }
-                    <div className={classes.filter}>
-                        <div className={classes.title}>Фильтры</div>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="border"
-                            component={MarketTypeSearch}
-                            label="Выберите зону"
-                            fullWidth={true}/>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="agent"
-                            component={AgentSearch}
-                            label="Агент"
-                            fullWidth={true}/>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="period"
-                            component={DateToDateField}
-                            label="Посмотреть по периоду"
-                            fullWidth={true}/>
-                        <Field
-                            name="showMarkets"
-                            className={classes.checkbox}
-                            component={Checkbox}
-                            label="Отображать магазины"/>
-                        <Field
-                            name="showZones"
-                            className={classes.checkbox}
-                            component={Checkbox}
-                            label="Отображать зоны"/>
-                        <Field
-                            name="agentTrack"
-                            className={classes.checkbox}
-                            component={Checkbox}
-                            label="Пройденный маршрут агента"/>
-                    </div>
+                        : <div className={classes.activeAgents}>
+                            {_.map(orderedData, (item) => {
+                                const id = _.get(item, 'id')
+                                const agent = _.get(item, 'agent')
+                                const FIVE_MIN = 350000
+                                const dateNow = _.toInteger(moment().format('x'))
+                                const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                                const difference = dateNow - registeredDate
+                                let isOnline = false
+                                if (difference <= FIVE_MIN) {
+                                    isOnline = true
+                                }
+                                const lastSeen = moment(registeredDate).fromNow()
+
+                                return (
+                                    <div key={id} className={(id === agentId) ? classes.activeAgent : classes.agent}>
+                                        <Link to={{
+                                            pathname: sprintf(ROUTES.TRACKING_ITEM_PATH, id),
+                                            query: filter.getParams()
+                                        }}>
+                                        </Link>
+                                        <Dot style={isOnline ? {color: '#81c784'} : {color: '#666'}}/>
+                                        <span>{agent}</span>
+                                        {!isOnline && <i>({lastSeen})</i>}
+                                    </div>
+                                )
+                            })
+                            }
+                        </div>}
                 </div>
+            </div>
+            {openShopDetail &&
+            <ShopDetails
+                shopDetails={shopDetails}
+            />
+            }
         </div>
     )
 
     return (
         <Container>
-            <SubMenu url={ROUTES.ZONES_LIST_URL}/>
+            <SubMenu url={ROUTES.TRACKING_LIST_URL} opacity={true}/>
+            {(listLoading || agentLocationLoading) &&
+            <div className={classes.mapLoader}>
+                <div>
+                    <CircularProgress size={40} thickness={4}/>
+                </div>
+            </div>}
             <div className={classes.trackingWrapper}>
-                <TrackingMap />
-                {zoneInfoToggle}
+                <TrackingMap
+                    filter={filter}
+                    agentId={agentId}
+                    listData={_.get(listData, 'data')}
+                    handleOpenDetails={handleOpenDetails}
+                    agentLocation={agentLocation}
+                    marketsLocation={marketsLocation}
+                    isOpenMarkets={isOpenMarkets}
+                    shopDetails={shopDetails}
+                    sliderValue={sliderValue}
+                />
             </div>
+            {zoneInfoToggle}
+            <TrackingMarketsZones
+                filter={filter}
+                filterForm={filterForm}
+                agentId={agentId}
+                openDetail={openDetail}/>
+            <TrackingTime
+                sliderValue={sliderValue}
+                setSliderValue={setSliderValue}
+                initialValues={initialValues}
+                openDetail={openDetail}/>
         </Container>
     )
 })
+
+TrackingWrapper.PropTypes = {
+    filter: PropTypes.object,
+    listData: PropTypes.object,
+    detailData: PropTypes.object,
+    agentLocation: PropTypes.object,
+    marketsLocation: PropTypes.object,
+    handleOpenDetails: PropTypes.func,
+    filterForm: PropTypes.shape({
+        handleSubmitFilterDialog: PropTypes.func.isRequired
+    }).isRequired,
+    isOpenTrack: PropTypes.bool,
+    isOpenMarkets: PropTypes.bool,
+    shopDetails: PropTypes.shape({
+        openShopDetails: PropTypes.number.isRequired,
+        handleOpenShopDetails: PropTypes.func.isRequired,
+        handleCloseShopDetails: PropTypes.func.isRequired
+    })
+}
 
 export default TrackingWrapper

@@ -33,7 +33,7 @@ const enhance = compose(
             paddingTop: '5px',
             paddingBottom: '22px',
             fontSize: '14px',
-            fontWeight: '700',
+            fontWeight: '600',
             textTransform: 'uppercase',
             textAlign: 'center',
             color: '#647994',
@@ -100,6 +100,7 @@ const SignInForm = enhance((props) => {
                     <RaisedButton
                         type="submit"
                         label="Войти"
+                        labelStyle={{fontSize: '13px'}}
                         primary={true}
                         fullWidth={true}
                     />

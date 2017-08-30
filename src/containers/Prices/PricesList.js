@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import moment from 'moment'
+import {reset} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -22,9 +23,9 @@ import {
     pricesCreateAction,
     pricesUpdateAction,
     pricesListFetchAction,
-    pricesCSVFetchAction,
     pricesDeleteAction,
-    pricesItemFetchAction
+    pricesItemFetchAction,
+    pricesMarketTypeFetchAction
 } from '../../actions/prices'
 
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -38,9 +39,8 @@ const enhance = compose(
         const createLoading = _.get(state, ['prices', 'create', 'loading'])
         const updateLoading = _.get(state, ['prices', 'update', 'loading'])
         const list = _.get(state, ['prices', 'list', 'data'])
+        const marketTypeList = _.get(state, ['prices', 'marketType', 'data'])
         const listLoading = _.get(state, ['prices', 'list', 'loading'])
-        const csvData = _.get(state, ['prices', 'csv', 'data'])
-        const csvLoading = _.get(state, ['prices', 'csv', 'loading'])
         const filterForm = _.get(state, ['form', 'PricesFilterForm'])
         const createForm = _.get(state, ['form', 'PricesCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -52,11 +52,10 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
-            csvData,
-            csvLoading,
             filter,
             filterForm,
-            createForm
+            createForm,
+            marketTypeList
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -71,25 +70,18 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const pricesId = _.toInteger(_.get(params, 'pricesId'))
         pricesId && dispatch(pricesItemFetchAction(pricesId))
+        dispatch(pricesMarketTypeFetchAction())
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const prevDialog = toBoolean(_.get(nextProps, ['location', 'query', PRICES_CREATE_DIALOG_OPEN]))
+        const nextDialog = toBoolean(_.get(nextProps, ['location', 'query', PRICES_CREATE_DIALOG_OPEN]))
+        return prevDialog !== nextDialog && nextDialog
+    }, ({dispatch, location}) => {
+        const nextDialog = toBoolean(_.get(location, ['query', PRICES_CREATE_DIALOG_OPEN]))
+        nextDialog && dispatch(pricesMarketTypeFetchAction())
     }),
 
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
-        handleOpenCSVDialog: props => () => {
-            const {dispatch, setOpenCSVDialog} = props
-            setOpenCSVDialog(true)
-
-            dispatch(pricesCSVFetchAction(props.filter))
-        },
-
-        handleCloseCSVDialog: props => () => {
-            const {setOpenCSVDialog} = props
-            setOpenCSVDialog(false)
-        },
-
         handleOpenConfirmDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICES_DELETE_DIALOG_OPEN]: true})})
@@ -102,18 +94,22 @@ const enhance = compose(
             const {dispatch, location: {pathname}, filter, params} = props
             const detailId = _.toNumber(_.get(params, 'pricesId'))
             dispatch(pricesDeleteAction(detailId))
-                .catch(() => {
+                .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[PRICES_DELETE_DIALOG_OPEN]: false})})
                     dispatch(pricesListFetchAction(filter))
                 })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                })
         },
 
         handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICES_FILTER_OPEN]: true})})
+            dispatch(reset('PricesCreateForm'))
         },
 
         handleCloseFilterDialog: props => () => {
@@ -128,34 +124,14 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const deliveryFromDate = _.get(filterForm, ['values', 'dateDelivery', 'fromDate']) || null
-            const deliveryToDate = _.get(filterForm, ['values', 'dateDelivery', 'toDate']) || null
-            const createdFromDate = _.get(filterForm, ['values', 'dateCreated', 'fromDate']) || null
-            const createdToDate = _.get(filterForm, ['values', 'dateCreated', 'toDate']) || null
-            const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 [PRICES_FILTER_OPEN]: false,
-                [PRICES_FILTER_KEY.PROVIDER]: provider,
-                [PRICES_FILTER_KEY.STOCK]: stock,
-                [PRICES_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
-                [PRICES_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD'),
-                [PRICES_FILTER_KEY.CREATED_FROM_DATE]: createdFromDate && createdFromDate.format('YYYY-MM-DD'),
-                [PRICES_FILTER_KEY.CREATED_TO_DATE]: createdToDate && createdToDate.format('YYYY-MM-DD')
+                [PRICES_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [PRICES_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
-        },
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
         },
 
         handleOpenCreateDialog: props => () => {
@@ -208,7 +184,7 @@ const enhance = compose(
         },
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.PRICES_LIST_URL, query: filter.getParam()})
+            hashHistory.push({pathname: ROUTER.PRICES_LIST_URL, query: filter.getParams()})
         },
 
         handleClickDetail: props => (id) => {
@@ -228,25 +204,19 @@ const PricesList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+        marketTypeList
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', PRICES_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', PRICES_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PRICES_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', PRICES_DELETE_DIALOG_OPEN]))
-    const provider = _.toInteger(filter.getParam(PRICES_FILTER_KEY.PROVIDER))
-    const stock = _.toInteger(filter.getParam(PRICES_FILTER_KEY.STOCK))
-    const deliveryFromDate = filter.getParam(PRICES_FILTER_KEY.DELIVERY_FROM_DATE)
-    const deliveryToDate = filter.getParam(PRICES_FILTER_KEY.DELIVERY_TO_DATE)
-    const createdFromDate = filter.getParam(PRICES_FILTER_KEY.CREATED_FROM_DATE)
-    const createdToDate = filter.getParam(PRICES_FILTER_KEY.CREATED_TO_DATE)
+    const beginFromDate = filter.getParam(PRICES_FILTER_KEY.BEGIN_FROM_DATE)
+    const beginToDate = filter.getParam(PRICES_FILTER_KEY.BEGIN_TO_DATE)
+    const tillFromDate = filter.getParam(PRICES_FILTER_KEY.TILL_FROM_DATE)
+    const tillToDate = filter.getParam(PRICES_FILTER_KEY.TILL_TO_DATE)
     const detailId = _.get(params, 'pricesId')
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
 
     const createDialog = {
         createLoading,
@@ -265,6 +235,7 @@ const PricesList = enhance((props) => {
     const forUpdateProducts = _.map(_.get(detail, 'products'), (item) => {
         return {
             product: {
+                text: _.get(item, ['product', 'name']),
                 value: {
                     id: _.get(item, ['product', 'id']),
                     name: _.get(item, ['product', 'name']),
@@ -274,20 +245,67 @@ const PricesList = enhance((props) => {
             amount: _.get(item, 'amount')
         }
     })
+    const filterBonus = _.filter(_.get(detail, 'products'), {'type': '1'})
+    const forUpdateBonus = _.map(filterBonus, (item) => {
+        return {
+            bonusProduct: {
+                text: _.get(item, ['product', 'name']),
+                value: {
+                    id: _.get(item, ['product', 'id']),
+                    name: _.get(item, ['product', 'name']),
+                    measurement: _.get(item, ['product', 'measurement'])
+                }
+            }
+        }
+    })
+
+    const filterGift = _.filter(_.get(detail, 'products'), {'type': '2'})
+    const forUpdateGift = _.map(filterGift, (item) => {
+        return {
+            giftProduct: {
+                text: _.get(item, ['product', 'name']),
+                value: {
+                    id: _.get(item, ['product', 'id']),
+                    name: _.get(item, ['product', 'name']),
+                    measurement: _.get(item, ['product', 'measurement'])
+                }
+            },
+            giftAmount: _.get(item, 'amount')
+        }
+    })
     const updateDialog = {
         initialValues: (() => {
+            const promotionType = _.get(detail, 'type')
             if (!detail || openCreateDialog) {
-                return {}
+                return {
+                    marketTypes: _.get(marketTypeList, 'results')
+                }
+            }
+            if (promotionType === 'bonus') {
+                return {
+                    name: _.get(detail, 'name'),
+                    discount: _.get(detail, 'discount'),
+                    beginDate: moment(_.get(detail, ['beginDate'])).toDate(),
+                    tillDate: moment(_.get(detail, ['tillDate'])).toDate(),
+                    bonusProducts: forUpdateBonus && forUpdateBonus,
+                    giftProducts: forUpdateGift && forUpdateGift,
+                    promotionType: promotionType,
+                    amount: _.toNumber(_.get(detail, 'totalAmount')),
+                    marketTypes: _.get(detail, 'marketTypes')
+                }
             }
             return {
                 name: _.get(detail, 'name'),
                 discount: _.get(detail, 'discount'),
                 beginDate: moment(_.get(detail, ['beginDate'])).toDate(),
                 tillDate: moment(_.get(detail, ['tillDate'])).toDate(),
-                products: forUpdateProducts
+                products: forUpdateProducts,
+                promotionType: promotionType,
+                amount: _.get(detail, 'totalAmount'),
+                marketTypes: _.get(detail, 'marketTypes')
             }
         })(),
-        updateLoading: updateLoading,
+        updateLoading,
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
@@ -296,19 +314,13 @@ const PricesList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            provider: {
-                value: provider
+            beginDate: {
+                fromDate: beginFromDate && moment(beginFromDate, 'YYYY-MM-DD'),
+                toDate: beginToDate && moment(beginToDate, 'YYYY-MM-DD')
             },
-            stock: {
-                value: stock
-            },
-            dateDelivery: {
-                fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
-                toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
-            },
-            dateCreated: {
-                fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
-                toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
+            tillDate: {
+                fromDate: tillFromDate && moment(tillFromDate, 'YYYY-MM-DD'),
+                toDate: tillToDate && moment(tillToDate, 'YYYY-MM-DD')
             }
         },
         filterLoading: false,
@@ -317,14 +329,6 @@ const PricesList = enhance((props) => {
         handleCloseFilterDialog: props.handleCloseFilterDialog,
         handleClearFilterDialog: props.handleClearFilterDialog,
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
-    }
-
-    const csvDialog = {
-        csvData: props.csvData,
-        csvLoading: props.csvLoading,
-        openCSVDialog: props.openCSVDialog,
-        handleOpenCSVDialog: props.handleOpenCSVDialog,
-        handleCloseCSVDialog: props.handleCloseCSVDialog
     }
 
     const listData = {
@@ -348,9 +352,7 @@ const PricesList = enhance((props) => {
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                csvDialog={csvDialog}
             />
         </Layout>
     )

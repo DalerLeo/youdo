@@ -9,23 +9,37 @@ const MINUS_ONE = -1
 export const createIncomeSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
     const comment = _.get(data, 'comment')
-
+    const clientId = _.get(data, ['client', 'value'])
+    const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
+    const division = _.get(data, ['division', 'value'])
     return {
-        amount,
+        'amount': numberWithoutSpaces(amount),
         comment,
-        'cashbox': cashboxId
+        'cashbox': cashboxId,
+        'client': clientId,
+        'custom_rate': customRate,
+        'division': division && division
     }
 }
 
 export const createExpenseSerializer = (data, cashboxId) => {
-    const amount = _.get(data, 'amount') > ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
+    let amount = numberWithoutSpaces(_.get(data, 'amount'))
+    if (amount > ZERO) {
+        amount *= MINUS_ONE
+    }
     const comment = _.get(data, 'comment')
-    const objectId = _.get(data, ['categoryId', 'value'])
+    const objectId = _.get(data, ['expanseCategory', 'value'])
+    const clientId = _.get(data, ['client', 'value'])
+    const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
+    const division = _.get(data, ['division', 'value'])
     return {
-        amount,
+        amount: amount,
         comment,
         'cashbox': cashboxId,
-        'expanse_category': objectId
+        'expanse_category': objectId,
+        'client': clientId,
+        'custom_rate': customRate,
+        'division': division && division
     }
 }
 
@@ -48,23 +62,17 @@ export const listFilterSerializer = (data, cashbox) => {
     const payType = _.get(defaultData, 'type')
     const type = (payType) ? (_.toNumber(payType) === ONE) ? 'out' : 'in' : null
     return {
+        'division': _.get(defaultData, 'division'),
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'type': type,
         'cashbox': newCashbox,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
+        'client': _.get(defaultData, 'client'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
         'expanse_category': _.get(data, 'categoryExpense')
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
-
-    return {
-        ...defaultData,
-        format: 'csv'
-    }
-}

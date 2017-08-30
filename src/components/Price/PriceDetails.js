@@ -11,6 +11,9 @@ import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import PriceSetForm from './PriceSetForm'
 import getConfig from '../../helpers/getConfig'
+import moment from 'moment'
+import numberFormat from '../../helpers/numberFormat'
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -37,12 +40,13 @@ const enhance = compose(
             width: '100%',
             height: '60px',
             padding: '0 30px',
-            borderBottom: '1px #efefef solid'
+            borderBottom: '1px #efefef solid',
+            position: 'relative'
         },
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700',
+            fontWeight: '600',
             cursor: 'pointer'
         },
         titleButtons: {
@@ -50,7 +54,7 @@ const enhance = compose(
         },
         bodyTitle: {
             display: 'flex',
-            fontWeight: '700',
+            fontWeight: '600',
             marginBottom: '25px',
             fontSize: '14px',
             justifyContent: 'space-between',
@@ -68,6 +72,7 @@ const enhance = compose(
             }
         },
         leftSide: {
+            position: 'relative',
             extend: 'subBlock',
             flexBasis: '45%',
             maxWidth: '45%',
@@ -100,12 +105,21 @@ const enhance = compose(
                     textAlign: 'right'
                 },
                 '& > div:first-child': {
-                    textAlign: 'left'
+                    textAlign: 'left',
+                    padding: '0!important'
+                },
+                '& > div:last-child': {
+                    padding: '0!important'
                 }
             },
             overflowY: 'auto',
-            overflowX: 'hidden',
-            margin: '0 -0.5rem'
+            overflowX: 'hidden'
+        },
+        agentCanSet: {
+            margin: '-10px -30px 10px',
+            padding: '10px 30px',
+            background: '#f2f5f8',
+            fontWeight: '600'
         },
         average: {
             fontWeight: '600',
@@ -114,8 +128,17 @@ const enhance = compose(
             textAlign: 'right'
         },
         averagePrice: {
-            fontWeight: '700',
+            fontWeight: '600',
             paddingLeft: '20px'
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
     })
 )
@@ -126,14 +149,24 @@ const PriceDetails = enhance((props) => {
         priceSetForm,
         detailData,
         handleCloseDetail,
-        mergedList
+        mergedList,
+        listDetailData
     } = props
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
     const marketTypeIsLoading = _.get(detailData, 'marketTypeLoading')
     const priceListItemsIsLoading = _.get(detailData, 'priceListItemsLoading')
-    const priceList = _.get(detailData, 'priceListItemsList')
+    const priceHistoryList = _.get(detailData, 'priceItemHistoryList')
+    const priceHistoryLoading = _.get(detailData, 'priceItemHistoryLoading')
     const name = _.get(detailData, ['data', 'name'])
+    const measurement = _.get(detailData, ['data', 'measurement', 'name'])
+    const priceUpdated = _.get(listDetailData, ['0', 'priceUpdated']) ? moment(_.get(listDetailData, ['0', 'priceUpdated'])).format('DD.MM.YYYY') : 'Не установлено'
+    const averageCost = _.get(listDetailData, ['0', 'netCost'])
+
+    const minPrice = numberFormat(_.get(detailData, ['data', 'minPrice']))
+    const maxPrice = numberFormat(_.get(detailData, ['data', 'maxPrice']))
+    const customPrice = _.get(detailData, ['data', 'customPrice'])
+    const currencyName = _.get(detailData, ['data', 'currencyName'])
+
     const iconStyle = {
         icon: {
             color: '#666',
@@ -141,8 +174,8 @@ const PriceDetails = enhance((props) => {
             height: 20
         },
         button: {
-            width: 48,
-            height: 48,
+            width: 20,
+            height: 20,
             padding: 0
         }
     }
@@ -150,7 +183,7 @@ const PriceDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -158,14 +191,16 @@ const PriceDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}
+                <div className={classes.titleLabel}>{name}</div>
+                <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
-                    {name}</div>
+                </div>
                 <div className={classes.titleButtons}>
                     {!priceSetForm.openPriceSetForm && <Tooltip position="bottom" text="Закрыть">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
+                            disableTouchRipple={true}
                             touch={true}
                             onTouchTap={handleCloseDetail}>
                             <CloseIcon2 />
@@ -174,46 +209,68 @@ const PriceDetails = enhance((props) => {
                 </div>
             </div>
             <div className={classes.content}>
+
                 <div className={classes.leftSide}>
                     <div className={classes.bodyTitle}>Поставки</div>
-                    <div className={classes.tableContent}>
-                        <Row>
-                            <Col xs={2} style={{fontSize: '15px'}}>&#8470;</Col>
-                            <Col style={{textAlign: 'left'}} xs={3}>Дата</Col>
-                            <Col style={{textAlign: 'left'}} xs={3}>Количество</Col>
-                            <Col xs={4}>Себестоимость</Col>
-                        </Row>
-                        <Row className="dottedList">
-                            <Col xs={2}>
-                                <a onClick={priceSupplyDialog.handleOpenSupplyDialog} className={classes.link}>
-                                    P-1121
-                                </a>
-                            </Col>
-                            <Col style={{textAlign: 'left'}} xs={3}>23 апр, 2017</Col>
-                            <Col style={{textAlign: 'left'}} xs={3}>200 кг</Col>
-                            <Col xs={4}>90 000 UZS</Col>
-                        </Row>
-                        <div className={classes.average}> Усредненная себестоимость:
-                            <span className={classes.averagePrice}>100 000 UZS</span>
+                    {priceHistoryLoading && <div className={classes.loader}>
+                                                <div>
+                                                    <CircularProgress size={40} thickness={4}/>
+                                                </div>
+                                            </div>}
+                    {!priceHistoryLoading &&
+                        <div className={classes.tableContent}>
+                            <Row>
+                                <Col xs={2} style={{fontSize: '15px'}}>&#8470;</Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>Дата</Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>Количество</Col>
+                                <Col xs={4}>Себестоимость</Col>
+                            </Row>
+
+                            {_.map(priceHistoryList, (item) => {
+                                const amount = _.get(item, 'amount')
+                                const netCost = _.get(item, 'netCost')
+                                const id = _.get(item, 'id')
+                                const supplyId = _.get(item, 'supplyId')
+                                return (
+                                    <Row key={id} className="dottedList">
+                                        <Col xs={2}>
+                                            <a onClick={ () => { priceSupplyDialog.handleOpenSupplyDialog(id) }} className={classes.link}>
+                                                {supplyId}
+                                            </a>
+                                        </Col>
+                                        <Col style={{textAlign: 'left'}} xs={3}>23 апр, 2017</Col>
+                                        <Col style={{textAlign: 'left'}} xs={3}>{numberFormat(amount, measurement)}</Col>
+                                        <Col xs={4}>{numberFormat(netCost, getConfig('PRIMARY_CURRENCY'))}</Col>
+                                    </Row>
+                                )
+                            })}
+
+                            <div className={classes.average}> Усредненная себестоимость:
+                                <span className={classes.averagePrice}>{numberFormat(averageCost, getConfig('PRIMARY_CURRENCY'))}</span>
+                            </div>
                         </div>
-                    </div>
+                    }
+
                 </div>
+
                 <div className={classes.rightSide}>
                     {(marketTypeIsLoading || priceListItemsIsLoading) && <div className={classes.loader}>
-                        <CircularProgress size={60} thickness={5} />
+                        <CircularProgress size={40} thickness={4} />
                     </div>}
-                    {priceSetForm.openPriceSetForm && <PriceSetForm
-                        initialValues={priceSetForm.initialValues}
-                        onClose={priceSetForm.handleClosePriceSetForm}
-                        onSubmit={priceSetForm.handleSubmitPriceSetForm}
-                        priceList={priceList}
-                        mergedList={mergedList}
-                    />
+                    {!marketTypeIsLoading && !priceListItemsIsLoading && priceSetForm.openPriceSetForm &&
+                        <PriceSetForm
+                            initialValues={priceSetForm.initialValues}
+                            onClose={priceSetForm.handleClosePriceSetForm}
+                            onSubmit={priceSetForm.handleSubmitPriceSetForm}
+                            mergedList={mergedList}
+                            priceUpdatedDate={priceUpdated}
+                            priceHolder={priceSetForm.initialValues}
+                        />
                     }
                     {(!marketTypeIsLoading && !priceListItemsIsLoading && !priceSetForm.openPriceSetForm) && <div>
                         <div className={classes.bodyTitle}>
                             <div>Цены на товар
-                                <span className={classes.rightSideTitleDate}> (23 апр, 2017)</span>
+                                <span className={classes.rightSideTitleDate}> ({priceUpdated})</span>
                             </div>
                             <div className={classes.titleButtons}>
                                 <Tooltip position="bottom" text="Изменить">
@@ -221,29 +278,31 @@ const PriceDetails = enhance((props) => {
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         touch={true}
-                                        onTouchTap={priceSetForm.handleOpenPriceSetForm}
-                                    >
+                                        disableTouchRipple={true}
+                                        onTouchTap={priceSetForm.handleOpenPriceSetForm}>
                                         <Edit />
                                     </IconButton>
                                 </Tooltip>
                             </div>
                         </div>
+                        {customPrice && <div className={classes.agentCanSet}>Агент может устанавливать цены. <br/> Минимальная / максимальная стоимость: {minPrice} / {maxPrice} {currencyName}</div>}
                         <div className={classes.tableContent}>
                             <Row className="dottedList">
                                 <Col xs={6}>Тип обьекта</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>Нал</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>Безнал</Col>
+                                <Col xs={3}>Нал</Col>
+                                <Col xs={3}>Безнал</Col>
                             </Row>
                             {_.map(mergedList, (item) => {
                                 const id = _.get(item, 'marketTypeId')
                                 const marketName = _.get(item, 'marketTypeName')
-                                const cashPrice = _.get(item, 'cash_price') + ' ' + primaryCurrency
-                                const transferPrice = _.get(item, 'transfer_price') + ' ' + primaryCurrency
+                                const currency = _.get(item, ['currency', 'name']) || ' '
+                                const cashPrice = _.get(item, 'cash_price') + ' ' + currency
+                                const transferPrice = _.get(item, 'transfer_price') + ' ' + currency
                                 return (
                                     <Row className="dottedList" key={id}>
                                         <Col xs={6}> {marketName}</Col>
-                                        <Col style={{textAlign: 'left'}} xs={3}>{cashPrice}</Col>
-                                        <Col style={{textAlign: 'left'}} xs={3}>{transferPrice}</Col>
+                                        <Col xs={3}>{cashPrice}</Col>
+                                        <Col xs={3}>{transferPrice}</Col>
                                     </Row>
                                 )
                             })}
@@ -256,7 +315,7 @@ const PriceDetails = enhance((props) => {
 PriceDetails.PropTypes = {
     mergedList: PropTypes.func.isRequired,
     priceSupplyDialog: PropTypes.shape({
-        openPriceSupplyDialog: PropTypes.bool.isRequired,
+        openPriceSupplyDialog: PropTypes.number.isRequired,
         handleOpenSupplyDialog: PropTypes.func.isRequired,
         handleCloseSupplyDialog: PropTypes.func.isRequired
     }).isRequired,

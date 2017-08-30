@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -21,6 +22,7 @@ import {
     marketTypeDeleteAction,
     marketTypeItemFetchAction
 } from '../../actions/marketType'
+import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -97,8 +99,9 @@ const enhance = compose(
         },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MARKET_TYPE_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('MarketTypeCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -116,6 +119,17 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[MARKET_TYPE_CREATE_DIALOG_OPEN]: false})})
                     dispatch(marketTypeListFetchAction(filter))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -137,9 +151,6 @@ const enhance = compose(
             const marketTypeId = _.toInteger(_.get(props, ['params', 'marketTypeId']))
 
             return dispatch(marketTypeUpdateAction(marketTypeId, _.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(marketTypeItemFetchAction(marketTypeId))
-                })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -194,7 +205,7 @@ const MarketTypeList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
 

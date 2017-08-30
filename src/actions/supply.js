@@ -40,7 +40,7 @@ export const supplyDefectAction = (supplyId, productId) => {
 
 export const supplyDeleteAction = (id) => {
     const payload = axios()
-        .post(API.SUPPLY_DELETE, {pk: id})
+        .post(API.SUPPLY_CANCEL, {pk: id})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -49,13 +49,13 @@ export const supplyDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.SUPPLY_DELETE,
+        type: actionTypes.SUPPLY_CANCEL,
         payload
     }
 }
 
 export const supplyUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+    const requestData = serializers.updateSerializer(formValues, id)
     const payload = axios()
         .put(sprintf(API.SUPPLY_ITEM, id), requestData)
         .then((response) => {

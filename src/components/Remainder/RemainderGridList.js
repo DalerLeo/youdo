@@ -2,51 +2,81 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
-import RemainderCreateDialog from './RemainderCreateDialog'
-import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down-circle'
-import Paper from 'material-ui/Paper'
 import RemainderDetails from './RemainderDetails'
+import numberFormat from '../../helpers/numberFormat'
+import RemainderTransferDialog from './RemainderTransferDialog'
 import RemainderFilterForm from './RemainderFilterForm'
+import RemainderDiscardDialog from './RemainderDiscardDialog'
+import MoreHortIcon from 'material-ui/svg-icons/navigation/more-horiz'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import RemoveIcon from 'material-ui/svg-icons/content/remove'
+import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz'
+import Tooltip from '../ToolTip'
+import {reduxForm} from 'redux-form'
+import NotFound from '../Images/not-found.png'
+import RemainderReservedDialog from './RemainderReservedDialog'
+import GridList from '../GridList'
 
+const ZERO = 0
 const enhance = compose(
     injectSheet({
+        listWrapper: {
+            '& > div:first-child': {
+                marginTop: '0 !important'
+            },
+            '& > div:last-child': {
+                marginBottom: '100px !important'
+            }
+        },
         wrapper: {
-            padding: '15px 30px',
+            position: 'relative',
+            padding: '0 30px',
+            marginBottom: '5px',
+            transition: 'all 400ms ease-out !important',
+            '& > a': {
+                color: 'inherit'
+            },
             '& .row': {
                 alignItems: 'center',
                 '& div': {
-                    lineHeight: '0px'
+                    height: '48px',
+                    display: 'flex',
+                    alignItems: 'center'
                 }
             }
         },
+        wrapperBold: {
+            extend: 'wrapper',
+            margin: '20px -15px !important',
+            transition: 'all 400ms ease-out !important',
+            '& .row:first-child': {
+                fontWeight: '600'
+            }
+        },
         headers: {
-            padding: '0px 30px 10px 30px',
+            padding: '20px 30px 10px',
             '& .row': {
                 alignItems: 'center'
             }
-        },
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
-            }
-        },
-        addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
         },
         productList: {
             padding: '20px 30px',
             display: 'flex',
             justifyContent: 'space-between'
+        },
+        search: {
+            display: 'flex',
+            alignItems: 'center',
+            position: 'absolute',
+            width: '220px',
+            left: 'calc(50% - 110px)',
+            top: '0',
+            bottom: '0'
         },
         products: {
             display: 'flex',
@@ -59,177 +89,315 @@ const enhance = compose(
         },
         itemData: {
             textAlign: 'left',
-            fontWeight: '700',
-            fontSize: '17px'
+            fontWeight: '600'
         },
-        filterWrapper: {
-            width: '300px',
-            zIndex: '99',
-            position: 'absolute',
+        itemOpenData: {
+            extend: 'itemData',
+            zIndex: '2',
+            color: '#129fdd',
+            cursor: 'pointer'
+        },
+        dropDown: {
+            position: 'absolute !important',
+            height: '48px !important',
             right: '0',
-            top: '0'
-        },
-        filterBtnWrapper: {
-            position: 'absolute',
-            top: '15px',
-            right: '0',
-            marginBottom: '0px'
-        },
-        filterBtn: {
-            backgroundColor: '#12aaeb !important',
-            color: '#fff',
-            fontWeight: '600',
-            padding: '7px 7px',
-            borderRadius: '3px',
-            lineHeight: '12px'
-        },
-        filterTitle: {
+            top: '0',
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'center',
-            padding: '20px 30px',
-            borderBottom: '1px #efefef solid',
-            lineHeight: '0'
+            justifyContent: 'center'
         },
-        search: {
+        dropUp: {
+            extend: 'dropDown',
+            transform: 'rotate(180deg)'
+        },
+        loader: {
+            display: 'flex',
+            height: '328px',
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        clearBtn: {
+            padding: '20px 30px',
+            display: 'flex',
+            alignItems: 'center',
+            color: '#909090',
+            '& button': {
+                '& > div': {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            }
+
+        },
+        nav: {
+            height: '48px',
             position: 'relative',
             display: 'flex',
-            maxWidth: '300px'
+            justifyContent: 'space-between',
+            padding: '0 30px'
         },
-        searchField: {
-            fontSize: '13px !important'
+        sendButton: {
+            '& button': {
+                backgroundColor: '#275482 !important'
+            }
         },
-        searchButton: {
-            position: 'absolute !important',
-            right: '-10px'
+        filterHolder: {
+            width: '260px',
+            display: 'flex',
+            alignItems: 'center',
+            position: 'relative'
+        },
+        sendButtonWrapper: {
+            position: 'absolute',
+            top: '10px',
+            right: '0',
+            marginBottom: '0px',
+            zIndex: '999'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '225px',
+            padding: '260px 0 50px',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666'
+        },
+        openDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
-    })
+    }),
+    reduxForm({
+        form: 'RemainderSearchForm',
+        enableReinitialize: true
+    }),
 )
 
-const iconStyle = {
+const actionIconStyle = {
     icon: {
-        color: '#129fdd',
-        width: 25,
-        height: 25
+        width: 30,
+        height: 30,
+        backgroundColor: 'transparent'
     },
     button: {
-        width: 25,
-        height: 25,
-        padding: 0
+        width: 30,
+        height: 30,
+        padding: 0,
+        backgroundColor: '#275482'
+
     }
 }
 
+const headerItems = [
+    {
+        name: 'product',
+        sorting: true,
+        title: 'Товар',
+        xs: 3
+    },
+    {
+        name: 'productType',
+        sorting: true,
+        title: 'Тип товара',
+        xs: 2
+    },
+    {
+        sorting: false,
+        title: 'Всего товаров',
+        xs: 2
+    },
+    {
+        sorting: false,
+        title: 'Бракованные товары',
+        xs: 3
+    },
+    {
+        sorting: false,
+        title: 'Забронированые',
+        xs: 2
+    }
+]
+
 const RemainderGridList = enhance((props) => {
     const {
-        createDialog,
-        updateDialog,
-        confirmDialog,
         detailData,
-        classes
+        classes,
+        filter,
+        listData,
+        transferDialog,
+        discardDialog,
+        handleCloseDetail,
+        handleOpenDetail,
+        filterItem,
+        filterDialog,
+        reservedDialog
     } = props
-    const filterBtn = (
-        <div className={classes.filterBtnWrapper}>
-            <div className={classes.filterBtn}
-            > Открыть фильтр</div>
-        </div>
-    )
+    const listLoading = _.get(listData, 'listLoading')
 
     const remainderFilterDialog = (
-        <RemainderFilterForm/>
+        <RemainderFilterForm
+            filterDialog={filterDialog}
+            filter={filter}
+            initialValues={filterDialog.initialValues}/>
     )
 
-    const list = (
-        <div>
-            <div className={classes.headers}>
-                <Row>
-                    <Col xs={3}>Товар</Col>
-                    <Col xs={3}>Тип товара</Col>
-                    <Col xs={4}>Склад</Col>
-                    <Col xs={1} style={{textAlign: 'left'}}>Всего товаров</Col>
-                </Row>
-            </div>
-            <Paper zDepth={1} >
-                <div className={classes.wrapper}>
-                    <Row>
-                        <Col xs={3}>Миф морозная свежесть</Col>
-                        <Col xs={3}>Стиралный порошок</Col>
-                        <Col xs={4}>Наименование склада 1</Col>
-                        <Col xs={1} className={classes.itemData}>200 кг</Col>
-                        <Col xs={1} style={{textAlign: 'right'}}>
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}>
-                                <Arrow/>
-                            </IconButton>
-                        </Col>
-                    </Row>
-                </div>
-                <RemainderDetails/>
-            </Paper>
-        </div>
+    const remainderDetail = (
+        <RemainderDetails
+            key={_.get(detailData, 'id')}
+            detailData={detailData || {}}
+            filterItem={filterItem}
+            reservedOpen={reservedDialog.handleOpenRemainderReservedDialog}
+            handleCloseDetail={handleCloseDetail}
+        />
+
     )
+
+    const remainderList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const product = _.get(item, 'title')
+        const balance = Number(_.get(item, 'balance')) + Number(_.get(item, 'defects'))
+        const defects = _.get(item, 'defects')
+        const reserved = _.toNumber(_.get(item, 'reserved'))
+        const measurement = _.get(item, ['measurement', 'name'])
+        const type = _.get(item, ['type', 'name'])
+        return (
+            <Row key={id} style={{position: 'relative'}}>
+                <div className={classes.openDetail} onClick={() => { handleOpenDetail(id) }}> </div>
+                <Col xs={3}>{product}</Col>
+                <Col xs={2}>{type}</Col>
+                <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
+                <Col xs={3} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
+                {(reserved > ZERO)
+                    ? <Col xs={2} className={classes.itemOpenData}
+                           onClick={() => { reservedDialog.handleOpenRemainderReservedDialog(id) }}>
+                        {numberFormat(reserved, measurement)}
+                    </Col>
+                    : <Col xs={2} className={classes.itemData}>
+                        {numberFormat(reserved, measurement)}
+                    </Col>}
+            </Row>
+        )
+    })
+
+    const list = {
+        header: headerItems,
+        list: remainderList,
+        loading: listLoading
+    }
 
     return (
         <Container>
             <SubMenu url={ROUTES.REMAINDER_LIST_URL}/>
-            {filterBtn}
-            {remainderFilterDialog}
-            {list}
 
-            <RemainderCreateDialog
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
+            <div className="sendButtonWrapper">
+                <FloatingActionButton
+                    className={classes.sendButton}
+                    mini={true}>
+                    <MoreHortIcon />
+                </FloatingActionButton>
+
+                <ul>
+                    <li style={{left: '60px'}}>
+                        <Tooltip position="bottom" text="Списание товара">
+                            <FloatingActionButton
+                                iconStyle={actionIconStyle.icon}
+                                style={actionIconStyle.button}
+                                onTouchTap={discardDialog.handleOpenDiscardDialog}>
+                                <RemoveIcon
+                                    style={{width: '20px', height: '30px', margin: 'auto'}}/>
+                            </FloatingActionButton>
+                        </Tooltip>
+                    </li>
+                    <li style={{left: '70px'}}>
+                        <Tooltip position="bottom" text="Передача товаров">
+                            <FloatingActionButton
+                                iconStyle={actionIconStyle.icon}
+                                style={actionIconStyle.button}
+                                onTouchTap={transferDialog.handleOpenTransferDialog}>
+                                <SwapHorizIcon style={{width: '20px', height: '30px', margin: 'auto'}}/>
+                            </FloatingActionButton>
+                        </Tooltip>
+                    </li>
+                </ul>
+            </div>
+
+            <GridList
+                filter={filter}
+                list={list}
+                detail={remainderDetail}
+                filterDialog={remainderFilterDialog}
             />
-
-            <RemainderCreateDialog
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                open={updateDialog.openUpdateDialog}
-                loading={updateDialog.updateLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
-
-            {detailData.data && <ConfirmDialog
-                type="delete"
-                message={_.get(detailData, ['data', 'name'])}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
+            <RemainderTransferDialog
+                open={transferDialog.openTransferDialog}
+                onClose={transferDialog.handleCloseTransferDialog}
+                onSubmit={transferDialog.handleSubmitTransferDialog}/>
+            <RemainderDiscardDialog
+                open={discardDialog.openDiscardDialog}
+                onClose={discardDialog.handleCloseDiscardDialog}
+                onSubmit={discardDialog.handleSubmitDiscardDialog}/>
+            <RemainderReservedDialog
+                listLoading={listLoading}
+                loading={reservedDialog.loading}
+                reservedDetail={reservedDialog.reservedDetail}
+                data={reservedDialog.data}
+                open={reservedDialog.openReversedDialog > ZERO}
+                onClose={reservedDialog.handleCloseRemainderReservedDialog}
+                filterItem={reservedDialog.dialogFilter}/>
         </Container>
     )
 })
 
 RemainderGridList.propTypes = {
     filter: PropTypes.object.isRequired,
+    filterItem: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
+    filterDialog: PropTypes.shape({
+        openFilterDialog: PropTypes.bool.isRequired,
+        handleCloseFilterDialog: PropTypes.func.isRequired,
+        handleOpenFilterDialog: PropTypes.func.isRequired,
+        handleSubmitFilterDialog: PropTypes.func.isRequired,
+        handleClearFilterDialog: PropTypes.func.isRequired
     }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
+    transferDialog: PropTypes.shape({
+        openTransferDialog: PropTypes.bool.isRequired,
+        handleOpenTransferDialog: PropTypes.func.isRequired,
+        handleCloseTransferDialog: PropTypes.func.isRequired,
+        handleSubmitTransferDialog: PropTypes.func.isRequired
     }).isRequired,
-    updateDialog: PropTypes.shape({
-        updateLoading: PropTypes.bool.isRequired,
-        openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenUpdateDialog: PropTypes.func.isRequired,
-        handleCloseUpdateDialog: PropTypes.func.isRequired,
-        handleSubmitUpdateDialog: PropTypes.func.isRequired
+    discardDialog: PropTypes.shape({
+        openDiscardDialog: PropTypes.bool.isRequired,
+        handleOpenDiscardDialog: PropTypes.func.isRequired,
+        handleCloseDiscardDialog: PropTypes.func.isRequired,
+        handleSubmitDiscardDialog: PropTypes.func.isRequired
     }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
+    reservedDialog: PropTypes.shape({
+        reservedDetail: PropTypes.array,
+        data: PropTypes.array,
+        openReversedDialog: PropTypes.number.isRequired,
+        handleOpenRemainderReservedDialog: PropTypes.func.isRequired,
+        handleCloseRemainderReservedDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

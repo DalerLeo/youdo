@@ -9,7 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
-import {TextField, OrderListReturnField} from '../ReduxForm'
+import {TextField, OrderListReturnField, StockSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import OrderReturnTotalSum from '../ReduxForm/Order/OrderReturnTotalSum'
 
@@ -44,7 +44,8 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            minHeight: '641px'
+            minHeight: '600px',
+            marginBottom: '64px'
         },
         titleContent: {
             background: '#fff',
@@ -65,8 +66,7 @@ const enhance = compose(
         },
         inContent: {
             display: 'flex',
-            color: '#333',
-            padding: '15px 30px'
+            color: '#333'
         },
         innerWrap: {
             overflow: 'auto'
@@ -79,10 +79,12 @@ const enhance = compose(
             position: 'relative'
         },
         field: {
-            width: '100%'
+            maxWidth: '70%',
+            flexBasis: '30%'
+
         },
         left: {
-            flexBasis: '35%',
+            flexBasis: '30%',
             padding: '15px 30px',
             borderRight: '1px #efefef solid'
         },
@@ -97,10 +99,20 @@ const enhance = compose(
             maxWidth: '55%',
             padding: '15px 30px'
         },
-        inputField: {
+        inputFieldCustom: {
             fontSize: '13px !important',
+            height: '45px !important',
+            width: '100%',
+            marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
             }
         },
         selectContent: {
@@ -133,14 +145,13 @@ const enhance = compose(
             }
         },
         bottomButton: {
-            bottom: '0',
-            left: '0',
-            right: '0',
-            padding: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 14px 10px 20px',
             zIndex: '999',
             borderTop: '1px solid #efefef',
             background: '#fff',
-            textAlign: 'right',
             '& span': {
                 fontSize: '13px !important',
                 fontWeight: '600 !important',
@@ -155,6 +166,17 @@ const enhance = compose(
         podlojkaScroll: {
             overflowY: 'auto !important',
             padding: '0 !important'
+        },
+        rightOrderPart: {
+            flexBasis: '70%',
+            maxWidth: '70%',
+            padding: '20px 30px',
+            minHeight: '485px'
+        },
+        leftOrderPart: {
+            flexBasis: '30%',
+            padding: '20px 30px',
+            borderRight: '1px #efefef solid'
         }
     }),
     reduxForm({
@@ -163,7 +185,7 @@ const enhance = compose(
     }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {open: false}),
+    }, {open: false})
 )
 
 const OrderReturnDialog = enhance((props) => {
@@ -174,7 +196,7 @@ const OrderReturnDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '500px'} : {width: '800px'}}
+            contentStyle={loading ? {width: '500px'} : {width: '900px', maxWidth: 'none'}}
             className={classes.podlojkaScroll}
             open={open}
             onRequestClose={onClose}
@@ -189,32 +211,38 @@ const OrderReturnDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                     <div className={classes.loader}>
-                        <CircularProgress size={80} thickness={5}/>
+                        <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent}>
-                            <div className={classes.field}>
+                            <div className={classes.leftOrderPart}>
+                                <Field
+                                    component={StockSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Cклад"
+                                    fullWidth={true}
+                                    name="stock"/>
+                                <Field
+                                    name="comment"
+                                    component={TextField}
+                                    className={classes.returnComment}
+                                    label="Комментарий к возврату"
+                                    fullWidth={true}
+                                    multiLine={true}
+                                    rows={1}
+                                    rowsMax={3}/>
+                            </div>
+                            <div className={classes.rightOrderPart}>
                                 <Fields
-                                    names={['returned_products', 'product', 'amount', 'cost']}
+                                    names={['returned_products', 'product', 'amount', 'cost', 'editAmount']}
                                     component={OrderListReturnField}
                                     orderData={orderData}
                                 />
                             </div>
                         </div>
-                        <div className={classes.commentField}>
-                            <Field
-                                name="comment"
-                                component={TextField}
-                                className={classes.returnComment}
-                                label="Комментарий к возврату"
-                                fullWidth={true}
-                                multiLine={true}
-                                rows={2}
-                                rowsMax={3}/>
-                            <div>Общая сумма возврата: <OrderReturnTotalSum/></div>
-                        </div>
                     </div>
                     <div className={classes.bottomButton}>
+                        <div className={classes.summary}>Общая сумма возврата: <OrderReturnTotalSum/></div>
                         <FlatButton
                             label="Возврат"
                             className={classes.actionButton}

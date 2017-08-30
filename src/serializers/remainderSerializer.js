@@ -1,36 +1,70 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import moment from 'moment'
+const ONE = 1
 
-export const createSerializer = (data) => {
-    const name = _.get(data, ['name'])
-
-    return {
-        name
-    }
-}
-
-const ZERO = 0
-export const listFilterSerializer = (data, stock) => {
+export const listFilterSerializer = (data) => {
     const {...defaultData} = data
+    const type = _.get(defaultData, 'typeChild') || _.get(defaultData, 'typeParent')
+
     const ordering = _.get(data, 'ordering')
-    const newStock = (stock !== ZERO) ? stock : null
     return {
-        'brand': _.get(defaultData, 'brand'),
-        'type': _.get(defaultData, 'type'),
-        'date_delivery_0': _.get(defaultData, 'deliveryFromDate'),
-        'date_delivery_1': _.get(defaultData, 'deliveryToDate'),
-        'stock': newStock,
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
+        type,
+        'brand': _.get(defaultData, 'brand'),
+        'stock': _.get(defaultData, 'stock'),
+        'measurement': _.get(defaultData, 'measurement'),
+        'searching': _.get(defaultData, 'search'),
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
 
-export const csvFilterSerializer = (data) => {
-    const {...defaultData} = listFilterSerializer(data)
+export const itemFilterSerializer = (data) => {
+    const {...defaultData} = data
 
     return {
-        ...defaultData,
-        format: 'csv'
+        'page': _.get(defaultData, 'dPage'),
+        'page_size': _.get(defaultData, 'dPageSize')
     }
 }
+export const transferSerializer = (data) => {
+    const fromStock = _.get(data, ['fromStock', 'value'])
+    const toStock = _.get(data, ['toStock', 'value'])
+    const comment = _.get(data, ['comment'])
+    const deliveryDate = moment(_.get(data, 'deliveryDate')).format('YYYY-MM-DD')
+    const products = _.map(_.get(data, 'products'), (item) => {
+        return {
+            amount: item.amount,
+            product: item.product.value.id,
+            'is_defect': _.get(item, ['isDefect', 'id']) === ONE
+        }
+    })
+
+    return {
+        'from_stock': fromStock,
+        'to_stock': toStock,
+        'date_delivery': deliveryDate,
+        products,
+        comment
+    }
+}
+
+export const discardSerializer = (data) => {
+    const comment = _.get(data, ['comment'])
+    const stock = _.get(data, ['fromStock', 'value'])
+    const products = _.map(_.get(data, 'products'), (item) => {
+        return {
+            amount: item.amount,
+            product: item.product.value.id,
+            'is_defect': _.get(item, ['isDefect', 'id']) === ONE
+        }
+    })
+
+    return {
+        products,
+        comment,
+        stock
+    }
+}
+

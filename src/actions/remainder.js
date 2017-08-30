@@ -5,58 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/remainderSerializer'
 
-export const remainderCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .post(API.REMAINDER_CREATE, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.REMAINDER_CREATE,
-        payload
-    }
-}
-
-export const remainderDeleteAction = (id) => {
-    const payload = axios()
-        .delete(sprintf(API.REMAINDER_DELETE, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.REMAINDER_DELETE,
-        payload
-    }
-}
-
-export const remainderUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .put(sprintf(API.REMAINDER_ITEM, id), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.REMAINDER_UPDATE,
-        payload
-    }
-}
-
-export const remainderListFetchAction = (filter, id) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), id)
+export const remainderListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
         .get((API.REMAINDER_LIST), {params})
         .then((response) => {
@@ -71,11 +21,9 @@ export const remainderListFetchAction = (filter, id) => {
         payload
     }
 }
-
-export const remainderCSVFetchAction = (filter) => {
-    const params = serializers.csvFilterSerializer(filter.getParams())
+export const remainderReversedListFetchAction = (id) => {
     const payload = axios()
-        .get(API.REMAINDER_LIST, {params})
+        .get(API.REMAINDER_RESERVED, {params: {product: id}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -84,14 +32,15 @@ export const remainderCSVFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.REMAINDER_LIST_CSV,
+        type: actionTypes.REMAINDER_RESERVED,
         payload
     }
 }
 
-export const remainderItemFetchAction = (id) => {
+export const remainderItemFetchAction = (id, filter) => {
+    const params = serializers.itemFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(sprintf(API.REMAINDER_ITEM, id))
+        .get(sprintf(API.REMAINDER_ITEM, id), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -101,6 +50,41 @@ export const remainderItemFetchAction = (id) => {
 
     return {
         type: actionTypes.REMAINDER_ITEM,
+        payload
+    }
+}
+
+export const remainderTransferAction = (formValues) => {
+    const requestData = serializers.transferSerializer(formValues)
+
+    const payload = axios()
+        .post(API.REMAINDER_TRANSFER, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.REMAINDER_TRANSFER,
+        payload
+    }
+}
+
+export const remainderDiscardAction = (formValues) => {
+    const requestData = serializers.discardSerializer(formValues)
+
+    const payload = axios()
+        .post(API.REMAINDER_DISCARD, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.REMAINDER_DISCARD,
         payload
     }
 }

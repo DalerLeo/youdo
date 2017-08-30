@@ -1,59 +1,8 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/trackingSerializer'
-
-export const trackingCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .post(API.TRACKING_CREATE, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.TRACKING_CREATE,
-        payload
-    }
-}
-
-export const trackingDeleteAction = (id) => {
-    const payload = axios()
-        .delete(sprintf(API.TRACKING_DELETE, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.TRACKING_DELETE,
-        payload
-    }
-}
-
-export const trackingUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .put(sprintf(API.TRACKING_ITEM, id), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.TRACKING_UPDATE,
-        payload
-    }
-}
 
 export const trackingListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
@@ -72,9 +21,9 @@ export const trackingListFetchAction = (filter) => {
     }
 }
 
-export const trackingItemFetchAction = (id) => {
+export const marketsLocationFetchAction = () => {
     const payload = axios()
-        .get(sprintf(API.TRACKING_ITEM, id))
+        .get(API.MARKETS_LOCATION)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -83,7 +32,25 @@ export const trackingItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.TRACKING_ITEM,
+        type: actionTypes.MARKETS_LOCATION,
         payload
     }
 }
+
+export const locationListAction = (id, data) => {
+    const params = serializers.agentLocationSerializer(id, data)
+    const payload = axios()
+        .get(API.LOCATION_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.LOCATION_LIST,
+        payload
+    }
+}
+

@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ExpensiveCategorySearchField, CurrencySearchField} from '../ReduxForm'
+import {TextField, ExpensiveCategorySearchField, CurrencySearchField, normalizeNumber} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 
@@ -107,7 +107,7 @@ const ClientTransactionCreateDialog = enhance((props) => {
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: '230px'}}>
                         <div className={classes.loader}>
-                            <CircularProgress size={80} thickness={5}/>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
                         <div className={classes.field}>
                             <div className={classes.itemList}>
@@ -126,6 +126,7 @@ const ClientTransactionCreateDialog = enhance((props) => {
                                     name="amount"
                                     component={TextField}
                                     label="Сумма"
+                                    normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
                                     style={{width: '50%'}}
                                     fullWidth={false}/>
@@ -133,7 +134,7 @@ const ClientTransactionCreateDialog = enhance((props) => {
                                     <Field
                                         name="currency"
                                         component={CurrencySearchField}
-                                        label="Сумма"
+                                        label="Валюта"
                                         className={classes.inputFieldCustom}
                                         style={{width: '50%'}}
                                         fullWidth={false}/>
@@ -154,6 +155,7 @@ const ClientTransactionCreateDialog = enhance((props) => {
                         <FlatButton
                             label="Сохранить"
                             className={classes.actionButton}
+                            labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                         />

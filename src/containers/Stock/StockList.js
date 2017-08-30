@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -105,8 +106,9 @@ const enhance = compose(
         },
 
         handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('StockCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -200,7 +202,7 @@ const StockList = enhance((props) => {
     }
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             }
             return {
@@ -209,7 +211,7 @@ const StockList = enhance((props) => {
                     value: _.get(detail, ['manager', 'id'])
                 },
                 stockType: {
-                    value: _.toInteger(_.get(detail, 'stockType'))
+                    value: _.get(detail, 'stockType')
                 }
             }
         })(),

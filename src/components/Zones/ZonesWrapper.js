@@ -6,7 +6,7 @@ import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
-import {reduxForm} from 'redux-form'
+import {reduxForm, Field} from 'redux-form'
 import CircularProgress from 'material-ui/CircularProgress'
 import TextFieldSearch from 'material-ui/TextField'
 import SearchIcon from 'material-ui/svg-icons/action/search'
@@ -25,6 +25,8 @@ import Tooltip from '../ToolTip'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import ZoneMap from './ZoneMap'
 import AddZonePopup from './AddZonePopup'
+import BindAgentDialog from './ZoneBindAgentDialog'
+import ConfirmDialog from '../ConfirmDialog'
 import ZoneDetails from './ZoneDetails'
 import NotFound from '../Images/not-found.png'
 
@@ -70,7 +72,7 @@ const enhance = compose(
             position: 'relative',
             overflowX: 'hidden',
             margin: '0 -28px',
-            minHeight: 'calc(100% - 4px)',
+            minHeight: 'calc(100% - 32px)',
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -2px 5px, rgba(0, 0, 0, 0.05) 0px -2px 6px',
             '& > div:first-child': {
                 position: 'absolute',
@@ -301,15 +303,22 @@ const ZonesWrapper = enhance((props) => {
         statData,
         classes,
         addZone,
+        updateZone,
+        deleteZone,
         detailData,
         toggle,
         search,
         setSearch,
-        onSubmit
+        onSubmit,
+        bindAgent,
+        unbindAgent
     } = props
+
+    const ZERO = 0
     const ONE = 1
     const isOpenToggle = toggle.openToggle
-    const isOpenPopup = addZone.openAddZone
+    const isOpenAddZone = addZone.openAddZone
+    const isOpenUpdateZone = updateZone.openUpdateZone
     const isLoadingList = _.get(listData, 'listLoading')
     const isListEmpty = _.isEmpty(_.get(listData, 'data'))
 
@@ -320,6 +329,16 @@ const ZonesWrapper = enhance((props) => {
     const boundMarkets = _.get(statData, ['data', 'boundMarkets'])
     const passiveMarkets = _.get(statData, ['data', 'passiveMarkets'])
     const passiveAgents = _.get(statData, ['data', 'passiveAgents'])
+
+    let isOpenConfirm = false
+    if (_.get(unbindAgent, 'openConfirmDialog') > ZERO) {
+        isOpenConfirm = true
+    }
+
+    let isOpenDeleteZone = false
+    if (_.get(deleteZone, 'openDeleteZone') > ZERO) {
+        isOpenDeleteZone = true
+    }
 
     const iconButton = (
         <IconButton
@@ -401,14 +420,17 @@ const ZonesWrapper = enhance((props) => {
                                     <Col xs={2} style={{textAlign: 'right'}}>
                                         <IconMenu
                                             iconButtonElement={iconButton}
+                                            menuItemStyle={{fontSize: '13px'}}
                                             anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                                             targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                                             <MenuItem
                                                 primaryText="Изменить"
+                                                onTouchTap={() => { updateZone.handleOpenUpdateZone(id) }}
                                                 leftIcon={<Edit />}
                                             />
                                             <MenuItem
-                                                primaryText="Удалить "
+                                                primaryText="Удалить"
+                                                onTouchTap={() => { deleteZone.handleOpenDeleteZone(id) }}
                                                 leftIcon={<DeleteIcon />}
                                             />
                                         </IconMenu>
@@ -439,6 +461,8 @@ const ZonesWrapper = enhance((props) => {
             </div>
             : <ZoneDetails
                     detailData={detailData}
+                    bindAgent={bindAgent}
+                    unbindAgent={unbindAgent}
                     filter={filter}
                 />}
         </div>
@@ -448,7 +472,7 @@ const ZonesWrapper = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.ZONES_LIST_URL}/>
 
-            <div className={classes.addButtonWrapper}>
+            {(!isOpenAddZone && !isOpenUpdateZone) && <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить зону">
                     <FloatingActionButton
                         mini={true}
@@ -457,14 +481,47 @@ const ZonesWrapper = enhance((props) => {
                         <ContentAdd />
                     </FloatingActionButton>
                 </Tooltip>
-            </div>
+            </div>}
 
             <div className={classes.zonesWrapper}>
-                <ZoneMap />
-                {isOpenPopup && <AddZonePopup
+                <Field
+                    name="polygon"
+                    listData={listData}
+                    isOpenAddZone={isOpenAddZone}
+                    filter={filter}
+                    component={ZoneMap}
+                />
+                {isOpenAddZone && <AddZonePopup
+                    filter={filter}
                     onClose={addZone.handleCloseAddZone}
                     onSubmit={addZone.handleSubmitAddZone}
                 />}
+                {isOpenUpdateZone && <AddZonePopup
+                    filter={filter}
+                    initialValues={updateZone.initialValues}
+                    onClose={updateZone.handleCloseUpdateZone}
+                    onSubmit={updateZone.handleSubmitUpdateZone}
+                />}
+                <BindAgentDialog
+                    open={bindAgent.openBindAgent}
+                    loading={bindAgent.bindAgentLoading}
+                    onClose={bindAgent.handleCloseBindAgent}
+                    onSubmit={bindAgent.handleSubmitBindAgent}
+                />
+                <ConfirmDialog
+                    open={isOpenConfirm}
+                    onClose={unbindAgent.handleCloseConfirmDialog}
+                    onSubmit={unbindAgent.handleSendConfirmDialog}
+                    message="Открепить данного агента?"
+                    type="submit"
+                />
+                <ConfirmDialog
+                    open={isOpenDeleteZone}
+                    onClose={deleteZone.handleCloseDeleteZone}
+                    onSubmit={deleteZone.handleSendDeleteZone}
+                    message="Удалить выбранную зону?"
+                    type="submit"
+                />
                 {zoneInfoToggle}
             </div>
         </Container>
@@ -478,14 +535,41 @@ ZonesWrapper.PropTypes = {
     statData: PropTypes.object,
     addZone: PropTypes.shape({
         openAddZone: PropTypes.bool.isRequired,
+        createLoading: PropTypes.bool.isRequired,
         handleOpenAddZone: PropTypes.func.isRequired,
         handleCloseAddZone: PropTypes.func.isRequired,
         handleSubmitAddZone: PropTypes.func.isRequired
+    }).isRequired,
+    updateZone: PropTypes.shape({
+        openUpdateZone: PropTypes.bool.isRequired,
+        updateLoading: PropTypes.bool.isRequired,
+        handleOpenUpdateZone: PropTypes.func.isRequired,
+        handleCloseUpdateZone: PropTypes.func.isRequired,
+        handleSubmitUpdateZone: PropTypes.func.isRequired
+    }).isRequired,
+    deleteZone: PropTypes.shape({
+        openDeleteZone: PropTypes.bool.isRequired,
+        handleOpenDeleteZone: PropTypes.func.isRequired,
+        handleCloseDeleteZone: PropTypes.func.isRequired,
+        handleSendDeleteZone: PropTypes.func.isRequired
     }).isRequired,
     toggle: PropTypes.shape({
         openToggle: PropTypes.bool.isRequired,
         handleExpandInfo: PropTypes.func.isRequired,
         handleCollapseInfo: PropTypes.func.isRequired
+    }).isRequired,
+    bindAgent: PropTypes.shape({
+        openBindAgent: PropTypes.bool.isRequired,
+        bindAgentLoading: PropTypes.bool.isRequired,
+        handleOpenBindAgent: PropTypes.func.isRequired,
+        handleCloseBindAgent: PropTypes.func.isRequired,
+        handleSubmitBindAgent: PropTypes.func.isRequired
+    }).isRequired,
+    unbindAgent: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

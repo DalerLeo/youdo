@@ -4,7 +4,6 @@ import {compose} from 'recompose'
 import {connect} from 'react-redux'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
-import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
 
 const ZERO = 0
 
@@ -15,28 +14,24 @@ const enhance = compose(
         const extraLoading = _.get(state, ['product', 'extra', 'loading'])
         const count = _.get(state, ['form', 'OrderCreateForm', 'values', 'amount']) || ONE
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
-        const deliveryPrice = _.get(state, ['form', 'OrderCreateForm', 'values', 'deliveryPrice'])
-        const discountPercent = _.get(state, ['form', 'OrderCreateForm', 'values', 'discountPrice']) || ZERO
         return {
             extra,
             count,
             products,
-            deliveryPrice,
-            discountPercent,
             extraLoading
         }
     })
 )
 const OrderTotalSum = enhance((props) => {
-    const {products, deliveryPrice, discountPercent} = props
-    const HUNDRED = 100
+    const {products} = props
     let totalCost = ZERO
     _.map(products, (item) => {
-        totalCost += _.toNumber(_.get(item, 'cost'))
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const cost = _.toNumber(_.get(item, 'cost'))
+        totalCost += (amount * cost)
     })
-    const orderTotal = (totalCost + numberWithoutSpaces(deliveryPrice)) * ((HUNDRED - _.toNumber(discountPercent)) / HUNDRED)
     return (
-        <b>{numberFormat(orderTotal, getConfig('PRIMARY_CURRENCY'))}</b>
+        <b>{numberFormat(totalCost, getConfig('PRIMARY_CURRENCY'))}</b>
     )
 })
 

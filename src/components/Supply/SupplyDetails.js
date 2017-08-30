@@ -7,7 +7,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Delete from 'material-ui/svg-icons/action/delete'
+import Cancel from 'material-ui/svg-icons/content/remove-circle'
 import {Row, Col} from 'react-flexbox-grid'
 import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
@@ -15,6 +15,7 @@ import CloseIcon from '../CloseIcon'
 import numberFormat from '../../helpers/numberFormat'
 import Tooltip from '../ToolTip'
 import moment from 'moment'
+import Pagination from '../GridList/GridListNavPagination'
 
 const colorBlue = '#12aaeb'
 const enhance = compose(
@@ -37,7 +38,6 @@ const enhance = compose(
             fontWeight: '600'
         },
         defect: {
-            extend: 'link',
             color: '#e57373 !important'
         },
         loader: {
@@ -59,7 +59,8 @@ const enhance = compose(
             alignItems: 'center',
             width: '100%',
             height: '65px',
-            margin: '-20px 0 0'
+            margin: '-20px 0 0',
+            position: 'relative'
         },
         titleLabel: {
             fontSize: '18px',
@@ -69,7 +70,12 @@ const enhance = compose(
         },
         titleButtons: {
             display: 'flex',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            '& button > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
         },
         titleSupplier: {
             fontSize: '18px',
@@ -126,6 +132,7 @@ const enhance = compose(
         details: {
             display: 'flex',
             justifyContent: 'space-between',
+            boxSizing: 'content-box',
             alignItems: 'center',
             width: '100%',
             background: '#f2f5f8',
@@ -242,6 +249,16 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-end'
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1',
+            margin: '0 -30px'
         }
     }),
     withState('openDetails', 'setOpenDetails', false)
@@ -269,11 +286,11 @@ const SupplyDetails = enhance((props) => {
         openDetails,
         handleSupplyExpenseOpenCreateDialog,
         supplyListData,
-        defectDialog,
         updateDialog,
         confirmDialog,
         confirmExpenseDialog,
-        handleCloseDetail
+        handleCloseDetail,
+        filter
     } = props
     const id = _.get(data, 'id')
     const provider = _.get(data, ['provider', 'name'])
@@ -285,11 +302,12 @@ const SupplyDetails = enhance((props) => {
     const contactEmail = _.get(contact, 'email')
     const contactPhone = _.get(contact, 'phone')
     const dateDelivery = _.get(data, 'dateDelivery') || 'Не указано'
-    const acceptedTime = (_.get(data, 'acceptedTime')) ? moment(_.get(data, 'acceptedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не начался'
+    const acceptedTime = (_.get(data, 'acceptedTime')) ? moment(_.get(data, 'acceptedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не началась'
     const finishedTime = (_.get(data, 'finishedTime')) ? moment(_.get(data, 'finishedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не закончилась'
-
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
+    const CANCELLED = 4
+    const isFinished = !_.isEmpty(_.get(data, 'finishedTime')) || _.toInteger(_.get(data, 'status')) === CANCELLED
 
     const supplyExpenseList = _.get(supplyListData, 'data')
     const supplyExpenseListLoading = _.get(supplyListData, 'supplyExpenseListLoading')
@@ -298,7 +316,7 @@ const SupplyDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={100} thickness={6}/>
+                    <CircularProgress size={40} thickness={4}/>
                 </div>
             </div>
         )
@@ -307,8 +325,10 @@ const SupplyDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}
-                    onTouchTap={handleCloseDetail}>Поставка №{id}</div>
+                <div className={classes.titleLabel}>Поставка №{id}</div>
+                <div className={classes.closeDetail}
+                     onClick={handleCloseDetail}>
+                </div>
                 <div className={classes.titleSupplier}>
                     <a className={classes.dropdown} onMouseEnter={() => {
                         setOpenDetails(true)
@@ -335,24 +355,26 @@ const SupplyDetails = enhance((props) => {
                     }
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Изменить">
+                    {updateDialog && <Tooltip position="bottom" text="Изменить">
                         <IconButton
+                            disabled={isFinished && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={updateDialog.handleOpenUpdateDialog}>
                             <Edit />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text="Отменить">
+                    </Tooltip>}
+                    {confirmDialog && <Tooltip position="bottom" text="Отменить">
                         <IconButton
+                            disabled={isFinished && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
-                            <Delete />
+                            <Cancel />
                         </IconButton>
-                    </Tooltip>
+                    </Tooltip>}
                 </div>
             </div>
 
@@ -389,24 +411,22 @@ const SupplyDetails = enhance((props) => {
                     {_.map(products, (item) => {
                         const ZERO = 0
                         const product = _.get(item, 'product')
-                        const defId = _.get(item, 'id')
                         const productId = _.get(product, 'id')
                         const productName = _.get(product, 'name')
-                        const cost = _.toInteger(_.get(item, 'cost'))
-                        const amount = _.toInteger(_.get(item, 'amount'))
+                        const cost = _.toNumber(_.get(item, 'cost'))
+                        const amount = _.toNumber(_.get(item, 'amount'))
                         const itemPrice = cost / amount
                         const postedAmount = _.get(item, 'postedAmount')
-                        const defectAmount = _.get(item, 'defectAmount')
                         const measurement = _.get(product, ['measurement', 'name'])
-                        const notAccepted = amount - (postedAmount + defectAmount)
+                        const defectAmount = _.toNumber(_.get(item, 'defectAmount'))
+                        const notAccepted = postedAmount + defectAmount < amount ? numberFormat(amount - defectAmount - postedAmount, measurement) : numberFormat(ZERO, measurement)
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
                                 <Col xs={4}>{productName}</Col>
                                 <Col xs={1}>{numberFormat(amount, measurement)}</Col>
                                 <Col xs={1}>{numberFormat(postedAmount, measurement)}</Col>
                                 <Col xs={1}>
-                                    {(defectAmount > ZERO) ? <a onClick={ () => { defectDialog.handleOpenDefectDialog(defId) } }
-                                                                className={classes.defect}>{numberFormat(defectAmount, measurement)}</a>
+                                    {(defectAmount > ZERO) ? <span className={classes.defect}>{numberFormat(defectAmount, measurement)}</span>
                                     : <span>{numberFormat(defectAmount, measurement)}</span>}
                                     </Col>
                                 <Col xs={1}>{notAccepted}</Col>
@@ -429,13 +449,15 @@ const SupplyDetails = enhance((props) => {
                         <div>
                             <FlatButton
                                 onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}
+                                labelStyle={{fontSize: '13px'}}
                                 className="expenseButton"
                                 label="+ добавить доп. расход"/>
                         </div>
+                        <div><Pagination filter={filter}/></div>
                     </div>
                     {supplyExpenseListLoading && <div className={classes.expenseLoader}>
                         <div>
-                            <CircularProgress size={70} thickness={6}/>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
                     </div>}
                     {!supplyExpenseListLoading && _.map(supplyExpenseList, (item) => {
@@ -480,7 +502,7 @@ SupplyDetails.propTypes = {
         openDefectDialog: PropTypes.bool.isRequired,
         handleOpenDefectDialog: PropTypes.func.isRequired,
         handleCloseDefectDialog: PropTypes.func.isRequired
-    }).isRequired
+    })
 }
 
 export default SupplyDetails

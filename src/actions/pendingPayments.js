@@ -54,3 +54,20 @@ export const pendingPaymentsItemFetchAction = (id) => {
         payload
     }
 }
+
+export const pendingPaymentsConvertAction = (data) => {
+    const params = serializers.convertSerializer(data)
+    const payload = axios()
+        .post(API.PENDING_PAYMENTS_CONVERT, params)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PENDING_PAYMENTS_CONVERT,
+        payload
+    }
+}

@@ -4,23 +4,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import ExpensiveCategoryCreateDialog from './ExpensiveCategoryCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
+import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import SettingSideMenu from '../Setting/SettingSideMenu'
 import Edit from 'material-ui/svg-icons/image/edit'
+import Tooltip from '../ToolTip'
 
 const listHeader = [
     {
@@ -52,42 +48,79 @@ const listHeader = [
 const enhance = compose(
     injectSheet({
         addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
             }
         },
+        wrapper: {
+            display: 'flex',
+            margin: '0 -28px',
+            height: 'calc(100% + 28px)'
+        },
         addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '-18px'
+        },
+        rightPanel: {
+            background: '#fff',
+            flexBasis: 'calc(100% - 225px)',
+            maxWidth: 'calc(100% - 225px)',
+            paddingTop: '10px',
+            overflowY: 'auto',
+            overflowX: 'hidden'
+        },
+        verticalButton: {
+            border: '2px #dfdfdf solid !important',
+            borderRadius: '50%',
+            opacity: '0',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
+        },
+        listRow: {
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            }
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0',
+            transition: 'all 200ms ease-out'
         }
     })
 )
+
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 30,
+        height: 25,
+        padding: 0
+    }
+}
 
 const ExpensiveCategoryGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
-        actionsDialog,
         confirmDialog,
         listData,
         detailData,
         classes
     } = props
-
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
 
     const expensiveCategoryDetail = (
         <span>a</span>
@@ -97,32 +130,34 @@ const ExpensiveCategoryGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
         return (
-            <Row key={id}>
+            <Row key={id} className={classes.listRow}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={6}>{name}</Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        />
-                    </IconMenu>
+                    <div className={classes.iconBtn}>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                touch={true}
+                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Удалить">
+                            <IconButton
+                                disableTouchRipple={true}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                touch={true}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </Col>
             </Row>
         )
@@ -134,26 +169,32 @@ const ExpensiveCategoryGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const addButton = (
+        <div className={classes.addButtonWrapper}>
+            <FlatButton
+                backgroundColor="#fff"
+                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
+                className={classes.addButton}
+                label="добавить категорию расходов"
+                onTouchTap={createDialog.handleOpenCreateDialog}
+                icon={<ContentAdd color="#12aaeb"/>}>
+            </FlatButton>
+        </div>
+    )
     return (
         <Container>
-            <SubMenu url={ROUTES.EXPENSIVE_CATEGORY_LIST_URL}/>
-            <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить категорию">
-                    <FloatingActionButton
-                        mini={true}
-                        className={classes.addButton}
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </Tooltip>
+            <div className={classes.wrapper}>
+                <SettingSideMenu currentUrl={ROUTES.EXPENSIVE_CATEGORY_LIST_URL}/>
+                <div className={classes.rightPanel}>
+                    <GridList
+                        filter={filter}
+                        list={list}
+                        detail={expensiveCategoryDetail}
+                        addButton={addButton}
+                        listShadow={false}
+                    />
+                </div>
             </div>
-
-            <GridList
-                filter={filter}
-                list={list}
-                detail={expensiveCategoryDetail}
-                actionsDialog={actions}
-            />
 
             <ExpensiveCategoryCreateDialog
                 open={createDialog.openCreateDialog}
@@ -207,10 +248,6 @@ ExpensiveCategoryGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired
 }
 

@@ -12,6 +12,7 @@ const enhance = compose(
         },
         tooltip: {
             zIndex: '999999 !important',
+            lineHeight: '1.2',
             '&.place-left': {
                 '&:after': {
                     right: '-5px !important'
@@ -34,7 +35,8 @@ const ToolTip = enhance(({classes, text, children, position}) => {
                 id={uniqId}
                 type="dark"
                 effect="solid"
-                className={classes.tooltip}>
+                className={classes.tooltip}
+                html={true}>
                 {text}
             </ReactTooltip>
         </div>
