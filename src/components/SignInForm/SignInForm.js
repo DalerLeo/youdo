@@ -13,10 +13,12 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '120px',
+            height: '120px',
             margin: '0 auto',
             padding: '15px',
-            textAlign: 'center',
-            display: 'inline-block'
+            alignItems: 'center',
+            justifyContent: 'center',
+            display: 'flex'
         },
 
         wrapper: {
@@ -75,7 +77,7 @@ const SignInForm = enhance((props) => {
     if (loading) {
         return (
             <Paper className={classes.loader} zDepth={2}>
-                <CircularProgress size={80} thickness={5}/>
+                <CircularProgress size={40} thickness={4}/>
             </Paper>
         )
     }
