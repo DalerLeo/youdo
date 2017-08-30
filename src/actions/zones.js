@@ -23,7 +23,7 @@ export const zoneCreateAction = (formValues) => {
 }
 
 export const zoneUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+    const requestData = serializers.updateSerializer(formValues)
     const payload = axios()
         .put(sprintf(API.ZONE_UPDATE, id), requestData)
         .then((response) => {

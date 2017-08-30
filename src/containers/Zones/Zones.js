@@ -255,7 +255,7 @@ const Zones = enhance((props) => {
     const openDeleteZone = _.toInteger(_.get(location, ['query', DELETE_ZONE]) || ZERO) > ZERO
     const openToggle = toBoolean(_.get(location, ['query', TOGGLE_INFO]))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', CONFIRM_DIALOG]) || ZERO) > ZERO
-    const openDetail = !_.isEmpty(_.get(params, 'zoneId'))
+    const openDetail = _.toInteger(_.get(params, 'zoneId'))
     const detailId = _.toInteger(_.get(params, 'zoneId'))
 
     const addZone = {

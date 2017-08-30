@@ -13,9 +13,9 @@ const enhance = compose(
     withScriptjs,
     withGoogleMap
 )
-
-const GoogleMapWrapper = enhance(({onMapLoad, isOpenAddZone, listData, filter, input, ...props}) => {
+const GoogleMapWrapper = enhance(({onMapLoad, isOpenAddZone, listData, zoneId, filter, input, ...props}) => {
     const isOpenDraw = toBoolean(_.get(filter.getParams(), 'draw'))
+    const isOpenUpdate = toBoolean(_.get(filter.getParams(), 'openUpdateZone'))
 
     const handleOverlayComplete = (event) => {
         const coordinates = event.overlay.getPath().getArray()
@@ -52,6 +52,13 @@ const GoogleMapWrapper = enhance(({onMapLoad, isOpenAddZone, listData, filter, i
         strokeWeight: 2,
         strokeColor: '#113460'
     }
+    const editPolygonOptioons = {
+        editable: true,
+        fillColor: '#4de03a',
+        fillOpacity: 0.3,
+        strokeWeight: 2,
+        strokeColor: '#236406'
+    }
 
     return (
         <DefaultGoogleMap ref={onMapLoad} {...props} >
@@ -80,13 +87,13 @@ const GoogleMapWrapper = enhance(({onMapLoad, isOpenAddZone, listData, filter, i
             />}
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
+                const title = _.get(item, 'title')
                 const point = _.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
                     const lat = _.get(p, '0')
                     const lng = _.get(p, '1')
 
                     return {lat: lat, lng: lng}
                 })
-                const keyTen = 10
                 const meanLat = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
                     return _.get(p, '0')
                 }))
@@ -97,19 +104,37 @@ const GoogleMapWrapper = enhance(({onMapLoad, isOpenAddZone, listData, filter, i
                     return false
                 }
 
-                return (
-                    <div>
+                const getPixelPositionOffset = (width, height) => {
+                    const TWO = 2
+                    return {
+                        x: -(width / TWO),
+                        y: -(height / TWO)
+                    }
+                }
+
+                if (id === zoneId && isOpenUpdate) {
+                    return (
                         <Polygon
                             key={id}
+                            paths={point}
+                            options={editPolygonOptioons}
+                        />
+                    )
+                }
+
+                return (
+                    <div key={id}>
+                        <Polygon
                             paths={point}
                             options={polygonOptions}
                         />
                         <OverlayView
-                            key={id * keyTen}
                             position={{lat: meanLat, lng: meanLng}}
+                            getPixelPositionOffset={getPixelPositionOffset}
                             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}>
-                            <div style={{fontSize: '24px', textAlign: 'center'}}>
-                                <div>Z-{id}</div>
+                            <div style={{textAlign: 'center'}}>
+                                <div style={{fontSize: '22px'}}>Z-{id}</div>
+                                <div>{title}</div>
                             </div>
                         </OverlayView>
                     </div>
@@ -129,6 +154,7 @@ const GoogleMap = (props) => {
     const {...defaultProps} = props
     const isOpenAddZone = _.get(props, 'isOpenAddZone')
     const filter = _.get(props, 'filter')
+    const zoneId = _.get(props, 'zoneId')
     const listData = _.get(props, 'listData')
 
     return (
@@ -143,6 +169,7 @@ const GoogleMap = (props) => {
             defaultOptions={{styles: googleMapStyle}}
 
             listData={listData}
+            zoneId={zoneId}
             isOpenAddZone={isOpenAddZone}
             filter={filter}
             {...defaultProps}>
