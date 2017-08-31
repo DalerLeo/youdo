@@ -88,6 +88,7 @@ const StockTabTransfer = enhance((props) => {
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
+            transfer={true}
         />
     )
 
