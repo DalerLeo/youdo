@@ -60,8 +60,6 @@ const enhance = compose(
         },
         tableWrapper: {
             height: 'calc(100% - 140px)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
@@ -152,7 +150,9 @@ const enhance = compose(
         rightPanel: {
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            overflowY: 'auto',
+            overflowX: 'hidden'
         },
         searchButton: {
             marginLeft: '-10px !important',
