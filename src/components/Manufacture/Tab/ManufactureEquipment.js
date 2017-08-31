@@ -10,19 +10,19 @@ import GridList from '../../GridList'
 
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         title: 'Наименование',
         xs: 4
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'type',
         title: 'Последняя отгрузка №',
         xs: 4
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'brand',
         title: 'Состояние',
         xs: 4

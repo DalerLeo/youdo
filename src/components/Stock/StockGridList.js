@@ -47,7 +47,7 @@ const listHeader = [
     {
         sorting: true,
         xs: 2,
-        name: 'created_date',
+        name: 'createdDate',
         title: 'Дата создания'
     },
     {

@@ -26,7 +26,7 @@ const listHeader = [
         title: 'Id'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         xs: 6,
         title: 'Наименование'

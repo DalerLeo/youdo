@@ -84,20 +84,21 @@ const listHeader = [
         title: 'Id'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         xs: 5,
         title: 'Наименование'
     },
     {
         sorting: true,
+        name: 'repetition',
         title: 'Похожие',
         xs: 2
     },
     {
         sorting: true,
         xs: 3,
-        name: 'created_date',
+        name: 'createdDate',
         title: 'Дата создания'
     },
     {

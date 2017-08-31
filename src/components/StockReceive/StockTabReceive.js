@@ -103,7 +103,7 @@ const listHeader = [
     },
     {
         name: 'by',
-        sorting: true,
+        sorting: false,
         title: 'От кого',
         xs: 3
     },
@@ -121,7 +121,7 @@ const listHeader = [
     },
     {
         name: 'stock',
-        sorting: true,
+        sorting: false,
         title: 'Склад',
         xs: 2
     }

@@ -29,7 +29,7 @@ const listHeader = [
         xs: '10%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'client',
         title: 'От кого',
         xs: '15%'
@@ -47,7 +47,7 @@ const listHeader = [
         xs: '15%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'user',
         title: 'Добавил',
         xs: '15%'
@@ -60,7 +60,7 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'amount',
+        name: 'totalPrice',
         alignRight: true,
         title: 'Сумма возврата',
         xs: '15%'
@@ -181,7 +181,7 @@ const OrderGridList = enhance((props) => {
                 <div style={{width: '15%'}}>{stock}</div>
                 <div style={{width: '15%'}}>{user}</div>
                 <div style={{width: '15%'}}>{createdDate}</div>
-                <div style={{width: '15%', textAlign: 'right'}}>{totalPrice}</div>
+                <div style={{width: '15%'}}>{totalPrice}</div>
                 <div style={{width: '5%'}}>
                     <div className={classes.buttons}>
                         {(status === PENDING || status === IN_PROGRESS)

@@ -17,6 +17,7 @@ const listHeader = [
         xs: 2
     },
     {
+        sorting: true,
         name: 'dateRequest',
         title: 'Дата запроса',
         xs: 2

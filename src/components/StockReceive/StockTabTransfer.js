@@ -26,7 +26,7 @@ const listHeader = [
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'stock',
         title: 'Склад',
         xs: 2
