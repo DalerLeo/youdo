@@ -203,7 +203,7 @@ const JoinList = enhance((props) => {
 
     const joinClientDialog = {
         initialValues: (() => {
-            if (toBoolean(openJoinMarket)) {
+            if (toBoolean(openJoinClient)) {
                 return {}
             }
             return {
