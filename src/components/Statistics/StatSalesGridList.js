@@ -373,7 +373,7 @@ const StatSalesGridList = enhance((props) => {
             <Col xs={2}>Дата</Col>
             <Col xs={3}>Магазин</Col>
             <Col xs={2}>Агент</Col>
-            <Col xs={1}>Возврать</Col>
+            <Col xs={1}>Возврат</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
             <Col xs={1} style={{display: 'none'}}>|</Col>
         </Row>
