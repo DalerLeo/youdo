@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import {compose} from 'recompose'
+import {hashHistory} from 'react-router'
 import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import {signInAction, authConfirmAction} from '../../actions/signIn'
@@ -26,25 +27,22 @@ const enhance = compose(
     })
 )
 
-const MINUS_ONE = -1
 const SignIn = enhance((props) => {
     const {classes, dispatch, location, loading, formValues} = props
 
     const onSubmit = () => {
         return dispatch(signInAction(formValues))
             .then(() => {
+                const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
                 dispatch(getConfig())
-                return dispatch(authConfirmAction())
-            }).then(() => {
-                window.location.href = _.get(location, ['query', 'redirect']) ? (_.get(location, ['query', 'redirect']).indexOf('#') > MINUS_ONE
-                    ? _.get(location, ['query', 'redirect'])
-                    : '/#' + _.get(location, ['query', 'redirect'])) : ROUTES.DASHBOARD_URL
+                dispatch(authConfirmAction())
+                hashHistory.push(redirectUrl)
             })
     }
 
     return (
         <div className={classes.container}>
-            <SignInForm loading={loading} onSubmit={onSubmit}/>
+            <SignInForm loading={loading} onSubmit={onSubmit} />
         </div>
     )
 })

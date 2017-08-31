@@ -2,6 +2,8 @@
  * Action Types
  */
 export const SIGN_IN = 'SIGN_IN'
+export const IS_ADMIN = 'IS_ADMIN'
+export const USER_GROUPS = 'USER_GROUPS'
 export const AUTH_CONFIRM = 'AUTH_CONFIRM'
 
 export const SHOP_LIST = 'SHOP_LIST'

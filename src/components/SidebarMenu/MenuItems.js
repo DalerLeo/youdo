@@ -10,16 +10,15 @@ import Store from 'material-ui/svg-icons/action/store'
 import Person from 'material-ui/svg-icons/social/group'
 import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
-import {getGroups, getValue} from '../../helpers/storage'
+import {getValue} from '../../helpers/storage'
 import toBoolean from '../../helpers/toBoolean'
 import {IS_SUPERUSER} from '../../constants/storage'
 
-const sessionGroups = getGroups()
 const isSuperUser = toBoolean(getValue(IS_SUPERUSER))
 
 const NOT_FOUND = -1
 
-const defaultMenu = [
+export const MenuItems = [
     {
         name: 'Продажи',
         icon: (<AttachMoney />),
@@ -119,7 +118,7 @@ const defaultMenu = [
     }
 ]
 
-const groups = [
+export const groups = [
     {
         id: 1,
         name: 'SupDir',
@@ -145,7 +144,8 @@ const groups = [
     },
     {
         id: 5,
-        name: 'collector'
+        name: 'collector',
+        urls: []
     },
     {
         id: 6,
@@ -159,46 +159,50 @@ const groups = [
     },
     {
         id: 7,
-        name: 'supervisor'
+        name: 'supervisor',
+        urls: []
     }
 ]
 
-let menus = []
 const getLinksByGroup = (groupId) => {
     return _.get(_.find(groups, {'id': _.toInteger(groupId)}), 'urls')
 }
-_.map(sessionGroups, (item) => {
-    const links = getLinksByGroup(item)
-    _.map(links, (link) => {
-        const parent = _
-            .chain(defaultMenu)
-            .find((obj) => {
-                return (_.findIndex(obj.childs,
-                    (ch) => ch.url === link) > NOT_FOUND)
-            })
-            .value()
-        let hasIn = false
-        _.map(menus, (menu) => {
-            if (menu.url === link) {
-                hasIn = true
-            }
-            _.map(menu.childs, (child) => {
-                if (child.url === link) {
+
+export const getNeedMenu = (sessionGroups) => {
+    let menus = []
+    _.map(sessionGroups, (item) => {
+        const links = getLinksByGroup(item)
+        _.map(links, (link) => {
+            const parent = _
+                .chain(MenuItems)
+                .find((obj) => {
+                    return (_.findIndex(obj.childs,
+                        (ch) => ch.url === link) > NOT_FOUND)
+                })
+                .value()
+            let hasIn = false
+            _.map(menus, (menu) => {
+                if (menu.url === link) {
                     hasIn = true
                 }
+                _.map(menu.childs, (child) => {
+                    if (child.url === link) {
+                        hasIn = true
+                    }
+                })
             })
+            if (!hasIn) {
+                menus.push(parent)
+            }
         })
-        if (!hasIn) {
-            menus.push(parent)
-        }
     })
-})
-
-const getMenus = () => {
-    if (isSuperUser) {
-        return defaultMenu
-    }
     return menus
 }
-export const MenuItems = getMenus()
+
+export const getMenus = (sessionGroups, isAdmin) => {
+    if (isAdmin) {
+        return MenuItems
+    }
+    return getNeedMenu(sessionGroups)
+}
 

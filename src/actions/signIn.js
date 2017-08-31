@@ -11,6 +11,26 @@ export const setTokenAction = () => {
     }
 }
 
+export const setAuthConfirmAction = () => {
+    return {
+        type: `${actionTypes.AUTH_CONFIRM}_FULFILLED`,
+        payload: JSON.parse(storageHelper.getUserData())
+    }
+}
+
+export const authConfirmAction = () => {
+    const payload = axios().get(API.AUTH_CONFIRM)
+        .then((response) => {
+            const userData = _.get(response, 'data')
+            storageHelper.setUser(userData)
+            return userData
+        })
+    return {
+        type: actionTypes.AUTH_CONFIRM,
+        payload
+    }
+}
+
 export const signInAction = (params) => {
     const payload = axios()
         .post(API.SIGN_IN, params)
@@ -54,14 +74,3 @@ export const signOutAction = () => {
     }
 }
 
-export const authConfirmAction = () => {
-    const payload = axios().get(API.AUTH_CONFIRM)
-        .then((response) => {
-            const userData = _.get(response, 'data')
-            storageHelper.setUser(userData)
-        })
-    return {
-        type: actionTypes.AUTH_CONFIRM,
-        payload
-    }
-}

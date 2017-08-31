@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import {connect} from 'react-redux'
-import {setTokenAction, signOutAction} from '../../actions/signIn'
+import {setTokenAction, signOutAction, setAuthConfirmAction} from '../../actions/signIn'
 import {trackingListFetchAction} from '../../actions/tracking'
 import DocumentTitle from 'react-document-title'
 import {hashHistory} from 'react-router'
@@ -32,6 +32,7 @@ class App extends React.Component {
         const pathname = _.get(props, ['location', 'pathname'])
         const {dispatch} = props
         dispatch(setTokenAction())
+        dispatch(setAuthConfirmAction())
         setInterval(() => {
             dispatch(notificationGetNotViewed())
         }, time)

@@ -1,5 +1,5 @@
 import {hashHistory} from 'react-router'
-import {userIsAuth} from '../permissions'
+import {userIsAuth, visibleOnlyAdmin} from '../permissions'
 import {getToken} from '../helpers/storage'
 import * as ROUTES from '../constants/routes'
 import App from '../containers/App'
@@ -454,14 +454,14 @@ export default {
         // Statistics
         {
             path: ROUTES.STATISTICS_LIST_URL,
-            component: userIsAuth(StatSalesList),
+            component: userIsAuth(visibleOnlyAdmin(StatSalesList)),
             childRoutes: [
             ]
         },
         // Statistics/sales all
         {
             path: ROUTES.STATISTICS_SALES_URL,
-            component: userIsAuth(StatSalesList),
+            component: userIsAuth(visibleOnlyAdmin(StatSalesList)),
             childRoutes: [
                 {
                     path: ROUTES.STATISTICS_SALES_ITEM_URL,
@@ -472,7 +472,7 @@ export default {
         // Statistics/agent
         {
             path: ROUTES.STATISTICS_AGENT_URL,
-            component: userIsAuth(StatAgentList),
+            component: userIsAuth(visibleOnlyAdmin(StatAgentList)),
             childRoutes: [
                 {
                     path: ROUTES.STATISTICS_AGENT_ITEM_URL,
@@ -483,13 +483,13 @@ export default {
         // Statistics/product
         {
             path: ROUTES.STATISTICS_PRODUCT_URL,
-            component: userIsAuth(StatProductList),
+            component: userIsAuth(visibleOnlyAdmin(StatProductList)),
             childRoutes: []
         },
         // Statistics/market
         {
             path: ROUTES.STATISTICS_MARKET_URL,
-            component: userIsAuth(StatMarketList),
+            component: userIsAuth(visibleOnlyAdmin(StatMarketList)),
             childRoutes: [
                 {
                     path: ROUTES.STATISTICS_MARKET_ITEM_URL,
@@ -500,25 +500,25 @@ export default {
         // Statistics/finance
         {
             path: ROUTES.STATISTICS_FINANCE_URL,
-            component: userIsAuth(StatFinanceList),
+            component: userIsAuth(visibleOnlyAdmin(StatFinanceList)),
             childRoutes: []
         },
         // Statistics/income
         {
             path: ROUTES.STATISTICS_INCOME_URL,
-            component: userIsAuth(StatIncomeList),
+            component: userIsAuth(visibleOnlyAdmin(StatIncomeList)),
             childRoutes: []
         },
         // Statistics/outcome
         {
             path: ROUTES.STATISTICS_OUTCOME_URL,
-            component: userIsAuth(StatOutcomeList),
+            component: userIsAuth(visibleOnlyAdmin(StatOutcomeList)),
             childRoutes: []
         },
         // Statistics/debtors
         {
             path: ROUTES.STATISTICS_DEBTORS_URL,
-            component: userIsAuth(StatDebtorsList),
+            component: userIsAuth(visibleOnlyAdmin(StatDebtorsList)),
             childRoutes: [
                 {
                     path: ROUTES.STATISTICS_DEBTORS_ITEM_URL,
@@ -529,7 +529,7 @@ export default {
         // Statistics/outcomeCategory
         {
             path: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL,
-            component: userIsAuth(StatOutcomeCategoryList),
+            component: userIsAuth(visibleOnlyAdmin(StatOutcomeCategoryList)),
             childRoutes: []
         },
         // Stock Receive Transfer
@@ -568,7 +568,7 @@ export default {
         // Statistics/remainder
         {
             path: ROUTES.STATISTICS_REMAINDER_URL,
-            component: userIsAuth(StatRemainderList),
+            component: userIsAuth(visibleOnlyAdmin(StatRemainderList)),
             childRoutes: [
                 {
                     path: ROUTES.STATISTICS_REMAINDER_ITEM_URL,
@@ -579,7 +579,7 @@ export default {
         // Statistics/cashbox
         {
             path: ROUTES.STATISTICS_CASHBOX_URL,
-            component: userIsAuth(StatCashboxList),
+            component: userIsAuth(visibleOnlyAdmin(StatCashboxList)),
             childRoutes: [
                 {
                     path: ROUTES.STATISTICS_CASHBOX_ITEM_URL,
@@ -613,7 +613,7 @@ export default {
         // Statistics/productMove
         {
             path: ROUTES.STATISTICS_PRODUCT_MOVE_URL,
-            component: userIsAuth(StatProductMoveList),
+            component: userIsAuth(visibleOnlyAdmin(StatProductMoveList)),
             childRoutes: [
                 {
                     path: ROUTES.STATISTICS_PRODUCT_MOVE_ITEM_URL,
@@ -624,10 +624,10 @@ export default {
         // Statistics/report
         {
             path: ROUTES.STATISTICS_REPORT_URL,
-            component: userIsAuth(StatReportList),
+            component: userIsAuth(visibleOnlyAdmin(StatReportList)),
             childRoutes: []
         },
-        // Statistics/report
+        // Division
         {
             path: ROUTES.DIVISION_LIST_URL,
             component: userIsAuth(DivisionList),
