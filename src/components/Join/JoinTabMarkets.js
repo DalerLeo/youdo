@@ -13,37 +13,37 @@ import JoinDialog from './JoinDialog'
 
 const listHeader = [
     {
-        xs: '20%',
+        width: '20%',
         sorting: false,
         name: 'name',
         title: 'Название'
     },
     {
-        xs: '25%',
+        width: '25%',
         sorting: false,
         name: 'client',
         title: 'Клиент'
     },
     {
-        xs: '15%',
+        width: '15%',
         sorting: true,
         name: 'repetition',
         title: 'Похожие'
     },
     {
-        xs: '20%',
+        width: '20%',
         sorting: false,
         name: 'address',
         title: 'Адрес'
     },
     {
-        xs: '15%',
+        width: '15%',
         sorting: true,
         name: 'phone',
         title: 'Телефон'
     },
     {
-        xs: '5%'
+        width: '5%'
     }
 ]
 

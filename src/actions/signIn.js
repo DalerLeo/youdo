@@ -12,10 +12,14 @@ export const setTokenAction = () => {
 }
 
 export const setAuthConfirmAction = () => {
-    return {
-        type: `${actionTypes.AUTH_CONFIRM}_FULFILLED`,
-        payload: JSON.parse(storageHelper.getUserData())
+    const userData = storageHelper.getUserData()
+    if (userData) {
+        return {
+            type: `${actionTypes.AUTH_CONFIRM}_FULFILLED`,
+            payload: JSON.parse(userData)
+        }
     }
+    return null
 }
 
 export const authConfirmAction = () => {

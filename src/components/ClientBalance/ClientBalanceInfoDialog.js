@@ -189,7 +189,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
                 <div style={{flexBasis: '45%', maxWidth: '45%'}}>
                     <div>Магазин: <span>{market}</span></div>
-                    <div>Коментария: <span>{comment}</span></div>
+                    <div>Комментарии: <span>{comment}</span></div>
                     <div>Тип: <span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
                             : type === CANCEL_ORDER ? 'Отмена заказа'

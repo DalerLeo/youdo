@@ -155,6 +155,7 @@ const GridListHeader = enhance((props) => {
     const firstIndex = 0
     const items = _.map(column, (item, index) => {
         const xs = (!_.isNil(item.xs)) ? item.xs : (index === firstIndex ? firstColumnSize : defaultColumnSize)
+        const width = _.get(item, 'width')
         const alignRight = _.get(item, 'alignRight')
 
         if (_.get(item, 'sorting')) {
@@ -165,7 +166,7 @@ const GridListHeader = enhance((props) => {
                     ) : (<ArrowDownIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>) : null
 
             if (withoutRow) {
-                return (<Col xs={xs} style={alignRight && {textAlign: 'right'}} key={index}>
+                return (<div style={alignRight ? {textAlign: 'right', width: width} : {width: width}} key={index}>
                     <Link
                         className={classes.sortingButton}
                         onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
@@ -177,7 +178,7 @@ const GridListHeader = enhance((props) => {
                             <span>{_.get(item, 'title')}</span> {Icon}
                         </FlatButton>
                     </Link>
-                </Col>)
+                </div>)
             }
             return (<Col xs={xs} key={index} style={alignRight && {textAlign: 'right'}}>
                         <Link
@@ -192,6 +193,12 @@ const GridListHeader = enhance((props) => {
                             </FlatButton>
                         </Link>
                     </Col>)
+        } else if (withoutRow && !_.get(item, 'sorting')) {
+            return (
+                <div style={{width: width}}>
+                    {_.get(item, 'title')}
+                </div>
+            )
         }
 
         return (
