@@ -10,11 +10,6 @@ import Store from 'material-ui/svg-icons/action/store'
 import Person from 'material-ui/svg-icons/social/group'
 import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
-import {getValue} from '../../helpers/storage'
-import toBoolean from '../../helpers/toBoolean'
-import {IS_SUPERUSER} from '../../constants/storage'
-
-const isSuperUser = toBoolean(getValue(IS_SUPERUSER))
 
 const NOT_FOUND = -1
 
