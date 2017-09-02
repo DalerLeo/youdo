@@ -18,6 +18,7 @@ const enhance = compose(
     })
 )
 
+const ONE = 1
 const PermissionToggle = enhance((props) => {
     const {status} = props
     const ON = 1
@@ -26,7 +27,7 @@ const PermissionToggle = enhance((props) => {
         <Toggle
             toggled={toggleStatus === ON}
             onToggle={props.toggle}
-            label="Включить"/>
+            label={status === ONE ? 'Включен' : 'Выключен'}/>
     )
 })
 

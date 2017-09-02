@@ -79,7 +79,7 @@ const enhance = compose(
         enableReinitialize: true
     })
 )
-
+const ONE = 1
 const PermissionGridList = enhance((props) => {
     const {
         filter,
@@ -123,7 +123,7 @@ const PermissionGridList = enhance((props) => {
                             name={'toggle' + id}
                             status={status}
                             id={id}
-                            update={updateDialog.handleSubmitUpdateDialog}
+                            update={() => { updateDialog.handleSubmitUpdateDialog(id, _.toInteger(status) === ONE) }}
                             component={PermissionToggle}
                         />
                     </div>
@@ -155,7 +155,6 @@ const PermissionGridList = enhance((props) => {
                         actionsDialog={actions}
                         addButton={addButton}
                         listShadow={false}
-                        withoutSearch={true}
                     />
                 </div>
             </div>
