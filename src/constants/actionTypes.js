@@ -406,3 +406,7 @@ export const PLAN_MONTHLY = 'PLAN_MONTHLY'
 
 export const JOIN_MARKETS = 'JOIN_MARKETS'
 export const JOIN_CLIENTS = 'JOIN_CLIENTS'
+
+export const ACCESS_LIST = 'ACCESS_LIST'
+export const ACCESS_ITEM = 'ACCESS_ITEM'
+export const ACCESS_UPDATE = 'ACCESS_UPDATE'

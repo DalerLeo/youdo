@@ -97,6 +97,7 @@ const enhance = compose(
             fontSize: '13px',
             color: '#999',
             width: '100%',
+            overflow: 'hidden',
             '& svg': {
                 width: '50px !important',
                 height: '50px !important',
@@ -149,11 +150,11 @@ const StockTransferDetails = enhance((props) => {
 
     if (_.isEmpty(products)) {
         return (
-            <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden'}}>
-                {detailLoading && <LinearProgress/>}
-                <div className={classes.emptyQuery}>
+            <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden', height: '100%'}}>
+                {detailLoading ? <LinearProgress/>
+                : <div className={classes.emptyQuery}>
                     <div>Товаров не найдено</div>
-                </div>
+                </div>}
             </div>
         )
     }

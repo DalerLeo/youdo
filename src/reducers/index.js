@@ -397,6 +397,11 @@ const rootReducer = combineReducers({
         joinMarkets: createThunkReducer(actionTypes.JOIN_MARKETS),
         joinClients: createThunkReducer(actionTypes.JOIN_CLIENTS)
     }),
+    access: combineReducers({
+        list: createThunkReducer(actionTypes.ACCESS_LIST),
+        item: createThunkReducer(actionTypes.ACCESS_ITEM),
+        update: createThunkReducer(actionTypes.ACCESS_UPDATE)
+    }),
     snackbar: snackbarReducer(),
     error: errorReducer(),
     form: formReducer,

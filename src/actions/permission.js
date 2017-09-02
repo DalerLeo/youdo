@@ -5,10 +5,10 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/permissionSerializer'
 
-export const permissionCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const permissionUpdateAction = (id, status) => {
+    const requestData = serializers.updateSerializer(id, status)
     const payload = axios()
-        .post(API.MEASUREMENT_CREATE, requestData)
+        .put(sprintf(API.ACCESS_ITEM, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,40 +17,7 @@ export const permissionCreateAction = (formValues) => {
         })
 
     return {
-        type: actionTypes.MEASUREMENT_CREATE,
-        payload
-    }
-}
-
-export const permissionDeleteAction = (id) => {
-    const payload = axios()
-        .delete(sprintf(API.MEASUREMENT_DELETE, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.MEASUREMENT_DELETE,
-        payload
-    }
-}
-
-export const permissionUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .put(sprintf(API.MEASUREMENT_ITEM, id), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.MEASUREMENT_UPDATE,
+        type: actionTypes.ACCESS_UPDATE,
         payload
     }
 }
@@ -58,7 +25,7 @@ export const permissionUpdateAction = (id, formValues) => {
 export const permissionListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.MEASUREMENT_LIST, {params})
+        .get(API.ACCESS_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,14 +34,14 @@ export const permissionListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.MEASUREMENT_LIST,
+        type: actionTypes.ACCESS_LIST,
         payload
     }
 }
 
 export const permissionItemFetchAction = (id) => {
     const payload = axios()
-        .get(sprintf(API.MEASUREMENT_ITEM, id))
+        .get(sprintf(API.ACCESS_ITEM, id))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -83,7 +50,7 @@ export const permissionItemFetchAction = (id) => {
         })
 
     return {
-        type: actionTypes.MEASUREMENT_ITEM,
+        type: actionTypes.ACCESS_ITEM,
         payload
     }
 }

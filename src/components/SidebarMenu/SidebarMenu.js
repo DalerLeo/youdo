@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
 import ToolTip from '../ToolTip'
 import {getMenus} from './MenuItems'
@@ -26,17 +27,19 @@ const enhance = compose(
             return _.get(item, 'id')
         })
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        const loading = _.get(state, ['authConfirm', 'loading'])
         const notificationData = _.get(state, ['notifications', 'timeInterval', 'data'])
         return {
             notificationData,
             isAdmin,
-            sessionGroups
+            sessionGroups,
+            loading
         }
     })
 )
 
 const SideBarMenu = enhance((props) => {
-    const {classes, handleSignOut, handleOpenNotificationBar, count, sessionGroups, isAdmin} = props
+    const {classes, handleSignOut, handleOpenNotificationBar, count, sessionGroups, isAdmin, loading} = props
     const menu = getMenus(sessionGroups, isAdmin)
     const items = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')
@@ -75,54 +78,58 @@ const SideBarMenu = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <div className={classes.items}>
-                <div className={classes.logo}>
-                    <img src={Logo}/>
+            {loading
+                ? <div className={classes.menuLoading}>
+                    <CircularProgress size={40} thickness={4} color="#efefef"/>
                 </div>
-                <div className={classes.notifications}>
-                    {count ? <Badge
-                        className={classes.badge}
-                        badgeContent={count}
-                        badgeStyle={{top: 8, right: 10}}>
-                        <ToolTip position="right" text="Уведомления">
-                            <FlatButton
-                                rippleColor="#fff"
-                                style={style.style}
-                                onTouchTap={() => {
-                                    handleOpenNotificationBar(true)
-                                }}>
-                                <Notification />
-                            </FlatButton>
-                        </ToolTip>
-                    </Badge>
-                        : <ToolTip position="right" text="Уведомления">
-                            <FlatButton
-                                rippleColor="#fff"
-                                style={style.style}
-                                onTouchTap={() => {
-                                    handleOpenNotificationBar(true)
-                                }}>
-                                <Notification />
-                            </FlatButton>
-                        </ToolTip>
-                    }
-                </div>
-                {items}
-                {!_.isEmpty(bottomItems) && <div className={classes.bottom}>
-                    {bottomItems}
-                </div>}
+                : <div className={classes.items}>
+                    <div className={classes.logo}>
+                        <img src={Logo}/>
+                    </div>
+                    <div className={classes.notifications}>
+                        {count ? <Badge
+                                className={classes.badge}
+                                badgeContent={count}
+                                badgeStyle={{top: 8, right: 10}}>
+                                <ToolTip position="right" text="Уведомления">
+                                    <FlatButton
+                                        rippleColor="#fff"
+                                        style={style.style}
+                                        onTouchTap={() => {
+                                            handleOpenNotificationBar(true)
+                                        }}>
+                                        <Notification/>
+                                    </FlatButton>
+                                </ToolTip>
+                            </Badge>
+                            : <ToolTip position="right" text="Уведомления">
+                                <FlatButton
+                                    rippleColor="#fff"
+                                    style={style.style}
+                                    onTouchTap={() => {
+                                        handleOpenNotificationBar(true)
+                                    }}>
+                                    <Notification/>
+                                </FlatButton>
+                            </ToolTip>
+                        }
+                    </div>
+                    {items}
+                    {!_.isEmpty(bottomItems) && <div className={classes.bottom}>
+                        {bottomItems}
+                    </div>}
 
-                <div className={classes.logout}>
-                    <ToolTip position="right" text="Выйти">
-                        <FlatButton
-                            rippleColor="#fff"
-                            style={style.style}
-                            onClick={handleSignOut}>
-                            <SettingsPower />
-                        </FlatButton>
-                    </ToolTip>
-                </div>
-            </div>
+                    <div className={classes.logout}>
+                        <ToolTip position="right" text="Выйти">
+                            <FlatButton
+                                rippleColor="#fff"
+                                style={style.style}
+                                onClick={handleSignOut}>
+                                <SettingsPower/>
+                            </FlatButton>
+                        </ToolTip>
+                    </div>
+                </div>}
         </div>
     )
 })
@@ -132,7 +139,19 @@ export default injectSheet({
         height: '100%',
         display: 'flex',
         backgroundColor: '#2d3037',
+        position: 'relative',
         boxShadow: '0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12)'
+    },
+
+    menuLoading: {
+        paddingTop: '100px',
+        display: 'flex',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        right: '0',
+        bottom: '0'
     },
 
     logo: {

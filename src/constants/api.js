@@ -412,3 +412,9 @@ export const RETURN_CANCEL = `${RETURN}/%d/cancel/`
 
 export const JOIN_MARKETS = 'market/merge/'
 export const JOIN_CLIENTS = 'sales/merge_clients/'
+
+export const ACCESS = 'main/access'
+export const ACCESS_LIST = `${ACCESS}/`
+export const ACCESS_ITEM = `${ACCESS}/%d/`
+export const ACCESS_UPDATE = `${ACCESS}/%d/`
+
