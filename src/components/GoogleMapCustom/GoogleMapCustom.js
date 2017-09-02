@@ -1,7 +1,6 @@
 import React from 'react'
 import Script from 'react-load-script'
 
-
 export default class GoogleCustomMap extends React.Component {
     constructor (props) {
         super(props)
@@ -13,7 +12,6 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     loadMap () {
-        const {config} = this.props
         if (this.state.scriptLoaded) {
             this.setState({
                 center: {lat: 24.886, lng: -70.268}
@@ -46,8 +44,7 @@ export default class GoogleCustomMap extends React.Component {
             center,
             mapTypeId: 'terrain'
         }
-        console.warn(this.refs.setMap)
-        return new google.maps.Map(this.refs.cMap, mapOptions)
+        return new google.maps.Map(this.state.cMap, mapOptions)
     }
 
     handleScriptCreate () {
@@ -66,18 +63,18 @@ export default class GoogleCustomMap extends React.Component {
         this.setState({
             scriptLoaded: true
         })
-        console.warn('ScriptLoaded')
+
         this.loadMap()
     }
 
     componentDidMount () {
         this.setMap = 'setMap'
         this.setState({
-            cMap: 'cMap'
+            cMap: this.el
         })
-    }
-    componentWillUnmount () {
-        google.maps.event.clearListeners(this.map, 'zoom_changed')
+        if (this.state.scriptLoaded) {
+            this.loadMap()
+        }
     }
 
     render () {
@@ -92,7 +89,7 @@ export default class GoogleCustomMap extends React.Component {
                     onError={this.handleScriptError.bind(this)}
                     onLoad={this.handleScriptLoad.bind(this)}
                 />
-                <div className='GMap-canvas' id="mappingGoogleCustom" ref={this.state.cMap} style={{height: '100%', width: '100%'}}> </div>
+                <div className='GMap-canvas' id="mappingGoogleCustom" ref={ el => this.el = el} style={{height: '100%', width: '100%'}}> </div>
             </div>
         )
     }
