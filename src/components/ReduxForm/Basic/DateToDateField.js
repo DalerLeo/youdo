@@ -14,6 +14,20 @@ import moment from 'moment'
 const MINUS_ONE = -1
 const MINUS_SEVEN = -7
 const MINUS_THIRTY = -30
+const x = new Date()
+const TODAY = x.getDate()
+const MONTH = x.getMonth()
+const ZERO = 0
+const TWO = 2
+const FOUR = 4
+const SIX = 6
+const SEVEN = 7
+const NINE = 9
+const ELEVEN = 11
+const THIRTY = 30
+const THIRTY_ONE = 31
+const DAY_OF_LAST_MONTH = (MONTH === ZERO || MONTH === TWO || MONTH === FOUR || MONTH === SIX || MONTH === SEVEN || MONTH === NINE || MONTH === ELEVEN)
+    ? THIRTY_ONE : THIRTY
 const range = {
     'Сегодня': {
         startDate: (now) => {
@@ -48,6 +62,14 @@ const range = {
         },
         endDate: (now) => {
             return now
+        }
+    },
+    'Прев. месяц': {
+        startDate: (now) => {
+            return now.add((TODAY + DAY_OF_LAST_MONTH) * MINUS_ONE, 'day')
+        },
+        endDate: (now) => {
+            return now.add(TODAY * MINUS_ONE, 'day')
         }
     }
 }

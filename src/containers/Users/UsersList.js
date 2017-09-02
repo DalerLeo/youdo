@@ -87,7 +87,7 @@ const enhance = compose(
         const prevUpdateDialog = _.get(props, ['location', 'query', USERS_UPDATE_DIALOG_OPEN])
         const nextUpdateDialog = _.get(nextProps, ['location', 'query', USERS_UPDATE_DIALOG_OPEN])
         return ((prevCreateDialog !== nextCreateDialog) || (prevUpdateDialog !== nextUpdateDialog)) &&
-            (nextCreateDialog === 'true' || nextUpdateDialog === 'true')
+            (nextCreateDialog === 'true' || nextUpdateDialog === 'true') && props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(userGroupListFetchAction())
         dispatch(stockListFetchAction(filter))

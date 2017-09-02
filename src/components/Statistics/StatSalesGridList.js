@@ -463,7 +463,7 @@ const StatSalesGridList = enhance((props) => {
                                             <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
                                             <div>Сумма возврата за период</div>
                                             <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                            <div>Выручка за период</div>
+                                            <div>Фактическая сумма продаж</div>
                                             <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                         </Col>
                                         <Col xs={9}>

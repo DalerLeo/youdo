@@ -4,12 +4,16 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../CloseIcon2'
+import sprintf from 'sprintf'
+import {Link} from 'react-router'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
+import CloseIcon2 from '../CloseIcon2'
 import numberFormat from '../../helpers/numberFormat'
+import * as ROUTES from '../../constants/routes'
+
 export const REMAINDER_RESERVED_DIALOG_OPEN = 'openReservedDialog'
 const enhance = compose(
     injectSheet({
@@ -156,7 +160,10 @@ const RemainderReservedDialog = enhance((props) => {
 
         return (
             <Row key={id} className="dottedList">
-                <Col xs={4}>{orderId}</Col>
+                <Col xs={4}><Link to={{
+                    pathname: sprintf(ROUTES.ORDER_ITEM_PATH, orderId),
+                    query: {search: orderId}
+                }} target="_blank">Заказ {orderId}</Link></Col>
                 <Col xs={4}>{stock}</Col>
                 <Col xs={4}>{amount}</Col>
             </Row>
