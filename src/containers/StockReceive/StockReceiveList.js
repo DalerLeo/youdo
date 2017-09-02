@@ -267,10 +267,14 @@ const enhance = compose(
             const type = _.get(tabTransferFilterForm, ['values', 'type', 'value']) || null
             const fromDate = _.get(tabTransferFilterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(tabTransferFilterForm, ['values', 'date', 'toDate']) || null
+            const acceptanceFromData = _.get(tabTransferFilterForm, ['values', 'acceptanceDate', 'fromDate']) || null
+            const acceptanceToDate = _.get(tabTransferFilterForm, ['values', 'acceptanceDate', 'toDate']) || null
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
                 [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,
                 [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
+                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_FROM_DATE]: acceptanceFromData && moment(acceptanceFromData).format('YYYY-MM-DD'),
+                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_TO_DATE]: acceptanceToDate && moment(acceptanceToDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 

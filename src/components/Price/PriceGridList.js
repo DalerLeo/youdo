@@ -50,19 +50,19 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'type',
+        name: 'netCost',
         title: 'Себестоимость',
         xs: 2
     },
     {
         sorting: true,
-        name: 'price',
+        name: 'minPrice',
         title: 'Цена',
         xs: 2
     },
     {
         sorting: true,
-        name: 'created_date',
+        name: 'priceUpdate',
         title: 'Дата обновления',
         xs: 2
     }

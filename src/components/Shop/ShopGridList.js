@@ -30,25 +30,25 @@ const listHeader = [
     },
     {
         xs: 3,
-        sorting: true,
+        sorting: false,
         name: 'client',
         title: 'Клиент'
     },
     {
         xs: 2,
-        sorting: true,
+        sorting: false,
         name: 'market_type',
         title: 'Тип'
     },
     {
         xs: 2,
-        sorting: true,
+        sorting: false,
         name: 'border',
         title: 'Зона'
     },
     {
         xs: 2,
-        sorting: true,
+        sorting: false,
         name: 'is_active',
         title: 'Статус'
     }

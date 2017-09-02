@@ -50,7 +50,7 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'total_balance',
+        name: 'totalBalance',
         alignRight: true,
         title: 'Остаток',
         xs: 2

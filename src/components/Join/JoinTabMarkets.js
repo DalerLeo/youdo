@@ -14,24 +14,25 @@ import JoinDialog from './JoinDialog'
 const listHeader = [
     {
         xs: '20%',
-        sorting: true,
+        sorting: false,
         name: 'name',
         title: 'Название'
     },
     {
         xs: '25%',
-        sorting: true,
+        sorting: false,
         name: 'client',
         title: 'Клиент'
     },
     {
         xs: '15%',
         sorting: true,
+        name: 'repetition',
         title: 'Похожие'
     },
     {
         xs: '20%',
-        sorting: true,
+        sorting: false,
         name: 'address',
         title: 'Адрес'
     },

@@ -25,7 +25,7 @@ const listHeader = [
         title: 'Id'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         xs: 4,
         title: 'Наименование'

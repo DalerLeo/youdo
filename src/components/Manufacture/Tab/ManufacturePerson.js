@@ -22,7 +22,7 @@ const listHeader = [
         xs: 4
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'position',
         title: 'Должность',
         xs: 3
@@ -34,7 +34,7 @@ const listHeader = [
         xs: 3
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'action',
         title: '',
         xs: 2
