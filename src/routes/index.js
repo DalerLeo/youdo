@@ -90,7 +90,7 @@ export default {
         // Shop
         {
             path: ROUTES.SHOP_LIST_URL,
-            component: userIsAuth(ShopList),
+            component: userIsAuth(visibleOnlyAdmin(ShopList)),
             childRoutes: [
                 {
                     path: ROUTES.SHOP_ITEM_URL,
@@ -106,7 +106,7 @@ export default {
         // Users
         {
             path: ROUTES.USERS_LIST_URL,
-            component: userIsAuth(UsersList),
+            component: userIsAuth(visibleOnlyAdmin(UsersList)),
             childRoutes: [
                 {
                     path: ROUTES.USERS_ITEM_URL,
@@ -117,7 +117,7 @@ export default {
         // Cashbox
         {
             path: ROUTES.CASHBOX_LIST_URL,
-            component: userIsAuth(CashboxList),
+            component: userIsAuth(visibleOnlyAdmin(CashboxList)),
             childRoutes: [
                 {
                     path: ROUTES.CASHBOX_ITEM_URL,
@@ -128,7 +128,7 @@ export default {
         // Transactoin
         {
             path: ROUTES.TRANSACTION_LIST_URL,
-            component: userIsAuth(TransactionList),
+            component: userIsAuth(visibleOnlyAdmin(TransactionList)),
             childRoutes: [
                 {
                     path: ROUTES.TRANSACTION_ITEM_URL,
@@ -139,7 +139,7 @@ export default {
         // Client Transactoin
         {
             path: ROUTES.CLIENT_TRANSACTION_LIST_URL,
-            component: userIsAuth(ClientTransactionList),
+            component: userIsAuth(visibleOnlyAdmin(ClientTransactionList)),
             childRoutes: [
                 {
                     path: ROUTES.CLIENT_TRANSACTION_ITEM_URL,
@@ -150,7 +150,7 @@ export default {
         // Supply
         {
             path: ROUTES.SUPPLY_LIST_URL,
-            component: userIsAuth(SupplyList),
+            component: userIsAuth(visibleOnlyAdmin(SupplyList)),
             childRoutes: [
                 {
                     path: ROUTES.SUPPLY_ITEM_URL,
@@ -161,7 +161,7 @@ export default {
         // Prices
         {
             path: ROUTES.PRICES_LIST_URL,
-            component: userIsAuth(PricesList),
+            component: userIsAuth(visibleOnlyAdmin(PricesList)),
             childRoutes: [
                 {
                     path: ROUTES.PRICES_ITEM_URL,
@@ -172,7 +172,7 @@ export default {
         // PRICE
         {
             path: ROUTES.PRICE_LIST_URL,
-            component: userIsAuth(PriceList),
+            component: userIsAuth(visibleOnlyAdmin(PriceList)),
             childRoutes: [
                 {
                     path: ROUTES.PRICE_ITEM_URL,
@@ -183,7 +183,7 @@ export default {
         // Order
         {
             path: ROUTES.ORDER_LIST_URL,
-            component: userIsAuth(OrderList),
+            component: userIsAuth(visibleOnlyAdmin(OrderList)),
             childRoutes: [
                 {
                     path: ROUTES.ORDER_ITEM_URL,
@@ -194,7 +194,7 @@ export default {
         // Return
         {
             path: ROUTES.RETURN_LIST_URL,
-            component: userIsAuth(ReturnList),
+            component: userIsAuth(visibleOnlyAdmin(ReturnList)),
             childRoutes: [
                 {
                     path: ROUTES.RETURN_ITEM_URL,
@@ -205,7 +205,7 @@ export default {
         // Product
         {
             path: ROUTES.PRODUCT_LIST_URL,
-            component: userIsAuth(ProductList),
+            component: userIsAuth(visibleOnlyAdmin(ProductList)),
             childRoutes: [
                 {
                     path: ROUTES.PRODUCT_ITEM_URL,
@@ -216,7 +216,7 @@ export default {
         // Product Type
         {
             path: ROUTES.PRODUCT_TYPE_LIST_URL,
-            component: userIsAuth(ProductTypeList),
+            component: userIsAuth(visibleOnlyAdmin(ProductTypeList)),
             childRoutes: [
                 {
                     path: ROUTES.PRODUCT_TYPE_ITEM_URL,
@@ -227,7 +227,7 @@ export default {
         // Product Price
         {
             path: ROUTES.PRODUCT_PRICE_LIST_URL,
-            component: userIsAuth(ProductPriceList),
+            component: userIsAuth(visibleOnlyAdmin(ProductPriceList)),
             childRoutes: [
                 {
                     path: ROUTES.PRODUCT_PRICE_ITEM_URL,
@@ -238,7 +238,7 @@ export default {
         // Equipment
         {
             path: ROUTES.EQUIPMENT_LIST_URL,
-            component: userIsAuth(EquipmentList),
+            component: userIsAuth(visibleOnlyAdmin(EquipmentList)),
             childRoutes: [
                 {
                     path: ROUTES.EQUIPMENT_ITEM_URL,
@@ -249,7 +249,7 @@ export default {
         // Stock
         {
             path: ROUTES.STOCK_LIST_URL,
-            component: userIsAuth(StockList),
+            component: userIsAuth(visibleOnlyAdmin(StockList)),
             childRoutes: [
                 {
                     path: ROUTES.STOCK_ITEM_URL,
@@ -260,7 +260,7 @@ export default {
         // Currency
         {
             path: ROUTES.CURRENCY_LIST_URL,
-            component: userIsAuth(CurrencyList),
+            component: userIsAuth(visibleOnlyAdmin(CurrencyList)),
             childRoutes: [
                 {
                     path: ROUTES.CURRENCY_ITEM_URL,
@@ -271,7 +271,7 @@ export default {
         // Measurement
         {
             path: ROUTES.MEASUREMENT_LIST_URL,
-            component: userIsAuth(MeasurementList),
+            component: userIsAuth(visibleOnlyAdmin(MeasurementList)),
             childRoutes: [
                 {
                     path: ROUTES.MEASUREMENT_ITEM_URL,
@@ -282,7 +282,7 @@ export default {
         // ExpensiveCategory
         {
             path: ROUTES.EXPENSIVE_CATEGORY_LIST_URL,
-            component: userIsAuth(ExpensiveCategoryList),
+            component: userIsAuth(visibleOnlyAdmin(ExpensiveCategoryList)),
             childRoutes: [
                 {
                     path: ROUTES.EXPENSIVE_CATEGORY_ITEM_URL,
@@ -293,7 +293,7 @@ export default {
         // Provider
         {
             path: ROUTES.PROVIDER_LIST_URL,
-            component: userIsAuth(ProviderList),
+            component: userIsAuth(visibleOnlyAdmin(ProviderList)),
             childRoutes: [
                 {
                     path: ROUTES.PROVIDER_ITEM_URL,
@@ -304,7 +304,7 @@ export default {
         // Client
         {
             path: ROUTES.CLIENT_LIST_URL,
-            component: userIsAuth(ClientList),
+            component: userIsAuth(visibleOnlyAdmin(ClientList)),
             childRoutes: [
                 {
                     path: ROUTES.CLIENT_ITEM_URL,
@@ -315,7 +315,7 @@ export default {
         // Brand
         {
             path: ROUTES.BRAND_LIST_URL,
-            component: userIsAuth(BrandList),
+            component: userIsAuth(visibleOnlyAdmin(BrandList)),
             childRoutes: [
                 {
                     path: ROUTES.BRAND_ITEM_URL,
@@ -326,7 +326,7 @@ export default {
         // Shift
         {
             path: ROUTES.SHIFT_LIST_URL,
-            component: userIsAuth(ShiftList),
+            component: userIsAuth(visibleOnlyAdmin(ShiftList)),
             childRoutes: [
                 {
                     path: ROUTES.SHIFT_ITEM_URL,
@@ -337,7 +337,7 @@ export default {
         // Manufacture
         {
             path: ROUTES.MANUFACTURE_LIST_URL,
-            component: userIsAuth(ManufactureList),
+            component: userIsAuth(visibleOnlyAdmin(ManufactureList)),
             childRoutes: [
                 {
                     path: ROUTES.MANUFACTURE_ITEM_URL,
@@ -348,7 +348,7 @@ export default {
         // Pending Expenses
         {
             path: ROUTES.PENDING_EXPENSES_LIST_URL,
-            component: userIsAuth(PendingExpensesList),
+            component: userIsAuth(visibleOnlyAdmin(PendingExpensesList)),
             childRoutes: [{
                 path: ROUTES.PENDING_EXPENSES_ITEM_URL,
                 component: userIsAuth(PendingExpensesList)
@@ -358,7 +358,7 @@ export default {
         // Pending Payments
         {
             path: ROUTES.PENDING_PAYMENTS_LIST_URL,
-            component: userIsAuth(PendingPaymentsList),
+            component: userIsAuth(visibleOnlyAdmin(PendingPaymentsList)),
             childRoutes: [{
                 path: ROUTES.PENDING_PAYMENTS_ITEM_URL,
                 component: userIsAuth(PendingPaymentsList)
@@ -367,7 +367,7 @@ export default {
         // METRICA (Stat Stock)
         {
             path: ROUTES.STATSTOCK_LIST_URL,
-            component: userIsAuth(StatStock),
+            component: userIsAuth(visibleOnlyAdmin(StatStock)),
             childRoutes: [{
                 path: ROUTES.STATSTOCK_ITEM_URL,
                 component: userIsAuth(StatStock)
@@ -376,7 +376,7 @@ export default {
         // METRICA (Stat Debtors)
         {
             path: ROUTES.STATDEBTORS_LIST_URL,
-            component: userIsAuth(StatDebtors),
+            component: userIsAuth(visibleOnlyAdmin(StatDebtors)),
             childRoutes: [{
                 path: ROUTES.STATDEBTORS_ITEM_URL,
                 component: userIsAuth(StatDebtors)
@@ -385,7 +385,7 @@ export default {
         // METRICA (Stat Manufacture)
         {
             path: ROUTES.STAT_MANUFACTURE_LIST_URL,
-            component: userIsAuth(StatManufacture),
+            component: userIsAuth(visibleOnlyAdmin(StatManufacture)),
             childRoutes: [{
                 path: ROUTES.STAT_MANUFACTURE_ITEM_URL,
                 component: userIsAuth(StatManufacture)
@@ -394,7 +394,7 @@ export default {
         // METRICA (Stat Cashbox)
         {
             path: ROUTES.STAT_CASHBOX_LIST_URL,
-            component: userIsAuth(StatCashbox),
+            component: userIsAuth(visibleOnlyAdmin(StatCashbox)),
             childRoutes: [{
                 path: ROUTES.STAT_CASHBOX_ITEM_URL,
                 component: userIsAuth(StatCashbox)
@@ -403,7 +403,7 @@ export default {
         // ZONES
         {
             path: ROUTES.ZONES_LIST_URL,
-            component: userIsAuth(Zones),
+            component: userIsAuth(visibleOnlyAdmin(Zones)),
             childRoutes: [{
                 path: ROUTES.ZONES_ITEM_URL,
                 component: userIsAuth(Zones)
@@ -412,7 +412,7 @@ export default {
         // TRACKING
         {
             path: ROUTES.TRACKING_LIST_URL,
-            component: userIsAuth(Tracking),
+            component: userIsAuth(visibleOnlyAdmin(Tracking)),
             childRoutes: [{
                 path: ROUTES.TRACKING_ITEM_URL,
                 component: userIsAuth(Tracking)
@@ -421,7 +421,7 @@ export default {
         // MARKET TYPE
         {
             path: ROUTES.MARKET_TYPE_LIST_URL,
-            component: userIsAuth(MarketTypeList),
+            component: userIsAuth(visibleOnlyAdmin(MarketTypeList)),
             childRoutes: [
                 {
                     path: ROUTES.MARKET_TYPE_ITEM_URL,
@@ -432,7 +432,7 @@ export default {
         // Price
         {
             path: ROUTES.PRICES_LIST_URL,
-            component: userIsAuth(PricesList),
+            component: userIsAuth(visibleOnlyAdmin(PricesList)),
             childRoutes: [
                 {
                     path: ROUTES.PRICES_ITEM_URL,
@@ -443,7 +443,7 @@ export default {
         // Remainder
         {
             path: ROUTES.REMAINDER_LIST_URL,
-            component: userIsAuth(RemainderList),
+            component: userIsAuth(visibleOnlyAdmin(RemainderList)),
             childRoutes: [
                 {
                     path: ROUTES.REMAINDER_ITEM_URL,
@@ -454,7 +454,7 @@ export default {
         // Statistics
         {
             path: ROUTES.STATISTICS_LIST_URL,
-            component: userIsAuth(visibleOnlyAdmin(StatSalesList)),
+            component: userIsAuth(visibleOnlyAdmin(StatSalesList, ROUTES.STATISTICS_LIST_URL)),
             childRoutes: [
             ]
         },
@@ -535,7 +535,7 @@ export default {
         // Stock Receive Transfer
         {
             path: ROUTES.STOCK_RECEIVE_LIST_URL,
-            component: userIsAuth(StockReceiveList),
+            component: userIsAuth(visibleOnlyAdmin(StockReceiveList)),
             childRoutes: [
                 {
                     path: ROUTES.STOCK_RECEIVE_ITEM_URL,
@@ -546,7 +546,7 @@ export default {
         // ClientBalance
         {
             path: ROUTES.CLIENT_BALANCE_LIST_URL,
-            component: userIsAuth(ClientBalanceList),
+            component: userIsAuth(visibleOnlyAdmin(ClientBalanceList)),
             childRoutes: [
                 {
                     path: ROUTES.CLIENT_BALANCE_ITEM_URL,
@@ -557,7 +557,7 @@ export default {
         // Plan
         {
             path: ROUTES.PLAN_LIST_URL,
-            component: userIsAuth(PlanList),
+            component: userIsAuth(visibleOnlyAdmin(PlanList)),
             childRoutes: [
                 {
                     path: ROUTES.PLAN_ITEM_URL,
@@ -591,7 +591,7 @@ export default {
         // Position
         {
             path: ROUTES.POSITION_LIST_URL,
-            component: userIsAuth(PositionList),
+            component: userIsAuth(visibleOnlyAdmin(PositionList)),
             childRoutes: [
                 {
                     path: ROUTES.POSITION_ITEM_URL,
@@ -602,7 +602,7 @@ export default {
         // Activity
         {
             path: ROUTES.ACTIVITY_LIST_URL,
-            component: userIsAuth(ActivityList),
+            component: userIsAuth(visibleOnlyAdmin(ActivityList)),
             childRoutes: [
                 {
                     path: ROUTES.ACTIVITY_ITEM_URL,
@@ -630,7 +630,7 @@ export default {
         // Division
         {
             path: ROUTES.DIVISION_LIST_URL,
-            component: userIsAuth(DivisionList),
+            component: userIsAuth(visibleOnlyAdmin(DivisionList)),
             childRoutes: [
                 {
                     path: ROUTES.DIVISION_ITEM_URL,
@@ -641,7 +641,7 @@ export default {
         // Join
         {
             path: ROUTES.JOIN_LIST_URL,
-            component: userIsAuth(JoinList),
+            component: userIsAuth(visibleOnlyAdmin(JoinList)),
             childRoutes: [
                 {
                     path: ROUTES.JOIN_ITEM_URL,
@@ -653,7 +653,7 @@ export default {
         // Permission
         {
             path: ROUTES.PERMISSION_LIST_URL,
-            component: userIsAuth(PermissionList),
+            component: userIsAuth(visibleOnlyAdmin(PermissionList)),
             childRoutes: [
                 {
                     path: ROUTES.PERMISSION_ITEM_URL,

@@ -26,48 +26,48 @@ const listHeader = [
         sorting: true,
         name: 'id',
         title: 'Возврат',
-        xs: '10%'
+        width: '10%'
     },
     {
         sorting: false,
         name: 'client',
         title: 'От кого',
-        xs: '15%'
+        width: '15%'
     },
     {
         sorting: true,
         name: 'order',
         title: 'Заказ',
-        xs: '10%'
+        width: '10%'
     },
     {
         sorting: true,
         name: 'stock',
         title: 'Склад',
-        xs: '15%'
+        width: '15%'
     },
     {
         sorting: false,
         name: 'user',
         title: 'Добавил',
-        xs: '15%'
+        width: '15%'
     },
     {
         sorting: true,
         name: 'createdDate',
         title: 'Дата возврата',
-        xs: '15%'
+        width: '15%'
     },
     {
         sorting: true,
         name: 'totalPrice',
         alignRight: true,
         title: 'Сумма возврата',
-        xs: '15%'
+        width: '15%'
     },
     {
         sorting: false,
-        xs: '5%'
+        width: '5%'
     }
 ]
 

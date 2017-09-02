@@ -57,7 +57,7 @@ const enhance = compose(
                 boxSizing: 'content-box',
                 width: '400px !important',
                 paddingRight: 'calc(100% - 400px)',
-                background: '#efefef',
+                background: '#f2f5f8',
                 '&:first-child': {
                     borderRadius: '2px',
                     height: '52px',

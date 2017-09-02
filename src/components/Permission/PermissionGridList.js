@@ -13,8 +13,6 @@ import PermissionToggle from './PermissionToggle'
 import ConfirmDialog from '../ConfirmDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FlatButton from 'material-ui/FlatButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 import {Field, reduxForm} from 'redux-form'
 
@@ -112,14 +110,20 @@ const PermissionGridList = enhance((props) => {
 
     const permissionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        const status = _.toInteger(_.get(item, 'status'))
 
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={10}>Описание доступа</Col>
+                <Col xs={10}>{name}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
                         <Field
+                            filter={filter}
                             name={'toggle' + id}
+                            status={status}
+                            id={id}
+                            update={updateDialog.handleSubmitUpdateDialog}
                             component={PermissionToggle}
                         />
                     </div>
@@ -135,15 +139,7 @@ const PermissionGridList = enhance((props) => {
     }
 
     const addButton = (
-        <div className={classes.addButtonWrapper}>
-            <FlatButton
-                backgroundColor="#fff"
-                labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
-                className={classes.addButton}
-                label="добавить доступ"
-                onTouchTap={createDialog.handleOpenCreateDialog}
-                icon={<ContentAdd color="#12aaeb"/>}>
-            </FlatButton>
+        <div>
         </div>
     )
 
