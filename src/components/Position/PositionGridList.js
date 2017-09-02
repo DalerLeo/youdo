@@ -111,7 +111,7 @@ const enhance = compose(
             fontWeight: '600',
             '& > div': {
                 padding: '15px 0',
-                height: '40px',
+                height: '50px',
                 '&:after': {
                     margin: '0 8px'
                 }

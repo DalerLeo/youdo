@@ -7,7 +7,7 @@ import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
 import ToolTip from '../ToolTip'
-import {MenuItems} from './MenuItems'
+import {getMenus} from './MenuItems'
 import Notification from 'material-ui/svg-icons/social/notifications'
 import Badge from 'material-ui/Badge'
 import Logo from '../Images/logo.png'
@@ -22,13 +22,23 @@ const style = {
 
 const enhance = compose(
     connect((state) => {
-        return _.get(state, ['notifications', 'timeInterval', 'data'])
+        const sessionGroups = _.map(_.get(state, ['authConfirm', 'data', 'groups']), (item) => {
+            return _.get(item, 'id')
+        })
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        const notificationData = _.get(state, ['notifications', 'timeInterval', 'data'])
+        return {
+            notificationData,
+            isAdmin,
+            sessionGroups
+        }
     })
 )
 
 const SideBarMenu = enhance((props) => {
-    const {classes, handleSignOut, handleOpenNotificationBar, count} = props
-    const items = _.map(MenuItems, (item, index) => {
+    const {classes, handleSignOut, handleOpenNotificationBar, count, sessionGroups, isAdmin} = props
+    const menu = getMenus(sessionGroups, isAdmin)
+    const items = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')
         if (atBottom) {
             return false
@@ -45,7 +55,7 @@ const SideBarMenu = enhance((props) => {
             </Link>
         )
     })
-    const bottomItems = _.map(MenuItems, (item, index) => {
+    const bottomItems = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')
         if (!atBottom) {
             return false
