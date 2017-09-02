@@ -19,7 +19,10 @@ export const setAuthConfirmAction = () => {
             payload: JSON.parse(userData)
         }
     }
-    return null
+    return {
+        type: `${actionTypes.AUTH_CONFIRM}_FULFILLED`,
+        payload: {}
+    }
 }
 
 export const authConfirmAction = () => {
