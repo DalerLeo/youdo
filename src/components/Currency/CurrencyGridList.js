@@ -32,7 +32,7 @@ const listHeader = [
         title: '№'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         xs: 3,
         title: 'Валюта'

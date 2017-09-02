@@ -26,25 +26,25 @@ const listHeader = [
         xs: 1
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         title: 'Наименование',
         xs: 3
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'currency',
         title: 'Валюта',
         xs: 3
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'cashier',
         title: 'Кассир',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'type',
         title: 'Тип',
         xs: 2

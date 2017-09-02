@@ -33,6 +33,27 @@ const enhance = compose(
                 }
             }
         },
+        header2: {
+            top: '50px',
+            width: '100%',
+            height: '50px',
+            alignItems: 'center',
+            background: '#5d6474',
+            overflow: 'hidden',
+            fontWeight: '600',
+            color: '#fff',
+            display: 'flex',
+            '& .row': {
+                width: '100%',
+                alignItems: 'center',
+                '& span': {
+                    lineHeight: 'normal !important'
+                },
+                '& button': {
+                    lineHeight: 'normal !important'
+                }
+            }
+        },
         fixedHeader: {
             extend: 'header',
             position: 'fixed',
@@ -116,7 +137,7 @@ const enhance = compose(
 )
 
 const GridListHeader = enhance((props) => {
-    const {classes, filter, column, listIds, onChecked, withoutCheckboxes, withoutRow} = props
+    const {classes, filter, column, listIds, onChecked, withoutCheckboxes, withoutRow, statistics} = props
 
     // Calculate row size for correct showing grid list
     const rowSize = 12
@@ -144,7 +165,7 @@ const GridListHeader = enhance((props) => {
                     ) : (<ArrowDownIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>) : null
 
             if (withoutRow) {
-                return (<div style={alignRight ? {textAlign: 'right', width: xs} : {width: xs}} key={index}>
+                return (<Col xs={xs} style={alignRight && {textAlign: 'right'}} key={index}>
                     <Link
                         className={classes.sortingButton}
                         onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
@@ -156,7 +177,7 @@ const GridListHeader = enhance((props) => {
                             <span>{_.get(item, 'title')}</span> {Icon}
                         </FlatButton>
                     </Link>
-                </div>)
+                </Col>)
             }
             return (<Col xs={xs} key={index} style={alignRight && {textAlign: 'right'}}>
                         <Link
@@ -180,7 +201,7 @@ const GridListHeader = enhance((props) => {
         )
     })
     return (
-        <div className={classes.header} id="header">
+        <div className={statistics ? classes.header2 : classes.header} id="header">
             <div className={classes.checkbox}>
                 {withoutCheckboxes &&
                 <Checkbox onCheck={onChecked} checked={checkboxChecked}/>

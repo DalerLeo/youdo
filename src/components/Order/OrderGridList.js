@@ -44,13 +44,13 @@ const listHeader = [
         xs: '17.5%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'market',
         title: 'Магазин',
         xs: '17.5%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'user',
         title: 'Инициатор',
         xs: '10%'

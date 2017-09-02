@@ -153,7 +153,7 @@ export const shopJoinListFetchAction = (id) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {
-        type: actionTypes.SHOP_ITEM,
+        type: actionTypes.SHOP_ITEM_REPETITION,
         payload
     }
 }

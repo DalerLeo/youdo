@@ -25,7 +25,7 @@ const listHeader = [
         xs: 1
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         title: 'Наименование',
         xs: 5
@@ -43,7 +43,7 @@ const listHeader = [
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'discount',
         title: 'Мар. акция',
         xs: 2

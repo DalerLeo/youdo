@@ -32,13 +32,13 @@ const listHeader = [
         xs: 1
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         title: 'Поставщик',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'stock',
         title: 'Склад',
         xs: 2

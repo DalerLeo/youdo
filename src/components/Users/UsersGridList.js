@@ -27,31 +27,31 @@ const listHeader = [
         xs: 1
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'username',
         title: 'Пользователь',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'login',
         title: 'Логин',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'typeUser',
         title: 'Должность',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'phoneNumber',
         title: 'Телефон',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'status',
         title: 'Статус',
         xs: 1

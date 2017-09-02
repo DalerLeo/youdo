@@ -26,7 +26,7 @@ const listHeader = [
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'stock',
         title: 'Склад',
         xs: 2
@@ -88,6 +88,7 @@ const StockTabTransfer = enhance((props) => {
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
+            transfer={true}
         />
     )
 

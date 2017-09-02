@@ -264,7 +264,7 @@ const ShopDetails = enhance((props) => {
     const shopType = _.get(data, ['marketType', 'name'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
-    const zone = _.get(data, 'border')
+    const zone = _.get(data, ['border', 'title'])
     const contactName = _.get(data, 'contactName')
     const phone = _.get(data, 'phone')
     const images = _.get(data, 'images') || {}
@@ -384,7 +384,7 @@ const ShopDetails = enhance((props) => {
                         <li>{client}</li>
                         <li>{createdBy}</li>
                         <li>{shopType}</li>
-                        <li>{!zone ? <span className="redFont">Не определена</span> : {zone}}</li>
+                        <li>{!zone ? <span className="redFont">Не определена</span> : zone}</li>
                     </ul>
                 </div>
                 <div className={classes.infoBlock}>

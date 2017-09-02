@@ -15,19 +15,19 @@ import ManufactureDetails from '../ManufactureDetails'
 import GridList from '../../GridList'
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         title: 'Наименование',
         xs: 5
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'description',
         title: 'Описание',
         xs: 4
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'bom',
         title: 'BoM',
         xs: 3
