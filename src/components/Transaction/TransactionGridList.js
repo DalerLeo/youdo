@@ -42,10 +42,11 @@ const enhance = compose(
             height: '100%'
         },
         leftSide: {
-            flexBasis: '20%'
+            width: '250px',
+            minWidth: '250px'
         },
         rightSide: {
-            flexBasis: '80%',
+            width: 'calc(100% - 250px)',
             marginLeft: '28px'
         },
         list: {

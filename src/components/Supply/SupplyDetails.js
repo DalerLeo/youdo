@@ -199,8 +199,8 @@ const enhance = compose(
             '& .expenseInfo': {
                 padding: '0 !important',
                 display: 'block',
-                '&:last-child': {
-                    position: 'static'
+                '&:last-child:after': {
+                    display: 'none'
                 },
                 '& .row': {
                     alignItems: 'center'
@@ -453,7 +453,7 @@ const SupplyDetails = enhance((props) => {
                                 className="expenseButton"
                                 label="+ добавить доп. расход"/>
                         </div>
-                        <div><Pagination filter={filter}/></div>
+                        {!_.isEmpty(supplyExpenseList) && <div><Pagination filter={filter}/></div>}
                     </div>
                     {supplyExpenseListLoading && <div className={classes.expenseLoader}>
                         <div>

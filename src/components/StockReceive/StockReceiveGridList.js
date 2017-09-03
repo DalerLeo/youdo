@@ -135,7 +135,7 @@ const StockReceiveGridList = enhance((props) => {
                 onChange={(value) => tabData.handleTabChange(value)}>
                 <Tab label="Приемка" value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
                 <Tab label="Передача" value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
-                <Tab label="Движения товаров" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
+                <Tab label="Движение товаров" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
                 <Tab label="История Приемки" value={TAB.STOCK_RECEIVE_TAB_HISTORY}/>
                 <Tab label="История Передачи" value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
             </Tabs>

@@ -161,7 +161,6 @@ const PendingPaymentsGridList = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                withoutRow={true}
                 detail={pendingPaymentsDetail}
                 filterDialog={pendingPaymentsFilterDialog}
             />
