@@ -121,7 +121,7 @@ const StockTabTransferHistory = enhance((props) => {
     const list = {
         header: listHeader,
         list: historyList,
-        loading: _.get(listData, 'historyListLoading')
+        loading: _.get(listData, 'transferListLoading')
     }
 
     return (

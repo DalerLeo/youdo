@@ -140,6 +140,10 @@ const enhance = compose(
         storeInfo: {
             display: 'flex'
         },
+        store: {
+            display: 'flex',
+            alignItems: 'center'
+        },
         dateInfo: {
             textAlign: 'right',
             display: 'flex',
@@ -191,7 +195,7 @@ const enhance = compose(
         },
         half: {
             width: '50%',
-            padding: '0 30px 10px',
+            padding: '0 30px',
             '&:last-child': {
                 borderLeft: '1px #efefef solid',
                 '& .row > div:last-child': {
@@ -200,8 +204,10 @@ const enhance = compose(
             }
         },
         totalAmount: {
-            padding: '10px 0',
+            padding: '15px 0',
             textAlign: 'right',
+            fontSize: '16px',
+            borderTop: '1px #efefef solid',
             '& strong': {
                 fontWeight: 'bold'
             }
@@ -222,8 +228,7 @@ const enhance = compose(
             margin: '0 -30px'
         },
         market: {
-            paddingTop: '13px',
-            paddingRight: '10px'
+            marginRight: '10px'
         }
     }),
 )
@@ -308,14 +313,14 @@ const PricesDetails = enhance((props) => {
                     </div>
                 </div>
                 {_.get(data, 'marketTypes') && _.get(data, 'marketTypes').length > ZERO && <div className={classes.storeInfo}>
-                    <div className={classes.store} style={{display: 'flex'}}>
-                        <span className={classes.market}><b>Действует для</b></span>
+                    <div className={classes.store}>
+                        <span className={classes.market}><b>Действует для:</b></span>
                         {_.map(_.get(data, 'marketTypes'), (item) => {
                             return (
                                 <Chip
                                     key={item.id}
-                                    style={{margin: 4}}
-                                >
+                                    labelStyle={{fontSize: '13px'}}
+                                    style={{margin: 4}}>
                                     {item.name}
                                 </Chip>
                             )
