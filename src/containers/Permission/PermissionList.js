@@ -59,13 +59,10 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleSubmitUpdateDialog: props => () => {
-            const {dispatch, filter, query} = props
-            const ON = 1
-            const itemId = _.toInteger(_.get(query, 'id'))
-            const status = _.toInteger(_.get(query, 'status')) === ON
+        handleSubmitUpdateDialog: props => (id, status) => {
+            const {dispatch, filter} = props
 
-            return dispatch(permissionUpdateAction(itemId, status))
+            return dispatch(permissionUpdateAction(id, status))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
