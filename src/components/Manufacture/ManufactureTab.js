@@ -13,7 +13,7 @@ import ManufactureShipment from './Tab/ManufactureShipment'
 const enhance = compose(
     injectSheet({
         ManufactRightSide: {
-            padding: '0px 30px',
+            padding: '0px 28px',
             width: 'calc(100% - 320px)',
             zIndex: '2'
         },

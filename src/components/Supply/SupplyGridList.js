@@ -158,11 +158,11 @@ const SupplyGridList = enhance((props) => {
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
+                <ModEditorIcon/>
             </IconButton>
 
             <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
+                <DeleteIcon/>
             </IconButton>
         </div>
     )
@@ -207,22 +207,22 @@ const SupplyGridList = enhance((props) => {
 
         return (
             <Row key={id} className={classes.listRow}>
+                <Col xs={1}>{id}</Col>
                 <Link to={{
                     pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
-                    <Col xs={1}>{id}</Col>
-                    <Col xs={2}>{name}</Col>
-                    <Col xs={2}>{stock}</Col>
-                    <Col xs={2}>{dateDelivery}</Col>
-                    <Col xs={2}>{totalCost}</Col>
-                    <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting} /> ожидает</span>)
-                        : ((status === IN_PROGRESS) ? (<span><i className={classes.begin} /> начался</span>)
-                            : (status === COMPLETED) ? (<span><i className={classes.success} /> принято</span>)
-                                : (<span><i className={classes.error} /> отменен</span>))}</Col>
-                    <Col xs={1}>{acceptedCost}</Col>
-                    <Col xs={1}>{defectedCost}</Col>
                 </Link>
+                <Col xs={2}>{name}</Col>
+                <Col xs={2}>{stock}</Col>
+                <Col xs={2}>{dateDelivery}</Col>
+                <Col xs={2}>{totalCost}</Col>
+                <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting}/> ожидает</span>)
+                    : ((status === IN_PROGRESS) ? (<span><i className={classes.begin}/> начался</span>)
+                        : (status === COMPLETED) ? (<span><i className={classes.success}/> принято</span>)
+                            : (<span><i className={classes.error}/> отменен</span>))}</Col>
+                <Col xs={1}>{acceptedCost}</Col>
+                <Col xs={1}>{defectedCost}</Col>
             </Row>
         )
     })
@@ -245,7 +245,7 @@ const SupplyGridList = enhance((props) => {
                         mini={true}
                         className={classes.addButton}
                         onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
+                        <ContentAdd/>
                     </FloatingActionButton>
                 </Tooltip>
             </div>
