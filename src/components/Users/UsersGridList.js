@@ -163,7 +163,7 @@ const UsersGridList = enhance((props) => {
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{firstName} {secondName}</Col>
-                <Col xs={2}>{username}</Col>
+                <Col xs={2} title={username}>{username}</Col>
                 <Col xs={2}>{position}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
                 <Col xs={2}>{isActive ? 'Активный' : 'Неактивный'}</Col>
