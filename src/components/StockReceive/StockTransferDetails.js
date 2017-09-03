@@ -148,7 +148,6 @@ const StockTransferDetails = enhance((props) => {
 
     const detailLoading = _.get(detailData, 'transferDetailLoading')
     const products = _.get(detailData, ['data', 'products'])
-    const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
     const id = _.get(detailData, 'id')
     const dateRequest = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateRequest']))
     const dateDelivery = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateDelivery']))

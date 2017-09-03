@@ -165,7 +165,7 @@ const StatCashboxList = enhance((props) => {
         itemGraphLoading,
         itemGraph,
         sumItemData,
-        sumItemDataLoading,
+        sumItemDataLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'cashboxId'))
