@@ -18,7 +18,8 @@ import {
     statCashboxListFetchAction,
     statCashboxItemFetchAction,
     statCashBoxSumDataFetchAction,
-    statCashBoxItemDataFetchAction
+    statCashBoxItemDataFetchAction,
+    statCashBoxItemSumDataFetchAction
 } from '../../actions/statCashbox'
 import {transactionListFetchAction} from '../../actions/transaction'
 
@@ -33,6 +34,8 @@ const enhance = compose(
         const listLoading = _.get(state, ['statCashbox', 'list', 'loading'])
         const sumData = _.get(state, ['statCashbox', 'sumData', 'data'])
         const sumLoading = _.get(state, ['statCashbox', 'sumData', 'loading'])
+        const sumItemData = _.get(state, ['statCashbox', 'itemSumData', 'data'])
+        const sumItemDataLoading = _.get(state, ['statCashbox', 'itemSumData', 'loading'])
         const itemGraph = _.get(state, ['statCashbox', 'itemGraph', 'data'])
         const itemGraphLoading = _.get(state, ['statCashbox', 'itemGraph', 'loading'])
         const filterForm = _.get(state, ['form', 'StatCashboxFilterForm'])
@@ -55,7 +58,9 @@ const enhance = compose(
             sumData,
             sumLoading,
             itemGraph,
-            itemGraphLoading
+            itemGraphLoading,
+            sumItemData,
+            sumItemDataLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -83,6 +88,7 @@ const enhance = compose(
             dispatch(statCashboxItemFetchAction(id))
             dispatch(transactionListFetchAction(filterDetail, id))
             dispatch(statCashBoxItemDataFetchAction(filterDetail, id))
+            dispatch(statCashBoxItemSumDataFetchAction(filterDetail, id))
         }
     }),
 
@@ -157,7 +163,9 @@ const StatCashboxList = enhance((props) => {
         sumLoading,
         handleGetCashBoxes,
         itemGraphLoading,
-        itemGraph
+        itemGraph,
+        sumItemData,
+        sumItemDataLoading,
     } = props
 
     const detailId = _.toInteger(_.get(params, 'cashboxId'))
@@ -181,6 +189,8 @@ const StatCashboxList = enhance((props) => {
     }
 
     const detailData = {
+        sumItemData,
+        sumItemDataLoading,
         id: detailId,
         data: detail,
         transactionData: _.get(transactionsList, 'results'),
