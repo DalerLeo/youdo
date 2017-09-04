@@ -21,8 +21,7 @@ const enhance = compose(
     connect(state => {
         return {
             formValues: _.get(state, ['form', 'SignInForm', 'values']),
-            loading: _.get(state, ['signIn', 'loading']),
-            config: _.get(state, ['config', 'primaryCurrency', 'data'])
+            loading: (_.get(state, ['signIn', 'loading']) || _.get(state, ['authConfirm', 'loading']))
         }
     })
 )
@@ -33,10 +32,13 @@ const SignIn = enhance((props) => {
     const onSubmit = () => {
         return dispatch(signInAction(formValues))
             .then(() => {
-                const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
+                const rememberUser = _.get(formValues, 'rememberMe') || false
                 dispatch(getConfig())
-                dispatch(authConfirmAction())
-                hashHistory.push(redirectUrl)
+                return dispatch(authConfirmAction(rememberUser))
+                    .then(() => {
+                        const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
+                        hashHistory.push(redirectUrl)
+                    })
             })
     }
 

@@ -4,7 +4,7 @@ import * as storageHelper from '../helpers/storage'
 import {hashHistory} from 'react-router'
 import * as ROUTES from '../constants/routes'
 
-const axiosRequest = () => {
+const axiosRequest = (useToken = true) => {
     const TOKEN = storageHelper.getToken()
     const UNAUTHORIZATE_STATUS = 401
     const NORM_STATUS_BEGIN = 200
@@ -12,7 +12,11 @@ const axiosRequest = () => {
     axios.defaults.baseURL = API_URL
 
     if (TOKEN) {
-        axios.defaults.headers.common.Authorization = `Token ${TOKEN}`
+        if (useToken) {
+            axios.defaults.headers.common.Authorization = `Token ${TOKEN}`
+        } else {
+            axios.defaults.headers.common.Authorization = ''
+        }
         axios.defaults.headers.common['cache-control'] = 'no-cache'
         axios.defaults.validateStatus = (status) => {
             if (status === UNAUTHORIZATE_STATUS) {
@@ -22,6 +26,8 @@ const axiosRequest = () => {
             }
             return status >= NORM_STATUS_BEGIN && status < NORM_STATUS_END
         }
+    } else {
+        axios.defaults.headers.common.Authorization = ''
     }
 
     return axios
