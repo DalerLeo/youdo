@@ -183,6 +183,7 @@ const JoinList = enhance((props) => {
                 markets: _.map(marketsItem, (item) => {
                     return {
                         address: _.get(item, 'address'),
+                        phone: _.get(item, 'phone'),
                         client: _.get(item, ['client', 'name']),
                         market: {
                             value: _.get(item, 'id'),

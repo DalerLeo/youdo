@@ -9,10 +9,8 @@ import CircularProgress from 'material-ui/CircularProgress'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
 import ToolTip from '../ToolTip'
 import {getMenus} from './MenuItems'
-import Notification from 'material-ui/svg-icons/social/notifications'
-import Badge from 'material-ui/Badge'
 import Logo from '../Images/logo.png'
-
+import CustomBadge from '../CustomBadge/CustomBadge'
 const style = {
     style: {
         width: 84,
@@ -28,9 +26,7 @@ const enhance = compose(
         })
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const loading = _.get(state, ['authConfirm', 'loading'])
-        const notificationData = _.get(state, ['notifications', 'timeInterval', 'data'])
         return {
-            notificationData,
             isAdmin,
             sessionGroups,
             loading
@@ -39,7 +35,7 @@ const enhance = compose(
 )
 
 const SideBarMenu = enhance((props) => {
-    const {classes, handleSignOut, handleOpenNotificationBar, count, sessionGroups, isAdmin, loading} = props
+    const {classes, handleSignOut, handleOpenNotificationBar, sessionGroups, isAdmin, loading} = props
     const menu = getMenus(sessionGroups, isAdmin)
     const items = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')
@@ -87,32 +83,11 @@ const SideBarMenu = enhance((props) => {
                         <img src={Logo}/>
                     </div>
                     <div className={classes.notifications}>
-                        {count ? <Badge
-                                className={classes.badge}
-                                badgeContent={count}
-                                badgeStyle={{top: 8, right: 10}}>
-                                <ToolTip position="right" text="Уведомления">
-                                    <FlatButton
-                                        rippleColor="#fff"
-                                        style={style.style}
-                                        onTouchTap={() => {
-                                            handleOpenNotificationBar(true)
-                                        }}>
-                                        <Notification/>
-                                    </FlatButton>
-                                </ToolTip>
-                            </Badge>
-                            : <ToolTip position="right" text="Уведомления">
-                                <FlatButton
-                                    rippleColor="#fff"
-                                    style={style.style}
-                                    onTouchTap={() => {
-                                        handleOpenNotificationBar(true)
-                                    }}>
-                                    <Notification/>
-                                </FlatButton>
-                            </ToolTip>
-                        }
+                        <CustomBadge
+                            classBadge={classes.badge}
+                            handleOpen={handleOpenNotificationBar}
+                            style={style.style}/>
+
                     </div>
                     {items}
                     {!_.isEmpty(bottomItems) && <div className={classes.bottom}>
