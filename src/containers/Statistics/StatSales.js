@@ -11,7 +11,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 
 import {StatSalesGridList, STAT_SALES_DIALOG_OPEN} from '../../components/Statistics'
-import {STAT_SALES_FILTER_KEY} from '../../components/Statistics/StatSalesGridList'
+import {STAT_SALES_FILTER_KEY} from '../../components/Statistics/Sales/StatSalesGridList'
 import {
     orderListFetchAction,
     orderItemFetchAction

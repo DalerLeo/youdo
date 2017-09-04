@@ -13,7 +13,7 @@ import {
 } from '../../actions/statisticsDeptors'
 import filterHelper from '../../helpers/filter'
 import {StatDebtorsGridList} from '../../components/Statistics'
-import {STAT_DEBTORS_FILTER_KEY} from '../../components/Statistics/StatDebtorsGridList'
+import {STAT_DEBTORS_FILTER_KEY} from '../../components/Statistics/Debtors/StatDebtorsGridList'
 
 const ZERO = 0
 const enhance = compose(

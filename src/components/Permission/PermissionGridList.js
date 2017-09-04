@@ -24,10 +24,11 @@ const listHeader = [
         title: 'Наименование'
     },
     {
-        sorting: false,
+        sorting: true,
         xs: 2,
+        alignRight: true,
         name: 'actions',
-        title: ''
+        title: 'Статус'
     }
 ]
 

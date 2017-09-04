@@ -3,19 +3,15 @@ import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
-import {Link} from 'react-router'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../CloseIcon2'
-import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
+import CloseIcon2 from '../../CloseIcon2/index'
+import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
-import sprintf from 'sprintf'
-import Person from '../Images/person.png'
-import Pagination from '../GridList/GridListNavPagination'
-import * as ROUTES from '../../constants/routes'
-import getConfig from '../../helpers/getConfig'
-import numberFormat from '../../helpers/numberFormat.js'
+import Pagination from '../../ReduxForm/Pagination'
+import getConfig from '../../../helpers/getConfig'
+import numberFormat from '../../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({
@@ -28,6 +24,11 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        dialog: {
+            '& > div:first-child > div:first-child': {
+                transform: 'translate(0px, 0px) !important'
+            }
+        },
         popUp: {
             color: '#333 !important',
             overflowY: 'hidden !important',
@@ -35,7 +36,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            height: '100%',
+            maxHeight: 'none !important',
             marginBottom: '64px'
         },
         content: {
@@ -92,26 +93,13 @@ const enhance = compose(
             '& div': {
                 display: 'flex',
                 alignItems: 'center'
-            },
-            '& .personImage': {
-                borderRadius: '50%',
-                overflow: 'hidden',
-                flexBasis: '35px',
-                height: '35px',
-                minWidth: '30px',
-                width: '35px',
-                marginRight: '10px',
-                '& img': {
-                    display: 'flex',
-                    height: '100%',
-                    width: '100%'
-                }
             }
+
         },
         tableWrapper: {
             padding: '0 30px',
-            maxHeight: '424px',
-            overflowY: 'auto',
+            maxHeight: '380px',
+            overflow: 'auto',
             '& .row': {
                 '&:first-child': {
                     fontWeight: '600'
@@ -130,45 +118,36 @@ const enhance = compose(
     }),
 )
 
-const StatAgentDialog = enhance((props) => {
-    const {
-        open,
-        onClose,
-        classes,
-        detailData
-    } = props
+const StatMarketDialog = enhance((props) => {
+    const {open, onClose, classes, detailData, filterItem} = props
+
     const loading = _.get(detailData, 'detailLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
-    const income = numberFormat(_.get(detailData, ['agentDetail', '0', 'income']), primaryCurrency)
+    const marketName = _.get(detailData, ['marketDetail', 'name'])
+    const income = numberFormat(_.get(detailData, ['marketDetail', 'income']), primaryCurrency)
     const fromDate = _.get(detailData, ['filterDateRange', 'fromDate'])
-                                            ? _.get(detailData, ['filterDateRange', 'fromDate']).format('DD.MM.YYYY')
-                                            : null
+        ? _.get(detailData, ['filterDateRange', 'fromDate']).format('DD.MM.YYYY')
+        : null
     const toDate = _.get(detailData, ['filterDateRange', 'toDate'])
-                                            ? _.get(detailData, ['filterDateRange', 'toDate']).format('DD.MM.YYYY')
-                                            : null
+        ? _.get(detailData, ['filterDateRange', 'toDate']).format('DD.MM.YYYY')
+        : null
     const dateRange = (fromDate && toDate) ? fromDate + ' - ' + toDate : 'Весь'
 
     const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
         const id = _.get(item, 'id')
-        const market = _.get(item, ['market', 'name'])
-        const totalPrice = _.get(item, 'totalPrice')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const client = _.get(item, ['client', 'name'])
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'))
+        const createdDate = moment(_.get(item, 'createdDate')).format('LL')
 
         return (
             <Row key={id} className="dottedList">
-                <Col xs={2}>
-                    <Link to={{
-                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
-                        query: {search: id}
-                    }} target="_blank">Заказ {id}</Link></Col>
-                <Col xs={6}>{market}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}>{totalPrice} {primaryCurrency}</Col>
+                <Col xs={2}>{id}</Col>
+                <Col xs={4}>{client}</Col>
+                <Col xs={3}>{createdDate}</Col>
+                <Col xs={3}>{totalPrice} {primaryCurrency}</Col>
             </Row>
         )
     })
-
     return (
         <Dialog
             modal={true}
@@ -182,13 +161,8 @@ const StatAgentDialog = enhance((props) => {
                 <CircularProgress/>
             </div>
             : <div>
-                    <div className={classes.titleContent}>
-                        <div>
-                            <div className="personImage">
-                                <img src={Person} alt=""/>
-                            </div>
-                            <div>{agentName}</div>
-                        </div>
+                    <div className={classes.titleContent} style={{textTransform: 'capitalize'}}>
+                        <span>{marketName}</span>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon2 color="#666666"/>
                         </IconButton>
@@ -201,24 +175,24 @@ const StatAgentDialog = enhance((props) => {
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
                                 <Col xs={2}>№ заказа</Col>
-                                <Col xs={6}>Магазин</Col>
-                                <Col xs={2}>Дата</Col>
-                                <Col xs={2}>Сумма</Col>
+                                <Col xs={4}>Агент</Col>
+                                <Col xs={3}>Дата</Col>
+                                <Col xs={3}>Сумма</Col>
                             </Row>
                             {orderList}
                         </div>
-                        <Pagination filter={_.get(detailData, 'filter')}/>
+                        <Pagination filter={filterItem}/>
                     </div>
                 </div>}
         </Dialog>
     )
 })
 
-StatAgentDialog.propTyeps = {
+StatMarketDialog.propTyeps = {
     filter: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool
 }
 
-export default StatAgentDialog
+export default StatMarketDialog

@@ -17,7 +17,7 @@ import {
     StatProductMoveGridList,
     STAT_PRODUCT_MOVE_DIALOG_OPEN
 } from '../../components/Statistics'
-import {STAT_PRODUCT_MOVE_FILTER_KEY} from '../../components/Statistics/StatProductMoveGridList'
+import {STAT_PRODUCT_MOVE_FILTER_KEY} from '../../components/Statistics/ProductMove/StatProductMoveGridList'
 import {
     statProductMoveListFetchAction,
     statProductMoveSumFetchAction

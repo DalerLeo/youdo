@@ -2,22 +2,22 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import Container from '../Container'
+import * as ROUTES from '../../../constants/routes'
+import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import {connect} from 'react-redux'
-import {DateToDateField, StockSearchField, ProductTypeParentSearchField, ProductTypeChildSearchField} from '../ReduxForm'
-import StatSideMenu from './StatSideMenu'
+import {DateToDateField, StockSearchField, ProductTypeParentSearchField, ProductTypeChildSearchField} from '../../ReduxForm/index'
+import StatSideMenu from '../StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-import Pagination from '../GridList/GridListNavPagination'
-import numberFormat from '../../helpers/numberFormat.js'
-import getConfig from '../../helpers/getConfig'
-import NotFound from '../Images/not-found.png'
+import Pagination from '../../GridList/GridListNavPagination/index'
+import numberFormat from '../../../helpers/numberFormat.js'
+import getConfig from '../../../helpers/getConfig'
+import NotFound from '../../Images/not-found.png'
 
 export const STAT_PRODUCT_MOVE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -32,10 +32,10 @@ const enhance = compose(
             width: '100%',
             height: '100%',
             background: '#fff',
+            display: 'flex',
             alignItems: 'center',
             zIndex: '999',
-            justifyContent: 'center',
-            display: 'flex'
+            justifyContent: 'center'
         },
         mainWrapper: {
             background: '#fff',
@@ -44,7 +44,10 @@ const enhance = compose(
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
+            WebkitTransition: 'all 500ms ease',
             padding: '20px 30px',
+            display: 'flex',
+            flexDirection: 'column',
             overflowY: 'auto',
             height: '100%',
             '& > div:nth-child(3)': {

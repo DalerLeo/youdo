@@ -2,28 +2,28 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import Container from '../Container'
+import * as ROUTES from '../../../constants/routes'
+import Container from '../../Container/index'
 import LinearProgress from 'material-ui/LinearProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, DivisionSearchField} from '../ReduxForm'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import StatSideMenu from './StatSideMenu'
-import LinearLoading from '../LinearProgress'
+import {TextField, DivisionSearchField} from '../../ReduxForm/index'
+import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
+import StatSideMenu from '../StatSideMenu'
+import LinearLoading from '../../LinearProgress/index'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import List from 'material-ui/svg-icons/action/list'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-import Pagination from '../GridList/GridListNavPagination'
+import Pagination from '../../GridList/GridListNavPagination/index'
 import StatMarketDialog from './StatMarketDialog'
-import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
+import numberFormat from '../../../helpers/numberFormat'
+import getConfig from '../../../helpers/getConfig'
 import ReactHighcharts from 'react-highcharts'
-import NotFound from '../Images/not-found.png'
-import dateFormat from '../../helpers/dateFormat'
+import NotFound from '../../Images/not-found.png'
+import dateFormat from '../../../helpers/dateFormat'
 
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
@@ -36,6 +36,7 @@ const enhance = compose(
         loader: {
             width: '100%',
             height: '100%',
+            margin: '0 !important',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',

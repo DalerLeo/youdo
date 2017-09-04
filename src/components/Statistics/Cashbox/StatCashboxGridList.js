@@ -3,27 +3,27 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import Container from '../Container'
+import * as ROUTES from '../../../constants/routes'
+import Container from '../../Container/index'
 import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import {CashboxSearchField, DivisionSearchField} from '../ReduxForm'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import StatSideMenu from './StatSideMenu'
+import {CashboxSearchField, DivisionSearchField} from '../../ReduxForm/index'
+import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
+import StatSideMenu from '../StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
-import Tooltip from '../ToolTip'
-import Person from '../Images/person.png'
+import Tooltip from '../../ToolTip/index'
+import Person from '../../Images/person.png'
 import ReactHighcharts from 'react-highcharts'
-import numberFormat from '../../helpers/numberFormat.js'
-import NotFound from '../Images/not-found.png'
+import numberFormat from '../../../helpers/numberFormat.js'
+import NotFound from '../../Images/not-found.png'
 import CashboxDetails from './StatCashboxDetails'
-import getConfig from '../../helpers/getConfig'
+import getConfig from '../../../helpers/getConfig'
 
 export const STAT_CASHBOX_FILTER_KEY = {
     CASHBOX: 'cashbox',
@@ -50,8 +50,6 @@ const enhance = compose(
         },
         wrapper: {
             height: 'calc(100% - 40px)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             padding: '20px 30px',
             '& > div:nth-child(2)': {
                 marginTop: '10px',

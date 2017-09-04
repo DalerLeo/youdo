@@ -7,7 +7,7 @@ import {compose, withHandlers, withPropsOnChange} from 'recompose'
 import filterHelper from '../../helpers/filter'
 
 import {StatFinanceGridList} from '../../components/Statistics'
-import {STAT_FINANCE_FILTER_KEY} from '../../components/Statistics/StatFinanceGridList'
+import {STAT_FINANCE_FILTER_KEY} from '../../components/Statistics/Finance/StatFinanceGridList'
 
 import {
     statFinanceInDataFetchAction,

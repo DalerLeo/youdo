@@ -13,7 +13,7 @@ import ArrowDown from 'material-ui/svg-icons/navigation/arrow-downward'
 import StockReturnDialog from '../StockReceive/StockReturnDialog'
 import StockSupplyDialog from '../StockReceive/StockSupplyDialog'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
-import InfoDialog from '../Statistics/StatSaleDialog'
+import InfoDialog from '../Statistics/Sales/StatSaleDialog'
 import PopoverDialog from './PopoverDialog'
 
 const ZERO = 0

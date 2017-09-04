@@ -18,6 +18,21 @@ const enhance = compose(
     })
 )
 
+const styles = {
+    thumbOff: {
+        backgroundColor: '#f5f5f5'
+    },
+    trackOff: {
+        backgroundColor: '#bdbdbd'
+    },
+    thumbSwitched: {
+        backgroundColor: '#81c784'
+    },
+    trackSwitched: {
+        backgroundColor: '#c8e6c9'
+    }
+}
+
 const ONE = 1
 const PermissionToggle = enhance((props) => {
     const {status} = props
@@ -25,6 +40,10 @@ const PermissionToggle = enhance((props) => {
     const toggleStatus = _.toInteger(status)
     return (
         <Toggle
+            thumbStyle={styles.thumbOff}
+            trackStyle={styles.trackOff}
+            thumbSwitchedStyle={styles.thumbSwitched}
+            trackSwitchedStyle={styles.trackSwitched}
             toggled={toggleStatus === ON}
             onToggle={props.toggle}
             label={status === ONE ? 'Включен' : 'Выключен'}/>

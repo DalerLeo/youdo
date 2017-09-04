@@ -6,7 +6,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import {StatOutcomeCategoryGridList} from '../../components/Statistics'
-import {STAT_OUTCOME_CATEGORY_FILTER_KEY} from '../../components/Statistics/StatOutcomeCategoryGridList'
+import {STAT_OUTCOME_CATEGORY_FILTER_KEY} from '../../components/Statistics/Outcome/StatOutcomeCategoryGridList'
 import {
     statOutcomeCategoryListFetchAction,
     statOutcomeCategoryItemFetchAction,

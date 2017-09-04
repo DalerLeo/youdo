@@ -2,19 +2,19 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import Container from '../Container'
+import * as ROUTES from '../../../constants/routes'
+import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import StatAgentDialog from './StatAgentDialog'
-import StatSideMenu from './StatSideMenu'
+import StatSideMenu from '../StatSideMenu'
 import CircularProgress from 'material-ui/CircularProgress'
-import Pagination from '../GridList/GridListNavPagination'
-import numberFormat from '../../helpers/numberFormat.js'
-import getConfig from '../../helpers/getConfig'
-import NotFound from '../Images/not-found.png'
+import Pagination from '../../GridList/GridListNavPagination/index'
+import numberFormat from '../../../helpers/numberFormat.js'
+import getConfig from '../../../helpers/getConfig'
+import NotFound from '../../Images/not-found.png'
 import StatAgentFilterForm from './StatAgentFilterForm'
-import GridListHeader from '../../components/GridList/GridListHeader'
+import GridListHeader from '../../GridList/GridListHeader/index'
 
 const enhance = compose(
     injectSheet({
@@ -56,11 +56,17 @@ const enhance = compose(
                 '& > div': {
                     display: 'flex',
                     height: '50px',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0'
+                    }
                 }
             },
             '& .dottedList': {
-                padding: '0',
+                padding: '0 30px',
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
@@ -188,6 +194,9 @@ const enhance = compose(
         header: {
             position: 'relative',
             top: 'auto'
+        },
+        alignRightFlex: {
+            justifyContent: 'flex-end'
         }
     }),
 )
@@ -248,18 +257,6 @@ const StatAgentGridList = enhance((props) => {
 
     const listLoading = _.get(listData, 'listLoading')
 
-    const headerStyle = {
-        backgroundColor: '#fff',
-        fontWeight: '600',
-        color: '#666'
-    }
-
-    const headers = (
-        <Row style={headerStyle} className="dottedList">
-
-        </Row>
-    )
-
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -281,13 +278,13 @@ const StatAgentGridList = enhance((props) => {
                     <div>{plan}</div>
                 </Col>
 
-                <Col xs={2}>
+                <Col xs={2} className={classes.alignRightFlex}>
                     <div>{income}</div>
                 </Col>
-                <Col xs={2}>
+                <Col xs={2} className={classes.alignRightFlex}>
                     <div>{paidFor}</div>
                 </Col>
-                <Col xs={2}>
+                <Col xs={2} className={classes.alignRightFlex}>
                     <div>{balance}</div>
                 </Col>
             </Row>
@@ -316,7 +313,6 @@ const StatAgentGridList = enhance((props) => {
                                 <div>По вашему запросу ничего не найдено</div>
                             </div>
                             : <div className={classes.tableWrapper}>
-                                {headers}
                                 <GridListHeader
                                     filter={filter}
                                     listIds={listIds}
@@ -324,7 +320,7 @@ const StatAgentGridList = enhance((props) => {
                                     withoutRow={false}
                                     column={listHeader}
                                     listShadow={true}
-                                    style={{position: 'relative !important'}}
+                                    style={{position: 'relative'}}
                                     className={classes.header}
                                     statistics={true}
                                 />

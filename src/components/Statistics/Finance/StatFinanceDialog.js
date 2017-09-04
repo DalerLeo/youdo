@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon2 from '../../CloseIcon2/index'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 
@@ -77,7 +77,7 @@ const enhance = compose(
     }),
 )
 
-const StatIncomeDialog = enhance((props) => {
+const StatFinanceDialog = enhance((props) => {
     const {open, loading, onClose, classes} = props
 
     return (
@@ -119,10 +119,10 @@ const StatIncomeDialog = enhance((props) => {
     )
 })
 
-StatIncomeDialog.propTyeps = {
+StatFinanceDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool
 }
 
-export default StatIncomeDialog
+export default StatFinanceDialog

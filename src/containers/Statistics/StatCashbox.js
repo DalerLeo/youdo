@@ -12,8 +12,8 @@ import * as serializers from '../../serializers/Statistics/statCashboxSerializer
 import getDocuments from '../../helpers/getDocument'
 
 import {StatCashboxGridList} from '../../components/Statistics'
-import {STAT_CASHBOX_FILTER_KEY} from '../../components/Statistics/StatCashboxGridList'
-import {STAT_CASHBOX_DETAIL_FILTER_KEY} from '../../components/Statistics/StatCashboxDetails'
+import {STAT_CASHBOX_FILTER_KEY} from '../../components/Statistics/Cashbox/StatCashboxGridList'
+import {STAT_CASHBOX_DETAIL_FILTER_KEY} from '../../components/Statistics/Cashbox/StatCashboxDetails'
 import {
     statCashboxListFetchAction,
     statCashboxItemFetchAction,
