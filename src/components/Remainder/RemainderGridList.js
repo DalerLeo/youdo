@@ -212,28 +212,31 @@ const actionIconStyle = {
 const headerItems = [
     {
         name: 'product',
-        sorting: true,
+        sorting: false,
         title: 'Товар',
         xs: 3
     },
     {
         name: 'productType',
-        sorting: true,
+        sorting: false,
         title: 'Тип товара',
         xs: 2
     },
     {
-        sorting: false,
+        sorting: true,
+        name: 'balance',
         title: 'Всего товаров',
         xs: 2
     },
     {
-        sorting: false,
+        sorting: true,
+        name: 'defects',
         title: 'Бракованные товары',
         xs: 3
     },
     {
-        sorting: false,
+        sorting: true,
+        name: 'reversed',
         title: 'Забронированые',
         xs: 2
     }

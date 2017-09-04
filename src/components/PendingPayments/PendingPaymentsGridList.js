@@ -20,17 +20,17 @@ const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: '№ заказа',
+        title: '№ зак.',
         xs: 1
     },
     {
-        sorting: false,
+        sorting: true,
         name: 'clientName',
         title: 'Клиент',
         xs: 2
     },
     {
-        sorting: false,
+        sorting: true,
         name: 'marketName',
         title: 'Магазин',
         xs: 2
@@ -38,8 +38,14 @@ const listHeader = [
     {
         sorting: true,
         name: 'created_date',
-        title: 'Дата создания',
-        xs: 2
+        title: 'Дата созд.',
+        xs: 1
+    },
+    {
+        sorting: true,
+        name: 'paymentType',
+        title: 'Тип опл.',
+        xs: 1
     },
     {
         sorting: true,
@@ -50,10 +56,14 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'total_balance',
+        name: 'totalBalance',
         alignRight: true,
         title: 'Остаток',
         xs: 2
+    },
+    {
+        sorting: true,
+        xs: 1
     }
 ]
 
@@ -85,6 +95,7 @@ const iconStyle = {
         padding: 0
     }
 }
+const ZERO = 0
 const PendingPaymentsGridList = enhance((props) => {
     const {
         filter,
@@ -108,6 +119,7 @@ const PendingPaymentsGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const client = _.get(item, 'client')
         const market = _.get(item, ['market', 'name'])
+        const paymentType = _.toNumber(_.get(item, 'paymentType')) === ZERO ? 'наличный' : 'банковский счет'
         const clientName = _.get(client, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), getConfig('PRIMARY_CURRENCY'))
@@ -117,7 +129,8 @@ const PendingPaymentsGridList = enhance((props) => {
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{clientName}</Col>
                 <Col xs={2}>{market}</Col>
-                <Col xs={2}>{createdDate}</Col>
+                <Col xs={1}>{createdDate}</Col>
+                <Col xs={1}>{paymentType}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{totalPrice}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{totalBalance}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
@@ -125,8 +138,10 @@ const PendingPaymentsGridList = enhance((props) => {
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
                         touch={true}
-                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
-                        <AddPayment />
+                        onTouchTap={() => {
+                            updateDialog.handleOpenUpdateDialog(id)
+                        }}>
+                        <AddPayment/>
                     </IconButton>
                 </Col>
             </Row>

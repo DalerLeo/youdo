@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import {compose} from 'recompose'
+import {hashHistory} from 'react-router'
 import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import {signInAction, authConfirmAction} from '../../actions/signIn'
@@ -20,31 +21,30 @@ const enhance = compose(
     connect(state => {
         return {
             formValues: _.get(state, ['form', 'SignInForm', 'values']),
-            loading: _.get(state, ['signIn', 'loading']),
-            config: _.get(state, ['config', 'primaryCurrency', 'data'])
+            loading: (_.get(state, ['signIn', 'loading']) || _.get(state, ['authConfirm', 'loading']))
         }
     })
 )
 
-const MINUS_ONE = -1
 const SignIn = enhance((props) => {
     const {classes, dispatch, location, loading, formValues} = props
 
     const onSubmit = () => {
         return dispatch(signInAction(formValues))
             .then(() => {
+                const rememberUser = _.get(formValues, 'rememberMe') || false
                 dispatch(getConfig())
-                return dispatch(authConfirmAction())
-            }).then(() => {
-                window.location.href = _.get(location, ['query', 'redirect']) ? (_.get(location, ['query', 'redirect']).indexOf('#') > MINUS_ONE
-                    ? _.get(location, ['query', 'redirect'])
-                    : '/#' + _.get(location, ['query', 'redirect'])) : ROUTES.DASHBOARD_URL
+                return dispatch(authConfirmAction(rememberUser))
+                    .then(() => {
+                        const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
+                        hashHistory.push(redirectUrl)
+                    })
             })
     }
 
     return (
         <div className={classes.container}>
-            <SignInForm loading={loading} onSubmit={onSubmit}/>
+            <SignInForm loading={loading} onSubmit={onSubmit} />
         </div>
     )
 })

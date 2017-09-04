@@ -24,10 +24,10 @@ const enhance = compose(
                 alignItems: 'center',
                 height: '100%',
                 margin: '0',
-                '&>div:first-child': {
+                '& > div:first-child': {
                     paddingLeft: '0'
                 },
-                '&>div:last-child': {
+                '& > div:last-child': {
                     paddingRight: '0'
                 }
             },

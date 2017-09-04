@@ -22,6 +22,7 @@ import {
     pendingPaymentsItemFetchAction
 } from '../../actions/pendingPayments'
 
+import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -129,6 +130,17 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[PENDING_PAYMENTS_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(pendingPaymentsListFetchAction(filter))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         }
     })

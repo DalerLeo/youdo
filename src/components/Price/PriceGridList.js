@@ -50,19 +50,19 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'type',
+        name: 'netCost',
         title: 'Себестоимость',
         xs: 2
     },
     {
         sorting: true,
-        name: 'price',
+        name: 'minPrice',
         title: 'Цена',
         xs: 2
     },
     {
         sorting: true,
-        name: 'created_date',
+        name: 'priceUpdate',
         title: 'Дата обновления',
         xs: 2
     }
@@ -143,6 +143,7 @@ const enhance = compose(
             }
         },
         icon: {
+            zIndex: '2',
             textAlign: 'right',
             '& > div > div:first-child': {
                 width: '22px',
@@ -152,10 +153,10 @@ const enhance = compose(
     }),
     withState('globalPrice', 'setGlobalPrice', true),
 
-reduxForm({
-    form: 'PriceGlobalForm',
-    enableReinitialize: true
-})
+    reduxForm({
+        form: 'PriceGlobalForm',
+        enableReinitialize: true
+    })
 )
 const PriceGridList = enhance((props) => {
     const {
@@ -190,7 +191,7 @@ const PriceGridList = enhance((props) => {
             detailData={detailData}
             listDetailData={listDetailData}
             priceSupplyDialog={priceSupplyDialog}
-            priceSetForm = {priceSetForm}
+            priceSetForm={priceSetForm}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             mergedList={(detailData.mergedList())}>
         </PriceDetails>
@@ -206,7 +207,7 @@ const PriceGridList = enhance((props) => {
                         component={TextField}
                         fullWidth={true}
                     />}
-                    {!globalPrice && <Link onClick={() => { setGlobalPrice(true) }} >10 %</Link>}
+                    {!globalPrice && <Link onClick={() => { setGlobalPrice(true) }}>10 %</Link>}
                 </div>
             </div>
             <div>
@@ -247,25 +248,25 @@ const PriceGridList = enhance((props) => {
 
         return (
             <Row key={id} className={classes.listRow}>
+                <Col xs={3}>{name}</Col>
                 <Link to={{
                     pathname: sprintf(ROUTES.PRICE_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
-                    <Col xs={3}>{name}</Col>
-                    <Col xs={2}>{codeProduct}</Col>
-                    <Col xs={2}>{netCost}</Col>
-                    <Col xs={2}>{price}</Col>
-                    <Col xs={2}>{priceUpdate}</Col>
-                    <Col xs={1} className={classes.icon}>
-                        {customPrice
+                </Link>
+                <Col xs={2}>{codeProduct}</Col>
+                <Col xs={2}>{netCost}</Col>
+                <Col xs={2}>{price}</Col>
+                <Col xs={2}>{priceUpdate}</Col>
+                <Col xs={1} className={classes.icon}>
+                    {customPrice
                         ? <Tooltip position="bottom" text={tooltipText}>
                             <Person style={{width: 22, color: '#81c784'}}/>
                         </Tooltip>
                         : <Tooltip position="bottom" text={tooltipText2}>
                             <Person style={{width: 22, color: '#999'}}/>
                         </Tooltip>}
-                    </Col>
-                </Link>
+                </Col>
             </Row>
         )
     })

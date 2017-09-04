@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import moment from 'moment'
+import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
     const name = _.get(data, ['name'])
@@ -15,12 +16,14 @@ export const createSerializer = (data) => {
 
 export const listFilterSerializer = (data, manufacture) => {
     const {...defaultData} = data
+    const ordering = _.get(data, 'ordering')
 
     return {
         'manufacture': manufacture,
         'name': _.get(defaultData, 'name'),
         'begin_time': _.get(defaultData, 'begin_time'),
-        'end_time': _.get(defaultData, 'end_time')
+        'end_time': _.get(defaultData, 'end_time'),
+        'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
 export const shiftManufactureSerializer = (manufactureId) => {

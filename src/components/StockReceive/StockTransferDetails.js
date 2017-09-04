@@ -53,8 +53,8 @@ const enhance = compose(
             borderTop: 'solid 1px #efefef'
         },
         leftSide: {
-            flexBasis: '70%',
-            maxWidth: '70%',
+            flexBasis: '100%',
+            maxWidth: '100%',
             padding: '0 30px 5px',
             '& > .row': {
                 padding: '15px 0',
@@ -148,7 +148,6 @@ const StockTransferDetails = enhance((props) => {
 
     const detailLoading = _.get(detailData, 'transferDetailLoading')
     const products = _.get(detailData, ['data', 'products'])
-    const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
     const id = _.get(detailData, 'id')
     const dateRequest = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateRequest']))
     const dateDelivery = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateDelivery']))
@@ -230,10 +229,6 @@ const StockTransferDetails = enhance((props) => {
                                 }
                                 return null
                             })}
-                        </div>
-                        <div className={classes.rightSide}>
-                            <div className={classes.subtitle}>Комментарий:</div>
-                            <div>{comment}</div>
                         </div>
                     </div>
                 </div>

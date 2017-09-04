@@ -84,10 +84,12 @@ const enhance = compose(
             const {filter, filterForm} = props
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const search = _.get(filterForm, ['values', 'search']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
 
             filter.filterBy({
+                [STAT_REMAINDER_FILTER_KEY.SEARCH]: search,
                 [STAT_REMAINDER_FILTER_KEY.PRODUCT]: product,
                 [STAT_REMAINDER_FILTER_KEY.DIVISION]: division,
                 [STAT_REMAINDER_FILTER_KEY.TYPE]: type,

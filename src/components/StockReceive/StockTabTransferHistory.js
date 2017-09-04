@@ -17,6 +17,7 @@ const listHeader = [
         xs: 2
     },
     {
+        sorting: true,
         name: 'dateRequest',
         title: 'Дата запроса',
         xs: 2
@@ -83,6 +84,7 @@ const StockTabTransferHistory = enhance((props) => {
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
+            transfer={true}
         />
     )
 
@@ -119,7 +121,7 @@ const StockTabTransferHistory = enhance((props) => {
     const list = {
         header: listHeader,
         list: historyList,
-        loading: _.get(listData, 'historyListLoading')
+        loading: _.get(listData, 'transferListLoading')
     }
 
     return (

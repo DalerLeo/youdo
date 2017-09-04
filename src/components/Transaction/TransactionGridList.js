@@ -42,10 +42,11 @@ const enhance = compose(
             height: '100%'
         },
         leftSide: {
-            flexBasis: '20%'
+            width: '250px',
+            minWidth: '250px'
         },
         rightSide: {
-            flexBasis: '80%',
+            width: 'calc(100% - 250px)',
             marginLeft: '28px'
         },
         list: {
@@ -173,32 +174,32 @@ const TransactionGridList = enhance((props) => {
             sorting: true,
             name: 'id',
             title: 'Id',
-            xs: '10%'
+            width: '10%'
         },
         {
             sorting: true,
             name: 'client',
             title: showCashbox ? 'Касса' : 'Клиент',
-            xs: '22%'
+            width: '22%'
         },
         {
             sorting: true,
             name: 'comment',
             title: 'Описание',
-            xs: '30%'
+            width: '30%'
         },
         {
             sorting: true,
             name: 'date',
             title: 'Дата',
-            xs: '18%'
+            width: '18%'
         },
         {
             sorting: true,
             name: 'amount',
             alignRight: true,
             title: 'Сумма',
-            xs: '15%'
+            width: '15%'
         }
     ]
 

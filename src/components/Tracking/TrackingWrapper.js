@@ -19,9 +19,11 @@ import TrackingTime from './TrackingTime'
 import TrackingAgentSearch from './TrackingAgentSearch'
 import ShopDetails from './TrackingShopDetails'
 import Man from 'material-ui/svg-icons/action/accessibility'
+import GROUP from 'material-ui/svg-icons/social/group'
 import Loyalty from 'material-ui/svg-icons/action/loyalty'
 import Van from 'material-ui/svg-icons/maps/local-shipping'
 import Money from 'material-ui/svg-icons/maps/local-atm'
+import ToolTip from '../ToolTip'
 
 const minutePerHour = 60
 const current = (_.toInteger(moment().format('H')) * minutePerHour) + _.toInteger(moment().format('m'))
@@ -256,20 +258,33 @@ const TrackingWrapper = enhance((props) => {
     }
     const buttons = [
         {
+            group: 'all',
+            icon: <GROUP/>,
+            name: 'Все'
+        },
+        {
             group: 1,
-            icon: <Man/>
+            icon: <Man/>,
+            name: 'Агенты'
+
         },
         {
             group: 2,
-            icon: <Loyalty/>
+            icon: <Loyalty/>,
+            name: 'Мерчендайзеры'
+
         },
         {
             group: 3,
-            icon: <Van/>
+            icon: <Van/>,
+            name: 'Доставщики'
+
         },
         {
             group: 4,
-            icon: <Money/>
+            icon: <Money/>,
+            name: 'Инкассаторы'
+
         }
     ]
     const today = moment().format('YYYY-MM-DD')
@@ -316,19 +331,20 @@ const TrackingWrapper = enhance((props) => {
                 <div className={classes.titleTabs}>
                     {_.map(buttons, (item) => {
                         const group = _.get(item, 'group')
+                        const name = _.get(item, 'name')
                         const groupId = _.get(tabData, 'groupId')
                         const icon = _.get(item, 'icon')
-
                         return (
+                        <ToolTip position="bottom" text={name} key={group}>
                             <IconButton
-                                key={group}
                                 disableTouchRipple={true}
-                                className={(group === groupId) && classes.activeTab}
+                                className={(group === groupId) ? classes.activeTab : ''}
                                 onTouchTap={() => { tabData.handleClickTab(group) }}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}>
                                 {icon}
                             </IconButton>
+                        </ToolTip>
                         )
                     })}
                 </div>

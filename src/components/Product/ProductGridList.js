@@ -38,13 +38,13 @@ const listHeader = [
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'type',
         title: 'Тип товара',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'measurement',
         title: 'Мера',
         xs: 2

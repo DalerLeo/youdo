@@ -40,6 +40,9 @@ const listHeader = [
         alignRight: true,
         title: 'Сумма',
         xs: 2
+    },
+    {
+        name: 'buttons'
     }
 ]
 

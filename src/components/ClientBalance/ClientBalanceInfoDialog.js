@@ -169,7 +169,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
     const detailList = _.map(_.get(detailData, 'data'), (item, index) => {
-        const id = _.get(item, 'order') || _.get(item, 'transaction')
+        const id = _.get(item, 'order') || _.get(item, 'transaction') || _.get(item, 'orderReturn')
         const createdDate = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:MM')
         const comment = _.get(item, 'comment') || 'Комментариев нет'
         const currency = _.get(item, ['currency', 'name'])
@@ -189,7 +189,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
                 <div style={{flexBasis: '45%', maxWidth: '45%'}}>
                     <div>Магазин: <span>{market}</span></div>
-                    <div>Коментария: <span>{comment}</span></div>
+                    <div>Комментарии: <span>{comment}</span></div>
                     <div>Тип: <span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
                             : type === CANCEL_ORDER ? 'Отмена заказа'
@@ -199,8 +199,12 @@ const ClientBalanceInfoDialog = enhance((props) => {
                                         query: {search: id}
                                     }} target="_blank">Заказ {id}</Link>
                                         : type === EXPENSE ? 'Расход'
-                                            : type === ORDER_RETURN ? 'Возврат заказа'
-                                                : type === FIRST_BALANCE ? 'Первый баланс' : null }</span></div>
+                                            : type === ORDER_RETURN ? <Link to={{
+                                                pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
+                                                query: {search: id}
+                                            }} target="_blank">Возврат заказа {id}</Link>
+                                                : type === FIRST_BALANCE ? 'Первый баланс' : null }</span>
+                    </div>
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>

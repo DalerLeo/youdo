@@ -47,6 +47,10 @@ const enhance = compose(
                 padding: '0 !important',
                 position: 'absolute !important'
             }
+        },
+        message: {
+            maxHeight: '600px',
+            overflowY: 'auto'
         }
     }),
     connect((state) => {
@@ -81,7 +85,7 @@ const ErrorDialog = ({dispatch, message, open, classes, arrMessage, ...defaultPr
                 </IconButton>
                 <div className={classes.inContent}>
                     <Error color="#fff" style={{width: '55px', height: '55px'}}/>
-                    <div>{message}</div>
+                    <div className={classes.message}>{message}</div>
                     {_.map(arrMessage, (item, index) => {
                         return (
                             <p key={index}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}: </b>}{item}</p>

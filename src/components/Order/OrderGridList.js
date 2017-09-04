@@ -35,50 +35,50 @@ const listHeader = [
         sorting: true,
         name: 'id',
         title: 'Заказ №',
-        xs: '10%'
+        width: '10%'
     },
     {
         sorting: true,
         name: 'client',
         title: 'Клиент',
-        xs: '17.5%'
+        width: '17.5%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'market',
         title: 'Магазин',
-        xs: '17.5%'
+        width: '17.5%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'user',
         title: 'Инициатор',
-        xs: '10%'
+        width: '10%'
     },
     {
         sorting: true,
         name: 'totalPrice',
         alignRight: true,
         title: 'Сумма заказа',
-        xs: '15%'
+        width: '15%'
     },
     {
         sorting: true,
         name: 'dateDelivery',
         title: 'Дата доставки',
-        xs: '15%'
+        width: '15%'
     },
     {
         sorting: true,
         name: 'createdDate',
         title: 'Дата создания',
-        xs: '15%'
+        width: '15%'
     },
     {
         sorting: false,
         name: 'acceptedCost',
         title: 'Статус',
-        xs: '5%'
+        width: '5%'
     }
 ]
 

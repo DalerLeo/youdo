@@ -42,7 +42,7 @@ const listHeader = [
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'type',
         title: 'Тип',
         xs: 2

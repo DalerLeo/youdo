@@ -242,7 +242,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STAT_CASHBOX_LIST),
         update: createThunkReducer(actionTypes.STAT_CASHBOX_UPDATE),
         item: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM),
-        sumData: createThunkReducer(actionTypes.STAT_CASHBOX_SUM),
+        sumData: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM_SUM),
+        itemSumData: createThunkReducer(actionTypes.STAT_CASHBOX_SUM),
         itemGraph: createThunkReducer(actionTypes.STAT_CASHBOX_DATA_ITEM)
     }),
     pendingPayments: combineReducers({
@@ -396,6 +397,11 @@ const rootReducer = combineReducers({
     join: combineReducers({
         joinMarkets: createThunkReducer(actionTypes.JOIN_MARKETS),
         joinClients: createThunkReducer(actionTypes.JOIN_CLIENTS)
+    }),
+    access: combineReducers({
+        list: createThunkReducer(actionTypes.ACCESS_LIST),
+        item: createThunkReducer(actionTypes.ACCESS_ITEM),
+        update: createThunkReducer(actionTypes.ACCESS_UPDATE)
     }),
     snackbar: snackbarReducer(),
     error: errorReducer(),

@@ -11,11 +11,38 @@ export const setTokenAction = () => {
     }
 }
 
+export const setAuthConfirmAction = () => {
+    const userData = storageHelper.getUserData()
+    if (userData) {
+        return {
+            type: `${actionTypes.AUTH_CONFIRM}_FULFILLED`,
+            payload: JSON.parse(userData)
+        }
+    }
+    return {
+        type: `${actionTypes.AUTH_CONFIRM}_FULFILLED`,
+        payload: {}
+    }
+}
+
+export const authConfirmAction = (rememberUser) => {
+    const payload = axios().get(API.AUTH_CONFIRM)
+        .then((response) => {
+            const userData = _.get(response, 'data')
+            storageHelper.setUser(userData, rememberUser)
+            return userData
+        })
+    return {
+        type: actionTypes.AUTH_CONFIRM,
+        payload
+    }
+}
+
 export const signInAction = (params) => {
-    const payload = axios()
+    const payload = axios(false)
         .post(API.SIGN_IN, params)
         .then((response) => {
-            const rememberMe = _.get(params, 'rememberMe')
+            const rememberMe = _.get(params, 'rememberMe') || false
             const token = _.get(response, ['data', 'token'])
 
             // Save token in browser storage
@@ -54,14 +81,3 @@ export const signOutAction = () => {
     }
 }
 
-export const authConfirmAction = () => {
-    const payload = axios().get(API.AUTH_CONFIRM)
-        .then((response) => {
-            const userData = _.get(response, 'data')
-            storageHelper.setUser(userData)
-        })
-    return {
-        type: actionTypes.AUTH_CONFIRM,
-        payload
-    }
-}

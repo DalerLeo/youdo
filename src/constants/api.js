@@ -243,6 +243,7 @@ export const STAT_MANUFACTURE_ITEM = `/${STAT_MANUFACTURE}/%d/`
 export const STAT_MANUFACTURE_DELETE = `/${STAT_MANUFACTURE}/%d/`
 
 export const STAT_CASHBOX_SUM = '/stats/cashboxes_sum/'
+export const STAT_CASHBOX_ITEM_SUM = '/stats/cashboxes_sum/'
 export const STAT_CASHBOX = 'finance/cashbox'
 export const STAT_CASHBOX_CREATE = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`
@@ -412,3 +413,9 @@ export const RETURN_CANCEL = `${RETURN}/%d/cancel/`
 
 export const JOIN_MARKETS = 'market/merge/'
 export const JOIN_CLIENTS = 'sales/merge_clients/'
+
+export const ACCESS = 'main/access'
+export const ACCESS_LIST = `${ACCESS}/`
+export const ACCESS_ITEM = `${ACCESS}/%d/`
+export const ACCESS_UPDATE = `${ACCESS}/%d/`
+

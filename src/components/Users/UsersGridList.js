@@ -27,31 +27,31 @@ const listHeader = [
         xs: 1
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'username',
         title: 'Пользователь',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'login',
         title: 'Логин',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'typeUser',
         title: 'Должность',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'phoneNumber',
         title: 'Телефон',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'status',
         title: 'Статус',
         xs: 1
@@ -102,6 +102,10 @@ const enhance = compose(
             padding: '0 30px',
             '&:hover > div:last-child > div ': {
                 opacity: '1'
+            },
+            '& > div': {
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
             }
         }
     })
@@ -163,7 +167,7 @@ const UsersGridList = enhance((props) => {
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{firstName} {secondName}</Col>
-                <Col xs={2}>{username}</Col>
+                <Col xs={2} title={username}>{username}</Col>
                 <Col xs={2}>{position}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
                 <Col xs={2}>{isActive ? 'Активный' : 'Неактивный'}</Col>

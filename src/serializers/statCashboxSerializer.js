@@ -10,13 +10,14 @@ export const createSerializer = (data) => {
     }
 }
 
-export const listFilterSerializer = (data) => {
+export const listFilterSerializer = (data, id) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const firstDayOfMonth = moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
     return {
+        'cashbox': id,
         'name': _.get(defaultData, 'name'),
         'division': _.get(defaultData, 'division'),
         'search': _.get(defaultData, 'search'),

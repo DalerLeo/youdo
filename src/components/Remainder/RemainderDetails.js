@@ -78,7 +78,7 @@ const enhance = compose(
         },
         itemData: {
             textAlign: 'left',
-            fontWeight: '700',
+            fontWeight: '600',
             fontSize: '16px'
         },
         itemOpenData: {
@@ -117,19 +117,20 @@ const enhance = compose(
 
 const RemainderDetails = enhance((props) => {
     const {classes, filterItem, detailData, handleCloseDetail, reservedOpen} = props
+    const ZERO = 0
     const isLoading = _.get(detailData, 'detailLoading')
     const detailId = _.get(detailData, 'id')
     const title = _.get(detailData, ['currentRow', '0', 'title'])
     const balance = _.get(detailData, ['currentRow', '0', 'balance'])
     const defects = _.get(detailData, ['currentRow', '0', 'defects'])
-    const reserved = _.get(detailData, ['currentRow', '0', 'reserved'])
+    const reserved = _.toNumber(_.get(detailData, ['currentRow', '0', 'reserved']))
     const measurement = _.get(detailData, ['currentRow', '0', 'measurement', 'name'])
     const type = _.get(detailData, ['currentRow', '0', 'type', 'name'])
 
     if (isLoading) {
         return (
             <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4} />
+                <CircularProgress size={40} thickness={4}/>
             </div>
         )
     }
@@ -138,50 +139,53 @@ const RemainderDetails = enhance((props) => {
             {_.isEmpty(_.get(detailData, ['data', 'results']))
                 ? <div className={classes.emptyQuery}>
                     <div>Товаров не найдено</div>
-                  </div>
-            : <div style={{width: '100%'}}>
+                </div>
+                : <div style={{width: '100%'}}>
                     <div className={classes.header}>
                         <div className={classes.closeDetail}
                              onClick={handleCloseDetail}>
                         </div>
-                        <Row className={classes.semibold} >
+                        <Row className={classes.semibold}>
                             <Col xs={3}>{title}</Col>
                             <Col xs={2}>{type}</Col>
                             <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
                             <Col xs={3} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
-                            <Col xs={2}
-                                 className={classes.itemOpenData} onClick={() => { reservedOpen(detailId) }}>
+                            {reserved > ZERO
+                                ? <Col xs={2}
+                                       className={classes.itemOpenData} onClick={() => { reservedOpen(detailId) }}>
                                     {numberFormat(reserved, measurement)}
-                            </Col>
+                                </Col>
+                                : <Col xs={2} className={classes.itemData}>{numberFormat(reserved, measurement)}</Col>}
                         </Row>
                     </div>
-                <div className={classes.content}>
-                    <div className={classes.title}>
-                        <div className={classes.titleLabel}>Парти товаров</div>
-                        <Pagination filter={filterItem}/>
+                    <div className={classes.content}>
+                        <div className={classes.title}>
+                            <div className={classes.titleLabel}>Парти товаров</div>
+                            <Pagination filter={filterItem}/>
+                        </div>
+                        <Row className='dottedList'>
+                            <Col xs={4}>Код</Col>
+                            <Col xs={4}>Дата приемки</Col>
+                            <Col xs={3}>Кол-во</Col>
+                            <Col xs={1}>Статус</Col>
+                        </Row>
+                        {_.map(_.get(detailData, ['data', 'results']), (item) => {
+                            const barcode = _.get(item, 'barcode')
+                            const productBalance = numberFormat(_.get(item, 'balance'), measurement)
+                            const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
+                            const isDefect = _.get(item, 'isDefect') ? 'Брак' : 'OK'
+                            return (
+                                <Row key={barcode} className='dottedList'>
+                                    <Col xs={4}>{barcode}</Col>
+                                    <Col xs={4}>{createdDate}</Col>
+                                    <Col xs={3}>{productBalance} </Col>
+                                    <Col xs={1}> <span
+                                        className={_.get(item, 'isDefect') ? classes.error : classes.success}>{isDefect}</span></Col>
+                                </Row>
+                            )
+                        })}
                     </div>
-                    <Row className='dottedList'>
-                        <Col xs={4}>Код</Col>
-                        <Col xs={4}>Дата приемки</Col>
-                        <Col xs={3}>Кол-во</Col>
-                        <Col xs={1}>Статус</Col>
-                    </Row>
-                    {_.map(_.get(detailData, ['data', 'results']), (item) => {
-                        const barcode = _.get(item, 'barcode')
-                        const productBalance = numberFormat(_.get(item, 'balance'), measurement)
-                        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
-                        const isDefect = _.get(item, 'isDefect') ? 'Брак' : 'OK'
-                        return (
-                            <Row key={barcode} className='dottedList'>
-                                <Col xs={4}>{barcode}</Col>
-                                <Col xs={4}>{createdDate}</Col>
-                                <Col xs={3}>{productBalance} </Col>
-                                <Col xs={1}> <span className={_.get(item, 'isDefect') ? classes.error : classes.success }>{isDefect}</span></Col>
-                            </Row>
-                        )
-                    })}
                 </div>
-              </div>
             }
         </div>
     )

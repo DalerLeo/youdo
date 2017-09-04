@@ -1,12 +1,7 @@
 import {TOKEN_KEY, USER_GROUPS, IS_SUPERUSER, PAGE_SIZE} from '../constants/storage'
-import _ from 'lodash'
 
 export const getStorage = (local) => {
     return local ? localStorage : sessionStorage
-}
-
-export const getToken = () => {
-    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY)
 }
 
 export const setToken = (token, local = false) => {
@@ -15,15 +10,14 @@ export const setToken = (token, local = false) => {
     storage.setItem(TOKEN_KEY, token)
 }
 
+export const getToken = () => {
+    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY)
+}
+
 export const setUser = (userData, local = false) => {
     const storage = getStorage(local)
-    const groups = _.map(_.get(userData, 'groups'), (item) => {
-        return _.get(item, 'id')
-    })
-    const isSuper = _.get(userData, 'is_superuser')
 
-    storage.setItem(USER_GROUPS, groups)
-    storage.setItem(IS_SUPERUSER, isSuper)
+    storage.setItem(USER_GROUPS, JSON.stringify(userData))
 }
 
 export const setPageSize = (value, local = false) => {
@@ -31,8 +25,8 @@ export const setPageSize = (value, local = false) => {
     storage.setItem(PAGE_SIZE, value)
 }
 
-export const getGroups = () => {
-    return _.split(localStorage.getItem(USER_GROUPS) || sessionStorage.getItem(USER_GROUPS), ',')
+export const getUserData = () => {
+    return localStorage.getItem(USER_GROUPS) || sessionStorage.getItem(USER_GROUPS)
 }
 export const getValue = (key) => {
     return localStorage.getItem(key) || sessionStorage.getItem(key)

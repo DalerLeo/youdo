@@ -3,14 +3,17 @@ import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
+import {Link} from 'react-router'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
+import sprintf from 'sprintf'
 import Person from '../Images/person.png'
 import Pagination from '../GridList/GridListNavPagination'
+import * as ROUTES from '../../constants/routes'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat.js'
 
@@ -150,11 +153,15 @@ const StatAgentDialog = enhance((props) => {
         const id = _.get(item, 'id')
         const market = _.get(item, ['market', 'name'])
         const totalPrice = _.get(item, 'totalPrice')
-        const createdDate = moment(_.get(item, 'createdDate')).format('LL')
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
 
         return (
             <Row key={id} className="dottedList">
-                <Col xs={2}>{id}</Col>
+                <Col xs={2}>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                        query: {search: id}
+                    }} target="_blank">Заказ {id}</Link></Col>
                 <Col xs={6}>{market}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={2}>{totalPrice} {primaryCurrency}</Col>

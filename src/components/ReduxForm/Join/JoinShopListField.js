@@ -120,9 +120,11 @@ const enhance = compose(
     connect((state) => {
         const address = _.get(state, ['shop', 'extra', 'data', 'address'])
         const client = _.get(state, ['shop', 'extra', 'data', 'client', 'name'])
+        const phone = _.get(state, ['shop', 'extra', 'data', 'phone'])
         return {
             address,
-            client
+            client,
+            phone
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -137,6 +139,7 @@ const enhance = compose(
             const markets = _.get(props, ['markets', 'input', 'value'])
             const address = _.get(props, 'address')
             const client = _.get(props, 'client')
+            const phone = _.get(props, 'phone')
 
             if (_.get(market, 'value')) {
                 let has = false
@@ -152,7 +155,7 @@ const enhance = compose(
                 }
 
                 if (!has) {
-                    let newArray = [{market, address, client}]
+                    let newArray = [{market, address, client, phone}]
                     _.map(markets, (obj) => {
                         newArray.push(obj)
                     })
@@ -229,20 +232,23 @@ const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) 
                 />
                 <div className={classes.list}>
                     <Row>
-                        <Col xs={5}>Наименование</Col>
+                        <Col xs={4}>Наименование</Col>
                         <Col xs={3}>Клиент</Col>
-                        <Col xs={3}>Адрес</Col>
+                        <Col xs={2}>Телефон</Col>
+                        <Col xs={2}>Адрес</Col>
                     </Row>
                     {_.map(markets, (item, index) => {
                         const name = _.get(item, ['market', 'text'])
                         const client = _.get(item, 'client')
+                        const phone = _.get(item, 'phone')
                         const address = _.get(item, 'address')
 
                         return (
                             <Row key={index} className={classes.tableRow}>
-                                <Col xs={5}>{name}</Col>
+                                <Col xs={4}>{name}</Col>
                                 <Col xs={3}>{client}</Col>
-                                <Col xs={3}>{address}</Col>
+                                <Col xs={2}>{phone}</Col>
+                                <Col xs={2}>{address}</Col>
                                 <Col xs={1} style={{textAlign: 'right', width: '40px'}}>
                                     <IconButton
                                         onTouchTap={() => handleRemove(index)}

@@ -1,21 +1,44 @@
 import _ from 'lodash'
 import {routerActions} from 'react-router-redux'
-import {UserAuthWrapper as userAuthWrapper} from 'redux-auth-wrapper'
+import {connectedRouterRedirect} from 'redux-auth-wrapper/history3/redirect'
+import * as ROUTES from '../constants/routes'
+import {getMenus} from '../components/SidebarMenu/MenuItems'
 
-export const userIsAuth = userAuthWrapper({
-    authSelector: state => _.get(state, 'signIn'),
-    failureRedirectPath: '/sign-in',
-    redirectAction: routerActions.replace,
-    predicate: signIn => {
-        const token = _.get(signIn, 'data')
+export const userIsAuth = connectedRouterRedirect({
+    authenticatedSelector: state => {
+        const token = _.get(state, ['signIn', 'data'])
         return !_.isEmpty(token)
     },
+    redirectPath: ROUTES.SIGN_IN_URL,
+    redirectAction: routerActions.replace,
     wrapperDisplayName: 'UserIsAuthenticated'
 })
 
-export const visibleOnlyAdmin = userAuthWrapper({
-    authSelector: state => state.user,
+export const visibleOnlyAdmin = connectedRouterRedirect({
+    authenticatedSelector: (state, ownProps) => {
+        let currentPath = _.get(ownProps, ['location', 'pathname'])
+        if (!_.startsWith(currentPath, '/')) {
+            currentPath = '/' + currentPath
+        }
+        const groups = _.map(_.get(state, ['authConfirm', 'data', 'groups']), (item) => {
+            return _.get(item, 'id')
+        })
+        const menus = getMenus(groups)
+        const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        if (isSuperUser) {
+            return isSuperUser
+        }
+        const filter = _.filter(menus, (o) => {
+            const childURL = _.map(_.get(o, 'childs'), (child) => {
+                if (_.startsWith(currentPath, child.url)) {
+                    return 'hasin'
+                }
+                return ''
+            })
+            return childURL.includes('hasin')
+        })
+        return !_.isEmpty(filter)
+    },
     wrapperDisplayName: 'VisibleOnlyAdmin',
-    predicate: user => user.isAdmin,
-    FailureComponent: null
+    redirectPath: ROUTES.ACCESS_DENIED_URL
 })

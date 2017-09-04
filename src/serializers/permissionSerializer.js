@@ -1,11 +1,11 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
-export const createSerializer = (data) => {
-    const name = _.get(data, ['name'])
-
+export const updateSerializer = (id, status) => {
+    const statusChange = status === true ? '2' : '1'
     return {
-        name
+        id,
+        'status': statusChange
     }
 }
 
