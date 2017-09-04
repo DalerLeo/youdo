@@ -25,11 +25,11 @@ export const setAuthConfirmAction = () => {
     }
 }
 
-export const authConfirmAction = () => {
+export const authConfirmAction = (rememberUser) => {
     const payload = axios().get(API.AUTH_CONFIRM)
         .then((response) => {
             const userData = _.get(response, 'data')
-            storageHelper.setUser(userData)
+            storageHelper.setUser(userData, rememberUser)
             return userData
         })
     return {
@@ -39,10 +39,10 @@ export const authConfirmAction = () => {
 }
 
 export const signInAction = (params) => {
-    const payload = axios()
+    const payload = axios(false)
         .post(API.SIGN_IN, params)
         .then((response) => {
-            const rememberMe = _.get(params, 'rememberMe')
+            const rememberMe = _.get(params, 'rememberMe') || false
             const token = _.get(response, ['data', 'token'])
 
             // Save token in browser storage

@@ -4,14 +4,14 @@ export const getStorage = (local) => {
     return local ? localStorage : sessionStorage
 }
 
-export const getToken = () => {
-    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY)
-}
-
 export const setToken = (token, local = false) => {
     const storage = getStorage(local)
 
     storage.setItem(TOKEN_KEY, token)
+}
+
+export const getToken = () => {
+    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY)
 }
 
 export const setUser = (userData, local = false) => {
