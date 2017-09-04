@@ -164,7 +164,7 @@ const JoinDialog = enhance((props) => {
         <Dialog
             modal={true}
             className={classes.podlojkaScroll}
-            contentStyle={loading ? {width: '500px', height: '300px'} : {width: '700px', maxWidth: 'none'}}
+            contentStyle={loading ? {width: '500px', height: '300px'} : isClient ? {width: '700px', maxWidth: 'none'} : {width: '1000px', maxWidth: 'none'}}
             open={open > ZERO || open === 'true'}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}

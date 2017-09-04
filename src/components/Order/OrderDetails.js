@@ -183,7 +183,7 @@ const OrderDetails = enhance((props) => {
 
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
-    const marketId = _.get(data, ['market', 'id'])
+    const marketId = _.get(data, ['market', 'id']) || ZERO
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
     const dealType = _.get(data, 'dealType')
     const division = _.get(data, ['division', 'name'])
