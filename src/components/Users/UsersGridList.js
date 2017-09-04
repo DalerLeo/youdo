@@ -102,6 +102,10 @@ const enhance = compose(
             padding: '0 30px',
             '&:hover > div:last-child > div ': {
                 opacity: '1'
+            },
+            '& > div': {
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
             }
         }
     })
