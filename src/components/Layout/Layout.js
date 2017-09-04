@@ -19,7 +19,7 @@ import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
 import CircularProgress from 'material-ui/CircularProgress'
 import {
     notificationListFetchAction,
-    notificationDeleteAction,
+    notificationDeleteAction
 } from '../../actions/notifications'
 import {openSnackbarAction} from '../../actions/snackbar'
 import Notifications from '../Images/Notification.png'
