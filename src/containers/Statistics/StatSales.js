@@ -13,15 +13,15 @@ import toBoolean from '../../helpers/toBoolean'
 import {StatSalesGridList, STAT_SALES_DIALOG_OPEN} from '../../components/Statistics'
 import {STAT_SALES_FILTER_KEY} from '../../components/Statistics/StatSalesGridList'
 import {
-    orderListFetchAction,
     orderItemFetchAction
 } from '../../actions/order'
 
 import {
-    statSalesDataFetchAction
+    statSalesDataFetchAction,
+    orderListFetchAction
 }
 from '../../actions/statSales'
-
+const ONE = 1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -48,7 +48,7 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(orderListFetchAction(filter, true))
+        dispatch(orderListFetchAction(filter, ONE))
         dispatch(statSalesDataFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
