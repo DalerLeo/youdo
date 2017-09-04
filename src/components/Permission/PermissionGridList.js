@@ -139,11 +139,6 @@ const PermissionGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
-    const addButton = (
-        <div>
-        </div>
-    )
-
     return (
         <Container>
             <div className={classes.wrapper}>
@@ -154,7 +149,7 @@ const PermissionGridList = enhance((props) => {
                         list={list}
                         detail={permissionDetail}
                         actionsDialog={actions}
-                        addButton={addButton}
+                        transparentLoading={true}
                         listShadow={false}
                     />
                 </div>
