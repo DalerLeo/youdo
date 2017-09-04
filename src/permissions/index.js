@@ -16,7 +16,10 @@ export const userIsAuth = connectedRouterRedirect({
 
 export const visibleOnlyAdmin = connectedRouterRedirect({
     authenticatedSelector: (state, ownProps) => {
-        const currentPath = _.get(ownProps, ['location', 'pathname'])
+        let currentPath = _.get(ownProps, ['location', 'pathname'])
+        if (!_.startsWith(currentPath, '/')) {
+            currentPath = '/' + currentPath
+        }
         const groups = _.map(_.get(state, ['authConfirm', 'data', 'groups']), (item) => {
             return _.get(item, 'id')
         })
@@ -26,7 +29,13 @@ export const visibleOnlyAdmin = connectedRouterRedirect({
             return isSuperUser
         }
         const filter = _.filter(menus, (o) => {
-            return _.get(o, 'url') === currentPath
+            const childURL = _.map(_.get(o, 'childs'), (child) => {
+                if (_.startsWith(currentPath, child.url)) {
+                    return 'hasin'
+                }
+                return ''
+            })
+            return childURL.includes('hasin')
         })
         return !_.isEmpty(filter)
     },
