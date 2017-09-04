@@ -3,26 +3,26 @@ import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import Container from '../Container'
+import * as ROUTES from '../../../constants/routes'
+import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {TextField, DivisionSearchField} from '../ReduxForm'
-import StatSideMenu from './StatSideMenu'
+import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
+import {TextField, DivisionSearchField} from '../../ReduxForm/index'
+import StatSideMenu from '../StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
-import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
-import Person from '../Images/person.png'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-import Pagination from '../GridList/GridListNavPagination'
-import getConfig from '../../helpers/getConfig'
-import numberFormat from '../../helpers/numberFormat'
-import NotFound from '../Images/not-found.png'
+import CircularProgress from 'material-ui/CircularProgress'
+import Pagination from '../../GridList/GridListNavPagination/index'
+import StatIncomeDialog from './StatIncomeDialog'
+import getConfig from '../../../helpers/getConfig'
+import numberFormat from '../../../helpers/numberFormat'
+import NotFound from '../../Images/not-found.png'
 
-export const STAT_OUTCOME_FILTER_KEY = {
+export const STAT_INCOME_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     SEARCH: 'search',
@@ -215,18 +215,18 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatOutcomeFilterForm',
+        form: 'StatIncomeFilterForm',
         enableReinitialize: true
     }),
 )
 
-const StatOutcomeGridList = enhance((props) => {
+const StatIncomeGridList = enhance((props) => {
     const {
-        listData,
         classes,
         filter,
         handleSubmitFilterDialog,
-        getDocument
+        statIncomeDialog,
+        listData
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -311,7 +311,7 @@ const StatOutcomeGridList = enhance((props) => {
             },
             name: 'Эффективность',
             data: value,
-            color: '#eb9696'
+            color: '#6cc6de'
 
         }]
     }
@@ -335,32 +335,27 @@ const StatOutcomeGridList = enhance((props) => {
         }
     }
 
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={1}>№</Col>
-            <Col xs={2}>Категория</Col>
-            <Col xs={4}>Описание</Col>
-            <Col xs={3}>Кассир</Col>
-            <Col xs={2}>Сумма</Col>
+            <Col xs={2}>№ заказа</Col>
+            <Col xs={3}>Дата</Col>
+            <Col xs={4}>Клиент</Col>
+            <Col xs={3}>Сумма</Col>
         </Row>
     )
-
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const comment = _.get(item, 'comment')
-        const amount = _.get(item, 'amount')
+        const date = moment(_.get(item, 'createdDate')).format('YY:MM:DD')
+        const client = _.get(item, ['client', 'name'])
+        const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
 
         return (
             <Row key={id} className="dottedList">
-                <Col xs={1}>{id}</Col>
-                <Col xs={2}>Логистика</Col>
-                <Col xs={4}>{comment}</Col>
-                <Col xs={3}>
-                    <div className="personImage"><img src={Person}/></div>
-                    <div>Бамбамбиев Куркуда</div>
-                </Col>
-                <Col xs={2}>{numberFormat(amount, primaryCurrency)}</Col>
+                <Col xs={2}>{id}</Col>
+                <Col xs={3}>{date}</Col>
+                <Col xs={4}>{client}</Col>
+                <Col xs={3} style={{justifyContent: 'flex-end'}}>{amount}</Col>
             </Row>
         )
     })
@@ -369,7 +364,7 @@ const StatOutcomeGridList = enhance((props) => {
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_OUTCOME_URL}/>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_INCOME_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
@@ -382,17 +377,16 @@ const StatOutcomeGridList = enhance((props) => {
                                     label="Диапазон дат"
                                     fullWidth={true}/>
                                 <Field
+                                    className={classes.inputFieldCustom}
                                     name="division"
                                     component={DivisionSearchField}
-                                    className={classes.inputFieldCustom}
                                     label="Подразделение"
-                                    fullWidth={true}
-                                />
+                                    fullWidth={true}/>
                                 <Field
                                     className={classes.inputFieldCustom}
                                     name="search"
                                     component={TextField}
-                                    label="Поиск"
+                                    label="Клиенты"
                                     fullWidth={true}/>
 
                                 <IconButton
@@ -404,39 +398,38 @@ const StatOutcomeGridList = enhance((props) => {
                                 </IconButton>
                             </div>
                             <a className={classes.excel}>
-                                <Excel color="#fff" onTouchTap={() => { getDocument.handleGetDocument() }}/>
-                                <span>Excel</span>
+                                <Excel color="#fff"/> <span>Excel</span>
                             </a>
                         </form>
                         {listLoading
-                            ? <div className={classes.loader}>
-                                <CircularProgress size={40} thickness={4}/>
-                            </div>
-                            : (_.isEmpty(list) && !listLoading)
-                                ? <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
-                                  </div>
-                                : <div>
-                                    <Row className={classes.diagram}>
-                                        <Col xs={3} className={classes.salesSummary}>
-                                            <div>Сумма продаж за период</div>
-                                            <div>{numberFormat(sum)} {primaryCurrency}</div>
-                                        </Col>
-                                        <Col xs={9}>
-                                            <ReactHighcharts config={config}/>
-                                        </Col>
-                                    </Row>
-                                    <div className={classes.pagination}>
-                                        <div><b>История расходов</b></div>
-                                        <Pagination filter={filter}/>
-                                    </div>
-                                    <div className={classes.tableWrapper}>
-                                        {headers}
-                                        {list}
-                                  </div>
-                                </div>
-                        }
+                        ? <div className={classes.loader}>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
+                        : (_.isEmpty(list) && !listLoading)
+                            ? <div className={classes.emptyQuery}>
+                                <div>По вашему запросу ничего не найдено</div>
+                              </div>
+                            : <div>
+                                <Row className={classes.diagram}>
+                                    <Col xs={3} className={classes.salesSummary}>
+                                        <div>Сумма продаж за период</div>
+                                        <div>{numberFormat(sum, primaryCurrency)}</div>
+                                    </Col>
+                                    <Col xs={9}>
+                                        <ReactHighcharts config={config}/>
+                                    </Col>
+                                </Row>
+                                <div className={classes.pagination}>
+                                    <div><b>История доходов</b></div>
+                                    <Pagination filter={filter}/>
+                                </div>
+                                <div className={classes.tableWrapper}>
+                                    {headers}
+                                  {list}
+                                </div>
+                              </div>
+                        }
+                    </div>
                 </div>
             </Row>
         </div>
@@ -445,14 +438,24 @@ const StatOutcomeGridList = enhance((props) => {
     return (
         <Container>
             {page}
+            <StatIncomeDialog
+                loading={statIncomeDialog.loading}
+                open={statIncomeDialog.openStatIncomeDialog}
+                onClose={statIncomeDialog.handleCloseStatIncomeDialog}
+            />
         </Container>
     )
 })
 
-StatOutcomeGridList.propTypes = {
+StatIncomeGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
-    detailData: PropTypes.object
+    detailData: PropTypes.object,
+    statIncomeDialog: PropTypes.shape({
+        openStatIncomeDialog: PropTypes.bool.isRequired,
+        handleCloseStatIncomeDialog: PropTypes.func.isRequired,
+        handleOpenStatIncomeDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
-export default StatOutcomeGridList
+export default StatIncomeGridList

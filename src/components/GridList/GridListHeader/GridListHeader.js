@@ -166,28 +166,28 @@ const GridListHeader = enhance((props) => {
                     ) : (<ArrowDownIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>) : null
 
             if (withoutRow) {
-                return (<div style={alignRight ? {textAlign: 'right', width: width} : {width: width}} key={index}>
+                return (<div style={alignRight ? {textAlign: 'right', justifyContent: 'flex-end', width: width} : {width: width}} key={index}>
                     <Link
                         className={classes.sortingButton}
                         onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
                         <FlatButton
                             className={classes.button}
                             labelStyle={{fontSize: '13px'}}
-                            style={alignRight ? {paddingRight: '0', paddingLeft: '30px', textAlign: 'right'} : {paddingRight: '30px', textAlign: 'left'}}
+                            style={alignRight ? {paddingRight: '0', paddingLeft: '30px', textAlign: 'right', justifyContent: 'flex-end'} : {paddingRight: '30px', textAlign: 'left'}}
                             disableTouchRipple={true}>
                             <span>{_.get(item, 'title')}</span> {Icon}
                         </FlatButton>
                     </Link>
                 </div>)
             }
-            return (<Col xs={xs} key={index} style={alignRight && {textAlign: 'right'}}>
+            return (<Col xs={xs} key={index} style={alignRight && {textAlign: 'right', justifyContent: 'flex-end'}}>
                         <Link
                             className={classes.sortingButton}
                             onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
                             <FlatButton
                                 className={classes.button}
                                 labelStyle={{fontSize: '13px'}}
-                                style={alignRight ? {paddingRight: '0', paddingLeft: '30px', textAlign: 'right'} : {paddingRight: '30px', textAlign: 'left'}}
+                                style={alignRight ? {paddingRight: '0', paddingLeft: '30px', textAlign: 'right', justifyContent: 'flex-end'} : {paddingRight: '30px', textAlign: 'left'}}
                                 disableTouchRipple={true}>
                                 {alignRight && Icon} <span>{_.get(item, 'title')}</span> {!alignRight && Icon}
                             </FlatButton>

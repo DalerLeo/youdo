@@ -24,10 +24,11 @@ const listHeader = [
         title: 'Наименование'
     },
     {
-        sorting: false,
+        sorting: true,
         xs: 2,
+        alignRight: true,
         name: 'actions',
-        title: ''
+        title: 'Статус'
     }
 ]
 
@@ -138,11 +139,6 @@ const PermissionGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
-    const addButton = (
-        <div>
-        </div>
-    )
-
     return (
         <Container>
             <div className={classes.wrapper}>
@@ -153,7 +149,7 @@ const PermissionGridList = enhance((props) => {
                         list={list}
                         detail={permissionDetail}
                         actionsDialog={actions}
-                        addButton={addButton}
+                        transparentLoading={true}
                         listShadow={false}
                     />
                 </div>

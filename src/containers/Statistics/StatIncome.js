@@ -11,7 +11,7 @@ import {
     StatIncomeGridList,
     STAT_INCOME_DIALOG_OPEN
 } from '../../components/Statistics'
-import {STAT_INCOME_FILTER_KEY} from '../../components/Statistics/StatIncomeGridList'
+import {STAT_INCOME_FILTER_KEY} from '../../components/Statistics/Income/StatIncomeGridList'
 import {
     statIncomeListFetchAction,
     statIncomeDataFetchAction

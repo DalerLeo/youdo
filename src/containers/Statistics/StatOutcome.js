@@ -11,7 +11,7 @@ import {
     StatOutcomeGridList,
     STAT_OUTCOME_DIALOG_OPEN
 } from '../../components/Statistics'
-import {STAT_OUTCOME_FILTER_KEY} from '../../components/Statistics/StatOutcomeGridList'
+import {STAT_OUTCOME_FILTER_KEY} from '../../components/Statistics/Outcome/StatOutcomeGridList'
 import {
     statOutcomeListFetchAction,
     statOutcomeDataFetchAction,

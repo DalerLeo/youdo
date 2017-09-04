@@ -79,10 +79,11 @@ const enhance = compose(
             background: '#fff',
             overflowY: 'auto',
             overflowX: 'hidden',
-            padding: '20px 30px'
+            padding: '10px 30px 20px'
         },
         nav: {
             display: 'flex',
+            height: '50px',
             alignItems: 'center',
             justifyContent: 'space-between',
             borderBottom: 'solid 1px #efefef'
@@ -118,8 +119,13 @@ const enhance = compose(
             }
         },
         permission: {
-            '& span': {
-                padding: '5px 10px',
+            '& > span': {
+                padding: '0 10px',
+                height: '28px',
+                borderRadius: '2px',
+                lineHeight: '1',
+                display: 'inline-flex',
+                alignItems: 'center',
                 backgroundColor: '#e9ecef',
                 marginRight: '10px'
             }

@@ -1,32 +1,30 @@
 import _ from 'lodash'
-import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import Container from '../Container'
+import * as ROUTES from '../../../constants/routes'
+import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import ReactHighcharts from 'react-highcharts'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {TextField, DivisionSearchField} from '../ReduxForm'
-import StatSideMenu from './StatSideMenu'
+import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
+import DivisionSearchField from '../../ReduxForm/DivisionSearchField'
+import StatSideMenu from '../StatSideMenu'
+import Person from '../../Images/person.png'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import CircularProgress from 'material-ui/CircularProgress'
-import Pagination from '../GridList/GridListNavPagination'
-import StatIncomeDialog from './StatIncomeDialog'
-import getConfig from '../../helpers/getConfig'
-import numberFormat from '../../helpers/numberFormat'
-import NotFound from '../Images/not-found.png'
+import Excel from 'material-ui/svg-icons/av/equalizer'
+import LinearProgress from 'material-ui/LinearProgress'
+import Pagination from '../../GridList/GridListNavPagination/index'
+import numberFormat from '../../../helpers/numberFormat.js'
+import getConfig from '../../../helpers/getConfig'
+import NotFound from '../../Images/not-found.png'
 
-export const STAT_INCOME_FILTER_KEY = {
+export const STAT_OUTCOME_CATEGORY_FILTER_KEY = {
+    DIVISION: 'division',
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate',
-    SEARCH: 'search',
-    DIVISION: 'division'
+    TO_DATE: 'toDate'
 }
 
 const enhance = compose(
@@ -47,22 +45,19 @@ const enhance = compose(
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
-            height: 'calc(100% - 40px)',
             padding: '20px 30px',
+            height: 'calc(100% - 40px)',
+            '& > div:nth-child(2)': {
+                marginTop: '10px',
+                borderTop: '1px #efefef solid',
+                borderBottom: '1px #efefef solid'
+            },
             '& .row': {
-                marginLeft: '0',
-                marginRight: '0'
+                margin: '0 !important'
             }
         },
-        pagination: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderTop: '1px #efefef solid',
-            borderBottom: '1px #efefef solid'
-        },
         tableWrapper: {
-            height: 'calc(100% - 283px)',
+            height: 'calc(100% - 118px)',
             overflowY: 'auto',
             overflowX: 'hidden',
             '& .row': {
@@ -72,10 +67,7 @@ const enhance = compose(
                 '& > div': {
                     display: 'flex',
                     height: '50px',
-                    alignItems: 'center',
-                    '&:last-child': {
-                        justifyContent: 'flex-end'
-                    }
+                    alignItems: 'center'
                 }
             },
             '& .dottedList': {
@@ -188,18 +180,6 @@ const enhance = compose(
                 width: '18px !important'
             }
         },
-        diagram: {
-            marginTop: '30px'
-        },
-        salesSummary: {
-            '& > div:first-child': {
-                color: '#666'
-            },
-            '& > div:last-child': {
-                fontSize: '24px',
-                fontWeight: '600'
-            }
-        },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
             backgroundSize: '200px',
@@ -215,113 +195,28 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatIncomeFilterForm',
+        form: 'StatOutcomeCategoryFilterForm',
         enableReinitialize: true
     }),
 )
 
-const StatIncomeGridList = enhance((props) => {
+const StatOutcomeCategoryGridList = enhance((props) => {
     const {
         classes,
+        listData,
         filter,
         handleSubmitFilterDialog,
-        statIncomeDialog,
-        listData
+        getDocument
     } = props
 
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
-
-    let sum = 0
-    const value = _.map(_.get(listData, 'grafData'), (item) => {
-        sum += _.toInteger(_.get(item, 'amount'))
-        return _.toInteger(_.get(item, 'amount'))
-    })
-    const valueName = _.map(_.get(listData, 'grafData'), (item) => {
-        return moment(_.get(item, 'date')).format('LL')
-    })
-    const config = {
-        chart: {
-            type: 'areaspline',
-            height: 145
-        },
-        title: {
-            text: '',
-            style: {
-                display: 'none'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        xAxis: {
-            categories: valueName,
-            tickmarkPlacement: 'on',
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            }
-        },
-        yAxis: {
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            gridLineColor: '#efefef',
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 0,
-                pointPlacement: 'on'
-            },
-            areaspline: {
-                fillOpacity: 0.7
-            }
-        },
-        tooltip: {
-            shared: true,
-            valueSuffix: ' %',
-            backgroundColor: '#363636',
-            style: {
-                color: '#fff'
-            },
-            borderRadius: 2,
-            borderWidth: 0,
-            enabled: true,
-            shadow: false,
-            useHTML: true,
-            crosshairs: true,
-            pointFormat: '{series.name}: <b>{point.y}</b><br/>в отношении к BoM<br/>'
-        },
-        series: [{
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Эффективность',
-            data: value,
-            color: '#6cc6de'
-
-        }]
-    }
 
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
         color: '#666'
     }
-
     const iconStyle = {
         icon: {
             color: '#5d6474',
@@ -337,24 +232,31 @@ const StatIncomeGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={2}>№ заказа</Col>
-            <Col xs={3}>Дата</Col>
-            <Col xs={4}>Клиент</Col>
-            <Col xs={3}>Сумма</Col>
+            <Col xs={3}>Категория</Col>
+            <Col xs={6}>Процентное соотношение</Col>
+            <Col xs={3} style={{justifyContent: 'flex-end'}}>Сумма ({currentCurrency})</Col>
         </Row>
     )
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const date = moment(_.get(item, 'createdDate')).format('YY:MM:DD')
-        const client = _.get(item, ['client', 'name'])
-        const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
+        const name = _.get(item, 'name')
+        const percent = _.get(item, 'percent')
+        const amount = numberFormat(_.get(item, 'amount'), getConfig('PRIMARY_CURRENCY'))
 
         return (
             <Row key={id} className="dottedList">
-                <Col xs={2}>{id}</Col>
-                <Col xs={3}>{date}</Col>
-                <Col xs={4}>{client}</Col>
+                <Col xs={3}>
+                    <div className="personImage"><img src={Person}/></div>
+                    <div>{name}</div>
+                </Col>
+                <Col xs={6}>
+                    <LinearProgress
+                        color="#58bed9"
+                        mode="determinate"
+                        value={percent}
+                        style={{backgroundColor: '#fff', height: '10px'}}/>
+                </Col>
                 <Col xs={3} style={{justifyContent: 'flex-end'}}>{amount}</Col>
             </Row>
         )
@@ -364,7 +266,7 @@ const StatIncomeGridList = enhance((props) => {
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_INCOME_URL}/>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_OUTCOME_CATEGORY_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
@@ -377,17 +279,12 @@ const StatIncomeGridList = enhance((props) => {
                                     label="Диапазон дат"
                                     fullWidth={true}/>
                                 <Field
-                                    className={classes.inputFieldCustom}
                                     name="division"
                                     component={DivisionSearchField}
-                                    label="Подразделение"
-                                    fullWidth={true}/>
-                                <Field
                                     className={classes.inputFieldCustom}
-                                    name="search"
-                                    component={TextField}
-                                    label="Клиенты"
-                                    fullWidth={true}/>
+                                    label="Подразделение"
+                                    fullWidth={true}
+                                />
 
                                 <IconButton
                                     className={classes.searchButton}
@@ -397,10 +294,12 @@ const StatIncomeGridList = enhance((props) => {
                                     <Search/>
                                 </IconButton>
                             </div>
-                            <a className={classes.excel}>
+                            <a className={classes.excel}
+                               onClick={getDocument.handleGetDocument}>
                                 <Excel color="#fff"/> <span>Excel</span>
                             </a>
                         </form>
+                            <Pagination filter={filter}/>
                         {listLoading
                         ? <div className={classes.loader}>
                             <CircularProgress size={40} thickness={4}/>
@@ -409,26 +308,10 @@ const StatIncomeGridList = enhance((props) => {
                             ? <div className={classes.emptyQuery}>
                                 <div>По вашему запросу ничего не найдено</div>
                               </div>
-                            : <div>
-                                <Row className={classes.diagram}>
-                                    <Col xs={3} className={classes.salesSummary}>
-                                        <div>Сумма продаж за период</div>
-                                        <div>{numberFormat(sum, primaryCurrency)}</div>
-                                    </Col>
-                                    <Col xs={9}>
-                                        <ReactHighcharts config={config}/>
-                                    </Col>
-                                </Row>
-                                <div className={classes.pagination}>
-                                    <div><b>История доходов</b></div>
-                                    <Pagination filter={filter}/>
-                                </div>
-                                <div className={classes.tableWrapper}>
-                                    {headers}
-                                  {list}
-                                </div>
-                              </div>
-                        }
+                            : <div className={classes.tableWrapper}>
+                                {headers}
+                                {list}
+                              </div>}
                     </div>
                 </div>
             </Row>
@@ -438,24 +321,13 @@ const StatIncomeGridList = enhance((props) => {
     return (
         <Container>
             {page}
-            <StatIncomeDialog
-                loading={statIncomeDialog.loading}
-                open={statIncomeDialog.openStatIncomeDialog}
-                onClose={statIncomeDialog.handleCloseStatIncomeDialog}
-            />
         </Container>
     )
 })
 
-StatIncomeGridList.propTypes = {
+StatOutcomeCategoryGridList.propTypes = {
     filter: PropTypes.object.isRequired,
-    listData: PropTypes.object,
-    detailData: PropTypes.object,
-    statIncomeDialog: PropTypes.shape({
-        openStatIncomeDialog: PropTypes.bool.isRequired,
-        handleCloseStatIncomeDialog: PropTypes.func.isRequired,
-        handleOpenStatIncomeDialog: PropTypes.func.isRequired
-    }).isRequired
+    listData: PropTypes.object
 }
 
-export default StatIncomeGridList
+export default StatOutcomeCategoryGridList

@@ -4,12 +4,24 @@ import {hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import Checkbox from 'material-ui/Checkbox'
+import CircularProgress from 'material-ui/CircularProgress'
 import Dot from '../../Images/dot.png'
 import NotFound from '../../Images/not-found.png'
 import Paper from 'material-ui/Paper'
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            background: '#fff',
+            height: '400px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        transparentLoading: {
+            extend: 'loader',
+            opacity: '0'
+        },
         itemsWrapper: {
             '& > div:last-child': {
                 marginBottom: '100px'
@@ -103,7 +115,7 @@ const enhance = compose(
 )
 
 const GridListBody = enhance((props) => {
-    const {classes, filter, list, onChecked, detail, withoutCheckboxes, flexibleRow, listShadow} = props
+    const {classes, filter, list, onChecked, detail, withoutCheckboxes, flexibleRow, listShadow, listLoading, transparentLoading} = props
 
     const items = _.map(list, (item, index) => {
         const id = (_.get(item, 'key'))
@@ -129,11 +141,11 @@ const GridListBody = enhance((props) => {
                 className={flexibleRow ? classes.flexibleItem : classes.item}
                 key={index}
                 style={!listShadow ? {boxShadow: 'none'} : {boxShadow: 'rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.12) 0px 3px 4px'}}>
-                    <div className={classes.checkbox}>
-                        {withoutCheckboxes &&
-                        <Checkbox onCheck={onChecked(id)} checked={checkboxChecked}/>
-                        }
-                    </div>
+                <div className={classes.checkbox}>
+                    {withoutCheckboxes &&
+                    <Checkbox onCheck={onChecked(id)} checked={checkboxChecked}/>
+                    }
+                </div>
                 {item}
             </Paper>
         )
@@ -142,9 +154,21 @@ const GridListBody = enhance((props) => {
         <div>
             {!_.isEmpty(items)
                 ? <div className={classes.itemsWrapper}>{items}</div>
-                : <Paper zDepth={1} className={classes.emptyQuery} style={!listShadow ? {boxShadow: 'none'} : {}}>
-                    <div>По вашему запросу ничего не найдено</div>
-                  </Paper>}
+                : (listLoading
+                    ? <Paper
+                        zDepth={1}
+                        className={transparentLoading ? classes.transparentLoading : classes.loader}
+                        style={!listShadow ? {boxShadow: 'none'} : {}}
+                        transitionEnabled={false}>
+                        <CircularProgress size={40} thickness={4}/>
+                    </Paper>
+                    : <Paper
+                        zDepth={1}
+                        className={classes.emptyQuery}
+                        style={!listShadow ? {boxShadow: 'none'} : {}}
+                        transitionEnabled={false}>
+                        <div>По вашему запросу ничего не найдено</div>
+                    </Paper>)}
         </div>
     )
 })

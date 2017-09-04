@@ -25,6 +25,14 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        transparentLoading: {
+            extend: 'loader',
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            top: '100px',
+            background: 'transparent !important'
         }
     })
 )
@@ -47,7 +55,8 @@ const GridList = enhance((props) => {
         flexibleRow,
         withoutPagination,
         refreshAction,
-        listShadow
+        listShadow,
+        transparentLoading
     } = props
 
     const header = _.get(list, 'header')
@@ -55,7 +64,7 @@ const GridList = enhance((props) => {
     const loading = _.get(list, 'loading')
     const listIds = _.map(listItems, item => _.toInteger(_.get(item, 'key')))
     const loaderOrList = (listLoading) => {
-        if (listLoading) {
+        if (listLoading && !transparentLoading) {
             return (
                 <Paper zDepth={1} className={classes.loader} style={!listShadow ? {boxShadow: 'none'} : {} }>
                     <CircularProgress size={40} thickness={4} />
@@ -68,6 +77,8 @@ const GridList = enhance((props) => {
                 filter={filter}
                 list={listItems}
                 detail={detail}
+                listLoading={listLoading}
+                transparentLoading={transparentLoading}
                 flexibleRow={flexibleRow}
                 withoutCheckboxes={withoutCheckboxes}
                 listShadow={listShadow}
@@ -100,6 +111,10 @@ const GridList = enhance((props) => {
                 />
             </Paper>
             {loaderOrList(loading)}
+            {(transparentLoading && loading) &&
+            <Paper zDepth={1} className={classes.transparentLoading} style={!listShadow ? {boxShadow: 'none'} : {} }>
+                <CircularProgress size={40} thickness={4}/>
+            </Paper>}
         </div>
     )
 })
@@ -139,6 +154,7 @@ GridList.defaultProps = {
     flexibleRow: false,
     withoutPagination: false,
     listShadow: true,
+    transparentLoading: false,
     actionsDialog: (<div>no</div>)
 }
 

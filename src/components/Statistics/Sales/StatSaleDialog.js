@@ -1,17 +1,13 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CircularProgress from 'material-ui/CircularProgress'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon2 from '../../CloseIcon2/index'
 import IconButton from 'material-ui/IconButton'
-import {Row, Col} from 'react-flexbox-grid'
-import Pagination from '../ReduxForm/Pagination'
-import getConfig from '../../helpers/getConfig'
-import numberFormat from '../../helpers/numberFormat'
+import OrderDetails from '../../Order/OrderDetails'
+import CircularProgress from 'material-ui/CircularProgress'
 
 const enhance = compose(
     injectSheet({
@@ -25,6 +21,7 @@ const enhance = compose(
             display: 'flex'
         },
         dialog: {
+            overflowY: 'auto !important',
             '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
             }
@@ -42,9 +39,20 @@ const enhance = compose(
         content: {
             width: '100%',
             display: 'block',
-            '& > div:last-child': {
-                padding: '0 30px',
-                borderTop: '1px #efefef solid'
+            '& > div': {
+                width: 'auto',
+                border: 'none',
+                padding: '0',
+                maxHeight: '573px',
+                '& > div > div:last-child > div > div:first-child': {
+                    maxHeight: '465px',
+                    overflowY: 'auto',
+                    margin: '0 -30px',
+                    padding: '0 30px'
+                },
+                '& > div > div:last-child > div > div:last-child': {
+                    padding: '0'
+                }
             }
         },
         titleSummary: {
@@ -93,13 +101,26 @@ const enhance = compose(
             '& div': {
                 display: 'flex',
                 alignItems: 'center'
+            },
+            '& .personImage': {
+                borderRadius: '50%',
+                overflow: 'hidden',
+                flexBasis: '35px',
+                height: '35px',
+                minWidth: '30px',
+                width: '35px',
+                marginRight: '10px',
+                '& img': {
+                    display: 'flex',
+                    height: '100%',
+                    width: '100%'
+                }
             }
-
         },
         tableWrapper: {
             padding: '0 30px',
-            maxHeight: '380px',
-            overflow: 'auto',
+            maxHeight: '424px',
+            overflowY: 'auto',
             '& .row': {
                 '&:first-child': {
                     fontWeight: '600'
@@ -118,81 +139,52 @@ const enhance = compose(
     }),
 )
 
-const StatMarketDialog = enhance((props) => {
-    const {open, onClose, classes, detailData, filterItem} = props
-
-    const loading = _.get(detailData, 'detailLoading')
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    const marketName = _.get(detailData, ['marketDetail', 'name'])
-    const income = numberFormat(_.get(detailData, ['marketDetail', 'income']), primaryCurrency)
-    const fromDate = _.get(detailData, ['filterDateRange', 'fromDate'])
-        ? _.get(detailData, ['filterDateRange', 'fromDate']).format('DD.MM.YYYY')
-        : null
-    const toDate = _.get(detailData, ['filterDateRange', 'toDate'])
-        ? _.get(detailData, ['filterDateRange', 'toDate']).format('DD.MM.YYYY')
-        : null
-    const dateRange = (fromDate && toDate) ? fromDate + ' - ' + toDate : 'Весь'
-
-    const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
-        const id = _.get(item, 'id')
-        const client = _.get(item, ['client', 'name'])
-        const totalPrice = numberFormat(_.get(item, 'totalPrice'))
-        const createdDate = moment(_.get(item, 'createdDate')).format('LL')
-
-        return (
-            <Row key={id} className="dottedList">
-                <Col xs={2}>{id}</Col>
-                <Col xs={4}>{client}</Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={3}>{totalPrice} {primaryCurrency}</Col>
-            </Row>
-        )
-    })
+const StatSaleDialog = enhance((props) => {
+    const {
+        open,
+        onClose,
+        classes,
+        detailData,
+        loading
+    } = props
+    const id = _.get(detailData, 'id')
     return (
         <Dialog
             modal={true}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '400px'} : {width: '700px'}}
+            contentStyle={loading ? {width: '500px'} : {width: '1000px', maxWidth: 'unset'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             {loading ? <div className={classes.loader}>
                 <CircularProgress/>
             </div>
-            : <div>
-                    <div className={classes.titleContent} style={{textTransform: 'capitalize'}}>
-                        <span>{marketName}</span>
+                : <div>
+                    <div className={classes.titleContent}>
+                        <div>
+                            <div>Заказ №{id}</div>
+                        </div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon2 color="#666666"/>
                         </IconButton>
                     </div>
                     <div className={classes.content}>
-                        <div className={classes.titleSummary}>
-                            <div>Период: <strong>{dateRange}</strong></div>
-                            <div>Сумма: <strong>{income}</strong></div>
-                        </div>
-                        <div className={classes.tableWrapper}>
-                            <Row className="dottedList">
-                                <Col xs={2}>№ заказа</Col>
-                                <Col xs={4}>Агент</Col>
-                                <Col xs={3}>Дата</Col>
-                                <Col xs={3}>Сумма</Col>
-                            </Row>
-                            {orderList}
-                        </div>
-                        <Pagination filter={filterItem}/>
+                        <OrderDetails
+                            data={_.get(detailData, 'data')}
+                            loading={loading}/>
                     </div>
                 </div>}
         </Dialog>
     )
 })
 
-StatMarketDialog.propTyeps = {
+StatSaleDialog.propTyeps = {
     filter: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    detailData: PropTypes.object
 }
 
-export default StatMarketDialog
+export default StatSaleDialog

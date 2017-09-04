@@ -4,13 +4,13 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon2 from '../../CloseIcon2/index'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
-import Pagination from '../GridList/GridListNavPagination'
-import dateFormat from '../../helpers/dateFormat'
-import numberFormat from '../../helpers/numberFormat'
+import Pagination from '../../GridList/GridListNavPagination/index'
+import dateFormat from '../../../helpers/dateFormat'
+import numberFormat from '../../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({

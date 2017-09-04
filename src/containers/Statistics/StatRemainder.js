@@ -17,7 +17,7 @@ import {
     STAT_REMAINDER_DIALOG_OPEN
 } from '../../components/Statistics'
 
-import {STAT_REMAINDER_FILTER_KEY} from '../../components/Statistics/StatRemainderGridLIst'
+import {STAT_REMAINDER_FILTER_KEY} from '../../components/Statistics/Remainder/StatRemainderGridLIst'
 import {
     statRemainderListFetchAction,
     statRemainderItemFetchAction
