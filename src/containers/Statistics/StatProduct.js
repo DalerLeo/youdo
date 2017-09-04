@@ -115,7 +115,6 @@ const StatProductList = enhance((props) => {
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
-
     return (
         <Layout {...layout}>
             <StatProductGridList
@@ -124,7 +123,7 @@ const StatProductList = enhance((props) => {
                 detailData={detailData}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 getDocument={getDocument}
-                initialValues={filterForm.initialValues}
+                filterForm={filterForm}
             />
         </Layout>
     )

@@ -200,10 +200,11 @@ const ClientBalanceInfoDialog = enhance((props) => {
                                     }} target="_blank">Заказ {id}</Link>
                                         : type === EXPENSE ? 'Расход'
                                             : type === ORDER_RETURN ? <Link to={{
-                                                pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                                                pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                                                 query: {search: id}
                                             }} target="_blank">Возврат заказа {id}</Link>
-                                                : type === FIRST_BALANCE ? 'Первый баланс' : null }</span></div>
+                                                : type === FIRST_BALANCE ? 'Первый баланс' : null }</span>
+                    </div>
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>

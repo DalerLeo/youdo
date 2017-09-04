@@ -166,7 +166,8 @@ const StatProductGridList = enhance((props) => {
         classes,
         filter,
         handleSubmitFilterDialog,
-        getDocument
+        getDocument,
+        filterForm
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -219,7 +220,7 @@ const StatProductGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                        <StatProductFilterForm onSubmit={handleSubmitFilterDialog} getDocument={getDocument}/>
+                        <StatProductFilterForm onSubmit={handleSubmitFilterDialog} getDocument={getDocument} initialValues={filterForm.initialValues}/>
                         <Pagination filter={filter}/>
                         {listLoading
                         ? <div className={classes.loader}>
