@@ -114,7 +114,11 @@ const enhance = compose(
     withHandlers({
         handleClickTab: props => (id) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[USER_GROUP]: id})})
+            if (_.toInteger(id)) {
+                hashHistory.push({pathname, query: filter.getParams({[USER_GROUP]: id})})
+            } else {
+                hashHistory.push({pathname, query: ''})
+            }
         },
 
         handleOpenDetails: props => (id) => {
@@ -193,14 +197,13 @@ const Tracking = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'agentId'))
     const openShopDetails = _.toInteger(_.get(location, ['query', OPEN_SHOP_DETAILS]) || ZERO) > ZERO
 
-    const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
+    const groupId = _.toInteger(_.get(location, ['query', USER_GROUP])) || 'all'
     const showZones = toBoolean(filter.getParam(TRACKING_FILTER_KEY.SHOW_ZONES)) || false
     const showMarkets = toBoolean(filter.getParam(TRACKING_FILTER_KEY.SHOW_MARKETS)) || false
     const agentTrack = toBoolean(filter.getParam(TRACKING_FILTER_KEY.AGENT_TRACK)) || false
     const date = filter.getParam(TRACKING_FILTER_KEY.DATE)
 
     const currentDate = !_.isEmpty(date) ? date : moment().format('YYYY-MM-DD')
-
     const tabData = {
         groupId,
         handleClickTab: props.handleClickTab

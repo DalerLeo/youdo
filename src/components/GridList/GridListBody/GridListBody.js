@@ -24,10 +24,6 @@ const enhance = compose(
                 alignItems: 'center',
                 height: '100%',
                 margin: '0',
-                '& > div': {
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                },
                 '& > div:first-child': {
                     paddingLeft: '0'
                 },

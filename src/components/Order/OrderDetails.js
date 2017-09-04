@@ -1,14 +1,16 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
+import sprintf from 'sprintf'
+import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
-import Paper from 'material-ui/Paper'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
+import {Link} from 'react-router'
 import OrderItemReturnDialog from './OrderItemReturnDialog'
 import RightSide from './OrderDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
@@ -144,7 +146,6 @@ const enhance = compose(
             }
         }
     }),
-    withState('openInfo', 'setOpenInfo', false)
 )
 
 const iconStyle = {
@@ -164,8 +165,6 @@ const OrderDetails = enhance((props) => {
     const {classes,
         loading,
         data,
-        setOpenInfo,
-        openInfo,
         transactionsDialog,
         returnDialog,
         returnListData,
@@ -183,10 +182,8 @@ const OrderDetails = enhance((props) => {
     } = props
 
     const id = _.get(data, 'id')
-    const contactName = _.get(data, ['contact', 'name'])
-    const contactEmail = _.get(data, ['contact', 'email']) || 'N/A'
-    const contactPhone = _.get(data, ['contact', 'telephone']) || 'N/A'
     const market = _.get(data, ['market', 'name'])
+    const marketId = _.get(data, ['market', 'id'])
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
     const dealType = _.get(data, 'dealType')
     const division = _.get(data, ['division', 'name'])
@@ -280,33 +277,19 @@ const OrderDetails = enhance((props) => {
                     <div className={classes.subBlock}>
                         <div className={classes.dataBox}>
                             <ul>
-                                <li onMouseEnter={() => { setOpenInfo(true) }}
-                                    onMouseLeave={() => {
-                                        if (openInfo) {
-                                            setOpenInfo(false)
-                                        }
-                                    }}>
+                                <li>
                                     <span>Клиент:</span>
-                                    <a><strong>{client}</strong></a>
-                                    <Paper zDepth={1} style={openInfo ? {opacity: '1', zIndex: '2', top: '0'} : {}}>
-                                        <li>
-                                            <span>Контактное лицо:</span>
-                                            <span>{contactName}</span>
-                                        </li>
-                                        <li>
-                                            <span>Телефон:</span>
-                                            <span>{contactPhone}</span>
-                                        </li>
-                                        <li>
-                                            <span>Email:</span>
-                                            <span>{contactEmail}</span>
-                                        </li>
-                                    </Paper>
+                                    <span>{client}</span>
                                 </li>
 
                                 <li>
                                     <span>Магазин:</span>
-                                    <span>{market}</span>
+                                    <span>
+                                        <Link to={{
+                                            pathname: sprintf(ROUTES.SHOP_ITEM_PATH, marketId),
+                                            query: {search: market}
+                                        }} target='_blank'>{market}</Link>
+                                    </span>
                                 </li>
                                 <li>
                                     <span>Инициатор:</span>
