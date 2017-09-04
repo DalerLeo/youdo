@@ -20,7 +20,7 @@ export const listFilterSerializer = (data) => {
         'group': _.get(defaultData, 'group'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
-        'page_size': _.get(defaultData, 'pageSize')
+        'page_size': 6000
     }
 }
 

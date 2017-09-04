@@ -23,7 +23,6 @@ export const visibleOnlyAdmin = userAuthWrapper({
         }
     },
     wrapperDisplayName: 'VisibleOnlyAdmin',
-    redirectAction: routerActions.replace,
     failureRedirectPath: ROUTES.ACCESS_DENIED_URL,
     predicate: state => {
         const currentPath = _.get(state, 'path')

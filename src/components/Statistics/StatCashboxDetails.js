@@ -209,7 +209,6 @@ const enhance = compose(
 
 const StatCashboxDetails = enhance((props) => {
     const {
-        listData,
         detailData,
         classes,
         filter,
@@ -217,10 +216,15 @@ const StatCashboxDetails = enhance((props) => {
         getDocument
     } = props
 
-    const listLoading = _.get(detailData, 'detailLoading')
+    const listLoading = _.get(detailData, 'sumItemDataLoading')
     const handleCloseDetail = _.get(detailData, 'handleCloseDetail')
-    const currency = _.get(_.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')}), ['currency', 'name'])
-
+    const startBalance = _.get(detailData, ['sumItemData', 'startBalance'])
+    const endBalance = _.get(detailData, ['sumItemData', 'endBalance'])
+    const income = _.get(detailData, ['sumItemData', 'income'])
+    const expenses = _.get(detailData, ['sumItemData', 'expenses'])
+    const firstName = _.get(detailData, ['data', 'cashier', 'firstName'])
+    const secondName = _.get(detailData, ['data', 'cashier', 'secondName'])
+    const currency = _.get(detailData, ['data', 'currency', 'name'])
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -307,31 +311,31 @@ const StatCashboxDetails = enhance((props) => {
                     <div className={classes.balances}>
                         <div className={classes.balanceItem}>
                             <span>Баланс на начало периода</span>
-                            <div>10 000 000 UZS</div>
+                            <div>{startBalance} {currency}</div>
                         </div>
                         <div className={classes.balanceItem}>
                             <span>Расход за период</span>
-                            <div>-5 000 000 UZS</div>
+                            <div>{expenses} {currency}</div>
                         </div>
                         <div className={classes.balanceItem}>
                             <span>Доход за период</span>
-                            <div>25 000 000 UZS</div>
+                            <div>{income} {currency}</div>
                         </div>
                         <div className={classes.balanceItem}>
                             <span>Баланс на конец периода</span>
-                            <div>30 000 000 UZS</div>
+                            <div>{endBalance} {currency}</div>
                         </div>
                     </div>
                     <div className={classes.navigation}>
                         <div className={classes.cashier}>
                             <img src={Person} alt=""/>
-                            <span>Бамбамбиев <br/> Куркуда</span>
+                            <span>{firstName}<br/> {secondName}</span>
                         </div>
                         <Pagination filter={filter}/>
                     </div>
                     {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
-                        <div>По вашему запросу ничего не найдено</div>
-                    </div>
+                            <div>По вашему запросу ничего не найдено</div>
+                        </div>
                         : <div className={classes.tableWrapper}>
                             {headers}
                             {list}

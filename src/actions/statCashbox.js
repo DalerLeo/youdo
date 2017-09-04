@@ -55,6 +55,23 @@ export const statCashBoxSumDataFetchAction = (filter) => {
     }
 }
 
+export const statCashBoxItemSumDataFetchAction = (filter, id) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), id)
+    const payload = axios()
+        .get(API.STAT_CASHBOX_ITEM_SUM, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_CASHBOX_ITEM_SUM,
+        payload
+    }
+}
+
 export const statCashBoxItemDataFetchAction = (filter, id) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
