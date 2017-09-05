@@ -15,6 +15,7 @@ import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import IconButton from 'material-ui/IconButton'
 import Cancel from 'material-ui/svg-icons/content/remove-circle'
+import Add from 'material-ui/svg-icons/content/add-circle'
 import ReturnIcon from 'material-ui/svg-icons/content/reply'
 import Tooltip from '../ToolTip'
 
@@ -124,6 +125,7 @@ const ClientBalanceGridList = enhance((props) => {
         classes,
         filter,
         createDialog,
+        addDialog,
         filterItem,
         infoDialog,
         listData,
@@ -192,6 +194,17 @@ const ClientBalanceGridList = enhance((props) => {
                                 <Cancel color='#f44336'/>
                             </IconButton>
                         </Tooltip>
+                        <Tooltip position="bottom" text="Добавить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onTouchTap={() => {
+                                    addDialog.handleOpenAddDialog(id)
+                                }}>
+                                <Add color='#275482'/>
+                            </IconButton>
+                        </Tooltip>
                     </div>
                 </Col>
             </Row>
@@ -240,6 +253,16 @@ const ClientBalanceGridList = enhance((props) => {
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
+                name={_.get(client, 'name')}
+            />
+            <ClientBalanceCreateDialog
+                open={addDialog.openAddDialog}
+                listData={listData}
+                detailData={detailData}
+                loading={addDialog.addLoading}
+                onClose={addDialog.handleCloseAddDialog}
+                onSubmit={addDialog.handleSubmitAddDialog}
+                addDialog={true}
                 name={_.get(client, 'name')}
             />
             <ClientBalanceReturnDialog
