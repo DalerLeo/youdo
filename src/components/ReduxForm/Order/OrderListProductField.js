@@ -249,6 +249,7 @@ const iconStyle = {
 }
 
 const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, customPrice, ...defaultProps}) => {
+    const editOnlyCost = _.get(defaultProps, 'editOnlyCost')
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const currency = getConfig('PRIMARY_CURRENCY')
@@ -257,13 +258,13 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
-                    <FlatButton
+                    {!editOnlyCost && <FlatButton
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}
                         labelStyle={{fontSize: '13px'}}
                         className={classes.span}
                         onTouchTap={() => dispatch({open: !state.open})}
-                    />
+                    />}
                 </div>
                 {state.open && <Row className={classes.background}>
                     <Col xs={3}>
