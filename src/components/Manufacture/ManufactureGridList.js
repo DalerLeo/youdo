@@ -24,6 +24,16 @@ import Badge from '../Images/badge.png'
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            display: 'flex',
+            position: 'absolute',
+            top: '100px',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            background: '#fff',
+            justifyContent: 'space-around'
+        },
         addButton: {
             '& button': {
                 backgroundColor: '#275482 !important'
@@ -41,13 +51,18 @@ const enhance = compose(
         },
         productionLeftSide: {
             padding: '0',
-            width: '320px'
+            width: '280px',
+            '& h2': {
+                fontSize: '13px',
+                fontWeight: 'bold',
+                margin: '0',
+                padding: '20px 30px'
+            }
         },
         productionUl: {
             listStyle: 'none',
             margin: '0',
             padding: '0',
-            minHeight: 'calc(100% - 59px)',
             borderRight: '1px #efefef solid'
         },
         productionType: {
@@ -62,16 +77,11 @@ const enhance = compose(
             cursor: 'pointer',
             transition: 'all 0.3s ease',
             '& img': {
-                width: '24px',
-                height: '24px',
+                opacity: '0.8',
+                width: '20px',
+                height: '20px',
                 marginRight: '10px'
             }
-        },
-        productionH2: {
-            fontSize: '13px',
-            fontWeight: 'bold',
-            margin: '0',
-            padding: '20px 30px'
         },
         productList: {
             width: '100%',
@@ -112,10 +122,10 @@ const ManufactureGridList = enhance((props) => {
     } = props
 
     const detailId = _.get(detailData, 'id')
-    const glue = 3
+    const glue = 2
     const cylindrical = 4
     const press = 6
-    const cut = 7
+    const cut = 1
     const badge = 8
     const manufactureList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -125,8 +135,8 @@ const ManufactureGridList = enhance((props) => {
                 onClick={() => {
                     listData.handleClickItem(id)
                 }}
-                style={ detailId === id ? {backgroundColor: 'white'} : {}}>
-                { id === glue ? <img src={Glue}/> : (
+                style={detailId === id ? {backgroundColor: 'white'} : {}}>
+                {id === glue ? <img src={Glue}/> : (
                     id === cylindrical ? <img src={Cylindrical}/> : (
                         id === press ? <img src={Press}/> : (
                             id === cut ? <img src={Cut}/> : (
@@ -194,16 +204,14 @@ const ManufactureGridList = enhance((props) => {
             <Row className={classes.productionMainRow}>
                 <div className={classes.productionLeftSide}>
                     <h2 className={classes.productionH2}>Этапы производства</h2>
-                    <Paper zDepth={2} style={{height: 'calc(100% - 59px)'}}>
-                        <ul className={classes.productionUl}>
-                            {
-                                _.get(listData, 'listLoading')
-                                    ? <div style={{textAlign: 'center'}}>
-                                    <CircularProgress size={40} thickness={4}/>
-                                </div>
-                                    : manufactureList
-                            }
-                        </ul>
+                    <Paper zDepth={1} style={{height: 'calc(100% - 58px)', position: 'relative'}}>
+                        {_.get(listData, 'listLoading')
+                            ? <div className={classes.loader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                            : <ul className={classes.productionUl}>
+                                {manufactureList}
+                            </ul>}
                     </Paper>
                 </div>
 

@@ -14,7 +14,7 @@ const enhance = compose(
     injectSheet({
         ManufactRightSide: {
             padding: '0px 28px',
-            width: 'calc(100% - 320px)',
+            width: 'calc(100% - 280px)',
             zIndex: '2'
         },
         colorCat: {

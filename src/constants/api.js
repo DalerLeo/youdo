@@ -254,7 +254,7 @@ export const STAT_CASHBOX_DATA_ITEM = 'stats/cashbox/%d/'
 export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
-export const MANUFACTURE_PRODUCT_DELETE = '/delete_ingredient/%d/'
+export const MANUFACTURE_PRODUCT_DELETE = 'manufacture/delete_ingredient/%d/'
 export const MANUFACTURE_PRODUCT_CHANGE = '/main/product/%d/change_manufacture/'
 
 export const SHIPMENT = 'manufacture/shipment_statistics/'

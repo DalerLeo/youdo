@@ -59,6 +59,7 @@ import {equipmentListFetchAction} from '../../actions/equipment'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const MINUS_ONE = -1
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -159,8 +160,8 @@ const enhance = compose(
         const manufactureId = _.get(params, 'manufactureId')
         if (nextTab === 'product') {
             dispatch(productListFetchAction(filterProduct, manufactureId))
-            if (_.get(location, ['query', 'productId'])) {
-                const productId = _.toInteger(_.get(location, ['query', 'productId']))
+            const productId = _.toInteger(_.get(location, ['query', 'productId']))
+            if (_.get(location, ['query', 'productId']) && productId > ZERO) {
                 dispatch(productItemFetchAction(productId))
                 dispatch(ingredientListFetchAction(productId))
             }
@@ -298,9 +299,10 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: false})})
         },
         handleSubmitCreateMaterials: props => () => {
-            const {dispatch, ingredientCreateForm, filter, location: {pathname}} = props
+            const {dispatch, ingredientCreateForm, filter, location: {pathname}, params} = props
             const productId = _.toNumber(_.get(props, ['location', 'query', 'productId']))
-            return dispatch(ingredientCreateAction(_.get(ingredientCreateForm, ['values']), productId))
+            const manufacture = _.toInteger(_.get(params, 'manufactureId'))
+            return dispatch(ingredientCreateAction(_.get(ingredientCreateForm, ['values']), productId, manufacture))
                 .then(() => {
                     hashHistory.push({
                         pathname,

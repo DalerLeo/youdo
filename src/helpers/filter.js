@@ -190,7 +190,8 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openChangeManufacture: null,
             editMaterials: null,
             joinMarket: null,
-            joinClient: null
+            joinClient: null,
+            createMaterials: null
         }))
     }
 

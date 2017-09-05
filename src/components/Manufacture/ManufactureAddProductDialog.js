@@ -54,9 +54,7 @@ const enhance = compose(
         },
         inContent: {
             display: 'flex',
-            maxHeight: '50vh',
             minHeight: '220px',
-            overflow: 'auto',
             padding: '0 30px',
             color: '#333'
         },
@@ -250,7 +248,7 @@ const ManufactureAddProductDialog = enhance((props) => {
                                 component={ProductSearchField}
                                 fullWidth={true}/>
                             <Fields
-                                names={['ingredients', 'ingredient', 'amount', 'measurement']}
+                                names={['ingredients', 'ingredient', 'amount', 'measurement', 'editAmount']}
                                 component={ManufactureListMaterialField}
                             />
                         </div>
