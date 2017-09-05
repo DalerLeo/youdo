@@ -2,6 +2,7 @@ import ClientBalanceGridList from './ClientBalanceGridList'
 import {CLIENT_BALANCE_FILTER_KEY, CLIENT_BALANCE_FILTER_OPEN} from './ClientBalanceFilterForm'
 const CLIENT_BALANCE_INFO_DIALOG_OPEN = 'openInfoDialog'
 const CLIENT_BALANCE_CREATE_DIALOG_OPEN = 'openCreateDialog'
+const CLIENT_BALANCE_ADD_DIALOG_OPEN = 'openAddDialog'
 const CLIENT_BALANCE_RETURN_DIALOG_OPEN = 'openClientReturnDialog'
 
 export {
@@ -9,6 +10,7 @@ export {
     CLIENT_BALANCE_FILTER_KEY,
     CLIENT_BALANCE_FILTER_OPEN,
     CLIENT_BALANCE_CREATE_DIALOG_OPEN,
+    CLIENT_BALANCE_ADD_DIALOG_OPEN,
     ClientBalanceGridList,
     CLIENT_BALANCE_RETURN_DIALOG_OPEN
 }
