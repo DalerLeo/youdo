@@ -112,8 +112,8 @@ const iconStyle = {
         height: 22
     },
     button: {
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         padding: 0
     }
 }
@@ -172,7 +172,7 @@ const ClientBalanceGridList = enhance((props) => {
                 </Col>
                 <Col xs={1} className={classes.rightAlign}>
                     <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                        <Tooltip position="left" text="Возврат с клиента">
+                        <Tooltip position="bottom" text="Возврат с клиента">
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
