@@ -172,7 +172,7 @@ const ClientBalanceGridList = enhance((props) => {
                 </Col>
                 <Col xs={1} className={classes.rightAlign}>
                     <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                        <Tooltip position="bottom" text="Возврат с клиента">
+                        <Tooltip position="left" text="Возврат с клиента">
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
