@@ -249,6 +249,7 @@ const iconStyle = {
 }
 
 const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, customPrice, ...defaultProps}) => {
+    const editOnlyCost = _.get(defaultProps, 'editOnlyCost')
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const currency = getConfig('PRIMARY_CURRENCY')
@@ -257,13 +258,13 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
-                    <FlatButton
+                    {!editOnlyCost && <FlatButton
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}
                         labelStyle={{fontSize: '13px'}}
                         className={classes.span}
                         onTouchTap={() => dispatch({open: !state.open})}
-                    />
+                    />}
                 </div>
                 {state.open && <Row className={classes.background}>
                     <Col xs={3}>
@@ -323,103 +324,109 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
             </div>
             {error && <div className={classes.error}>{error}</div>}
             {!_.isEmpty(products) ? <div className={classes.table}>
-                <Table
-                    fixedHeader={true}
-                    fixedFooter={false}
-                    selectable={false}
-                    multiSelectable={false}>
-                    <TableHeader
-                        displaySelectAll={false}
-                        adjustForCheckbox={false}
-                        enableSelectAll={false}
-                        className={classes.title}>
-                        <TableRow className={classes.tableRow}>
-                            <TableHeaderColumn
-                                className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Цена ({currency})</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Всего ({currency})</TableHeaderColumn>
-                            <TableHeaderColumn></TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody
-                        displayRowCheckbox={false}
-                        deselectOnClickaway={false}
-                        showRowHover={false}
-                        stripedRows={false}>
-                        {_.map(products, (item, index) => {
-                            const product = _.get(item, ['product', 'value', 'name'])
-                            const itemMeasurement = _.get(item, 'measurement') || ''
-                            const cost = _.toNumber(_.get(item, 'cost'))
-                            const amount = _.toNumber(_.get(item, 'amount'))
-                            const isEditable = _.get(item, 'customPrice')
+                    <Table
+                        fixedHeader={true}
+                        fixedFooter={false}
+                        selectable={false}
+                        multiSelectable={false}>
+                        <TableHeader
+                            displaySelectAll={false}
+                            adjustForCheckbox={false}
+                            enableSelectAll={false}
+                            className={classes.title}>
+                            <TableRow className={classes.tableRow}>
+                                <TableHeaderColumn
+                                    className={classes.tableTitle}>Наименование</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Цена
+                                    ({currency})</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Всего
+                                    ({currency})</TableHeaderColumn>
+                                <TableHeaderColumn></TableHeaderColumn>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody
+                            displayRowCheckbox={false}
+                            deselectOnClickaway={false}
+                            showRowHover={false}
+                            stripedRows={false}>
+                            {_.map(products, (item, index) => {
+                                const product = _.get(item, ['product', 'value', 'name'])
+                                const itemMeasurement = _.get(item, 'measurement') || ''
+                                const cost = _.toNumber(_.get(item, 'cost'))
+                                const amount = _.toNumber(_.get(item, 'amount'))
+                                const isEditable = _.get(item, 'customPrice')
 
-                            if (editItem === index) {
+                                if (editItem === index) {
+                                    return (
+                                        <TableRow key={index} className={classes.tableRow}>
+                                            <TableRowColumn>{product}</TableRowColumn>
+                                            {editOnlyCost
+                                                ? <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
+                                                : <TableRowColumn style={{padding: 0}}>
+                                                    <TextField
+                                                        placeholder={amount + ' ' + itemMeasurement}
+                                                        className={classes.inputFieldEdit}
+                                                        fullWidth={true}
+                                                        {..._.get(defaultProps, 'editAmount')}
+                                                    />
+                                                </TableRowColumn>}
+                                            <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
+                                                {isEditable
+                                                    ? <TextField
+                                                        placeholder={cost}
+                                                        className={classes.inputFieldEditRight}
+                                                        fullWidth={true}
+                                                        {..._.get(defaultProps, 'editCost')}
+                                                    />
+                                                    : numberFormat(cost)}
+                                            </TableRowColumn>
+                                            <TableRowColumn
+                                                style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
+                                            <TableRowColumn style={{textAlign: 'right'}}>
+                                                <IconButton
+                                                    onTouchTap={() => { handleEdit(index) }}>
+                                                    <Check color="#12aaeb"/>
+                                                </IconButton>
+                                            </TableRowColumn>
+                                        </TableRow>
+                                    )
+                                }
+
                                 return (
                                     <TableRow key={index} className={classes.tableRow}>
-                                        <TableRowColumn>
-                                            {product}
-                                        </TableRowColumn>
-                                        <TableRowColumn style={{padding: 0}}>
-                                            <TextField
-                                                placeholder={amount + ' ' + itemMeasurement}
-                                                className={classes.inputFieldEdit}
-                                                fullWidth={true}
-                                                {..._.get(defaultProps, 'editAmount')}
-                                            />
-                                        </TableRowColumn>
-                                        <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
-                                            {isEditable
-                                            ? <TextField
-                                                placeholder={cost}
-                                                className={classes.inputFieldEditRight}
-                                                fullWidth={true}
-                                                {..._.get(defaultProps, 'editCost')}
-                                            />
-                                            : numberFormat(cost)}
-                                        </TableRowColumn>
-                                        <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
+                                        <TableRowColumn>{product}</TableRowColumn>
+                                        <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
+                                        <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost)}</TableRowColumn>
+                                        <TableRowColumn
+                                            style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>
                                             <IconButton
-                                                onTouchTap={() => { handleEdit(index) }}>
-                                                <Check color="#12aaeb"/>
+                                                disabled={editOnlyCost && !isEditable}
+                                                onTouchTap={() => setEditItem(index)}
+                                                style={iconStyle.button}
+                                                iconStyle={iconStyle.icon}>
+                                                <EditIcon color="#666666"/>
+                                            </IconButton>
+                                            <IconButton
+                                                disabled={editOnlyCost}
+                                                onTouchTap={() => handleRemove(index)}
+                                                style={iconStyle.button}
+                                                iconStyle={iconStyle.icon}>
+                                                <DeleteIcon color="#666666"/>
                                             </IconButton>
                                         </TableRowColumn>
                                     </TableRow>
                                 )
-                            }
-
-                            return (
-                                <TableRow key={index} className={classes.tableRow}>
-                                    <TableRowColumn>{product}</TableRowColumn>
-                                    <TableRowColumn>
-                                        {amount} {itemMeasurement}</TableRowColumn>
-                                    <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost)}</TableRowColumn>
-                                    <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
-                                    <TableRowColumn style={{textAlign: 'right'}}>
-                                        <IconButton
-                                            onTouchTap={() => setEditItem(index)}
-                                            style={iconStyle.button}
-                                            iconStyle={iconStyle.icon}>
-                                            <EditIcon color="#666666"/>
-                                        </IconButton>
-                                        <IconButton
-                                            onTouchTap={() => handleRemove(index)}
-                                            style={iconStyle.button}
-                                            iconStyle={iconStyle.icon}>
-                                            <DeleteIcon color="#666666"/>
-                                        </IconButton>
-                                    </TableRowColumn>
-                                </TableRow>
-                            )
-                        })}
-                    </TableBody>
-                </Table>
-            </div>
+                            })}
+                        </TableBody>
+                    </Table>
+                </div>
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?
+                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
+                            товар?
                         </div>
                     </div>
                 </div>

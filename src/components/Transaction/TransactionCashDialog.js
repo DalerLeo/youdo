@@ -183,15 +183,18 @@ const TransactionCashDialog = enhance((props) => {
                 const currency = _.get(item, ['currency', 'name'])
                 const order = _.get(item, ['order'])
                 const customRate = _.get(item, ['customRate'])
-                const internal = _.get(item, 'internal')
-                const amount = _.get(item, ['amount'])
+                const internal = _.toNumber(_.get(item, 'internal'))
+                const amount = _.toNumber(_.get(item, 'amount'))
                 return (
                     <Row key={_.get(item, 'id')} className={classes.detailsRow}>
                         <Col xs={4}>{clientName}</Col>
                         <Col xs={3}>{marketName}</Col>
-                        <Col xs={3}>{order}</Col>
-                        <Col xs={3}>{amount} {currency} {currency !== primaryCurrency && customRate ? '(internal ' + customRate + ' ' + primaryCurrency + ')'
-                            : (!customRate ? '(internal ' + (amount / internal) + ' ' + primaryCurrency + ')' : null) }</Col>
+                        <Col xs={2}>{order}</Col>
+                        <Col xs={3}>
+                            <div>{numberFormat(amount, currency)}</div>
+                            <div>{currency !== primaryCurrency && customRate ? '(internal ' + numberFormat(customRate, primaryCurrency) + ')'
+                                : (!customRate ? '(internal ' + numberFormat((amount / internal), primaryCurrency) + ')' : null) }</div>
+                        </Col>
                     </Row>
 
                 )
@@ -233,13 +236,13 @@ const TransactionCashDialog = enhance((props) => {
                                 return (
                                     <div key={index} className={classes.details}>
                                         <Row style={{position: 'relative'}}>
+                                            <Col xs={6}>{user}</Col>
                                             <div
                                                 className={classes.closeDetail}
                                                 onClick={() => {
                                                     acceptCashDialog.handleCloseAcceptCashDetail()
                                                 }}>
                                             </div>
-                                            <Col xs={6}>{user}</Col>
                                             <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
                                             <Col xs={1}>
                                                 <div style={{marginRight: '-4px'}}>

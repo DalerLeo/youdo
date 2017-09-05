@@ -7,9 +7,9 @@ import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
+import OrderCreateDialog from './OrderCreateDialog'
 import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
-import OrderCreateDialog from './OrderCreateDialog'
 import OrderShortageDialog from './OrderShortage'
 import ConfirmDialog from '../ConfirmDialog'
 import ClientCreateDialog from '../Client/ClientCreateDialog'
@@ -213,7 +213,7 @@ const OrderGridList = enhance((props) => {
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             returnDataLoading={returnDataLoading}
-            handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
+            updateDialog={updateDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             cancelOrderReturnDialog={cancelOrderReturnDialog}
             type={type}
@@ -383,15 +383,6 @@ const OrderGridList = enhance((props) => {
                 loading={shortageDialog.shortageLoading}
                 onClose={shortageDialog.handleCloseShortageDialog}
                 onSubmit={shortageDialog.handleSubmitShortageDialog}
-            />
-
-            <OrderCreateDialog
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                open={updateDialog.openUpdateDialog}
-                loading={updateDialog.updateLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
 
             <ClientCreateDialog
