@@ -80,7 +80,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{addDialog ? 'Добавить расход клиенту' : 'Добавить даход клиенту'}</span>
+                <span>{addDialog ? 'Добавить даход клиенту' : 'Добавить расход клиенту'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
