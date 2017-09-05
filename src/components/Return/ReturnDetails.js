@@ -196,12 +196,12 @@ const ReturnDetails = enhance((props) => {
     const user = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
     const createdDate = dateTimeFormat(_.get(data, 'createdDate'))
     const finishedTime = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'finishedTime'), true) : 'Не установлена'
-    const acceptedBy = _.get(data, 'acceptedBy')
+    const acceptedBy = _.get(data, ['acceptedBy', 'firstName'])
     const acceptedDate = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не установлена'
     const comment = _.get(data, 'comment')
     const stock = _.get(data, ['stock', 'name'])
     const order = _.get(data, 'order')
-    const client = _.get(data, 'client')
+    const client = _.get(data, ['client', 'name'])
     const market = _.get(data, 'market')
     const status = _.toInteger(_.get(data, 'status'))
     const PENDING = 0

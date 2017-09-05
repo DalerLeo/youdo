@@ -51,6 +51,7 @@ import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
 const TYPE = 'openType'
+const POP_TYPE = 'popType'
 const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
@@ -191,11 +192,42 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const nextDialog = _.get(nextProps, ['location', 'query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
         const prevDialog = _.get(props, ['location', 'query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
-        return prevDialog !== nextDialog && nextDialog !== 'false'
+        const nextReturnDialog = _.get(nextProps, ['location', 'query', STOCK_RETURN_DIALOG_OPEN])
+        const prevReturnDialog = _.get(props, ['location', 'query', STOCK_RETURN_DIALOG_OPEN])
+        const nextSupplyDialog = _.get(nextProps, ['location', 'query', STOCK_SUPPLY_DIALOG_OPEN])
+        const prevSupplyDialog = _.get(props, ['location', 'query', STOCK_SUPPLY_DIALOG_OPEN])
+        return (prevDialog !== nextDialog && nextDialog !== 'false') ||
+                (prevReturnDialog !== nextReturnDialog && nextReturnDialog !== 'false') ||
+                 (prevSupplyDialog !== nextSupplyDialog && nextSupplyDialog !== 'false')
     }, ({dispatch, location}) => {
         const dialog = _.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
+        const returnDialog = _.get(location, ['query', STOCK_RETURN_DIALOG_OPEN])
+        const stockDialog = _.get(location, ['query', STOCK_SUPPLY_DIALOG_OPEN])
         if (dialog !== 'false' && dialog) {
             dispatch(historyOrderItemFetchAction(_.toNumber(dialog)))
+        } else if (returnDialog !== 'false' && returnDialog) {
+            dispatch(returnItemFetchAction(_.toNumber(returnDialog)))
+        } else if (stockDialog !== 'false' && stockDialog) {
+            dispatch(supplyItemFetchAction(_.toNumber(stockDialog)))
+        }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const nextPopoverDialog = _.get(nextProps, ['location', 'query', SROCK_POPVER_DIALOG_OPEN])
+        const prevPopoverDialog = _.get(props, ['location', 'query', SROCK_POPVER_DIALOG_OPEN])
+        return prevPopoverDialog !== nextPopoverDialog && nextPopoverDialog !== 'false'
+    }, ({dispatch, location}) => {
+        const dialog = _.toNumber(_.get(location, ['query', SROCK_POPVER_DIALOG_OPEN]))
+        const popoverType = (_.get(location, ['query', POP_TYPE]))
+        if (dialog !== 'false' && dialog) {
+            if (popoverType === 'transfer') {
+                dispatch(stockReceiveOrderItemFetchAction(dialog))
+            } else if (popoverType === 'stock_transfer') {
+                dispatch(stockReceiveOrderItemFetchAction(dialog))
+            } else if (popoverType === 'order_return') {
+                dispatch(orderReturnListAction(dialog))
+            } else if (popoverType === 'delivery_return') {
+                dispatch(stockTransferItemFetchAction(dialog))
+            }
         }
     }),
 
@@ -453,23 +485,14 @@ const enhance = compose(
         },
 
         handleOpenPopoverDialog: props => (id, type) => {
-            const {dispatch, location: {pathname}, filter, setType} = props
-            hashHistory.push({pathname, query: filter.getParams({[SROCK_POPVER_DIALOG_OPEN]: id})})
+            const {location: {pathname}, filter, setType} = props
+            hashHistory.push({pathname, query: filter.getParams({[SROCK_POPVER_DIALOG_OPEN]: id, [POP_TYPE]: type})})
             setType(type)
-            if (type === 'transfer') {
-                dispatch(stockReceiveOrderItemFetchAction(id))
-            } else if (type === 'stock_transfer') {
-                dispatch(stockReceiveOrderItemFetchAction(id))
-            } else if (type === 'order_return') {
-                dispatch(orderReturnListAction(id))
-            } else if (type === 'delivery_return') {
-                dispatch(stockTransferItemFetchAction(id))
-            }
         },
 
         handleClosePopoverDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SROCK_POPVER_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SROCK_POPVER_DIALOG_OPEN]: false, [POP_TYPE]: null})})
         }
     })
 )
@@ -506,8 +529,7 @@ const StockReceiveList = enhance((props) => {
         stockTransferDialogData,
         stockTransferDialogDataLoading,
         stockDeliveryReturnDialogData,
-        stockDeliveryReturnDialogDataLoading,
-        popoverType
+        stockDeliveryReturnDialogDataLoading
     } = props
     const detailType = _.get(location, ['query', TYPE])
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
@@ -527,8 +549,9 @@ const StockReceiveList = enhance((props) => {
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
     const returnDialogDataOpen = _.toNumber(_.get(location, ['query', STOCK_RETURN_DIALOG_OPEN]))
-    const supplyDialogOpen = _.toNumber(_.get(location, ['query', STOCK_SUPPLY_DIALOG_OPEN]))
+    const supplyDialogOpen = _.toNumber(_.get(location, ['query', STOCK_SUPPLY_DIALOG_OPEN]) || '0')
     const popoverDialogOpen = _.toNumber(_.get(location, ['query', SROCK_POPVER_DIALOG_OPEN]))
+    const popoverType = _.get(location, ['query', 'popType'])
 
     const listData = {
         data: _.get(list, 'results'),

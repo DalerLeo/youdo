@@ -184,13 +184,15 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openAddCourseDialog: null,
             openClientReturnDialog: null,
             detailId: null,
+            openStockReturnDialog: null,
             orderId: null,
             ingId: null,
             openDeleteProductDialog: null,
             openChangeManufacture: null,
             editMaterials: null,
             joinMarket: null,
-            joinClient: null
+            joinClient: null,
+            openPopoverDialog: null
         }))
     }
 
