@@ -22,7 +22,7 @@ import {
     OPEN_DELETE_MATERIALS_DIALOG,
     MANUFACTURE_CHANGE,
     TAB,
-    ManufactureGridList
+    ManufactureProductWrapper
 } from '../../components/Manufacture'
 import {PRODUCT_FILTER_KEY, PRODUCT_FILTER_OPEN} from '../../components/Product'
 import {PERSON_FILTER_KEY, PERSON_FILTER_OPEN} from '../../components/Manufacture/PersonFilterForm'
@@ -494,8 +494,7 @@ const enhance = compose(
         handleTabChange: props => (tab) => {
             const {location: {pathname}} = props
             hashHistory.push({
-                pathname: pathname,
-                query: {[TAB]: tab}
+                pathname: ROUTER.MANUFACTURE_LIST_URL + '/' + tab
             })
         },
         handleItemClick: props => (id) => {
@@ -753,7 +752,7 @@ const ManufactureList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <ManufactureGridList
+            <ManufactureProductWrapper
                 createMaterials={createMaterials}
                 editMaterials={editMaterials}
                 deleteMaterials={deleteMaterials}

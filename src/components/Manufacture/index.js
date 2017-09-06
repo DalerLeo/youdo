@@ -1,4 +1,5 @@
 import ManufactureGridList from './ManufactureGridList'
+import ManufactureProductWrapper from './ManufactureProductWrapper'
 import {OPEN_USER_CREATE_DIALOG} from './ManufactureAddStaffDialog'
 import {MANUFACTURE_SHOW_BOM_DIALOG_OPEN} from './ManufactureShowBom'
 import {MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN} from './ManufactureAddProductDialog'
@@ -32,5 +33,6 @@ export {
     OPEN_DELETE_MATERIALS_DIALOG,
     MANUFACTURE_CHANGE,
     TAB,
-    ManufactureGridList
+    ManufactureGridList,
+    ManufactureProductWrapper
 }

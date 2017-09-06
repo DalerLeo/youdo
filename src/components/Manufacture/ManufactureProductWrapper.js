@@ -4,17 +4,17 @@ import PropTypes from 'prop-types'
 import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import ManufactureAddStaffDialog from './ManufactureAddStaffDialog'
 import ManufacturesList from './ManufacturesList'
 import ManufactureShowBom from './ManufactureShowBom'
 import ManufactureChangeDialog from './ManufactureChangeDialog'
 import ManufactureAddProductDialog from './ManufactureAddProductDialog'
 import ManufactureEditProductDialog from './ManufactureEditProductDialog'
-import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
-import SubMenu from '../SubMenu'
-import ManufactureTab from './ManufactureTab'
 import ConfirmDialog from '../ConfirmDialog'
+import Paper from 'material-ui/Paper'
+import ManufactureProduct from './Tab/ManufactureProduct'
+import * as ROUTES from '../../constants/routes'
+import {Link} from 'react-router'
 
 const enhance = compose(
     injectSheet({
@@ -30,8 +30,35 @@ const enhance = compose(
             marginBottom: '0px'
         },
         productionMainRow: {
+            paddingTop: '20px',
             margin: '0 -28px',
-            height: 'calc(100vh - 60px)'
+            height: 'calc(100vh - 20px)'
+        },
+        productionRightSide: {
+            width: 'calc(100% - 280px)',
+            padding: '0 28px'
+        },
+        tabWrapper: {
+            display: 'flex',
+            alignItems: 'center',
+            '& > a': {
+                fontWeight: 'inherit',
+                color: 'inherit'
+            }
+        },
+        tab: {
+            height: '58px',
+            lineHeight: '58px',
+            padding: '0 20px',
+            transition: 'all 300ms ease',
+            cursor: 'pointer'
+        },
+        activeTab: {
+            extend: 'tab',
+            color: '#12aaeb',
+            fontWeight: '600',
+            borderBottom: '3px #12aaeb solid',
+            cursor: 'default'
         },
         productList: {
             width: '100%',
@@ -54,46 +81,47 @@ const enhance = compose(
     })
 )
 
-const ManufactureGridList = enhance((props) => {
+const tabs = [
+    {
+        title: 'Продукция',
+        url: ROUTES.MANUFACTURE_PRODUCT_LIST_URL
+    },
+    {
+        title: 'Персонал',
+        url: ROUTES.MANUFACTURE_PERSON_LIST_URL
+    },
+    {
+        title: 'Оборудование',
+        url: ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL
+    },
+    {
+        title: 'Партия',
+        url: ROUTES.MANUFACTURE_SHIPMENT_LIST_URL
+    }
+]
+
+const ManufactureProductWrapper = enhance((props) => {
     const {
+        filter,
         listData,
         detailData,
         showBom,
         classes,
-        equipmentData,
         editMaterials,
         createMaterials,
         productData,
-        tabData,
         productFilterDialog,
-        personData,
-        shipmentData,
         deleteMaterials
     } = props
 
     const ZERO = 0
+    console.warn(filter.getParams())
 
     const productConfirm = _.get(productData, 'confirmDialog')
     const productCreate = _.get(productData, 'createDialog')
-    const userCreate = _.get(personData, 'createDialog')
-    const userUpdate = _.get(personData, 'updateDialog')
-    const userConfirm = _.get(personData, 'confirmDialog')
     const productName = _.get(_.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), 'name')
     return (
         <Container>
-            <SubMenu url={ROUTES.MANUFACTURE_CUSTOM_URL}/>
-            <ManufactureAddStaffDialog
-                open={userCreate.open}
-                onClose={userCreate.handleCloseDialog}
-                onSubmit={userCreate.handleSubmitDialog}
-            />
-            <ManufactureAddStaffDialog
-                isUpdate={true}
-                initialValues={userUpdate.initialValues}
-                open={userUpdate.open}
-                onClose={userUpdate.handleCloseUpdateDialog}
-                onSubmit={userUpdate.handleSubmitUpdateDialog}
-            />
             <ManufactureShowBom
                 open={showBom.open}
                 onClose={showBom.handleClose}
@@ -126,17 +154,34 @@ const ManufactureGridList = enhance((props) => {
             <Row className={classes.productionMainRow}>
                 <ManufacturesList listData={listData} detailData={detailData}/>
 
-                <ManufactureTab
-                    tabData={tabData}
-                    editMaterials={editMaterials}
-                    createMaterials={createMaterials}
-                    deleteMaterials={deleteMaterials}
-                    productData={productData}
-                    personData={personData}
-                    equipmentData={equipmentData}
-                    shipmentData={shipmentData}
-                    productFilterDialog={productFilterDialog}
-                    handleCloseDetail={_.get(detailData, 'handleCloseDetail')}/>
+                <div className={classes.productionRightSide}>
+                    <Paper zDepth={1} className={classes.tabWrapper}>
+                        {
+                            _.map(tabs, (tab, index) => {
+                                const title = _.get(tab, 'title')
+                                const url = _.get(tab, 'url')
+
+                                return (
+                                    <Link key={index} to={{pathname: url, query: ''}}>
+                                        <div className={classes.tab}>
+                                            <span>{title}</span>
+                                        </div>
+                                    </Link>
+                                )
+                            })
+                        }
+                    </Paper>
+
+                    <ManufactureProduct
+                        productData={productData}
+                        editMaterials={editMaterials}
+                        filter={filter}
+                        filterDialog={productFilterDialog}
+                        createMaterials={createMaterials}
+                        deleteMaterials={deleteMaterials}
+                        handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+                    />
+                </div>
             </Row>
 
             {_.get(deleteMaterials, 'open') !== false && <ConfirmDialog
@@ -153,19 +198,11 @@ const ManufactureGridList = enhance((props) => {
                 onSubmit={productConfirm.handleSendConfirmDialog}
                 open={productConfirm.openConfirmDialog}
             />}
-            {_.get(personData, 'userShiftItem') && <ConfirmDialog
-                type="delete"
-                message={_.get(_.get(personData, ['userShiftItem', 'user']), 'firstName') +
-                ' ' + _.get(_.get(personData, ['userShiftItem', 'user']), 'secondName')}
-                onClose={userConfirm.handleCloseConfirmDialog}
-                onSubmit={userConfirm.handleSendConfirmDialog}
-                open={userConfirm.open}
-            />}
         </Container>
     )
 })
 
-ManufactureGridList.propTypes = {
+ManufactureProductWrapper.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
     showBom: PropTypes.shape({
@@ -174,9 +211,6 @@ ManufactureGridList.propTypes = {
         handleClose: PropTypes.func.isRequired
     }).isRequired,
     productData: PropTypes.object.isRequired,
-    personData: PropTypes.object.isRequired,
-    equipmentData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
     productFilterDialog: PropTypes.shape({
         initialValues: PropTypes.object,
         filterLoading: PropTypes.bool,
@@ -194,4 +228,4 @@ ManufactureGridList.propTypes = {
     updateProductDialog: PropTypes.object
 }
 
-export default ManufactureGridList
+export default ManufactureProductWrapper
