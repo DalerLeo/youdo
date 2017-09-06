@@ -63,7 +63,7 @@ const enhance = compose(
 const ZERO = 0
 
 const ClientBalanceCreateDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, name, detailData, listData} = props
+    const {classes, open, onClose, handleSubmit, loading, name, detailData, listData, addDialog} = props
     const data = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
     const cosmBalance = _.toNumber(_.get(data, 'cosmeticsBalance'))
     const shammBalance = _.toNumber(_.get(data, 'shampooBalance'))
@@ -80,7 +80,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Добавить расход клиенту</span>
+                <span>{addDialog ? 'Добавить даход клиенту' : 'Добавить расход клиенту'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
