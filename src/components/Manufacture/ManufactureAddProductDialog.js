@@ -213,7 +213,7 @@ const enhance = compose(
     }),
     withState('openAddMaterials', 'setOpenAddMaterials', false),
     reduxForm({
-        form: 'ProviderCreateForm',
+        form: 'ManufactureAddProductForm',
         enableReinitialize: true
     })
 )
@@ -248,7 +248,7 @@ const ManufactureAddProductDialog = enhance((props) => {
                                 component={ProductSearchField}
                                 fullWidth={true}/>
                             <Fields
-                                names={['ingredients', 'ingredient', 'amount', 'measurement', 'editAmount']}
+                                names={['ingredients', 'ingredient', 'amount', 'editAmount']}
                                 component={ManufactureListMaterialField}
                             />
                         </div>

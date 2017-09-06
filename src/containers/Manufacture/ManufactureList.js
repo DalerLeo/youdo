@@ -79,7 +79,7 @@ const enhance = compose(
         const productDetail = _.get(state, ['ingredient', 'list', 'data'])
         const productDetailLoading = _.get(state, ['ingredient', 'list', 'loading'])
         const productListLoading = _.get(state, ['product', 'list', 'loading'])
-        const productAddForm = _.get(state, ['form', 'ProviderCreateForm'])
+        const productAddForm = _.get(state, ['form', 'ManufactureAddProductForm'])
         const changeForm = _.get(state, ['form', 'ChangeManufactureForm'])
         const filterProduct = filterHelper(productList, pathname, query)
         const filterProductForm = _.get(state, ['form', 'ProductFilterForm'])
@@ -209,7 +209,7 @@ const enhance = compose(
         handleOpenAddProductDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: true})})
-            dispatch(reset('ProviderCreateForm'))
+            dispatch(reset('ManufactureAddProductForm'))
         },
         handleCloseAddProductDialog: props => () => {
             const {location: {pathname}, filter} = props

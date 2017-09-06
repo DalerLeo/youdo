@@ -145,7 +145,7 @@ const enhance = compose(
             marginTop: '20px'
         },
         addRaw: {
-            alignItems: 'flex-start',
+            alignItems: 'flex-end',
             justifyContent: 'space-between',
             margin: '5px -7px',
             '& > div:first-child > div:first-child': {
@@ -165,23 +165,25 @@ const enhance = compose(
     }),
     withState('editItem', 'setEditItem', null),
     withHandlers({
-        handleAdd: props => (measurementName) => {
+        handleAdd: props => () => {
             const ingredient = _.get(props, ['ingredient', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
-            const measurement = measurementName
+            const measurement = _.get(props, 'measurementName')
             const onChange = _.get(props, ['ingredients', 'input', 'onChange'])
             const ingredients = _.get(props, ['ingredients', 'input', 'value'])
-
-            if (!_.isEmpty(ingredient) && amount) {
+            console.warn(props)
+            if (!_.isEmpty(ingredient) && !_.isEmpty(amount)) {
                 let has = false
                 _.map(ingredients, (item) => {
                     if (_.get(item, 'ingredient') === ingredient) {
                         has = true
                     }
                 })
-                const fields = ['amount', 'ingredient']
+                const fields = ['ingredient', 'amount']
                 for (let i = 0; i < fields.length; i++) {
-                    let newChange = _.get(props, [fields[i], 'input', 'onChange'])
+                    const newChange = _.get(props, [fields[i], 'input', 'onChange'])
+                    console.warn(_.get(props, [fields[i]]))
+                    console.warn(fields[i])
                     props.dispatch(newChange(null))
                 }
 
@@ -273,13 +275,10 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, hand
                         />
                     </Col>
                     <Col xs={1} style={{height: '32px'}}>
-                        <ProductMeasurementField/>
+                        {measurementName}
                     </Col>
-                    <IconButton
-                        onTouchTap={() => { handleAdd(measurementName) }}>
-                        <div>
-                            <ImageCheck color="#129fdd"/>
-                        </div>
+                    <IconButton onTouchTap={handleAdd}>
+                        <ImageCheck color="#129fdd"/>
                     </IconButton>
                 </Row>
             </div>}
