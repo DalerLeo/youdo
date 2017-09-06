@@ -226,7 +226,8 @@ const OrderCreateDialog = enhance((props) => {
         isUpdate,
         createClientDialog,
         products,
-        status
+        status,
+        canChangeAnyPrice
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     let notEnough = false
@@ -340,6 +341,7 @@ const OrderCreateDialog = enhance((props) => {
                                 <Fields
                                     names={['products', 'product', 'amount', 'cost', 'type', 'editAmount', 'editCost']}
                                     editOnlyCost={status === DELIVERED || status === GIVEN}
+                                    canChangeAnyPrice={canChangeAnyPrice}
                                     component={OrderListProductField}
                                 />
                             </div>

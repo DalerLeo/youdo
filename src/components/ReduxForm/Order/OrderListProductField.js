@@ -250,6 +250,7 @@ const iconStyle = {
 
 const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, customPrice, ...defaultProps}) => {
     const editOnlyCost = _.get(defaultProps, 'editOnlyCost')
+    const canChangeAnyPrice = _.get(defaultProps, 'canChangeAnyPrice')
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const currency = getConfig('PRIMARY_CURRENCY')
@@ -358,6 +359,40 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                 const isEditable = _.get(item, 'customPrice')
 
                                 if (editItem === index) {
+                                    if (canChangeAnyPrice) {
+                                        return (
+                                            <TableRow key={index} className={classes.tableRow}>
+                                                <TableRowColumn>{product}</TableRowColumn>
+                                                {editOnlyCost
+                                                    ? <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
+                                                    : <TableRowColumn style={{padding: 0}}>
+                                                        <TextField
+                                                            placeholder={amount + ' ' + itemMeasurement}
+                                                            className={classes.inputFieldEdit}
+                                                            fullWidth={true}
+                                                            {..._.get(defaultProps, 'editAmount')}
+                                                        />
+                                                    </TableRowColumn>}
+                                                <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
+                                                    <TextField
+                                                        placeholder={cost}
+                                                        className={classes.inputFieldEditRight}
+                                                        fullWidth={true}
+                                                        {..._.get(defaultProps, 'editCost')}
+                                                    />
+                                                </TableRowColumn>
+                                                <TableRowColumn style={{textAlign: 'right'}}>
+                                                    {numberFormat(cost * amount)}
+                                                </TableRowColumn>
+                                                <TableRowColumn style={{textAlign: 'right'}}>
+                                                    <IconButton
+                                                        onTouchTap={() => { handleEdit(index) }}>
+                                                        <Check color="#12aaeb"/>
+                                                    </IconButton>
+                                                </TableRowColumn>
+                                            </TableRow>
+                                        )
+                                    }
                                     return (
                                         <TableRow key={index} className={classes.tableRow}>
                                             <TableRowColumn>{product}</TableRowColumn>
@@ -401,13 +436,20 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                         <TableRowColumn
                                             style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>
-                                            <IconButton
-                                                disabled={editOnlyCost && !isEditable}
-                                                onTouchTap={() => setEditItem(index)}
-                                                style={iconStyle.button}
-                                                iconStyle={iconStyle.icon}>
-                                                <EditIcon color="#666666"/>
-                                            </IconButton>
+                                            {canChangeAnyPrice
+                                                ? <IconButton
+                                                    onTouchTap={() => setEditItem(index)}
+                                                    style={iconStyle.button}
+                                                    iconStyle={iconStyle.icon}>
+                                                    <EditIcon color="#666666"/>
+                                                </IconButton>
+                                                : <IconButton
+                                                    disabled={editOnlyCost && !isEditable}
+                                                    onTouchTap={() => setEditItem(index)}
+                                                    style={iconStyle.button}
+                                                    iconStyle={iconStyle.icon}>
+                                                    <EditIcon color="#666666"/>
+                                                </IconButton>}
                                             <IconButton
                                                 disabled={editOnlyCost}
                                                 onTouchTap={() => handleRemove(index)}
