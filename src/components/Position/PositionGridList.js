@@ -168,12 +168,12 @@ const iconStyle = {
 }
 const accessList = [
     {
-        id: 2,
-        name: 'delivery'
-    },
-    {
         id: 1,
         name: 'SupDir'
+    },
+    {
+        id: 2,
+        name: 'delivery'
     },
     {
         id: 3,
@@ -201,7 +201,7 @@ const accessList = [
     },
     {
         id: 9,
-        name: 'changeRate'
+        name: 'change_any_price'
     }
 ]
 const PositionGridList = enhance((props) => {

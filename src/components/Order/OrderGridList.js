@@ -176,7 +176,8 @@ const OrderGridList = enhance((props) => {
         printDialog,
         type,
         cancelOrderReturnDialog,
-        refreshAction
+        refreshAction,
+        canChangeAnyPrice
     } = props
 
     const orderFilterDialog = (
@@ -217,6 +218,7 @@ const OrderGridList = enhance((props) => {
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             cancelOrderReturnDialog={cancelOrderReturnDialog}
             type={type}
+            canChangeAnyPrice={canChangeAnyPrice}
         />
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {

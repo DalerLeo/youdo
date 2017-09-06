@@ -179,7 +179,8 @@ const OrderDetails = enhance((props) => {
         paymentData,
         getDocument,
         returnData,
-        handleCloseDetail
+        handleCloseDetail,
+        canChangeAnyPrice
     } = props
 
     const id = _.get(data, 'id')
@@ -412,6 +413,7 @@ const OrderDetails = enhance((props) => {
             <OrderCreateDialog
                 isUpdate={true}
                 status={status}
+                canChangeAnyPrice={canChangeAnyPrice}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
