@@ -4,6 +4,7 @@ import _ from 'lodash'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
 import CircularProgress from 'material-ui/CircularProgress'
 import AddZonePopup from './AddZonePopup'
+import ZoneDeleteDialog from './ZoneDeleteDialog'
 
 const classes = {
     loader: {
@@ -22,27 +23,83 @@ export default class GoogleCustomMap extends React.Component {
         this.state = {
             center: null,
             drawing: null,
-            toggle: false
+            zone: [],
+            points: null
         }
 
         this.handleClearDrawing = this.handleClearDrawing.bind(this)
+        this.handleDeleteZone = this.handleDeleteZone.bind(this)
+        this.getUpdatedZone = this.getUpdatedZone.bind(this)
     }
 
-    loadMap () {
-        if (this.state.scriptLoaded) {
-            this.setState({
-                center: {lat: 24.886, lng: -70.268}
-            })
-        }
+    handleScriptCreate () {
+        this.setState({
+            scriptLoaded: false
+        })
+    }
 
-        this.map = this.createMap(this.state.center)
+    handleScriptError () {
+        this.setState({
+            scriptError: true
+        })
+    }
+
+    handleScriptLoad () {
+        this.setState({
+            scriptLoaded: true
+        })
+
+        this.map = this.createMap()
+        this.createZones()
+    }
+
+    handleClearDrawing () {
+        google.maps.event.clearInstanceListeners(this.state.drawing)
+        this.state.drawing.setMap(null)
+    }
+
+    handleDrawing () {
+        if (this.state.drawing) {
+            this.state.drawing.setMap(this.map)
+        }
+    }
+
+    handleEdit () {
+        if (this.state.drawing) {
+            this.state.drawing.setMap(null)
+        }
+    }
+
+    getMarkers () {
         let locations = [
             {lat: -31.563910, lng: 147.154312},
             {lat: -33.718234, lng: 150.363181},
             {lat: -43.999792, lng: 170.463352}
         ]
         let labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        let markers = locations.map((location, i) => {
+            return new google.maps.Marker({
+                position: location,
+                label: labels[i % labels.length],
+                map: this.map
+            })
+        })
 
+        new MarkerClusterer(this.map, markers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
+    }
+
+    createMap () {
+        const mapOptions = {
+            zoom: 13,
+            center: GOOGLE_MAP.DEFAULT_LOCATION,
+            mapTypeId: 'terrain'
+        }
+        return new google.maps.Map(this.refs.mapping, mapOptions)
+    }
+
+    createZones () {
+        let zones = []
         _.map(_.get(this.props, ['listData', 'data']), (item) => {
             const id = _.get(item, 'id')
             const title = _.get(item, 'title')
@@ -53,7 +110,7 @@ export default class GoogleCustomMap extends React.Component {
                 return {lat: lat, lng: lng}
             })
 
-            const customZone = new google.maps.Polygon({
+            const existingZone = new google.maps.Polygon({
                 paths: point,
                 fillColor: '#199ee0',
                 fillOpacity: 0.2,
@@ -63,23 +120,18 @@ export default class GoogleCustomMap extends React.Component {
                 draggable: false,
                 zIndex: 1
             })
-            customZone.setMap(this.map)
+            zones.push({zone: existingZone, id, title})
+
+            existingZone.setMap(this.map)
         })
-        let markers = locations.map((location, i) => {
-            return new google.maps.Marker({
-                position: location,
-                label: labels[i % labels.length],
-                map: this.map
-            })
-        })
+
         new google.maps.Marker({
             position: GOOGLE_MAP.DEFAULT_LOCATION,
             map: this.map
         })
 
-        new MarkerClusterer(this.map, markers,
-            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
         this.setState({
+            zone: zones,
             drawing: new google.maps.drawing.DrawingManager({
                 drawingMode: google.maps.drawing.OverlayType.POLYGON,
                 drawingControl: false,
@@ -101,94 +153,117 @@ export default class GoogleCustomMap extends React.Component {
         })
     }
 
-    createMap () {
-        const mapOptions = {
-            zoom: 4,
-            center: GOOGLE_MAP.DEFAULT_LOCATION,
-            mapTypeId: 'terrain'
-        }
-        return new google.maps.Map(this.refs.mapping, mapOptions)
-    }
-
-    handleScriptCreate () {
-        this.setState({
-            scriptLoaded: false
-        })
-    }
-
-    handleScriptError () {
-        this.setState({
-            scriptError: true
-        })
-    }
-
-    handleScriptLoad () {
-        this.setState({
-            scriptLoaded: true
-        })
-
-        this.loadMap()
-    }
-
-    handleClearDrawing (...evt) {
-        google.maps.event.clearInstanceListeners(this.state.drawing)
-        this.state.drawing.setMap(null)
-    }
-
-    handleDrawing () {
-        if (this.state.drawing) {
-            this.state.drawing.setMap(this.map)
-        }
-    }
-
-    handleEdit () {
-        if (this.state.drawing) {
-            this.state.drawing.setMap(null)
-        }
-    }
-
-    componentWillUpdate () {
-        if (this.state.drawing) {
-            google.maps.event.addListener(this.state.drawing, 'overlaycomplete', (event) => {
-                const coordinates = event.overlay.getPath().getArray()
-                const points = event.overlay.getPaths().forEach((path) => {
-                    this.getPoints = () => {
-                        return _.map(coordinates, (p) => {
-                            const polyLat = p.lat()
-                            const polyLng = p.lng()
-                            return {lat: polyLat, lng: polyLng}
-                        })
-                    }
-                    google.maps.event.addListener(path, 'insert_at', () => {
-                        console.warn('insert')
-                        return this.getPoints()
+    createCustomZone (nextState) {
+        google.maps.event.addListener(nextState.drawing, 'overlaycomplete', (event) => {
+            this.handleEdit()
+            const coordinates = event.overlay.getPath().getArray()
+            event.overlay.getPaths().forEach((path) => {
+                this.getPoints = () => {
+                    return _.map(coordinates, (p) => {
+                        const polyLat = p.lat()
+                        const polyLng = p.lng()
+                        return {lat: polyLat, lng: polyLng}
                     })
+                }
 
-                    google.maps.event.addListener(path, 'remove_at', () => {
-                        console.warn('remove')
-                        return this.getPoints()
-                    })
+                google.maps.event.addListener(path, 'insert_at', () => this.setState({points: this.getPoints()}))
 
-                    google.maps.event.addListener(path, 'set_at', () => {
-                        console.warn('set')
-                        return this.getPoints()
-                    })
-                })
+                google.maps.event.addListener(path, 'remove_at', () => this.setState({points: this.getPoints()}))
+
+                google.maps.event.addListener(path, 'set_at', () => this.setState({points: this.getPoints()}))
             })
-        }
+            this.setState({points: this.getPoints()})
+        })
+    }
+    createCustomZone2 (nextState) {
+        google.maps.event.addListener(nextState.drawing, 'overlaycomplete', (event) => {
+            this.handleEdit()
+            const coordinates = event.overlay.getPath().getArray()
+            event.overlay.getPaths().forEach((path) => {
+                this.getPoints = () => {
+                    return _.map(coordinates, (p) => {
+                        const polyLat = p.lat()
+                        const polyLng = p.lng()
+                        return {lat: polyLat, lng: polyLng}
+                    })
+                }
+
+                google.maps.event.addListener(path, 'insert_at', () => this.setState({points: this.getPoints()}))
+
+                google.maps.event.addListener(path, 'remove_at', () => this.setState({points: this.getPoints()}))
+
+                google.maps.event.addListener(path, 'set_at', () => this.setState({points: this.getPoints()}))
+            })
+            this.setState({points: this.getPoints()})
+        })
     }
 
-    shouldComponentUpdate (nextProps, nextState) {
-        if (_.get(nextState, 'scriptLoaded')) {
-            this.loadMap()
+    editZone (nextProps, nextState) {
+        const selectedZone = _.get(_.filter(nextState.zone, (item) => {
+            return nextProps.zoneId === item.id
+        }), ['0', 'zone'])
+
+        selectedZone.setOptions({
+            editable: true,
+            fillColor: '#4de03a',
+            fillOpacity: 0.3,
+            strokeWeight: 2,
+            strokeColor: '#236406'
+        })
+        const coordinates = selectedZone.getPath().getArray()
+        selectedZone.getPaths().forEach(() => {
+            this.getChangedPoints = {
+                points: _.map(coordinates, (p) => {
+                    const polyLat = p.lat()
+                    const polyLng = p.lng()
+                    return {lat: polyLat, lng: polyLng}
+                })
+            }
+        })
+    }
+    getUpdatedZone () {
+        if (this.state.zone[0]) {
+            const selectedZone = _.get(_.filter(this.state.zone, (item) => {
+                return _.toInteger(this.props.zoneId) === item.id
+            }), ['0', 'zone'])
+            const coordinates = selectedZone.getPath().getArray()
+            console.log(selectedZone.getPaths())
+            selectedZone.getPaths().forEach(() => {
+                this.getChangedPoints = {
+                    points: _.map(coordinates, (p) => {
+                        const polyLat = p.lat()
+                        const polyLng = p.lng()
+                        return {lat: polyLat, lng: polyLng}
+                    })
+                }
+            })
+            console.log(this.getChangedPoints)
+            return this.getChangedPoints
         }
-        return true
+        return null
+    }
+
+    handleDeleteZone (id) {
+        const selectedZone = _.get(_.filter(this.state.zone, (item) => {
+            return _.toNumber(id) === item.id
+        }), ['0', 'zone'])
+        selectedZone.setMap(null)
+    }
+
+    componentWillUpdate (nextProps, nextState) {
+        if (nextState.drawing) {
+            if (_.get(nextProps, 'zoneId')) {
+                this.editZone(nextProps, nextState)
+            }
+            this.createCustomZone(nextState)
+        }
     }
 
     render () {
-        const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone} = this.props
+        const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone} = this.props
         const GOOGLE_API_KEY = 'AIzaSyDnUkBg_uV1aa4e7pyEvv3bVxN3RfwNQEo'
         const url = 'http://maps.googleapis.com/maps/api/js?key=' + GOOGLE_API_KEY + '&libraries=drawing'
+
         if (_.get(this.props, ['listData', 'listLoading'])) {
             return (
                 <div style={classes.loader}>
@@ -196,6 +271,8 @@ export default class GoogleCustomMap extends React.Component {
                 </div>
             )
         }
+
+
         return (
             <div style={{height: '100%', width: '100%'}}>
                 <div className='GMap-canvas' id="mappingGoogleCustom" ref='mapping'
@@ -215,6 +292,7 @@ export default class GoogleCustomMap extends React.Component {
                     edit={this.handleEdit.bind(this)}
                     onClose={addZone.handleCloseAddZone}
                     onSubmit={addZone.handleSubmitAddZone}
+                    data={() =>  { return this.state.points }}
                 />}
                 {isOpenUpdateZone && <AddZonePopup
                     filter={filter}
@@ -224,7 +302,17 @@ export default class GoogleCustomMap extends React.Component {
                     edit={this.handleEdit.bind(this)}
                     onSubmit={updateZone.handleSubmitUpdateZone}
                     initialValues={updateZone.initialValues}
+                    data={() => {return _.get(this.getUpdatedZone(), 'points')}}
                 />}
+                <ZoneDeleteDialog
+                    open={deleteZone.openDeleteZone}
+                    onClose={deleteZone.handleCloseDeleteZone}
+                    onSubmit={deleteZone.handleSendDeleteZone}
+                    deleteZone={this.handleDeleteZone}
+                    message="Удалить выбранную зону?"
+                    type="submit"
+
+                />
             </div>
         )
     }

@@ -2,15 +2,13 @@ import React from 'react'
 import _ from 'lodash'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
-import sprintf from 'sprintf'
-import * as ROUTER from '../../constants/routes'
 import {reset} from 'redux-form'
 import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import ZonesWrapper from '../../components/GoogleMapCustom/ZonesWrapper'
-import {ADD_ZONE, UPDATE_ZONE, DELETE_ZONE, TOGGLE_INFO, BIND_AGENT, CONFIRM_DIALOG, DRAW} from '../../components/Zones'
+import {ADD_ZONE, UPDATE_ZONE, DELETE_ZONE, TOGGLE_INFO, BIND_AGENT, CONFIRM_DIALOG, DRAW, ZONE_ID} from '../../components/Zones'
 import {
     zoneCreateAction,
     zoneUpdateAction,
@@ -155,9 +153,9 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[ADD_ZONE]: false})})
         },
 
-        handleSubmitAddZone: props => () => {
+        handleSubmitAddZone: props => (data) => {
             const {location: {pathname}, dispatch, createForm, filter} = props
-
+            console.warn('ADDD', data)
             return dispatch(zoneCreateAction(createForm))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Зона успешно добавлена'}))
@@ -170,10 +168,9 @@ const enhance = compose(
         },
 
         handleOpenUpdateZone: props => (id) => {
-            const {filter} = props
+            const {filter, location: {pathname}} = props
             hashHistory.push({
-                pathname: sprintf('/googleMap/%d/', id),
-                query: filter.getParams({[UPDATE_ZONE]: true, [TOGGLE_INFO]: false})
+                pathname, query: filter.getParams({[UPDATE_ZONE]: true, [TOGGLE_INFO]: false, [ZONE_ID]: id})
             })
         },
 
@@ -182,10 +179,10 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[UPDATE_ZONE]: false})})
         },
 
-        handleSubmitUpdateZone: props => () => {
+        handleSubmitUpdateZone: props => (data) => {
             const {location: {pathname}, dispatch, createForm, filter} = props
             const zoneId = _.toInteger(_.get(props, ['params', 'zoneId']))
-
+            console.warn('UPDATE', data)
             return dispatch(zoneUpdateAction(zoneId, createForm))
                 .then(() => {
                     return dispatch(zoneItemFetchAction(zoneId))
@@ -254,13 +251,12 @@ const Zones = enhance((props) => {
     const openUpdateZone = toBoolean(_.get(location, ['query', UPDATE_ZONE]))
     const openBindAgent = toBoolean(_.get(location, ['query', BIND_AGENT]))
     const openDraw = toBoolean(_.get(location, ['query', DRAW]))
+    const zoneId = _.toNumber(_.get(location, ['query', ZONE_ID]))
     const openDeleteZone = _.toInteger(_.get(location, ['query', DELETE_ZONE]) || ZERO) > ZERO
     const openToggle = toBoolean(_.get(location, ['query', TOGGLE_INFO]))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', CONFIRM_DIALOG]) || ZERO) > ZERO
     const openDetail = _.toInteger(_.get(params, 'zoneId'))
     const detailId = _.toInteger(_.get(params, 'zoneId'))
-
-
 
     const addZone = {
         openAddZone,
@@ -328,7 +324,8 @@ const Zones = enhance((props) => {
         openDetail,
         id: detailId,
         data: detail,
-        detailLoading
+        detailLoading,
+        zoneId
     }
 
     const toggle = {

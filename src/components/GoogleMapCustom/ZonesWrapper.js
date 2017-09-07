@@ -489,6 +489,10 @@ const ZonesWrapper = enhance((props) => {
                     addZone={addZone}
                     updateZone={updateZone}
                     isOpenUpdateZone={isOpenUpdateZone}
+                    id={_.get(detailData, 'id')}
+                    zoneId={_.get(detailData, 'zoneId')}
+                    deleteId={_.get(deleteZone, 'openDeleteZone')}
+                    deleteZone={deleteZone}
                 />
 
                 <BindAgentDialog
@@ -504,13 +508,7 @@ const ZonesWrapper = enhance((props) => {
                     message="Открепить данного агента?"
                     type="submit"
                 />
-                <ConfirmDialog
-                    open={isOpenDeleteZone}
-                    onClose={deleteZone.handleCloseDeleteZone}
-                    onSubmit={deleteZone.handleSendDeleteZone}
-                    message="Удалить выбранную зону?"
-                    type="submit"
-                />
+
                 {zoneInfoToggle}
             </div>
         </Container>

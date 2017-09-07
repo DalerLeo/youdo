@@ -115,9 +115,10 @@ const AddZonePopup = enhance((props) => {
         handleSubmit,
         handleClearDrawing,
         draw,
-        edit
+        edit,
+        data
     } = props
-    const submitZone = handleSubmit(() => props.onSubmit().catch(validate))
+    const submitZone = handleSubmit(() => props.onSubmit(data()).catch(validate))
     const isDraw = toBoolean(_.get(filter.getParams(), 'draw'))
 
     return (

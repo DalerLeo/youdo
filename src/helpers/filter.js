@@ -196,7 +196,10 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openAddDialog: null,
             openInfo: null,
             openAddZone: null,
-            draw: null
+            draw: null,
+            zoneId: null,
+            openUpdateZone: null,
+            deleteZone: null
 
         }))
     }

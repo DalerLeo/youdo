@@ -1,4 +1,4 @@
-import GoogleMapCustom from './GoogleMapCustom'
+import GoogleMapCustom from './GoogleMapList'
 
 export {
     GoogleMapCustom
