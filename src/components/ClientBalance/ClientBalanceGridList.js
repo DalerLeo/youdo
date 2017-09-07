@@ -77,6 +77,13 @@ const enhance = compose(
         },
         rightAlign: {
             textAlign: 'right',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            '& > div': {
+                position: 'absolute',
+                right: '-15px'
+            },
             '& button': {
                 opacity: '0',
                 '& > div': {
@@ -202,7 +209,7 @@ const ClientBalanceGridList = enhance((props) => {
                                 onTouchTap={() => {
                                     addDialog.handleOpenAddDialog(id)
                                 }}>
-                                <Add color='#275482'/>
+                                <Add color='#8dc572'/>
                             </IconButton>
                         </Tooltip>
                     </div>

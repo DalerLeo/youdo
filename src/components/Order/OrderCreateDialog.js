@@ -225,7 +225,9 @@ const OrderCreateDialog = enhance((props) => {
         shortageDialog,
         isUpdate,
         createClientDialog,
-        products
+        products,
+        status,
+        canChangeAnyPrice
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     let notEnough = false
@@ -236,6 +238,9 @@ const OrderCreateDialog = enhance((props) => {
             notEnough = true
         }
     })
+
+    const GIVEN = 2
+    const DELIVERED = 3
 
     const selectFieldScroll = {
         scrollable: true,
@@ -335,6 +340,8 @@ const OrderCreateDialog = enhance((props) => {
                             <div className={classes.rightOrderPart}>
                                 <Fields
                                     names={['products', 'product', 'amount', 'cost', 'type', 'editAmount', 'editCost']}
+                                    editOnlyCost={status === DELIVERED || status === GIVEN}
+                                    canChangeAnyPrice={canChangeAnyPrice}
                                     component={OrderListProductField}
                                 />
                             </div>

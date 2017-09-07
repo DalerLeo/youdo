@@ -22,6 +22,7 @@ import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import StatRightSide from './OrderStatDetailsRightSide'
+import OrderCreateDialog from './OrderCreateDialog'
 
 const ZERO = 0
 
@@ -172,13 +173,14 @@ const OrderDetails = enhance((props) => {
         itemReturnDialog,
         cancelOrderReturnDialog,
         confirmDialog,
-        handleOpenUpdateDialog,
+        updateDialog,
         type,
         tabData,
         paymentData,
         getDocument,
         returnData,
-        handleCloseDetail
+        handleCloseDetail,
+        canChangeAnyPrice
     } = props
 
     const id = _.get(data, 'id')
@@ -252,11 +254,11 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={!(status === REQUESTED || status === READY)}
+                            disabled={(status === CANCELED)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
-                            onTouchTap={handleOpenUpdateDialog}>
+                            onTouchTap={updateDialog.handleOpenUpdateDialog}>
                             <Edit />
                         </IconButton>
                     </Tooltip>
@@ -407,6 +409,17 @@ const OrderDetails = enhance((props) => {
                 onSubmit={cancelOrderReturnDialog.handleSubmitCancelOrderReturnDialog}
                 open={cancelOrderReturnDialog.openCancelOrderReturnDialog > ZERO}/>
             }
+
+            <OrderCreateDialog
+                isUpdate={true}
+                status={status}
+                canChangeAnyPrice={canChangeAnyPrice}
+                initialValues={updateDialog.initialValues}
+                open={updateDialog.openUpdateDialog}
+                loading={updateDialog.updateLoading}
+                onClose={updateDialog.handleCloseUpdateDialog}
+                onSubmit={updateDialog.handleSubmitUpdateDialog}
+            />
         </div>
     )
 })
@@ -444,7 +457,14 @@ OrderDetails.propTypes = {
         handleCloseCancelOrderReturnDialog: PropTypes.func,
         handleSubmitCancelOrderReturnDialog: PropTypes.func,
         openCancelOrderReturnDialog: PropTypes.number
-    })
+    }),
+    updateDialog: PropTypes.shape({
+        updateLoading: PropTypes.bool.isRequired,
+        openUpdateDialog: PropTypes.bool.isRequired,
+        handleOpenUpdateDialog: PropTypes.func.isRequired,
+        handleCloseUpdateDialog: PropTypes.func.isRequired,
+        handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default OrderDetails
