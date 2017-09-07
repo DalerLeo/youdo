@@ -232,10 +232,10 @@ const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) 
                 />
                 <div className={classes.list}>
                     <Row>
-                        <Col xs={4}>Наименование</Col>
+                        <Col xs={3}>Наименование</Col>
                         <Col xs={3}>Клиент</Col>
                         <Col xs={2}>Телефон</Col>
-                        <Col xs={2}>Адрес</Col>
+                        <Col xs={3}>Адрес</Col>
                     </Row>
                     {_.map(markets, (item, index) => {
                         const name = _.get(item, ['market', 'text'])
@@ -245,10 +245,10 @@ const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) 
 
                         return (
                             <Row key={index} className={classes.tableRow}>
-                                <Col xs={4}>{name}</Col>
+                                <Col xs={3}>{name}</Col>
                                 <Col xs={3}>{client}</Col>
                                 <Col xs={2}>{phone}</Col>
-                                <Col xs={2}>{address}</Col>
+                                <Col xs={3}>{address}</Col>
                                 <Col xs={1} style={{textAlign: 'right', width: '40px'}}>
                                     <IconButton
                                         onTouchTap={() => handleRemove(index)}

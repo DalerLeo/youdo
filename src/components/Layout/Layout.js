@@ -19,8 +19,7 @@ import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
 import CircularProgress from 'material-ui/CircularProgress'
 import {
     notificationListFetchAction,
-    notificationDeleteAction,
-    notificationGetNotViewed
+    notificationDeleteAction
 } from '../../actions/notifications'
 import {openSnackbarAction} from '../../actions/snackbar'
 import Notifications from '../Images/Notification.png'
@@ -89,8 +88,6 @@ const enhance = compose(
             setOpenNotifications(status)
             if (status) {
                 dispatch(notificationListFetchAction())
-            } else {
-                dispatch(notificationGetNotViewed())
             }
         }
 

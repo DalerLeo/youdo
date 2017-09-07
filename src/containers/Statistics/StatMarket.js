@@ -19,7 +19,7 @@ import {
 } from '../../actions/statMarket'
 
 import {StatMarketGridList, STAT_MARKET_DIALOG_OPEN} from '../../components/Statistics'
-import {STAT_MARKET_FILTER_KEY} from '../../components/Statistics/StatMarketGridList'
+import {STAT_MARKET_FILTER_KEY} from '../../components/Statistics/Markets/StatMarketGridList'
 
 const ZERO = 0
 const enhance = compose(

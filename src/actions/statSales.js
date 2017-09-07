@@ -20,3 +20,20 @@ export const statSalesDataFetchAction = (filter) => {
         payload
     }
 }
+
+export const orderListFetchAction = (filter, withOrderReturn) => {
+    const params = serializers.orderListFilterSerializer(filter.getParams(), withOrderReturn)
+    const payload = axios()
+        .get(API.ORDER_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_LIST,
+        payload
+    }
+}

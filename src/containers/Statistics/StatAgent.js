@@ -17,7 +17,7 @@ import {
     StatAgentGridList,
     STAT_AGENT_DIALOG_OPEN
 } from '../../components/Statistics'
-import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/StatAgentFilterForm'
+import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/Agents/StatAgentFilterForm'
 import {
     statAgentListFetchAction,
     statAgentItemFetchAction

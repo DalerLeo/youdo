@@ -79,10 +79,11 @@ const enhance = compose(
             background: '#fff',
             overflowY: 'auto',
             overflowX: 'hidden',
-            padding: '20px 30px'
+            padding: '10px 30px 20px'
         },
         nav: {
             display: 'flex',
+            height: '55px',
             alignItems: 'center',
             justifyContent: 'space-between',
             borderBottom: 'solid 1px #efefef'
@@ -118,10 +119,19 @@ const enhance = compose(
             }
         },
         permission: {
-            '& span': {
-                padding: '5px 10px',
+            minHeight: '50px',
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            '& > span': {
+                padding: '0 10px',
+                height: '28px',
+                borderRadius: '2px',
+                lineHeight: '1',
+                display: 'inline-flex',
+                alignItems: 'center',
                 backgroundColor: '#e9ecef',
-                marginRight: '10px'
+                margin: '5px 10px 5px 0'
             }
         },
         iconBtn: {
@@ -131,7 +141,7 @@ const enhance = compose(
         },
         list: {
             '& .dottedList': {
-                height: '50px',
+                padding: '0',
                 '&:after': {
                     margin: '0 8px'
                 },
@@ -160,44 +170,7 @@ const iconStyle = {
         padding: 0
     }
 }
-const accessList = [
-    {
-        id: 2,
-        name: 'delivery'
-    },
-    {
-        id: 1,
-        name: 'SupDir'
-    },
-    {
-        id: 3,
-        name: 'agent'
-    },
-    {
-        id: 4,
-        name: 'merch'
-    },
-    {
-        id: 5,
-        name: 'collector'
-    },
-    {
-        id: 6,
-        name: 'cashier'
-    },
-    {
-        id: 7,
-        name: 'supervisor'
-    },
-    {
-        id: 8,
-        name: 'changePrice'
-    },
-    {
-        id: 9,
-        name: 'changeRate'
-    }
-]
+
 const PositionGridList = enhance((props) => {
     const {
         createDialog,
@@ -220,6 +193,7 @@ const PositionGridList = enhance((props) => {
     const permissionList = _.map(_.get(listData, ['data']), (item, index) => {
         const name = _.get(item, 'name')
         const id = _.get(item, 'id')
+        const groups = _.get(item, 'groups')
         return (
             <Row key={index} className="dottedList">
                 <Col xs={2}>
@@ -227,17 +201,13 @@ const PositionGridList = enhance((props) => {
                 </Col>
                 <Col xs={9}>
                     <div className={classes.permission}>
-                        {_.map(_.get(item, ['groups']), (perm) => {
-                            const access = _.find(accessList, {'id': _.toInteger(perm)})
-                            if (_.get(access, 'id') !== MINUS_ONE) {
+                        {_.isEmpty(groups)
+                            ? <span>Нет доступа</span>
+                            : _.map(groups, (perm) => {
                                 return (
-                                    <span key={perm}>{userGroupFormat(_.get(access, 'name'))}</span>
+                                <span key={perm.id}>{userGroupFormat(_.get(perm, 'name'))}</span>
                                 )
-                            }
-                            return (
-                                <span key={perm}>Нет доступа</span>
-                            )
-                        })}
+                            })}
                     </div>
                 </Col>
                 <Col xs={1}>

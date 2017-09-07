@@ -5,13 +5,13 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon2 from '../../CloseIcon2/index'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
 import {Row, Col} from 'react-flexbox-grid'
 import CircularProgress from 'material-ui/CircularProgress'
-import getConfig from '../../helpers/getConfig'
-import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../../helpers/getConfig'
+import numberFormat from '../../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({

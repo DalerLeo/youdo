@@ -63,6 +63,24 @@ export const createExpenseSerializer = (data, client) => {
         payment_type: paymentType === TWO ? ZERO : paymentType
     }
 }
+export const createAddSerializer = (data, client) => {
+    const amount = numberWithoutSpaces(_.get(data, 'amount'))
+    const newAmount = amount > ZERO ? amount : amount * MINUS_ONE
+    const comment = _.get(data, 'comment')
+    const currency = getConfig('PRIMARY_CURRENCY_ID')
+    const division = _.get(data, ['division', 'value'])
+    const paymentType = _.get(data, ['paymentType', 'value'])
+
+    return {
+        'amount': newAmount,
+        'comment': comment,
+        client,
+        currency,
+        division,
+        type: 9,
+        payment_type: paymentType === TWO ? ZERO : paymentType
+    }
+}
 
 export const createReturnSerializer = (data, id) => {
     const client = id

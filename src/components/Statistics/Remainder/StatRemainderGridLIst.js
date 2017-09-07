@@ -2,49 +2,52 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import Container from '../Container'
+import * as ROUTES from '../../../constants/routes'
+import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import {connect} from 'react-redux'
 import {reduxForm, Field} from 'redux-form'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import DivisionSearchField from '../ReduxForm/DivisionSearchField'
-import StatSideMenu from './StatSideMenu'
-import Person from '../Images/person.png'
+import {StockSearchField, ProductTypeParentSearchField, ProductTypeChildSearchField, TextField} from '../../ReduxForm/index'
+import StatRemainderDialog from './StatRemainderDialog'
+import StatSideMenu from '../StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
+import List from 'material-ui/svg-icons/action/list'
 import CircularProgress from 'material-ui/CircularProgress'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-import LinearProgress from 'material-ui/LinearProgress'
-import Pagination from '../GridList/GridListNavPagination'
-import numberFormat from '../../helpers/numberFormat.js'
-import getConfig from '../../helpers/getConfig'
-import NotFound from '../Images/not-found.png'
+import Pagination from '../../GridList/GridListNavPagination/index'
+import numberFormat from '../../../helpers/numberFormat.js'
+import NotFound from '../../Images/not-found.png'
+import getConfig from '../../../helpers/getConfig'
+import Tooltip from '../../ToolTip/index'
 
-export const STAT_OUTCOME_CATEGORY_FILTER_KEY = {
-    DIVISION: 'division',
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+export const STAT_REMAINDER_FILTER_KEY = {
+    STOCK: 'stock',
+    TYPE: 'type',
+    SEARCH: 'search',
+    PRODUCT: 'product',
+    DIVISION: 'division'
 }
-
 const enhance = compose(
     injectSheet({
-        loader: {
-            width: '100%',
-            height: '100%',
-            background: '#fff',
-            alignItems: 'center',
-            zIndex: '999',
-            justifyContent: 'center',
-            display: 'flex'
-        },
         mainWrapper: {
             background: '#fff',
             margin: '0 -28px',
             height: 'calc(100% + 28px)',
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
+        loader: {
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: '999',
+            display: 'flex'
+        },
         wrapper: {
+            minWidth: '946px',
             padding: '20px 30px',
             height: 'calc(100% - 40px)',
             '& > div:nth-child(2)': {
@@ -58,8 +61,6 @@ const enhance = compose(
         },
         tableWrapper: {
             height: 'calc(100% - 118px)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
@@ -99,21 +100,6 @@ const enhance = compose(
             fontSize: '24px!important',
             fontWeight: '600'
         },
-        inputFieldCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            }
-        },
         balanceButtonWrap: {
             display: 'flex',
             alignItems: 'center',
@@ -128,7 +114,7 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             '& > div': {
-                width: '170px!important',
+                width: '140px!important',
                 position: 'relative',
                 marginRight: '40px',
                 '&:last-child': {
@@ -156,9 +142,9 @@ const enhance = compose(
 
         },
         rightPanel: {
+            overflowY: 'auto',
             flexBasis: 'calc(100% - 250px)',
-            maxWidth: 'calc(100% - 250px)',
-            overflow: 'hidden'
+            maxWidth: 'calc(100% - 250px)'
         },
         searchButton: {
             marginLeft: '-10px !important',
@@ -180,6 +166,21 @@ const enhance = compose(
                 width: '18px !important'
             }
         },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
             backgroundSize: '200px',
@@ -195,21 +196,31 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatOutcomeCategoryFilterForm',
+        form: 'StatRemainderFilterForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'StatRemainderFilterForm', 'values', 'typeParent', 'value'])
+        return {
+            typeParent
+        }
+    })
 )
 
-const StatOutcomeCategoryGridList = enhance((props) => {
+const StatRemainderGridList = enhance((props) => {
     const {
         classes,
+        statRemainderDialog,
         listData,
         filter,
-        handleSubmitFilterDialog,
-        getDocument
+        detailData,
+        getDocument,
+        handleSubmit,
+        filterItem,
+        onSubmit,
+        typeParent
     } = props
 
-    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
 
     const headerStyle = {
@@ -229,35 +240,48 @@ const StatOutcomeCategoryGridList = enhance((props) => {
             padding: 0
         }
     }
-
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={3}>Категория</Col>
-            <Col xs={6}>Процентное соотношение</Col>
-            <Col xs={3} style={{justifyContent: 'flex-end'}}>Сумма ({currentCurrency})</Col>
+            <Col xs={3}>Товар</Col>
+            <Col xs={2}>Тип товара</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Всего товаров</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Доступно</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Цена</Col>
+            <Col xs={1} style={{display: 'none'}}>|</Col>
+
         </Row>
     )
 
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const percent = _.get(item, 'percent')
-        const amount = numberFormat(_.get(item, 'amount'), getConfig('PRIMARY_CURRENCY'))
+        const productType = _.get(item, ['type', 'name'])
+        const product = _.get(item, 'title')
+        const measurement = _.get(item, ['measurement', 'name'])
+        const defects = numberFormat(_.get(item, 'defects'), measurement)
+        const price = numberFormat(_.get(item, 'price'), getConfig('PRIMARY_CURRENCY'))
+        const balance = numberFormat(Number(_.get(item, 'balance')) + Number(_.get(item, 'defects')), measurement)
+        const reserved = numberFormat(Number(_.get(item, 'reserved')), measurement)
+        const available = numberFormat(Number(_.get(item, 'balance')) - Number(_.get(item, 'reserved')), measurement)
 
         return (
             <Row key={id} className="dottedList">
                 <Col xs={3}>
-                    <div className="personImage"><img src={Person}/></div>
-                    <div>{name}</div>
+                    <div>{product}</div>
                 </Col>
-                <Col xs={6}>
-                    <LinearProgress
-                        color="#58bed9"
-                        mode="determinate"
-                        value={percent}
-                        style={{backgroundColor: '#fff', height: '10px'}}/>
+                <Col xs={2}>{productType}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', whiteSpace: 'nowrap'}}>
+                    <Tooltip position="top" text="Всего / Забронировано / Брак">
+                        {balance} / <span style={{color: '#90a4ae'}}> {reserved} </span> / <span style={{color: '#e57373'}}> {defects} </span>
+                    </Tooltip>
                 </Col>
-                <Col xs={3} style={{justifyContent: 'flex-end'}}>{amount}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{available}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{price}</Col>
+                <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right', paddingRight: '0'}}>
+                    <IconButton
+                        onTouchTap={() => { statRemainderDialog.handleOpenStatRemainderDialog(id) }}>
+                        <List color="#12aaeb"/>
+                    </IconButton>
+                </Col>
             </Row>
         )
     })
@@ -266,26 +290,36 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_OUTCOME_CATEGORY_URL}/>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_REMAINDER_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                        <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+                        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                             <div className={classes.filter}>
                                 <Field
                                     className={classes.inputFieldCustom}
-                                    name="date"
-                                    component={DateToDateField}
-                                    label="Диапазон дат"
+                                    name="stock"
+                                    component={StockSearchField}
+                                    label="Склад"
                                     fullWidth={true}/>
                                 <Field
-                                    name="division"
-                                    component={DivisionSearchField}
                                     className={classes.inputFieldCustom}
-                                    label="Подразделение"
-                                    fullWidth={true}
-                                />
-
+                                    name="typeParent"
+                                    component={ProductTypeParentSearchField}
+                                    label="Тип товара"
+                                    fullWidth={true}/>
+                                {typeParent && <Field
+                                    className={classes.inputFieldCustom}
+                                    name="type"
+                                    component={ProductTypeChildSearchField}
+                                    label="Подкатегория"
+                                    fullWidth={true}/>}
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="search"
+                                    component={TextField}
+                                    label="Поиск"
+                                    fullWidth={true}/>
                                 <IconButton
                                     className={classes.searchButton}
                                     iconStyle={iconStyle.icon}
@@ -295,23 +329,27 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                                 </IconButton>
                             </div>
                             <a className={classes.excel}
-                               onClick={getDocument.handleGetDocument}>
+                               onClick = {getDocument.handleGetDocument}>
                                 <Excel color="#fff"/> <span>Excel</span>
                             </a>
                         </form>
-                            <Pagination filter={filter}/>
                         {listLoading
                         ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
+                            <CircularProgress size={40} thickness={4} />
                         </div>
                         : (_.isEmpty(list) && !listLoading)
                             ? <div className={classes.emptyQuery}>
                                 <div>По вашему запросу ничего не найдено</div>
-                              </div>
-                            : <div className={classes.tableWrapper}>
+                            </div>
+                            : <div>
+                                <Pagination filter={filter}/>
+
+                                <div className={classes.tableWrapper}>
                                 {headers}
                                 {list}
-                              </div>}
+                                </div>
+                              </div>
+                        }
                     </div>
                 </div>
             </Row>
@@ -321,13 +359,25 @@ const StatOutcomeCategoryGridList = enhance((props) => {
     return (
         <Container>
             {page}
+            <StatRemainderDialog
+                loading={_.get(detailData.detailLoading)}
+                detailData={detailData}
+                open={statRemainderDialog.openStatRemainderDialog}
+                onClose={statRemainderDialog.handleCloseStatRemainderDialog}
+                filterItem={filterItem}/>
         </Container>
     )
 })
 
-StatOutcomeCategoryGridList.propTypes = {
+StatRemainderGridList.propTypes = {
     filter: PropTypes.object.isRequired,
-    listData: PropTypes.object
+    listData: PropTypes.object,
+    detailData: PropTypes.object,
+    statRemainderDialog: PropTypes.shape({
+        openStatRemainderDialog: PropTypes.bool.isRequired,
+        handleOpenStatRemainderDialog: PropTypes.func.isRequired,
+        handleCloseStatRemainderDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
-export default StatOutcomeCategoryGridList
+export default StatRemainderGridList

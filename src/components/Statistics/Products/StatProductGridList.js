@@ -2,17 +2,17 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../constants/routes'
-import Container from '../Container'
+import * as ROUTES from '../../../constants/routes'
+import Container from '../../Container/index'
 import LinearProgress from 'material-ui/LinearProgress'
 import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import StatSideMenu from './StatSideMenu'
-import Pagination from '../GridList/GridListNavPagination'
-import getConfig from '../../helpers/getConfig'
-import numberFormat from '../../helpers/numberFormat.js'
-import NotFound from '../Images/not-found.png'
+import StatSideMenu from '../StatSideMenu'
+import Pagination from '../../GridList/GridListNavPagination/index'
+import getConfig from '../../../helpers/getConfig'
+import numberFormat from '../../../helpers/numberFormat.js'
+import NotFound from '../../Images/not-found.png'
 import StatProductFilterForm from './StatProductFilterForm'
 
 const enhance = compose(
@@ -34,8 +34,6 @@ const enhance = compose(
         },
         wrapper: {
             height: 'calc(100% - 40px)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             padding: '20px 30px',
             '& > div:nth-child(2)': {
                 marginTop: '10px',
