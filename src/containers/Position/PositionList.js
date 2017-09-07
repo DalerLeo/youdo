@@ -290,7 +290,7 @@ const PositionList = enhance((props) => {
             let group = []
             const groups = _.get(detail, 'groups')
             _.each(groups, (item) => {
-                group[item] = true
+                group[item.id] = true
             })
             if (!name || openCreateDialog) {
                 return {}
