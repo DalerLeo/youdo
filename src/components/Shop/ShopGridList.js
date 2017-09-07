@@ -24,7 +24,7 @@ import Tooltip from '../ToolTip'
 const listHeader = [
     {
         xs: 3,
-        sorting: true,
+        sorting: false,
         name: 'name',
         title: 'Название'
     },

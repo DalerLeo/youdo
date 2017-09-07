@@ -37,7 +37,7 @@ const validate = (data) => {
 
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         title: 'Название',
         xs: 3
@@ -55,14 +55,14 @@ const listHeader = [
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'minPrice',
         title: 'Цена',
         xs: 2
     },
     {
         sorting: true,
-        name: 'priceUpdate',
+        name: 'priceUpdated',
         title: 'Дата обновления',
         xs: 2
     }

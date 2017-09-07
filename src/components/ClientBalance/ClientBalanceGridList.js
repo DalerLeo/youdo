@@ -26,7 +26,7 @@ const DIVISION = {
 
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'client',
         title: 'Клиент',
         xs: 3

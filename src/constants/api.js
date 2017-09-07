@@ -328,6 +328,7 @@ export const STAT_DEBTORS_ITEM = 'sales/order/'
 export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 
 export const STAT_SALES_DATA = '/stats/orders/'
+export const STAT_SALES_GET_DOCUMENT = '/stats/orders/export/'
 
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'

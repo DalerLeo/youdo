@@ -16,7 +16,7 @@ import GridList from '../../GridList'
 
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         title: 'Сотрудник',
         xs: 4
@@ -28,7 +28,7 @@ const listHeader = [
         xs: 3
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'shift',
         title: 'Смена',
         xs: 3

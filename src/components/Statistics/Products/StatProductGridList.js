@@ -14,6 +14,7 @@ import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
 import StatProductFilterForm from './StatProductFilterForm'
+import GridListHeader from '../../GridList/GridListHeader/index'
 
 const enhance = compose(
     injectSheet({
@@ -159,7 +160,40 @@ const enhance = compose(
         }
     }),
 )
-
+const listHeader = [
+    {
+        sorting: false,
+        name: 'name',
+        title: 'Товар',
+        xs: 3
+    },
+    {
+        sorting: false,
+        name: 'type',
+        title: 'Тип товара',
+        xs: 3
+    },
+    {
+        sorting: true,
+        name: 'percent',
+        title: 'Продажи',
+        xs: 3
+    },
+    {
+        sorting: true,
+        alignRight: true,
+        name: 'count',
+        title: 'Кол-во',
+        xs: 1
+    },
+    {
+        sorting: true,
+        alignRight: true,
+        name: 'income',
+        title: 'Сумма',
+        xs: 2
+    }
+]
 const StatProductGridList = enhance((props) => {
     const {
         listData,
@@ -172,20 +206,6 @@ const StatProductGridList = enhance((props) => {
 
     const listLoading = _.get(listData, 'listLoading')
 
-    const headerStyle = {
-        backgroundColor: '#fff',
-        fontWeight: '600',
-        color: '#666'
-    }
-    const headers = (
-        <Row style={headerStyle} className="dottedList">
-            <Col xs={3}>Товар</Col>
-            <Col xs={3}>Тип товара</Col>
-            <Col xs={3}>Продажи</Col>
-            <Col xs={1}>Кол-во</Col>
-            <Col xs={2}>Сумма</Col>
-        </Row>
-    )
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -211,7 +231,7 @@ const StatProductGridList = enhance((props) => {
             </Row>
         )
     })
-
+    const listIds = _.map(list, item => _.toInteger(_.get(item, 'key')))
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -230,7 +250,17 @@ const StatProductGridList = enhance((props) => {
                             <div>По вашему запросу ничего не найдено</div>
                         </div>
                         : <div className={classes.tableWrapper}>
-                            {headers}
+                                    <GridListHeader
+                                        filter={filter}
+                                        listIds={listIds}
+                                        withoutCheckboxes={false}
+                                        withoutRow={false}
+                                        column={listHeader}
+                                        listShadow={true}
+                                        style={{position: 'relative'}}
+                                        className={classes.header}
+                                        statistics={true}
+                                    />
                             {list}
                         </div>}
                     </div>

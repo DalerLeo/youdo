@@ -38,7 +38,7 @@ const listHeader = [
         width: '10%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'client',
         title: 'Клиент',
         width: '17.5%'

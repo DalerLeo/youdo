@@ -203,19 +203,19 @@ const enhance = compose(
 
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'agent',
         title: 'Агенты',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'zone',
         title: 'Зона',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'plan',
         title: 'План',
         xs: 2
