@@ -76,16 +76,20 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
-        dispatch(manufactureListFetchAction(filter))
+        let prevPath = _.startsWith(props.pathname, '/') ? props.pathname : '/' + props.pathname
+        let nextPath = _.startsWith(nextProps.pathname, '/') ? nextProps.pathname : '/' + nextProps.pathname
+        return _.startsWith(prevPath, ROUTER.MANUFACTURE_PRODUCT_LIST_URL) !== _.startsWith(nextPath, ROUTER.MANUFACTURE_PRODUCT_LIST_URL)
+    }, ({dispatch, filter, pathname}) => {
+        if (_.startsWith(pathname, ROUTER.MANUFACTURE_PRODUCT_LIST_URL)) {
+            dispatch(manufactureListFetchAction(filter))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
         const manufactureId = _.get(props, ['params', 'manufactureId'])
         const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
-        return (props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest() && !_.isNull(nextProps.filterProduct.filterRequest())) ||
-            (manufactureId !== nextManufactureId && nextManufactureId)
+        return (manufactureId !== nextManufactureId && nextManufactureId) ||
+            (props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest())
     }, ({dispatch, filterProduct, params}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
         if (manufactureId > ZERO) {
@@ -115,11 +119,16 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[PRODUCT_FILTER_OPEN]: false})})
         },
         handleClearProductFilterDialog: props => () => {
-            const {location: {pathname}} = props
+            const {dispatch, params, filterProduct, location: {pathname}} = props
+            const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
             hashHistory.push({pathname, query: {}})
+                .then(() => {
+                    return dispatch(productListFetchAction(filterProduct, manufactureId))
+                })
         },
         handleSubmitProductFilterDialog: props => () => {
-            const {filterProduct, filterProductForm} = props
+            const {dispatch, filterProduct, filterProductForm, params} = props
+            const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
             const typeParent = _.get(filterProductForm, ['values', 'typeParent', 'value']) || null
             const typeChild = _.get(filterProductForm, ['values', 'typeChild', 'value']) || null
             const measurement = _.get(filterProductForm, ['values', 'measurement', 'value']) || null
@@ -131,6 +140,7 @@ const enhance = compose(
                 [PRODUCT_FILTER_KEY.MEASUREMENT]: measurement,
                 [PRODUCT_FILTER_KEY.BRAND]: brand
             })
+            dispatch(productListFetchAction(filterProduct, manufactureId))
         },
 
         handleOpenAddProductDialog: props => () => {
@@ -303,7 +313,7 @@ const enhance = compose(
 
         handleCloseDetail: props => () => {
             const {filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParam({'productId': MINUS_ONE})})
+            hashHistory.push({pathname, query: filter.getParams({'productId': false})})
         }
     })
 )
