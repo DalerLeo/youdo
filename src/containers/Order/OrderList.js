@@ -77,6 +77,7 @@ const enhance = compose(
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
+        const userGroups = _.get(state, ['authConfirm', 'data', 'groups'])
 
         return {
             list,
@@ -102,7 +103,8 @@ const enhance = compose(
             returnDataLoading,
             returnDialogLoading,
             products,
-            editProducts
+            editProducts,
+            userGroups
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -532,7 +534,8 @@ const OrderList = enhance((props) => {
         paymentLoading,
         params,
         listPrint,
-        listPrintLoading
+        listPrintLoading,
+        userGroups
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
@@ -764,6 +767,10 @@ const OrderList = enhance((props) => {
             listPrintData={listPrintData}/>
     }
 
+    const canChangeAnyPrice = !_.isEmpty(_.filter(userGroups, (o) => {
+        return o.name === 'change_any_price'
+    }))
+
     document.getElementById('wrapper').style.height = '100%'
     const order = true
     return (
@@ -791,6 +798,7 @@ const OrderList = enhance((props) => {
                 type={order}
                 refreshAction={props.handleRefreshList}
                 cancelOrderReturnDialog={cancelOrderReturnDialog}
+                canChangeAnyPrice={canChangeAnyPrice}
             />
         </Layout>
     )
