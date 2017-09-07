@@ -172,7 +172,7 @@ const enhance = compose(
         handleOpenUpdateZone: props => (id) => {
             const {filter} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.ZONES_ITEM_PATH, id),
+                pathname: sprintf('/googleMap/%d/', id),
                 query: filter.getParams({[UPDATE_ZONE]: true, [TOGGLE_INFO]: false})
             })
         },

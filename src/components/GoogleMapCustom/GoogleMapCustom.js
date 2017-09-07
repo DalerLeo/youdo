@@ -39,26 +39,6 @@ export default class GoogleCustomMap extends React.Component {
         let locations = [
             {lat: -31.563910, lng: 147.154312},
             {lat: -33.718234, lng: 150.363181},
-            {lat: -33.727111, lng: 150.371124},
-            {lat: -33.848588, lng: 151.209834},
-            {lat: -33.851702, lng: 151.216968},
-            {lat: -34.671264, lng: 150.863657},
-            {lat: -35.304724, lng: 148.662905},
-            {lat: -36.817685, lng: 175.699196},
-            {lat: -36.828611, lng: 175.790222},
-            {lat: -37.750000, lng: 145.116667},
-            {lat: -37.759859, lng: 145.128708},
-            {lat: -37.765015, lng: 145.133858},
-            {lat: -37.770104, lng: 145.143299},
-            {lat: -37.773700, lng: 145.145187},
-            {lat: -37.774785, lng: 145.137978},
-            {lat: -37.819616, lng: 144.968119},
-            {lat: -38.330766, lng: 144.695692},
-            {lat: -39.927193, lng: 175.053218},
-            {lat: -41.330162, lng: 174.865694},
-            {lat: -42.734358, lng: 147.439506},
-            {lat: -42.734358, lng: 147.501315},
-            {lat: -42.735258, lng: 147.438000},
             {lat: -43.999792, lng: 170.463352}
         ]
         let labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -150,26 +130,6 @@ export default class GoogleCustomMap extends React.Component {
         this.loadMap()
     }
 
-    handleMarkerScriptCreate () {
-        this.setState({
-            markerScriptLoaded: false
-        })
-    }
-
-    handleMarkerScriptError () {
-        this.setState({
-            markerScriptError: true
-        })
-    }
-
-    handleMarkerScriptLoad () {
-        this.setState({
-            markerScriptLoaded: true
-        })
-
-        this.loadMap()
-    }
-
     handleClearDrawing (...evt) {
         google.maps.event.clearInstanceListeners(this.state.drawing)
         this.state.drawing.setMap(null)
@@ -218,11 +178,17 @@ export default class GoogleCustomMap extends React.Component {
         }
     }
 
+    shouldComponentUpdate (nextProps, nextState) {
+        if (_.get(nextState, 'scriptLoaded')) {
+            this.loadMap()
+        }
+        return true
+    }
+
     render () {
         const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone} = this.props
         const GOOGLE_API_KEY = 'AIzaSyDnUkBg_uV1aa4e7pyEvv3bVxN3RfwNQEo'
         const url = 'http://maps.googleapis.com/maps/api/js?key=' + GOOGLE_API_KEY + '&libraries=drawing'
-        const markerCluster = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'
         if (_.get(this.props, ['listData', 'listLoading'])) {
             return (
                 <div style={classes.loader}>
@@ -233,18 +199,13 @@ export default class GoogleCustomMap extends React.Component {
         return (
             <div style={{height: '100%', width: '100%'}}>
                 <div className='GMap-canvas' id="mappingGoogleCustom" ref='mapping'
-                     style={{height: '100%', width: '100%'}}></div>
+                     style={{height: '100%', width: '100%'}}>
+                </div>
                 <Script
                     url={url}
                     onCreate={this.handleScriptCreate.bind(this)}
                     onError={this.handleScriptError.bind(this)}
                     onLoad={this.handleScriptLoad.bind(this)}
-                />
-                <Script
-                    url={markerCluster}
-                    onCreate={this.handleMarkerScriptCreate.bind(this)}
-                    onError={this.handleMarkerScriptError.bind(this)}
-                    onLoad={this.handleMarkerScriptLoad.bind(this)}
                 />
 
                 {isOpenAddZone && <AddZonePopup
