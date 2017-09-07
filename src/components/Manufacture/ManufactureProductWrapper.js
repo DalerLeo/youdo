@@ -9,12 +9,11 @@ import ManufactureShowBom from './ManufactureShowBom'
 import ManufactureChangeDialog from './ManufactureChangeDialog'
 import ManufactureAddProductDialog from './ManufactureAddProductDialog'
 import ManufactureEditProductDialog from './ManufactureEditProductDialog'
+import ManufactureTabs from './ManufactureTabs'
 import Container from '../Container'
 import ConfirmDialog from '../ConfirmDialog'
-import Paper from 'material-ui/Paper'
 import ManufactureProduct from './Tab/ManufactureProduct'
 import * as ROUTES from '../../constants/routes'
-import {Link} from 'react-router'
 
 const enhance = compose(
     injectSheet({
@@ -32,33 +31,13 @@ const enhance = compose(
         productionMainRow: {
             paddingTop: '20px',
             margin: '0 -28px',
-            height: 'calc(100vh - 20px)'
+            height: '100vh'
         },
         productionRightSide: {
             width: 'calc(100% - 280px)',
-            padding: '0 28px'
-        },
-        tabWrapper: {
-            display: 'flex',
-            alignItems: 'center',
-            '& > a': {
-                fontWeight: 'inherit',
-                color: 'inherit'
-            }
-        },
-        tab: {
-            height: '58px',
-            lineHeight: '58px',
-            padding: '0 20px',
-            transition: 'all 300ms ease',
-            cursor: 'pointer'
-        },
-        activeTab: {
-            extend: 'tab',
-            color: '#12aaeb',
-            fontWeight: '600',
-            borderBottom: '3px #12aaeb solid',
-            cursor: 'default'
+            marginTop: '-20px',
+            padding: '20px 30px',
+            overflowY: 'auto'
         },
         productList: {
             width: '100%',
@@ -81,28 +60,9 @@ const enhance = compose(
     })
 )
 
-const tabs = [
-    {
-        title: 'Продукция',
-        url: ROUTES.MANUFACTURE_PRODUCT_LIST_URL
-    },
-    {
-        title: 'Персонал',
-        url: ROUTES.MANUFACTURE_PERSON_LIST_URL
-    },
-    {
-        title: 'Оборудование',
-        url: ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL
-    },
-    {
-        title: 'Партия',
-        url: ROUTES.MANUFACTURE_SHIPMENT_LIST_URL
-    }
-]
-
 const ManufactureProductWrapper = enhance((props) => {
     const {
-        filter,
+        filterProduct,
         listData,
         detailData,
         showBom,
@@ -115,7 +75,6 @@ const ManufactureProductWrapper = enhance((props) => {
     } = props
 
     const ZERO = 0
-    console.warn(filter.getParams())
 
     const productConfirm = _.get(productData, 'confirmDialog')
     const productCreate = _.get(productData, 'createDialog')
@@ -155,27 +114,12 @@ const ManufactureProductWrapper = enhance((props) => {
                 <ManufacturesList listData={listData} detailData={detailData}/>
 
                 <div className={classes.productionRightSide}>
-                    <Paper zDepth={1} className={classes.tabWrapper}>
-                        {
-                            _.map(tabs, (tab, index) => {
-                                const title = _.get(tab, 'title')
-                                const url = _.get(tab, 'url')
-
-                                return (
-                                    <Link key={index} to={{pathname: url, query: ''}}>
-                                        <div className={classes.tab}>
-                                            <span>{title}</span>
-                                        </div>
-                                    </Link>
-                                )
-                            })
-                        }
-                    </Paper>
+                    <ManufactureTabs currentURL={ROUTES.MANUFACTURE_PRODUCT_LIST_URL}/>
 
                     <ManufactureProduct
                         productData={productData}
                         editMaterials={editMaterials}
-                        filter={filter}
+                        filter={filterProduct}
                         filterDialog={productFilterDialog}
                         createMaterials={createMaterials}
                         deleteMaterials={deleteMaterials}

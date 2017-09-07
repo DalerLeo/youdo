@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Paper from 'material-ui/Paper'
-import * as TAB from '../../constants/manufactureTab'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import ManufactureProduct from './Tab/ManufactureProduct'
 import ManufacturePerson from './Tab/ManufacturePerson'
@@ -70,34 +69,7 @@ const ManufactureTab = enhance((props) => {
     const tab = _.get(tabData, 'tab')
     return (
         <div className={classes.ManufactRightSide}>
-            <div>
-                <Paper zDepth={1}>
-                    <Tabs
-                        className={classes.colorCat}
-                        value={tab}
-                        onChange={(value) => tabData.handleTabChange(value)}>
-                        <Tab label="Продукция" value={TAB.MANUFACTURE_TAB_PRODUCT}/>
-                        <Tab label="Персонал" value={TAB.MANUFACTURE_TAB_PERSON} />
-                        <Tab label="Оборудование" value={TAB.MANUFACTURE_TAB_EQUIPMENT} />
-                        <Tab label="Партия товара" value={TAB.MANUFACTURE_TAB_SHIPMENT} />
-                    </Tabs>
-                </Paper>
-                {TAB.MANUFACTURE_TAB_PRODUCT === tab && <ManufactureProduct
-                    productData={productData}
-                    editMaterials={editMaterials}
-                    filter={tabData.filter}
-                    filterDialog={productFilterDialog}
-                    createMaterials={createMaterials}
-                    deleteMaterials={deleteMaterials}
-                    handleCloseDetail={handleCloseDetail}/>}
-                {TAB.MANUFACTURE_TAB_PERSON === tab && <ManufacturePerson
-                    personData={personData}
-                    />}
-                {TAB.MANUFACTURE_TAB_EQUIPMENT === tab && <ManufactureEquipment
-                    equipmentData={equipmentData}/>}
-                {TAB.MANUFACTURE_TAB_SHIPMENT === tab && <ManufactureShipment
-                    shipmentData={shipmentData}/>}
-            </div>
+
         </div>
     )
 })

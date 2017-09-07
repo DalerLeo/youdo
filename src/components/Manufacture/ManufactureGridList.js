@@ -81,7 +81,6 @@ const ManufactureGridList = enhance((props) => {
     const productName = _.get(_.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), 'name')
     return (
         <Container>
-            <SubMenu url={ROUTES.MANUFACTURE_CUSTOM_URL}/>
             <ManufactureAddStaffDialog
                 open={userCreate.open}
                 onClose={userCreate.handleCloseDialog}

@@ -28,7 +28,8 @@ import {ProviderList} from '../containers/Provider'
 import {ClientList} from '../containers/Client'
 import {
     ManufactureList,
-    ManufactureProductList
+    ManufactureProductList,
+    ManufacturePersonList
 } from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
 import {StatStock} from '../containers/StatStock'
@@ -450,12 +451,7 @@ export default {
         {
             path: ROUTES.MANUFACTURE_LIST_URL,
             component: userIsAdminChain(ManufactureProductList),
-            childRoutes: [
-                {
-                    path: ROUTES.MANUFACTURE_ITEM_URL,
-                    component: userIsAuth(ManufactureProductList)
-                }
-            ]
+            childRoutes: []
         },
         // Manufacture Product
         {
@@ -465,6 +461,17 @@ export default {
                 {
                     path: ROUTES.MANUFACTURE_PRODUCT_ITEM_URL,
                     component: userIsAuth(ManufactureProductList)
+                }
+            ]
+        },
+        // Manufacture Person
+        {
+            path: ROUTES.MANUFACTURE_PERSON_LIST_URL,
+            component: userIsAdminChain(ManufacturePersonList),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACTURE_PERSON_ITEM_URL,
+                    component: userIsAuth(ManufacturePersonList)
                 }
             ]
         },

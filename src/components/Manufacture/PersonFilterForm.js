@@ -13,7 +13,7 @@ import {ShiftSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const PERSON_FILTER_OPEN = 'openPersonFilterDialog'
+export const PERSON_FILTER_OPEN = 'openFilterDialog'
 
 export const PERSON_FILTER_KEY = {
     SHIFT: 'shift'
@@ -102,7 +102,7 @@ const enhance = compose(
             const {filter} = props
             return _(PERSON_FILTER_KEY)
                 .values()
-                .filter(item => item !== PERSON_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== PERSON_FILTER_KEY.SHIFT)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -111,7 +111,7 @@ const enhance = compose(
 )
 
 const UsersFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -151,7 +151,7 @@ const UsersFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="shift" component={ShiftSearchField} label="Смена" fullWidth={true}/>
                     </div>

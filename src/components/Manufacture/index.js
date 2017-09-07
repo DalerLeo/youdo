@@ -1,5 +1,7 @@
 import ManufactureGridList from './ManufactureGridList'
 import ManufactureProductWrapper from './ManufactureProductWrapper'
+import ManufacturePersonWrapper from './ManufacturePersonWrapper'
+
 import {OPEN_USER_CREATE_DIALOG} from './ManufactureAddStaffDialog'
 import {MANUFACTURE_SHOW_BOM_DIALOG_OPEN} from './ManufactureShowBom'
 import {MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN} from './ManufactureAddProductDialog'
@@ -15,7 +17,6 @@ const MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN = 'createMaterials'
 const OPEN_DELETE_MATERIALS_DIALOG = 'openDeleteIngredient'
 const OPEN_USER_CONFIRM_DIALOG = 'openUserDeleteDialog'
 const MANUFACTURE_CHANGE = 'openChangeManufacture'
-const TAB = 'tab'
 
 export {
     OPEN_USER_CREATE_DIALOG,
@@ -32,7 +33,7 @@ export {
     OPEN_USER_UPDATE_DIALOG,
     OPEN_DELETE_MATERIALS_DIALOG,
     MANUFACTURE_CHANGE,
-    TAB,
     ManufactureGridList,
-    ManufactureProductWrapper
+    ManufactureProductWrapper,
+    ManufacturePersonWrapper
 }

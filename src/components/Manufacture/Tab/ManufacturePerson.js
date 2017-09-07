@@ -12,7 +12,10 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
 import PersonFilterForm from '../PersonFilterForm'
+import ManufactureAddStaffDialog from '../ManufactureAddStaffDialog'
+import ConfirmDialog from '../../ConfirmDialog'
 import GridList from '../../GridList'
+import moment from 'moment'
 
 const listHeader = [
     {
@@ -22,15 +25,15 @@ const listHeader = [
         xs: 4
     },
     {
-        sorting: false,
-        name: 'position',
-        title: 'Должность',
-        xs: 3
-    },
-    {
         sorting: true,
         name: 'shift',
         title: 'Смена',
+        xs: 3
+    },
+    {
+        sorting: false,
+        name: 'time',
+        title: 'Время',
         xs: 3
     },
     {
@@ -77,7 +80,8 @@ const ManufacturePerson = (props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
         const shift = _.get(item, 'name')
-        const beginTime = _.get(item, 'beginTime')
+        const beginTime = moment(moment().format('YYYY-MM-DD ' + _.get(item, 'beginTime'))).format('HH:mm')
+        const endTime = moment(moment().format('YYYY-MM-DD ' + _.get(item, 'endTime'))).format('HH:mm')
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -87,7 +91,7 @@ const ManufacturePerson = (props) => {
             <Row key={id}>
                 <Col xs={4}>{name}</Col>
                 <Col xs={3}>{shift}</Col>
-                <Col xs={3}>{beginTime}</Col>
+                <Col xs={3}>{beginTime} - {endTime}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -120,13 +124,15 @@ const ManufacturePerson = (props) => {
         loading: _.get(personData, 'listLoading')
     }
 
-    const createDialog = _.get(personData, 'createDialog')
+    const userCreate = _.get(personData, 'createDialog')
+    const userUpdate = _.get(personData, 'updateDialog')
+    const userConfirm = _.get(personData, 'confirmDialog')
 
     return (
         <Row>
             <Col xs={12}>
                 <div style={{padding: '10px 0', textAlign: 'right'}}>
-                    <FloatButton onClick={createDialog.handleOpenDialog} style={{color: '#12aaeb'}}>
+                    <FloatButton onClick={userCreate.handleOpenDialog} style={{color: '#12aaeb'}}>
                         <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
                                     viewBox="0 0 24 15"/>
                         добавить сотрудников
@@ -139,6 +145,26 @@ const ManufacturePerson = (props) => {
                     actionsDialog={actions}
                     filterDialog={personFilterDialog}
                 />
+                <ManufactureAddStaffDialog
+                    open={userCreate.open}
+                    onClose={userCreate.handleCloseDialog}
+                    onSubmit={userCreate.handleSubmitDialog}
+                />
+                <ManufactureAddStaffDialog
+                    isUpdate={true}
+                    initialValues={userUpdate.initialValues}
+                    open={userUpdate.open}
+                    onClose={userUpdate.handleCloseUpdateDialog}
+                    onSubmit={userUpdate.handleSubmitUpdateDialog}
+                />
+                {_.get(personData, 'userShiftItem') && <ConfirmDialog
+                    type="delete"
+                    message={_.get(_.get(personData, ['userShiftItem', 'user']), 'firstName') +
+                    ' ' + _.get(_.get(personData, ['userShiftItem', 'user']), 'secondName')}
+                    onClose={userConfirm.handleCloseConfirmDialog}
+                    onSubmit={userConfirm.handleSendConfirmDialog}
+                    open={userConfirm.open}
+                />}
             </Col>
         </Row>
     )

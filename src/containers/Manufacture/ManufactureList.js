@@ -6,7 +6,6 @@ import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
-import * as MANUFACTURE_TAB from '../../constants/manufactureTab'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -541,7 +540,6 @@ const ManufactureList = enhance((props) => {
     const shift = _.toInteger(filterProduct.getParam(PERSON_FILTER_KEY.SHIFT))
     const brand = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.BRAND))
     const openDeleteMaterialsDialog = toBoolean(_.get(location, ['query', OPEN_DELETE_MATERIALS_DIALOG]))
-    const tab = _.get(location, ['query', TAB]) || MANUFACTURE_TAB.MANUFACTURE_DEFAULT_TAB
 
     const openAddProductDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]))
     const openProductConfirmDialog = toBoolean(_.get(location, ['query', OPEN_DELETE_PRODUCT_DIALOG]))
@@ -638,7 +636,6 @@ const ManufactureList = enhance((props) => {
 
     const tabData = {
         filter: filterProduct,
-        tab,
         handleTabChange: props.handleTabChange
     }
 

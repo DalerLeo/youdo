@@ -110,8 +110,6 @@ export const CLIENT_ITEM_PATH = `${CLIENT}/%d`
 
 export const MANUFACTURE = 'manufacture'
 export const MANUFACTURE_LIST_URL = `/${MANUFACTURE}`
-export const MANUFACTURE_CUSTOM_URL = `/${MANUFACTURE}/1`
-export const MANUFACTURE_ITEM_URL = `${MANUFACTURE_LIST_URL}/:manufactureId`
 export const MANUFACTURE_ITEM_PATH = `${MANUFACTURE}/%d`
 
 export const MANUFACTURE_PRODUCT_LIST_URL = `/${MANUFACTURE}/product`

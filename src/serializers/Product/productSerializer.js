@@ -19,6 +19,7 @@ export const createSerializer = (data) => {
 }
 
 export const listFilterSerializer = (data, manufacture) => {
+    console.warn(data)
     const {...defaultData} = data
     const type = _.get(defaultData, 'typeChild') || _.get(defaultData, 'typeParent')
     const ordering = _.get(data, 'ordering')

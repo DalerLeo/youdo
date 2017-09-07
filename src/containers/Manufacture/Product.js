@@ -6,7 +6,6 @@ import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
-import * as MANUFACTURE_TAB from '../../constants/manufactureTab'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -31,9 +30,16 @@ import {
     manufactureProductDeleteAction,
     productChangeManufacture
 } from '../../actions/manufactureProduct'
+import {
+    ingredientCreateAction,
+    ingredientUpdateAction,
+    ingredientListFetchAction,
+    ingredientDeleteAction
+} from '../../actions/ingredient'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const MINUS_ONE = -1
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -46,6 +52,7 @@ const enhance = compose(
         const productListLoading = _.get(state, ['product', 'list', 'loading'])
         const productAddForm = _.get(state, ['form', 'ManufactureAddProductForm'])
         const changeForm = _.get(state, ['form', 'ChangeManufactureForm'])
+        const ingredientCreateForm = _.get(state, ['form', 'IngredientCreateForm'])
         const filter = filterHelper(list, pathname, query)
         const filterProduct = filterHelper(productList, pathname, query)
         const filterProductForm = _.get(state, ['form', 'ProductFilterForm'])
@@ -63,15 +70,39 @@ const enhance = compose(
             productAddForm,
             changeForm,
             filterProduct,
-            filterProductForm
+            filterProductForm,
+            ingredientCreateForm
         }
     }),
 
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter, filterProduct}) => {
+    }, ({dispatch, filter}) => {
         dispatch(manufactureListFetchAction(filter))
-        dispatch(productListFetchAction(filterProduct))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const manufactureId = _.get(props, ['params', 'manufactureId'])
+        const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
+        return (props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest() && !_.isNull(nextProps.filterProduct.filterRequest())) ||
+            (manufactureId !== nextManufactureId && nextManufactureId)
+    }, ({dispatch, filterProduct, params}) => {
+        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        if (manufactureId > ZERO) {
+            dispatch(productListFetchAction(filterProduct, manufactureId))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const productId = _.get(props, ['query', 'productId'])
+        const nextProductId = _.get(nextProps, ['query', 'productId'])
+        return productId !== nextProductId && nextProductId > ZERO
+    }, ({dispatch, query}) => {
+        const productId = _.toInteger(_.get(query, 'productId'))
+        if (productId > ZERO) {
+            dispatch(productItemFetchAction(productId))
+            dispatch(ingredientListFetchAction(productId))
+        }
     }),
 
     withHandlers({
@@ -89,13 +120,14 @@ const enhance = compose(
         },
         handleSubmitProductFilterDialog: props => () => {
             const {filterProduct, filterProductForm} = props
-            const type = _.get(filterProductForm, ['values', 'type', 'value']) || null
+            const typeParent = _.get(filterProductForm, ['values', 'typeParent', 'value']) || null
+            const typeChild = _.get(filterProductForm, ['values', 'typeChild', 'value']) || null
             const measurement = _.get(filterProductForm, ['values', 'measurement', 'value']) || null
             const brand = _.get(filterProductForm, ['values', 'brand', 'value']) || null
 
             filterProduct.filterBy({
-                [PRODUCT_FILTER_OPEN]: false,
-                [PRODUCT_FILTER_KEY.TYPE]: type,
+                [PRODUCT_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [PRODUCT_FILTER_KEY.TYPE_CHILD]: typeChild,
                 [PRODUCT_FILTER_KEY.MEASUREMENT]: measurement,
                 [PRODUCT_FILTER_KEY.BRAND]: brand
             })
@@ -127,29 +159,29 @@ const enhance = compose(
                 })
         },
 
-        handleOpenProductConfirmDialog: props => (id) => {
-            const {filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: true, 'productId': id})})
+        handleOpenProductConfirmDialog: props => () => {
+            const {filterProduct, location: {pathname}} = props
+            hashHistory.push({pathname, query: filterProduct.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: true})})
         },
         handleCloseProductConfirmDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filterProduct} = props
             hashHistory.push({
                 pathname,
-                query: filter.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: false})
+                query: filterProduct.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: false})
             })
         },
         handleSendProductConfirmDialog: props => () => {
             const {dispatch, filterProduct, location: {pathname}, params} = props
-            const productId = _.get(props, ['location', 'query', 'productId'])
+            const productId = _.toInteger(_.get(props, ['location', 'query', 'productId']))
             const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
-            dispatch(manufactureProductDeleteAction(_.toInteger(productId)))
+            dispatch(manufactureProductDeleteAction(productId))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
                 .then(() => {
                     hashHistory.push({
                         pathname,
-                        query: filterProduct.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: false, 'productId': MINUS_ONE})
+                        query: filterProduct.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: false})
                     })
                     dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                     return dispatch(productListFetchAction(filterProduct, manufactureId))
@@ -177,6 +209,98 @@ const enhance = compose(
                 })
         },
 
+        handleOpenCreateMaterials: props => () => {
+            const {dispatch, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: true})})
+            dispatch(reset('IngredientCreateForm'))
+        },
+        handleCloseCreateMaterials: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: false})})
+        },
+        handleSubmitCreateMaterials: props => () => {
+            const {dispatch, ingredientCreateForm, filter, location: {pathname}, params} = props
+            const productId = _.toNumber(_.get(props, ['location', 'query', 'productId']))
+            const manufacture = _.toInteger(_.get(params, 'manufactureId'))
+            return dispatch(ingredientCreateAction(_.get(ingredientCreateForm, ['values']), productId, manufacture))
+                .then(() => {
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: false})
+                    })
+                    dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(ingredientListFetchAction(productId))
+                })
+        },
+
+        handleOpenEditMaterials: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: true, 'ingId': id})
+            })
+        },
+        handleCloseEditMaterials: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: false, 'ingId': MINUS_ONE})
+            })
+        },
+        handleSubmitEditMaterials: props => () => {
+            const {dispatch, ingredientCreateForm, filter, location: {pathname}} = props
+            const productId = _.toNumber(_.get(props, ['location', 'query', 'productId']))
+            const ingredientId = _.toNumber(_.get(props, ['location', 'query', 'ingId']))
+            return dispatch(ingredientUpdateAction(_.get(ingredientCreateForm, ['values']), _.toNumber(ingredientId), productId))
+                .then(() => {
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: false, 'ingId': MINUS_ONE})
+                    })
+                    dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(ingredientListFetchAction(productId))
+                })
+        },
+
+        handleOpenMaterialsConfirmDialog: props => (id) => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_DELETE_MATERIALS_DIALOG]: true, 'ingId': id})})
+        },
+        handleCloseMaterialsConfirmDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[OPEN_DELETE_MATERIALS_DIALOG]: false, 'ingId': MINUS_ONE})
+            })
+        },
+        handleSendMaterialsConfirmDialog: props => () => {
+            const {dispatch, filter, location: {pathname}} = props
+            const ingId = _.toNumber(_.get(props, ['location', 'query', 'ingId']))
+            const productId = _.toNumber(_.get(props, ['location', 'query', 'productId']))
+            dispatch(ingredientDeleteAction(_.toNumber(ingId)))
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                })
+                .then(() => {
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[OPEN_DELETE_MATERIALS_DIALOG]: false, 'ingId': MINUS_ONE})
+                    })
+                    dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(ingredientListFetchAction(productId))
+                })
+        },
+
+        handleClickItem: props => (id) => {
+            const {filterProduct} = props
+            hashHistory.push({pathname: sprintf(ROUTER.MANUFACTURE_PRODUCT_ITEM_PATH, id), query: filterProduct.getParams()})
+        },
+
+        handleItemClick: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({'productId': id})})
+        },
+
         handleCloseDetail: props => () => {
             const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParam({'productId': MINUS_ONE})})
@@ -186,6 +310,7 @@ const enhance = compose(
 
 const ManufactureProductList = enhance((props) => {
     const {
+        filter,
         list,
         listLoading,
         productList,
@@ -317,15 +442,21 @@ const ManufactureProductList = enhance((props) => {
     return (
         <Layout {...layout}>
             <ManufactureProductWrapper
-                filter={filterProduct}
+                filter={filter}
+                filterProduct={filterProduct}
+                listData={listData}
+                detailData={detailData}
+                showBom={showBom}
+                addProductDialog={addProductDialog}
                 createMaterials={createMaterials}
+                selectProduct={selectProduct}
                 editMaterials={editMaterials}
                 deleteMaterials={deleteMaterials}
-                detailData={detailData}
-                listData={listData}
-                showBom={showBom}
-                productData={productData}
                 productFilterDialog={productFilterDialog}
+                deleteProductDialog={deleteProductDialog}
+                productDetailData={productDetailData}
+                changeManufacture={changeManufacture}
+                productData={productData}
             />
         </Layout>
     )
