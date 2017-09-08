@@ -193,7 +193,8 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             joinMarket: null,
             joinClient: null,
             openPopoverDialog: null,
-            openAddDialog: null
+            openAddDialog: null,
+            openSetDiscountDialog: null
         }))
     }
 
