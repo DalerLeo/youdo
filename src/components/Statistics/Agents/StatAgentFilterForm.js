@@ -4,7 +4,7 @@ import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../../ReduxForm/index'
-import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
+import PlanMonthFilter from '../../../components/Plan/PlanMonthFilter'
 import ZoneSearchField from '../../ReduxForm/ZoneSearchField'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
@@ -97,7 +97,8 @@ const StatAgentFilterForm = enhance((props) => {
     const {
         classes,
         onSubmit,
-        getDocument
+        getDocument,
+        calendar
     } = props
     const iconStyle = {
         icon: {
@@ -114,32 +115,29 @@ const StatAgentFilterForm = enhance((props) => {
 
     return (
         <form className={classes.form} onSubmit={onSubmit}>
-            <div className={classes.filter}>
-                <Field
-                    className={classes.inputFieldCustom}
-                    name="date"
-                    component={DateToDateField}
-                    label="Диапазон дат"
-                    fullWidth={true}/>
-                <Field
-                    className={classes.inputFieldCustom}
-                    name="zone"
-                    component={ZoneSearchField}
-                    label="Зона"
-                    fullWidth={true}/>
-                <Field
-                    className={classes.inputFieldCustom}
-                    name="search"
-                    component={TextField}
-                    label="Поиск"
-                    fullWidth={true}/>
-                <IconButton
-                    className={classes.searchButton}
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}
-                    type="submit">
-                    <Search/>
-                </IconButton>
+            <div style={{display: 'flex'}}>
+                <PlanMonthFilter calendar={calendar} style={{paddingTop: '10px !important'}}/>
+                <div className={classes.filter}>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="zone"
+                        component={ZoneSearchField}
+                        label="Зона"
+                        fullWidth={true}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="search"
+                        component={TextField}
+                        label="Поиск"
+                        fullWidth={true}/>
+                    <IconButton
+                        className={classes.searchButton}
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        type="submit">
+                        <Search/>
+                    </IconButton>
+                </div>
             </div>
             <a className={classes.excel}
                onClick={getDocument.handleGetDocument}>

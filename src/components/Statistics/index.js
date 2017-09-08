@@ -22,6 +22,7 @@ const STAT_INCOME_DIALOG_OPEN = 'openStatIncomeDialog'
 const STAT_DEBTORS_DIALOG_OPEN = 'openStatDebtorsDialog'
 const STAT_OUTCOME_DIALOG_OPEN = 'openStatOutcomeDialog'
 const STAT_PRODUCT_MOVE_DIALOG_OPEN = 'openStatProductMoveDialog'
+const DATE = 'date'
 
 export {
     StatSideMenu,
@@ -38,7 +39,7 @@ export {
     StatCashboxGridList,
     StatProductMoveGridList,
     StatReportGridList,
-
+    DATE,
     STAT_AGENT_DIALOG_OPEN,
     STAT_MARKET_DIALOG_OPEN,
     STAT_FINANCE_DIALOG_OPEN,

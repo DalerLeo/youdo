@@ -15,7 +15,8 @@ import moment from 'moment'
 
 import {
     StatAgentGridList,
-    STAT_AGENT_DIALOG_OPEN
+    STAT_AGENT_DIALOG_OPEN,
+    DATE
 } from '../../components/Statistics'
 import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/Agents/StatAgentFilterForm'
 import {
@@ -23,7 +24,9 @@ import {
     statAgentItemFetchAction
 } from '../../actions/statAgent'
 
+const defaultDate = moment().format('YYYY-MM-DD')
 const ZERO = 0
+const ONE = 1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -35,6 +38,8 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'StatAgentFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query)
+        const selectedDate = _.get(query, DATE) || defaultDate
+
         return {
             list,
             listLoading,
@@ -43,7 +48,8 @@ const enhance = compose(
             filter,
             query,
             filterForm,
-            filterItem
+            filterItem,
+            selectedDate
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -101,6 +107,19 @@ const enhance = compose(
             const {filter} = props
             const params = serializers.listFilterSerializer(filter.getParams())
             getDocuments(API.STAT_AGENT_GET_DOCUMENT, params)
+        },
+        handlePrevMonth: props => () => {
+            const {location: {pathname}, filter, selectedDate} = props
+            const prevMonth = moment(selectedDate).subtract(ONE, 'month')
+            const dateForURL = prevMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
+        handleNextMonth: props => () => {
+            const {location: {pathname}, filter, selectedDate} = props
+            const nextMonth = moment(selectedDate).add(ONE, 'month')
+            const dateForURL = nextMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
         }
     })
 )
@@ -116,6 +135,7 @@ const StatAgentList = enhance((props) => {
         layout,
         filterItem,
         filterForm,
+        currentDate,
         params
     } = props
 
@@ -124,6 +144,7 @@ const StatAgentList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+    const selectedDate = _.get(location, ['query', DATE]) || currentDate
 
     const statAgentDialog = {
         openStatAgentDialog,
@@ -161,6 +182,11 @@ const StatAgentList = enhance((props) => {
             toDate: moment(lastDayOfMonth)
         }
     }
+    const calendar = {
+        selectedDate: selectedDate,
+        handlePrevMonth: props.handlePrevMonth,
+        handleNextMonth: props.handleNextMonth
+    }
 
     return (
         <Layout {...layout}>
@@ -171,6 +197,7 @@ const StatAgentList = enhance((props) => {
                 detailData={detailData}
                 statAgentDialog={statAgentDialog}
                 getDocument={getDocument}
+                calendar={calendar}
                 initialValues={initialValues}
             />
         </Layout>
