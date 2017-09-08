@@ -7,6 +7,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import ProductFilterForm from '../../Product/ProductFilterForm'
 import IconButton from 'material-ui/IconButton'
+import Paper from 'material-ui/Paper'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import FlatButton from 'material-ui/FlatButton'
@@ -54,9 +55,10 @@ const enhance = compose(
             cursor: 'pointer'
         },
         choose: {
-            background: 'url(' + Choose + ') no-repeat center center',
+            background: 'url(' + Choose + ') no-repeat center 50px',
             backgroundSize: '200px',
-            padding: '255px 0 30px',
+            marginTop: '20px',
+            padding: '245px 0 30px',
             textAlign: 'center',
             fontSize: '15px',
             color: '#666'
@@ -126,9 +128,9 @@ const ManufactureProduct = enhance((props) => {
     const createDialog = _.get(productData, 'createDialog')
     if (manufactureId <= ZERO) {
         return (
-            <div className={classes.choose}>
+            <Paper zDepth={1} className={classes.choose}>
                 <div>Выберите производство...</div>
-            </div>
+            </Paper>
         )
     }
     return (
