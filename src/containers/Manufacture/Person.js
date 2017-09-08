@@ -55,15 +55,19 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
-        dispatch(manufactureListFetchAction(filter))
+        let prevPath = _.startsWith(props.pathname, '/') ? props.pathname : '/' + props.pathname
+        let nextPath = _.startsWith(nextProps.pathname, '/') ? nextProps.pathname : '/' + nextProps.pathname
+        return _.startsWith(prevPath, ROUTER.MANUFACTURE_PERSON_LIST_URL) !== _.startsWith(nextPath, ROUTER.MANUFACTURE_PERSON_LIST_URL)
+    }, ({dispatch, filter, pathname}) => {
+        if (_.startsWith(pathname, ROUTER.MANUFACTURE_PERSON_LIST_URL)) {
+            dispatch(manufactureListFetchAction(filter))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
         const manufactureId = _.get(props, ['params', 'manufactureId'])
         const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
-        return (props.filterUser.filterRequest() !== nextProps.filterUser.filterRequest() && !_.isNull(nextProps.filterUser.filterRequest())) ||
+        return (props.filterUser.filterRequest() !== nextProps.filterUser.filterRequest() && nextManufactureId > ZERO) ||
             (manufactureId !== nextManufactureId && nextManufactureId)
     }, ({dispatch, filterUser, params}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))

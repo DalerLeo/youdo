@@ -117,6 +117,7 @@ const ManufactureProductWrapper = enhance((props) => {
                     <ManufactureTabs currentURL={ROUTES.MANUFACTURE_PRODUCT_LIST_URL}/>
 
                     <ManufactureProduct
+                        manufactureId={_.toInteger(_.get(detailData, 'id'))}
                         productData={productData}
                         editMaterials={editMaterials}
                         filter={filterProduct}
@@ -149,11 +150,6 @@ const ManufactureProductWrapper = enhance((props) => {
 ManufactureProductWrapper.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    showBom: PropTypes.shape({
-        open: PropTypes.bool.isRequired,
-        handleOpen: PropTypes.func.isRequired,
-        handleClose: PropTypes.func.isRequired
-    }).isRequired,
     productData: PropTypes.object.isRequired,
     productFilterDialog: PropTypes.shape({
         initialValues: PropTypes.object,
