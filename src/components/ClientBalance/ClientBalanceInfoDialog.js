@@ -27,7 +27,8 @@ import {
     CANCEL_ORDER_RETURN,
     EXPENSE,
     FIRST_BALANCE,
-    ORDER
+    ORDER,
+    NONE_TYPE
 } from '../../constants/clientBalanceInfo'
 const enhance = compose(
     injectSheet({
@@ -189,9 +190,9 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 <div style={{flexBasis: '16%', maxWidth: '16%'}}>{createdDate}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
                 <div style={{flexBasis: '45%', maxWidth: '45%'}}>
-                    <div>Магазин: <span>{market}</span></div>
+                    {market && <div>Магазин: <span>{market}</span></div>}
                     <div>Комментарии: <span>{comment}</span></div>
-                    <div>Тип: <span>{type === PAYMENT ? 'Оплата'
+                    {type && <div>Тип: <span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
                             : type === CANCEL_ORDER ? 'Отмена заказа'
                                 : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
@@ -204,8 +205,9 @@ const ClientBalanceInfoDialog = enhance((props) => {
                                                 pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                                                 query: {search: id}
                                             }} target="_blank">Возврат заказа {id}</Link>
-                                                : type === FIRST_BALANCE ? 'Первый баланс' : null }</span>
-                    </div>
+                                                : type === FIRST_BALANCE ? 'Первый баланс'
+                                                    : type === NONE_TYPE ? 'Произвольный' : null }</span>
+                    </div>}
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>
