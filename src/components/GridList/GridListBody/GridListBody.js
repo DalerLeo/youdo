@@ -83,7 +83,7 @@ const enhance = compose(
             padding: '260px 0 50px',
             textAlign: 'center',
             fontSize: '13px',
-            color: '#999',
+            color: '#666 !important',
             '& svg': {
                 width: '50px !important',
                 height: '50px !important',

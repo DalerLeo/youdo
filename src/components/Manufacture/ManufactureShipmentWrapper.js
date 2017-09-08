@@ -5,10 +5,9 @@ import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import ManufacturesList from './ManufacturesList'
-
 import ManufactureTabs from './ManufactureTabs'
 import Container from '../Container'
-import ManufacturePerson from './Tab/ManufacturePerson'
+import ManufactureShipment from './Tab/ManufactureShipment'
 import * as ROUTES from '../../constants/routes'
 
 const enhance = compose(
@@ -56,11 +55,11 @@ const enhance = compose(
     })
 )
 
-const ManufacturePersonWrapper = enhance((props) => {
+const ManufactureShipmentWrapper = enhance((props) => {
     const {
         listData,
         detailData,
-        personData,
+        shipmentData,
         classes
     } = props
     return (
@@ -69,18 +68,18 @@ const ManufacturePersonWrapper = enhance((props) => {
                 <ManufacturesList listData={listData} detailData={detailData}/>
 
                 <div className={classes.productionRightSide}>
-                    <ManufactureTabs currentURL={ROUTES.MANUFACTURE_PERSON_LIST_URL}/>
-                    <ManufacturePerson personData={personData} manufactureId={_.toInteger(_.get(detailData, 'id'))}/>
+                    <ManufactureTabs currentURL={ROUTES.MANUFACTURE_SHIPMENT_LIST_URL}/>
+                    <ManufactureShipment manufactureId={_.toInteger(_.get(detailData, 'id'))} shipmentData={shipmentData}/>
                 </div>
             </Row>
         </Container>
     )
 })
 
-ManufacturePersonWrapper.propTypes = {
+ManufactureShipmentWrapper.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    personData: PropTypes.object.isRequired
+    shipmentData: PropTypes.object
 }
 
-export default ManufacturePersonWrapper
+export default ManufactureShipmentWrapper

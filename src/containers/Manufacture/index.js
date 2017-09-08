@@ -1,9 +1,11 @@
-import ManufactureList from './ManufactureList'
 import ManufactureProductList from './Product'
 import ManufacturePersonList from './Person'
+import ManufactureEquipmentList from './Equipment'
+import ManufactureShipmentList from './Shipment'
 
 export {
-    ManufactureList,
     ManufactureProductList,
-    ManufacturePersonList
+    ManufacturePersonList,
+    ManufactureEquipmentList,
+    ManufactureShipmentList
 }

@@ -115,7 +115,6 @@ const ManufactureProductWrapper = enhance((props) => {
 
                 <div className={classes.productionRightSide}>
                     <ManufactureTabs currentURL={ROUTES.MANUFACTURE_PRODUCT_LIST_URL}/>
-
                     <ManufactureProduct
                         manufactureId={_.toInteger(_.get(detailData, 'id'))}
                         productData={productData}

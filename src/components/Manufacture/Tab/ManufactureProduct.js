@@ -61,7 +61,7 @@ const enhance = compose(
             padding: '245px 0 30px',
             textAlign: 'center',
             fontSize: '15px',
-            color: '#666'
+            color: '#666 !important'
         }
     })
 )

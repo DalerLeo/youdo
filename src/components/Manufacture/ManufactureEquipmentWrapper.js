@@ -8,7 +8,7 @@ import ManufacturesList from './ManufacturesList'
 
 import ManufactureTabs from './ManufactureTabs'
 import Container from '../Container'
-import ManufacturePerson from './Tab/ManufacturePerson'
+import ManufactureEquipment from './Tab/ManufactureEquipment'
 import * as ROUTES from '../../constants/routes'
 
 const enhance = compose(
@@ -56,11 +56,11 @@ const enhance = compose(
     })
 )
 
-const ManufacturePersonWrapper = enhance((props) => {
+const ManufactureEquipmentWrapper = enhance((props) => {
     const {
         listData,
         detailData,
-        personData,
+        equipmentData,
         classes
     } = props
     return (
@@ -69,18 +69,18 @@ const ManufacturePersonWrapper = enhance((props) => {
                 <ManufacturesList listData={listData} detailData={detailData}/>
 
                 <div className={classes.productionRightSide}>
-                    <ManufactureTabs currentURL={ROUTES.MANUFACTURE_PERSON_LIST_URL}/>
-                    <ManufacturePerson personData={personData} manufactureId={_.toInteger(_.get(detailData, 'id'))}/>
+                    <ManufactureTabs currentURL={ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL}/>
+                    <ManufactureEquipment manufactureId={_.toInteger(_.get(detailData, 'id'))} equipmentData={equipmentData}/>
                 </div>
             </Row>
         </Container>
     )
 })
 
-ManufacturePersonWrapper.propTypes = {
+ManufactureEquipmentWrapper.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    personData: PropTypes.object.isRequired
+    equipmentData: PropTypes.object
 }
 
-export default ManufacturePersonWrapper
+export default ManufactureEquipmentWrapper

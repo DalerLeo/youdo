@@ -20,7 +20,6 @@ import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import ProductCustomSearchField from './ProductCustomSearchField'
 import TextField from '../Basic/TextField'
-import {ProductMeasurementField} from '../index'
 import {connect} from 'react-redux'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
 import normalizeNumber from '../normalizers/normalizeNumber'
@@ -171,7 +170,6 @@ const enhance = compose(
             const measurement = _.get(props, 'measurementName')
             const onChange = _.get(props, ['ingredients', 'input', 'onChange'])
             const ingredients = _.get(props, ['ingredients', 'input', 'value'])
-            console.warn(props)
             if (!_.isEmpty(ingredient) && !_.isEmpty(amount)) {
                 let has = false
                 _.map(ingredients, (item) => {
@@ -182,8 +180,6 @@ const enhance = compose(
                 const fields = ['ingredient', 'amount']
                 for (let i = 0; i < fields.length; i++) {
                     const newChange = _.get(props, [fields[i], 'input', 'onChange'])
-                    console.warn(_.get(props, [fields[i]]))
-                    console.warn(fields[i])
                     props.dispatch(newChange(null))
                 }
 
