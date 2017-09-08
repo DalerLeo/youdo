@@ -287,7 +287,7 @@ const ReturnDetails = enhance((props) => {
                                 </li>
                                 {client && <li>
                                     <span>Клиент:</span>
-                                    <span>{_.get(client, 'name')}</span>
+                                    <span>{client}</span>
                                 </li>}
                                 {market && <li>
                                     <span>Магазин:</span>

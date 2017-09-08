@@ -547,8 +547,14 @@ const OrderList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
     const openCancelOrderReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_ORDER_RETURN_DIALOG_OPEN]))
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
+    const dept = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DEPT))
+    const initiator = _.toInteger(filter.getParam(ORDER_FILTER_KEY.INITIATOR))
     const zone = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ZONE))
     const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STATUS))
+    const shop = _.toInteger(filter.getParam(ORDER_FILTER_KEY.SHOP))
+    const product = _.toInteger(filter.getParam(ORDER_FILTER_KEY.PRODUCT))
+    const division = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DIVISION))
+    const status = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STATUS))
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
@@ -705,6 +711,24 @@ const OrderList = enhance((props) => {
             },
             orderStatus: {
                 value: orderStatus
+            },
+            division: {
+                value: division
+            },
+            status: {
+                value: status
+            },
+            shop: {
+                value: shop
+            },
+            product: {
+                value: product
+            },
+            initiator: {
+                value: initiator
+            },
+            dept: {
+                value: dept
             },
             zone: {
                 value: zone

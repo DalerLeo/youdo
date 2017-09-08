@@ -261,6 +261,8 @@ const ShopDetails = enhance((props) => {
     if (!firstName && !secondName) {
         createdBy = 'Неизвестно'
     }
+    const changedBy = _.get(data, 'changedBy') ? _.get(data, ['changedBy', 'firstName']) + ' ' + _.get(data, ['changedBy', 'secondName'])
+        : 'Неизвестно'
     const shopType = _.get(data, ['marketType', 'name'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
@@ -377,12 +379,14 @@ const ShopDetails = enhance((props) => {
                     <ul className={classes.details}>
                         <li>Клиент</li>
                         <li>Создал</li>
+                        <li>Изменил</li>
                         <li>Тип заведения</li>
                         <li>Зона</li>
                     </ul>
                     <ul className={classes.details}>
                         <li>{client}</li>
                         <li>{createdBy}</li>
+                        <li>{changedBy}</li>
                         <li>{shopType}</li>
                         <li>{!zone ? <span className="redFont">Не определена</span> : zone}</li>
                     </ul>
