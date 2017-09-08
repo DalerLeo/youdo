@@ -161,17 +161,11 @@ const enhance = compose(
                     dispatch(clientBalanceListFetchAction(filter))
                     dispatch(reset('ClientBalanceCreateForm'))
                 }).catch((error) => {
-                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
-                        return <p key={index}>{item}</p>
-                    })
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}><b
-                            style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
                     })
-
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
-                            {notEnough && <p>{notEnough}</p>}
                             {errorWhole}
                         </div>
                     }))
@@ -190,7 +184,7 @@ const enhance = compose(
             dispatch(reset('ClientBalanceCreateForm'))
         },
         handleSubmitAddDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, params} = props
+            const {dispatch, createForm, filter, params} = props
             const clientId = _.get(params, ['clientBalanceId'])
             return dispatch(clientAddAction(_.get(createForm, ['values']), clientId))
                 .then(() => {
@@ -198,23 +192,17 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({
-                        pathname,
+                        pathname: ROUTER.CLIENT_BALANCE_LIST_URL,
                         query: filter.getParams({[CLIENT_BALANCE_ADD_DIALOG_OPEN]: false})
                     })
                     dispatch(clientBalanceListFetchAction(filter))
                     dispatch(reset('ClientBalanceCreateForm'))
                 }).catch((error) => {
-                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
-                        return <p key={index}>{item}</p>
-                    })
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}><b
-                            style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
                     })
-
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
-                            {notEnough && <p>{notEnough}</p>}
                             {errorWhole}
                         </div>
                     }))
@@ -249,17 +237,11 @@ const enhance = compose(
                     dispatch(clientBalanceListFetchAction(filter))
                     dispatch(reset('ClientBalanceReturnForm'))
                 }).catch((error) => {
-                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
-                        return <p key={index}>{item}</p>
-                    })
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}><b
-                            style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
                     })
-
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
-                            {notEnough && <p>{notEnough}</p>}
                             {errorWhole}
                         </div>
                     }))

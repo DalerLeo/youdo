@@ -60,6 +60,7 @@ export const createExpenseSerializer = (data, client) => {
         client,
         currency,
         division,
+        type: 9,
         payment_type: paymentType === TWO ? ZERO : paymentType
     }
 }
