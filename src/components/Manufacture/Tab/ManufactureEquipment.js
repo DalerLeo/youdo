@@ -4,9 +4,11 @@ import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import IconButton from 'material-ui/IconButton'
+import Paper from 'material-ui/Paper'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import GridList from '../../GridList'
+import Choose from '../../Images/choose-menu.png'
 
 const listHeader = [
     {
@@ -30,7 +32,6 @@ const listHeader = [
 ]
 const enhance = compose(
     injectSheet({
-
         imgContent: {
             '& img': {
                 width: '33%',
@@ -41,12 +42,22 @@ const enhance = compose(
         },
         equipmentContent: {
             marginTop: '56px'
+        },
+        choose: {
+            background: 'url(' + Choose + ') no-repeat center 50px',
+            backgroundSize: '200px',
+            marginTop: '20px',
+            padding: '245px 0 30px',
+            textAlign: 'center',
+            fontSize: '15px',
+            color: '#666 !important'
         }
     })
 )
 
 const ManufactureEquipment = enhance((props) => {
-    const {equipmentData, classes} = props
+    const {equipmentData, classes, manufactureId} = props
+    const ZERO = 0
 
     const filter = _.get(equipmentData, 'filter')
     const detail = (
@@ -84,16 +95,21 @@ const ManufactureEquipment = enhance((props) => {
             </IconButton>
         </div>
     )
+    if (manufactureId <= ZERO) {
+        return (
+            <Paper zDepth={1} className={classes.choose}>
+                <div>Выберите производство...</div>
+            </Paper>
+        )
+    }
     return (
-        <Row className={classes.equipmentContent}>
-            <Col xs={12}>
-                <GridList
-                    filter={filter}
-                    list={equipmentListExp}
-                    detail={detail}
-                    actionsDialog={actions}/>
-            </Col>
-        </Row>
+        <div className={classes.equipmentContent}>
+            <GridList
+                filter={filter}
+                list={equipmentListExp}
+                detail={detail}
+                actionsDialog={actions}/>
+        </div>
     )
 })
 

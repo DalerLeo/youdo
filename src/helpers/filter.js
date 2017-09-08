@@ -192,6 +192,7 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             editMaterials: null,
             joinMarket: null,
             joinClient: null,
+            createMaterials: null,
             openPopoverDialog: null,
             openAddDialog: null
         }))
