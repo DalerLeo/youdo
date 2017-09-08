@@ -194,7 +194,8 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             joinClient: null,
             createMaterials: null,
             openPopoverDialog: null,
-            openAddDialog: null
+            openAddDialog: null,
+            openSetDiscountDialog: null
         }))
     }
 

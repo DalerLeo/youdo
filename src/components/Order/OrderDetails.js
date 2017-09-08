@@ -16,6 +16,7 @@ import RightSide from './OrderDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import PrintIcon from 'material-ui/svg-icons/action/print'
+import MoneyOffIcon from 'material-ui/svg-icons/editor/money-off'
 import ConfirmDialog from '../ConfirmDialog'
 import Tooltip from '../ToolTip'
 import moment from 'moment'
@@ -23,6 +24,7 @@ import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import StatRightSide from './OrderStatDetailsRightSide'
 import OrderCreateDialog from './OrderCreateDialog'
+import OrderSetDiscountDialog from './OrderSetDiscountDialog'
 
 const ZERO = 0
 
@@ -91,6 +93,7 @@ const enhance = compose(
             zIndex: '1'
         },
         titleButtons: {
+            position: 'relative',
             display: 'flex',
             justifyContent: 'flex-end',
             zIndex: '3'
@@ -145,6 +148,12 @@ const enhance = compose(
                     top: '10px'
                 }
             }
+        },
+        discountPop: {
+            position: 'absolute',
+            top: '45px',
+            right: '60px',
+            width: '200px'
         }
     }),
 )
@@ -180,7 +189,8 @@ const OrderDetails = enhance((props) => {
         getDocument,
         returnData,
         handleCloseDetail,
-        canChangeAnyPrice
+        canChangeAnyPrice,
+        setDiscountDialog
     } = props
 
     const id = _.get(data, 'id')
@@ -232,6 +242,11 @@ const OrderDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
+                    {setDiscountDialog.openSetDiscountDialog && <div className={classes.discountPop}>
+                        <OrderSetDiscountDialog
+                            onSubmit={setDiscountDialog.handleSubmitSetDiscountDialog}
+                            id={id}/>
+                    </div>}
                     <Tooltip position="bottom" text="Добавить возврат">
                         <IconButton
                             disabled={!(status === DELIVERED || status === GIVEN)}
@@ -260,6 +275,16 @@ const OrderDetails = enhance((props) => {
                             touch={true}
                             onTouchTap={updateDialog.handleOpenUpdateDialog}>
                             <Edit />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Скидка">
+                        <IconButton
+                            disabled={(status === CANCELED)}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={setDiscountDialog.handleToggleSetDiscountDialog}>
+                            <MoneyOffIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip position="bottom" text="Отменить">
@@ -420,6 +445,7 @@ const OrderDetails = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
+
         </div>
     )
 })
@@ -464,6 +490,11 @@ OrderDetails.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    setDiscountDialog: PropTypes.shape({
+        openSetDiscountDialog: PropTypes.bool.isRequired,
+        handleToggleSetDiscountDialog: PropTypes.func.isRequired,
+        handleSubmitSetDiscountDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
