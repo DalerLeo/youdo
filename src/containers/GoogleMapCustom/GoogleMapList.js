@@ -10,8 +10,8 @@ import toBoolean from '../../helpers/toBoolean'
 import ZonesWrapper from '../../components/GoogleMapCustom/ZonesWrapper'
 import {ADD_ZONE, UPDATE_ZONE, DELETE_ZONE, TOGGLE_INFO, BIND_AGENT, CONFIRM_DIALOG, DRAW, ZONE_ID} from '../../components/Zones'
 import {
-    zoneCreateAction,
-    zoneUpdateAction,
+    zoneCustomCreateAction,
+    zoneCustomUpdateAction,
     zoneDeleteAction,
     zoneListFetchAction,
     zoneListSearchFetchAction,
@@ -81,7 +81,6 @@ const enhance = compose(
         const search = _.get(query, 'search')
         dispatch(zoneListSearchFetchAction(search))
     }),
-
 
     withHandlers({
         handleOpenConfirmDialog: props => (id) => {
@@ -153,15 +152,14 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[ADD_ZONE]: false})})
         },
 
-        handleSubmitAddZone: props => (data) => {
+        handleSubmitAddZone: props => (points) => {
             const {location: {pathname}, dispatch, createForm, filter} = props
-            console.warn('ADDD', data)
-            return dispatch(zoneCreateAction(createForm))
+            return dispatch(zoneCustomCreateAction(_.get(createForm, ['zoneName']), points))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Зона успешно добавлена'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ADD_ZONE]: false, [TOGGLE_INFO]: true})})
+                    hashHistory.push({pathname, query: filter.getParams({[ADD_ZONE]: false, [TOGGLE_INFO]: true, [ZONE_ID]: null})})
                     dispatch(zoneListFetchAction(filter))
                     dispatch(zoneStatisticsFetchAction(filter))
                 })
@@ -176,14 +174,14 @@ const enhance = compose(
 
         handleCloseUpdateZone: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[UPDATE_ZONE]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[UPDATE_ZONE]: false, [ZONE_ID]: null})})
         },
 
         handleSubmitUpdateZone: props => (data) => {
-            const {location: {pathname}, dispatch, createForm, filter} = props
-            const zoneId = _.toInteger(_.get(props, ['params', 'zoneId']))
-            console.warn('UPDATE', data)
-            return dispatch(zoneUpdateAction(zoneId, createForm))
+            const {location: {pathname, query}, dispatch, createForm, filter} = props
+            const zoneId = _.toNumber(_.get(query, ZONE_ID))
+            const title = _.get(createForm, ['zoneName']) || _.get(data, 'title')
+            return dispatch(zoneCustomUpdateAction(zoneId, title, _.get(data, 'points')))
                 .then(() => {
                     return dispatch(zoneItemFetchAction(zoneId))
                 })
@@ -191,7 +189,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Зона успешно изменена'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[UPDATE_ZONE]: false, [TOGGLE_INFO]: true})})
+                    hashHistory.push({pathname, query: filter.getParams({[UPDATE_ZONE]: false, [TOGGLE_INFO]: true, [ZONE_ID]: null})})
                 })
         },
 

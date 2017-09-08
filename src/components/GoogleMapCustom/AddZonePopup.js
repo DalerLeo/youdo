@@ -116,11 +116,12 @@ const AddZonePopup = enhance((props) => {
         handleClearDrawing,
         draw,
         edit,
-        data
+        data,
+        isDrawing
     } = props
     const submitZone = handleSubmit(() => props.onSubmit(data()).catch(validate))
     const isDraw = toBoolean(_.get(filter.getParams(), 'draw'))
-
+    console.warn(isDrawing)
     return (
         <div>
             <Paper zDepth={1} className={classes.addZoneWrapper}>
@@ -135,7 +136,7 @@ const AddZonePopup = enhance((props) => {
                         <Tooltip text="Режим рисования" position="bottom">
                             <IconButton
                                 disableTouchRipple={true}
-                                className={isDraw ? classes.activeButton : classes.button}
+                                className={isDrawing ? classes.activeButton : classes.button}
                                 onTouchTap={() => { draw() }}>
                                 <Draw color="#666"/>
                             </IconButton>
@@ -144,7 +145,7 @@ const AddZonePopup = enhance((props) => {
                         <Tooltip text="Обычный режим" position="bottom">
                             <IconButton
                                 disableTouchRipple={true}
-                                className={!isDraw ? classes.activeButton : classes.button}
+                                className={!isDrawing ? classes.activeButton : classes.button}
                                 onTouchTap={() => { edit() }}>
                                 <Touch color="#666"/>
                             </IconButton>
@@ -174,7 +175,10 @@ const AddZonePopup = enhance((props) => {
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
-                        onTouchTap={onClose}>
+                        onTouchTap={ () => {
+                            onClose()
+                            edit()
+                        } }>
                         <CloseIcon2/>
                     </FloatingActionButton>
                 </Tooltip>

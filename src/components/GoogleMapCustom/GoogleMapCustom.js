@@ -5,7 +5,8 @@ import * as GOOGLE_MAP from '../../constants/googleMaps'
 import CircularProgress from 'material-ui/CircularProgress'
 import AddZonePopup from './AddZonePopup'
 import ZoneDeleteDialog from './ZoneDeleteDialog'
-
+import {googleMapStyle} from '../../constants/googleMapsStyle'
+const ZERO = 0
 const classes = {
     loader: {
         width: '100%',
@@ -24,7 +25,9 @@ export default class GoogleCustomMap extends React.Component {
             center: null,
             drawing: null,
             zone: [],
-            points: null
+            points: null,
+            isDrawing: false,
+            overlay: null
         }
 
         this.handleClearDrawing = this.handleClearDrawing.bind(this)
@@ -61,12 +64,18 @@ export default class GoogleCustomMap extends React.Component {
     handleDrawing () {
         if (this.state.drawing) {
             this.state.drawing.setMap(this.map)
+            this.setState({
+                isDrawing: true
+            })
         }
     }
 
     handleEdit () {
         if (this.state.drawing) {
             this.state.drawing.setMap(null)
+            this.setState({
+                isDrawing: false
+            })
         }
     }
 
@@ -91,9 +100,10 @@ export default class GoogleCustomMap extends React.Component {
 
     createMap () {
         const mapOptions = {
-            zoom: 13,
+            zoom: 4,
             center: GOOGLE_MAP.DEFAULT_LOCATION,
-            mapTypeId: 'terrain'
+            mapTypeId: 'terrain',
+            styles: googleMapStyle
         }
         return new google.maps.Map(this.refs.mapping, mapOptions)
     }
@@ -116,7 +126,7 @@ export default class GoogleCustomMap extends React.Component {
                 fillOpacity: 0.2,
                 strokeWeight: 2,
                 strokeColor: '#113460',
-                clickable: true,
+                clickable: false,
                 draggable: false,
                 zIndex: 1
             })
@@ -146,11 +156,55 @@ export default class GoogleCustomMap extends React.Component {
                     strokeColor: '#113460',
                     clickable: true,
                     draggable: false,
-                    editable: true,
+                    editable: false,
                     zIndex: 1
                 }
             })
         })
+
+        this.createOverlays()
+    }
+
+    onAdd () {
+        let containerElement = document.createElement('div')
+        containerElement.style.borderStyle = 'none'
+        containerElement.style.borderWidth = '0px'
+        containerElement.style.position = 'absolute'
+
+        return containerElement
+    }
+    onRemove() {
+
+    }
+    draw() {
+
+        let overlayView = this.state.overlay
+        let mapPanes = overlayView.getPanes()
+
+    }
+    createOverlays () {
+        let overlay
+        let overlayView = new google.maps.OverlayView()
+        overlayView.setMap(this.map)
+        this.setState({
+            overlay: overlayView
+        })
+        overlayView.onAdd = this.onAdd
+        overlayView.onRemove = this.onRemove
+        overlayView.draw = this.draw
+
+
+    }
+
+    USGSOverlay (bounds, image, map) {
+        this.bounds_ = bounds
+        this.image_ = image
+        this.map_ = map
+
+        this.div_ = null
+
+        // Explicitly call setMap on this overlay.
+        this.setMap(map)
     }
 
     createCustomZone (nextState) {
@@ -162,7 +216,7 @@ export default class GoogleCustomMap extends React.Component {
                     return _.map(coordinates, (p) => {
                         const polyLat = p.lat()
                         const polyLng = p.lng()
-                        return {lat: polyLat, lng: polyLng}
+                        return [polyLat, polyLng]
                     })
                 }
 
@@ -197,7 +251,16 @@ export default class GoogleCustomMap extends React.Component {
             this.setState({points: this.getPoints()})
         })
     }
-
+    setEditableFalse () {
+        _.map(this.state.zone, (item) => {
+            _.get(item, 'zone').setOptions({
+                fillColor: '#199ee0',
+                fillOpacity: 0.2,
+                strokeColor: '#113460',
+                editable: false
+            })
+        })
+    }
     editZone (nextProps, nextState) {
         const selectedZone = _.get(_.filter(nextState.zone, (item) => {
             return nextProps.zoneId === item.id
@@ -222,22 +285,22 @@ export default class GoogleCustomMap extends React.Component {
         })
     }
     getUpdatedZone () {
-        if (this.state.zone[0]) {
+        if (this.state.zone[ZERO]) {
             const selectedZone = _.get(_.filter(this.state.zone, (item) => {
                 return _.toInteger(this.props.zoneId) === item.id
-            }), ['0', 'zone'])
-            const coordinates = selectedZone.getPath().getArray()
-            console.log(selectedZone.getPaths())
-            selectedZone.getPaths().forEach(() => {
+            }), ['0'])
+
+            const coordinates = _.get(selectedZone, 'zone').getPath().getArray()
+            _.get(selectedZone, 'zone').getPaths().forEach(() => {
                 this.getChangedPoints = {
                     points: _.map(coordinates, (p) => {
                         const polyLat = p.lat()
                         const polyLng = p.lng()
-                        return {lat: polyLat, lng: polyLng}
+                        return [polyLat, polyLng]
                     })
                 }
             })
-            console.log(this.getChangedPoints)
+            this.getChangedPoints.title = _.get(selectedZone, 'title')
             return this.getChangedPoints
         }
         return null
@@ -254,6 +317,8 @@ export default class GoogleCustomMap extends React.Component {
         if (nextState.drawing) {
             if (_.get(nextProps, 'zoneId')) {
                 this.editZone(nextProps, nextState)
+            } else {
+                this.setEditableFalse()
             }
             this.createCustomZone(nextState)
         }
@@ -271,7 +336,7 @@ export default class GoogleCustomMap extends React.Component {
                 </div>
             )
         }
-
+        console.warn(this.state)
 
         return (
             <div style={{height: '100%', width: '100%'}}>
@@ -292,7 +357,8 @@ export default class GoogleCustomMap extends React.Component {
                     edit={this.handleEdit.bind(this)}
                     onClose={addZone.handleCloseAddZone}
                     onSubmit={addZone.handleSubmitAddZone}
-                    data={() =>  { return this.state.points }}
+                    data={() => { return this.state.points }}
+                    isDrawing={this.state.isDrawing}
                 />}
                 {isOpenUpdateZone && <AddZonePopup
                     filter={filter}
@@ -302,7 +368,8 @@ export default class GoogleCustomMap extends React.Component {
                     edit={this.handleEdit.bind(this)}
                     onSubmit={updateZone.handleSubmitUpdateZone}
                     initialValues={updateZone.initialValues}
-                    data={() => {return _.get(this.getUpdatedZone(), 'points')}}
+                    data={() => { return this.getUpdatedZone() }}
+                    isDrawing={this.state.isDrawing}
                 />}
                 <ZoneDeleteDialog
                     open={deleteZone.openDeleteZone}
