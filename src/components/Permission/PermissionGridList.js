@@ -116,6 +116,7 @@ const iconStyle = {
     }
 }
 const ONE = 1
+const ZERO = 0
 const PermissionGridList = enhance((props) => {
     const {
         filter,
@@ -227,7 +228,7 @@ const PermissionGridList = enhance((props) => {
             />
             <SetDateDialog
                 initialValues={setDateDialog.initialValues}
-                open={_.toInteger(setDateDialog.open) > 0 ? true : toBoolean(setDateDialog.open)}
+                open={_.toInteger(setDateDialog.open) > ZERO ? true : toBoolean(setDateDialog.open)}
                 loading={setDateDialog.loading}
                 onClose={setDateDialog.handleCloseSetDateDialog}
                 onSubmit={setDateDialog.handleSubmitSetDateDialog}

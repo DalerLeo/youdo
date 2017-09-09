@@ -72,7 +72,6 @@ const SetDateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
-    console.log(open)
     return (
         <Dialog
             modal={true}
