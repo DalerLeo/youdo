@@ -13,6 +13,7 @@ import NotFound from '../Images/not-found.png'
 import CloseIcon2 from '../CloseIcon2'
 import numberFormat from '../../helpers/numberFormat'
 import * as ROUTES from '../../constants/routes'
+import Pagination from '../ReduxForm/Pagination'
 
 export const REMAINDER_RESERVED_DIALOG_OPEN = 'openReservedDialog'
 const enhance = compose(
@@ -147,7 +148,8 @@ const RemainderReservedDialog = enhance((props) => {
         data,
         reservedDetail,
         loading,
-        listLoading
+        listLoading,
+        filterItem
     } = props
 
     const agentName = _.get(reservedDetail, ['0', 'title'])
@@ -203,6 +205,7 @@ const RemainderReservedDialog = enhance((props) => {
                                 <div>
                                 {reservedList}
                                 </div>
+                                <Pagination filter={filterItem}/>
                             </div>
                           </div>}
                 </div>}
