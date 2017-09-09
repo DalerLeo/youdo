@@ -251,7 +251,7 @@ const OrderGridList = enhance((props) => {
         const CANCELED = 4
         const ZERO = 0
         return (
-            <div className={isNew ? classes.listWrapperNew : classes.listWrapper} key={id}>
+            <div key={id} className={isNew ? classes.listWrapperNew : classes.listWrapper}>
                 <Link className={classes.openDetails} to={{
                     pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                     query: filter.getParams()
