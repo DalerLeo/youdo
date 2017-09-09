@@ -55,8 +55,8 @@ export const userShiftUpdateAction = (id, formValues, manufacture) => {
     }
 }
 
-export const userShiftListFetchAction = (data, manufactureId) => {
-    const params = serializers.listFilterSerializer(data, manufactureId)
+export const userShiftListFetchAction = (filter, manufactureId) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), manufactureId)
     const payload = axios()
         .get(API.USER_SHIFT_LIST, {params})
         .then((response) => {

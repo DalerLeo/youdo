@@ -114,16 +114,11 @@ const enhance = compose(
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '285px',
-            padding: '260px 0 0',
+            backgroundSize: '225px',
+            padding: '205px 0 20px',
             textAlign: 'center',
-            fontSize: '15px',
-            color: '#666',
-            '& svg': {
-                width: '50px !important',
-                height: '50px !important',
-                color: '#999 !important'
-            }
+            fontSize: '13px',
+            color: '#666'
         }
     }),
 )
@@ -199,7 +194,7 @@ const ManufactureDetails = enhance((props) => {
                 <div className={classes.closeDetail} onClick={handleCloseDetail}> </div>
                 <div className={classes.titleLabel}>{productTitle}</div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Изменить производителя">
+                    <Tooltip position="bottom" text="Изменить производство">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
@@ -240,7 +235,7 @@ const ManufactureDetails = enhance((props) => {
                         </ul>
                     </div>
                     : <div className={classes.emptyQuery}>
-                        <div>По вашему запросу ничего не найдено</div>
+                        <div>В данном продукте нет сырья</div>
                     </div>}
             </div>
         </div>

@@ -118,7 +118,7 @@ const ManufactureChange = enhance((props) => {
             bodyClassName={classes.popUp}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.titleContent}>
-                    <span>Изменение производителя</span>
+                    <span>Изменение производства</span>
                     <IconButton onTouchTap={onClose}>
                         <CloseIcon2 color="#666666"/>
                     </IconButton>

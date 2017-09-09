@@ -2,17 +2,24 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
+import {compose} from 'recompose'
+import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import FloatButton from 'material-ui/FlatButton'
+import FlatButton from 'material-ui/FlatButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
 import PersonFilterForm from '../PersonFilterForm'
+import ManufactureAddStaffDialog from '../ManufactureAddStaffDialog'
+import ConfirmDialog from '../../ConfirmDialog'
 import GridList from '../../GridList'
+import moment from 'moment'
+import Paper from 'material-ui/Paper'
+import Choose from '../../Images/choose-menu.png'
 
 const listHeader = [
     {
@@ -28,9 +35,15 @@ const listHeader = [
         xs: 3
     },
     {
-        sorting: false,
+        sorting: true,
         name: 'shift',
         title: 'Смена',
+        xs: 3
+    },
+    {
+        sorting: false,
+        name: 'time',
+        title: 'Время',
         xs: 3
     },
     {
@@ -41,9 +54,41 @@ const listHeader = [
     }
 ]
 
-const ManufacturePerson = (props) => {
-    const {personData} = props
+const enhance = compose(
+    injectSheet({
+        listRow: {
+            cursor: 'pointer',
+            width: 'auto !important',
+            margin: '0 -30px !important',
+            padding: '0 30px'
+        },
+        imgContent: {
+            '& img': {
+                width: '33%',
+                margin: '1px'
+            },
+            height: '390px',
+            overflowY: 'scroll'
+        },
+        cursor: {
+            cursor: 'pointer'
+        },
+        choose: {
+            background: 'url(' + Choose + ') no-repeat center 50px',
+            backgroundSize: '200px',
+            marginTop: '20px',
+            padding: '245px 0 30px',
+            textAlign: 'center',
+            fontSize: '15px',
+            color: '#666 !important'
+        }
+    })
+)
 
+const ManufacturePerson = enhance((props) => {
+    const {personData, classes, manufactureId} = props
+
+    const ZERO = 0
     const filter = _.get(personData, 'filter')
     const filterDialog = _.get(personData, 'filterDialog')
 
@@ -58,11 +103,11 @@ const ManufacturePerson = (props) => {
     const actions = (
         <div>
             <IconButton>
-                <ModEditorIcon />
+                <ModEditorIcon/>
             </IconButton>
 
             <IconButton>
-                <DeleteIcon />
+                <DeleteIcon/>
             </IconButton>
         </div>
     )
@@ -77,17 +122,18 @@ const ManufacturePerson = (props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
         const shift = _.get(item, 'name')
-        const beginTime = _.get(item, 'beginTime')
+        const beginTime = moment(moment().format('YYYY-MM-DD ' + _.get(item, 'beginTime'))).format('HH:mm')
+        const endTime = moment(moment().format('YYYY-MM-DD ' + _.get(item, 'endTime'))).format('HH:mm')
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
+                <MoreVertIcon/>
             </IconButton>
         )
         return (
             <Row key={id}>
                 <Col xs={4}>{name}</Col>
                 <Col xs={3}>{shift}</Col>
-                <Col xs={3}>{beginTime}</Col>
+                <Col xs={3}>{beginTime} - {endTime}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
@@ -96,14 +142,14 @@ const ManufacturePerson = (props) => {
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem
                             primaryText="Изменить"
-                            leftIcon={<Edit />}
+                            leftIcon={<Edit/>}
                             onTouchTap={() => {
                                 updateDialog.handleOpenUpdateDialog(id)
                             }}
                         />
                         <MenuItem
                             primaryText="Удалить "
-                            leftIcon={<DeleteIcon />}
+                            leftIcon={<DeleteIcon/>}
                             onTouchTap={() => {
                                 confirmDialog.handleOpenConfirmDialog(id)
                             }}
@@ -120,29 +166,57 @@ const ManufacturePerson = (props) => {
         loading: _.get(personData, 'listLoading')
     }
 
-    const createDialog = _.get(personData, 'createDialog')
+    const userCreate = _.get(personData, 'createDialog')
+    const userUpdate = _.get(personData, 'updateDialog')
+    const userConfirm = _.get(personData, 'confirmDialog')
+
+    if (manufactureId <= ZERO) {
+        return (
+            <Paper zDepth={1} className={classes.choose}>
+                <div>Выберите производство...</div>
+            </Paper>
+        )
+    }
 
     return (
-        <Row>
-            <Col xs={12}>
-                <div style={{padding: '10px 0', textAlign: 'right'}}>
-                    <FloatButton onClick={createDialog.handleOpenDialog} style={{color: '#12aaeb'}}>
-                        <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
-                                    viewBox="0 0 24 15"/>
-                        добавить сотрудников
-                    </FloatButton>
-                </div>
-                <GridList
-                    filter={filter}
-                    list={personListExp}
-                    detail={detail}
-                    actionsDialog={actions}
-                    filterDialog={personFilterDialog}
-                />
-            </Col>
-        </Row>
+        <div>
+            <div style={{padding: '10px 0', textAlign: 'right'}}>
+                <FlatButton
+                    label="Добавить сотрудников"
+                    onClick={userCreate.handleOpenDialog}
+                    labelStyle={{color: '#12aaeb', fontSize: '13px', textTransform: 'normal'}}
+                    icon={<ContentAdd style={{width: 13, height: 13, fill: '#12aaeb'}}/>}/>
+            </div>
+            <GridList
+                filter={filter}
+                list={personListExp}
+                detail={detail}
+                actionsDialog={actions}
+                filterDialog={personFilterDialog}
+            />
+            <ManufactureAddStaffDialog
+                open={userCreate.open}
+                onClose={userCreate.handleCloseDialog}
+                onSubmit={userCreate.handleSubmitDialog}
+            />
+            <ManufactureAddStaffDialog
+                isUpdate={true}
+                initialValues={userUpdate.initialValues}
+                open={userUpdate.open}
+                onClose={userUpdate.handleCloseUpdateDialog}
+                onSubmit={userUpdate.handleSubmitUpdateDialog}
+            />
+            {_.get(personData, 'userShiftItem') && <ConfirmDialog
+                type="delete"
+                message={_.get(_.get(personData, ['userShiftItem', 'user']), 'firstName') +
+                ' ' + _.get(_.get(personData, ['userShiftItem', 'user']), 'secondName')}
+                onClose={userConfirm.handleCloseConfirmDialog}
+                onSubmit={userConfirm.handleSendConfirmDialog}
+                open={userConfirm.open}
+            />}
+        </div>
     )
-}
+})
 
 ManufacturePerson.propTypes = {
     personData: PropTypes.object.isRequired
