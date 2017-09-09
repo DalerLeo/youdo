@@ -7,7 +7,7 @@ import Notification from 'material-ui/svg-icons/social/notifications'
 import axios from '../../helpers/axios'
 
 const ZERO = 0
-const TIMER = 15000
+const TIMER = 1800000
 
 export default class CustomBadge extends React.Component {
     constructor (props) {

@@ -57,6 +57,7 @@ const enhance = compose(
             (!_.get(props, ['params', 'statAgentId'])) &&
             (!_.get(nextProps, ['params', 'statAgentId']))
     }, ({dispatch, filter}) => {
+        console.log('ishladi')
         dispatch(statAgentListFetchAction(filter))
     }),
 

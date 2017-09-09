@@ -5,6 +5,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -14,21 +15,43 @@ import ConfirmDialog from '../ConfirmDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import SettingSideMenu from '../Setting/SettingSideMenu'
+import SetDateDialog from './SetDateDialog'
+import Tooltip from '../Tooltip'
+import toBoolean from '../../helpers/toBoolean'
 import {Field, reduxForm} from 'redux-form'
 
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
-        xs: 10,
+        xs: 4,
         title: 'Наименование'
     },
     {
-        sorting: true,
+        sorting: false,
+        name: 'fromTime',
+        xs: 2,
+        title: 'Время начала'
+    },
+    {
+        sorting: false,
+        name: 'toTime',
+        xs: 2,
+        title: 'Время окончания'
+    },
+    {
+        sorting: false,
         xs: 2,
         alignRight: true,
         name: 'actions',
         title: 'Статус'
+    },
+    {
+        sorting: false,
+        name: 'edit',
+        alignRight: true,
+        xs: 2,
+        title: 'Edit'
     }
 ]
 
@@ -80,6 +103,18 @@ const enhance = compose(
         enableReinitialize: true
     })
 )
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 30,
+        height: 25,
+        padding: 0
+    }
+}
 const ONE = 1
 const PermissionGridList = enhance((props) => {
     const {
@@ -90,6 +125,7 @@ const PermissionGridList = enhance((props) => {
         confirmDialog,
         listData,
         detailData,
+        setDateDialog,
         classes
     } = props
 
@@ -112,11 +148,15 @@ const PermissionGridList = enhance((props) => {
     const permissionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const fromTime = _.get(item, 'fromTime')
+        const toTime = _.get(item, 'toTime')
         const status = _.toInteger(_.get(item, 'status'))
 
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={10}>{name}</Col>
+                <Col xs={4}>{name}</Col>
+                <Col xs={2}>{fromTime}</Col>
+                <Col xs={2}>{toTime}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
                         <Field
@@ -127,6 +167,20 @@ const PermissionGridList = enhance((props) => {
                             update={() => { updateDialog.handleSubmitUpdateDialog(id, _.toInteger(status) === ONE) }}
                             component={PermissionToggle}
                         />
+                    </div>
+                </Col>
+                <Col xs={2} style={{textAlign: 'right'}}>
+                    <div className={classes.iconBtn}>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                touch={true}
+                                onTouchTap={() => { setDateDialog.handleOpenSetDateDialog(id) }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
                     </div>
                 </Col>
             </Row>
@@ -170,6 +224,13 @@ const PermissionGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+            />
+            <SetDateDialog
+                initialValues={setDateDialog.initialValues}
+                open={_.toInteger(setDateDialog.open) > 0 ? true : toBoolean(setDateDialog.open)}
+                loading={setDateDialog.loading}
+                onClose={setDateDialog.handleCloseSetDateDialog}
+                onSubmit={setDateDialog.handleSubmitSetDateDialog}
             />
 
             {detailData.data && <ConfirmDialog
