@@ -28,7 +28,6 @@ import {
 } from '../../components/Order'
 const CLIENT_CREATE_DIALOG_OPEN = 'openClientCreate'
 const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
-const ORDER_SET_DISCOUNT_DIALOG = 'openSetDiscountDialog'
 import {
     orderCreateAction,
     orderUpdateAction,
@@ -160,15 +159,17 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
+        const prevUpdate = toBoolean(_.get(props, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
         const nextUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
-        const prevId = _.toInteger(_.get(nextProps, ['params', 'orderId']))
-        const nextId = _.toInteger(_.get(nextProps, ['params', 'orderId']))
+        const detail = nextProps.detail
 
-        return (prevUpdate !== nextUpdate) || (prevId !== nextId)
-    }, ({dispatch, params}) => {
+        return (prevUpdate !== nextUpdate && !_.isEmpty(detail))
+    }, ({dispatch, params, detail}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        dispatch(orderProductMobileAction(orderId))
+        const marketId = _.toInteger(_.get(detail, ['market', 'id']))
+        if (orderId > ZERO && marketId > ZERO) {
+            dispatch(orderProductMobileAction(orderId, marketId))
+        }
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -405,10 +406,8 @@ const enhance = compose(
         },
 
         handleOpenUpdateDialog: props => () => {
-            const {dispatch, location: {pathname}, filter, params} = props
-            const orderId = _.toInteger(_.get(params, 'orderId'))
+            const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})})
-            dispatch(orderProductMobileAction(orderId))
         },
 
         handleCloseUpdateDialog: props => () => {
@@ -503,31 +502,20 @@ const enhance = compose(
             const {dispatch, filter} = props
             return dispatch(orderListFetchAction(filter))
         },
-        handleToggleSetDiscountDialog: props => () => {
-            const {location: {pathname, query}, filter} = props
-            const toggle = !toBoolean(_.get(query, ORDER_SET_DISCOUNT_DIALOG))
-
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_SET_DISCOUNT_DIALOG]: toggle})})
-        },
-        handleSubmitSetDiscountDialog: props => (id) => {
-            const {dispatch, discountCreateForm, filter} = props
+        handleSubmitDiscountDialog: props => (id) => {
+            const {dispatch, discountCreateForm} = props
             return dispatch(orderSetDiscountAction(id, _.get(discountCreateForm, ['values', 'percent'])))
                 .then(() => {
-                    hashHistory.push(filter.createURL({[ORDER_SET_DISCOUNT_DIALOG]: false}))
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: 'Скидка добавлена'}))
                 })
                 .then(() => {
                     return dispatch(orderItemFetchAction(id))
                 }).catch((error) => {
-                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
-                        return <p key={index}>{item}</p>
-                    })
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
                     })
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
-                            {notEnough && <p>{notEnough}</p>}
                             {errorWhole}
                         </div>
                     }))
@@ -571,7 +559,6 @@ const OrderList = enhance((props) => {
     const openReturnDialog = toBoolean(_.get(location, ['query', ORDER_RETURN_DIALOG_OPEN]))
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
-    const openSetDiscountDialog = toBoolean(_.get(location, ['query', ORDER_SET_DISCOUNT_DIALOG]))
     const openCancelOrderReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_ORDER_RETURN_DIALOG_OPEN]))
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
     const zone = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ZONE))
@@ -596,11 +583,6 @@ const OrderList = enhance((props) => {
         openTransactionsDialog,
         handleOpenTransactionsDialog: props.handleOpenTransactionsDialog,
         handleCloseTransactionsDialog: props.handleCloseTransactionsDialog
-    }
-    const setDiscountDialog = {
-        openSetDiscountDialog,
-        handleToggleSetDiscountDialog: props.handleToggleSetDiscountDialog,
-        handleSubmitSetDiscountDialog: props.handleSubmitSetDiscountDialog
     }
 
     const cancelOrderReturnDialog = {
@@ -831,7 +813,7 @@ const OrderList = enhance((props) => {
                 refreshAction={props.handleRefreshList}
                 cancelOrderReturnDialog={cancelOrderReturnDialog}
                 canChangeAnyPrice={canChangeAnyPrice}
-                setDiscountDialog={setDiscountDialog}
+                handleSubmitDiscountDialog={props.handleSubmitDiscountDialog}
             />
         </Layout>
     )
