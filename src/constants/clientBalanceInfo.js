@@ -6,3 +6,4 @@ export const EXPENSE = 5
 export const CANCEL = 6
 export const CANCEL_ORDER = 7
 export const CANCEL_ORDER_RETURN = 8
+export const NONE_TYPE = 9

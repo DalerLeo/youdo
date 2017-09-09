@@ -7,10 +7,12 @@ import {Row, Col} from 'react-flexbox-grid'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import ProductFilterForm from '../../Product/ProductFilterForm'
 import IconButton from 'material-ui/IconButton'
+import Paper from 'material-ui/Paper'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import FloatButton from 'material-ui/FlatButton'
+import FlatButton from 'material-ui/FlatButton'
 import ManufactureDetails from '../ManufactureDetails'
+import Choose from '../../Images/choose-menu.png'
 
 import GridList from '../../GridList'
 const listHeader = [
@@ -51,12 +53,22 @@ const enhance = compose(
         },
         cursor: {
             cursor: 'pointer'
+        },
+        choose: {
+            background: 'url(' + Choose + ') no-repeat center 50px',
+            backgroundSize: '200px',
+            marginTop: '20px',
+            padding: '245px 0 30px',
+            textAlign: 'center',
+            fontSize: '15px',
+            color: '#666 !important'
         }
     })
 )
 
 const ManufactureProduct = enhance((props) => {
-    const {classes, filter, filterDialog, productData, editMaterials, createMaterials, deleteMaterials, handleCloseDetail} = props
+    const {classes, filter, filterDialog, productData, editMaterials, createMaterials, deleteMaterials, handleCloseDetail, manufactureId} = props
+    const ZERO = 0
 
     const productFilterDialog = (
         <ProductFilterForm
@@ -114,26 +126,29 @@ const ManufactureProduct = enhance((props) => {
         loading: _.get(productData, 'listLoading')
     }
     const createDialog = _.get(productData, 'createDialog')
+    if (manufactureId <= ZERO) {
+        return (
+            <Paper zDepth={1} className={classes.choose}>
+                <div>Выберите производство...</div>
+            </Paper>
+        )
+    }
     return (
         <div>
-            <div>
-                <div style={{padding: '10px 0', textAlign: 'right'}}>
-                    <FloatButton onClick={createDialog.handleOpenCreateDialog} style={{color: '#12aaeb'}}>
-                        <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
-                                    viewBox="0 0 24 15"/>
-                        добавить продукцию
-                    </FloatButton>
-                </div>
+            <div style={{padding: '10px 0', textAlign: 'right'}}>
+                <FlatButton
+                    label="Добавить продукцию"
+                    onClick={createDialog.handleOpenCreateDialog}
+                    labelStyle={{color: '#12aaeb', fontSize: '13px', textTransform: 'normal'}}
+                    icon={<ContentAdd style={{width: 13, height: 13, fill: '#12aaeb'}}/>}/>
             </div>
-            <div>
-                <GridList
-                    filter={filter}
-                    list={productListExp}
-                    detail={detail}
-                    actionsDialog={actions}
-                    filterDialog={productFilterDialog}
-                />
-            </div>
+            <GridList
+                filter={filter}
+                list={productListExp}
+                detail={detail}
+                actionsDialog={actions}
+                filterDialog={productFilterDialog}
+            />
         </div>
     )
 })
