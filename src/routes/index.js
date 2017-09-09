@@ -26,7 +26,12 @@ import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
 import {ClientList} from '../containers/Client'
-import {ManufactureList} from '../containers/Manufacture'
+import {
+    ManufactureProductList,
+    ManufacturePersonList,
+    ManufactureEquipmentList,
+    ManufactureShipmentList
+} from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
 import {StatStock} from '../containers/StatStock'
 import {StatDebtors} from '../containers/StatDebtors'
@@ -337,17 +342,6 @@ export default {
                 }
             ]
         },
-        // Manufacture
-        {
-            path: ROUTES.MANUFACTURE_LIST_URL,
-            component: userIsAdminChain(ManufactureList),
-            childRoutes: [
-                {
-                    path: ROUTES.MANUFACTURE_ITEM_URL,
-                    component: userIsAuth(ManufactureList)
-                }
-            ]
-        },
         // Pending Expenses
         {
             path: ROUTES.PENDING_EXPENSES_LIST_URL,
@@ -451,6 +445,56 @@ export default {
                 {
                     path: ROUTES.REMAINDER_ITEM_URL,
                     component: userIsAuth(visibleOnlyAdmin(RemainderList))
+                }
+            ]
+        },
+        // Manufacture
+        {
+            path: ROUTES.MANUFACTURE_LIST_URL,
+            component: userIsAdminChain(ManufactureProductList),
+            childRoutes: []
+        },
+        // Manufacture Product
+        {
+            path: ROUTES.MANUFACTURE_PRODUCT_LIST_URL,
+            component: userIsAdminChain(ManufactureProductList),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACTURE_PRODUCT_ITEM_URL,
+                    component: userIsAuth(ManufactureProductList)
+                }
+            ]
+        },
+        // Manufacture Person
+        {
+            path: ROUTES.MANUFACTURE_PERSON_LIST_URL,
+            component: userIsAdminChain(ManufacturePersonList),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACTURE_PERSON_ITEM_URL,
+                    component: userIsAuth(ManufacturePersonList)
+                }
+            ]
+        },
+        // Manufacture Equipment
+        {
+            path: ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL,
+            component: userIsAdminChain(ManufactureEquipmentList),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACTURE_EQUIPMENT_ITEM_URL,
+                    component: userIsAuth(ManufactureEquipmentList)
+                }
+            ]
+        },
+        // Manufacture Shipment
+        {
+            path: ROUTES.MANUFACTURE_SHIPMENT_LIST_URL,
+            component: userIsAdminChain(ManufactureShipmentList),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACTURE_SHIPMENT_ITEM_URL,
+                    component: userIsAuth(ManufactureShipmentList)
                 }
             ]
         },

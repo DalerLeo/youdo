@@ -78,9 +78,9 @@ export const MenuItems = [
     {
         name: 'Производство',
         icon: (<Map />),
-        url: ROUTES.MANUFACTURE_CUSTOM_URL,
+        url: ROUTES.MANUFACTURE_LIST_URL,
         childs: [
-            {name: 'Производство', url: ROUTES.MANUFACTURE_CUSTOM_URL}
+            {name: 'Производство', url: ROUTES.MANUFACTURE_LIST_URL}
         ]
     },
     {

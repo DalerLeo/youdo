@@ -11,7 +11,7 @@ import CloseIcon2 from '../CloseIcon2'
 import {ShiftSearchField, UsersSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
-export const OPEN_USER_CREATE_DIALOG = 'openCreateUser'
+export const OPEN_USER_CREATE_DIALOG = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)

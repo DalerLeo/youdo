@@ -239,7 +239,7 @@ const ManufactureEditProductDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.titleContent}>
-                    <span>Редактирование сырья</span>
+                    <span>{isUpdate ? 'Редактирование сырья' : 'Добавление сырья'}</span>
                     <IconButton onTouchTap={onClose}>
                         <CloseIcon2 color="#666666"/>
                     </IconButton>

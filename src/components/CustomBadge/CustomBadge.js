@@ -6,12 +6,13 @@ import FlatButton from 'material-ui/FlatButton'
 import Notification from 'material-ui/svg-icons/social/notifications'
 import axios from '../../helpers/axios'
 
+const ZERO = 0
 const TIMER = 15000
 
 export default class CustomBadge extends React.Component {
     constructor (props) {
         super(props)
-        this.state = {count: ''}
+        this.state = {count: 0}
     }
 
     componentDidMount () {
@@ -33,7 +34,7 @@ export default class CustomBadge extends React.Component {
 
     render () {
         const {classBadge, style, handleOpen} = this.props
-        if (!this.state.count) {
+        if (this.state.count <= ZERO) {
             return (
                 <ToolTip position="right" text="Уведомления">
                     <FlatButton

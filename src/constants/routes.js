@@ -109,10 +109,24 @@ export const CLIENT_ITEM_URL = `${CLIENT_LIST_URL}/:clientId`
 export const CLIENT_ITEM_PATH = `${CLIENT}/%d`
 
 export const MANUFACTURE = 'manufacture'
-export const MANUFACTURE_LIST_URL = `/${MANUFACTURE}`
-export const MANUFACTURE_CUSTOM_URL = `/${MANUFACTURE}/3`
-export const MANUFACTURE_ITEM_URL = `${MANUFACTURE_LIST_URL}/:manufactureId`
+export const MANUFACTURE_LIST_URL = `/${MANUFACTURE}/product`
 export const MANUFACTURE_ITEM_PATH = `${MANUFACTURE}/%d`
+
+export const MANUFACTURE_PRODUCT_LIST_URL = `/${MANUFACTURE}/product`
+export const MANUFACTURE_PRODUCT_ITEM_URL = `${MANUFACTURE_PRODUCT_LIST_URL}/:manufactureId`
+export const MANUFACTURE_PRODUCT_ITEM_PATH = `${MANUFACTURE}/product/%d`
+
+export const MANUFACTURE_PERSON_LIST_URL = `/${MANUFACTURE}/person`
+export const MANUFACTURE_PERSON_ITEM_URL = `${MANUFACTURE_PERSON_LIST_URL}/:manufactureId`
+export const MANUFACTURE_PERSON_ITEM_PATH = `${MANUFACTURE}/person/%d`
+
+export const MANUFACTURE_EQUIPMENT_LIST_URL = `/${MANUFACTURE}/equipment`
+export const MANUFACTURE_EQUIPMENT_ITEM_URL = `${MANUFACTURE_EQUIPMENT_LIST_URL}/:manufactureId`
+export const MANUFACTURE_EQUIPMENT_ITEM_PATH = `${MANUFACTURE}/equipment/%d`
+
+export const MANUFACTURE_SHIPMENT_LIST_URL = `/${MANUFACTURE}/shipment`
+export const MANUFACTURE_SHIPMENT_ITEM_URL = `${MANUFACTURE_SHIPMENT_LIST_URL}/:manufactureId`
+export const MANUFACTURE_SHIPMENT_ITEM_PATH = `${MANUFACTURE}/shipment/%d`
 
 export const SHIFT = 'shift'
 export const SHIFT_LIST_URL = `/${SHIFT}`
