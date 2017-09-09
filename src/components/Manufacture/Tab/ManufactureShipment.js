@@ -9,6 +9,8 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import ManufactureShipmentDetail from './ManufactureShipmentDetail'
 import GridList from '../../GridList'
+import Paper from 'material-ui/Paper'
+import Choose from '../../Images/choose-menu.png'
 
 const listHeader = [
     {
@@ -44,24 +46,25 @@ const listHeader = [
 ]
 const enhance = compose(
     injectSheet({
-
-        imgContent: {
-            '& img': {
-                width: '33%',
-                margin: '1px'
-            },
-            height: '390px',
-            overflowY: 'scroll'
-        },
-        equipmentContent: {
+        shipmentContent: {
             marginTop: '56px'
+        },
+        choose: {
+            background: 'url(' + Choose + ') no-repeat center 50px',
+            backgroundSize: '200px',
+            marginTop: '20px',
+            padding: '245px 0 30px',
+            textAlign: 'center',
+            fontSize: '15px',
+            color: '#666 !important'
         }
     })
 )
 
 const ManufactureShipment = enhance((props) => {
-    const {shipmentData, classes} = props
+    const {shipmentData, classes, manufactureId} = props
 
+    const ZERO = 0
     const filter = _.get(shipmentData, 'filter')
     const detail = (
         <ManufactureShipmentDetail
@@ -104,16 +107,22 @@ const ManufactureShipment = enhance((props) => {
             </IconButton>
         </div>
     )
+
+    if (manufactureId <= ZERO) {
+        return (
+            <Paper zDepth={1} className={classes.choose}>
+                <div>Выберите производство...</div>
+            </Paper>
+        )
+    }
     return (
-        <Row className={classes.equipmentContent}>
-            <Col xs={12}>
-                <GridList
-                    filter={filter}
-                    list={shipmentExp}
-                    detail={detail}
-                    actionsDialog={actions}/>
-            </Col>
-        </Row>
+        <div className={classes.shipmentContent}>
+            <GridList
+                filter={filter}
+                list={shipmentExp}
+                detail={detail}
+                actionsDialog={actions}/>
+        </div>
     )
 })
 

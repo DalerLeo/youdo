@@ -149,9 +149,9 @@ const OrderDetailsRightSideTabs = enhance((props) => {
     const tab = _.get(tabData, 'tab')
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
+    const discountPrice = _.get(data, 'discountPrice')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     let totalProductPrice = _.toNumber('0')
-    let totalDiscount = _.toNumber('0')
     return (
         <div className={classes.rightSide}>
             <Tabs
@@ -178,10 +178,9 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const returnAmount = _.toNumber(_.get(item, 'returnAmount'))
                                 const isBonus = _.get(item, 'isBonus')
                                 const measurement = _.get(product, ['measurement', 'name'])
-                                const discount = numberFormat(_.toInteger(_.get(item, 'discountPrice')) * _.toInteger(amount))
+                                const discount = numberFormat(_.toNumber(_.get(item, 'discountPrice')) * _.toNumber(amount))
                                 const tooltipText = 'Количество возврата'
                                 totalProductPrice += _.toNumber(productTotal)
-                                totalDiscount += _.toNumber(discount)
 
                                 return (
                                     <Row className="dottedList" key={index}>
@@ -206,7 +205,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             <Col xs={4}>ОБЩАЯ СУММА ({primaryCurrency}):</Col>
                             <Col xs={4}> </Col>
                             <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
-                            <Col xs={2}>{numberFormat(totalDiscount)}</Col>
+                            <Col xs={2}>{numberFormat(discountPrice)}</Col>
                         </Row>
                     </div>
                 </Tab>

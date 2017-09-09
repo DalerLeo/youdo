@@ -199,6 +199,21 @@ export const orderItemFetchAction = (id) => {
         payload
     }
 }
+export const orderSetDiscountAction = (id, percent) => {
+    const payload = axios()
+        .post(sprintf(API.ORDER_SET_DISCOUNT, id), {'discount_price': percent})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_SET_DISCOUNT,
+        payload
+    }
+}
 
 export const orderProductMobileAction = (id) => {
     const payload = axios()
