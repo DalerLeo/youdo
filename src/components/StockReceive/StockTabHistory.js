@@ -19,7 +19,7 @@ import PopoverDialog from './PopoverDialog'
 const ZERO = 0
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'product',
         title: 'Товар',
         xs: 4

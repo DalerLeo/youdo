@@ -231,7 +231,8 @@ const StatSalesGridList = enhance((props) => {
         listData,
         statSaleDialog,
         handleSubmit,
-        detailData
+        detailData,
+        handleGetDocument
     } = props
 
     const loading = _.get(listData, 'listLoading')
@@ -444,7 +445,7 @@ const StatSalesGridList = enhance((props) => {
                                         <Search/>
                                     </IconButton>
                                 </div>
-                                <a className={classes.excel}>
+                                <a className={classes.excel} onClick={handleGetDocument}>
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>

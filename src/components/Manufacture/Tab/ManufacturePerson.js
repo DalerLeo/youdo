@@ -23,13 +23,19 @@ import Choose from '../../Images/choose-menu.png'
 
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'name',
         title: 'Сотрудник',
         xs: 4
     },
     {
-        sorting: true,
+        sorting: false,
+        name: 'position',
+        title: 'Должность',
+        xs: 3
+    },
+    {
+        sorting: false,
         name: 'shift',
         title: 'Смена',
         xs: 3

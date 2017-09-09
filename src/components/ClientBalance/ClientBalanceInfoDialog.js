@@ -164,13 +164,13 @@ const iconStyle = {
         }
     }
 }
+const THREE = 3
 const ClientBalanceInfoDialog = enhance((props) => {
     const {open, filterItem, onClose, classes, detailData, name, balance, paymentType} = props
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
     const detailList = _.map(_.get(detailData, 'data'), (item, index) => {
-        const id = _.get(item, 'order') || _.get(item, 'transaction') || _.get(item, 'orderReturn')
         const createdDate = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:MM')
         const comment = _.get(item, 'comment') || 'Комментариев нет'
         const currency = _.get(item, ['currency', 'name'])
@@ -180,6 +180,8 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const internal = _.toNumber(_.get(item, 'internal'))
         const user = _.get(item, 'user') ? (_.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])) : 'Система'
         const type = _.get(item, 'type')
+        const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
+
         return (
             <Row key={index} className='dottedList'>
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>

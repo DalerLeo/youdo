@@ -203,43 +203,55 @@ const enhance = compose(
 
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'agent',
         title: 'Агенты',
         xs: 2
     },
     {
-        sorting: true,
-        name: 'zone',
-        title: 'Зона',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'plan',
+        sorting: false,
+        name: 'monthlyPlanAmount',
         title: 'План',
+        xs: 1
+    },
+    {
+        sorting: false,
+        name: 'ordersTotalPrice',
+        title: 'Сумма продаж',
+        xs: 2
+    },
+    {
+        sorting: false,
+        name: 'ordersReturnTotalPrice',
+        title: 'Сумма возарата',
         xs: 2
     },
     {
         sorting: true,
-        alignRight: true,
-        name: 'status',
-        title: 'Продано',
+        name: 'factPrice',
+        title: 'Факт. продажи',
         xs: 2
     },
     {
         sorting: true,
+        name: 'totalPaid',
         alignRight: true,
-        name: 'status',
         title: 'Оплачено',
-        xs: 2
+        xs: 1
+    },
+    {
+        sorting: true,
+        name: 'ordersLeftTotalPrice',
+        alignRight: true,
+        title: 'Баланс',
+        xs: 1
     },
     {
         sorting: true,
         alignRight: true,
-        name: 'status',
-        title: 'Баланс',
-        xs: 2
+        name: 'monthlyPlanLeft',
+        title: 'До выполнения',
+        xs: 1
     }
 ]
 
@@ -252,6 +264,7 @@ const StatAgentGridList = enhance((props) => {
         handleSubmitFilterDialog,
         detailData,
         getDocument,
+        calendar,
         initialValues
     } = props
 
@@ -260,32 +273,39 @@ const StatAgentGridList = enhance((props) => {
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const zone = _.get(item, ['zone', 'name'])
-        const plan = _.get(item, 'plan')
-        const paidFor = _.get(item, 'paidFor')
-        const balance = _.get(item, 'balance')
-        const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
+        const plan = numberFormat(_.get(item, 'monthlyPlanAmount'), getConfig('PRIMARY_CURRENCY'))
+        const factPrice = numberFormat(_.get(item, 'factPrice'), getConfig('PRIMARY_CURRENCY'))
+        const orderTotalPrice = numberFormat(_.get(item, 'ordersTotalPrice'), getConfig('PRIMARY_CURRENCY'))
+        const orderReturnTotalPrice = numberFormat(_.get(item, 'ordersReturnTotalPrice'), getConfig('PRIMARY_CURRENCY'))
+        const orderLeftTotalPrice = numberFormat(_.get(item, 'ordersLeftTotalPrice'), getConfig('PRIMARY_CURRENCY'))
+        const totalPaid = numberFormat(_.get(item, 'totalPaid'), getConfig('PRIMARY_CURRENCY'))
+        const monthlyPlanLeft = numberFormat(_.get(item, 'monthlyPlanLeft'), getConfig('PRIMARY_CURRENCY'))
 
         return (
             <Row key={id} className="dottedList">
                 <Col xs={2}>
                     <div className={classes.pointer} onClick={() => { statAgentDialog.handleOpenStatAgentDialog(id) }}>{name}</div>
                 </Col>
-                <Col xs={2}>
-                    <div>{zone}</div>
-                </Col>
-                <Col xs={2}>
+                <Col xs={1}>
                     <div>{plan}</div>
                 </Col>
-
-                <Col xs={2} className={classes.alignRightFlex}>
-                    <div>{income}</div>
+                <Col xs={2}>
+                    <div>{orderTotalPrice}</div>
                 </Col>
-                <Col xs={2} className={classes.alignRightFlex}>
-                    <div>{paidFor}</div>
+                <Col xs={2}>
+                    <div>{orderReturnTotalPrice}</div>
                 </Col>
-                <Col xs={2} className={classes.alignRightFlex}>
-                    <div>{balance}</div>
+                <Col xs={2}>
+                    <div>{factPrice}</div>
+                </Col>
+                <Col xs={1} className={classes.alignRightFlex}>
+                    <div>{totalPaid}</div>
+                </Col>
+                <Col xs={1} className={classes.alignRightFlex}>
+                    <div>{orderLeftTotalPrice}</div>
+                </Col>
+                <Col xs={1} className={classes.alignRightFlex}>
+                    <div>{monthlyPlanLeft}</div>
                 </Col>
             </Row>
         )
@@ -302,7 +322,8 @@ const StatAgentGridList = enhance((props) => {
                         <StatAgentFilterForm
                             onSubmit={handleSubmitFilterDialog}
                             initialValues={initialValues}
-                            getDocument={getDocument}/>
+                            getDocument={getDocument}
+                            calendar={calendar}/>
                         <Pagination filter={filter}/>
                     {listLoading
                         ? <div className={classes.loader}>

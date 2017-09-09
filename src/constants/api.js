@@ -303,7 +303,7 @@ export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
 export const REMAINDER_DISCARD = '/stock/writeoff/'
 export const REMAINDER_RESERVED = '/stock/reserved_product/'
 
-export const STAT_AGENT_LIST = 'stats/agents/'
+export const STAT_AGENT_LIST = 'stats/agents/statistics/all/'
 export const STAT_AGENT_ITEM = 'sales/order/'
 export const STAT_AGENT_GET_DOCUMENT = '/stats/agents/export/'
 
@@ -329,6 +329,7 @@ export const STAT_DEBTORS_ITEM = 'sales/order/'
 export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 
 export const STAT_SALES_DATA = '/stats/orders/'
+export const STAT_SALES_GET_DOCUMENT = '/stats/orders/export/'
 
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'

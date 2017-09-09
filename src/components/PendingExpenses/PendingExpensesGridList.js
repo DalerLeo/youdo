@@ -23,20 +23,20 @@ const listHeader = [
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'type',
         title: 'Описание',
         xs: 5
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'brand',
         title: 'Дата',
         xs: 2
     },
     {
         sorting: true,
-        name: 'measurement',
+        name: 'amount',
         alignRight: true,
         title: 'Сумма',
         xs: 2

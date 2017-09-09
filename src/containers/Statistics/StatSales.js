@@ -9,13 +9,14 @@ import * as ROUTER from '../../constants/routes'
 import {compose, withHandlers, withPropsOnChange} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-
+import * as serializers from '../../serializers/Statistics/statSalesSerializer'
+import getDocuments from '../../helpers/getDocument'
 import {StatSalesGridList, STAT_SALES_DIALOG_OPEN} from '../../components/Statistics'
 import {STAT_SALES_FILTER_KEY} from '../../components/Statistics/Sales/StatSalesGridList'
 import {
     orderItemFetchAction
 } from '../../actions/order'
-
+import * as API from '../../constants/api'
 import {
     statSalesDataFetchAction,
     orderListFetchAction
@@ -81,6 +82,11 @@ const enhance = compose(
                 [STAT_SALES_FILTER_KEY.DIVISION]: division
 
             })
+        },
+        handleGetDocument: props => () => {
+            const {filter} = props
+            const params = serializers.orderListFilterSerializer(filter.getParams())
+            getDocuments(API.STAT_SALES_GET_DOCUMENT, params)
         }
     })
 )
@@ -150,6 +156,7 @@ const StatSalesList = enhance((props) => {
                 filterForm={filterForm}
                 onSubmit={props.handleSubmitFilterDialog}
                 graphData={graphData}
+                handleGetDocument={props.handleGetDocument}
             />
         </Layout>
     )
