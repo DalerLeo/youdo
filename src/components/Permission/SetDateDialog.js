@@ -5,11 +5,12 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
+import IconButton from 'material-ui/IconButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
+import PermissionToggle from './PermissionToggle'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TimeField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
-import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
 const validate = (data) => {
@@ -69,7 +70,7 @@ const enhance = compose(
 )
 
 const SetDateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes, id, status, setDateDialog} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -82,7 +83,7 @@ const SetDateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Редактирование смены' : 'Добавить смену'}</span>
+                <span>Время работы</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -91,6 +92,15 @@ const SetDateDialog = enhance((props) => {
                 <form onSubmit={onSubmit}>
                     <div className={classes.inContent} style={{minHeight: '150px'}}>
                         <div className={classes.field} style={{paddingTop: '15px'}}>
+                            <div className={classes.iconBtn}>
+                                <Field
+                                    name={'toggle' + id}
+                                    status={status}
+                                    id={id}
+                                    update={() => { setDateDialog.handleClickTime(!status) }}
+                                    component={PermissionToggle}
+                                />
+                            </div>
                             <Field
                                 name="fromTime"
                                 component={TimeField}

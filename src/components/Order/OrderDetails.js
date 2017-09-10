@@ -213,7 +213,8 @@ const OrderDetails = enhance((props) => {
         canChangeAnyPrice,
         openDiscountDialog,
         setOpenDiscountDialog,
-        handleSubmitDiscountDialog
+        handleSubmitDiscountDialog,
+        stat
     } = props
 
     const id = _.get(data, 'id')
@@ -458,7 +459,7 @@ const OrderDetails = enhance((props) => {
                 open={cancelOrderReturnDialog.openCancelOrderReturnDialog > ZERO}/>
             }
 
-            <OrderCreateDialog
+            {!stat && <OrderCreateDialog
                 isUpdate={true}
                 status={status}
                 canChangeAnyPrice={canChangeAnyPrice}
@@ -467,7 +468,7 @@ const OrderDetails = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
+            />}
 
         </div>
     )
@@ -482,7 +483,7 @@ OrderDetails.propTypes = {
     }),
     data: PropTypes.object.isRequired,
     returnData: PropTypes.array,
-    loading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     returnDialog: PropTypes.shape({
         returnLoading: PropTypes.bool,
         openReturnDialog: PropTypes.bool,

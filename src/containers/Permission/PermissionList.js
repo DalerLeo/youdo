@@ -173,7 +173,8 @@ const PermissionList = enhance((props) => {
         open: openSetDateDialog,
         handleOpenSetDateDialog: props.handleOpenSetDateDialog,
         handleCloseSetDateDialog: props.handleCloseSetDateDialog,
-        handleSubmitSetDateDialog: props.handleSubmitSetDateDialog
+        handleSubmitSetDateDialog: props.handleSubmitSetDateDialog,
+        handleClickTime: props.handleClickTime
     }
 
     return (
