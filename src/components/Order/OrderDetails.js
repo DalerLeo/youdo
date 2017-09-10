@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import sprintf from 'sprintf'
 import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
@@ -28,6 +28,7 @@ import OrderSetDiscountDialog from './OrderSetDiscountDialog'
 
 const ZERO = 0
 
+const popupWidth = 210
 const enhance = compose(
     injectSheet({
         dottedList: {
@@ -150,12 +151,32 @@ const enhance = compose(
             }
         },
         discountPop: {
+            width: popupWidth + 'px',
             position: 'absolute',
-            top: '45px',
-            right: '60px',
-            width: '200px'
+            right: '55px',
+            top: '55px',
+            transformOrigin: '170px 0',
+            transition: 'all 200ms ease-out',
+            zIndex: '5'
+        },
+        arrow: {
+            top: -12,
+            right: 36,
+            position: 'absolute',
+            borderRight: '10px solid transparent',
+            borderBottom: '12px solid #fff',
+            borderLeft: '10px solid transparent',
+            zIndex: '2'
+        },
+        arrowShadow: {
+            extend: 'arrow',
+            top: -13,
+            filter: 'blur(1px)',
+            borderBottomColor: '#e0e0e0',
+            zIndex: '1'
         }
     }),
+    withState('openDiscountDialog', 'setOpenDiscountDialog', false)
 )
 
 const iconStyle = {
@@ -190,7 +211,9 @@ const OrderDetails = enhance((props) => {
         returnData,
         handleCloseDetail,
         canChangeAnyPrice,
-        setDiscountDialog
+        openDiscountDialog,
+        setOpenDiscountDialog,
+        handleSubmitDiscountDialog
     } = props
 
     const id = _.get(data, 'id')
@@ -241,12 +264,15 @@ const OrderDetails = enhance((props) => {
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
+                <div className={classes.discountPop} style={openDiscountDialog ? {transform: 'scale(1)'} : {transform: 'scale(0)'}}>
+                    <OrderSetDiscountDialog
+                        id={id}
+                        setOpenDiscountDialog={setOpenDiscountDialog}
+                        onSubmit={handleSubmitDiscountDialog}/>
+                    <div className={classes.arrow}> </div>
+                    <div className={classes.arrowShadow}> </div>
+                </div>
                 <div className={classes.titleButtons}>
-                    {setDiscountDialog.openSetDiscountDialog && <div className={classes.discountPop}>
-                        <OrderSetDiscountDialog
-                            onSubmit={setDiscountDialog.handleSubmitSetDiscountDialog}
-                            id={id}/>
-                    </div>}
                     <Tooltip position="bottom" text="Добавить возврат">
                         <IconButton
                             disabled={!(status === DELIVERED || status === GIVEN)}
@@ -283,7 +309,7 @@ const OrderDetails = enhance((props) => {
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
-                            onTouchTap={setDiscountDialog.handleToggleSetDiscountDialog}>
+                            onTouchTap={() => { setOpenDiscountDialog(!openDiscountDialog) }}>
                             <MoneyOffIcon />
                         </IconButton>
                     </Tooltip>
@@ -490,11 +516,6 @@ OrderDetails.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    setDiscountDialog: PropTypes.shape({
-        openSetDiscountDialog: PropTypes.bool.isRequired,
-        handleToggleSetDiscountDialog: PropTypes.func.isRequired,
-        handleSubmitSetDiscountDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

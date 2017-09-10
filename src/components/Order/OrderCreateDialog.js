@@ -359,7 +359,7 @@ const OrderCreateDialog = enhance((props) => {
                             onTouchTap={shortageDialog.handleOpenShortageDialog}/>
 
                             : <FlatButton
-                                label="Оформить заказ"
+                                label={isUpdate ? 'Изменить заказ' : 'Оформить заказ'}
                                 labelStyle={{fontSize: '13px'}}
                                 className={classes.actionButton}
                                 primary={true}
