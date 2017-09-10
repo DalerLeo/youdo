@@ -168,7 +168,8 @@ const iconStyle = {
 }
 const THREE = 3
 const ClientBalanceInfoDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser} = props
+    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType} = props
+    const superUser = true
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
@@ -191,7 +192,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 </div>
                 <div style={{flexBasis: '16%', maxWidth: '16%'}}>{createdDate}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
-                <div style={{flexBasis: '45%', maxWidth: '45%'}}>
+                <div style={{flexBasis: '40%', maxWidth: '40%'}}>
                     {market && <div>Магазин: <span>{market}</span></div>}
                     <div>Комментарии: <span>{comment}</span></div>
                     {type && <div>Тип: <span>{type === PAYMENT ? 'Оплата'
@@ -274,8 +275,9 @@ const ClientBalanceInfoDialog = enhance((props) => {
                             </div>
                             <div style={{flexBasis: '16%', maxWidth: '16%'}}>Дата</div>
                             <div style={{flexBasis: '20%', maxWidth: '20%'}}>Кто</div>
-                            <div style={{flexBasis: '45%', maxWidth: '45%'}}>Описание</div>
+                            <div style={{flexBasis: '40%', maxWidth: '40%'}}>Описание</div>
                             <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Сумма</div>
+                            <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}/>
                         </Row>
 
                         {!_.isEmpty(_.get(detailData, 'data')) ? detailList
