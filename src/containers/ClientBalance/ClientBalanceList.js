@@ -16,6 +16,7 @@ import {
     CLIENT_BALANCE_FILTER_OPEN,
     CLIENT_BALANCE_CREATE_DIALOG_OPEN,
     CLIENT_BALANCE_ADD_DIALOG_OPEN,
+    CLIENT_BALANCE_SUPER_USER_OPEN,
     CLIENT_BALANCE_RETURN_DIALOG_OPEN,
     ClientBalanceGridList
 } from '../../components/ClientBalance'
@@ -246,6 +247,44 @@ const enhance = compose(
                         </div>
                     }))
                 })
+        },
+
+        handleOpenSuperUserDialog: props => (id) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
+                query: filter.getParams({[CLIENT_BALANCE_SUPER_USER_OPEN]: true})
+            })
+        },
+        handleCloseSuperUserDialog: props => () => {
+            const {dispatch, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_SUPER_USER_OPEN]: false})})
+            dispatch(reset('ClientBalanceCreateForm'))
+        },
+        handleSubmitSuperUserDialog: props => () => {
+            const {dispatch, createForm, filter, params} = props
+            const clientId = _.get(params, ['clientBalanceId'])
+            return dispatch(clientAddAction(_.get(createForm, ['values']), clientId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({
+                        pathname: ROUTER.CLIENT_BALANCE_LIST_URL,
+                        query: filter.getParams({[CLIENT_BALANCE_SUPER_USER_OPEN]: false})
+                    })
+                    dispatch(clientBalanceListFetchAction(filter))
+                    dispatch(reset('ClientBalanceCreateForm'))
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         }
     })
 )
@@ -268,6 +307,7 @@ const ClientBalanceList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_CREATE_DIALOG_OPEN]))
     const openAddDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_ADD_DIALOG_OPEN]))
+    const openSuperUser = toBoolean(_.get(location, ['query', CLIENT_BALANCE_SUPER_USER_OPEN]))
     const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
     const openClientReturnDialog = _.get(location, ['query', CLIENT_BALANCE_RETURN_DIALOG_OPEN])
     const division = _.toNumber(_.get(location, ['query', 'division']))
@@ -331,6 +371,12 @@ const ClientBalanceList = enhance((props) => {
         data: _.get(detail, 'results'),
         detailLoading
     }
+    const superUser = {
+        open: openSuperUser,
+        handleOpenSuperUserDialog: props.handleOpenSuperUserDialog,
+        handleCloseSuperUserDialog: props.handleCloseSuperUserDialog,
+        handleSubmitSuperUserDialog: props.handleSubmitFilterDialog
+    }
 
     return (
         <Layout {...layout}>
@@ -344,6 +390,7 @@ const ClientBalanceList = enhance((props) => {
                 addDialog={addDialog}
                 filterDialog={filterDialog}
                 clientReturnDialog={clientReturnDialog}
+                superUser={superUser}
             />
         </Layout>
     )

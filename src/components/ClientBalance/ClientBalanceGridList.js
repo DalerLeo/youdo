@@ -137,7 +137,8 @@ const ClientBalanceGridList = enhance((props) => {
         infoDialog,
         listData,
         detailData,
-        clientReturnDialog
+        clientReturnDialog,
+        superUser
     } = props
 
     const clientBalanceDetail = (
@@ -260,6 +261,16 @@ const ClientBalanceGridList = enhance((props) => {
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
+                name={_.get(client, 'name')}
+            />
+            <ClientBalanceCreateDialog
+                open={superUser.openCreateDialog}
+                listData={listData}
+                detailData={detailData}
+                loading={superUser.createLoading}
+                onClose={superUser.handleCloseCreateDialog}
+                onSubmit={superUser.handleSubmitCreateDialog}
+                superUser={true}
                 name={_.get(client, 'name')}
             />
             <ClientBalanceCreateDialog

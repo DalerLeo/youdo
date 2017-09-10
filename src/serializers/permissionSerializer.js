@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 export const updateSerializer = (id, status) => {
@@ -20,6 +21,15 @@ export const listFilterSerializer = (data) => {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
+    }
+}
+export const setDateSerializer = (data) => {
+    const fromTime = _.get(data, 'fromTime')
+    const toTime = _.get(data, 'toTime')
+
+    return {
+        'from_time': moment(fromTime).format('HH:mm:ss'),
+        'to_time': moment(toTime).format('HH:mm:ss')
     }
 }
 

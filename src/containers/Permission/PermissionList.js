@@ -15,9 +15,12 @@ import {
 import {
     permissionUpdateAction,
     permissionListFetchAction,
-    permissionItemFetchAction
+    permissionItemFetchAction,
+    setDateAction
 } from '../../actions/permission'
 import {openSnackbarAction} from '../../actions/snackbar'
+
+const SET_DATE_DIALOG_DATE = 'openSetDateDialog'
 
 const enhance = compose(
     connect((state, props) => {
@@ -30,6 +33,7 @@ const enhance = compose(
         const list = _.get(state, ['access', 'list', 'data'])
         const listLoading = _.get(state, ['access', 'list', 'loading'])
         const createForm = _.get(state, ['form', 'PermissionCreateForm'])
+        const setDateForm = _.get(state, ['form', 'SetDateDialogForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -41,6 +45,7 @@ const enhance = compose(
             updateLoading,
             filter,
             createForm,
+            setDateForm,
             query
         }
     }),
@@ -70,6 +75,29 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[PERMISSION_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(permissionListFetchAction(filter))
                 })
+        },
+
+        handleOpenSetDateDialog: props => (id) => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[SET_DATE_DIALOG_DATE]: id})})
+        },
+
+        handleCloseSetDateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SET_DATE_DIALOG_DATE]: false})})
+        },
+
+        handleSubmitSetDateDialog: props => () => {
+            const {dispatch, setDateForm, filter, location: {pathname}} = props
+            const permissionId = _.toInteger(_.get(props, ['query', 'openSetDateDialog']))
+            return dispatch(setDateAction(_.get(setDateForm, ['values']), permissionId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[SET_DATE_DIALOG_DATE]: false})})
+                    dispatch(permissionListFetchAction(filter))
+                })
         }
     })
 )
@@ -91,6 +119,7 @@ const PermissionList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', PERMISSION_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PERMISSION_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', PERMISSION_DELETE_DIALOG_OPEN]))
+    const openSetDateDialog = _.get(location, ['query', SET_DATE_DIALOG_DATE])
     const detailId = _.toInteger(_.get(params, 'itemId'))
 
     const actionsDialog = {
@@ -140,6 +169,13 @@ const PermissionList = enhance((props) => {
         data: detail,
         detailLoading
     }
+    const setDateDialog = {
+        open: openSetDateDialog,
+        handleOpenSetDateDialog: props.handleOpenSetDateDialog,
+        handleCloseSetDateDialog: props.handleCloseSetDateDialog,
+        handleSubmitSetDateDialog: props.handleSubmitSetDateDialog,
+        handleClickTime: props.handleClickTime
+    }
 
     return (
         <Layout {...layout}>
@@ -151,6 +187,7 @@ const PermissionList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
+                setDateDialog={setDateDialog}
             />
         </Layout>
     )

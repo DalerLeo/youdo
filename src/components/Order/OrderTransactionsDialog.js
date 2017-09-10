@@ -180,8 +180,8 @@ const OrderTransactionsDialog = enhance((props) => {
                                     const type = _.toInteger(_.get(item, 'type'))
 
                                     const payDate = dateFormat(_.get(item, ['clientTransaction', 'createdDate'])) + moment(_.get(item, ['clientTransaction', 'createdDate'])).format(' HH:MM')
-                                    const amount = _.toNumber(_.get(item, ['clientTransaction', 'amount']))
                                     const orderSum = numberFormat(_.get(item, 'amount'), currentCurrency)
+                                    const amount = type === BALANCE ? _.get(item, 'amount') : _.toNumber(_.get(item, ['clientTransaction', 'amount']))
                                     const internal = _.toNumber(_.get(item, ['clientTransaction', 'internal']))
                                     const pp = '(' + numberFormat(internal, currentCurrency) + ')'
 

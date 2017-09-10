@@ -213,7 +213,8 @@ const OrderDetails = enhance((props) => {
         canChangeAnyPrice,
         openDiscountDialog,
         setOpenDiscountDialog,
-        handleSubmitDiscountDialog
+        handleSubmitDiscountDialog,
+        stat
     } = props
 
     const id = _.get(data, 'id')
@@ -240,11 +241,8 @@ const OrderDetails = enhance((props) => {
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const paymentType = _.get(data, 'paymentType')
     const totalBalance = _.get(data, 'totalBalance')
+    const productTotal = _.get(data, 'totalPrice')
 
-    let productTotal = _.toNumber(zero)
-    _.map(_.get(data, 'products'), (item) => {
-        productTotal += _.toNumber(_.get(item, 'totalPrice'))
-    })
     if (loading) {
         return (
             <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
@@ -378,7 +376,7 @@ const OrderDetails = enhance((props) => {
                                     <span>{(paymentType === '0') ? 'Наличными' : 'Перечислением'}</span>
                                 </li>
                                 <li>
-                                    <span>Стоимость товаров</span>
+                                    <span>Общая стоимость</span>
                                     <span>{numberFormat(productTotal, primaryCurrency)}</span>
                                 </li>
                                 <li>
@@ -461,7 +459,7 @@ const OrderDetails = enhance((props) => {
                 open={cancelOrderReturnDialog.openCancelOrderReturnDialog > ZERO}/>
             }
 
-            <OrderCreateDialog
+            {!stat && <OrderCreateDialog
                 isUpdate={true}
                 status={status}
                 canChangeAnyPrice={canChangeAnyPrice}
@@ -470,7 +468,7 @@ const OrderDetails = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
+            />}
 
         </div>
     )
@@ -485,7 +483,7 @@ OrderDetails.propTypes = {
     }),
     data: PropTypes.object.isRequired,
     returnData: PropTypes.array,
-    loading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     returnDialog: PropTypes.shape({
         returnLoading: PropTypes.bool,
         openReturnDialog: PropTypes.bool,
