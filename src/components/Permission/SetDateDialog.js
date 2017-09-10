@@ -3,13 +3,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import {connect} from 'react-redux'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
-import PermissionToggle from './PermissionToggle'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TimeField} from '../ReduxForm'
+import {TimeField, CheckBox} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 
@@ -66,11 +66,17 @@ const enhance = compose(
     reduxForm({
         form: 'SetDateDialogForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const setTime = _.get(state, ['form', 'SetDateDialogForm', 'values', 'setTime'])
+        return {
+            setTime
+        }
     })
 )
 
 const SetDateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, id, status, setDateDialog} = props
+    const {open, loading, handleSubmit, onClose, classes, setTime} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -94,20 +100,20 @@ const SetDateDialog = enhance((props) => {
                         <div className={classes.field} style={{paddingTop: '15px'}}>
                             <div className={classes.iconBtn}>
                                 <Field
-                                    name={'toggle' + id}
-                                    status={status}
-                                    id={id}
-                                    update={() => { setDateDialog.handleClickTime(!status) }}
-                                    component={PermissionToggle}
-                                />
+                                    name="setTime"
+                                    className={classes.checkbox}
+                                    component={CheckBox}
+                                    label="Снять со счета клиента"/>
                             </div>
                             <Field
+                                disabled={setTime}
                                 name="fromTime"
                                 component={TimeField}
                                 className={classes.inputFieldTime}
                                 label="Начало"
                                 fullWidth={true}/>
                             <Field
+                                disabled={setTime}
                                 name="toTime"
                                 component={TimeField}
                                 className={classes.inputFieldTime}

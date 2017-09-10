@@ -76,7 +76,6 @@ const enhance = compose(
         const historyList = _.get(state, ['stockReceive', 'history', 'data'])
         const historyOrderDetail = _.get(state, ['order', 'item', 'data'])
         const historyOrderLoading = _.get(state, ['order', 'item', 'loading'])
-        console.log(historyOrderLoading)
         const historyListLoading = _.get(state, ['stockReceive', 'history', 'loading'])
         const transferList = _.get(state, ['stockReceive', 'transfer', 'data'])
         const transferListLoading = _.get(state, ['stockReceive', 'transfer', 'loading'])

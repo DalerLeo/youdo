@@ -167,7 +167,7 @@ const iconStyle = {
 }
 const THREE = 3
 const ClientBalanceInfoDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType} = props
+    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser} = props
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
