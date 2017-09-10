@@ -2,7 +2,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
@@ -147,8 +147,19 @@ const enhance = compose(
             '& .row:last-child:after': {
                 display: 'none'
             }
+        },
+        dottedList: {
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            }
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0',
+            transition: 'all 200ms ease-out'
         }
-    })
+    }),
+    withState('currentItem', 'setItem', null)
 )
 
 const iconStyle = {
@@ -159,8 +170,8 @@ const iconStyle = {
         lineHeight: 'normal'
     },
     button: {
-        width: 48,
-        height: 48,
+        width: 38,
+        height: 38,
         '& > div': {
             lineHeight: 'none'
         }
@@ -168,8 +179,7 @@ const iconStyle = {
 }
 const THREE = 3
 const ClientBalanceInfoDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType} = props
-    const superUser = true
+    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem} = props
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
@@ -186,7 +196,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
 
         return (
-            <Row key={index} className='dottedList'>
+            <Row key={index} className={classes.dottedList}>
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>
                     {(amount > ZERO) ? <ArrowUpIcon color="#92ce95"/> : <ArrowDownIcon color="#e27676"/>}
                 </div>
@@ -217,14 +227,14 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     <div>{currency !== currentCurrency ? numberFormat(internal, currentCurrency) + customRate : null} </div>
                 </div>
                 {superUser && <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}>
-                    <div>
+                    <div className={classes.iconBtn} style={{marginTop: '-15px'}}>
                         <Tooltip position="bottom" text="Изменить">
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 disableTouchRipple={true}
                                 touch={true}
-                                onTouchTap={() => { superUser.handleOpenSuperUserDialog(id) }}>
+                                onTouchTap={() => { superUser.handleOpenSuperUserDialog(item), setItem(item) }}>
                                 <Edit />
                             </IconButton>
                         </Tooltip>

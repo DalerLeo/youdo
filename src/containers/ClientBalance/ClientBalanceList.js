@@ -25,7 +25,8 @@ import {
     clientBalanceItemFetchAction,
     clientBalanceCreateExpenseAction,
     clientAddAction,
-    clientBalanceReturnAction
+    clientBalanceReturnAction,
+    superUserAction
 } from '../../actions/clientBalance'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
@@ -249,10 +250,10 @@ const enhance = compose(
                 })
         },
 
-        handleOpenSuperUserDialog: props => (id) => {
-            const {filter} = props
+        handleOpenSuperUserDialog: props => (item) => {
+            const {filter, location: {pathname}} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
+                pathname,
                 query: filter.getParams({[CLIENT_BALANCE_SUPER_USER_OPEN]: true})
             })
         },
@@ -264,7 +265,7 @@ const enhance = compose(
         handleSubmitSuperUserDialog: props => () => {
             const {dispatch, createForm, filter, params} = props
             const clientId = _.get(params, ['clientBalanceId'])
-            return dispatch(clientAddAction(_.get(createForm, ['values']), clientId))
+            return dispatch(superUserAction(_.get(createForm, ['values']), clientId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })

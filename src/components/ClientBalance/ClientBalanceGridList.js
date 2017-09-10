@@ -112,6 +112,7 @@ const enhance = compose(
             }
         }
     })
+
 )
 const iconStyle = {
     icon: {
@@ -138,7 +139,8 @@ const ClientBalanceGridList = enhance((props) => {
         listData,
         detailData,
         clientReturnDialog,
-        superUser
+        superUser,
+        currentItem
     } = props
 
     const clientBalanceDetail = (
@@ -233,6 +235,21 @@ const ClientBalanceGridList = enhance((props) => {
             _.get(infoDialog, 'type') === 'bank' ? ' переч.' : ' нал.'
         ) : 'косметика'
     const clientName = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog'))})
+
+    const initialValue = {
+        paymentType: {
+            value: _.get(currentItem, 'paymentType')
+        },
+        amount: {
+            value:  _.get(currentItem, 'amount')
+        },
+        division: {
+            value:  _.get(currentItem, 'division')
+        },
+        comment: {
+            value:  _.get(currentItem, 'comment')
+        }
+    }
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
@@ -253,6 +270,7 @@ const ClientBalanceGridList = enhance((props) => {
                 name={_.get(client, 'name')}
                 paymentType={paymentType}
                 balance={balance}
+                superUser={superUser}
             />
             <ClientBalanceCreateDialog
                 open={createDialog.openCreateDialog}
@@ -264,12 +282,13 @@ const ClientBalanceGridList = enhance((props) => {
                 name={_.get(client, 'name')}
             />
             <ClientBalanceCreateDialog
-                open={superUser.openCreateDialog}
+                initialValue={initialValue}
+                open={superUser.open}
                 listData={listData}
                 detailData={detailData}
                 loading={superUser.createLoading}
-                onClose={superUser.handleCloseCreateDialog}
-                onSubmit={superUser.handleSubmitCreateDialog}
+                onClose={superUser.handleCloseSuperUserDialog}
+                onSubmit={superUser.handleSubmitSuperUserDialog}
                 superUser={true}
                 name={_.get(client, 'name')}
             />
