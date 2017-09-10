@@ -1,10 +1,12 @@
+import _ from 'lodash'
 const normalizeDiscount = value => {
+    const numberValue = _.toNumber(value)
     const MAX = 100
-    if (!value) {
-        return value
+    if (_.isNaN(numberValue) || value === '') {
+        return ''
     }
 
-    return value > MAX ? MAX : value
+    return numberValue > MAX ? MAX : value
 }
 
 export default normalizeDiscount

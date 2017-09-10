@@ -215,9 +215,9 @@ export const orderSetDiscountAction = (id, percent) => {
     }
 }
 
-export const orderProductMobileAction = (id) => {
+export const orderProductMobileAction = (orderId, marketId) => {
     const payload = axios()
-        .get(API.PRODUCT_MOBILE, {'params': {'order': id}})
+        .get(API.PRODUCT_MOBILE, {'params': {'order': orderId, 'market': marketId}})
         .then((response) => {
             return _.get(response, 'data')
         })

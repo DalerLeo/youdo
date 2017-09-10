@@ -132,7 +132,7 @@ const enhance = compose(
         },
         background: {
             display: 'flex',
-            alignItems: 'flex-end',
+            alignItems: 'flex-start',
             padding: '10px',
             margin: '5px -30px 0',
             backgroundColor: '#f1f5f8',
@@ -150,22 +150,48 @@ const enhance = compose(
             '& > div > div > div:first-child': {
                 overflow: 'hidden'
             }
+        },
+        confirm: {
+            background: '#fff',
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '10'
+        },
+        confirmButtons: {
+            marginTop: '-35px',
+            textAlign: 'center',
+            '& > div:first-child': {
+                fontWeight: '600',
+                fontSize: '15px',
+                marginBottom: '15px'
+            }
         }
     }),
     connect((state) => {
         const measurement = _.get(state, ['product', 'extra', 'data', 'measurement', 'name'])
         const customPrice = _.get(state, ['product', 'extra', 'data', 'custom_price'])
         const cashPrice = _.get(state, ['product', 'extra', 'data', 'cash_price'])
+        const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
+        const initialPaymentType = _.get(state, ['form', 'OrderCreateForm', 'initial', 'paymentType'])
         return {
             measurement,
             customPrice,
-            cashPrice
+            cashPrice,
+            paymentType,
+            initialPaymentType
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
     withState('editItem', 'setEditItem', null),
+    withState('openConfirmPT', 'setOpenConfirmPT', false),
 
     withHandlers({
         handleAdd: props => () => {
@@ -178,12 +204,9 @@ const enhance = compose(
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
             if (!_.isEmpty(_.get(product, 'value')) && amount && cost) {
-                let has = false
-                _.map(products, (item) => {
-                    if (_.get(item, 'product') === product) {
-                        has = true
-                    }
-                })
+                let has = Boolean(_(products)
+                    .filter(item => _.get(item, 'product') === product)
+                    .first())
                 const fields = ['amount', 'cost', 'product']
                 for (let i = 0; i < fields.length; i++) {
                     let newChange = _.get(props, [fields[i], 'input', 'onChange'])
@@ -247,8 +270,15 @@ const iconStyle = {
         height: 22
     }
 }
+const flatButton = {
+    label: {
+        color: '#12aaeb',
+        fontWeight: 600,
+        fontSize: '13px'
+    }
+}
 
-const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, customPrice, ...defaultProps}) => {
+const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, customPrice, openConfirmPT, setOpenConfirmPT, paymentType, ...defaultProps}) => {
     const editOnlyCost = _.get(defaultProps, 'editOnlyCost')
     const canChangeAnyPrice = _.get(defaultProps, 'canChangeAnyPrice')
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
@@ -256,6 +286,25 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
     const currency = getConfig('PRIMARY_CURRENCY')
     return (
         <div className={classes.wrapper}>
+            {openConfirmPT && <div className={classes.confirm}>
+                <div className={classes.confirmButtons}>
+                    <div>Цены товаров будут изменены на {(paymentType === 'cash' ? 'наличные' : 'банковский счет')}</div>
+                    <FlatButton
+                        label="Нет"
+                        labelStyle={flatButton.label}
+                        onTouchTap={() => { setOpenConfirmPT(false) }}
+                        className={classes.actionButton}
+                        primary={true}
+                    />
+                    <FlatButton
+                        label="Да"
+                        labelStyle={flatButton.label}
+                        className={classes.actionButton}
+                        primary={true}
+                        // OnTouchTap={customSubmit}
+                    />
+                </div>
+            </div>}
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
@@ -314,9 +363,8 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                             {..._.get(defaultProps, 'cost')}
                         />}
                     </Col>
-                    <Col xs={1}>
+                    <Col xs={1} style={{alignSelf: 'center'}}>
                         <IconButton
-                            label="Применить"
                             onTouchTap={handleAdd}>
                             <Check color="#12aaeb"/>
                         </IconButton>
