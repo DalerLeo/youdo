@@ -11,6 +11,7 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
+import Edit from 'material-ui/svg-icons/image/edit'
 import Pagination from '../ReduxForm/Pagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
@@ -189,7 +190,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 </div>
                 <div style={{flexBasis: '16%', maxWidth: '16%'}}>{createdDate}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
-                <div style={{flexBasis: '45%', maxWidth: '45%'}}>
+                <div style={{flexBasis: '40%', maxWidth: '40%'}}>
                     {market && <div>Магазин: <span>{market}</span></div>}
                     <div>Комментарии: <span>{comment}</span></div>
                     {type && <div>Тип: <span>{type === PAYMENT ? 'Оплата'
@@ -212,6 +213,20 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>
                     <div>{currency !== currentCurrency ? numberFormat(internal, currentCurrency) + customRate : null} </div>
+                </div>
+                <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}>
+                    <div>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                touch={true}
+                                onTouchTap={() => { superUser.handleOpenSuperUserDialog(id) }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </div>
             </Row>)
     })
