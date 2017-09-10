@@ -103,13 +103,14 @@ const SetDateDialog = enhance((props) => {
                                     name="setTime"
                                     className={classes.checkbox}
                                     component={CheckBox}
-                                    label="Снять со счета клиента"/>
+                                    label={'Время не ограничено'}/>
                             </div>
                             <Field
                                 disabled={setTime}
                                 name="fromTime"
                                 component={TimeField}
                                 className={classes.inputFieldTime}
+                                value='asdasd'
                                 label="Начало"
                                 fullWidth={true}/>
                             <Field

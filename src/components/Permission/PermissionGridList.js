@@ -5,7 +5,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import Edit from 'material-ui/svg-icons/image/edit'
+import Time from 'material-ui/svg-icons/device/access-time'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -40,18 +40,18 @@ const listHeader = [
         title: 'Время окончания'
     },
     {
-        sorting: false,
+        sorting: true,
         xs: 2,
         alignRight: true,
         name: 'actions',
         title: 'Статус'
     },
     {
-        sorting: false,
+        sorting: true,
         name: 'edit',
         alignRight: true,
         xs: 2,
-        title: 'Edit'
+        title: 'Рабочее время'
     }
 ]
 
@@ -149,8 +149,8 @@ const PermissionGridList = enhance((props) => {
     const permissionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const fromTime = _.get(item, 'fromTime')
-        const toTime = _.get(item, 'toTime')
+        const fromTime = _.get(item, 'fromTime') || 'Время не ограничено'
+        const toTime = _.get(item, 'toTime') || 'Время не ограничено'
         const status = _.toInteger(_.get(item, 'status'))
 
         return (
@@ -179,7 +179,7 @@ const PermissionGridList = enhance((props) => {
                                 disableTouchRipple={true}
                                 touch={true}
                                 onTouchTap={() => { setDateDialog.handleOpenSetDateDialog(id) }}>
-                                <Edit />
+                                <Time color='blue'/>
                             </IconButton>
                         </Tooltip>
                     </div>
