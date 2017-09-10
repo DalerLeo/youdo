@@ -16,7 +16,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 import SetDateDialog from './SetDateDialog'
-import Tooltip from '../Tooltip'
+import Tooltip from '../ToolTip'
 import toBoolean from '../../helpers/toBoolean'
 import {Field, reduxForm} from 'redux-form'
 
