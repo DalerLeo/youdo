@@ -96,6 +96,9 @@ const enhance = compose(
             margin: '0 -30px !important',
             width: 'auto !important',
             padding: '0 30px'
+        },
+        iconBtn: {
+            display: 'inline-flex'
         }
     }),
     reduxForm({
@@ -111,8 +114,11 @@ const iconStyle = {
     },
     button: {
         width: 30,
-        height: 25,
-        padding: 0
+        height: 26,
+        padding: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end'
     }
 }
 const ONE = 1
@@ -149,8 +155,8 @@ const PermissionGridList = enhance((props) => {
     const permissionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const fromTime = _.get(item, 'fromTime') || 'Время не ограничено'
-        const toTime = _.get(item, 'toTime') || 'Время не ограничено'
+        const fromTime = _.get(item, 'fromTime') || (<span style={{fontSize: 22}}>∞</span>)
+        const toTime = _.get(item, 'toTime') || (<span style={{fontSize: 22}}>∞</span>)
         const status = _.toInteger(_.get(item, 'status'))
 
         return (
@@ -179,7 +185,7 @@ const PermissionGridList = enhance((props) => {
                                 disableTouchRipple={true}
                                 touch={true}
                                 onTouchTap={() => { setDateDialog.handleOpenSetDateDialog(id) }}>
-                                <Time color='blue'/>
+                                <Time color='#5d6474'/>
                             </IconButton>
                         </Tooltip>
                     </div>

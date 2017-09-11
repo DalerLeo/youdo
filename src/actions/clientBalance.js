@@ -88,10 +88,10 @@ export const clientBalanceReturnAction = (formValues, id) => {
         payload
     }
 }
-export const superUserAction = (formValues, id) => {
-    const requestData = serializers.updateTransactionSerializer(formValues, id)
+export const superUserAction = (formValues, clientId, transId) => {
+    const requestData = serializers.updateTransactionSerializer(formValues, clientId)
     const payload = axios()
-        .put(sprintf(API.CLIENT_BALANCE_SUPER_USER, id), requestData)
+        .put(sprintf(API.CLIENT_BALANCE_SUPER_USER, transId), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
