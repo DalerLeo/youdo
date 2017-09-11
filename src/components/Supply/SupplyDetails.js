@@ -245,6 +245,14 @@ const enhance = compose(
                 }
             }
         },
+        totalSummary: {
+            fontWeight: 'bold',
+            padding: '20px 0',
+            borderBottom: '1px #efefef solid',
+            '& > div:last-child': {
+                textAlign: 'right'
+            }
+        },
         expenseSum: {
             display: 'flex',
             alignItems: 'center',
@@ -292,6 +300,8 @@ const SupplyDetails = enhance((props) => {
         handleCloseDetail,
         filter
     } = props
+
+    const ZERO = 0
     const id = _.get(data, 'id')
     const provider = _.get(data, ['provider', 'name'])
     const products = _.get(data, 'products')
@@ -311,6 +321,18 @@ const SupplyDetails = enhance((props) => {
 
     const supplyExpenseList = _.get(supplyListData, 'data')
     const supplyExpenseListLoading = _.get(supplyListData, 'supplyExpenseListLoading')
+
+    const firstMeasurement = _.get(products, ['0', 'product', 'measurement', 'name'])
+    let identicalMeasurement = false
+    const totalAmount = _.sumBy(products, (o) => {
+        return _.toNumber(_.get(o, 'amount'))
+    })
+    const totalAccepted = _.sumBy(products, (o) => {
+        return _.toNumber(_.get(o, 'postedAmount'))
+    })
+    const totalDefected = _.sumBy(products, (o) => {
+        return _.toNumber(_.get(o, 'defectAmount'))
+    })
 
     if (loading) {
         return (
@@ -382,7 +404,7 @@ const SupplyDetails = enhance((props) => {
                 <div className={classes.storeInfo}>
                     <div className={classes.store}>Склад: <span
                         style={{color: '#999', fontWeight: 'bold'}}>{stock}</span></div>
-                    <div className={classes.supplyDate} style={{marginLeft: '45px'}}>Дата поставки: <span
+                    <div style={{marginLeft: '45px'}}>Дата поставки: <span
                         style={{color: '#e57373', fontWeight: 'bold'}}>{dateDelivery}</span></div>
                 </div>
                 <div className={classes.dateInfo}>
@@ -409,7 +431,6 @@ const SupplyDetails = enhance((props) => {
                 </div>
                 <div>
                     {_.map(products, (item) => {
-                        const ZERO = 0
                         const product = _.get(item, 'product')
                         const productId = _.get(product, 'id')
                         const productName = _.get(product, 'name')
@@ -420,6 +441,9 @@ const SupplyDetails = enhance((props) => {
                         const measurement = _.get(product, ['measurement', 'name'])
                         const defectAmount = _.toNumber(_.get(item, 'defectAmount'))
                         const notAccepted = postedAmount + defectAmount < amount ? numberFormat(amount - defectAmount - postedAmount, measurement) : numberFormat(ZERO, measurement)
+                        if (firstMeasurement === measurement) {
+                            identicalMeasurement = true
+                        }
                         return (
                             <Row className="dataInfo dottedList" key={productId}>
                                 <Col xs={4}>{productName}</Col>
@@ -440,9 +464,21 @@ const SupplyDetails = enhance((props) => {
                         )
                     })}
                 </div>
-                <div className="summary">
-                    <div>Сумма заказа <span style={{marginLeft: '40px'}}>{numberFormat(totalCost, currency)}</span></div>
-                </div>
+                {identicalMeasurement ? <Row className={classes.totalSummary}>
+                    <Col xs={4}>Итого:</Col>
+                    <Col xs={1}>{numberFormat(totalAmount, firstMeasurement)}</Col>
+                    <Col xs={1}>{numberFormat(totalAccepted, firstMeasurement)}</Col>
+                    <Col xs={1}>{numberFormat(totalDefected, firstMeasurement)}</Col>
+                    <Col xs={1}>
+                        {totalAccepted + totalDefected < totalAmount
+                            ? numberFormat(totalAmount - totalDefected - totalAccepted, firstMeasurement)
+                            : numberFormat(ZERO, firstMeasurement)}
+                    </Col>
+                    <Col xs={4}>{numberFormat(totalCost, currency)}</Col>
+                </Row>
+                : <div className="summary">
+                        <div>Сумма заказа <span style={{marginLeft: '40px'}}>{numberFormat(totalCost, currency)}</span></div>
+                    </div>}
                 <div className="addExpenses">
                     <div className="addExpense">
                         <div>Дополнительные расходы по заказу</div>
