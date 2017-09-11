@@ -2,7 +2,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
@@ -126,6 +126,8 @@ const enhance = compose(
             '& > .row': {
                 margin: '0',
                 padding: '15px 0',
+                alignItems: 'center',
+                position: 'relative',
                 '& > div': {
                     padding: '0 0.5rem',
                     '& a': {
@@ -149,17 +151,18 @@ const enhance = compose(
             }
         },
         dottedList: {
-            '&:hover > div:last-child > div ': {
+            '&:hover > div:last-child': {
                 opacity: '1'
             }
         },
         iconBtn: {
             display: 'flex',
+            position: 'absolute',
+            right: '-15px',
             opacity: '0',
             transition: 'all 200ms ease-out'
         }
-    }),
-    withState('currentItem', 'setItem', null)
+    })
 )
 
 const iconStyle = {
@@ -172,14 +175,13 @@ const iconStyle = {
     button: {
         width: 38,
         height: 38,
-        '& > div': {
-            lineHeight: 'none'
-        }
+        padding: 0
     }
 }
 const THREE = 3
 const ClientBalanceInfoDialog = enhance((props) => {
     const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem} = props
+    const isSuperUser = _.get(superUser, 'isSuperUser')
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
@@ -194,6 +196,11 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const user = _.get(item, 'user') ? (_.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])) : 'Система'
         const type = _.get(item, 'type')
         const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
+
+        const openEditDialog = (thisItem) => {
+            superUser.handleOpenSuperUserDialog(thisItem.id)
+            setItem(thisItem)
+        }
 
         return (
             <Row key={index} className={classes.dottedList}>
@@ -226,20 +233,19 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     <div>{numberFormat(amount, currency)}</div>
                     <div>{currency !== currentCurrency ? numberFormat(internal, currentCurrency) + customRate : null} </div>
                 </div>
-                {superUser && <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}>
-                    <div className={classes.iconBtn} style={{marginTop: '-15px'}}>
+                {(isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
+                    <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 disableTouchRipple={true}
                                 touch={true}
-                                onTouchTap={() => { superUser.handleOpenSuperUserDialog(item), setItem(item) }}>
+                                onTouchTap={() => { openEditDialog(item) }}>
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                    </div>
-                </div>}
+                    </div>}
             </Row>)
     })
 

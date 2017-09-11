@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import axios from '../helpers/axios'
+import sprintf from 'sprintf'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/clientBalanceSerializer'
@@ -88,9 +89,9 @@ export const clientBalanceReturnAction = (formValues, id) => {
     }
 }
 export const superUserAction = (formValues, id) => {
-    const requestData = serializers.createReturnSerializer(formValues, id)
+    const requestData = serializers.updateTransactionSerializer(formValues, id)
     const payload = axios()
-        .post(API.CLIENT_TRANSACTION_RETURN, requestData)
+        .put(sprintf(API.CLIENT_BALANCE_SUPER_USER, id), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -99,7 +100,7 @@ export const superUserAction = (formValues, id) => {
         })
 
     return {
-        type: actionTypes.CLIENT_TRANSACTION_RETURN,
+        type: actionTypes.CLIENT_BALANCE_SUPER_USER,
         payload
     }
 }
