@@ -366,6 +366,7 @@ export const CLIENT_BALANCE = 'sales/client_balances'
 export const CLIENT_BALANCE_LIST = `/${CLIENT_BALANCE}/`
 export const CLIENT_BALANCE_ITEM = 'sales/client_transaction/'
 export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
+export const CLIENT_BALANCE_SUPER_USER = '/sales/client_transaction/%d/'
 
 export const PLAN_CREATE = `/${STAT_AGENT_LIST}/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`

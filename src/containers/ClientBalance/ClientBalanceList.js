@@ -25,12 +25,14 @@ import {
     clientBalanceItemFetchAction,
     clientBalanceCreateExpenseAction,
     clientAddAction,
-    clientBalanceReturnAction
+    clientBalanceReturnAction,
+    superUserAction
 } from '../../actions/clientBalance'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
 const MINUS_ONE = -1
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -39,17 +41,20 @@ const enhance = compose(
         const detailLoading = _.get(state, ['clientBalance', 'item', 'loading'])
         const createLoading = _.get(state, ['clientBalance', 'create', 'loading'])
         const updateLoading = _.get(state, ['clientBalance', 'update', 'loading'])
+        const updateTransactionLoading = _.get(state, ['clientBalance', 'updateAdmin', 'loading'])
         const list = _.get(state, ['clientBalance', 'list', 'data'])
         const listLoading = _.get(state, ['clientBalance', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'ClientBalanceFilterForm'])
         const createForm = _.get(state, ['form', 'ClientBalanceCreateForm'])
+        const updateForm = _.get(state, ['form', 'ClientBalanceUpdateForm'])
         const returnForm = _.get(state, ['form', 'ClientBalanceReturnForm'])
-        const addLoading = _.get(state, ['clientBalance', 'create', 'loading'])
+        const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
 
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 
         return {
+            query,
             list,
             listLoading,
             detail,
@@ -60,8 +65,10 @@ const enhance = compose(
             filterItem,
             filterForm,
             createForm,
+            updateForm,
             returnForm,
-            addLoading
+            isSuperUser,
+            updateTransactionLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -250,10 +257,10 @@ const enhance = compose(
         },
 
         handleOpenSuperUserDialog: props => (id) => {
-            const {filter} = props
+            const {filter, location: {pathname}} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
-                query: filter.getParams({[CLIENT_BALANCE_SUPER_USER_OPEN]: true})
+                pathname,
+                query: filter.getParams({[CLIENT_BALANCE_SUPER_USER_OPEN]: id})
             })
         },
         handleCloseSuperUserDialog: props => () => {
@@ -262,9 +269,9 @@ const enhance = compose(
             dispatch(reset('ClientBalanceCreateForm'))
         },
         handleSubmitSuperUserDialog: props => () => {
-            const {dispatch, createForm, filter, params} = props
-            const clientId = _.get(params, ['clientBalanceId'])
-            return dispatch(clientAddAction(_.get(createForm, ['values']), clientId))
+            const {dispatch, updateForm, filter, query} = props
+            const clientId = _.toInteger(_.get(query, CLIENT_BALANCE_SUPER_USER_OPEN))
+            return dispatch(superUserAction(_.get(updateForm, ['values']), clientId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -274,10 +281,11 @@ const enhance = compose(
                         query: filter.getParams({[CLIENT_BALANCE_SUPER_USER_OPEN]: false})
                     })
                     dispatch(clientBalanceListFetchAction(filter))
-                    dispatch(reset('ClientBalanceCreateForm'))
-                }).catch((error) => {
+                    dispatch(reset('ClientBalanceUpdateForm'))
+                })
+                .catch((error) => {
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
                     })
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
@@ -301,13 +309,15 @@ const ClientBalanceList = enhance((props) => {
         filter,
         filterItem,
         layout,
-        params
+        params,
+        isSuperUser,
+        updateTransactionLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_CREATE_DIALOG_OPEN]))
     const openAddDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_ADD_DIALOG_OPEN]))
-    const openSuperUser = toBoolean(_.get(location, ['query', CLIENT_BALANCE_SUPER_USER_OPEN]))
+    const openSuperUser = _.toInteger(_.get(location, ['query', CLIENT_BALANCE_SUPER_USER_OPEN])) > ZERO
     const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
     const openClientReturnDialog = _.get(location, ['query', CLIENT_BALANCE_RETURN_DIALOG_OPEN])
     const division = _.toNumber(_.get(location, ['query', 'division']))
@@ -372,10 +382,12 @@ const ClientBalanceList = enhance((props) => {
         detailLoading
     }
     const superUser = {
+        isSuperUser,
         open: openSuperUser,
+        loading: updateTransactionLoading,
         handleOpenSuperUserDialog: props.handleOpenSuperUserDialog,
         handleCloseSuperUserDialog: props.handleCloseSuperUserDialog,
-        handleSubmitSuperUserDialog: props.handleSubmitFilterDialog
+        handleSubmitSuperUserDialog: props.handleSubmitSuperUserDialog
     }
 
     return (

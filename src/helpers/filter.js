@@ -195,7 +195,8 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             createMaterials: null,
             openPopoverDialog: null,
             openAddDialog: null,
-            openSetDiscountDialog: null
+            openSetDiscountDialog: null,
+            openSuperUser: null
         }))
     }
 

@@ -7,10 +7,11 @@ import GridList from '../GridList'
 import Container from '../Container'
 import ClientBalanceInfoDialog from './ClientBalanceInfoDialog'
 import ClientBalanceCreateDialog from './ClientBalanceCreateDialog'
+import ClientBalanceUpdateDialog from './ClientBalanceUpdateDialog'
 import ClientBalanceReturnDialog from './ClientBalanceReturnDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import IconButton from 'material-ui/IconButton'
@@ -111,7 +112,9 @@ const enhance = compose(
                 cursor: 'pointer'
             }
         }
-    })
+    }),
+    withState('currentItem', 'setItem', null)
+
 )
 const iconStyle = {
     icon: {
@@ -138,9 +141,12 @@ const ClientBalanceGridList = enhance((props) => {
         listData,
         detailData,
         clientReturnDialog,
-        superUser
+        superUser,
+        currentItem,
+        setItem
     } = props
 
+    const isSuperUser = _.get(superUser, 'isSuperUser')
     const clientBalanceDetail = (
         <span>a</span>
     )
@@ -233,6 +239,16 @@ const ClientBalanceGridList = enhance((props) => {
             _.get(infoDialog, 'type') === 'bank' ? ' переч.' : ' нал.'
         ) : 'косметика'
     const clientName = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog'))})
+    const initialValues = {
+        paymentType: {
+            value: _.get(currentItem, 'paymentType')
+        },
+        amount: _.get(currentItem, 'amount'),
+        division: {
+            value: _.get(currentItem, ['division', 'id'])
+        },
+        comment: _.get(currentItem, 'comment')
+    }
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
@@ -253,6 +269,8 @@ const ClientBalanceGridList = enhance((props) => {
                 name={_.get(client, 'name')}
                 paymentType={paymentType}
                 balance={balance}
+                superUser={superUser}
+                setItem={setItem}
             />
             <ClientBalanceCreateDialog
                 open={createDialog.openCreateDialog}
@@ -263,16 +281,14 @@ const ClientBalanceGridList = enhance((props) => {
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 name={_.get(client, 'name')}
             />
-            <ClientBalanceCreateDialog
-                open={superUser.openCreateDialog}
-                listData={listData}
-                detailData={detailData}
-                loading={superUser.createLoading}
-                onClose={superUser.handleCloseCreateDialog}
-                onSubmit={superUser.handleSubmitCreateDialog}
-                superUser={true}
+            {isSuperUser && <ClientBalanceUpdateDialog
+                initialValues={initialValues}
+                open={superUser.open}
+                loading={superUser.loading}
+                onClose={superUser.handleCloseSuperUserDialog}
+                onSubmit={superUser.handleSubmitSuperUserDialog}
                 name={_.get(client, 'name')}
-            />
+            />}
             <ClientBalanceCreateDialog
                 open={addDialog.openAddDialog}
                 listData={listData}
@@ -315,6 +331,13 @@ ClientBalanceGridList.propTypes = {
         handleOpenClientReturnDialog: PropTypes.func.isRequired,
         handleCloseClientReturnDialog: PropTypes.func.isRequired,
         handleSubmitClientReturnDialog: PropTypes.func.isRequired
+    }),
+    superUser: PropTypes.shape({
+        open: PropTypes.bool.isRequired,
+        loading: PropTypes.bool.isRequired,
+        handleOpenSuperUserDialog: PropTypes.func.isRequired,
+        handleCloseSuperUserDialog: PropTypes.func.isRequired,
+        handleSubmitSuperUserDialog: PropTypes.func.isRequired
     })
 }
 

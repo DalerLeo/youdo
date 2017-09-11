@@ -126,6 +126,8 @@ const enhance = compose(
             '& > .row': {
                 margin: '0',
                 padding: '15px 0',
+                alignItems: 'center',
+                position: 'relative',
                 '& > div': {
                     padding: '0 0.5rem',
                     '& a': {
@@ -147,6 +149,18 @@ const enhance = compose(
             '& .row:last-child:after': {
                 display: 'none'
             }
+        },
+        dottedList: {
+            '&:hover > div:last-child': {
+                opacity: '1'
+            }
+        },
+        iconBtn: {
+            display: 'flex',
+            position: 'absolute',
+            right: '-15px',
+            opacity: '0',
+            transition: 'all 200ms ease-out'
         }
     })
 )
@@ -159,17 +173,15 @@ const iconStyle = {
         lineHeight: 'normal'
     },
     button: {
-        width: 48,
-        height: 48,
-        '& > div': {
-            lineHeight: 'none'
-        }
+        width: 38,
+        height: 38,
+        padding: 0
     }
 }
 const THREE = 3
 const ClientBalanceInfoDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType} = props
-    const superUser = true
+    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem} = props
+    const isSuperUser = _.get(superUser, 'isSuperUser')
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
@@ -185,8 +197,13 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const type = _.get(item, 'type')
         const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
 
+        const openEditDialog = (thisItem) => {
+            superUser.handleOpenSuperUserDialog(thisItem.id)
+            setItem(thisItem)
+        }
+
         return (
-            <Row key={index} className='dottedList'>
+            <Row key={index} className={classes.dottedList}>
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>
                     {(amount > ZERO) ? <ArrowUpIcon color="#92ce95"/> : <ArrowDownIcon color="#e27676"/>}
                 </div>
@@ -216,20 +233,19 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     <div>{numberFormat(amount, currency)}</div>
                     <div>{currency !== currentCurrency ? numberFormat(internal, currentCurrency) + customRate : null} </div>
                 </div>
-                {superUser && <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}>
-                    <div>
+                {(isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
+                    <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 disableTouchRipple={true}
                                 touch={true}
-                                onTouchTap={() => { superUser.handleOpenSuperUserDialog(id) }}>
+                                onTouchTap={() => { openEditDialog(item) }}>
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                    </div>
-                </div>}
+                    </div>}
             </Row>)
     })
 
