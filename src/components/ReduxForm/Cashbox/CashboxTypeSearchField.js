@@ -8,8 +8,8 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
 
-const getOptions = (search, type, currency) => {
-    return axios().get(`${PATH.CASHBOX_LIST}?currency=${currency || ''}&type=${type || ''}&page_size=1000&search=${search || ''}`)
+const getOptions = (search, type, currency, cashboxId) => {
+    return axios().get(`${PATH.CASHBOX_LIST}?currency=${currency || ''}&type=${type || ''}&page_size=1000&search=${search || ''}&id=${!cashboxId}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -37,13 +37,14 @@ const CashboxTypeSearchField = enhance((props) => {
         return getItem(id, dispatch)
     }
     const type = _.get(cashbox, 'type')
+    const cashboxId = _.get(cashbox, 'id')
     const currency = _.get(cashbox, ['currency', 'id'])
     if (cashbox) {
         return (
             <SearchField
                 getValue={SearchField.defaultGetValue('id')}
                 getText={SearchField.defaultGetText('name')}
-                getOptions={(search) => { return getOptions(search, type, currency) }}
+                getOptions={(search) => { return getOptions(search, type, currency, cashboxId) }}
                 getItem={test}
                 getItemText={(value) => {
                     return _.get(value, ['name'])

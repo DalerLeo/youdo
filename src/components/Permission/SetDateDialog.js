@@ -96,7 +96,7 @@ const SetDateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit}>
-                    <div className={classes.inContent} style={{minHeight: '150px'}}>
+                    <div className={classes.inContent} style={{minHeight: '190px'}}>
                         <div className={classes.field} style={{paddingTop: '15px'}}>
                             <div className={classes.iconBtn}>
                                 <Field
