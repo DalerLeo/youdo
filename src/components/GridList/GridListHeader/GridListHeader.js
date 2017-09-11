@@ -156,9 +156,10 @@ const GridListHeader = enhance((props) => {
     const items = _.map(column, (item, index) => {
         const xs = (!_.isNil(item.xs)) ? item.xs : (index === firstIndex ? firstColumnSize : defaultColumnSize)
         const width = _.get(item, 'width')
+        const sortable = _.get(item, 'sorting')
         const alignRight = _.get(item, 'alignRight')
 
-        if (_.get(item, 'sorting')) {
+        if (sortable) {
             const name = _.get(item, 'name')
             const sortingType = filter.getSortingType(name)
             const Icon = !_.isNull(sortingType) ? sortingType ? (
@@ -180,7 +181,8 @@ const GridListHeader = enhance((props) => {
                     </Link>
                 </div>)
             }
-            return (<Col xs={xs} key={index} style={alignRight && {textAlign: 'right', justifyContent: 'flex-end'}}>
+            return (
+                <Col xs={xs} key={index} style={alignRight && {textAlign: 'right', justifyContent: 'flex-end'}}>
                         <Link
                             className={classes.sortingButton}
                             onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
@@ -192,17 +194,18 @@ const GridListHeader = enhance((props) => {
                                 {alignRight && Icon} <span>{_.get(item, 'title')}</span> {!alignRight && Icon}
                             </FlatButton>
                         </Link>
-                    </Col>)
-        } else if (withoutRow && !_.get(item, 'sorting')) {
+                    </Col>
+            )
+        } else if (withoutRow && !sortable) {
             return (
-                <div style={{width: width}}>
+                <div style={alignRight ? {width: width, textAlign: 'right'} : {width: width}}>
                     {_.get(item, 'title')}
                 </div>
             )
         }
 
         return (
-            <Col xs={xs} key={index}>
+            <Col xs={xs} key={index} style={alignRight && {textAlign: 'right'}}>
                 {_.get(item, 'title')}
             </Col>
         )
