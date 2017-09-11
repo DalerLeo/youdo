@@ -1,3 +1,5 @@
+/* eslint:disable */
+
 import React from 'react'
 import Script from 'react-load-script'
 import _ from 'lodash'
@@ -100,12 +102,14 @@ export default class GoogleCustomMap extends React.Component {
 
     createMap () {
         const mapOptions = {
-            zoom: 4,
+            zoom: 13,
             center: GOOGLE_MAP.DEFAULT_LOCATION,
             mapTypeId: 'terrain',
             styles: googleMapStyle
         }
-        return new google.maps.Map(this.refs.mapping, mapOptions)
+        const googl = new google.maps.Map(this.refs.mapping, mapOptions)
+        this.map = googl
+        return googl
     }
 
     createZones () {
@@ -119,10 +123,10 @@ export default class GoogleCustomMap extends React.Component {
 
                 return {lat: lat, lng: lng}
             })
-            this.meanLat = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
+            const meanLat = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
                 return _.get(p, '0')
             }))
-            this.meanLng = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
+            const meanLng = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
                 return _.get(p, '1')
             }))
             const existingZone = new google.maps.Polygon({
@@ -166,58 +170,43 @@ export default class GoogleCustomMap extends React.Component {
                 }
             })
         })
-
-        this.createOverlays()
     }
 
-    onAdd () {
-        let containerElement = document.createElement('div')
-        containerElement.style.borderStyle = 'none'
-        containerElement.style.borderWidth = '0px'
-        containerElement.style.position = 'absolute'
+    createOverlays (meanLat, meanLng, title) {
+        this.overlayView = new google.maps.OverlayView()
+        this.overlayView.setMap(this.map)
+        console.warn('aaaaabbbbbb')
+        this.overlayView.onAdd = () => {
+            console.warn('ccccccccc')
+            let containerElement = document.createElement('div')
+            containerElement.style.borderStyle = 'none'
+            containerElement.style.borderWidth = '0px'
+            containerElement.style.position = 'absolute'
 
-        return containerElement
-    }
-    onRemove() {
+            return containerElement
+        }
+        this.overlayView.draw = () => {
+            console.warn('aaaaaaaaaaa')
+            let overlayEl = this.overlayView
+            let mapPanes = overlayEl.getPanes()
+            console.warn(mapPanes)
+            let mapCanvasProjection = overlayEl.getProjection()
+            const bounds = new google.maps.LatLngBounds(
+                new google.maps.LatLng(meanLat, meanLng))
+            let sw = mapCanvasProjection.fromLatLngToDivPixel(bounds.getCenter())
+            let div = overlayEl.onAdd()
+            div.style.left = sw.x + 'px'
+            div.style.top = sw.y + 'px'
+            div.style.color = 'red'
+            div.innerHTML = title
+            let mapPaneName = 'overlayLayer'
+            mapPanes[mapPaneName].appendChild(div)
+            console.warn(div)
+        }
 
-    }
-    draw() {
-        let overlayView = this
-        let mapPanes = overlayView.getPanes()
-        let mapCanvasProjection = overlayView.getProjection()
-        const bounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(41.259925245676556, 69.2534065246582))
-        console.warn(this.onAdd())
-        let sw = mapCanvasProjection.fromLatLngToDivPixel(bounds.getCenter())
-        let div = this.onAdd()
-        div.style.left = sw.x + 'px'
-        div.style.top = sw.y + 'px'
-        let mapPaneName = 'overlayMouseTarget'
-        mapPanes[mapPaneName].appendChild(div)
-
-    }
-    createOverlays () {
-        let overlayView = new google.maps.OverlayView()
-        overlayView.setMap(this.map)
-        this.setState({
-            overlay: overlayView
-        })
-        overlayView.onAdd = this.onAdd
-        overlayView.onRemove = this.onRemove
-        overlayView.draw = this.draw
-
-
-    }
-
-    USGSOverlay (bounds, image, map) {
-        this.bounds_ = bounds
-        this.image_ = image
-        this.map_ = map
-
-        this.div_ = null
-
-        // Explicitly call setMap on this overlay.
-        this.setMap(map)
+        this.overlayView.onRemove = () => {
+            console.warn('ddddd')
+        }
     }
 
     createCustomZone (nextState) {
@@ -242,6 +231,7 @@ export default class GoogleCustomMap extends React.Component {
             this.setState({points: this.getPoints()})
         })
     }
+
     createCustomZone2 (nextState) {
         google.maps.event.addListener(nextState.drawing, 'overlaycomplete', (event) => {
             this.handleEdit()
@@ -264,6 +254,7 @@ export default class GoogleCustomMap extends React.Component {
             this.setState({points: this.getPoints()})
         })
     }
+
     setEditableFalse () {
         _.map(this.state.zone, (item) => {
             _.get(item, 'zone').setOptions({
@@ -274,6 +265,7 @@ export default class GoogleCustomMap extends React.Component {
             })
         })
     }
+
     editZone (nextProps, nextState) {
         const selectedZone = _.get(_.filter(nextState.zone, (item) => {
             return nextProps.zoneId === item.id
@@ -297,6 +289,7 @@ export default class GoogleCustomMap extends React.Component {
             }
         })
     }
+
     getUpdatedZone () {
         if (this.state.zone[ZERO]) {
             const selectedZone = _.get(_.filter(this.state.zone, (item) => {
@@ -337,6 +330,10 @@ export default class GoogleCustomMap extends React.Component {
         }
     }
 
+    componentWillUnmount () {
+        this.overlayView.setMap(null)
+    }
+
     render () {
         const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone} = this.props
         const GOOGLE_API_KEY = 'AIzaSyDnUkBg_uV1aa4e7pyEvv3bVxN3RfwNQEo'
@@ -349,7 +346,6 @@ export default class GoogleCustomMap extends React.Component {
                 </div>
             )
         }
-        console.warn(this.state)
 
         return (
             <div style={{height: '100%', width: '100%'}}>
@@ -370,7 +366,9 @@ export default class GoogleCustomMap extends React.Component {
                     edit={this.handleEdit.bind(this)}
                     onClose={addZone.handleCloseAddZone}
                     onSubmit={addZone.handleSubmitAddZone}
-                    data={() => { return this.state.points }}
+                    data={() => {
+                        return this.state.points
+                    }}
                     isDrawing={this.state.isDrawing}
                 />}
                 {isOpenUpdateZone && <AddZonePopup
@@ -381,7 +379,9 @@ export default class GoogleCustomMap extends React.Component {
                     edit={this.handleEdit.bind(this)}
                     onSubmit={updateZone.handleSubmitUpdateZone}
                     initialValues={updateZone.initialValues}
-                    data={() => { return this.getUpdatedZone() }}
+                    data={() => {
+                        return this.getUpdatedZone()
+                    }}
                     isDrawing={this.state.isDrawing}
                 />}
                 <ZoneDeleteDialog
