@@ -255,12 +255,7 @@ const ShopDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'name'])
-    const firstName = _.get(data, ['createdBy', 'firstName'])
-    const secondName = _.get(data, ['createdBy', 'secondName'])
-    let createdBy = firstName + ' ' + secondName
-    if (!firstName && !secondName) {
-        createdBy = 'Неизвестно'
-    }
+    const createdBy = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName']) || 'Неизвестно'
     const changedBy = _.get(data, 'changedBy') ? _.get(data, ['changedBy', 'firstName']) + ' ' + _.get(data, ['changedBy', 'secondName'])
         : 'Неизвестно'
     const shopType = _.get(data, ['marketType', 'name'])
