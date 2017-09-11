@@ -224,7 +224,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                                             : type === ORDER_RETURN ? <Link to={{
                                                 pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                                                 query: {search: id}
-                                            }} target="_blank">Возврат заказа {id}</Link>
+                                            }} target="_blank">Возврат {id}</Link>
                                                 : type === FIRST_BALANCE ? 'Первый баланс'
                                                     : type === NONE_TYPE ? 'Произвольный' : null }</span>
                     </div>}

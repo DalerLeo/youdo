@@ -52,12 +52,14 @@ const listHeader = [
         sorting: true,
         name: 'netCost',
         title: 'Себестоимость',
+        alignRight: true,
         xs: 2
     },
     {
         sorting: false,
         name: 'minPrice',
         title: 'Цена',
+        alignRight: true,
         xs: 2
     },
     {
@@ -255,8 +257,8 @@ const PriceGridList = enhance((props) => {
                 }}>
                 </Link>
                 <Col xs={2}>{codeProduct}</Col>
-                <Col xs={2}>{netCost}</Col>
-                <Col xs={2}>{price}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{netCost}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{price}</Col>
                 <Col xs={2}>{priceUpdate}</Col>
                 <Col xs={1} className={classes.icon}>
                     {customPrice
