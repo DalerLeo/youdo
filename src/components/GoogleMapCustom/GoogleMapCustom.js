@@ -119,7 +119,12 @@ export default class GoogleCustomMap extends React.Component {
 
                 return {lat: lat, lng: lng}
             })
-
+            this.meanLat = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
+                return _.get(p, '0')
+            }))
+            this.meanLng = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
+                return _.get(p, '1')
+            }))
             const existingZone = new google.maps.Polygon({
                 paths: point,
                 fillColor: '#199ee0',
@@ -177,13 +182,21 @@ export default class GoogleCustomMap extends React.Component {
 
     }
     draw() {
-
-        let overlayView = this.state.overlay
+        let overlayView = this
         let mapPanes = overlayView.getPanes()
+        let mapCanvasProjection = overlayView.getProjection()
+        const bounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(41.259925245676556, 69.2534065246582))
+        console.warn(this.onAdd())
+        let sw = mapCanvasProjection.fromLatLngToDivPixel(bounds.getCenter())
+        let div = this.onAdd()
+        div.style.left = sw.x + 'px'
+        div.style.top = sw.y + 'px'
+        let mapPaneName = 'overlayMouseTarget'
+        mapPanes[mapPaneName].appendChild(div)
 
     }
     createOverlays () {
-        let overlay
         let overlayView = new google.maps.OverlayView()
         overlayView.setMap(this.map)
         this.setState({
