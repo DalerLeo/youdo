@@ -25,6 +25,7 @@ import NotFound from '../../Images/not-found.png'
 import CashboxDetails from './StatCashboxDetails'
 import getConfig from '../../../helpers/getConfig'
 
+const BANK = 1
 export const STAT_CASHBOX_FILTER_KEY = {
     CASHBOX: 'cashbox',
     DIVISION: 'division',
@@ -53,8 +54,7 @@ const enhance = compose(
             padding: '20px 30px',
             '& > div:nth-child(2)': {
                 marginTop: '10px',
-                borderTop: '1px #efefef solid',
-                borderBottom: '1px #efefef solid'
+                borderTop: '1px #efefef solid'
             },
             '& .row': {
                 margin: '0 !important'
@@ -193,13 +193,11 @@ const enhance = compose(
             }
         },
         balances: {
-            display: 'flex',
-            padding: '20px 0',
-            borderTop: '1px #efefef solid',
-            borderBottom: '1px #efefef solid'
+            padding: '20px 0'
         },
         balanceItem: {
-            marginRight: '50px',
+            flexBasis: '25%',
+            maxWidth: '25%',
             '& span': {
                 color: '#666',
                 marginBottom: '5px'
@@ -223,6 +221,84 @@ const enhance = compose(
                 width: '50px !important',
                 height: '50px !important',
                 color: '#999 !important'
+            }
+        },
+        tableRow: {
+            '& td': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
+            },
+            '& td:nth-child(1)': {
+                textAlign: 'left'
+            },
+            '&:nth-child(even)': {
+                backgroundColor: '#f9f9f9'
+            }
+        },
+        leftTable: {
+            display: 'table',
+            marginLeft: '-30px',
+            width: '100%',
+            '& > div': {
+                '&:nth-child(even)': {
+                    backgroundColor: '#f9f9f9'
+                },
+                display: 'table-row',
+                height: '40px',
+                '&:nth-child(2)': {
+                    height: '39px'
+                },
+                '&:first-child': {
+                    backgroundColor: 'white',
+                    height: '41px',
+                    '& span': {
+
+                        padding: '10px 30px',
+                        borderTop: '1px #efefef solid',
+                        borderBottom: '1px #efefef solid'
+                    }
+                },
+                '& span': {
+                    display: 'table-cell',
+                    verticalAlign: 'middle',
+                    padding: '0 30px'
+                }
+            }
+        },
+        tableWrapper: {
+            display: 'flex',
+            margin: '0 -30px',
+            paddingLeft: '30px',
+            '& > div:first-child': {
+                zIndex: '20',
+                boxShadow: '5px 0 8px -3px #CCC',
+                width: '255px'
+            },
+            '& > div:last-child': {
+                width: 'calc(100% - 255px)',
+                overflowX: 'auto',
+                overflowY: 'hidden'
+            }
+        },
+        tableBody: {
+        },
+        mainTable: {
+            width: '100%',
+            minWidth: '1200px',
+            color: '#666',
+            borderCollapse: 'collapse',
+            '& tr, td': {
+                height: '40px'
+            },
+            '& td': {
+                padding: '0 20px',
+                minWidth: '140px'
+            }
+        },
+        title: {
+            fontWeight: '600',
+            '& tr, td': {
+                border: '1px #efefef solid'
             }
         }
     }),
@@ -266,6 +342,39 @@ const StatCashboxGridList = enhance((props) => {
             padding: 0
         }
     }
+    const tableLeft = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name') || 'No'
+        return (
+            <div key={id} style={{cursor: 'pointer'}} onClick={() => listData.handleOpenDetail(id)}><span>{name}</span></div>
+        )
+    })
+
+    const tableList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const cashierFirstName = _.get(item, ['cashier', 'firstName'])
+        const cashierSecondName = _.get(item, ['cashier', 'secondName'])
+        const cashier = cashierFirstName + ' ' + cashierSecondName
+        const type = _.toInteger(_.get(item, 'type')) === BANK ? 'банковский счет' : 'наличные'
+        const currency = _.get(item, ['currency', 'name'])
+
+        const inBalancePr = numberFormat(_.get(item, 'inBalance'), primaryCurrency)
+        const inPricePr = numberFormat(_.get(item, 'inPrice'), primaryCurrency)
+
+        return (
+            <tr key={id} className={classes.tableRow}>
+                <td>{cashier}</td>
+                <td>{type}</td>
+                <td>{currency}</td>
+                <td>{inBalancePr}</td>
+                <td>{inPricePr}</td>
+                <td>{inBalancePr}</td>
+                <td>{inPricePr}</td>
+
+            </tr>
+        )
+    })
+
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const bank = 1
@@ -451,7 +560,7 @@ const StatCashboxGridList = enhance((props) => {
                                      <div>По вашему запросу ничего не найдено</div>
                                    </div>
                                  : <div>
-                                     <div className={classes.balances}>
+                                     <Row className={classes.balances}>
                                          <div className={classes.balanceItem}>
                                              <span>Баланс на начало периода</span>
                                              <div>{numberFormat(startBalance, primaryCurrency)}</div>
@@ -468,10 +577,29 @@ const StatCashboxGridList = enhance((props) => {
                                              <span>Баланс на конец периода</span>
                                              <div>{numberFormat(endBalance, primaryCurrency)}</div>
                                          </div>
-                                     </div>
-                                     <div className={classes.cashboxWrapper}>
-                                        {list}
-                                     </div>
+                                     </Row>
+                                        <div className={classes.tableWrapper}>
+                                            <div className={classes.leftTable}>
+                                                <div><span>Касса</span></div>
+                                                {tableLeft}
+                                            </div>
+                                            <div>
+                                                <table className={classes.mainTable}>
+                                                    <tbody>
+                                                    <tr className={classes.title}>
+                                                        <td>Кассир</td>
+                                                        <td>Тип</td>
+                                                        <td>Валюта</td>
+                                                        <td>Баланс на начало периода</td>
+                                                        <td>Расход за период</td>
+                                                        <td>Доход за период</td>
+                                                        <td>Баланс на конец периода</td>
+                                                    </tr>
+                                                    {tableList}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                  </div>}
                         </div>
 
