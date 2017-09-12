@@ -139,6 +139,8 @@ export default injectSheet({
     items: {
         position: 'relative',
         width: '100%',
+        overflowY: 'auto',
+        overflowX: 'hidden',
         '& button': {
             opacity: '0.5',
             '& > div': {
@@ -176,10 +178,7 @@ export default injectSheet({
     },
 
     logout: {
-        position: 'absolute',
-        bottom: '0',
-        left: '0',
-        right: '0'
+
     },
     badge: {
         padding: '0 !important',

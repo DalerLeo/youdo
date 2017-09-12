@@ -74,7 +74,6 @@ const enhance = compose(
             fontWeight: '600',
             marginTop: '20px',
             paddingRight: '30px',
-            textTransform: 'uppercase',
             textAlign: 'right'
         },
         tab: {
@@ -156,7 +155,10 @@ const OrderDetailsRightSideTabs = enhance((props) => {
     const firstType = _.get(products, ['0', 'product', 'productType', 'id'])
     const firstMeasurement = _.get(products, ['0', 'product', 'measurement', 'name'])
     let totalProductPrice = _.toNumber('0')
-    let wholeAmount = 0
+    let wholeAmount = _.sumBy(products, (o) => {
+        return _.toNumber(_.get(o, 'amount'))
+    })
+    let commonMeasurement = false
     return (
         <div className={classes.rightSide}>
             <Tabs
@@ -190,9 +192,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const discount = numberFormat(_.toNumber(_.get(item, 'discountPrice')) * _.toNumber(amount))
                                 const tooltipText = 'Количество возврата'
                                 totalProductPrice += _.toNumber(productTotal)
-
-                                if (firstType === type) {
-                                    wholeAmount += amount
+                                if (type === firstType) {
+                                    commonMeasurement = true
                                 }
 
                                 return (
@@ -211,14 +212,16 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                         </Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
                                         <Col xs={2}>{numberFormat(productTotal)}</Col>
-                                        <Col xs={2}>{discount}</Col>
+                                        <Col xs={2}>{isBonus ? '0' : discount}</Col>
                                     </Row>
                                 )
                             })}
                         </div>
                         <Row className={classes.summary}>
-                            <Col xs={4}>{(wholeAmount > ZERO) ? <span>Итого:</span> : <span>Общая сумма {primaryCurrency}</span>}</Col>
-                            <Col xs={2}>{(wholeAmount > ZERO) && <span>{numberFormat(wholeAmount, firstMeasurement)}</span>}</Col>
+                            <Col xs={4}>{commonMeasurement ? <span>Итого:</span> : <span>Общая сумма {primaryCurrency}</span>}</Col>
+                            {commonMeasurement
+                                ? <Col xs={2}>{(wholeAmount > ZERO) && <span>{numberFormat(wholeAmount, firstMeasurement)}</span>}</Col>
+                                : <Col xs={2}></Col>}
                             <Col xs={2}> </Col>
                             <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
                             <Col xs={2}>{numberFormat(discountPrice)}</Col>

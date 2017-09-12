@@ -119,6 +119,7 @@ const StockReceiveGridList = enhance((props) => {
         confirmDialog,
         createDialog,
         handleCheckedForm,
+        handleCheckedDefect,
         historyDialog,
         returnDialog,
         supplyDialog,
@@ -185,6 +186,7 @@ const StockReceiveGridList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 handleCloseDetail={handleCloseDetail}
+                handleCheckedDefect={handleCheckedDefect}
                 createDialog={createDialog}
                 filterDialog={filterDialog}
                 history={true}

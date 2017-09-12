@@ -4,7 +4,6 @@ import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../../ReduxForm/index'
-import PlanMonthFilter from '../../../components/Plan/PlanMonthFilter'
 import ZoneSearchField from '../../ReduxForm/ZoneSearchField'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
@@ -94,12 +93,7 @@ const enhance = compose(
 )
 
 const StatAgentFilterForm = enhance((props) => {
-    const {
-        classes,
-        onSubmit,
-        getDocument,
-        calendar
-    } = props
+    const {classes, onSubmit, getDocument} = props
     const iconStyle = {
         icon: {
             color: '#5d6474',
@@ -116,7 +110,6 @@ const StatAgentFilterForm = enhance((props) => {
     return (
         <form className={classes.form} onSubmit={onSubmit}>
             <div style={{display: 'flex'}}>
-                <PlanMonthFilter calendar={calendar} style={{paddingTop: '10px !important'}}/>
                 <div className={classes.filter}>
                     <Field
                         className={classes.inputFieldCustom}

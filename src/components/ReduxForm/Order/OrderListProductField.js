@@ -279,6 +279,7 @@ const flatButton = {
 }
 
 const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, customPrice, openConfirmPT, setOpenConfirmPT, paymentType, ...defaultProps}) => {
+    const ONE = 1
     const editOnlyCost = _.get(defaultProps, 'editOnlyCost')
     const canChangeAnyPrice = _.get(defaultProps, 'canChangeAnyPrice')
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
@@ -410,7 +411,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                     if (canChangeAnyPrice) {
                                         return (
                                             <TableRow key={index} className={classes.tableRow}>
-                                                <TableRowColumn>{product}</TableRowColumn>
+                                                <TableRowColumn><strong style={{marginRight: '5px'}}>{index + ONE}.</strong> {product}</TableRowColumn>
                                                 {editOnlyCost
                                                     ? <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
                                                     : <TableRowColumn style={{padding: 0}}>
@@ -443,7 +444,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                     }
                                     return (
                                         <TableRow key={index} className={classes.tableRow}>
-                                            <TableRowColumn>{product}</TableRowColumn>
+                                            <TableRowColumn><strong style={{marginRight: '5px'}}>{index + ONE}.</strong> {product}</TableRowColumn>
                                             {editOnlyCost
                                                 ? <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
                                                 : <TableRowColumn style={{padding: 0}}>
@@ -478,7 +479,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
 
                                 return (
                                     <TableRow key={index} className={classes.tableRow}>
-                                        <TableRowColumn>{product}</TableRowColumn>
+                                        <TableRowColumn><strong style={{marginRight: '5px'}}>{index + ONE}.</strong> {product}</TableRowColumn>
                                         <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost)}</TableRowColumn>
                                         <TableRowColumn

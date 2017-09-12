@@ -25,6 +25,11 @@ const enhance = compose(
                 height: '36px',
                 alignItems: 'center',
                 textTransform: 'capitalize'
+            },
+            '& > nav': {
+                display: 'flex',
+                height: '36px',
+                alignItems: 'center'
             }
         },
         datePicker: {
@@ -65,7 +70,7 @@ const PlanMonthFilter = enhance((props) => {
     const selectedYear = moment(_.get(calendar, 'selectedDate')).format('YYYY')
     return (
         <div className={classes.titleDate}>
-            <div>
+            <nav>
                 <IconButton
                     onTouchTap={calendar.handlePrevMonth}
                     iconStyle={navArrow.icon}
@@ -73,9 +78,9 @@ const PlanMonthFilter = enhance((props) => {
                     disableTouchRipple={true}>
                     <LeftArrow/>
                 </IconButton>
-            </div>
+            </nav>
             <div>{monthFormat(selectedMonth)}&nbsp;{selectedYear}</div>
-            <div>
+            <nav>
                 <IconButton
                     onTouchTap={calendar.handleNextMonth}
                     iconStyle={navArrow.icon}
@@ -83,7 +88,7 @@ const PlanMonthFilter = enhance((props) => {
                     disableTouchRipple={true}>
                     <RightArrow/>
                 </IconButton>
-            </div>
+            </nav>
         </div>
     )
 })

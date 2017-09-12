@@ -15,6 +15,8 @@ import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import StatAgentFilterForm from './StatAgentFilterForm'
 import GridListHeader from '../../GridList/GridListHeader/index'
+import PlanMonthFilter from '../../../components/Plan/PlanMonthFilter'
+import Tooltip from '../../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -47,6 +49,7 @@ const enhance = compose(
         },
         tableWrapper: {
             height: 'calc(100% - 118px)',
+            margin: '0 -30px',
             overflowY: 'auto',
             overflowX: 'hidden',
             '& .row': {
@@ -54,11 +57,10 @@ const enhance = compose(
                     bottom: '-1px'
                 },
                 '& > div': {
-                    display: 'flex',
-                    height: '50px',
-                    alignItems: 'center',
+                    textAlign: 'right',
                     '&:first-child': {
-                        paddingLeft: '0'
+                        paddingLeft: '0',
+                        textAlign: 'left'
                     },
                     '&:last-child': {
                         paddingRight: '0'
@@ -67,9 +69,9 @@ const enhance = compose(
             },
             '& .dottedList': {
                 padding: '0 30px',
+                height: '50px',
                 '&:last-child:after': {
-                    content: '""',
-                    backgroundImage: 'none'
+                    display: 'none'
                 }
             },
             '& .personImage': {
@@ -197,6 +199,39 @@ const enhance = compose(
         },
         alignRightFlex: {
             justifyContent: 'flex-end'
+        },
+        filters: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            '& > div:first-child': {
+                padding: '0',
+                height: '55px',
+                fontSize: '15px',
+                '& > div': {
+                    width: '120px',
+                    justifyContent: 'center'
+                },
+                '& > nav': {
+                    height: '30px',
+                    '& button': {
+                        display: 'flex !important',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '30px !important',
+                        width: '30px !important'
+                    },
+                    '& svg': {
+                        height: '24px !important',
+                        width: '24px !important'
+                    }
+                }
+            }
+        },
+        opacity: {
+            '& span': {
+                color: '#777',
+                margin: '0 2px'
+            }
         }
     }),
 )
@@ -211,47 +246,37 @@ const listHeader = [
     {
         sorting: false,
         name: 'monthlyPlanAmount',
+        alignRight: true,
         title: 'План',
         xs: 1
     },
     {
         sorting: false,
-        name: 'ordersTotalPrice',
-        title: 'Сумма продаж',
-        xs: 2
-    },
-    {
-        sorting: false,
-        name: 'ordersReturnTotalPrice',
-        title: 'Сумма возарата',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'factPrice',
-        title: 'Факт. продажи',
-        xs: 2
+        alignRight: true,
+        name: 'summary',
+        title: 'Сумма',
+        xs: 3
     },
     {
         sorting: true,
         name: 'totalPaid',
         alignRight: true,
         title: 'Оплачено',
-        xs: 1
+        xs: 2
     },
     {
         sorting: true,
         name: 'ordersLeftTotalPrice',
         alignRight: true,
         title: 'Баланс',
-        xs: 1
+        xs: 2
     },
     {
         sorting: true,
         alignRight: true,
         name: 'monthlyPlanLeft',
         title: 'До выполнения',
-        xs: 1
+        xs: 2
     }
 ]
 
@@ -274,12 +299,14 @@ const StatAgentGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const plan = numberFormat(_.get(item, 'monthlyPlanAmount'), getConfig('PRIMARY_CURRENCY'))
-        const factPrice = numberFormat(_.get(item, 'factPrice'), getConfig('PRIMARY_CURRENCY'))
-        const orderTotalPrice = numberFormat(_.get(item, 'ordersTotalPrice'), getConfig('PRIMARY_CURRENCY'))
-        const orderReturnTotalPrice = numberFormat(_.get(item, 'ordersReturnTotalPrice'), getConfig('PRIMARY_CURRENCY'))
+        const factPrice = numberFormat(_.get(item, 'factPrice'))
+        const orderTotalPrice = numberFormat(_.get(item, 'ordersTotalPrice'))
+        const orderReturnTotalPrice = numberFormat(_.get(item, 'ordersReturnTotalPrice'))
         const orderLeftTotalPrice = numberFormat(_.get(item, 'ordersLeftTotalPrice'), getConfig('PRIMARY_CURRENCY'))
         const totalPaid = numberFormat(_.get(item, 'totalPaid'), getConfig('PRIMARY_CURRENCY'))
         const monthlyPlanLeft = numberFormat(_.get(item, 'monthlyPlanLeft'), getConfig('PRIMARY_CURRENCY'))
+
+        const tooltipText = '<div>Продажи / Возвраты / Фактически</div>'
 
         return (
             <Row key={id} className="dottedList">
@@ -289,22 +316,20 @@ const StatAgentGridList = enhance((props) => {
                 <Col xs={1}>
                     <div>{plan}</div>
                 </Col>
-                <Col xs={2}>
-                    <div>{orderTotalPrice}</div>
+                <Col xs={3} style={{display: 'flex', justifyContent: 'flex-end'}}>
+                    <Tooltip position="bottom" text={tooltipText}>
+                        <div className={classes.opacity}>
+                            <span>{orderTotalPrice}</span> / <span>{orderReturnTotalPrice}</span> / <strong>{factPrice}</strong> {getConfig('PRIMARY_CURRENCY')}
+                        </div>
+                    </Tooltip>
                 </Col>
-                <Col xs={2}>
-                    <div>{orderReturnTotalPrice}</div>
-                </Col>
-                <Col xs={2}>
-                    <div>{factPrice}</div>
-                </Col>
-                <Col xs={1} className={classes.alignRightFlex}>
+                <Col xs={2} className={classes.alignRightFlex}>
                     <div>{totalPaid}</div>
                 </Col>
-                <Col xs={1} className={classes.alignRightFlex}>
+                <Col xs={2} className={classes.alignRightFlex}>
                     <div>{orderLeftTotalPrice}</div>
                 </Col>
-                <Col xs={1} className={classes.alignRightFlex}>
+                <Col xs={2} className={classes.alignRightFlex}>
                     <div>{monthlyPlanLeft}</div>
                 </Col>
             </Row>
@@ -324,7 +349,10 @@ const StatAgentGridList = enhance((props) => {
                             initialValues={initialValues}
                             getDocument={getDocument}
                             calendar={calendar}/>
-                        <Pagination filter={filter}/>
+                        <div className={classes.filters}>
+                            <PlanMonthFilter calendar={calendar}/>
+                            <Pagination filter={filter}/>
+                        </div>
                     {listLoading
                         ? <div className={classes.loader}>
                             <CircularProgress size={40} thickness={4}/>
@@ -338,7 +366,6 @@ const StatAgentGridList = enhance((props) => {
                                     filter={filter}
                                     listIds={listIds}
                                     withoutCheckboxes={false}
-                                    withoutRow={false}
                                     column={listHeader}
                                     listShadow={true}
                                     style={{position: 'relative'}}
