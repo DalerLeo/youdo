@@ -23,6 +23,8 @@ import Loyalty from 'material-ui/svg-icons/action/loyalty'
 import Van from 'material-ui/svg-icons/maps/local-shipping'
 import Money from 'material-ui/svg-icons/maps/local-atm'
 import NotFound from '../Images/not-found.png'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet({
@@ -116,6 +118,9 @@ const enhance = compose(
             },
             '&::-webkit-scrollbar': {
                 width: '0'
+            },
+            '& > div:last-child': {
+                marginBottom: '20px'
             }
         },
         agent: {
@@ -165,11 +170,6 @@ const enhance = compose(
             marginTop: '-15px',
             height: '30px',
             width: '3px'
-        },
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
-            }
         },
         addButtonWrapper: {
             position: 'absolute',
@@ -233,14 +233,36 @@ const PlanWrapper = enhance((props) => {
         planSalesDialog,
         handleClickTab,
         groupId,
-        calendar
+        calendar,
+        monthlyPlan
     } = props
 
+    const ZERO = 0
+    const HUNDRED = 100
     const detailId = _.get(detailData, 'id')
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const agentsList = _.map(_.get(usersList, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const username = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
-        const agentTooltip = '2 000 000 / 3 000 000 UZS'
+        const username = _.get(item, 'name')
+        const planFact = _.toNumber(_.get(item, 'factPrice'))
+        const planAmount = _.toNumber(_.get(item, 'monthlyPlanAmount'))
+        const percent = (planFact / planAmount) * HUNDRED
+        const agentTooltip = numberFormat(planFact) + '/ ' + numberFormat(planAmount) + ' ' + primaryCurrency
+
+        if (planAmount <= ZERO) {
+            return (
+                <div key={id} className={(id === detailId) ? classes.activeAgent : classes.agent}>
+                    <Link to={{
+                        pathname: sprintf(ROUTES.PLAN_ITEM_PATH, id),
+                        query: filter.getParams()
+                    }}>
+                    </Link>
+                    <div className={classes.line}>
+                    </div>
+                    <span>{username}</span>
+                </div>
+            )
+        }
 
         return (
             <Tooltip key={id} position="bottom" text={agentTooltip}>
@@ -253,7 +275,7 @@ const PlanWrapper = enhance((props) => {
                     <div className={classes.line}>
                     </div>
                     <span>{username}</span>
-                    <span>56%</span>
+                    <span>{numberFormat(percent)}%</span>
                 </div>
             </Tooltip>
         )
@@ -318,12 +340,12 @@ const PlanWrapper = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.PLAN_LIST_URL}/>
-
             <div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Составить план">
                     <FloatingActionButton
                         mini={true}
-                        className={classes.addButton}
+                        zDepth={1}
+                        backgroundColor="#12aaeb"
                         onTouchTap={addPlan.handleOpenAddPlan}>
                         <ContentAdd />
                     </FloatingActionButton>
@@ -336,6 +358,7 @@ const PlanWrapper = enhance((props) => {
                     calendar={calendar}
                     detailData={detailData}
                     planSalesDialog={planSalesDialog}
+                    monthlyPlan={monthlyPlan}
                     filter={filter}/>
             </div>
 

@@ -26,7 +26,7 @@ const AgentSearchField = (props) => {
             getText={SearchField.defaultGetText('username')}
             getOptions={getOptions}
             getItem={getItem}
-            getItemText={SearchField.defaultGetText('name')}
+            getItemText={SearchField.defaultGetText('username')}
             {...props}
         />
     )

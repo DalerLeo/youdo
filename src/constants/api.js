@@ -371,6 +371,8 @@ export const CLIENT_BALANCE_SUPER_USER = '/sales/client_transaction/%d/'
 export const PLAN_CREATE = `/${STAT_AGENT_LIST}/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
 export const PLAN_MONTHLY = 'sales/monthly_plan/'
+export const PLAN_AGENT_MONTHLY = 'stats/agents/statistics/'
+export const PLAN_AGENT_LIST = 'stats/agents/statistics/all/'
 
 export const POSITION = 'main/position'
 export const POSITION_COURSE_CREATE = 'finance/currency_rate/'

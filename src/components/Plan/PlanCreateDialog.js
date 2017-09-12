@@ -59,8 +59,7 @@ const enhance = compose(
             overflowX: 'hidden',
             height: '100%',
             minHeight: '700px',
-            maxHeight: 'inherit !important',
-            marginBottom: '64px'
+            maxHeight: 'inherit !important'
         },
         titleContent: {
             background: '#fff',
@@ -183,7 +182,7 @@ const enhance = compose(
             left: '0',
             right: '0',
             zIndex: '8',
-            transition: 'all 300ms ease-out'
+            transition: 'all 200ms ease-out'
         },
         agentsActive: {
             extend: 'agents',
