@@ -2,9 +2,9 @@ import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../../helpers/serializer'
 
-export const listFilterSerializer = (data, query) => {
-    const {...defaultData} = data
-    const ordering = _.get(data, 'ordering')
+export const listFilterSerializer = (query) => {
+    const {...defaultData} = query
+    const ordering = _.get(query, 'ordering')
 
     const year = moment(_.get(query, 'date')).format('YYYY') || moment().format('YYYY')
     const month = moment(_.get(query, 'date')).format('M') || moment().format('M')

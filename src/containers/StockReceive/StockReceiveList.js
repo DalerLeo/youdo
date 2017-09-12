@@ -453,6 +453,14 @@ const enhance = compose(
             const form = 'StockReceiveCreateForm'
             dispatch(change(form, 'product[' + index + '][accepted]', val))
         },
+        handleCheckedDefect: props => (index, value) => {
+            const {dispatch} = props
+            const zero = 0
+            const val = _.toNumber(value)
+            const form = 'StockReceiveCreateForm'
+            dispatch(change(form, 'product[' + index + '][accepted]', val))
+            dispatch(change(form, 'product[' + index + '][defected]', zero))
+        },
         handleOpenHistoryDialog: props => (id) => {
             const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: id})})
@@ -531,6 +539,7 @@ const StockReceiveList = enhance((props) => {
         stockDeliveryReturnDialogData,
         stockDeliveryReturnDialogDataLoading
     } = props
+
     const detailType = _.get(location, ['query', TYPE])
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
@@ -637,9 +646,12 @@ const StockReceiveList = enhance((props) => {
             }
             return {
                 product: _.map(_.get(detail, 'products'), (item) => {
+                    const MINUS_ONE = -1
+                    const posted = _.toNumber(_.get(item, 'postedAmount')) < ZERO ? (_.toNumber(_.get(item, 'postedAmount')) * MINUS_ONE) : _.toNumber(_.get(item, 'postedAmount'))
+                    const defected = _.toNumber(_.get(item, 'defectAmount')) < ZERO ? (_.toNumber(_.get(item, 'defectAmount')) * MINUS_ONE) : _.toNumber(_.get(item, 'defectAmount'))
                     return {
-                        accepted: _.get(item, 'postedAmount'),
-                        defected: _.get(item, 'defectAmount')
+                        accepted: posted,
+                        defected: defected
                     }
                 })
             }
@@ -780,6 +792,7 @@ const StockReceiveList = enhance((props) => {
                 writeOfDialog={writeOfDialog}
                 deliveryReturnDialog={deliveryReturnDialog}
                 popoverDialog={popoverDialog}
+                handleCheckedDefect={props.handleCheckedDefect}
             />
         </Layout>
     )

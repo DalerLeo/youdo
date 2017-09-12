@@ -74,7 +74,12 @@ const enhance = compose(
         titleButtons: {
             display: 'flex',
             zIndex: '3',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            '& button > div': {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center 25px',
@@ -103,7 +108,10 @@ const enhance = compose(
             height: 'inherit',
             fontWeight: '600',
             cursor: 'pointer',
-            position: 'relative'
+            position: 'relative',
+            '& > div': {
+                height: '48px'
+            }
         },
         closeDetail: {
             position: 'absolute',
@@ -128,8 +136,8 @@ const enhance = compose(
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 25,
-        height: 25
+        width: 22,
+        height: 22
     },
     button: {
         width: 48,
@@ -149,6 +157,7 @@ const StockReceiveDetails = enhance((props) => {
         history,
         popover
     } = props
+
     const useBarcode = toBoolean(getConfig('USE_BARCODE'))
     const onClose = _.get(detailData, 'onClose')
     const type = _.get(detailData, 'type')
@@ -156,25 +165,25 @@ const StockReceiveDetails = enhance((props) => {
     const formattedType = stockTypeFormat(type)
     const finishedTime = dateFormat(_.get(detailData, ['data', 'finishedTime']), true)
     const acceptedTime = dateFormat(_.get(detailData, ['data', 'acceptedTime']), true)
-    const acceptedBy = _.get(detailData, ['data', 'acceptedBy'])
+    const acceptedBy = _.get(detailData, ['data', 'acceptedBy']) && (_.get(detailData, ['data', 'acceptedBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'acceptedBy', 'firstName']))
     const date = _.get(detailData, ['currentDetail', 'date']) ? dateFormat(_.get(detailData, ['currentDetail', 'date']))
         : (_.get(detailData, ['data', 'createdDate']) ? dateFormat(_.get(detailData, ['data', 'createdDate'])) : 'Не указана')
     const stockName = _.get(detailData, ['currentDetail', 'stock', 'name']) || _.get(detailData, ['data', 'toStock', 'name'])
     const id = _.get(detailData, 'id') || _.get(detailData, ['data', 'id'])
-    const tooltipText = 'Подтвердить Запрос № ' + id
-    const tooltipCancelText = 'Отменить Запрос № ' + id
-    const tooltipUpdateText = 'Изменить Запрос № ' + id
+    const tooltipText = 'Подтвердить Запрос №' + id
+    const tooltipCancelText = 'Отменить Запрос №' + id
+    const tooltipUpdateText = 'Изменить Запрос №' + id
     const detailLoading = _.get(detailData, 'detailLoading') || _.get(detailData, 'loading')
     const products = (type === 'order_return') ? _.get(detailData, ['data', 'returnedProducts']) : _.get(detailData, ['data', 'products'])
     const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
-    if (_.isEmpty(products)) {
+
+    if (_.isEmpty(products) && !detailLoading) {
         return (
             <div className={classes.wrapper}
                  style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {
                      maxHeight: '250px',
                      overflowY: 'hidden'
                  }}>
-                {detailLoading && <LinearProgress/>}
                 <div className={classes.emptyQuery}>
                     <div>Товаров не найдено</div>
                 </div>
@@ -191,14 +200,12 @@ const StockReceiveDetails = enhance((props) => {
                         <div className={classes.closeDetail}
                              onClick={handleCloseDetail}>
                         </div>
-                        <Row className={classes.semibold} tyle={history ? {lineHeight: '48px'} : {}}>
+                        <Row className={classes.semibold} style={history ? {lineHeight: '48px'} : {}}>
                             <Col xs={2}>{id}</Col>
                             {by ? <Col xs={3}>{by}</Col> : null}
                             <Col xs={2}>{formattedType}</Col>
                             <Col xs={2}>{date}</Col>
-                            <Col xs={2}>
-                                {stockName}
-                            </Col>
+                            <Col xs={2}>{stockName}</Col>
                             <Col xs={1}>
                                 <div className={classes.titleButtons}>
                                     {!history && (type === 'transfer')
