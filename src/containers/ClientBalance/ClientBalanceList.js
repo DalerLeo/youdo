@@ -269,18 +269,23 @@ const enhance = compose(
             dispatch(reset('ClientBalanceCreateForm'))
         },
         handleSubmitSuperUserDialog: props => () => {
-            const {dispatch, updateForm, filter, query} = props
-            const clientId = _.toInteger(_.get(query, CLIENT_BALANCE_SUPER_USER_OPEN))
-            return dispatch(superUserAction(_.get(updateForm, ['values']), clientId))
+            const {dispatch, updateForm, filter, filterItem, query, params, location: {pathname}, location} = props
+            const clientId = _.toInteger(_.get(params, 'clientBalanceId'))
+            const transId = _.toInteger(_.get(query, CLIENT_BALANCE_SUPER_USER_OPEN))
+            const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
+            const division = _.get(location, ['query', 'division'])
+            const type = _.get(location, ['query', 'type'])
+
+            return dispatch(superUserAction(_.get(updateForm, 'values'), clientId, transId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push({
-                        pathname: ROUTER.CLIENT_BALANCE_LIST_URL,
-                        query: filter.getParams({[CLIENT_BALANCE_SUPER_USER_OPEN]: false})
+                        pathname, query: filter.getParams({[CLIENT_BALANCE_SUPER_USER_OPEN]: false})
                     })
                     dispatch(clientBalanceListFetchAction(filter))
+                    dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, division, type))
                     dispatch(reset('ClientBalanceUpdateForm'))
                 })
                 .catch((error) => {

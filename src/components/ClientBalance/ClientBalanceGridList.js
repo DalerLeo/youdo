@@ -301,7 +301,7 @@ const ClientBalanceGridList = enhance((props) => {
             />
             <ClientBalanceReturnDialog
                 name={_.get(clientName, 'name')}
-                open={_.get(clientReturnDialog, 'openClientReturnDialog') && _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog')) !== MINUS_ONE}
+                open={_.get(clientReturnDialog, 'openClientReturnDialog') ? _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog')) !== MINUS_ONE : false}
                 onClose={clientReturnDialog.handleCloseClientReturnDialog}
                 onSubmit={clientReturnDialog.handleSubmitClientReturnDialog}
             />
@@ -327,7 +327,6 @@ ClientBalanceGridList.propTypes = {
         handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
     clientReturnDialog: PropTypes.shape({
-        openClientReturnDialog: PropTypes.string.isRequired,
         handleOpenClientReturnDialog: PropTypes.func.isRequired,
         handleCloseClientReturnDialog: PropTypes.func.isRequired,
         handleSubmitClientReturnDialog: PropTypes.func.isRequired

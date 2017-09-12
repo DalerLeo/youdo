@@ -42,7 +42,7 @@ export const planMonthlySetAction = (data, filter, user) => {
 export const planAgentsListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.USERS_LIST, {params})
+        .get(API.PLAN_AGENT_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,7 +50,7 @@ export const planAgentsListFetchAction = (filter) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {
-        type: actionTypes.USERS_LIST,
+        type: actionTypes.PLAN_AGENT_LIST,
         payload
     }
 }
@@ -66,6 +66,22 @@ export const planItemFetchAction = (id) => {
         })
     return {
         type: actionTypes.USERS_ITEM,
+        payload
+    }
+}
+
+export const agentMonthlyPlanAction = (filter, user) => {
+    const params = serializers.agentMonthlyPlanSerializer(filter.getParams(), user)
+    const payload = axios()
+        .get(API.PLAN_AGENT_MONTHLY, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.PLAN_AGENT_MONTHLY,
         payload
     }
 }
