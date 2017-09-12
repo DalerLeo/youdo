@@ -9,7 +9,7 @@ import {compose} from 'recompose'
 import {connect} from 'react-redux'
 
 const getOptions = (search, type, currency, cashboxId) => {
-    return axios().get(`${PATH.CASHBOX_LIST}?currency=${currency || ''}&type=${type || ''}&page_size=1000&search=${search || ''}&id=${!cashboxId}`)
+    return axios().get(`${PATH.CASHBOX_LIST}?currency=${currency || ''}&type =${type || ''}&page_size=1000&search=${search || ''}&exclude_id=${cashboxId}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })

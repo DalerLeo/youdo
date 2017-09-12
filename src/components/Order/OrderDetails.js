@@ -192,6 +192,7 @@ const iconStyle = {
     }
 }
 
+const hundred = 100
 const OrderDetails = enhance((props) => {
     const {classes,
         loading,
@@ -214,6 +215,7 @@ const OrderDetails = enhance((props) => {
         openDiscountDialog,
         setOpenDiscountDialog,
         handleSubmitDiscountDialog,
+        handleSubmitSetZeroDiscountDialog,
         stat
     } = props
 
@@ -241,7 +243,9 @@ const OrderDetails = enhance((props) => {
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const paymentType = _.get(data, 'paymentType')
     const totalBalance = _.get(data, 'totalBalance')
-    const productTotal = _.get(data, 'totalPrice')
+    const productTotal = _.toNumber(_.get(data, 'totalPrice'))
+    const discountPrice = _.toNumber(_.get(data, 'discountPrice'))
+    const price = (discountPrice * hundred) / (productTotal + discountPrice)
 
     if (loading) {
         return (
@@ -265,6 +269,7 @@ const OrderDetails = enhance((props) => {
                 <div className={classes.discountPop} style={openDiscountDialog ? {transform: 'scale(1)'} : {transform: 'scale(0)'}}>
                     <OrderSetDiscountDialog
                         id={id}
+                        initialValues={{percent: price}}
                         setOpenDiscountDialog={setOpenDiscountDialog}
                         onSubmit={handleSubmitDiscountDialog}/>
                     <div className={classes.arrow}> </div>
@@ -308,6 +313,16 @@ const OrderDetails = enhance((props) => {
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { setOpenDiscountDialog(!openDiscountDialog) }}>
+                            <MoneyOffIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Скидка">
+                        <IconButton
+                            disabled={(status === CANCELED)}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { handleSubmitSetZeroDiscountDialog(id) }}>
                             <MoneyOffIcon />
                         </IconButton>
                     </Tooltip>

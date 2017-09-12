@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
+import {connect} from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
@@ -269,7 +270,20 @@ const enhance = compose(
             margin: '0 -30px'
         }
     }),
-    withState('openDetails', 'setOpenDetails', false)
+    withState('openDetails', 'setOpenDetails', false),
+    connect((state) => {
+        const sessionGroups = _.map(_.get(state, ['authConfirm', 'data', 'groups']), (item) => {
+            return _.get(item, 'id')
+        })
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        const loading = _.get(state, ['authConfirm', 'data', 'loading'])
+
+        return {
+            isAdmin,
+            sessionGroups,
+            loading
+        }
+    })
 )
 
 const iconStyle = {
@@ -298,7 +312,8 @@ const SupplyDetails = enhance((props) => {
         confirmDialog,
         confirmExpenseDialog,
         handleCloseDetail,
-        filter
+        filter,
+        isAdmin
     } = props
 
     const ZERO = 0
@@ -379,7 +394,7 @@ const SupplyDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     {updateDialog && <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={isFinished && true}
+                            disabled={isAdmin && isFinished && true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

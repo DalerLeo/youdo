@@ -187,9 +187,7 @@ const StockReceiveGridList = enhance((props) => {
                 handleCloseDetail={handleCloseDetail}
                 createDialog={createDialog}
                 filterDialog={filterDialog}
-                history={true}
-
-            />}
+                history={true}/>}
 
         </div>
     )

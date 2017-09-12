@@ -4,10 +4,10 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
 import RemoveCircleIcon from 'material-ui/svg-icons/content/remove-circle'
 import EditIcon from 'material-ui/svg-icons/image/edit'
-import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
@@ -36,6 +36,14 @@ const enhance = compose(
             '& a': {
                 color: colorBlue
             }
+        },
+        loader: {
+            width: '100%',
+            background: '#fff',
+            height: '150px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         },
         content: {
             width: '100%',
@@ -74,7 +82,12 @@ const enhance = compose(
         titleButtons: {
             display: 'flex',
             zIndex: '3',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            '& button > div': {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center 25px',
@@ -100,10 +113,14 @@ const enhance = compose(
             }
         },
         semibold: {
+            lineHeight: '48px',
             height: 'inherit',
             fontWeight: '600',
             cursor: 'pointer',
-            position: 'relative'
+            position: 'relative',
+            '& > div': {
+                height: '48px'
+            }
         },
         closeDetail: {
             position: 'absolute',
@@ -128,8 +145,8 @@ const enhance = compose(
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 25,
-        height: 25
+        width: 22,
+        height: 22
     },
     button: {
         width: 48,
@@ -149,6 +166,7 @@ const StockReceiveDetails = enhance((props) => {
         history,
         popover
     } = props
+
     const useBarcode = toBoolean(getConfig('USE_BARCODE'))
     const onClose = _.get(detailData, 'onClose')
     const type = _.get(detailData, 'type')
@@ -156,25 +174,25 @@ const StockReceiveDetails = enhance((props) => {
     const formattedType = stockTypeFormat(type)
     const finishedTime = dateFormat(_.get(detailData, ['data', 'finishedTime']), true)
     const acceptedTime = dateFormat(_.get(detailData, ['data', 'acceptedTime']), true)
-    const acceptedBy = _.get(detailData, ['data', 'acceptedBy'])
+    const acceptedBy = _.get(detailData, ['data', 'acceptedBy']) && (_.get(detailData, ['data', 'acceptedBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'acceptedBy', 'firstName']))
     const date = _.get(detailData, ['currentDetail', 'date']) ? dateFormat(_.get(detailData, ['currentDetail', 'date']))
         : (_.get(detailData, ['data', 'createdDate']) ? dateFormat(_.get(detailData, ['data', 'createdDate'])) : 'Не указана')
     const stockName = _.get(detailData, ['currentDetail', 'stock', 'name']) || _.get(detailData, ['data', 'toStock', 'name'])
     const id = _.get(detailData, 'id') || _.get(detailData, ['data', 'id'])
-    const tooltipText = 'Подтвердить Запрос № ' + id
-    const tooltipCancelText = 'Отменить Запрос № ' + id
-    const tooltipUpdateText = 'Изменить Запрос № ' + id
-    const detailLoading = _.get(detailData, 'detailLoading') || _.get(detailData, 'loading')
+    const tooltipText = 'Подтвердить Запрос №' + id
+    const tooltipCancelText = 'Отменить Запрос №' + id
+    const tooltipUpdateText = 'Изменить Запрос №' + id
+    const detailLoading = _.get(detailData, 'detailLoading')
     const products = (type === 'order_return') ? _.get(detailData, ['data', 'returnedProducts']) : _.get(detailData, ['data', 'products'])
     const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
-    if (_.isEmpty(products)) {
+
+    if (_.isEmpty(products) && !detailLoading) {
         return (
             <div className={classes.wrapper}
                  style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {
                      maxHeight: '250px',
                      overflowY: 'hidden'
                  }}>
-                {detailLoading && <LinearProgress/>}
                 <div className={classes.emptyQuery}>
                     <div>Товаров не найдено</div>
                 </div>
@@ -183,22 +201,22 @@ const StockReceiveDetails = enhance((props) => {
     }
 
     return (
-        <div className={classes.wrapper}
-             style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
-            {detailLoading ? <LinearProgress/>
+        <div className={classes.wrapper}>
+            {detailLoading
+                ? <div className={classes.loader}>
+                    <CircularProgress thickness={4} size={40}/>
+                </div>
                 : <div style={{width: '100%'}}>
                     <div className={classes.header}>
                         <div className={classes.closeDetail}
                              onClick={handleCloseDetail}>
                         </div>
-                        <Row className={classes.semibold} tyle={history ? {lineHeight: '48px'} : {}}>
+                        <Row className={classes.semibold} style={history ? {lineHeight: '48px'} : {}}>
                             <Col xs={2}>{id}</Col>
                             {by ? <Col xs={3}>{by}</Col> : null}
                             <Col xs={2}>{formattedType}</Col>
                             <Col xs={2}>{date}</Col>
-                            <Col xs={2}>
-                                {stockName}
-                            </Col>
+                            <Col xs={2}>{stockName}</Col>
                             <Col xs={1}>
                                 <div className={classes.titleButtons}>
                                     {!history && (type === 'transfer')
@@ -247,6 +265,7 @@ const StockReceiveDetails = enhance((props) => {
                                                                 iconStyle={iconStyle.icon}
                                                                 style={iconStyle.button}
                                                                 touch={true}
+                                                                disabled={history}
                                                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                                                                 <EditIcon />
                                                             </IconButton>
@@ -277,18 +296,19 @@ const StockReceiveDetails = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <div className={classes.leftSide}>
-                            <Row className='dottedList' style={{padding: '15px 30px'}}>
+                            <Row className='dottedList'>
                                 <Col xs={6}>Товар</Col>
                                 <Col xs={4}>Тип товара</Col>
                                 <Col xs={2}>Кол-во</Col>
                             </Row>
-                            {_.map(products, (item, index) => {
+                            {_.map(products, (item) => {
+                                const productId = _.get(item, 'id')
                                 const name = _.get(item, ['product', 'name'])
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const productType = _.get(item, ['product', 'type', 'name'])
                                 const amount = numberFormat(_.get(item, 'amount'), measurement)
                                 return (
-                                    <Row key={index} className='dottedList'>
+                                    <Row key={productId} className='dottedList'>
                                         <Col xs={6}>{name}</Col>
                                         <Col xs={4}>{productType}</Col>
                                         <Col xs={2}>{amount}</Col>
@@ -298,17 +318,17 @@ const StockReceiveDetails = enhance((props) => {
                         </div>
                         <div className={classes.rightSide}>
                             {history && useBarcode &&
-                                 <div>
-                                    <div className={classes.details}>Начало приемки: <span>{acceptedTime}</span></div>
-                                    <div className={classes.details}>Конец приемки: <span>{finishedTime}</span></div>
-                                     <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
-                                 </div>
+                            <div>
+                                <div className={classes.details}>Начало приемки: <span>{acceptedTime}</span></div>
+                                <div className={classes.details}>Конец приемки: <span>{finishedTime}</span></div>
+                                <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
+                            </div>
                             }
                             {history && !useBarcode &&
-                                <div>
-                                    <div className={classes.details}>Дата приемки: <span>{acceptedTime}</span></div>
-                                    <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
-                                </div>}
+                            <div>
+                                <div className={classes.details}>Дата приемки: <span>{acceptedTime}</span></div>
+                                <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
+                            </div>}
                             <div className={classes.subtitle}>Комментарий:</div>
                             <div>{comment}</div>
                         </div>
