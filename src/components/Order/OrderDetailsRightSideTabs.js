@@ -74,7 +74,6 @@ const enhance = compose(
             fontWeight: '600',
             marginTop: '20px',
             paddingRight: '30px',
-            textTransform: 'uppercase',
             textAlign: 'right'
         },
         tab: {
@@ -211,7 +210,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                         </Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
                                         <Col xs={2}>{numberFormat(productTotal)}</Col>
-                                        <Col xs={2}>{discount}</Col>
+                                        <Col xs={2}>{isBonus ? '0' : discount}</Col>
                                     </Row>
                                 )
                             })}

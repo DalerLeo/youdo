@@ -66,7 +66,7 @@ const enhance = compose(
 
         const detailProducts = _.get(state, ['stockReceive', 'item', 'data'])
         const detailLoading = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'loading'])
-            : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'transfer', 'loading'])
+            : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'loading'])
                 : (stockReceiveType === 'stock_transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'loading'])
                     : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'loading'])
                         : _.get(state, ['order', 'returnList', 'loading'])

@@ -213,6 +213,7 @@ const StockTransferDetails = enhance((props) => {
                             </Row>
                             {_.map(products, (item) => {
                                 const productId = _.get(item, 'id')
+                                const isBonus = _.get(item, 'isBonus')
                                 const name = _.get(item, ['product', 'name'])
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const amount = numberformat(_.get(item, 'amount'), measurement)
@@ -221,7 +222,7 @@ const StockTransferDetails = enhance((props) => {
                                 if (stock === detailType) {
                                     return (
                                         <Row key={productId} className='dottedList'>
-                                            <Col xs={6}>{name}</Col>
+                                            <Col xs={6}>{name} {isBonus && <strong className="greenFont">(бонус)</strong>}</Col>
                                             <Col xs={4}>{type}</Col>
                                             <Col xs={2}>{amount}</Col>
                                         </Row>

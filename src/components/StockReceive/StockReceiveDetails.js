@@ -4,10 +4,10 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
 import RemoveCircleIcon from 'material-ui/svg-icons/content/remove-circle'
 import EditIcon from 'material-ui/svg-icons/image/edit'
-import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
@@ -36,6 +36,14 @@ const enhance = compose(
             '& a': {
                 color: colorBlue
             }
+        },
+        loader: {
+            width: '100%',
+            background: '#fff',
+            height: '150px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         },
         content: {
             width: '100%',
@@ -105,6 +113,7 @@ const enhance = compose(
             }
         },
         semibold: {
+            lineHeight: '48px',
             height: 'inherit',
             fontWeight: '600',
             cursor: 'pointer',
@@ -173,7 +182,7 @@ const StockReceiveDetails = enhance((props) => {
     const tooltipText = 'Подтвердить Запрос №' + id
     const tooltipCancelText = 'Отменить Запрос №' + id
     const tooltipUpdateText = 'Изменить Запрос №' + id
-    const detailLoading = _.get(detailData, 'detailLoading') || _.get(detailData, 'loading')
+    const detailLoading = _.get(detailData, 'detailLoading')
     const products = (type === 'order_return') ? _.get(detailData, ['data', 'returnedProducts']) : _.get(detailData, ['data', 'products'])
     const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
 
@@ -192,9 +201,11 @@ const StockReceiveDetails = enhance((props) => {
     }
 
     return (
-        <div className={classes.wrapper}
-             style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
-            {detailLoading ? <LinearProgress/>
+        <div className={classes.wrapper}>
+            {detailLoading
+                ? <div className={classes.loader}>
+                    <CircularProgress thickness={4} size={40}/>
+                </div>
                 : <div style={{width: '100%'}}>
                     <div className={classes.header}>
                         <div className={classes.closeDetail}
@@ -284,7 +295,7 @@ const StockReceiveDetails = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <div className={classes.leftSide}>
-                            <Row className='dottedList' style={{padding: '15px 30px'}}>
+                            <Row className='dottedList'>
                                 <Col xs={6}>Товар</Col>
                                 <Col xs={4}>Тип товара</Col>
                                 <Col xs={2}>Кол-во</Col>
