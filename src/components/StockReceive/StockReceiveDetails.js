@@ -265,6 +265,7 @@ const StockReceiveDetails = enhance((props) => {
                                                                 iconStyle={iconStyle.icon}
                                                                 style={iconStyle.button}
                                                                 touch={true}
+                                                                disabled={history}
                                                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                                                                 <EditIcon />
                                                             </IconButton>
@@ -300,13 +301,14 @@ const StockReceiveDetails = enhance((props) => {
                                 <Col xs={4}>Тип товара</Col>
                                 <Col xs={2}>Кол-во</Col>
                             </Row>
-                            {_.map(products, (item, index) => {
+                            {_.map(products, (item) => {
+                                const productId = _.get(item, 'id')
                                 const name = _.get(item, ['product', 'name'])
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const productType = _.get(item, ['product', 'type', 'name'])
                                 const amount = numberFormat(_.get(item, 'amount'), measurement)
                                 return (
-                                    <Row key={index} className='dottedList'>
+                                    <Row key={productId} className='dottedList'>
                                         <Col xs={6}>{name}</Col>
                                         <Col xs={4}>{productType}</Col>
                                         <Col xs={2}>{amount}</Col>
@@ -316,17 +318,17 @@ const StockReceiveDetails = enhance((props) => {
                         </div>
                         <div className={classes.rightSide}>
                             {history && useBarcode &&
-                                 <div>
-                                    <div className={classes.details}>Начало приемки: <span>{acceptedTime}</span></div>
-                                    <div className={classes.details}>Конец приемки: <span>{finishedTime}</span></div>
-                                     <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
-                                 </div>
+                            <div>
+                                <div className={classes.details}>Начало приемки: <span>{acceptedTime}</span></div>
+                                <div className={classes.details}>Конец приемки: <span>{finishedTime}</span></div>
+                                <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
+                            </div>
                             }
                             {history && !useBarcode &&
-                                <div>
-                                    <div className={classes.details}>Дата приемки: <span>{acceptedTime}</span></div>
-                                    <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
-                                </div>}
+                            <div>
+                                <div className={classes.details}>Дата приемки: <span>{acceptedTime}</span></div>
+                                <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
+                            </div>}
                             <div className={classes.subtitle}>Комментарий:</div>
                             <div>{comment}</div>
                         </div>
