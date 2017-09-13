@@ -126,15 +126,16 @@ const enhance = compose(
             const {dispatch, params, setOpenConfirmDialog, filter} = props
             const detailId = _.toInteger(_.get(params, 'supplyId'))
             dispatch(supplyDeleteAction(detailId))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
-                })
                 .then(() => {
                     setOpenConfirmDialog(false)
+                    dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                     return dispatch(supplyItemFetchAction(detailId))
                 })
                 .then(() => {
                     return dispatch(supplyListFetchAction(filter))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Не удалось'}))
                 })
         },
 

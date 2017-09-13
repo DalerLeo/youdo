@@ -12,8 +12,11 @@ import StatRemainderGridList from './Remainder/StatRemainderGridLIst'
 import StatCashboxGridList from './Cashbox/StatCashboxGridList'
 import StatProductMoveGridList from './ProductMove/StatProductMoveGridList'
 import StatReportGridList from './StatReportGridLIst'
+import StatReturnGridList from './Return/StatReturnGridList'
+import StatReturnDialog from './Return/StatReturnDialog'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
+const STAT_RETURN_DIALOG_OPEN = 'openStatReturnDialog'
 const STAT_REMAINDER_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_SALES_DIALOG_OPEN = 'openStatSalesDialog'
 const STAT_MARKET_DIALOG_OPEN = 'openStatMarketDialog'
@@ -25,6 +28,8 @@ const STAT_PRODUCT_MOVE_DIALOG_OPEN = 'openStatProductMoveDialog'
 const DATE = 'date'
 
 export {
+    StatReturnGridList,
+    StatReturnDialog,
     StatSideMenu,
     StatSalesGridList,
     StatAgentGridList,
@@ -48,5 +53,6 @@ export {
     STAT_OUTCOME_DIALOG_OPEN,
     STAT_SALES_DIALOG_OPEN,
     STAT_REMAINDER_DIALOG_OPEN,
-    STAT_PRODUCT_MOVE_DIALOG_OPEN
+    STAT_PRODUCT_MOVE_DIALOG_OPEN,
+    STAT_RETURN_DIALOG_OPEN
 }
