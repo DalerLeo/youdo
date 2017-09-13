@@ -125,10 +125,10 @@ const OrderDetailsRightSideTabs = enhance((props) => {
     const {
         classes,
         data,
-        returnDataLoading,
         itemReturnDialog,
         tabData,
         returnData,
+        returnDataLoading,
         cancelOrderReturnOpen
     } = props
 
@@ -314,9 +314,9 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 </div>
                             }
                         </div>
-                        : <div className={classes.emptyQuery}>
+                        : (!returnDataLoading && <div className={classes.emptyQuery}>
                             <div>В данном заказе нет возвратов</div>
-                        </div>}
+                        </div>)}
                 </Tab>
             </Tabs>
         </div>

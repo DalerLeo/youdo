@@ -8,6 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import {TextField, normalizeDiscount} from '../ReduxForm'
 import Paper from 'material-ui/Paper'
 import toCamelCase from '../../helpers/toCamelCase'
+import numberFormat from '../../helpers/numberFormat'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -27,8 +28,15 @@ const enhance = compose(
             padding: '10px',
             paddingLeft: '20px',
             display: 'flex',
+            flexWrap: 'wrap',
             alignItems: 'baseline',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            '& a': {
+                width: '100%',
+                textAlign: 'center',
+                marginTop: '5px',
+                fontWeight: '600'
+            }
         },
         inputFieldCustom: {
             width: '110px !important',
@@ -63,7 +71,8 @@ const enhance = compose(
 )
 
 const OrderSetDiscountDialog = enhance((props) => {
-    const {classes, handleSubmit, id, setOpenDiscountDialog} = props
+    const {classes, handleSubmit, id, setOpenDiscountDialog, percent, handleSubmitSetZeroDiscountDialog} = props
+    const ZERO = 0
     const onSubmit = handleSubmit(() => {
         props.onSubmit(id).catch(validate)
             .then(() => {
@@ -76,7 +85,11 @@ const OrderSetDiscountDialog = enhance((props) => {
             <form onSubmit={onSubmit} className={classes.field}>
                 <div><Field
                     name="percent"
+                    hintText={numberFormat(percent)}
                     component={TextField}
+                    floatingLabelFixed={true}
+                    floatingLabelStyle={{right: 0, transformOrigin: 'right top 0'}}
+                    hintStyle={{bottom: 10, right: 0}}
                     normalize={normalizeDiscount}
                     label="Размер скидки"
                     className={classes.inputFieldCustom}
@@ -90,6 +103,7 @@ const OrderSetDiscountDialog = enhance((props) => {
                     primary={true}
                     type="submit"
                 />
+                {percent > ZERO && <a onClick={() => { handleSubmitSetZeroDiscountDialog(id) }}>Отменить скидку</a>}
             </form>
         </Paper>
     )

@@ -172,7 +172,6 @@ const OrderGridList = enhance((props) => {
         tabData,
         classes,
         createClientDialog,
-        returnDataLoading,
         printDialog,
         type,
         cancelOrderReturnDialog,
@@ -206,6 +205,7 @@ const OrderGridList = enhance((props) => {
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             returnData={_.get(detailData, 'return')}
+            returnDataLoading={_.get(detailData, 'returnLoading')}
             transactionsDialog={transactionsDialog}
             tabData={tabData}
             getDocument={getDocument}
@@ -215,7 +215,6 @@ const OrderGridList = enhance((props) => {
             itemReturnDialog={itemReturnDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
-            returnDataLoading={returnDataLoading}
             updateDialog={updateDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             cancelOrderReturnDialog={cancelOrderReturnDialog}

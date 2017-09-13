@@ -269,7 +269,8 @@ const OrderDetails = enhance((props) => {
                 <div className={classes.discountPop} style={openDiscountDialog ? {transform: 'scale(1)'} : {transform: 'scale(0)'}}>
                     <OrderSetDiscountDialog
                         id={id}
-                        initialValues={{percent: price}}
+                        percent={price}
+                        handleSubmitSetZeroDiscountDialog={handleSubmitSetZeroDiscountDialog}
                         setOpenDiscountDialog={setOpenDiscountDialog}
                         onSubmit={handleSubmitDiscountDialog}/>
                     <div className={classes.arrow}> </div>
@@ -313,16 +314,6 @@ const OrderDetails = enhance((props) => {
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { setOpenDiscountDialog(!openDiscountDialog) }}>
-                            <MoneyOffIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text="Скидка">
-                        <IconButton
-                            disabled={(status === CANCELED)}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={() => { handleSubmitSetZeroDiscountDialog(id) }}>
                             <MoneyOffIcon />
                         </IconButton>
                     </Tooltip>
