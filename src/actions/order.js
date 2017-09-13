@@ -201,7 +201,7 @@ export const orderItemFetchAction = (id) => {
 }
 export const orderSetDiscountAction = (id, percent) => {
     const payload = axios()
-        .post(sprintf(API.ORDER_SET_DISCOUNT, id), {'discount_price': percent})
+        .post(sprintf(API.ORDER_SET_DISCOUNT, id), {'discount_price': _.toNumber(percent)})
         .then((response) => {
             return _.get(response, 'data')
         })
