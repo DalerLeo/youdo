@@ -180,7 +180,7 @@ const enhance = compose(
                 const fields = ['ingredient', 'amount']
                 for (let i = 0; i < fields.length; i++) {
                     const newChange = _.get(props, [fields[i], 'input', 'onChange'])
-                    props.dispatch(newChange(null))
+                    newChange(null)
                 }
 
                 if (!has) {

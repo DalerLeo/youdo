@@ -300,14 +300,13 @@ const StockReceiveDetails = enhance((props) => {
                                 <Col xs={4}>Тип товара</Col>
                                 <Col xs={2}>Кол-во</Col>
                             </Row>
-                            {_.map(products, (item) => {
-                                const productId = _.get(item, 'id')
+                            {_.map(products, (item, index) => {
                                 const name = _.get(item, ['product', 'name'])
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const productType = _.get(item, ['product', 'type', 'name'])
                                 const amount = numberFormat(_.get(item, 'amount'), measurement)
                                 return (
-                                    <Row key={productId} className='dottedList'>
+                                    <Row key={index} className='dottedList'>
                                         <Col xs={6}>{name}</Col>
                                         <Col xs={4}>{productType}</Col>
                                         <Col xs={2}>{amount}</Col>
