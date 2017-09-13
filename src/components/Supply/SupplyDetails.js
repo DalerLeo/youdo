@@ -404,7 +404,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>}
                     {confirmDialog && <Tooltip position="bottom" text="Отменить">
                         <IconButton
-                            disabled={isFinished && true}
+                            disabled={!isAdmin && isFinished}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
