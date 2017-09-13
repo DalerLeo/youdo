@@ -6,7 +6,7 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'search': _.get(defaultData, 'search'),
+        'searching': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'division': _.get(defaultData, 'division'),
         'page_size': _.get(defaultData, 'pageSize'),

@@ -189,9 +189,7 @@ const StockReceiveGridList = enhance((props) => {
                 handleCheckedDefect={handleCheckedDefect}
                 createDialog={createDialog}
                 filterDialog={filterDialog}
-                history={true}
-
-            />}
+                history={true}/>}
 
         </div>
     )

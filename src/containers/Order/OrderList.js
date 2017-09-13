@@ -520,6 +520,25 @@ const enhance = compose(
                         </div>
                     }))
                 })
+        },
+        handleSubmitSetZeroDiscountDialog: props => (id) => {
+            const {dispatch} = props
+            return dispatch(orderSetDiscountAction(id, ZERO))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Скидка отменена'}))
+                })
+                .then(() => {
+                    return dispatch(orderItemFetchAction(id))
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         }
     }),
 )
@@ -838,6 +857,7 @@ const OrderList = enhance((props) => {
                 cancelOrderReturnDialog={cancelOrderReturnDialog}
                 canChangeAnyPrice={canChangeAnyPrice}
                 handleSubmitDiscountDialog={props.handleSubmitDiscountDialog}
+                handleSubmitSetZeroDiscountDialog={props.handleSubmitSetZeroDiscountDialog}
             />
         </Layout>
     )
