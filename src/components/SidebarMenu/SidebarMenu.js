@@ -11,6 +11,7 @@ import ToolTip from '../ToolTip'
 import {getMenus} from './MenuItems'
 import Logo from '../Images/logo.png'
 import CustomBadge from '../CustomBadge/CustomBadge'
+
 const style = {
     style: {
         width: 84,
@@ -43,68 +44,71 @@ const SideBarMenu = enhance((props) => {
             return false
         }
         return (
-            <Link to={item.url} key={index}>
-                <ToolTip position="right" text={item.name}>
-                    <FlatButton
-                        rippleColor="#fff"
-                        style={style.style}>
-                        {item.icon}
-                    </FlatButton>
-                </ToolTip>
-            </Link>
+            <div key={index}>
+                <Link to={item.url}>
+                    <ToolTip position="right" text={item.name}>
+                        <FlatButton
+                            rippleColor="#fff"
+                            style={style.style}>
+                            {item.icon}
+                        </FlatButton>
+                    </ToolTip>
+                </Link>
+            </div>
         )
     })
-    const bottomItems = _.map(menu, (item, index) => {
-        const atBottom = _.get(item, 'bottom')
-        if (!atBottom) {
-            return false
-        }
+    const bottomItems = _.filter(menu, (o) => {
+        return o.bottom
+    })
+    const afterLine = _.map(bottomItems, (item, index) => {
         return (
-            <Link to={item.url} key={index}>
-                <ToolTip position="right" text={item.name}>
-                    <FlatButton
-                        rippleColor="#fff"
-                        style={style.style}>
-                        {item.icon}
-                    </FlatButton>
-                </ToolTip>
-            </Link>
+            <div key={index}>
+                <Link to={item.url}>
+                    <ToolTip position="right" text={item.name}>
+                        <FlatButton
+                            rippleColor="#fff"
+                            style={style.style}>
+                            {item.icon}
+                        </FlatButton>
+                    </ToolTip>
+                </Link>
+            </div>
         )
     })
 
     return (
         <div className={classes.wrapper}>
-            {loading
-                ? <div className={classes.menuLoading}>
-                    <CircularProgress size={40} thickness={4} color="#efefef"/>
+        {loading
+            ? <div className={classes.menuLoading}>
+                <CircularProgress size={40} thickness={4} color="#efefef"/>
+            </div>
+            : <div className={classes.items}>
+                <div className={classes.logo}>
+                    <img src={Logo}/>
                 </div>
-                : <div className={classes.items}>
-                    <div className={classes.logo}>
-                        <img src={Logo}/>
-                    </div>
-                    <div className={classes.notifications}>
-                        <CustomBadge
-                            classBadge={classes.badge}
-                            handleOpen={handleOpenNotificationBar}
-                            style={style.style}/>
+                <div className={classes.notifications}>
+                    <CustomBadge
+                        classBadge={classes.badge}
+                        handleOpen={handleOpenNotificationBar}
+                        style={style.style}/>
 
-                    </div>
-                    {items}
-                    {!_.isEmpty(bottomItems) && <div className={classes.bottom}>
-                        {bottomItems}
-                    </div>}
-
-                    <div className={classes.logout}>
-                        <ToolTip position="right" text="Выйти">
-                            <FlatButton
-                                rippleColor="#fff"
-                                style={style.style}
-                                onClick={handleSignOut}>
-                                <SettingsPower/>
-                            </FlatButton>
-                        </ToolTip>
-                    </div>
+                </div>
+                {items}
+                {!_.isEmpty(afterLine) &&
+                <div className={classes.bottom}>
+                    {afterLine}
                 </div>}
+            </div>}
+            {!loading && <div className={classes.logout}>
+                <ToolTip position="right" text="Выйти">
+                    <FlatButton
+                        rippleColor="#fff"
+                        style={style.style}
+                        onClick={handleSignOut}>
+                        <SettingsPower/>
+                    </FlatButton>
+                </ToolTip>
+            </div>}
         </div>
     )
 })
@@ -113,9 +117,34 @@ export default injectSheet({
     wrapper: {
         height: '100%',
         display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        overflowY: 'auto',
+        overflowX: 'hidden',
         backgroundColor: '#2d3037',
         position: 'relative',
-        boxShadow: '0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12)'
+        boxShadow: '0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12)',
+        '& button': {
+            opacity: '0.5',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                width: '100%'
+            },
+            '&:hover': {
+                opacity: '1'
+            }
+        },
+        '& svg': {
+            color: '#fff !important',
+            width: '25px !important',
+            height: '25px !important'
+        },
+        '&::-webkit-scrollbar': {
+            width: '0'
+        }
     },
 
     menuLoading: {
@@ -139,26 +168,10 @@ export default injectSheet({
     items: {
         position: 'relative',
         width: '100%',
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        '& button': {
-            opacity: '0.5',
-            '& > div': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100%',
-                width: '100%'
-            },
-            '&:hover': {
-                opacity: '1'
-            }
-        },
-        '& svg': {
-            color: '#fff !important',
-            width: '25px !important',
-            height: '25px !important'
-        }
+        minHeight: '800px',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
     },
 
     bottom: {
@@ -175,10 +188,6 @@ export default injectSheet({
             left: '0',
             right: '0'
         }
-    },
-
-    logout: {
-
     },
     badge: {
         padding: '0 !important',

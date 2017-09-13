@@ -130,11 +130,11 @@ const enhance = compose(
         const extra = _.get(state, ['product', 'extra', 'data'])
         const productAmount = _.toNumber(_.get(state, ['form', 'OrderReturnForm', 'values', 'product', 'value', 'amount']))
         const returnAmount = _.toNumber(_.get(state, ['form', 'OrderReturnForm', 'values', 'product', 'value', 'returnAmount']))
+        const normalizeAmount = productAmount - returnAmount
 
         return {
             extra,
-            productAmount,
-            returnAmount
+            normalizeAmount
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -147,6 +147,7 @@ const enhance = compose(
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
             const extra = _.get(props, ['extra'])
+            const normalizeAmount = _.get(props, ['normalizeAmount'])
             const onChange = _.get(props, ['returned_products', 'input', 'onChange'])
             const products = _.get(props, ['returned_products', 'input', 'value'])
 
@@ -164,7 +165,7 @@ const enhance = compose(
                 }
                 const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(amount)
                 if (!has) {
-                    onChange(_.union(products, [{product, amount, cost}]))
+                    onChange(_.union(products, [{product, amount, cost, normalizeAmount}]))
                 }
             }
         },
@@ -199,9 +200,7 @@ const enhance = compose(
     })
 )
 
-const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, productAmount, returnAmount, editItem, setEditItem, handleEdit, ...defaultProps}) => {
-    const normalizeAmount = productAmount - returnAmount
-
+const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove, normalizeAmount, editItem, setEditItem, handleEdit, ...defaultProps}) => {
     const normalizeReturn = value => {
         if (!value) {
             return value
@@ -288,6 +287,14 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         showRowHover={false}
                         stripedRows={false}>
                         {_.map(products, (item, index) => {
+                            const normalize = _.get(item, 'normalizeAmount')
+                            const normalizeEditReturn = value => {
+                                if (!value) {
+                                    return value
+                                }
+
+                                return value > normalize ? normalize : value
+                            }
                             const product = _.get(item, ['product', 'text'])
                             const amount = numberFormat(_.get(item, 'amount'))
                             const measurement = _.get(item, ['product', 'value', 'product', 'measurement', 'name'])
@@ -297,12 +304,13 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                                     <TableRow key={index} className={classes.tableRow}>
                                         <TableRowColumn>{product}</TableRowColumn>
                                         <TableRowColumn style={{padding: 0}}>
-                                            <TextField
+                                            <Field
+                                                name="editAmount"
+                                                component={TextField}
                                                 placeholder={amount + ' ' + measurement}
                                                 className={classes.inputFieldEdit}
-                                                fullWidth={true}
-                                                {..._.get(defaultProps, 'editAmount')}
-                                            />
+                                                normalize={normalizeEditReturn}
+                                                fullWidth={true}/>
                                         </TableRowColumn>
                                         <TableRowColumn>{price}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>

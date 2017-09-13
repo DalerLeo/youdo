@@ -61,8 +61,6 @@ const enhance = compose(
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const createLoading = _.get(state, ['order', 'create', 'loading'])
         const createClientLoading = _.get(state, ['client', 'create', 'loading'])
-        const returnLoading = _.get(state, ['order', 'return', 'loading'])
-        const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
         const returnDialogLoading = _.get(state, ['order', 'returnList', 'loading'])
         const shortageLoading = _.get(state, ['order', 'create', 'loading'])
         const updateLoading = _.get(state, ['order', 'update', 'loading'])
@@ -76,6 +74,7 @@ const enhance = compose(
         const discountCreateForm = _.get(state, ['form', 'OrderSetDiscountForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
         const returnData = _.get(state, ['order', 'return', 'data', 'results'])
+        const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
@@ -91,7 +90,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             createClientLoading,
-            returnLoading,
             shortageLoading,
             updateLoading,
             filter,
@@ -116,12 +114,13 @@ const enhance = compose(
         dispatch(orderListFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
-        const prevTransaction = _.get(props, ['location', 'query', 'openTransactionsDialog'])
-        const nextTransaction = _.get(nextProps, ['location', 'query', 'openTransactionsDialog'])
-        return prevTransaction !== nextTransaction && nextTransaction === 'true'
-    }, ({dispatch, params}) => {
+        const prevTransaction = toBoolean(_.get(props, ['location', 'query', 'openTransactionsDialog']))
+        const nextTransaction = toBoolean(_.get(nextProps, ['location', 'query', 'openTransactionsDialog']))
+        return prevTransaction !== nextTransaction && nextTransaction === true
+    }, ({dispatch, params, location}) => {
+        const openTransaction = toBoolean(_.get(location, ['query', 'openTransactionsDialog']))
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        if (orderId > ZERO) {
+        if (orderId > ZERO && openTransaction) {
             dispatch(orderTransactionFetchAction(orderId))
         }
     }),
@@ -131,9 +130,10 @@ const enhance = compose(
         const prevTab = _.get(props, ['location', 'query', 'tab'])
         const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
         return (prevOrderId !== nextOrderId || prevTab !== nextTab) && nextTab === 'return'
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, location}) => {
+        const returnTab = _.get(location, ['query', TAB])
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        if (orderId > ZERO) {
+        if (orderId > ZERO && returnTab === ORDER_TAB.ORDER_TAB_RETURN) {
             dispatch(orderItemReturnFetchAction(orderId))
         }
     }),
@@ -781,6 +781,7 @@ const OrderList = enhance((props) => {
         id: detailId,
         data: detail || {},
         return: returnData || [],
+        returnLoading: returnDataLoading,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }

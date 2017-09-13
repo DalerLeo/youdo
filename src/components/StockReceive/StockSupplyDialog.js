@@ -21,6 +21,7 @@ const enhance = compose(
         },
         dialog: {
             overflowY: 'auto !important',
+            paddingTop: '50px !important',
             '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
             }

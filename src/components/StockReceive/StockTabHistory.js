@@ -76,7 +76,10 @@ const enhance = compose(
         infoDialog: {
             color: '#129fdd',
             cursor: 'pointer',
-            textDecoration: 'underline;'
+            fontWeight: '600',
+            '&:hover': {
+                textDecoration: 'underline'
+            }
         }
     })
 )
