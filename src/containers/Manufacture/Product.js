@@ -37,6 +37,7 @@ import {
     ingredientDeleteAction
 } from '../../actions/ingredient'
 import {openSnackbarAction} from '../../actions/snackbar'
+import {openErrorAction} from '../../actions/error'
 
 const MINUS_ONE = -1
 const ZERO = 0
@@ -125,6 +126,16 @@ const enhance = compose(
                 .then(() => {
                     return dispatch(productListFetchAction(filterProduct, manufactureId))
                 })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         },
         handleSubmitProductFilterDialog: props => () => {
             const {dispatch, filterProduct, filterProductForm, params} = props
@@ -166,6 +177,16 @@ const enhance = compose(
                         query: filterProduct.getParams({[MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]: false})
                     })
                     return dispatch(productListFetchAction(filterProduct, manufactureId))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -216,6 +237,16 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filterProduct.getParams({[MANUFACTURE_CHANGE]: false})})
                     dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                     return dispatch(productListFetchAction(filterProduct, manufactureId))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -269,6 +300,16 @@ const enhance = compose(
                     })
                     dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                     return dispatch(ingredientListFetchAction(productId))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 

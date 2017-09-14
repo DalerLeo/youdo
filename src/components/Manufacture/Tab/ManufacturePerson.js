@@ -38,19 +38,19 @@ const listHeader = [
         sorting: false,
         name: 'shift',
         title: 'Смена',
-        xs: 3
+        xs: 2
     },
     {
         sorting: false,
         name: 'time',
         title: 'Время',
-        xs: 3
+        xs: 2
     },
     {
         sorting: false,
         name: 'action',
         title: '',
-        xs: 2
+        xs: 1
     }
 ]
 
@@ -133,8 +133,8 @@ const ManufacturePerson = enhance((props) => {
             <Row key={id}>
                 <Col xs={4}>{name}</Col>
                 <Col xs={3}>{shift}</Col>
-                <Col xs={3}>{beginTime} - {endTime}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>
+                <Col xs={2}>{beginTime} - {endTime}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         iconButtonElement={iconButton}
                         menuItemStyle={{fontSize: '13px'}}

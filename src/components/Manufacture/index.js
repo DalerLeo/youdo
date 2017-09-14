@@ -1,7 +1,7 @@
-import ManufactureProductWrapper from './ManufactureProductWrapper'
-import ManufacturePersonWrapper from './ManufacturePersonWrapper'
-import ManufactureEquipmentWrapper from './ManufactureEquipmentWrapper'
-import ManufactureShipmentWrapper from './ManufactureShipmentWrapper'
+import ManufactureProductWrapper from './ProductWrapper'
+import ManufacturePersonWrapper from './PersonWrapper'
+import ManufactureEquipmentWrapper from './EquipmentWrapper'
+import ManufactureShipmentWrapper from './ShipmentWrapper'
 
 import {OPEN_USER_CREATE_DIALOG} from './ManufactureAddStaffDialog'
 import {MANUFACTURE_SHOW_BOM_DIALOG_OPEN} from './ManufactureShowBom'
