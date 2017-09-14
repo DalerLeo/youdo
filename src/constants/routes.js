@@ -207,6 +207,10 @@ export const STATISTICS_AGENT_ITEM_PATH = `/${STATISTICS_AGENT}/%d`
 export const STATISTICS_PRODUCT_URL = `/${STATISTICS}/product`
 export const STATISTICS_MARKET = 'statistics/market'
 export const STATISTICS_MARKET_URL = `/${STATISTICS_MARKET}`
+export const STATISTICS_RETURN = 'statistics/return'
+export const STATISTICS_RETURN_URL = `/${STATISTICS_RETURN}`
+export const STATISTICS_RETURN_ITEM_URL = `/${STATISTICS_RETURN}:statReturnId`
+export const STATISTICS_RETURN_ITEM_PATH = `/${STATISTICS_RETURN}/%d`
 export const STATISTICS_MARKET_ITEM_URL = `/${STATISTICS_MARKET}/:statMarketId`
 export const STATISTICS_MARKET_ITEM_PATH = `/${STATISTICS_MARKET}/%d`
 

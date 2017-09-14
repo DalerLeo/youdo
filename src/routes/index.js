@@ -50,6 +50,7 @@ import {RemainderList} from '../containers/Remainder'
 import {
     StatSalesList,
     StatAgentList,
+    StatReturnList,
     StatProductList,
     StatMarketList,
     StatFinanceList,
@@ -524,6 +525,17 @@ export default {
                 {
                     path: ROUTES.STATISTICS_AGENT_ITEM_URL,
                     component: userIsAuth(StatAgentList)
+                }
+            ]
+        },
+        // Statistics/return
+        {
+            path: ROUTES.STATISTICS_RETURN_URL,
+            component: userIsAdminChain(StatReturnList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_RETURN_ITEM_URL,
+                    component: userIsAuth(StatReturnList)
                 }
             ]
         },

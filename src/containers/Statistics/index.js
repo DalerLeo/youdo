@@ -11,8 +11,10 @@ import StatRemainderList from './StatRemainder'
 import StatCashboxList from './StatCashbox'
 import StatProductMoveList from './StatProductMove'
 import StatReportList from './StatReport'
+import StatReturnList from './StatReturn'
 
 export {
+    StatReturnList,
     StatAgentList,
     StatProductList,
     StatMarketList,

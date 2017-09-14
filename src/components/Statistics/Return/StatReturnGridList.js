@@ -2,28 +2,27 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import _ from 'lodash'
 import {Row, Col} from 'react-flexbox-grid'
-import * as ROUTES from '../../../constants/routes'
-import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import ReactHighcharts from 'react-highcharts'
-import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import DivisionSearchField from '../../ReduxForm/DivisionSearchField'
-import StatSideMenu from '../StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
+import List from 'material-ui/svg-icons/action/list'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-import Pagination from '../../GridList/GridListNavPagination/index'
-import numberFormat from '../../../helpers/numberFormat'
-import StatSaleDialog from './StatSaleDialog'
-import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
+import StatReturnDialog from './StatReturnDialog'
+import StatSideMenu from '../StatSideMenu'
+import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
+import Container from '../../Container/index'
+import Pagination from '../../GridList/GridListNavPagination/index'
+import DivisionSearchField from '../../ReduxForm/DivisionSearchField'
+import NotFound from '../../Images/not-found.png'
+import * as ROUTES from '../../../constants/routes'
+import numberFormat from '../../../helpers/numberFormat'
 import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
-import NotFound from '../../Images/not-found.png'
 
-export const STAT_SALES_FILTER_KEY = {
+export const STAT_RETURN_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     DIVISION: 'division'
@@ -215,138 +214,25 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatSalesFilterForm',
+        form: 'StatReturnFilterForm',
         enableReinitialize: true
     }),
 )
 
-const StatSalesGridList = enhance((props) => {
+const StatReturnGridList = enhance((props) => {
     const {
         classes,
+        type,
         filter,
-        graphData,
         onSubmit,
         listData,
-        statSaleDialog,
+        statReturnDialog,
         handleSubmit,
         detailData,
         handleGetDocument
     } = props
 
     const loading = _.get(listData, 'listLoading')
-    let sum = 0
-    let returnSum = 0
-    const value = _.map(_.get(graphData, 'data'), (item) => {
-        sum += _.toInteger(_.get(item, 'amount'))
-        return _.toInteger(_.get(item, 'amount'))
-    })
-
-    const returnedValue = _.map(_.get(graphData, 'data'), (item) => {
-        returnSum += _.toInteger(_.get(item, 'returnAmount'))
-        return _.toInteger(_.get(item, 'returnAmount'))
-    })
-
-    const valueName = _.map(_.get(graphData, 'data'), (item) => {
-        return dateFormat(_.get(item, 'date'))
-    })
-
-    const config = {
-        chart: {
-            type: 'areaspline',
-            height: 180
-        },
-        title: {
-            text: '',
-            style: {
-                display: 'none'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        yAxis: {
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            gridLineColor: '#fff',
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: 'transparent'
-            }],
-            labels: {
-                enabled: false
-            },
-            lineWidth: 0,
-            minorGridLineWidth: 0,
-            lineColor: 'transparent',
-            minorTickLength: 0,
-            tickLength: 0
-        },
-        xAxis: {
-            categories: valueName,
-            lineWidth: 0,
-            minorGridLineWidth: 0,
-            lineColor: 'transparent',
-            minorTickLength: 0,
-            tickLength: 0,
-            labels: {
-                enabled: false
-            }
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 0,
-                pointPlacement: 'on'
-            },
-            areaspline: {
-                fillOpacity: 0.7
-            }
-        },
-        tooltip: {
-            shared: true,
-            valueSuffix: ' ' + getConfig('PRIMARY_CURRENCY'),
-            backgroundColor: '#363636',
-            style: {
-                color: '#fff'
-            },
-            borderRadius: 2,
-            borderWidth: 0,
-            enabled: true,
-            shadow: true,
-            useHTML: true,
-            crosshairs: true,
-            pointFormat: '<div class="diagramTooltip">' +
-                                '{series.name}: {point.y}' +
-                        '</div>'
-        },
-        series: [{
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Продажа',
-            data: value,
-            color: '#6cc6de'
-
-        },
-        {
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Возврат',
-            data: returnedValue,
-            color: '#EB9696'
-        }]
-    }
-
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -368,48 +254,47 @@ const StatSalesGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={1}>№ Сделки</Col>
-            <Col xs={2}>Дата</Col>
-            <Col xs={3}>Магазин</Col>
-            <Col xs={2}>Агент</Col>
-            <Col xs={1}>Возврат</Col>
-            <Col xs={2} tyle={{textAlign: 'right'}}>Сумма</Col>
+            <Col xs={1}>Воз.</Col>
+            <Col xs={2}>От кого</Col>
+            <Col xs={1}>Заказ</Col>
+            <Col xs={2}>Склад</Col>
+            <Col xs={2}>Добавил</Col>
+            <Col xs={2}>Дата возврата</Col>
+            <Col xs={2} style={{textAlign: 'right'}}>Сумма возврата</Col>
         </Row>
     )
 
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
-    const list = (
-
-        _.map(_.get(listData, 'data'), (item) => {
-            const marketName = _.get(item, ['market', 'name'])
-            const id = _.get(item, 'id')
-            const createdDate = moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM')
-            const firstName = _.get(item, ['user', 'firstName'])
-            const secondName = _.get(item, ['user', 'secondName '])
-            const totalPrice = _.get(item, 'totalPrice')
-            const returnPrice = _.get(item, 'totalReturnedPrice')
-
-            return (
-                <Row key={id} className="dottedList">
-                    <Col xs={1}>{id}</Col>
-                    <Col xs={2}>{createdDate}</Col>
-                    <Col xs={3}>{marketName}</Col>
-                    <Col xs={2}>
-                        <div>{firstName} {secondName}</div>
-                    </Col>
-                    <Col xs={1}>{numberFormat(returnPrice)} {currentCurrency}</Col>
-                    <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice)} {currentCurrency}</Col>
-                </Row>
-            )
-        })
-
-    )
+    const list = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const client = _.get(item, ['client', 'name']) || '-'
+        const order = _.get(item, 'order') || '-'
+        const stock = _.get(item, ['stock', 'name'])
+        const user = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || 'N/A'
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
+        return (
+            <Row className={classes.listWrapper} key={id}>
+                <Col xs={1}>{id}</Col>
+                <Col xs={2}>{client}</Col>
+                <Col xs={1}>{order}</Col>
+                <Col xs={2}>{stock}</Col>
+                <Col xs={2}>{user}</Col>
+                <Col xs={2}>{createdDate}</Col>
+                <Col xs={2}>{totalPrice}
+                    <IconButton
+                        onTouchTap={ () => { statReturnDialog.handleOpenStatReturnDialog(id) }}>
+                        <List color="#12aaeb"/>
+                    </IconButton></Col>
+            </Row>
+        )
+    })
 
     const page = (
             <div className={classes.mainWrapper}>
                 <Row style={{margin: '0', height: '100%'}}>
                     <div className={classes.leftPanel}>
-                        <StatSideMenu currentUrl={ROUTES.STATISTICS_SALES_URL}/>
+                        <StatSideMenu currentUrl={ROUTES.STATISTICS_RETURN_URL}/>
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
@@ -448,25 +333,8 @@ const StatSalesGridList = enhance((props) => {
                                     <div>По вашему запросу ничего не найдено</div>
                                 </div>
                                 : <div>
-                                    <Row className={classes.diagram}>
-                                        <Col xs={3} className={classes.salesSummary}>
-                                            <div>Сумма продаж за период</div>
-                                            <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                            <div>Сумма возврата за период</div>
-                                            <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                            <div>Фактическая сумма продаж</div>
-                                            <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                        </Col>
-                                        <Col xs={9}>
-                                            {_.get(graphData, 'graphLoading') && <div className={classes.loader}>
-                                                <CircularProgress size={50} thickness={4} />
-                                            </div>}
-                                            {!_.get(graphData, 'graphLoading') &&
-                                            <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>}
-                                        </Col>
-                                    </Row>
                                     <div className={classes.pagination}>
-                                        <div><b>История продаж</b></div>
+                                        <div><b>История возврата</b></div>
                                         <Pagination filter={filter}/>
                                     </div>
                                     <div className={classes.tableWrapper}>
@@ -484,25 +352,26 @@ const StatSalesGridList = enhance((props) => {
     return (
         <Container>
             {page}
-            <StatSaleDialog
+            <StatReturnDialog
                 loading={_.get(detailData, 'detailLoading')}
                 detailData={detailData}
-                open={statSaleDialog.openStatSaleDialog}
-                onClose={statSaleDialog.handleCloseStatSaleDialog}
-                filter={filter}/>
+                open={statReturnDialog.openStatReturnDialog}
+                onClose={statReturnDialog.handleCloseStatReturnDialog}
+                filter={filter}
+                type={type}/>
         </Container>
     )
 })
 
-StatSalesGridList.propTypes = {
+StatReturnGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    statSaleDialog: PropTypes.shape({
-        openStatSaleDialog: PropTypes.bool.isRequired,
-        handleOpenStatSaleDialog: PropTypes.func.isRequired,
-        handleCloseStatSaleDialog: PropTypes.func.isRequired
+    statReturnDialog: PropTypes.shape({
+        openStatReturnDialog: PropTypes.bool.isRequired,
+        handleOpenStatReturnDialog: PropTypes.func.isRequired,
+        handleCloseStatReturnDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default StatSalesGridList
+export default StatReturnGridList

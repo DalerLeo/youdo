@@ -158,13 +158,15 @@ const enhance = compose(
     }, {open: false}),
     connect((state) => {
         const measurementName = _.get(state, ['product', 'extra', 'data', 'measurement', 'name'])
+        const product = _.get(state, ['form', 'ManufactureAddProductForm', 'values', 'product', 'value'])
         return {
+            product,
             measurementName
         }
     }),
     withState('editItem', 'setEditItem', null),
     withHandlers({
-        handleAdd: props => () => {
+        handleAdd: props => (product) => {
             const ingredient = _.get(props, ['ingredient', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
             const measurement = _.get(props, 'measurementName')
@@ -173,7 +175,7 @@ const enhance = compose(
             if (!_.isEmpty(ingredient) && !_.isEmpty(amount)) {
                 let has = false
                 _.map(ingredients, (item) => {
-                    if (_.get(item, 'ingredient') === ingredient) {
+                    if (_.get(item, 'ingredient') === ingredient || product === ingredient) {
                         has = true
                     }
                 })
@@ -237,7 +239,7 @@ const iconStyle = {
     }
 }
 
-const ManufactureListMaterialField = ({classes, measurementName, handleAdd, handleEdit, editItem, setEditItem, handleRemove, openAddMaterials, setOpenAddMaterials, ...defaultProps}) => {
+const ManufactureListMaterialField = ({classes, measurementName, handleAdd, product, handleEdit, editItem, setEditItem, handleRemove, openAddMaterials, setOpenAddMaterials, ...defaultProps}) => {
     const ingredients = _.get(defaultProps, ['ingredients', 'input', 'value']) || []
 
     return (
@@ -273,7 +275,7 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, hand
                     <Col xs={1} style={{height: '32px'}}>
                         {measurementName}
                     </Col>
-                    <IconButton onTouchTap={handleAdd}>
+                    <IconButton onTouchTap={() => { handleAdd(product) }}>
                         <ImageCheck color="#129fdd"/>
                     </IconButton>
                 </Row>
