@@ -74,6 +74,7 @@ const enhance = compose(
         const discountCreateForm = _.get(state, ['form', 'OrderSetDiscountForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
         const returnData = _.get(state, ['order', 'return', 'data', 'results'])
+        const returnLoading = _.get(state, ['order', 'return', 'loading'])
         const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
@@ -100,6 +101,7 @@ const enhance = compose(
             returnForm,
             returnData,
             orderReturnList,
+            returnLoading,
             returnDataLoading,
             returnDialogLoading,
             products,
