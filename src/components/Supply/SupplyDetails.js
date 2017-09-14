@@ -272,17 +272,9 @@ const enhance = compose(
     }),
     withState('openDetails', 'setOpenDetails', false),
     connect((state) => {
-        const sessionGroups = _.map(_.get(state, ['authConfirm', 'data', 'groups']), (item) => {
-            return _.get(item, 'id')
-        })
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
-        const loading = _.get(state, ['authConfirm', 'data', 'loading'])
 
-        return {
-            isAdmin,
-            sessionGroups,
-            loading
-        }
+        return {isAdmin}
     })
 )
 
@@ -331,8 +323,9 @@ const SupplyDetails = enhance((props) => {
     const finishedTime = (_.get(data, 'finishedTime')) ? moment(_.get(data, 'finishedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не закончилась'
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
-    const CANCELLED = 4
-    const isFinished = !_.isEmpty(_.get(data, 'finishedTime')) || _.toInteger(_.get(data, 'status')) === CANCELLED
+    const CANCELED = 4
+    const status = _.toInteger(_.get(data, 'status'))
+    const isFinished = !_.isEmpty(_.get(data, 'finishedTime')) || status === CANCELED
 
     const supplyExpenseList = _.get(supplyListData, 'data')
     const supplyExpenseListLoading = _.get(supplyListData, 'supplyExpenseListLoading')
@@ -394,7 +387,7 @@ const SupplyDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     {updateDialog && <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={isAdmin && isFinished && true}
+                            disabled={(isAdmin && isFinished) || status === CANCELED}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -404,7 +397,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>}
                     {confirmDialog && <Tooltip position="bottom" text="Отменить">
                         <IconButton
-                            disabled={!isAdmin && isFinished}
+                            disabled={(!isAdmin && isFinished) || status === CANCELED}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
