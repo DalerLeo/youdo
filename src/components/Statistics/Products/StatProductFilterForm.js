@@ -96,7 +96,8 @@ const enhance = compose(
 const StatProductFilterForm = enhance((props) => {
     const {
         classes,
-        handleSubmitFilterDialog,
+        onSubmit,
+        handleSubmit,
         getDocument
     } = props
 
@@ -107,6 +108,7 @@ const StatProductFilterForm = enhance((props) => {
             height: 22
         },
         button: {
+            minWidth: 40,
             width: 40,
             height: 40,
             padding: 0
@@ -114,7 +116,7 @@ const StatProductFilterForm = enhance((props) => {
     }
 
     return (
-        <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
             <div className={classes.filter}>
                 <Field
                     className={classes.inputFieldCustom}

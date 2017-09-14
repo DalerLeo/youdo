@@ -43,8 +43,7 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleSubmitFilterDialog: props => (event) => {
-            event.preventDefault()
+        handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
 
             const search = _.get(filterForm, ['values', 'search']) || null

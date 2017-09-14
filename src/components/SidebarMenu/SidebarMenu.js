@@ -38,34 +38,51 @@ const enhance = compose(
     withState('blurIsHere', 'updateBlur', true),
     lifecycle({
         componentDidMount () {
+            const show = '0'
+            const hide = '-50px'
+
             const menu = ReactDOM.findDOMNode(this.refs.menuWrapper)
             const items = ReactDOM.findDOMNode(this.refs.items)
             const logout = ReactDOM.findDOMNode(this.refs.logoutBtn)
             const blur = ReactDOM.findDOMNode(this.refs.blur)
-            const wrapperHeight = menu.clientHeight
             const buttonHeight = logout.clientHeight
             const sidebarHeight = items.clientHeight
-            const windowHeight = window.innerHeight
+            let defaultWindowHeight = window.innerHeight
 
-            if (windowHeight < sidebarHeight) {
-                blur.style.bottom = '0'
+            if (defaultWindowHeight < sidebarHeight) {
+                blur.style.bottom = show
             }
-            menu.addEventListener('scroll', () => {
-                const buttonOffset = logout.getBoundingClientRect().bottom
-                if (buttonOffset < (wrapperHeight + buttonHeight)) {
-                    blur.style.bottom = '-50px'
+
+            window.addEventListener('resize', () => {
+                const scrollVal = menu.scrollTop
+                defaultWindowHeight = window.innerHeight
+                if (defaultWindowHeight < (sidebarHeight - buttonHeight)) {
+                    if (scrollVal < (sidebarHeight - defaultWindowHeight)) {
+                        blur.style.bottom = show
+                    } else {
+                        blur.style.bottom = hide
+                    }
                 } else {
-                    blur.style.bottom = '0'
+                    blur.style.bottom = hide
                 }
             })
 
-            window.addEventListener('resize', () => {
-                const winH = window.innerHeight
-                if (winH < (sidebarHeight - buttonHeight)) {
-                    blur.style.bottom = '0'
+            menu.addEventListener('scroll', () => {
+                const scrollVal = menu.scrollTop
+                if (scrollVal < (sidebarHeight - defaultWindowHeight)) {
+                    blur.style.bottom = show
                 } else {
-                    blur.style.bottom = '-50px'
+                    blur.style.bottom = hide
                 }
+            })
+
+            blur.addEventListener('click', () => {
+                const scrollIntoViewOptions = {
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'nearest'
+                }
+                logout.scrollIntoView(scrollIntoViewOptions)
             })
         }
     })
@@ -146,7 +163,7 @@ const SideBarMenu = enhance((props) => {
                 </ToolTip>
             </div>}
             <div ref="blur" className={classes.blur}>
-                <Arrow color="#fff"/>
+                <Arrow color="#fff" ref="arrow"/>
             </div>
         </div>
     )
@@ -209,7 +226,7 @@ export default injectSheet({
             position: 'relative',
             transition: 'all 300ms ease',
             opacity: '0.5',
-            animation: 'animation 800ms infinite'
+            animation: 'animation ease 700ms infinite'
         }
     },
 
