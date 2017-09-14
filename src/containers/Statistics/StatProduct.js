@@ -43,14 +43,14 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleSubmitFilterDialog: props => (event) => {
-            event.preventDefault()
+        handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
 
             const search = _.get(filterForm, ['values', 'search']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const productType = _.get(filterForm, ['values', 'productType', 'value']) || null
+            const productTypeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
@@ -59,6 +59,7 @@ const enhance = compose(
                 [STAT_PRODUCT_FILTER_KEY.PRODUCT]: product,
                 [STAT_PRODUCT_FILTER_KEY.DIVISION]: division,
                 [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE]: productType,
+                [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE_CHILD]: productTypeChild,
                 [STAT_PRODUCT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_PRODUCT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 

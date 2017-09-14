@@ -3,18 +3,20 @@ import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, DivisionSearchField} from '../../ReduxForm/index'
-import ProductTypeSearchField from '../../ReduxForm/Product/ProductTypeSearchField'
+import {connect} from 'react-redux'
+import {TextField, ProductTypeChildSearchField, ProductTypeParentSearchField} from '../../ReduxForm/index'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
+import _ from 'lodash'
 
 export const STAT_PRODUCT_FILTER_KEY = {
     SEARCH: 'search',
     PRODUCT: 'product',
     DIVISION: 'division',
     PRODUCT_TYPE: 'productType',
+    PRODUCT_TYPE_CHILD: 'productTypeChild',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
@@ -91,15 +93,22 @@ const enhance = compose(
         form: 'StatProductFilterForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'StatProductFilterForm', 'values', 'productType', 'value'])
+        return {
+            typeParent
+        }
+    }),
 )
 
 const StatProductFilterForm = enhance((props) => {
     const {
         classes,
         handleSubmitFilterDialog,
-        getDocument
+        getDocument,
+        typeParent,
+        handleSubmit
     } = props
-
     const iconStyle = {
         icon: {
             color: '#5d6474',
@@ -114,7 +123,7 @@ const StatProductFilterForm = enhance((props) => {
     }
 
     return (
-        <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+        <form className={classes.form} onSubmit={() => handleSubmit(handleSubmitFilterDialog)}>
             <div className={classes.filter}>
                 <Field
                     className={classes.inputFieldCustom}
@@ -125,15 +134,17 @@ const StatProductFilterForm = enhance((props) => {
                 <Field
                     className={classes.inputFieldCustom}
                     name="productType"
-                    component={ProductTypeSearchField}
+                    component={ProductTypeParentSearchField}
                     label="Тип товара"
                     fullWidth={true}/>
-                <Field
-                    name="division"
-                    component={DivisionSearchField}
+                {typeParent ? <Field
+                    name="productTypeChild"
                     className={classes.inputFieldCustom}
-                    label="Подразделение"
-                    fullWidth={true}/>
+                    component={ProductTypeChildSearchField}
+                    parentType={typeParent}
+                    label="Подкатегория"
+                    fullWidth={true}
+                /> : null}
                 <Field
                     className={classes.inputFieldCustom}
                     name="search"

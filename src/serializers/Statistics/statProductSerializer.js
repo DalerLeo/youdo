@@ -17,6 +17,7 @@ export const listFilterSerializer = (data) => {
     const firstDayOfMonth = moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
+    const type = _.get(defaultData, 'productTypeChild') || _.get(defaultData, 'productType')
 
     return {
         'search': _.get(defaultData, 'search'),
@@ -24,7 +25,7 @@ export const listFilterSerializer = (data) => {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
-        'type': _.get(defaultData, 'productType'),
+        type,
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
     }

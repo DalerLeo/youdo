@@ -187,7 +187,6 @@ const StatReportGridList = enhance((props) => {
         handleSubmit
     } = props
     const listLoading = _.get(listData, 'listLoading')
-
     const iconStyle = {
         icon: {
             color: '#5d6474',
@@ -200,26 +199,30 @@ const StatReportGridList = enhance((props) => {
             padding: 0
         }
     }
-
+    const stockData = _.get(listData, ['data', 'stock'])
+    const cashBoxesData = _.get(listData, ['data', 'cashboxes'])
+    const debtorsData = _.get(listData, ['data', 'debtors'])
+    const salesData = _.get(listData, ['data', 'sales'])
+    const transferData = _.get(listData, ['data', 'transfer'])
     const stock = (
         <div className={classes.block}>
             <span>Склад</span>
             <ul>
                 <li>
                     <span>Сумма товаров на начало периода</span>
-                    <span>25 000 000 UZS</span>
+                    <span>{_.get(stockData, 'beginPriceSum')}</span>
                 </li>
                 <li>
                     <span>Поступления на склад</span>
-                    <span>15 000 000 UZS</span>
+                    <span>{_.get(stockData, 'inPriceSum')}</span>
                 </li>
                 <li>
                     <span>Выдано со склада</span>
-                    <span>20 000 000 UZS</span>
+                    <span>{_.get(stockData, 'outPriceSum')}</span>
                 </li>
                 <li>
                     <span>Сумма товаров на конец периода</span>
-                    <span>30 000 000 UZS</span>
+                    <span>{_.get(stockData, 'endPriceSum')}</span>
                 </li>
             </ul>
         </div>
@@ -231,7 +234,7 @@ const StatReportGridList = enhance((props) => {
             <ul>
                 <li>
                     <span>Стоимость проданного товара</span>
-                    <span>25 000 000 UZS</span>
+                    <span>{_.get(salesData, 'sada')}</span>
                 </li>
                 <li>
                     <span>Себистоимость товара</span>
@@ -251,7 +254,7 @@ const StatReportGridList = enhance((props) => {
             <ul>
                 <li>
                     <span>Доход от продаж</span>
-                    <span>25 000 000 UZS</span>
+                    <span>{_.get(transferData, 'das')}</span>
                 </li>
                 <li>
                     <span>Списанные товары</span>
@@ -276,7 +279,7 @@ const StatReportGridList = enhance((props) => {
                 <li>
                     <span>Баланс <br/> на начало периода</span>
                     <div>
-                        <span>5 000 000 UZS</span>
+                        <span>{_.get(cashBoxesData, 'sum')}</span>
                         <span>15 000 000 UZS</span>
                     </div>
                 </li>
@@ -311,11 +314,11 @@ const StatReportGridList = enhance((props) => {
             <ul>
                 <li>
                     <span>Задолжности клиентов</span>
-                    <span>25 000 000 UZS</span>
+                    <span>{_.get(debtorsData, 'debtsSum')}</span>
                 </li>
                 <li>
                     <span>Задолжности фирмы</span>
-                    <span>15 000 000 UZS</span>
+                    <span>{_.get(debtorsData, 'expectSum')}</span>
                 </li>
             </ul>
         </div>
