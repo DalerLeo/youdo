@@ -219,7 +219,6 @@ const enhance = compose(
                         newArray.push(obj)
                     })
                     onChange(newArray)
-                    has = false
                 }
             }
         },
