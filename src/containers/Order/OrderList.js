@@ -165,12 +165,14 @@ const enhance = compose(
         const nextUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
         const detail = nextProps.detail
 
-        return (prevUpdate !== nextUpdate && !_.isEmpty(detail))
-    }, ({dispatch, params, detail}) => {
+        return (prevUpdate !== nextUpdate && nextUpdate === true && !_.isEmpty(detail))
+    }, ({dispatch, params, location, detail}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         const marketId = _.toInteger(_.get(detail, ['market', 'id']))
-        if (orderId > ZERO && marketId > ZERO) {
-            dispatch(orderProductMobileAction(orderId, marketId))
+        const openUpdate = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
+        if (orderId > ZERO && marketId > ZERO && openUpdate) {
+            const size = 100
+            dispatch(orderProductMobileAction(orderId, marketId, size))
         }
     }),
 

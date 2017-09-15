@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withState, withReducer, withHandlers, withPropsOnChange} from 'recompose'
+import ReactDOM from 'react-dom'
+import {compose, withState, withReducer, withHandlers, lifecycle} from 'recompose'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
@@ -27,6 +28,7 @@ import Check from 'material-ui/svg-icons/navigation/check'
 import ProductCustomSearchField from './ProductCustomSearchField'
 import OrderProductTypeSearchField from './OrderProductTypeSearchField'
 
+let initialPaymentType = ''
 const enhance = compose(
     injectSheet({
         wrapper: {
@@ -160,8 +162,7 @@ const enhance = compose(
             top: -20,
             left: -30,
             right: -30,
-            bottom: -20,
-            zIndex: '10'
+            bottom: -20
         },
         confirmButtons: {
             marginTop: '-35px',
@@ -170,6 +171,9 @@ const enhance = compose(
                 fontWeight: '600',
                 fontSize: '15px',
                 marginBottom: '15px'
+            },
+            '& button span': {
+                display: 'block'
             }
         }
     }),
@@ -178,30 +182,20 @@ const enhance = compose(
         const customPrice = _.get(state, ['product', 'extra', 'data', 'custom_price'])
         const cashPrice = _.get(state, ['product', 'extra', 'data', 'cash_price'])
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
-        const initialPaymentType = _.get(state, ['form', 'OrderCreateForm', 'initial', 'paymentType'])
+        const updateProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
         return {
             measurement,
             customPrice,
             cashPrice,
             paymentType,
-            initialPaymentType
+            updateProducts
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
     withState('editItem', 'setEditItem', null),
-    withState('openConfirmPT', 'setOpenConfirmPT', false),
-
-    withPropsOnChange((props, nextProps) => {
-        const paymentType = _.get(nextProps, 'paymentType')
-        const initialPaymentType = _.get(nextProps, 'initialPaymentType')
-        return paymentType !== initialPaymentType
-    }, ({paymentType, initialPaymentType, setOpenConfirmPT}) => {
-        if (paymentType !== initialPaymentType) {
-            // . setOpenConfirmPT(true)
-        }
-    }),
+    withState('price', 'updatePrice', false),
 
     withHandlers({
         handleAdd: props => () => {
@@ -231,6 +225,25 @@ const enhance = compose(
                     onChange(newArray)
                 }
             }
+        },
+
+        handleChangePT: props => () => {
+            const paymentType = _.get(props, 'paymentType')
+            initialPaymentType = paymentType
+            const products = _.get(props, ['products', 'input', 'value'])
+            const changedProducts = _.get(props, ['products', 'input', 'onChange'])
+            const updateProducts = _.get(props, 'updateProducts')
+            _.map(products, (item, index) => {
+                const prices = _.find(updateProducts, (obj, indx) => {
+                    return index === indx
+                })
+                item.cost = (paymentType === 'bank') ? _.get(prices, 'transferPrice') : _.get(prices, 'cashPrice')
+            })
+            let newArray = []
+            _.map(products, (obj) => {
+                newArray.push(obj)
+            })
+            changedProducts(newArray)
         },
 
         handleEdit: props => (listIndex) => {
@@ -263,6 +276,26 @@ const enhance = compose(
                 .filter((item, index) => index !== listIndex)
 
             onChange(products)
+        }
+    }),
+
+    lifecycle({
+        componentDidMount () {
+            const cancelBtn = ReactDOM.findDOMNode(this.refs.cancel)
+            const confirmBtn = ReactDOM.findDOMNode(this.refs.confirm)
+            const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
+            cancelBtn.addEventListener('click', () => {
+                confirmDialog.style.zIndex = '-10'
+            })
+            confirmBtn.addEventListener('click', () => {
+                confirmDialog.style.zIndex = '-10'
+            })
+        },
+        componentWillReceiveProps (props) {
+            const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
+            if (props.paymentType !== initialPaymentType) {
+                confirmDialog.style.zIndex = '10'
+            }
         }
     })
 )
@@ -298,10 +331,8 @@ const OrderListProductField = enhance((props) => {
         setEditItem,
         measurement,
         customPrice,
-        openConfirmPT,
-        setOpenConfirmPT,
         paymentType,
-        initialPaymentType
+        handleChangePT
     } = props
     const ONE = 1
     const editOnlyCost = _.get(props, 'editOnlyCost')
@@ -309,29 +340,30 @@ const OrderListProductField = enhance((props) => {
     const products = _.get(props, ['products', 'input', 'value']) || []
     const error = _.get(props, ['products', 'meta', 'error'])
     const currency = getConfig('PRIMARY_CURRENCY')
+    initialPaymentType = (paymentType === 'cash') ? 'cash' : 'bank'
 
     return (
         <div className={classes.wrapper}>
-            {initialPaymentType !== paymentType &&
-            <div className={classes.confirm} style={openConfirmPT ? {display: 'flex'} : {display: 'none'}}>
+            <div ref="confirmDialog" className={classes.confirm} style={(paymentType !== initialPaymentType) ? {zIndex: 10} : {zIndex: -10}}>
                 <div className={classes.confirmButtons}>
                     <div>Цены товаров будут изменены на {(paymentType === 'cash' ? 'наличные' : 'банковский счет')}</div>
                     <FlatButton
                         label="Нет"
+                        ref="cancel"
                         labelStyle={flatButton.label}
-                        onTouchTap={() => { setOpenConfirmPT(false) }}
                         className={classes.actionButton}
                         primary={true}
                     />
                     <FlatButton
                         label="Да"
+                        ref="confirm"
                         labelStyle={flatButton.label}
                         className={classes.actionButton}
                         primary={true}
-                        // OnTouchTap={customSubmit}
+                        onTouchTap={handleChangePT}
                     />
                 </div>
-            </div>}
+            </div>
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
