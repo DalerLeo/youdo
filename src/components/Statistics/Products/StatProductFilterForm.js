@@ -4,14 +4,13 @@ import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-
 import {connect} from 'react-redux'
 import {TextField, ProductTypeChildSearchField, ProductTypeParentSearchField} from '../../ReduxForm/index'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-import _ from 'lodash'
+
 export const STAT_PRODUCT_FILTER_KEY = {
     SEARCH: 'search',
     PRODUCT_TYPE: 'productType',
@@ -93,7 +92,6 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-
         const typeParent = _.get(state, ['form', 'StatProductFilterForm', 'values', 'productType', 'value'])
         return {
             typeParent
