@@ -178,6 +178,7 @@ const StockReceiveGridList = enhance((props) => {
                 detailData={transferDetail}
                 handleCloseDetail={handleCloseDetail}
                 printDialog={printDialog}
+                handleCloseHistoryDialog={historyDialog.handleCloseHistoryDialog}
             />}
             {TAB.STOCK_RECEIVE_TAB_HISTORY === tab && <TabReceive
                 filter={filter}
@@ -189,7 +190,8 @@ const StockReceiveGridList = enhance((props) => {
                 handleCheckedDefect={handleCheckedDefect}
                 createDialog={createDialog}
                 filterDialog={filterDialog}
-                history={true}/>}
+                history={true}/>
+            }
 
         </div>
     )

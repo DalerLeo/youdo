@@ -47,7 +47,6 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         const returnId = _.get(nextProps, ['params', 'statReturnId'])
-
         return returnId && _.get(props, ['params', 'statReturnId']) !== returnId
     }, ({dispatch, params}) => {
         const returnId = _.toInteger(_.get(params, 'statReturnId'))

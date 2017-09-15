@@ -9,7 +9,7 @@ import * as serializers from '../serializers/Statistics/statAgentSerializer'
 export const statReturnDataFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get((API.STAT_AGENT_LIST), {params})
+        .get((API.STAT_SALES_DATA), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -18,7 +18,7 @@ export const statReturnDataFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.STAT_AGENT_LIST,
+        type: actionTypes.STAT_RETURN_DATA,
         payload
     }
 }

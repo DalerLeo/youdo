@@ -145,6 +145,7 @@ const enhance = compose(
             stockDeliveryReturnDialogDataLoading
         }
     }),
+    withState('orgType', 'setType', ''),
 
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['location', 'query', 'tab']) || 'receive'
@@ -197,8 +198,8 @@ const enhance = compose(
         const nextSupplyDialog = _.get(nextProps, ['location', 'query', STOCK_SUPPLY_DIALOG_OPEN])
         const prevSupplyDialog = _.get(props, ['location', 'query', STOCK_SUPPLY_DIALOG_OPEN])
         return (prevDialog !== nextDialog && nextDialog !== 'false') ||
-                (prevReturnDialog !== nextReturnDialog && nextReturnDialog !== 'false') ||
-                 (prevSupplyDialog !== nextSupplyDialog && nextSupplyDialog !== 'false')
+            (prevReturnDialog !== nextReturnDialog && nextReturnDialog !== 'false') ||
+            (prevSupplyDialog !== nextSupplyDialog && nextSupplyDialog !== 'false')
     }, ({dispatch, location}) => {
         const dialog = _.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
         const returnDialog = _.get(location, ['query', STOCK_RETURN_DIALOG_OPEN])
@@ -440,12 +441,20 @@ const enhance = compose(
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams()})
         },
-        handleOpenDetail: props => (id, type) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.STOCK_RECEIVE_ITEM_PATH, id),
-                query: filter.getParams({[TYPE]: type})
-            })
+        handleOpenDetail: props => (id, type, typeOrg) => {
+            const {filter, setType} = props
+            setType(typeOrg)
+            if (typeOrg === 'transfer') {
+                hashHistory.push({
+                    pathname: sprintf(ROUTER.STOCK_RECEIVE_ITEM_PATH, id),
+                    query: filter.getParams({[TYPE]: type, [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: id})
+                })
+            } else {
+                hashHistory.push({
+                    pathname: sprintf(ROUTER.STOCK_RECEIVE_ITEM_PATH, id),
+                    query: filter.getParams({[TYPE]: type})
+                })
+            }
         },
         handleCheckedForm: props => (index, value, selected) => {
             const {dispatch} = props
@@ -608,12 +617,17 @@ const StockReceiveList = enhance((props) => {
 
     const detailData = {
         type: detailType,
-        id: detailId,
-        data: detail,
+        id: openHistoryInfoDialog || detailId,
+        data: openHistoryInfoDialog ? _.get(historyList, 'results') : detail,
         detailLoading,
-        currentDetail
+        currentDetail,
+        detailData: {
+            data: historyOrderDetail || {},
+            id: openHistoryInfoDialog
+        },
+        historyListLoading,
+        historyOrderLoading
     }
-
     const confirmDialog = {
         openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,

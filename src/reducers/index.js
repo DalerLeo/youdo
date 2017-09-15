@@ -359,6 +359,9 @@ const rootReducer = combineReducers({
     statSales: combineReducers({
         data: createThunkReducer(actionTypes.STAT_SALES_DATA)
     }),
+    statReturn: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_RETURN_DATA)
+    }),
     statFinance: combineReducers({
         dataIn: createThunkReducer(actionTypes.STAT_FINANCE_DATA_IN),
         dataOut: createThunkReducer(actionTypes.STAT_FINANCE_DATA_OUT),

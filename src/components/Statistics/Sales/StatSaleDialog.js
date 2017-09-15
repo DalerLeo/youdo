@@ -4,10 +4,10 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../../CloseIcon2/index'
-import IconButton from 'material-ui/IconButton'
-import OrderDetails from '../../Order/OrderDetails'
 import CircularProgress from 'material-ui/CircularProgress'
+import IconButton from 'material-ui/IconButton'
+import CloseIcon2 from '../../CloseIcon2/index'
+import OrderDetails from '../../Order/OrderDetails'
 
 const enhance = compose(
     injectSheet({

@@ -6,8 +6,12 @@ import GridList from '../GridList'
 import TabTransferFilterForm from './TabTransferFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import CircularProgress from 'material-ui/CircularProgress'
+import IconButton from 'material-ui/IconButton'
 import moment from 'moment'
 import Details from './StockTabTransferHistoryDetails'
+import CloseIcon2 from '../CloseIcon2/index'
+import OrderDetails from '../Order/OrderDetails'
 
 const listHeader = [
     {
@@ -29,9 +33,15 @@ const listHeader = [
         xs: 2
     },
     {
+        sorting: true,
+        name: 'type',
+        title: 'Тип',
+        xs: 2
+    },
+    {
         name: 'receiver',
         title: 'Кому',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -76,7 +86,9 @@ const StockTabTransferHistory = enhance((props) => {
         detailData,
         handleCloseDetail,
         classes,
-        printDialog
+        printDialog,
+        handleCloseHistoryDialog,
+        orgType
     } = props
 
     const usersFilterDialog = (
@@ -97,22 +109,44 @@ const StockTabTransferHistory = enhance((props) => {
             handleOpenPrint={printDialog.handleOpenPrintDialog}
             confirm={false}/>
     )
+    const historyTypeDetail = _.get(detailData, 'transferDetailLoading') ? <div className={classes.loader}>
+            <CircularProgress/>
+        </div>
+        : <div>
+            <div className={classes.titleContent}>
+                <div>
+                    <div>Заказ №{_.get(detailData, 'id')}</div>
+                </div>
+                <IconButton onTouchTap={handleCloseHistoryDialog}>
+                    <CloseIcon2 color="#666666"/>
+                </IconButton>
+            </div>
+            <div className={classes.content}>
+                <OrderDetails
+                    data={_.get(detailData, 'data')}
+                    loading={_.get(detailData, 'transferDetailLoading')}
+                    stat={true}/>
+            </div>
+        </div>
     const historyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const dateRequest = moment(_.get(item, 'dateRequest')).format('DD.MM.YYYY')
         const dateDelivery = moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY')
         const receiver = _.get(item, ['receiver'])
         const stockId = _.get(item, ['stock', 'id'])
+        const typeOrg = _.get(item, 'type')
+        const type = typeOrg === 'order' ? 'Заказ' : (typeOrg === 'transfer' ? 'Передача' : null)
         const stockName = _.get(item, ['stock', 'name'])
         return (
             <Row
                 key={id + '_' + stockId}
                 style={{position: 'relative', cursor: 'pointer'}}
-                onClick={() => { listData.handleOpenDetail(id, stockId) }}>
+                onClick={() => { listData.handleOpenDetail(id, stockId, typeOrg) }}>
                 <Col xs={2} >{id}</Col>
                 <Col xs={2}>{dateRequest}</Col>
                 <Col xs={2}>{stockName}</Col>
-                <Col xs={3}>{receiver}</Col>
+                <Col xs={2}>{type}</Col>
+                <Col xs={2}>{receiver}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
             </Row>
         )
@@ -123,13 +157,12 @@ const StockTabTransferHistory = enhance((props) => {
         list: historyList,
         loading: _.get(listData, 'transferListLoading')
     }
-
     return (
         <div className={classes.wrapper}>
             <GridList
                 filter={filter}
                 list={list}
-                detail={historyDetail}
+                detail={orgType === 'transfer' ? historyTypeDetail : historyDetail}
                 filterDialog={usersFilterDialog}
             />
         </div>
