@@ -13,6 +13,8 @@ import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Excel from 'material-ui/svg-icons/av/equalizer'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet({
@@ -187,7 +189,6 @@ const StatReportGridList = enhance((props) => {
         handleSubmit
     } = props
     const listLoading = _.get(listData, 'listLoading')
-
     const iconStyle = {
         icon: {
             color: '#5d6474',
@@ -200,26 +201,31 @@ const StatReportGridList = enhance((props) => {
             padding: 0
         }
     }
-
+    const currency = getConfig('PRIMARY_CURRENCY')
+    const stockData = _.get(listData, ['data', 'stock'])
+    const cashBoxesData = _.get(listData, ['data', 'cashboxes'])
+    const debtorsData = _.get(listData, ['data', 'debtors'])
+    const salesData = _.get(listData, ['data', 'sales'])
+    const transferData = _.get(listData, ['data', 'transfer'])
     const stock = (
         <div className={classes.block}>
             <span>Склад</span>
             <ul>
                 <li>
                     <span>Сумма товаров на начало периода</span>
-                    <span>25 000 000 UZS</span>
+                    <span>{numberFormat(_.get(stockData, 'beginPriceSum'), currency)}</span>
                 </li>
                 <li>
                     <span>Поступления на склад</span>
-                    <span>15 000 000 UZS</span>
+                    <span>{numberFormat(_.get(stockData, 'inPriceSum'), currency)}</span>
                 </li>
                 <li>
                     <span>Выдано со склада</span>
-                    <span>20 000 000 UZS</span>
+                    <span>{numberFormat(_.get(stockData, 'outPriceSum'), currency)}</span>
                 </li>
                 <li>
                     <span>Сумма товаров на конец периода</span>
-                    <span>30 000 000 UZS</span>
+                    <span>{numberFormat(_.get(stockData, 'endPriceSum'), currency)}</span>
                 </li>
             </ul>
         </div>
@@ -231,15 +237,15 @@ const StatReportGridList = enhance((props) => {
             <ul>
                 <li>
                     <span>Стоимость проданного товара</span>
-                    <span>25 000 000 UZS</span>
+                    <span>{numberFormat(_.get(salesData, 'salesSum'), currency)}</span>
                 </li>
                 <li>
                     <span>Себистоимость товара</span>
-                    <span>15 000 000 UZS</span>
+                    <span>{numberFormat(_.get(salesData, 'netCost'), currency)}</span>
                 </li>
                 <li>
                     <span>Доход от продаж</span>
-                    <span>20 000 000 UZS</span>
+                    <span>{numberFormat(_.get(salesData, 'salesProfit'), currency)}</span>
                 </li>
             </ul>
         </div>
@@ -251,19 +257,19 @@ const StatReportGridList = enhance((props) => {
             <ul>
                 <li>
                     <span>Доход от продаж</span>
-                    <span>25 000 000 UZS</span>
+                    <span>{numberFormat(_.get(transferData, 'salesSum'), currency)}</span>
                 </li>
                 <li>
                     <span>Списанные товары</span>
-                    <span>15 000 000 UZS</span>
+                    <span>{numberFormat(_.get(transferData, 'writeoff'), currency)}</span>
                 </li>
                 <li>
                     <span>Прочие расходы фирмы</span>
-                    <span>20 000 000 UZS</span>
+                    <span>{numberFormat(_.get(transferData, 'expenses'), currency)}</span>
                 </li>
                 <li>
                     <span>Прибыль фирмы</span>
-                    <span>20 000 000 UZS</span>
+                    <span>{numberFormat(_.get(transferData, 'profit'), currency)}</span>
                 </li>
             </ul>
         </div>
@@ -276,7 +282,7 @@ const StatReportGridList = enhance((props) => {
                 <li>
                     <span>Баланс <br/> на начало периода</span>
                     <div>
-                        <span>5 000 000 UZS</span>
+                        <span>{_.get(cashBoxesData, 'sum')}</span>
                         <span>15 000 000 UZS</span>
                     </div>
                 </li>
@@ -311,11 +317,11 @@ const StatReportGridList = enhance((props) => {
             <ul>
                 <li>
                     <span>Задолжности клиентов</span>
-                    <span>25 000 000 UZS</span>
+                    <span>{numberFormat(_.get(debtorsData, 'debtsSum'), currency)}</span>
                 </li>
                 <li>
                     <span>Задолжности фирмы</span>
-                    <span>15 000 000 UZS</span>
+                    <span>{numberFormat(_.get(debtorsData, 'expectSum'), currency)}</span>
                 </li>
             </ul>
         </div>

@@ -115,6 +115,16 @@ const enhance = compose(
                 .then(() => {
                     return dispatch(productListFetchAction(filterProduct, manufactureId))
                 })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         },
         handleSubmitProductFilterDialog: props => () => {
             const {dispatch, filterProduct, filterProductForm, params} = props
@@ -218,6 +228,16 @@ const enhance = compose(
                     dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                     return dispatch(productListFetchAction(filterProduct, manufactureId))
                 })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         },
 
         handleOpenCreateMaterials: props => () => {
@@ -270,6 +290,16 @@ const enhance = compose(
                     })
                     dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                     return dispatch(ingredientListFetchAction(productId))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 

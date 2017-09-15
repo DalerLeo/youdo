@@ -3,7 +3,6 @@ import ManufacturePersonWrapper from './ManufacturePersonWrapper'
 import ManufactureEquipmentWrapper from './ManufactureEquipmentWrapper'
 import ManufactureShipmentWrapper from './ManufactureShipmentWrapper'
 import ManufacturesList from './ManufacturesList'
-
 import {OPEN_USER_CREATE_DIALOG} from './ManufactureAddStaffDialog'
 import {MANUFACTURE_SHOW_BOM_DIALOG_OPEN} from './ManufactureShowBom'
 import {MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN} from './ManufactureAddProductDialog'
