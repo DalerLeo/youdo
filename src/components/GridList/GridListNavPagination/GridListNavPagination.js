@@ -75,9 +75,9 @@ const GridListNavPagination = enhance(({classes, onChange, filter, customPaginat
                     style={{width: '52px', marginTop: '10px'}}
                     underlineStyle={{border: '0px solid'}}
                     onChange={onChange}>
-                    <MenuItem value={10} primaryText="10" />
-                    <MenuItem value={50} primaryText="50" />
-                    <MenuItem value={100} primaryText="100" />
+                    <MenuItem value={10} primaryText="10" innerDivStyle={{fontSize: 13}}/>
+                    <MenuItem value={50} primaryText="50" innerDivStyle={{fontSize: 13}}/>
+                    <MenuItem value={100} primaryText="100" innerDivStyle={{fontSize: 13}}/>
                 </SelectField>
             </div>
             <div className={classes.nav}>

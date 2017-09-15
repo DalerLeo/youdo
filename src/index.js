@@ -29,17 +29,33 @@ setObservableConfig(rxjsconfig)
 
 const muiTheme = getMuiTheme({
     fontFamily: 'Open Sans, sans-serif',
+    fontSize: '13px',
     palette: {
         primary1Color: '#5d6474',
         primary2Color: '#5d6474',
         primary3Color: '#5d6474',
         accent1Color: '#5d6474',
         accent2Color: '#fff',
-        accent3Color: '#fff'
+        accent3Color: '#fff',
+        textColor: '#333'
     },
     appBar: {
         height: 50,
         textColor: 'white'
+    },
+    chip: {
+        fontSize: 13
+    },
+    flatButton: {
+        fontSize: 13,
+        fontWeight: 400
+    },
+    reisedButton: {
+        fontSize: 13,
+        fontWeight: 400
+    },
+    menuItem: {
+
     }
 })
 

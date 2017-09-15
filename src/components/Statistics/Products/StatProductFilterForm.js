@@ -114,8 +114,9 @@ const StatProductFilterForm = enhance((props) => {
             height: 22
         },
         button: {
-            width: 30,
-            height: 30,
+            minWidth: 40,
+            width: 40,
+            height: 40,
             padding: 0
         }
     }
@@ -151,7 +152,6 @@ const StatProductFilterForm = enhance((props) => {
                     fullWidth={true}/>
                 <IconButton
                     className={classes.searchButton}
-                    disableTouchRipple={true}
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
                     type="submit">

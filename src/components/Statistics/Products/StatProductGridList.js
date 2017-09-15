@@ -15,6 +15,7 @@ import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
 import StatProductFilterForm from './StatProductFilterForm'
 import GridListHeader from '../../GridList/GridListHeader/index'
+import Tooltip from '../../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -47,7 +48,12 @@ const enhance = compose(
         },
         tableWrapper: {
             height: 'calc(100% - 118px)',
-            '& .row': {
+            margin: '0 -30px',
+            '& .dottedList': {
+                padding: '0 30px',
+                '&:last-child:after': {
+                    display: 'none'
+                },
                 '&:after': {
                     bottom: '-1px'
                 },
@@ -55,16 +61,11 @@ const enhance = compose(
                     display: 'flex',
                     height: '50px',
                     alignItems: 'center',
-                    '&:last-child': {
-                        justifyContent: 'flex-end'
-                    }
-                }
-            },
-            '& .dottedList': {
-                padding: '0',
-                '&:last-child:after': {
-                    content: '""',
-                    backgroundImage: 'none'
+                    '& > div': {
+                        width: '100%'
+                    },
+                    '&:first-child': {paddingLeft: 0},
+                    '&:last-child': {paddingRight: 0}
                 }
             }
         },
@@ -123,17 +124,17 @@ const listHeader = [
         sorting: true,
         name: 'percent',
         title: 'Продажи',
-        xs: 3
+        xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         alignRight: true,
         name: 'count',
         title: 'Кол-во',
-        xs: 1
+        xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         alignRight: true,
         name: 'income',
         title: 'Сумма',
@@ -157,23 +158,25 @@ const StatProductGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const type = _.get(item, 'type')
         const percent = _.get(item, 'percent')
-        const count = _.get(item, 'count')
         const measurement = _.get(item, 'measurement')
+        const count = numberFormat(_.get(item, 'count'), measurement)
         const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
 
         return (
             <Row key={id} className="dottedList">
                 <Col xs={3}>{name}</Col>
                 <Col xs={3}>{type}</Col>
-                <Col xs={3}>
-                    <LinearProgress
-                        color="#58bed9"
-                        mode="determinate"
-                        value={percent}
-                        style={{backgroundColor: '#fff', height: '10px'}}/>
+                <Col xs={2}>
+                    <Tooltip position="bottom" text={percent + '%'}>
+                        <LinearProgress
+                            color="#58bed9"
+                            mode="determinate"
+                            value={percent}
+                            style={{backgroundColor: '#efefef', height: '10px'}}/>
+                    </Tooltip>
                 </Col>
-                <Col xs={1}>{count} {measurement}</Col>
-                <Col xs={2}>{income}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{count}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{income}</Col>
             </Row>
         )
     })
@@ -196,17 +199,17 @@ const StatProductGridList = enhance((props) => {
                             <div>По вашему запросу ничего не найдено</div>
                         </div>
                         : <div className={classes.tableWrapper}>
-                                    <GridListHeader
-                                        filter={filter}
-                                        listIds={listIds}
-                                        withoutCheckboxes={false}
-                                        withoutRow={false}
-                                        column={listHeader}
-                                        listShadow={true}
-                                        style={{position: 'relative'}}
-                                        className={classes.header}
-                                        statistics={true}
-                                    />
+                                <GridListHeader
+                                    filter={filter}
+                                    listIds={listIds}
+                                    withoutCheckboxes={false}
+                                    withoutRow={false}
+                                    column={listHeader}
+                                    listShadow={true}
+                                    style={{position: 'relative'}}
+                                    className={classes.header}
+                                    statistics={true}
+                                />
                             {list}
                         </div>}
                     </div>
