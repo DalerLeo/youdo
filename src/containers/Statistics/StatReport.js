@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
+import moment from 'moment'
 
 import {
     StatReportGridList
@@ -74,6 +75,7 @@ const enhance = compose(
 
 const StatReportList = enhance((props) => {
     const {
+        location,
         list,
         listLoading,
         filter,
@@ -81,15 +83,24 @@ const StatReportList = enhance((props) => {
         filterItem
     } = props
 
+    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+
     const listData = {
-        data: _.get(list, 'results'),
+        data: list || {},
         listLoading
     }
 
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
-
+    const initialValues = {
+        date: {
+            fromDate: moment(firstDayOfMonth),
+            toDate: moment(lastDayOfMonth)
+        }
+    }
     return (
         <Layout {...layout}>
             <StatReportGridList
@@ -98,6 +109,7 @@ const StatReportList = enhance((props) => {
                 listData={listData}
                 getDocument={getDocument}
                 filterItem={filterItem}
+                initialValues={initialValues}
             />
         </Layout>
     )
