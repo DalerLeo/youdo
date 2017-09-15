@@ -74,6 +74,7 @@ const enhance = compose(
         const discountCreateForm = _.get(state, ['form', 'OrderSetDiscountForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
         const returnData = _.get(state, ['order', 'return', 'data', 'results'])
+        const returnLoading = _.get(state, ['order', 'return', 'loading'])
         const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
@@ -100,6 +101,7 @@ const enhance = compose(
             returnForm,
             returnData,
             orderReturnList,
+            returnLoading,
             returnDataLoading,
             returnDialogLoading,
             products,
@@ -163,12 +165,14 @@ const enhance = compose(
         const nextUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
         const detail = nextProps.detail
 
-        return (prevUpdate !== nextUpdate && !_.isEmpty(detail))
-    }, ({dispatch, params, detail}) => {
+        return (prevUpdate !== nextUpdate && nextUpdate === true && !_.isEmpty(detail))
+    }, ({dispatch, params, location, detail}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         const marketId = _.toInteger(_.get(detail, ['market', 'id']))
-        if (orderId > ZERO && marketId > ZERO) {
-            dispatch(orderProductMobileAction(orderId, marketId))
+        const openUpdate = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
+        if (orderId > ZERO && marketId > ZERO && openUpdate) {
+            const size = 100
+            dispatch(orderProductMobileAction(orderId, marketId, size))
         }
     }),
 

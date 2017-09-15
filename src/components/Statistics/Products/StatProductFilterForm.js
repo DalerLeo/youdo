@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {compose} from 'recompose'
@@ -9,7 +10,6 @@ import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-import _ from 'lodash'
 
 export const STAT_PRODUCT_FILTER_KEY = {
     SEARCH: 'search',
@@ -132,6 +132,7 @@ const StatProductFilterForm = enhance((props) => {
                     fullWidth={true}/>
                 <Field
                     className={classes.inputFieldCustom}
+
                     name="productType"
                     component={ProductTypeParentSearchField}
                     label="Тип товара"
