@@ -18,7 +18,6 @@ export const listFilterSerializer = (data) => {
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
     const type = _.get(defaultData, 'productTypeChild') || _.get(defaultData, 'productType')
-
     return {
         'search': _.get(defaultData, 'search'),
         'division': _.get(defaultData, 'division'),

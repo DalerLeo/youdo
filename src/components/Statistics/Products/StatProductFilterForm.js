@@ -13,8 +13,6 @@ import _ from 'lodash'
 
 export const STAT_PRODUCT_FILTER_KEY = {
     SEARCH: 'search',
-    PRODUCT: 'product',
-    DIVISION: 'division',
     PRODUCT_TYPE: 'productType',
     PRODUCT_TYPE_CHILD: 'productTypeChild',
     TO_DATE: 'toDate',
@@ -104,9 +102,9 @@ const enhance = compose(
 const StatProductFilterForm = enhance((props) => {
     const {
         classes,
-        handleSubmitFilterDialog,
         getDocument,
         typeParent,
+        onSubmit,
         handleSubmit
     } = props
     const iconStyle = {
@@ -116,14 +114,14 @@ const StatProductFilterForm = enhance((props) => {
             height: 22
         },
         button: {
-            width: 40,
-            height: 40,
+            width: 30,
+            height: 30,
             padding: 0
         }
     }
 
     return (
-        <form className={classes.form} onSubmit={() => handleSubmit(handleSubmitFilterDialog)}>
+        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
             <div className={classes.filter}>
                 <Field
                     className={classes.inputFieldCustom}
@@ -153,6 +151,7 @@ const StatProductFilterForm = enhance((props) => {
                     fullWidth={true}/>
                 <IconButton
                     className={classes.searchButton}
+                    disableTouchRipple={true}
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
                     type="submit">
