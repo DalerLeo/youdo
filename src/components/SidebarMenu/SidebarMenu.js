@@ -51,6 +51,7 @@ const enhance = compose(
 
             if (defaultWindowHeight < sidebarHeight) {
                 blur.style.bottom = show
+                console.log('default - show')
             }
 
             window.addEventListener('resize', () => {
@@ -58,20 +59,28 @@ const enhance = compose(
                 defaultWindowHeight = window.innerHeight
                 if (defaultWindowHeight < (sidebarHeight - buttonHeight)) {
                     if (scrollVal < (sidebarHeight - defaultWindowHeight)) {
+                        console.warn('resize - show ---')
                         blur.style.bottom = show
                     } else {
+                        console.warn('resize - hide ---')
                         blur.style.bottom = hide
                     }
                 } else {
+                    console.warn('resize - hide')
                     blur.style.bottom = hide
                 }
             })
 
             menu.addEventListener('scroll', () => {
                 const scrollVal = menu.scrollTop
+                console.error(scrollVal)
+                console.error(sidebarHeight)
+                console.error(defaultWindowHeight)
                 if (scrollVal < (sidebarHeight - defaultWindowHeight)) {
+                    console.error('scroll - show')
                     blur.style.bottom = show
                 } else {
+                    console.error('scroll - hide')
                     blur.style.bottom = hide
                 }
             })
