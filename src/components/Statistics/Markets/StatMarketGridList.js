@@ -344,7 +344,6 @@ const StatMarketGridList = enhance((props) => {
                 <div key={id}>
                     <Row>
                         <Col xs={3}>
-                            <img src="http://www.shop-script.su/images/internet-biznes/market-store-icon.jpg" alt=""/>
                             <span>{name}</span>
                         </Col>
                         <Col xs={3}>{clientName}</Col>
@@ -376,7 +375,6 @@ const StatMarketGridList = enhance((props) => {
         return (
             <Row key={id} className="dottedList">
                 <Col xs={3}>
-                    <img src="http://www.shop-script.su/images/internet-biznes/market-store-icon.jpg" alt=""/>
                     <span>{name}</span>
                 </Col>
                 <Col xs={3}>{clientName}</Col>

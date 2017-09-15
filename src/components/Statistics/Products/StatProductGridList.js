@@ -69,21 +69,6 @@ const enhance = compose(
                 }
             }
         },
-        inputFieldCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            }
-        },
         excel: {
             background: '#71ce87',
             borderRadius: '2px',
@@ -96,36 +81,6 @@ const enhance = compose(
                 width: '18px !important'
             }
         },
-        form: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-        },
-        filter: {
-            display: 'flex',
-            alignItems: 'center',
-            '& > div': {
-                width: '100% !important',
-                position: 'relative',
-                marginRight: '40px',
-                '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    right: '-20px',
-                    height: '30px',
-                    width: '1px',
-                    top: '50%',
-                    marginTop: '-15px',
-                    background: '#efefef'
-                },
-                '&:last-child': {
-                    '&:after': {
-                        content: '""',
-                        background: 'none'
-                    }
-                }
-            }
-        },
         leftPanel: {
             backgroundColor: '#f2f5f8',
             flexBasis: '250px',
@@ -136,15 +91,6 @@ const enhance = compose(
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
             overflow: 'hidden'
-        },
-        searchButton: {
-            marginLeft: '-10px !important',
-            marginRight: '10px !important',
-            '& div': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
