@@ -69,15 +69,6 @@ const enhance = compose(
         dispatch(statCashboxListFetchAction(filter))
         dispatch(statCashBoxSumDataFetchAction(filter))
     }),
-
-    withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['list', 'count']) !== _.get(nextProps, ['list', 'count'])
-    }, ({dispatch, filter, list}) => {
-        _.map(_.get(list, 'results'), (item) => {
-            dispatch(statCashBoxItemDataFetchAction(filter, _.get(item, 'id')))
-        })
-    }),
-
     withPropsOnChange((props, nextProps) => {
         const prevId = _.toInteger(_.get(props, ['params', 'cashboxId']))
         const nextId = _.toInteger(_.get(nextProps, ['params', 'cashboxId']))
@@ -182,8 +173,6 @@ const StatCashboxList = enhance((props) => {
     let detailItem = []
 
     const listData = {
-        itemGraphLoading,
-        itemGraph,
         detailItem,
         sumData,
         sumLoading,
@@ -194,6 +183,8 @@ const StatCashboxList = enhance((props) => {
     }
 
     const detailData = {
+        itemGraphLoading,
+        itemGraph: _.get(itemGraph, 'results'),
         sumItemData,
         sumItemDataLoading,
         id: detailId,

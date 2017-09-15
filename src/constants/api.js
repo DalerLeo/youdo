@@ -245,6 +245,7 @@ export const STAT_MANUFACTURE_DELETE = `/${STAT_MANUFACTURE}/%d/`
 
 export const STAT_CASHBOX_SUM = '/stats/cashboxes_sum/'
 export const STAT_CASHBOX_ITEM_SUM = '/stats/cashboxes_sum/'
+export const STAT_CASHBOX_SUM_LIST = '/stats/cashboxes_sum_list/'
 export const STAT_CASHBOX = 'finance/cashbox'
 export const STAT_CASHBOX_CREATE = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`

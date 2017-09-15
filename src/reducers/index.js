@@ -242,8 +242,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STAT_CASHBOX_LIST),
         update: createThunkReducer(actionTypes.STAT_CASHBOX_UPDATE),
         item: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM),
-        sumData: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM_SUM),
-        itemSumData: createThunkReducer(actionTypes.STAT_CASHBOX_SUM),
+        sumData: createThunkReducer(actionTypes.STAT_CASHBOX_SUM),
+        itemSumData: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM_SUM),
         itemGraph: createThunkReducer(actionTypes.STAT_CASHBOX_DATA_ITEM)
     }),
     pendingPayments: combineReducers({

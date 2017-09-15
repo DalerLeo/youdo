@@ -180,8 +180,9 @@ const enhance = compose(
                 })
                 .catch((error) => {
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
                     })
+
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
                             {errorWhole}

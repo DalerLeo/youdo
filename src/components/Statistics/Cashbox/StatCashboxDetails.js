@@ -223,6 +223,14 @@ const StatCashboxDetails = enhance((props) => {
         handleSubmitFilterDialog,
         getDocument
     } = props
+    const grapthLoading = _.get(detailData, 'itemGraphLoading')
+    const graphAmount = _.map(_.get(detailData, ['itemGraph']), (item) => {
+        return _.toInteger(_.get(item, 'balance'))
+    })
+    const date = _.map(_.get(detailData, ['itemGraph']), (item) => {
+        return _.toInteger(_.get(item, 'date'))
+    })
+
     const ZERO = 0
     const TEN = 10
     const config = {
@@ -267,6 +275,7 @@ const StatCashboxDetails = enhance((props) => {
             tickLength: 0
         },
         xAxis: {
+            categories: date,
             lineWidth: 0,
             minorGridLineWidth: 0,
             lineColor: 'transparent',
@@ -312,7 +321,7 @@ const StatCashboxDetails = enhance((props) => {
                 radius: 2
             },
             name: 'Баланс',
-            data: arr,
+            data: graphAmount,
             color: '#3aa8c6'
 
         }]
@@ -434,7 +443,11 @@ const StatCashboxDetails = enhance((props) => {
                                 </div>
                             </div>
                             <div style={{flexBasis: 'calc(100% - 440px)', maxWidth: 'calc(100% - 440px)'}}>
-                                <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                {grapthLoading ? <div className={classes.loader}>
+                                        <CircularProgress size={40} thickness={4}/>
+                                    </div>
+                                    : <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                }
                             </div>
                         </Row>
                     </div>
