@@ -246,7 +246,6 @@ const OrderCreateDialog = enhance((props) => {
         scrollable: true,
         maxHeight: '150px'
     }
-
     return (
         <Dialog
             modal={true}

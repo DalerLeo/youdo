@@ -6,8 +6,8 @@ export const createSerializer = (data, manufactureId) => {
     const manufacture = manufactureId
     const ingredients = _.map(_.get(data, ['ingredients']), (item) => {
         return {
-            amount: item.amount,
-            ingredient: item.ingredient.value
+            amount: _.get(item, 'amount'),
+            ingredient: _.get(item, ['ingredient', 'value', 'id'])
         }
     })
 

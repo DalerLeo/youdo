@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withState, withReducer, withHandlers} from 'recompose'
+import {compose, withState, withReducer, withHandlers, withPropsOnChange} from 'recompose'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
@@ -157,10 +157,10 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
+            top: -20,
+            left: -30,
+            right: -30,
+            bottom: -20,
             zIndex: '10'
         },
         confirmButtons: {
@@ -192,6 +192,16 @@ const enhance = compose(
     }, {open: false}),
     withState('editItem', 'setEditItem', null),
     withState('openConfirmPT', 'setOpenConfirmPT', false),
+
+    withPropsOnChange((props, nextProps) => {
+        const paymentType = _.get(nextProps, 'paymentType')
+        const initialPaymentType = _.get(nextProps, 'initialPaymentType')
+        return paymentType !== initialPaymentType
+    }, ({paymentType, initialPaymentType, setOpenConfirmPT}) => {
+        if (paymentType !== initialPaymentType) {
+            // . setOpenConfirmPT(true)
+        }
+    }),
 
     withHandlers({
         handleAdd: props => () => {
@@ -276,17 +286,34 @@ const flatButton = {
         fontSize: '13px'
     }
 }
-
-const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, customPrice, openConfirmPT, setOpenConfirmPT, paymentType, ...defaultProps}) => {
+const OrderListProductField = enhance((props) => {
+    const {
+        classes,
+        state,
+        dispatch,
+        handleAdd,
+        handleEdit,
+        handleRemove,
+        editItem,
+        setEditItem,
+        measurement,
+        customPrice,
+        openConfirmPT,
+        setOpenConfirmPT,
+        paymentType,
+        initialPaymentType
+    } = props
     const ONE = 1
-    const editOnlyCost = _.get(defaultProps, 'editOnlyCost')
-    const canChangeAnyPrice = _.get(defaultProps, 'canChangeAnyPrice')
-    const products = _.get(defaultProps, ['products', 'input', 'value']) || []
-    const error = _.get(defaultProps, ['products', 'meta', 'error'])
+    const editOnlyCost = _.get(props, 'editOnlyCost')
+    const canChangeAnyPrice = _.get(props, 'canChangeAnyPrice')
+    const products = _.get(props, ['products', 'input', 'value']) || []
+    const error = _.get(props, ['products', 'meta', 'error'])
     const currency = getConfig('PRIMARY_CURRENCY')
+
     return (
         <div className={classes.wrapper}>
-            {openConfirmPT && <div className={classes.confirm}>
+            {initialPaymentType !== paymentType &&
+            <div className={classes.confirm} style={openConfirmPT ? {display: 'flex'} : {display: 'none'}}>
                 <div className={classes.confirmButtons}>
                     <div>Цены товаров будут изменены на {(paymentType === 'cash' ? 'наличные' : 'банковский счет')}</div>
                     <FlatButton
@@ -324,7 +351,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                             component={OrderProductTypeSearchField}
                             className={classes.searchFieldCustom}
                             fullWidth={true}
-                            {..._.get(defaultProps, 'type')}
+                            {..._.get(props, 'type')}
                         />
                     </Col>
                     <Col xs={3}>
@@ -333,7 +360,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                             label="Наименование"
                             className={classes.searchFieldCustom}
                             fullWidth={true}
-                            {..._.get(defaultProps, 'product')}
+                            {..._.get(props, 'product')}
                         />
                     </Col>
                     <Col xs={2}>
@@ -343,7 +370,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                             name="amount"
                             className={classes.inputFieldCustom}
                             fullWidth={true}
-                            {..._.get(defaultProps, 'amount')}
+                            {..._.get(props, 'amount')}
                         />
                     </Col>
                     <Col xs={1} style={{alignSelf: 'flex-end'}}>
@@ -360,7 +387,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                             normalize={normalizeNumber}
-                            {..._.get(defaultProps, 'cost')}
+                            {..._.get(props, 'cost')}
                         />}
                     </Col>
                     <Col xs={1} style={{alignSelf: 'center'}}>
@@ -418,7 +445,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                                             placeholder={amount + ' ' + itemMeasurement}
                                                             className={classes.inputFieldEdit}
                                                             fullWidth={true}
-                                                            {..._.get(defaultProps, 'editAmount')}
+                                                            {..._.get(props, 'editAmount')}
                                                         />
                                                     </TableRowColumn>}
                                                 <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
@@ -426,7 +453,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                                         placeholder={cost}
                                                         className={classes.inputFieldEditRight}
                                                         fullWidth={true}
-                                                        {..._.get(defaultProps, 'editCost')}
+                                                        {..._.get(props, 'editCost')}
                                                     />
                                                 </TableRowColumn>
                                                 <TableRowColumn style={{textAlign: 'right'}}>
@@ -451,7 +478,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                                         placeholder={amount + ' ' + itemMeasurement}
                                                         className={classes.inputFieldEdit}
                                                         fullWidth={true}
-                                                        {..._.get(defaultProps, 'editAmount')}
+                                                        {..._.get(props, 'editAmount')}
                                                     />
                                                 </TableRowColumn>}
                                             <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
@@ -460,7 +487,7 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
                                                         placeholder={cost}
                                                         className={classes.inputFieldEditRight}
                                                         fullWidth={true}
-                                                        {..._.get(defaultProps, 'editCost')}
+                                                        {..._.get(props, 'editCost')}
                                                     />
                                                     : numberFormat(cost)}
                                             </TableRowColumn>
@@ -523,6 +550,6 @@ const OrderListProductField = ({classes, state, dispatch, handleAdd, handleEdit,
             }
         </div>
     )
-}
+})
 
-export default enhance(OrderListProductField)
+export default OrderListProductField

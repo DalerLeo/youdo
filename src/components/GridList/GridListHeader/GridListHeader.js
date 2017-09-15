@@ -163,42 +163,57 @@ const GridListHeader = enhance((props) => {
             const name = _.get(item, 'name')
             const sortingType = filter.getSortingType(name)
             const Icon = !_.isNull(sortingType) ? sortingType ? (
-                        <ArrowUpIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>
-                    ) : (<ArrowDownIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>) : null
+                <ArrowUpIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>
+            ) : (<ArrowDownIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>) : null
 
             if (withoutRow) {
-                return (<div style={alignRight ? {textAlign: 'right', justifyContent: 'flex-end', width: width} : {width: width}} key={index}>
-                    <Link
-                        className={classes.sortingButton}
-                        onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
-                        <FlatButton
-                            className={classes.button}
-                            labelStyle={{fontSize: '13px'}}
-                            style={alignRight ? {paddingRight: '0', paddingLeft: '30px', textAlign: 'right', justifyContent: 'flex-end'} : {paddingRight: '30px', textAlign: 'left'}}
-                            disableTouchRipple={true}>
-                            <span>{_.get(item, 'title')}</span> {Icon}
-                        </FlatButton>
-                    </Link>
-                </div>)
-            }
-            return (
-                <Col xs={xs} key={index} style={alignRight && {textAlign: 'right', justifyContent: 'flex-end'}}>
+                return (
+                    <div style={alignRight ? {
+                        textAlign: 'right',
+                        justifyContent: 'flex-end',
+                        width: width
+                    } : {width: width}} key={index}>
                         <Link
                             className={classes.sortingButton}
                             onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
                             <FlatButton
                                 className={classes.button}
                                 labelStyle={{fontSize: '13px'}}
-                                style={alignRight ? {paddingRight: '0', paddingLeft: '30px', textAlign: 'right', justifyContent: 'flex-end'} : {paddingRight: '30px', textAlign: 'left'}}
+                                style={alignRight ? {
+                                    paddingRight: '0',
+                                    paddingLeft: '30px',
+                                    textAlign: 'right',
+                                    justifyContent: 'flex-end'
+                                } : {paddingRight: '30px', textAlign: 'left'}}
                                 disableTouchRipple={true}>
-                                {alignRight && Icon} <span>{_.get(item, 'title')}</span> {!alignRight && Icon}
+                                <span>{_.get(item, 'title')}</span> {Icon}
                             </FlatButton>
                         </Link>
-                    </Col>
+                    </div>)
+            }
+            return (
+                <Col xs={xs} key={index} style={alignRight && {textAlign: 'right', justifyContent: 'flex-end'}}>
+                    <Link
+                        className={classes.sortingButton}
+                        onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
+                        <FlatButton
+                            className={classes.button}
+                            labelStyle={{fontSize: '13px'}}
+                            style={alignRight ? {
+                                paddingRight: '0',
+                                paddingLeft: '30px',
+                                textAlign: 'right',
+                                justifyContent: 'flex-end'
+                            } : {paddingRight: '30px', textAlign: 'left'}}
+                            disableTouchRipple={true}>
+                            {alignRight && Icon} <span>{_.get(item, 'title')}</span> {!alignRight && Icon}
+                        </FlatButton>
+                    </Link>
+                </Col>
             )
         } else if (withoutRow && !sortable) {
             return (
-                <div style={alignRight ? {width: width, textAlign: 'right'} : {width: width}}>
+                <div key={index} style={alignRight ? {width: width, textAlign: 'right'} : {width: width}}>
                     {_.get(item, 'title')}
                 </div>
             )

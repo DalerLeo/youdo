@@ -218,7 +218,6 @@ const OrderDetails = enhance((props) => {
         handleSubmitSetZeroDiscountDialog,
         stat
     } = props
-
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
     const marketId = _.get(data, ['market', 'id']) || ZERO

@@ -48,16 +48,14 @@ const enhance = compose(
 
             const search = _.get(filterForm, ['values', 'search']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
-            const productType = _.get(filterForm, ['values', 'productType', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'type', 'value']) || _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 [STAT_PRODUCT_FILTER_KEY.SEARCH]: search,
                 [STAT_PRODUCT_FILTER_KEY.PRODUCT]: product,
-                [STAT_PRODUCT_FILTER_KEY.DIVISION]: division,
-                [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE]: productType,
+                [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE]: typeParent,
                 [STAT_PRODUCT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_PRODUCT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
