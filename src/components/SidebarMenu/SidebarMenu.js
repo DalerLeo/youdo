@@ -51,7 +51,6 @@ const enhance = compose(
 
             if (defaultWindowHeight < sidebarHeight) {
                 blur.style.bottom = show
-                console.log('default - show')
             }
 
             window.addEventListener('resize', () => {
