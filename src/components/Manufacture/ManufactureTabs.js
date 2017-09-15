@@ -53,13 +53,22 @@ const tabs = [
 ]
 
 const ManufactureTabs = enhance((props) => {
-    const {classes, currentURL} = props
+    const {classes, currentURL, detailId} = props
     return (
         <Paper zDepth={1} className={classes.tabWrapper}>
             {
                 _.map(tabs, (tab, index) => {
                     const title = _.get(tab, 'title')
                     const url = _.get(tab, 'url')
+                    if (detailId) {
+                        return (
+                            <Link key={index} to={{pathname: url + '/' + detailId}}>
+                                <div className={currentURL === url ? classes.activeTab : classes.tab}>
+                                    <span>{title}</span>
+                                </div>
+                            </Link>
+                        )
+                    }
 
                     return (
                         <Link key={index} to={{pathname: url}}>

@@ -108,6 +108,9 @@ export const CLIENT_LIST_URL = `/${CLIENT}`
 export const CLIENT_ITEM_URL = `${CLIENT_LIST_URL}/:clientId`
 export const CLIENT_ITEM_PATH = `${CLIENT}/%d`
 
+export const MANUFACT = 'manufact'
+export const MANUFACT_PRODUCT = 'manufact/product'
+export const MANUFACT_PERSON = 'manufact/person'
 export const MANUFACTURE = 'manufacture'
 export const MANUFACTURE_LIST_URL = `/${MANUFACTURE}/product`
 export const MANUFACTURE_ITEM_PATH = `${MANUFACTURE}/%d`

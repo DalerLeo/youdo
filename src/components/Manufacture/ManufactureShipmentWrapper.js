@@ -1,12 +1,9 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import ManufacturesList from './ManufacturesList'
 import ManufactureTabs from './ManufactureTabs'
-import Container from '../Container'
 import ManufactureShipment from './Tab/ManufactureShipment'
 import * as ROUTES from '../../constants/routes'
 
@@ -57,22 +54,14 @@ const enhance = compose(
 
 const ManufactureShipmentWrapper = enhance((props) => {
     const {
-        listData,
         detailData,
-        shipmentData,
-        classes
+        shipmentData
     } = props
     return (
-        <Container>
-            <Row className={classes.productionMainRow}>
-                <ManufacturesList listData={listData} detailData={detailData}/>
-
-                <div className={classes.productionRightSide}>
-                    <ManufactureTabs currentURL={ROUTES.MANUFACTURE_SHIPMENT_LIST_URL}/>
-                    <ManufactureShipment manufactureId={_.toInteger(_.get(detailData, 'id'))} shipmentData={shipmentData}/>
-                </div>
-            </Row>
-        </Container>
+        <div>
+            <ManufactureTabs currentURL={ROUTES.MANUFACTURE_SHIPMENT_LIST_URL} detailId={_.toInteger(_.get(detailData, 'id'))}/>
+            <ManufactureShipment manufactureId={_.toInteger(_.get(detailData, 'id'))} shipmentData={shipmentData}/>
+        </div>
     )
 })
 

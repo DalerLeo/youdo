@@ -9,6 +9,7 @@ import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import ManufactureWrapper from './Wrapper'
 import {
     MANUFACTURE_SHOW_BOM_DIALOG_OPEN,
     MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN,
@@ -20,7 +21,6 @@ import {
     ManufactureProductWrapper
 } from '../../components/Manufacture'
 import {PRODUCT_FILTER_KEY, PRODUCT_FILTER_OPEN} from '../../components/Product'
-import {manufactureListFetchAction} from '../../actions/manufacture'
 import {
     productListFetchAction,
     productItemFetchAction
@@ -75,17 +75,6 @@ const enhance = compose(
             ingredientCreateForm
         }
     }),
-
-    withPropsOnChange((props, nextProps) => {
-        let prevPath = _.startsWith(props.pathname, '/') ? props.pathname : '/' + props.pathname
-        let nextPath = _.startsWith(nextProps.pathname, '/') ? nextProps.pathname : '/' + nextProps.pathname
-        return _.startsWith(prevPath, ROUTER.MANUFACTURE_PRODUCT_LIST_URL) !== _.startsWith(nextPath, ROUTER.MANUFACTURE_PRODUCT_LIST_URL)
-    }, ({dispatch, filter, pathname}) => {
-        if (_.startsWith(pathname, ROUTER.MANUFACTURE_PRODUCT_LIST_URL)) {
-            dispatch(manufactureListFetchAction(filter))
-        }
-    }),
-
     withPropsOnChange((props, nextProps) => {
         const manufactureId = _.get(props, ['params', 'manufactureId'])
         const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
@@ -463,23 +452,25 @@ const ManufactureProductList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <ManufactureProductWrapper
-                filter={filter}
-                filterProduct={filterProduct}
-                listData={listData}
-                detailData={detailData}
-                showBom={showBom}
-                addProductDialog={addProductDialog}
-                createMaterials={createMaterials}
-                selectProduct={selectProduct}
-                editMaterials={editMaterials}
-                deleteMaterials={deleteMaterials}
-                productFilterDialog={productFilterDialog}
-                deleteProductDialog={deleteProductDialog}
-                productDetailData={productDetailData}
-                changeManufacture={changeManufacture}
-                productData={productData}
-            />
+            <ManufactureWrapper detailId={detailId} clickDetail={props.handleClickItem}>
+                <ManufactureProductWrapper
+                    filter={filter}
+                    filterProduct={filterProduct}
+                    listData={listData}
+                    detailData={detailData}
+                    showBom={showBom}
+                    addProductDialog={addProductDialog}
+                    createMaterials={createMaterials}
+                    selectProduct={selectProduct}
+                    editMaterials={editMaterials}
+                    deleteMaterials={deleteMaterials}
+                    productFilterDialog={productFilterDialog}
+                    deleteProductDialog={deleteProductDialog}
+                    productDetailData={productDetailData}
+                    changeManufacture={changeManufacture}
+                    productData={productData}
+                />
+            </ManufactureWrapper>
         </Layout>
     )
 })

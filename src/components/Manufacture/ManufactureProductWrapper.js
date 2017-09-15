@@ -1,16 +1,13 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import ManufacturesList from './ManufacturesList'
 import ManufactureShowBom from './ManufactureShowBom'
 import ManufactureChangeDialog from './ManufactureChangeDialog'
 import ManufactureAddProductDialog from './ManufactureAddProductDialog'
 import ManufactureEditProductDialog from './ManufactureEditProductDialog'
 import ManufactureTabs from './ManufactureTabs'
-import Container from '../Container'
 import ConfirmDialog from '../ConfirmDialog'
 import ManufactureProduct from './Tab/ManufactureProduct'
 import * as ROUTES from '../../constants/routes'
@@ -63,10 +60,8 @@ const enhance = compose(
 const ManufactureProductWrapper = enhance((props) => {
     const {
         filterProduct,
-        listData,
         detailData,
         showBom,
-        classes,
         editMaterials,
         createMaterials,
         productData,
@@ -80,7 +75,7 @@ const ManufactureProductWrapper = enhance((props) => {
     const productCreate = _.get(productData, 'createDialog')
     const productName = _.get(_.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), 'name')
     return (
-        <Container>
+        <div>
             <ManufactureShowBom
                 open={showBom.open}
                 onClose={showBom.handleClose}
@@ -109,25 +104,17 @@ const ManufactureProductWrapper = enhance((props) => {
                 onClose={_.get(productData, ['changeManufacture', 'handleCloseChangeManufacture'])}
                 onSubmit={_.get(productData, ['changeManufacture', 'handleSubmitChangeManufacture'])}
             />
-
-            <Row className={classes.productionMainRow}>
-                <ManufacturesList listData={listData} detailData={detailData}/>
-
-                <div className={classes.productionRightSide}>
-                    <ManufactureTabs currentURL={ROUTES.MANUFACTURE_PRODUCT_LIST_URL}/>
-                    <ManufactureProduct
-                        manufactureId={_.toInteger(_.get(detailData, 'id'))}
-                        productData={productData}
-                        editMaterials={editMaterials}
-                        filter={filterProduct}
-                        filterDialog={productFilterDialog}
-                        createMaterials={createMaterials}
-                        deleteMaterials={deleteMaterials}
-                        handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
-                    />
-                </div>
-            </Row>
-
+            <ManufactureTabs currentURL={ROUTES.MANUFACTURE_PRODUCT_LIST_URL} detailId={_.toInteger(_.get(detailData, 'id'))}/>
+            <ManufactureProduct
+                manufactureId={_.toInteger(_.get(detailData, 'id'))}
+                productData={productData}
+                editMaterials={editMaterials}
+                filter={filterProduct}
+                filterDialog={productFilterDialog}
+                createMaterials={createMaterials}
+                deleteMaterials={deleteMaterials}
+                handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+            />
             {_.get(deleteMaterials, 'open') !== false && <ConfirmDialog
                 type="delete"
                 open={deleteMaterials.open}
@@ -142,12 +129,11 @@ const ManufactureProductWrapper = enhance((props) => {
                 onSubmit={productConfirm.handleSendConfirmDialog}
                 open={productConfirm.openConfirmDialog}
             />}
-        </Container>
+        </div>
     )
 })
 
 ManufactureProductWrapper.propTypes = {
-    listData: PropTypes.object,
     detailData: PropTypes.object,
     productData: PropTypes.object.isRequired,
     productFilterDialog: PropTypes.shape({
