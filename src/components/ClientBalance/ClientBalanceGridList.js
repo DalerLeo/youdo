@@ -249,7 +249,6 @@ const ClientBalanceGridList = enhance((props) => {
                 const id = _.get(item, 'id')
                 const name = _.get(item, 'name') || 'No'
                 return (
-
                     <div key={id} style={{cursor: 'pointer'}} onClick={() => listData.handleOpenDetail(id)}><span>{name}</span></div>
                 )
             })}
@@ -261,7 +260,6 @@ const ClientBalanceGridList = enhance((props) => {
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
                 return (
-
                     <div key={id} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                         <Tooltip position="bottom" text="Возврат с клиента">
                             <IconButton
@@ -312,9 +310,9 @@ const ClientBalanceGridList = enhance((props) => {
             <tbody>
             <tr className={classes.title}>
                 <td>Кол-во заказов</td>
-                {_.map(head, (item) => {
+                {_.map(head, (item, index) => {
                     return (
-                        <td>{item}</td>
+                        <td key={index}>{item}</td>
                     )
                 })}
             </tr>
@@ -330,9 +328,9 @@ const ClientBalanceGridList = enhance((props) => {
                 return (
                     <tr key={id} className={classes.tableRow}>
                         <td>{orderNo}</td>
-                        {_.map(amountValues, (val) => {
+                        {_.map(amountValues, (val, index) => {
                             return (
-                                <td style={{cursor: 'pointer'}} onClick={() => {
+                                <td key={index} style={{cursor: 'pointer'}} onClick={() => {
                                     infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type'))
                                 }}>
                                     {_.get(val, 'amount') || '0'} {primaryCurrency}
