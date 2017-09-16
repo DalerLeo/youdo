@@ -58,9 +58,10 @@ const enhance = compose(
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const stockReceiveType = _.get(props, ['location', 'query', 'openType'])
+        const stockOrgType = _.get(props, ['location', 'query', 'openPopoverDialog'])
         const detail = (stockReceiveType === 'supply') ? _.get(state, ['stockReceive', 'item', 'data'])
             : (stockReceiveType === 'transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'data'])
-                : (stockReceiveType === 'stock_transfer') ? _.get(state, ['stockReceive', 'stockTransfer', 'data'])
+                : (stockReceiveType === 'stock_transfer' || stockOrgType) ? _.get(state, ['stockReceive', 'stockTransfer', 'data'])
                     : (stockReceiveType === 'delivery_return') ? _.get(state, ['stockReceive', 'transferItem', 'data'])
                         : _.get(state, ['order', 'returnList', 'data'])
 
@@ -145,7 +146,6 @@ const enhance = compose(
             stockDeliveryReturnDialogDataLoading
         }
     }),
-    withState('orgType', 'setType', ''),
 
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['location', 'query', 'tab']) || 'receive'
@@ -201,10 +201,11 @@ const enhance = compose(
             (prevReturnDialog !== nextReturnDialog && nextReturnDialog !== 'false') ||
             (prevSupplyDialog !== nextSupplyDialog && nextSupplyDialog !== 'false')
     }, ({dispatch, location}) => {
+        const popoverDialog = _.get(location, ['query', SROCK_POPVER_DIALOG_OPEN])
         const dialog = _.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
         const returnDialog = _.get(location, ['query', STOCK_RETURN_DIALOG_OPEN])
         const stockDialog = _.get(location, ['query', STOCK_SUPPLY_DIALOG_OPEN])
-        if (dialog !== 'false' && dialog) {
+        if (dialog !== 'false' && dialog && !popoverDialog) {
             dispatch(historyOrderItemFetchAction(_.toNumber(dialog)))
         } else if (returnDialog !== 'false' && returnDialog) {
             dispatch(returnItemFetchAction(_.toNumber(returnDialog)))
@@ -218,11 +219,12 @@ const enhance = compose(
         return prevPopoverDialog !== nextPopoverDialog && nextPopoverDialog !== 'false'
     }, ({dispatch, location}) => {
         const dialog = _.toNumber(_.get(location, ['query', SROCK_POPVER_DIALOG_OPEN]))
+        const open = _.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
         const popoverType = (_.get(location, ['query', POP_TYPE]))
         if (dialog !== 'false' && dialog) {
             if (popoverType === 'transfer') {
                 dispatch(stockReceiveOrderItemFetchAction(dialog))
-            } else if (popoverType === 'stock_transfer') {
+            } else if (popoverType === 'stock_transfer' || open) {
                 dispatch(stockReceiveOrderItemFetchAction(dialog))
             } else if (popoverType === 'order_return') {
                 dispatch(orderReturnListAction(dialog))
@@ -439,20 +441,19 @@ const enhance = compose(
         },
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams()})
+            hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: filter.getParams({[STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false})})
         },
         handleOpenDetail: props => (id, type, typeOrg) => {
-            const {filter, setType} = props
-            setType(typeOrg)
+            const {filter, location: {pathname}} = props
             if (typeOrg === 'transfer') {
                 hashHistory.push({
-                    pathname: sprintf(ROUTER.STOCK_RECEIVE_ITEM_PATH, id),
-                    query: filter.getParams({[TYPE]: type, [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: id})
+                    pathname,
+                    query: filter.getParams({[TYPE]: type, [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: id, [SROCK_POPVER_DIALOG_OPEN]: id})
                 })
             } else {
                 hashHistory.push({
                     pathname: sprintf(ROUTER.STOCK_RECEIVE_ITEM_PATH, id),
-                    query: filter.getParams({[TYPE]: type})
+                    query: filter.getParams({[TYPE]: type, [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false, [SROCK_POPVER_DIALOG_OPEN]: false})
                 })
             }
         },
@@ -606,7 +607,7 @@ const StockReceiveList = enhance((props) => {
     })
     const transferDetailData = {
         type: detailType,
-        id: detailId,
+        id: openHistoryInfoDialog || detailId,
         data: transferDetail,
         transferDetailLoading,
         currentTransferDetail
@@ -617,16 +618,10 @@ const StockReceiveList = enhance((props) => {
 
     const detailData = {
         type: detailType,
-        id: openHistoryInfoDialog || detailId,
-        data: openHistoryInfoDialog ? _.get(historyList, 'results') : detail,
+        id: detailId,
+        data: detail,
         detailLoading,
-        currentDetail,
-        detailData: {
-            data: historyOrderDetail || {},
-            id: openHistoryInfoDialog
-        },
-        historyListLoading,
-        historyOrderLoading
+        currentDetail
     }
     const confirmDialog = {
         openConfirmDialog,
@@ -763,9 +758,9 @@ const StockReceiveList = enhance((props) => {
 
     const popoverDialog = {
         type: popoverType,
-        data: popoverType === 'stock_transfer' || popoverType === 'transfer' ? stockTransferDialogData
+        data: popoverType === 'stock_transfer' || popoverType === 'transfer' || openHistoryInfoDialog ? stockTransferDialogData
             : (popoverType === 'delivery_return' ? stockDeliveryReturnDialogData : null),
-        loading: popoverType === 'stock_transfer' || popoverType === 'transfer' ? stockTransferDialogDataLoading
+        loading: popoverType === 'stock_transfer' || popoverType === 'transfer' || openHistoryInfoDialog ? stockTransferDialogDataLoading
             : (popoverType === 'delivery_return' ? stockDeliveryReturnDialogDataLoading : null),
         open: popoverDialogOpen,
         handleOpenDialog: props.handleOpenPopoverDialog,

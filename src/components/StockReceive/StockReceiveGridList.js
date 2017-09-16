@@ -150,9 +150,7 @@ const StockReceiveGridList = enhance((props) => {
                 createDialog={createDialog}
                 filterDialog={filterDialog}
                 history={false}
-                handleCheckedForm={handleCheckedForm}
-
-            />}
+                handleCheckedForm={handleCheckedForm}/>}
             {TAB.STOCK_RECEIVE_TAB_TRANSFER === tab && <TabTransfer
                 filter={filter}
                 listData={transferData}
@@ -160,8 +158,7 @@ const StockReceiveGridList = enhance((props) => {
                 handleCloseDetail={handleCloseDetail}
                 confirmDialog={confirmDialog}
                 filterDialog={filterDialog}
-                printDialog={printDialog}
-            />}
+                printDialog={printDialog}/>}
             {TAB.STOCK_RECEIVE_TAB_OUT_HISTORY === tab && <TabHistory
                 filter={filter}
                 listData={historyData}
@@ -169,8 +166,7 @@ const StockReceiveGridList = enhance((props) => {
                 historyDialog={historyDialog}
                 returnDialog={returnDialog}
                 supplyDialog={supplyDialog}
-                popoverDialog={popoverDialog}
-            />}
+                popoverDialog={popoverDialog}/>}
             {TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY === tab && <TabTransferHistory
                 filter={filter}
                 listData={transferData}
@@ -179,7 +175,7 @@ const StockReceiveGridList = enhance((props) => {
                 handleCloseDetail={handleCloseDetail}
                 printDialog={printDialog}
                 handleCloseHistoryDialog={historyDialog.handleCloseHistoryDialog}
-            />}
+                popoverDialog={popoverDialog}/>}
             {TAB.STOCK_RECEIVE_TAB_HISTORY === tab && <TabReceive
                 filter={filter}
                 listData={listData}

@@ -5,13 +5,10 @@ import {Row, Col} from 'react-flexbox-grid'
 import GridList from '../GridList'
 import TabTransferFilterForm from './TabTransferFilterForm'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
-import CircularProgress from 'material-ui/CircularProgress'
-import IconButton from 'material-ui/IconButton'
+import {compose, withState} from 'recompose'
 import moment from 'moment'
 import Details from './StockTabTransferHistoryDetails'
-import CloseIcon2 from '../CloseIcon2/index'
-import OrderDetails from '../Order/OrderDetails'
+import TransferDetail from './StockTabTransferHistoryTransferDetails'
 
 const listHeader = [
     {
@@ -75,7 +72,8 @@ const enhance = compose(
                 marginRight: '5px'
             }
         }
-    })
+    }),
+    withState('transferType', 'setTransferType', '')
 )
 
 const StockTabTransferHistory = enhance((props) => {
@@ -87,8 +85,9 @@ const StockTabTransferHistory = enhance((props) => {
         handleCloseDetail,
         classes,
         printDialog,
-        handleCloseHistoryDialog,
-        orgType
+        popoverDialog,
+        setTransferType,
+        transferType
     } = props
 
     const usersFilterDialog = (
@@ -109,25 +108,14 @@ const StockTabTransferHistory = enhance((props) => {
             handleOpenPrint={printDialog.handleOpenPrintDialog}
             confirm={false}/>
     )
-    const historyTypeDetail = _.get(detailData, 'transferDetailLoading') ? <div className={classes.loader}>
-            <CircularProgress/>
-        </div>
-        : <div>
-            <div className={classes.titleContent}>
-                <div>
-                    <div>Заказ №{_.get(detailData, 'id')}</div>
-                </div>
-                <IconButton onTouchTap={handleCloseHistoryDialog}>
-                    <CloseIcon2 color="#666666"/>
-                </IconButton>
-            </div>
-            <div className={classes.content}>
-                <OrderDetails
-                    data={_.get(detailData, 'data')}
-                    loading={_.get(detailData, 'transferDetailLoading')}
-                    stat={true}/>
-            </div>
-        </div>
+    const historyTransferDetail = (
+        <TransferDetail
+            key={_.get(popoverDialog, ['data', 'id']) + '_transfer'}
+            loading={_.get(popoverDialog, 'loading')}
+            onClose={handleCloseDetail}
+            detailData={popoverDialog}
+        />)
+
     const historyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const dateRequest = moment(_.get(item, 'dateRequest')).format('DD.MM.YYYY')
@@ -139,9 +127,12 @@ const StockTabTransferHistory = enhance((props) => {
         const stockName = _.get(item, ['stock', 'name'])
         return (
             <Row
-                key={id + '_' + stockId}
+                key={transferType === 'transfer' ? id + '_transfer' : id + '_' + stockId}
                 style={{position: 'relative', cursor: 'pointer'}}
-                onClick={() => { listData.handleOpenDetail(id, stockId, typeOrg) }}>
+                onClick={() => {
+                    listData.handleOpenDetail(id, stockId, typeOrg)
+                    setTransferType(typeOrg)
+                }}>
                 <Col xs={2} >{id}</Col>
                 <Col xs={2}>{dateRequest}</Col>
                 <Col xs={2}>{stockName}</Col>
@@ -162,7 +153,7 @@ const StockTabTransferHistory = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={orgType === 'transfer' ? historyTypeDetail : historyDetail}
+                detail={(_.get(popoverDialog, ['data', 'id']).isNumber() || transferType === 'transfer') ? historyTransferDetail : historyDetail}
                 filterDialog={usersFilterDialog}
             />
         </div>
