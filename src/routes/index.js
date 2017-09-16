@@ -30,7 +30,8 @@ import {
     ManufactureProductList,
     ManufacturePersonList,
     ManufactureEquipmentList,
-    ManufactureShipmentList
+    ManufactureShipmentList,
+    ManufactureWrapper
 } from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
 import {StatStock} from '../containers/StatStock'
@@ -446,6 +447,21 @@ export default {
                 {
                     path: ROUTES.REMAINDER_ITEM_URL,
                     component: userIsAuth(visibleOnlyAdmin(RemainderList))
+                }
+            ]
+        },
+        // Manufact
+        {
+            path: ROUTES.MANUFACT_PERSON,
+            component: userIsAdminChain(ManufactureWrapper),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACT_PRODUCT,
+                    component: userIsAdminChain(ManufactureProductList)
+                },
+                {
+                    path: ROUTES.MANUFACT_PERSON,
+                    component: userIsAdminChain(ManufacturePersonList)
                 }
             ]
         },

@@ -15,8 +15,8 @@ import {
     OPEN_USER_CONFIRM_DIALOG,
     ManufacturePersonWrapper
 } from '../../components/Manufacture'
+import ManufactureWrapper from './Wrapper'
 import {PERSON_FILTER_KEY, PERSON_FILTER_OPEN} from '../../components/Manufacture/PersonFilterForm'
-import {manufactureListFetchAction} from '../../actions/manufacture'
 import {
     userShiftCreateAction,
     userShiftListFetchAction,
@@ -54,17 +54,6 @@ const enhance = compose(
             filterPersonForm
         }
     }),
-
-    withPropsOnChange((props, nextProps) => {
-        let prevPath = _.startsWith(props.pathname, '/') ? props.pathname : '/' + props.pathname
-        let nextPath = _.startsWith(nextProps.pathname, '/') ? nextProps.pathname : '/' + nextProps.pathname
-        return _.startsWith(prevPath, ROUTER.MANUFACTURE_PERSON_LIST_URL) !== _.startsWith(nextPath, ROUTER.MANUFACTURE_PERSON_LIST_URL)
-    }, ({dispatch, filter, pathname}) => {
-        if (_.startsWith(pathname, ROUTER.MANUFACTURE_PERSON_LIST_URL)) {
-            dispatch(manufactureListFetchAction(filter))
-        }
-    }),
-
     withPropsOnChange((props, nextProps) => {
         const manufactureId = _.get(props, ['params', 'manufactureId'])
         const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
@@ -291,12 +280,14 @@ const ManufacturePersonList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <ManufacturePersonWrapper
-                filter={filter}
-                personData={personData}
-                listData={listData}
-                detailData={detailData}
-            />
+            <ManufactureWrapper detailId={detailId} clickDetail={props.handleClickItem}>
+                <ManufacturePersonWrapper
+                    filter={filter}
+                    personData={personData}
+                    listData={listData}
+                    detailData={detailData}
+                />
+            </ManufactureWrapper>
         </Layout>
     )
 })
