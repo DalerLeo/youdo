@@ -197,7 +197,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     createdDate={(currencyRate === ORDERING_CURRENCY) && createdDate}
                                     component={PendingPaymentRadioButton}
                                 />
-                                {(currencyRate === INDIVIDUAL)
+                                {(currencyRate === INDIVIDUAL && _.get(currency, 'name') !== primaryCurrency)
                                     ? <div className={classes.customCurrency}>
                                         <Field
                                             component={TextField}

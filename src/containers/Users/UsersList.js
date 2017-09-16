@@ -279,7 +279,6 @@ const UsersList = enhance((props) => {
         }
         return {id: obj.id, selected: false}
     })
-
     const isSelectedStocks = _.map(_.get(stockList, 'results'), (obj) => {
         const userSelectedStock = _.find(_.get(detail, 'stocks'), {'id': obj.id})
         if (!openCreateDialog && _.get(userSelectedStock, 'id') === obj.id) {
@@ -334,6 +333,7 @@ const UsersList = enhance((props) => {
                 secondName: _.get(detail, 'secondName'),
                 phoneNumber: _.get(detail, 'phoneNumber'),
                 groups: isSelectedGroups,
+                radioStock: _.get(detail, ['stocks', '0', 'id']),
                 stocks: isSelectedStocks,
                 types: isSelectedMarkets,
                 region: _.get(detail, 'region'),

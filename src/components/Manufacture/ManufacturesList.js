@@ -63,11 +63,11 @@ const enhance = compose(
 const ManufacturesList = enhance((props) => {
     const {
         listData,
-        detailData,
-        classes
+        classes,
+        handleClick,
+        detailId
     } = props
 
-    const detailId = _.get(detailData, 'id')
     const glue = 2
     const cylindrical = 4
     const press = 6
@@ -79,7 +79,7 @@ const ManufacturesList = enhance((props) => {
         return (
             <li key={id} className={classes.productionType}
                 onClick={() => {
-                    listData.handleClickItem(id)
+                    handleClick(id)
                 }}
                 style={detailId === id ? {backgroundColor: 'white'} : {}}>
                 {id === glue ? <img src={Glue}/> : (

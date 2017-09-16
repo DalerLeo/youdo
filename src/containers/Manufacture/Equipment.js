@@ -8,8 +8,8 @@ import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import {ManufactureEquipmentWrapper} from '../../components/Manufacture'
-import {manufactureListFetchAction} from '../../actions/manufacture'
 import {equipmentListFetchAction} from '../../actions/equipment'
+import ManufactureWrapper from './Wrapper'
 
 const ZERO = 0
 const enhance = compose(
@@ -32,16 +32,6 @@ const enhance = compose(
             equipmentList,
             equipmentListLoading,
             filterEquipment
-        }
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        let prevPath = _.startsWith(props.pathname, '/') ? props.pathname : '/' + props.pathname
-        let nextPath = _.startsWith(nextProps.pathname, '/') ? nextProps.pathname : '/' + nextProps.pathname
-        return _.startsWith(prevPath, ROUTER.MANUFACTURE_EQUIPMENT_LIST_URL) !== _.startsWith(nextPath, ROUTER.MANUFACTURE_EQUIPMENT_LIST_URL)
-    }, ({dispatch, filter, pathname}) => {
-        if (_.startsWith(pathname, ROUTER.MANUFACTURE_EQUIPMENT_LIST_URL)) {
-            dispatch(manufactureListFetchAction(filter))
         }
     }),
 
@@ -98,12 +88,14 @@ const ManufactureEquipmentList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <ManufactureEquipmentWrapper
-                filter={filter}
-                equipmentData={equipmentData}
-                listData={listData}
-                detailData={detailData}
-            />
+            <ManufactureWrapper detailId={detailId} clickDetail={props.handleClickItem}>
+                <ManufactureEquipmentWrapper
+                    filter={filter}
+                    equipmentData={equipmentData}
+                    listData={listData}
+                    detailData={detailData}
+                />
+            </ManufactureWrapper>
         </Layout>
     )
 })
