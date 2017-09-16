@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
+import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 const ZERO = 0
 const ONE = 1
@@ -20,8 +21,8 @@ export const createSerializer = (data) => {
     const products = _.map(_.get(data, ['products']), (item) => {
         return {
             id: _.get(item, ['product', 'id']),
-            amount: _.get(item, 'amount'),
-            custom_price: _.get(item, 'cost'),
+            amount: numberWithoutSpaces(_.get(item, 'amount')),
+            custom_price: numberWithoutSpaces(_.get(item, 'cost')),
             product: _.get(item, ['product', 'value', 'id'])
         }
     })
