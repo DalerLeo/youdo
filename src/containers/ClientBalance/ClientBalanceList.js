@@ -339,11 +339,26 @@ const ClientBalanceList = enhance((props) => {
     const toDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
 
+    const divisionInfo = _.find(_.get(list, ['results', '0', 'divisions']), (item) => {
+        return _.get(item, 'id') === division
+    })
+
+    const getBalance = (payType) => {
+        const balance = _.find(_.get(list, ['results']), (item) => {
+            return _.get(item, 'id') === detailId
+        })
+        const div = _.find(_.get(balance, 'divisions'), (item) => {
+            return _.get(item, 'id') === division
+        })
+        return _.get(div, payType)
+    }
+
     const infoDialog = {
         updateLoading: detailLoading,
         openInfoDialog,
-        division: division,
-        type: type,
+        division: divisionInfo,
+        type: type === 'bank' ? ' переч.' : ' нал.',
+        balance: getBalance(type),
         handleOpenInfoDialog: props.handleOpenInfoDialog,
         handleCloseInfoDialog: props.handleCloseInfoDialog
     }

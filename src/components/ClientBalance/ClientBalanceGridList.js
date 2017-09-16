@@ -241,6 +241,7 @@ const ClientBalanceGridList = enhance((props) => {
     const name1 = _.get(listData, ['data', '0', 'division', '0', 'name'])
     const name2 = _.get(listData, ['data', '0', 'division', '1', 'name'])
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+
     const clients = (
         <div className={classes.leftTable}>
             <div><span>Клиент</span></div>
@@ -317,20 +318,25 @@ const ClientBalanceGridList = enhance((props) => {
                     )
                 })}
             </tr>
+
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
                 const orderNo = numberFormat(_.get(item, 'orders'))
                 amountValues = []
-                _.map(item.divisions, (child) => {
-                    amountValues.push(child.cash)
-                    amountValues.push(child.bank)
+                _.map(_.get(item, 'divisions'), (child) => {
+                    amountValues.push({amount: _.get(child, 'cash'), type: 'cash', id: _.get(child, 'id')})
+                    amountValues.push({amount: _.get(child, 'bank'), type: 'bank', id: _.get(child, 'id')})
                 })
                 return (
                     <tr key={id} className={classes.tableRow}>
                         <td>{orderNo}</td>
                         {_.map(amountValues, (val) => {
                             return (
-                                <td>{val || '0'} {primaryCurrency}</td>
+                                <td style={{cursor: 'pointer'}} onClick={() => {
+                                    infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type'))
+                                }}>
+                                    {_.get(val, 'amount') || '0'} {primaryCurrency}
+                                </td>
                             )
                         })}
                     </tr>
@@ -475,12 +481,6 @@ const ClientBalanceGridList = enhance((props) => {
     }
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const balance = _.get(infoDialog, 'division') === DIVISION.SHAMPUN
-        ? _.get(infoDialog, 'type') === 'cash' ? _.get(client, 'shampooBalance') : _.get(client, 'shampooBank')
-        : _.get(client, 'cosmeticsBalance')
-    const paymentType = _.get(infoDialog, 'division') === DIVISION.SHAMPUN ? 'шамнунь' + (
-            _.get(infoDialog, 'type') === 'bank' ? ' переч.' : ' нал.'
-        ) : 'косметика'
     const clientName = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog'))})
     const initialValues = {
         paymentType: {
@@ -542,8 +542,8 @@ const ClientBalanceGridList = enhance((props) => {
                 filterItem={filterItem}
                 filter={filter}
                 name={_.get(client, 'name')}
-                paymentType={paymentType}
-                balance={balance}
+                paymentType={_.get(infoDialog, ['division', 'name']) + _.get(infoDialog, 'type')}
+                balance={_.get(infoDialog, 'balance')}
                 superUser={superUser}
                 setItem={setItem}
             />
