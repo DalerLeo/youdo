@@ -129,14 +129,14 @@ const enhance = compose(
             marginLeft: '-30px',
             paddingLeft: '30px',
             '& > div:first-child': {
-                zIndex: '20',
-                flexBasis: '20%',
-                maxWidth: '20%',
+                zIndex: '4',
+                flexBasis: '23%',
+                maxWidth: '23%',
                 boxShadow: '5px 0 8px -3px #CCC'
             },
             '& > div:nth-child(2)': {
-                flexBasis: '68%',
-                maxWidth: '68%',
+                flexBasis: '65%',
+                maxWidth: '65%',
                 overflowX: 'auto',
                 overflowY: 'hidden'
             },
@@ -249,7 +249,7 @@ const ClientBalanceGridList = enhance((props) => {
                 const id = _.get(item, 'id')
                 const name = _.get(item, 'name') || 'No'
                 return (
-                    <div key={id} style={{cursor: 'pointer'}} onClick={() => listData.handleOpenDetail(id)}><span>{name}</span></div>
+                    <div key={id}><span>{name}</span></div>
                 )
             })}
         </div>
