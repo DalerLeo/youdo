@@ -46,6 +46,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['clientBalance', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'ClientBalanceFilterForm'])
         const createForm = _.get(state, ['form', 'ClientBalanceCreateForm'])
+        const searchForm = _.get(state, ['form', 'ClientBalanceForm'])
         const updateForm = _.get(state, ['form', 'ClientBalanceUpdateForm'])
         const returnForm = _.get(state, ['form', 'ClientBalanceReturnForm'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
@@ -68,7 +69,8 @@ const enhance = compose(
             updateForm,
             returnForm,
             isSuperUser,
-            updateTransactionLoading
+            updateTransactionLoading,
+            searchForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -224,7 +226,13 @@ const enhance = compose(
                 query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: id})
             })
         },
-
+        handleSubmitSearch: props => () => {
+            const {location: {pathname}, filter, searchForm} = props
+            const term = _.get(searchForm, ['values', 'searching'])
+            hashHistory.push({
+                pathname, query: filter.getParams({search: term})
+            })
+        },
         handleCloseClientReturnDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
             dispatch(reset('ClientBalanceReturnForm'))
@@ -408,6 +416,7 @@ const ClientBalanceList = enhance((props) => {
                 filterDialog={filterDialog}
                 clientReturnDialog={clientReturnDialog}
                 superUser={superUser}
+                handleSubmitSearch={props.handleSubmitSearch}
             />
         </Layout>
     )

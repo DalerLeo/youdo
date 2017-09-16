@@ -8,7 +8,9 @@ import Container from '../Container'
 import ClientBalanceInfoDialog from './ClientBalanceInfoDialog'
 import ClientBalanceCreateDialog from './ClientBalanceCreateDialog'
 import ClientBalanceUpdateDialog from './ClientBalanceUpdateDialog'
+import CircularProgress from 'material-ui/CircularProgress'
 import ClientBalanceReturnDialog from './ClientBalanceReturnDialog'
+import {Field, reduxForm} from 'redux-form'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
@@ -19,55 +21,29 @@ import Cancel from 'material-ui/svg-icons/content/remove-circle'
 import Add from 'material-ui/svg-icons/content/add-circle'
 import ReturnIcon from 'material-ui/svg-icons/content/reply'
 import Tooltip from '../ToolTip'
+import Paper from 'material-ui/Paper'
+import SearchIcon from 'material-ui/svg-icons/action/search'
 
+import {TextField} from '../ReduxForm/index'
+import Pagination from '../GridList/GridListNavPagination'
+let amountValues = []
+let head = []
 const DIVISION = {
     SHAMPUN: 2,
     KOSMETIKA: 1
 }
 
-const listHeader = [
-    {
-        sorting: false,
-        name: 'client',
-        title: 'Клиент',
-        xs: 3
-    },
-    {
-        sorting: true,
-        name: 'orders',
-        title: 'Кол-во заказов',
-        xs: 2
-    },
-    {
-        sorting: true,
-        alignRight: true,
-        name: 'cosmetics_balance',
-        title: 'Баланс косметика',
-        xs: 2
-    },
-    {
-        sorting: true,
-        alignRight: true,
-        name: 'shampoo_balance',
-        title: 'Баланс шампунь нал.',
-        xs: 2
-    },
-    {
-        sorting: true,
-        alignRight: true,
-        name: 'shampoo_bank',
-        title: 'Баланс шампунь переч.',
-        xs: 2
-    },
-    {
-        sorting: false,
-        title: '',
-        xs: 1
-    }
-]
-
 const enhance = compose(
     injectSheet({
+        loader: {
+            width: '100%',
+            height: '300px',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
         listRow: {
             margin: '0 -30px !important',
             padding: '0 30px',
@@ -111,11 +87,126 @@ const enhance = compose(
             '& span': {
                 cursor: 'pointer'
             }
+        },
+        tableRow: {
+            '& td': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'left'
+            },
+            '&:nth-child(even)': {
+                backgroundColor: '#f4f4f4'
+            }
+        },
+        leftTable: {
+            display: 'table',
+            width: '100%',
+            '& > div': {
+                '&:nth-child(even)': {
+                    backgroundColor: '#f4f4f4'
+                },
+                display: 'table-row',
+                height: '40px',
+                '&:nth-child(2)': {
+                    height: '39px'
+                },
+                '&:first-child': {
+                    backgroundColor: 'white',
+                    height: '41px',
+                    '& span': {
+                        borderTop: '1px #efefef solid',
+                        borderBottom: '1px #efefef solid'
+                    }
+                },
+                '& span': {
+                    display: 'table-cell',
+                    verticalAlign: 'middle',
+                    padding: '0 10px 0 30px'
+                }
+            }
+        },
+        tableWrapper: {
+            display: 'flex',
+            marginLeft: '-30px',
+            paddingLeft: '30px',
+            '& > div:first-child': {
+                zIndex: '20',
+                flexBasis: '20%',
+                maxWidth: '20%',
+                boxShadow: '5px 0 8px -3px #CCC'
+            },
+            '& > div:nth-child(2)': {
+                flexBasis: '68%',
+                maxWidth: '68%',
+                overflowX: 'auto',
+                overflowY: 'hidden'
+            },
+            '& > div:nth-child(3)': {
+                flexBasis: '12%',
+                maxWidth: '12%'
+
+            }
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        mainTable: {
+            width: '100%',
+            minWidth: '1200px',
+            color: '#666',
+            borderCollapse: 'collapse',
+            '& tr, td': {
+                height: '40px'
+            },
+            '& td': {
+                padding: '0 20px',
+                minWidth: '80px'
+            }
+        },
+        title: {
+            fontWeight: '600',
+            '& tr, td': {
+                border: '1px #efefef solid'
+            }
+        },
+        nav: {
+            height: '52px',
+            padding: '0 30px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
         }
+    }),
+    reduxForm({
+        form: 'ClientBalanceForm',
+        enableReinitialize: true
     }),
     withState('currentItem', 'setItem', null)
 
 )
+
+const searchIconStyle = {
+    icon: {
+        width: 24,
+        height: 24
+    },
+    button: {
+        width: 30,
+        height: 30,
+        padding: 0
+    }
+}
 const iconStyle = {
     icon: {
         width: 22,
@@ -143,9 +234,161 @@ const ClientBalanceGridList = enhance((props) => {
         clientReturnDialog,
         superUser,
         currentItem,
-        setItem
+        setItem,
+        handleSubmit,
+        handleSubmitSearch
     } = props
+    const name1 = _.get(listData, ['data', '0', 'division', '0', 'name'])
+    const name2 = _.get(listData, ['data', '0', 'division', '1', 'name'])
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const clients = (
+        <div className={classes.leftTable}>
+            <div><span>Клиент</span></div>
+            {_.map(_.get(listData, 'data'), (item) => {
+                const id = _.get(item, 'id')
+                const name = _.get(item, 'name') || 'No'
+                return (
 
+                    <div key={id} style={{cursor: 'pointer'}} onClick={() => listData.handleOpenDetail(id)}><span>{name}</span></div>
+                )
+            })}
+        </div>
+    )
+    const buttons = (
+        <div className={classes.leftTable}>
+            <div><span> </span></div>
+            {_.map(_.get(listData, 'data'), (item) => {
+                const id = _.get(item, 'id')
+                return (
+
+                    <div key={id} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <Tooltip position="bottom" text="Возврат с клиента">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onTouchTap={() => {
+                                    clientReturnDialog.handleOpenClientReturnDialog(id)
+                                }}>
+                                <ReturnIcon color="#666"/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Списать">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onTouchTap={() => {
+                                    createDialog.handleOpenCreateDialog(id)
+                                }}>
+                                <Cancel color='#f44336'/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Добавить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}
+                                onTouchTap={() => {
+                                    addDialog.handleOpenAddDialog(id)
+                                }}>
+                                <Add color='#8dc572'/>
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                )
+            })}
+        </div>
+    )
+    head = []
+    _.map(_.get(listData, ['data', '0', 'divisions']), (item) => {
+        head.push(item.name + ' нал.')
+        head.push(item.name + ' переч.')
+    })
+
+    const tableList = (
+        <table className={classes.mainTable}>
+            <tbody>
+            <tr className={classes.title}>
+                <td>Кол-во заказов</td>
+                {_.map(head, (item) => {
+                    return (
+                        <td>{item}</td>
+                    )
+                })}
+            </tr>
+            {_.map(_.get(listData, 'data'), (item) => {
+                const id = _.get(item, 'id')
+                const orderNo = numberFormat(_.get(item, 'orders'))
+                amountValues = []
+                _.map(item.divisions, (child) => {
+                    amountValues.push(child.cash)
+                    amountValues.push(child.bank)
+                })
+                return (
+                    <tr key={id} className={classes.tableRow}>
+                        <td>{orderNo}</td>
+                        {_.map(amountValues, (val) => {
+                            return (
+                                <td>{val || '0'} {primaryCurrency}</td>
+                            )
+                        })}
+                    </tr>
+                )
+            })}
+            </tbody>
+        </table>
+    )
+    const lists = (
+        <div className={classes.tableWrapper}>
+            {clients}
+            <div>
+                {tableList}
+            </div>
+            {buttons}
+        </div>
+    )
+
+    const listHeader = [
+        {
+            sorting: false,
+            name: 'client',
+            title: 'Клиент',
+            xs: 3
+        },
+        {
+            sorting: true,
+            name: 'orders',
+            title: 'Кол-во заказов',
+            xs: 2
+        },
+        {
+            sorting: true,
+            alignRight: true,
+            name: 'cosmetics_balance',
+            title: name1,
+            xs: 2
+        },
+        {
+            sorting: true,
+            alignRight: true,
+            name: 'shampoo_balance',
+            title: name2,
+            xs: 2
+        },
+        {
+            sorting: true,
+            alignRight: true,
+            name: 'shampoo_bank',
+            title: 'Баланс шампунь переч.',
+            xs: 2
+        },
+        {
+            sorting: false,
+            title: '',
+            xs: 1
+        }
+    ]
     const isSuperUser = _.get(superUser, 'isSuperUser')
     const clientBalanceDetail = (
         <span>a</span>
@@ -249,16 +492,48 @@ const ClientBalanceGridList = enhance((props) => {
         },
         comment: _.get(currentItem, 'comment')
     }
+
+    const navigation = (
+        <div className={classes.nav}>
+            <form style={{display: 'flex', alignItems: 'center'}} onSubmit={handleSubmit(handleSubmitSearch)}>
+                <Field
+                    className={classes.inputFieldCustom}
+                    component={TextField}
+                    name="searching"
+                    label="Поиск"
+                />
+                <IconButton
+                    type="submit"
+                    iconStyle={searchIconStyle.icon}
+                    style={searchIconStyle.button}
+                    touch={true}>
+                    <SearchIcon color='rgb(204, 204, 204)'/>
+                </IconButton>
+            </form>
+            <Pagination filter={filter}/>
+        </div>
+    )
+
+    const gridList = (
+        <GridList
+            filter={filter}
+            list={list}
+            detail={clientBalanceDetail}
+            loading={_.get(listData, 'listLoading')}
+        />
+    )
+
+    _.get(gridList, 'hello')
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
-
-            <GridList
-                filter={filter}
-                list={list}
-                detail={clientBalanceDetail}
-                loading={_.get(listData, 'listLoading')}
-            />
+            <Paper>
+                {navigation}
+                {_.get(listData, 'listLoading')
+                    ? <div className={classes.loader}>
+                        <CircularProgress size={40} thickness={4}/>
+                    </div> : lists}
+            </Paper>
 
             <ClientBalanceInfoDialog
                 open={infoDialog.openInfoDialog}
