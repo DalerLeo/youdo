@@ -23,6 +23,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import SupplyExpenseCreateDialog from './SupplyExpenseCreateDialog'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
+import {connect} from 'react-redux'
 
 const listHeader = [
     {
@@ -132,6 +133,11 @@ const enhance = compose(
                 }
             }
         }
+    }),
+    connect((state) => {
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+
+        return {isAdmin}
     })
 )
 
@@ -150,6 +156,7 @@ const SupplyGridList = enhance((props) => {
         listData,
         detailData,
         classes,
+        isAdmin,
 
         supplyExpenseCreateDialog,
         supplyListData
@@ -189,6 +196,7 @@ const SupplyGridList = enhance((props) => {
             supplyListData={supplyListData}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             filter={filterItem}
+            isAdmin={isAdmin}
         />
     )
 
@@ -233,6 +241,7 @@ const SupplyGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const detailStatus = _.toInteger(_.get(detailData, ['data', 'status']))
     const expense = _.find(_.get(supplyListData, 'data'), {'id': confirmExpenseDialog.removeId})
     const expComment = _.get(expense, 'comment')
     return (
@@ -287,13 +296,22 @@ const SupplyGridList = enhance((props) => {
                 onSubmit={supplyExpenseCreateDialog.handleSupplyExpenseSubmitCreateDialog}
             />
 
-            {detailData.data && <ConfirmDialog
+            {(detailData.data && isAdmin && (detailStatus === IN_PROGRESS || detailStatus === COMPLETED)) ? <ConfirmDialog
                 type="cancel"
-                message={'Постака № ' + _.get(detailData, ['data', 'id'])}
+                message={'Склад уже принял поставку. Отмена данной поставки приведет списанию товаров из' +
+                    ' склада. НЕ РЕКОМЕНДУЕТСЯ ОТМЕНА!'}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
-            />}
+            />
+
+            : (detailData.data && <ConfirmDialog
+                type="cancel"
+                message={'Поставка № ' + _.get(detailData, ['data', 'id'])}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.handleSendConfirmDialog}
+                open={confirmDialog.openConfirmDialog}
+            />)}
 
             {confirmExpenseDialog.removeId && <ConfirmDialog
                 type="delete"
