@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
@@ -11,8 +11,8 @@ import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import Person from 'material-ui/svg-icons/social/person'
 import toCamelCase from '../../helpers/toCamelCase'
-import DateToDate from '../ReduxForm/Basic/DateToDateFieldCustom'
 import GoogleMap from '../GoogleMap'
+import PlanAddCalendar from './PlanAddCalendar'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -108,30 +108,6 @@ const enhance = compose(
             display: 'flex',
             flexDirection: 'column',
             zIndex: '10'
-        },
-        dateBlock: {
-            padding: '20px 30px'
-        },
-        week: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: '12px'
-        },
-        weekItem: {
-            background: '#eaeaea',
-            color: '#666',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '26px',
-            width: '32px'
-        },
-        weekItemActive: {
-            extend: 'weekItem',
-            background: '#8de2b3',
-            color: '#fff'
         },
         scroll: {
             height: '100%'
@@ -326,7 +302,8 @@ const PlanCreateDialog = enhance((props) => {
         zonesList,
         zonesLoading,
         isActiveAgent,
-        setActiveAgent
+        setActiveAgent,
+        calendar
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const agentIcon = {
@@ -365,24 +342,7 @@ const PlanCreateDialog = enhance((props) => {
                                 </IconButton>
                             </div>
                             <div className={classes.scroll}>
-                                <div className={classes.dateBlock}>
-                                    <Field
-                                        name="date"
-                                        component={DateToDate}
-                                        className={classes.inputFieldCustom}
-                                        label="Дата"
-                                        fullWidth={true}
-                                    />
-                                    <div className={classes.week}>
-                                        <div className={classes.weekItemActive}>Пн</div>
-                                        <div className={classes.weekItem}>Вт</div>
-                                        <div className={classes.weekItem}>Ср</div>
-                                        <div className={classes.weekItem}>Чт</div>
-                                        <div className={classes.weekItem}>Пт</div>
-                                        <div className={classes.weekItem}>Сб</div>
-                                        <div className={classes.weekItem}>Вс</div>
-                                    </div>
-                                </div>
+                                <PlanAddCalendar calendar={calendar} />
                                 <div className={classes.zonesList}>
                                     {zonesLoading
                                         ? <div className={classes.loader}>

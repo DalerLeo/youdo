@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import {Link} from 'react-router'
 import _ from 'lodash'
 import {connect} from 'react-redux'
-import {compose, lifecycle, withState} from 'recompose'
+import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -12,7 +12,8 @@ import ToolTip from '../ToolTip'
 import {getMenus} from './MenuItems'
 import Logo from '../Images/logo.png'
 import CustomBadge from '../CustomBadge/CustomBadge'
-import Arrow from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
 
 const style = {
     style: {
@@ -35,7 +36,6 @@ const enhance = compose(
             loading
         }
     }),
-    withState('blurIsHere', 'updateBlur', true),
     lifecycle({
         componentDidMount () {
             const show = '0'
@@ -44,39 +44,59 @@ const enhance = compose(
             const menu = ReactDOM.findDOMNode(this.refs.menuWrapper)
             const items = ReactDOM.findDOMNode(this.refs.items)
             const logout = ReactDOM.findDOMNode(this.refs.logoutBtn)
-            const blur = ReactDOM.findDOMNode(this.refs.blur)
+            const downBlur = ReactDOM.findDOMNode(this.refs.down_blur)
+            const upBlur = ReactDOM.findDOMNode(this.refs.up_blur)
             const buttonHeight = logout.clientHeight
-            const sidebarHeight = items.clientHeight
+            let sidebarHeight = items.clientHeight
             let defaultWindowHeight = window.innerHeight
 
             if (defaultWindowHeight < sidebarHeight) {
-                blur.style.bottom = show
+                downBlur.style.bottom = show
+                upBlur.style.top = hide
             }
 
             window.addEventListener('resize', () => {
                 const scrollVal = menu.scrollTop
                 defaultWindowHeight = window.innerHeight
+                sidebarHeight = items.clientHeight
                 if (defaultWindowHeight < (sidebarHeight - buttonHeight)) {
                     if (scrollVal < (sidebarHeight - defaultWindowHeight)) {
-                        blur.style.bottom = show
+                        downBlur.style.bottom = show
+                        upBlur.style.top = hide
+                    } else if (scrollVal < buttonHeight) {
+                        upBlur.style.top = hide
                     } else {
-                        blur.style.bottom = hide
+                        downBlur.style.bottom = hide
+                        upBlur.style.top = show
                     }
                 } else {
-                    blur.style.bottom = hide
+                    downBlur.style.bottom = hide
                 }
             })
 
             menu.addEventListener('scroll', () => {
                 const scrollVal = menu.scrollTop
                 if (scrollVal < (sidebarHeight - defaultWindowHeight)) {
-                    blur.style.bottom = show
+                    downBlur.style.bottom = show
+                    upBlur.style.top = hide
                 } else {
-                    blur.style.bottom = hide
+                    downBlur.style.bottom = hide
+                    upBlur.style.top = show
+                    if (scrollVal < buttonHeight) {
+                        upBlur.style.top = hide
+                    }
                 }
             })
 
-            blur.addEventListener('click', () => {
+            upBlur.addEventListener('click', () => {
+                const scrollIntoViewOptions = {
+                    behavior: 'smooth',
+                    block: 'start',
+                    inline: 'start'
+                }
+                items.scrollIntoView(scrollIntoViewOptions)
+            })
+            downBlur.addEventListener('click', () => {
                 const scrollIntoViewOptions = {
                     behavior: 'smooth',
                     block: 'nearest',
@@ -162,8 +182,11 @@ const SideBarMenu = enhance((props) => {
                     </FlatButton>
                 </ToolTip>
             </div>}
-            <div ref="blur" className={classes.blur}>
-                <Arrow color="#fff" ref="arrow"/>
+            <div ref="down_blur" className={classes.downBlur}>
+                <ArrowDown color="#fff"/>
+            </div>
+            <div ref="up_blur" className={classes.upBlur}>
+                <ArrowUp color="#fff"/>
             </div>
         </div>
     )
@@ -209,7 +232,7 @@ export default injectSheet({
         '100%': {top: 3}
     },
 
-    blur: {
+    downBlur: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -217,17 +240,29 @@ export default injectSheet({
         left: '0',
         bottom: '-50px',
         width: '84px',
-        height: '40px',
+        height: '50px',
         background: 'linear-gradient(to bottom, rgba(21, 24, 31, 0) 0%, rgba(21, 24, 31, 1)' +
         ' 100%, rgba(21, 24, 31, 1) 100%)',
         zIndex: '1',
         transition: 'all 250ms ease-out',
+        fallbacks: [
+            {display: '-webkit-flex'},
+            {display: '-moz-flex'}
+        ],
         '& svg': {
             position: 'relative',
             transition: 'all 300ms ease',
             opacity: '0.5',
             animation: 'animation ease 700ms infinite'
         }
+    },
+
+    upBlur: {
+        extend: 'downBlur',
+        bottom: 'auto',
+        top: '-50px',
+        background: 'linear-gradient(to top, rgba(21, 24, 31, 0) 0%, rgba(21, 24, 31, 1)' +
+        ' 100%, rgba(21, 24, 31, 1) 100%)'
     },
 
     menuLoading: {

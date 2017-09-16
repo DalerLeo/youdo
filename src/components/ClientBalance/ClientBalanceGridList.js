@@ -301,6 +301,7 @@ const ClientBalanceGridList = enhance((props) => {
             />
             <ClientBalanceReturnDialog
                 name={_.get(clientName, 'name')}
+                clientId={_.get(filter.getParams(), 'openClientReturnDialog')}
                 open={_.get(clientReturnDialog, 'openClientReturnDialog') ? _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog')) !== MINUS_ONE : false}
                 onClose={clientReturnDialog.handleCloseClientReturnDialog}
                 onSubmit={clientReturnDialog.handleSubmitClientReturnDialog}

@@ -10,7 +10,16 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {ClientSearchField, MarketSearchField, UsersSearchField, DeptSearchField, ZoneSearchField, DivisionSearchField, ProductSearchField} from '../ReduxForm'
+import {
+    ClientSearchField,
+    MarketSearchField,
+    UsersSearchField,
+    DeptSearchField,
+    ZoneSearchField,
+    DivisionSearchField,
+    ProductSearchField,
+    CheckBox
+} from '../ReduxForm'
 import OrderStatusSearchField from '../ReduxForm/Order/OrderStatusSearchField'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -29,7 +38,8 @@ export const ORDER_FILTER_KEY = {
     TO_DATE: 'toDate',
     DELIVERY_FROM_DATE: 'deliveryFromDate',
     DELIVERY_TO_DATE: 'deliveryToDate',
-    ZONE: 'zone'
+    ZONE: 'zone',
+    ONLY_BONUS: 'onlyBonus'
 }
 
 const enhance = compose(
@@ -200,6 +210,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="zone" component={ZoneSearchField} label="Зона"/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
                         <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label="Дата доставки"/>
+                        <Field name="onlyBonus" component={CheckBox} label="Только бонусные товары"/>
                     </div>
 
                     <RaisedButton
