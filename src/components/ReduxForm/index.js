@@ -69,6 +69,7 @@ import CustomChipField from './Basic/CustomChipField'
 import OrderTransferTypeSearchField from './OrderTransferTypeSearchFiled'
 import StockHistoryTypeSearchField from '../ReduxForm/StockHistoryTypeSearchField'
 import AgentSearchField from '../ReduxForm/AgentSearchField'
+import UserStockRadioButtonField from './UserStockRadioButtonField'
 
 export {
     AgentSearchField,
@@ -141,5 +142,6 @@ export {
     ClientBalanceReturnProductList,
     ChipField,
     CustomChipField,
-    OrderTransferTypeSearchField
+    OrderTransferTypeSearchField,
+    UserStockRadioButtonField
 }
