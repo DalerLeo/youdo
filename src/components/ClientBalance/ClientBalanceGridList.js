@@ -75,11 +75,11 @@ const enhance = compose(
         },
         red: {
             color: '#e27676',
-            cursor: 'pointer'
+            fontWeight: '600'
         },
         green: {
-            color: '#92ce95',
-            cursor: 'pointer'
+            fontWeight: '600',
+            color: '#92ce95'
         },
         balance: {
             textAlign: 'right',
@@ -130,13 +130,13 @@ const enhance = compose(
             paddingLeft: '30px',
             '& > div:first-child': {
                 zIndex: '4',
-                flexBasis: '23%',
-                maxWidth: '23%',
+                flexBasis: '25%',
+                maxWidth: '25%',
                 boxShadow: '5px 0 8px -3px #CCC'
             },
             '& > div:nth-child(2)': {
-                flexBasis: '65%',
-                maxWidth: '65%',
+                flexBasis: '63%',
+                maxWidth: '63%',
                 overflowX: 'auto',
                 overflowY: 'hidden'
             },
@@ -163,7 +163,7 @@ const enhance = compose(
         },
         mainTable: {
             width: '100%',
-            minWidth: '1200px',
+            minWidth: '750px',
             color: '#666',
             borderCollapse: 'collapse',
             '& tr, td': {
@@ -181,7 +181,7 @@ const enhance = compose(
             }
         },
         nav: {
-            height: '52px',
+            height: '55px',
             padding: '0 30px',
             display: 'flex',
             justifyContent: 'space-between',
@@ -329,11 +329,12 @@ const ClientBalanceGridList = enhance((props) => {
                     <tr key={id} className={classes.tableRow}>
                         <td>{orderNo}</td>
                         {_.map(amountValues, (val, index) => {
+                            const amount = _.get(val, 'amount') || '0'
                             return (
                                 <td key={index} style={{cursor: 'pointer'}} onClick={() => {
                                     infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type'))
                                 }}>
-                                    {_.get(val, 'amount') || '0'} {primaryCurrency}
+                                    <span className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : {}}>{amount}{primaryCurrency}</span>
                                 </td>
                             )
                         })}
