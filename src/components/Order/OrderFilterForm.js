@@ -39,14 +39,15 @@ export const ORDER_FILTER_KEY = {
     DELIVERY_FROM_DATE: 'deliveryFromDate',
     DELIVERY_TO_DATE: 'deliveryToDate',
     ZONE: 'zone',
-    ONLY_BONUS: 'onlyBonus'
+    ONLY_BONUS: 'onlyBonus',
+    EXCLUDE: 'exclude'
 }
 
 const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'absolute',
-            minWidth: '300px',
+            minWidth: '310px',
             background: '#fff',
             zIndex: 99,
             top: 0,
@@ -210,7 +211,8 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="zone" component={ZoneSearchField} label="Зона"/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
                         <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label="Дата доставки"/>
-                        <Field name="onlyBonus" component={CheckBox} label="Только бонусные товары"/>
+                        <Field name="onlyBonus" component={CheckBox} label="Только бонусные заказы"/>
+                        <Field name="exclude" component={CheckBox} label="Исключить отмененные заказы"/>
                     </div>
 
                     <RaisedButton

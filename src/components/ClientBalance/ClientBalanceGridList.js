@@ -334,7 +334,7 @@ const ClientBalanceGridList = enhance((props) => {
                                 <td key={index} style={{cursor: 'pointer'}} onClick={() => {
                                     infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type'))
                                 }}>
-                                    <span className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : {}}>{amount}{primaryCurrency}</span>
+                                    <span className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : {}}>{amount} {primaryCurrency}</span>
                                 </td>
                             )
                         })}
