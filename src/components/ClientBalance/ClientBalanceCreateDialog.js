@@ -53,6 +53,12 @@ const enhance = compose(
                     textAlign: 'right'
                 }
             }
+        },
+        red: {
+            fontWeight: '600'
+        },
+        green: {
+            fontWeight: '600'
         }
     })),
     reduxForm({
@@ -61,14 +67,29 @@ const enhance = compose(
     })
 )
 const ZERO = 0
-
 const ClientBalanceCreateDialog = enhance((props) => {
     const {classes, open, onClose, handleSubmit, loading, name, detailData, listData, addDialog, superUser} = props
     const data = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const cosmBalance = _.toNumber(_.get(data, 'cosmeticsBalance'))
-    const shammBalance = _.toNumber(_.get(data, 'shampooBalance'))
-    const shampooBank = _.toNumber(_.get(data, 'shampooBank'))
+    let balanceArr = []
     const currency = getConfig('PRIMARY_CURRENCY')
+
+    _.map(_.get(data, 'divisions'), (item) => {
+        balanceArr.push({amount: _.get(item, 'cash'), name: _.get(item, 'name'), type: 'нал.'})
+        balanceArr.push({amount: _.get(item, 'bank'), name: _.get(item, 'name'), type: 'переч.'})
+    })
+    const balanceInfo = _.map(balanceArr, (balance, index) => {
+        const balanceName = _.get(balance, 'name')
+        const amount = _.get(balance, 'amount')
+        const type = _.get(balance, 'type')
+        return (
+            <Row key={index} style={{padding: '10px 30px'}}>
+                <Col xs={6}>{balanceName + ' ' + type}</Col>
+                <Col xs={6}>
+                    <span className={(amount <= ZERO) ? classes.red : classes.green}>{numberFormat(amount, currency)}</span>
+                </Col>
+            </Row>
+        )
+    })
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
@@ -92,24 +113,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
                 : <div className={classes.bodyContent}>
                     <div style={{padding: '10px 30px'}}>Клиент: <strong>{name}</strong></div>
                     {!superUser && <div>
-                        <Row style={{padding: '10px 30px'}}>
-                            <Col xs={6}>Баланс Косметика:</Col>
-                            <Col xs={6}>
-                                <span className={(cosmBalance <= ZERO) ? classes.red : classes.green}>{numberFormat(cosmBalance, currency)}</span>
-                            </Col>
-                        </Row>
-                        <Row style={{padding: '10px 30px'}}>
-                            <Col xs={6}>Баланс Шампунь Нал.:</Col>
-                            <Col xs={6}>
-                                <span className={(shammBalance <= ZERO) ? classes.red : classes.green}>{numberFormat(shammBalance, currency)}</span>
-                            </Col>
-                        </Row>
-                        <Row style={{padding: '10px 30px'}}>
-                            <Col xs={6}>Баланс Шампунь Переч.:</Col>
-                            <Col xs={6}>
-                                <span className={(shampooBank <= ZERO) ? classes.red : classes.green}>{numberFormat(shampooBank, currency)}</span>
-                            </Col>
-                        </Row>
+                        {balanceInfo}
                     </div>}
                     <form onSubmit={onSubmit} className={classes.form}>
                         <div className={classes.inContent} style={{minHeight: '100px'}}>
