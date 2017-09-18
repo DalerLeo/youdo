@@ -116,6 +116,7 @@ export const ORDER = 'sales/order'
 export const ORDER_CREATE = `/${ORDER}/`
 export const ORDER_RETURN = '/sales/order_return/'
 export const ORDER_RETURN_LIST = '/sales/order_return/%d/'
+export const ORDER_SET_DISCOUNT = `/${ORDER}/%d/add_discount/`
 export const ORDER_TRANSACTION = '/sales/client_transaction/'
 export const ORDER_PAYMENTS = '/sales/payments_list/%d/'
 export const ORDER_RETURN_CANCEL = '/sales/order_return/%d/cancel/'
@@ -244,6 +245,7 @@ export const STAT_MANUFACTURE_DELETE = `/${STAT_MANUFACTURE}/%d/`
 
 export const STAT_CASHBOX_SUM = '/stats/cashboxes_sum/'
 export const STAT_CASHBOX_ITEM_SUM = '/stats/cashboxes_sum/'
+export const STAT_CASHBOX_SUM_LIST = '/stats/cashboxes_sum_list/'
 export const STAT_CASHBOX = 'finance/cashbox'
 export const STAT_CASHBOX_CREATE = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`
@@ -254,7 +256,7 @@ export const STAT_CASHBOX_DATA_ITEM = 'stats/cashbox/%d/'
 export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
-export const MANUFACTURE_PRODUCT_DELETE = '/delete_ingredient/%d/'
+export const MANUFACTURE_PRODUCT_DELETE = 'manufacture/delete_ingredient/%d/'
 export const MANUFACTURE_PRODUCT_CHANGE = '/main/product/%d/change_manufacture/'
 
 export const SHIPMENT = 'manufacture/shipment_statistics/'
@@ -302,7 +304,7 @@ export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
 export const REMAINDER_DISCARD = '/stock/writeoff/'
 export const REMAINDER_RESERVED = '/stock/reserved_product/'
 
-export const STAT_AGENT_LIST = 'stats/agents/'
+export const STAT_AGENT_LIST = 'stats/agents/statistics/all/'
 export const STAT_AGENT_ITEM = 'sales/order/'
 export const STAT_AGENT_GET_DOCUMENT = '/stats/agents/export/'
 
@@ -328,6 +330,7 @@ export const STAT_DEBTORS_ITEM = 'sales/order/'
 export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 
 export const STAT_SALES_DATA = '/stats/orders/'
+export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'
 
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
@@ -364,10 +367,13 @@ export const CLIENT_BALANCE = 'sales/client_balances'
 export const CLIENT_BALANCE_LIST = `/${CLIENT_BALANCE}/`
 export const CLIENT_BALANCE_ITEM = 'sales/client_transaction/'
 export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
+export const CLIENT_BALANCE_SUPER_USER = '/sales/client_transaction/%d/'
 
 export const PLAN_CREATE = `/${STAT_AGENT_LIST}/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
 export const PLAN_MONTHLY = 'sales/monthly_plan/'
+export const PLAN_AGENT_MONTHLY = 'stats/agents/statistics/'
+export const PLAN_AGENT_LIST = 'stats/agents/statistics/all/'
 
 export const POSITION = 'main/position'
 export const POSITION_COURSE_CREATE = 'finance/currency_rate/'
@@ -393,7 +399,7 @@ export const STAT_PRODUCT_MOVE_LIST = 'stats/stock/products/'
 export const STAT_PRODUCT_MOVE_SUM = 'stats/stock/sum/'
 export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/agents/export/'
 
-export const STAT_REPORT_LIST = 'stats/agents/'
+export const STAT_REPORT_LIST = 'stats/general/'
 export const STAT_REPORT_ITEM = 'sales/order/'
 export const STAT_REPORT_GET_DOCUMENT = '/stats/agents/export/'
 

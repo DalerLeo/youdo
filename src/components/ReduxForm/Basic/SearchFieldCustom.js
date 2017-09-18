@@ -112,7 +112,7 @@ const SearchFieldCustom = enhance((props) => {
                 openOnFocus={true}
                 style={{position: 'relative'}}
                 menuStyle={{maxHeight: '300px', overflowY: 'auto'}}
-                textFieldStyle={{width: '400px'}}
+                textFieldStyle={{minWidth: '400px'}}
                 listStyle={{}}
                 className="autocomplete"
                 {...inputAutoComplete}

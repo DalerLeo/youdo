@@ -16,6 +16,7 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import NotFound from '../../Images/not-found.png'
 import Person from '../../Images/person.png'
 import numberFormat from '../../../helpers/numberFormat'
+import ReactHighcharts from 'react-highcharts'
 
 export const STAT_CASHBOX_DETAIL_FILTER_KEY = {
     CASHBOX: 'cashbox',
@@ -140,23 +141,23 @@ const enhance = compose(
             }
         },
         balances: {
-            display: 'flex',
             padding: '20px 0',
             borderTop: '1px #efefef solid',
             borderBottom: '1px #efefef solid'
         },
-        balanceItem: {
-            marginRight: '50px',
-            '& span': {
-                color: '#666',
-                marginBottom: '5px'
+        sumItem: {
+            '& > div:first-child': {
+                marginBottom: '20px'
             },
-            '& div': {
-                fontSize: '24px',
-                fontWeight: '600'
-            },
-            '&:last-child': {
-                marginRight: '0'
+            '& > div': {
+                '& span': {
+                    color: '#666',
+                    marginBottom: '5px'
+                },
+                '& div': {
+                    fontSize: '24px',
+                    fontWeight: '600'
+                }
             }
         },
         searchButton: {
@@ -199,6 +200,10 @@ const enhance = compose(
                 height: '50px !important',
                 color: '#999 !important'
             }
+        },
+        salesSummary: {
+            width: '440px',
+            display: 'flex'
         }
     }),
     reduxForm({
@@ -206,7 +211,10 @@ const enhance = compose(
         enableReinitialize: true
     }),
 )
-
+let arr = []
+for (let i = 0, t = 20; i < t; i++) {
+    arr.push(Math.round(Math.random() * t))
+}
 const StatCashboxDetails = enhance((props) => {
     const {
         detailData,
@@ -215,7 +223,109 @@ const StatCashboxDetails = enhance((props) => {
         handleSubmitFilterDialog,
         getDocument
     } = props
+    const grapthLoading = _.get(detailData, 'itemGraphLoading')
+    const graphAmount = _.map(_.get(detailData, ['itemGraph']), (item) => {
+        return _.toInteger(_.get(item, 'balance'))
+    })
+    const date = _.map(_.get(detailData, ['itemGraph']), (item) => {
+        return _.toInteger(_.get(item, 'date'))
+    })
 
+    const ZERO = 0
+    const TEN = 10
+    const config = {
+        chart: {
+            type: 'area',
+            height: 120,
+            showAxes: false,
+            spacing: [ZERO, TEN, ZERO, TEN]
+        },
+        title: {
+            text: '',
+            style: {
+                display: 'none'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+        yAxis: {
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            },
+            gridLineColor: '#fff',
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: 'transparent'
+            }],
+            labels: {
+                enabled: false
+            },
+            lineWidth: 0,
+            minorGridLineWidth: 0,
+            lineColor: 'transparent',
+            minorTickLength: 0,
+            tickLength: 0
+        },
+        xAxis: {
+            categories: date,
+            lineWidth: 0,
+            minorGridLineWidth: 0,
+            lineColor: 'transparent',
+            minorTickLength: 0,
+            tickLength: 0,
+            labels: {
+                enabled: false
+            }
+        },
+        plotOptions: {
+            series: {
+                lineWidth: 0,
+                pointPlacement: 'on'
+            },
+            area: {
+                fillColor: '#bfebf7',
+                lineColor: '#3aa8c6'
+            }
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: 'USD',
+            backgroundColor: '#fff',
+            borderColor: '#ccc',
+            style: {
+                color: '#333',
+                fontFamily: 'Open Sans',
+                fontSize: '11px'
+            },
+            borderRadius: 0,
+            borderWidth: 1,
+            enabled: true,
+            shadow: false,
+            useHTML: true,
+            crosshairs: false,
+            pointFormat: '{series.name}: <strong>{point.y}</strong>'
+        },
+        series: [{
+            marker: {
+                enabled: false,
+                symbol: 'circle',
+                fillColor: '#3aa8c6',
+                radius: 2
+            },
+            name: 'Баланс',
+            data: graphAmount,
+            color: '#3aa8c6'
+
+        }]
+    }
     const listLoading = _.get(detailData, 'sumItemDataLoading')
     const handleCloseDetail = _.get(detailData, 'handleCloseDetail')
     const startBalance = _.get(detailData, ['sumItemData', 'startBalance'])
@@ -309,22 +419,37 @@ const StatCashboxDetails = enhance((props) => {
                         </div>
                     </form>
                     <div className={classes.balances}>
-                        <div className={classes.balanceItem}>
-                            <span>Баланс на начало периода</span>
-                            <div>{startBalance} {currency}</div>
-                        </div>
-                        <div className={classes.balanceItem}>
-                            <span>Расход за период</span>
-                            <div>{expenses} {currency}</div>
-                        </div>
-                        <div className={classes.balanceItem}>
-                            <span>Доход за период</span>
-                            <div>{income} {currency}</div>
-                        </div>
-                        <div className={classes.balanceItem}>
-                            <span>Баланс на конец периода</span>
-                            <div>{endBalance} {currency}</div>
-                        </div>
+                        <Row className={classes.diagram}>
+                            <div className={classes.salesSummary}>
+                                <div style={{marginRight: '40px'}} className={classes.sumItem}>
+                                    <div className={classes.balanceItem}>
+                                        <span>Баланс на начало периода</span>
+                                        <div>{startBalance} {currency}</div>
+                                    </div>
+                                    <div className={classes.balanceItem}>
+                                        <span>Баланс на конец периода</span>
+                                        <div>{endBalance} {currency}</div>
+                                    </div>
+                                </div>
+                                <div className={classes.sumItem}>
+                                    <div className={classes.balanceItem}>
+                                        <span>Доход за период</span>
+                                        <div>{income} {currency}</div>
+                                    </div>
+                                    <div className={classes.balanceItem}>
+                                        <span>Расход за период</span>
+                                        <div>{expenses} {currency}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{flexBasis: 'calc(100% - 440px)', maxWidth: 'calc(100% - 440px)'}}>
+                                {grapthLoading ? <div className={classes.loader}>
+                                        <CircularProgress size={40} thickness={4}/>
+                                    </div>
+                                    : <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                }
+                            </div>
+                        </Row>
                     </div>
                     <div className={classes.navigation}>
                         <div className={classes.cashier}>

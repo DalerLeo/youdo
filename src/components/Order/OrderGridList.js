@@ -38,7 +38,7 @@ const listHeader = [
         width: '10%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'client',
         title: 'Клиент',
         width: '17.5%'
@@ -56,7 +56,7 @@ const listHeader = [
         width: '10%'
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'totalPrice',
         alignRight: true,
         title: 'Сумма заказа',
@@ -172,12 +172,13 @@ const OrderGridList = enhance((props) => {
         tabData,
         classes,
         createClientDialog,
-        returnDataLoading,
         printDialog,
         type,
         cancelOrderReturnDialog,
         refreshAction,
-        canChangeAnyPrice
+        canChangeAnyPrice,
+        handleSubmitDiscountDialog,
+        handleSubmitSetZeroDiscountDialog
     } = props
 
     const orderFilterDialog = (
@@ -204,6 +205,7 @@ const OrderGridList = enhance((props) => {
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             returnData={_.get(detailData, 'return')}
+            returnDataLoading={_.get(detailData, 'returnLoading')}
             transactionsDialog={transactionsDialog}
             tabData={tabData}
             getDocument={getDocument}
@@ -213,12 +215,13 @@ const OrderGridList = enhance((props) => {
             itemReturnDialog={itemReturnDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
-            returnDataLoading={returnDataLoading}
             updateDialog={updateDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             cancelOrderReturnDialog={cancelOrderReturnDialog}
             type={type}
             canChangeAnyPrice={canChangeAnyPrice}
+            handleSubmitDiscountDialog={handleSubmitDiscountDialog}
+            handleSubmitSetZeroDiscountDialog={handleSubmitSetZeroDiscountDialog}
         />
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {
@@ -231,7 +234,7 @@ const OrderGridList = enhance((props) => {
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = dateFormat((_.get(item, 'dateDelivery')), '')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
-        const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
+        const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
         const balanceTooltip = numberFormat(totalBalance, currentCurrency)
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
@@ -251,7 +254,7 @@ const OrderGridList = enhance((props) => {
         const CANCELED = 4
         const ZERO = 0
         return (
-            <div className={isNew ? classes.listWrapperNew : classes.listWrapper} key={id}>
+            <div key={id} className={isNew ? classes.listWrapperNew : classes.listWrapper}>
                 <Link className={classes.openDetails} to={{
                     pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                     query: filter.getParams()
@@ -317,7 +320,7 @@ const OrderGridList = enhance((props) => {
                         ? PAY_DELAY
                         : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
                             ? PAY_PENDING
-                            : 'Оплачено'}>
+                            : totalBalance === ZERO ? 'Оплачено' : null}>
                         <IconButton
                             disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
@@ -327,7 +330,7 @@ const OrderGridList = enhance((props) => {
                                 ? '#e57373'
                                 : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
                                     ? '#B7BBB7'
-                                    : '#81c784'
+                                    : (totalBalance === ZERO ? '#81c784' : '#B7BBB7')
                             }/>
                         </IconButton>
                     </Tooltip>

@@ -47,8 +47,9 @@ const enhance = compose(
             WebkitTransition: 'all 500ms ease',
             padding: '20px 30px',
             display: 'flex',
-            flexDirection: 'column',
             overflowY: 'auto',
+            overflowX: 'hidden',
+            flexDirection: 'column',
             height: '100%',
             '& > div:nth-child(3)': {
                 marginTop: '10px',
@@ -65,10 +66,10 @@ const enhance = compose(
             '& > div:first-child': {
                 zIndex: '20',
                 boxShadow: '5px 0 8px -3px #CCC',
-                width: '255px'
+                width: '400px'
             },
             '& > div:last-child': {
-                width: 'calc(100% - 255px)',
+                width: 'calc(100% - 400px)',
                 overflowX: 'auto',
                 overflowY: 'hidden'
             }
@@ -467,7 +468,7 @@ const StatProductMoveGridList = enhance((props) => {
                                             <table className={classes.mainTable}>
                                                 <tbody className={classes.tableBody}>
                                                 <tr className={classes.title}>
-                                                    <td rowSpan={2}>ID товара</td>
+                                                    <td rowSpan={2}>Код товара</td>
                                                     <td colSpan={2}>Остаток на начало периода</td>
                                                     <td colSpan={2}>Поступивший товара за период</td>
                                                     <td colSpan={2}>Возврать</td>

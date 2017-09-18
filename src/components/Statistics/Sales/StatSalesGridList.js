@@ -15,7 +15,6 @@ import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../../GridList/GridListNavPagination/index'
-import List from 'material-ui/svg-icons/action/list'
 import numberFormat from '../../../helpers/numberFormat'
 import StatSaleDialog from './StatSaleDialog'
 import moment from 'moment'
@@ -224,14 +223,14 @@ const enhance = compose(
 const StatSalesGridList = enhance((props) => {
     const {
         classes,
-        type,
         filter,
         graphData,
         onSubmit,
         listData,
         statSaleDialog,
         handleSubmit,
-        detailData
+        detailData,
+        handleGetDocument
     } = props
 
     const loading = _.get(listData, 'listLoading')
@@ -374,8 +373,7 @@ const StatSalesGridList = enhance((props) => {
             <Col xs={3}>Магазин</Col>
             <Col xs={2}>Агент</Col>
             <Col xs={1}>Возврат</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
-            <Col xs={1} style={{display: 'none'}}>|</Col>
+            <Col xs={2} tyle={{textAlign: 'right'}}>Сумма</Col>
         </Row>
     )
 
@@ -400,14 +398,7 @@ const StatSalesGridList = enhance((props) => {
                         <div>{firstName} {secondName}</div>
                     </Col>
                     <Col xs={1}>{numberFormat(returnPrice)} {currentCurrency}</Col>
-                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice)} {currentCurrency}</Col>
-                    <Col xs={1}>
-                        <IconButton
-                            onTouchTap={ () => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
-
-                            <List color="#12aaeb"/>
-                        </IconButton>
-                    </Col>
+                    <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice)} {currentCurrency}</Col>
                 </Row>
             )
         })
@@ -444,7 +435,7 @@ const StatSalesGridList = enhance((props) => {
                                         <Search/>
                                     </IconButton>
                                 </div>
-                                <a className={classes.excel}>
+                                <a className={classes.excel} onClick={handleGetDocument}>
                                     <Excel color="#fff"/> <span>Excel</span>
                                 </a>
                             </form>
@@ -498,8 +489,7 @@ const StatSalesGridList = enhance((props) => {
                 detailData={detailData}
                 open={statSaleDialog.openStatSaleDialog}
                 onClose={statSaleDialog.handleCloseStatSaleDialog}
-                filter={filter}
-                type={type}/>
+                filter={filter}/>
         </Container>
     )
 })

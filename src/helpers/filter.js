@@ -192,6 +192,7 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             editMaterials: null,
             joinMarket: null,
             joinClient: null,
+            createMaterials: null,
             openPopoverDialog: null,
             openAddDialog: null,
             openInfo: null,
@@ -199,7 +200,11 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             draw: null,
             zoneId: null,
             openUpdateZone: null,
-            deleteZone: null
+            deleteZone: null,
+            openSetDiscountDialog: null,
+            openSuperUser: null,
+            popType: null,
+            openStockSupplyDialog: null
 
         }))
     }

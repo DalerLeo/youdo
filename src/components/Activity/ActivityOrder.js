@@ -9,7 +9,6 @@ import getConfig from '../../helpers/getConfig'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
-import InfiniteScroll from 'react-infinite-scroller'
 
 const enhance = compose(
     injectSheet({
@@ -30,11 +29,12 @@ const enhance = compose(
         },
         blockTitle: {
             padding: '15px 0',
+            height: '90px',
             fontWeight: 'bold'
         },
         blockItems: {
             overflowY: 'auto',
-            height: 'calc(100% - 80px)',
+            height: 'calc(100% - 120px)',
             paddingRight: '10px'
         },
         tube: {
@@ -55,6 +55,10 @@ const enhance = compose(
         tubeTime: {
             fontSize: '10px',
             color: '#999'
+        },
+        info: {
+            fontWeight: '400',
+            padding: '5px 0'
         },
         status: {
             borderRadius: '2px',
@@ -157,14 +161,16 @@ const ActivityOrder = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Cделки</div>
-            <InfiniteScroll
-                pageStart={0}
-                loader={<div className={classes.loader}><CircularProgress size={30} thickness={3}/></div>}
-                useWindow={false}
-                className={classes.blockItems}>
+            <div className={classes.blockTitle}>
+                <div>Cделки (43)</div>
+                <div className={classes.info}>
+                    <div>Сумма (нал): <strong>23 475 USD</strong></div>
+                    <div>Сумма (пер): <strong>12 231 USD</strong></div>
+                </div>
+            </div>
+            <div className={classes.blockItems}>
                 {orderList}
-            </InfiniteScroll>
+            </div>
         </div>
     )
 })

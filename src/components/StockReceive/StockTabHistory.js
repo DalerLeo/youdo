@@ -19,7 +19,7 @@ import PopoverDialog from './PopoverDialog'
 const ZERO = 0
 const listHeader = [
     {
-        sorting: true,
+        sorting: false,
         name: 'product',
         title: 'Товар',
         xs: 4
@@ -76,7 +76,10 @@ const enhance = compose(
         infoDialog: {
             color: '#129fdd',
             cursor: 'pointer',
-            textDecoration: 'underline;'
+            fontWeight: '600',
+            '&:hover': {
+                textDecoration: 'underline'
+            }
         }
     })
 )

@@ -8,7 +8,7 @@ import * as serializers from '../serializers/statCashboxSerializer'
 export const statCashboxListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.STAT_CASHBOX_LIST, {params})
+        .get(API.STAT_CASHBOX_SUM_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })

@@ -23,7 +23,6 @@ import {
     statProductMoveSumFetchAction
 } from '../../actions/statProductMove'
 
-const ONE = 1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -137,10 +136,6 @@ const StatProductMoveList = enhance((props) => {
         'toDate': _.get(filterForm, ['values', 'date', 'toDate'])
     } : {}
 
-    const defaultDate = {
-        'fromDate': moment().subtract(ONE, 'month'),
-        'toDate': moment()
-    }
     const detailData = {
         filter: filterItem,
         id: detailId,
@@ -156,7 +151,6 @@ const StatProductMoveList = enhance((props) => {
     }
     const initialValues = {
         date: {
-            date: filterDateRange || defaultDate,
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)
         }

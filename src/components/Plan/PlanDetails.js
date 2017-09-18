@@ -14,6 +14,8 @@ import Checked from 'material-ui/svg-icons/toggle/check-box'
 import Indeterminate from 'material-ui/svg-icons/toggle/indeterminate-check-box'
 import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
 import Agent from '../Images/agent.png'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 
 const timelineColor = '#22a6c6'
 const enhance = compose(
@@ -395,7 +397,7 @@ const enhance = compose(
 )
 
 const PlanDetails = enhance((props) => {
-    const {classes, detailData, planSalesDialog, calendar} = props
+    const {classes, detailData, planSalesDialog, calendar, monthlyPlan} = props
     const loading = _.get(detailData, 'detailLoading')
     const isOpenDetails = _.get(detailData, 'openDetail')
     const firstName = _.get(detailData, ['data', 'firstName'])
@@ -424,6 +426,10 @@ const PlanDetails = enhance((props) => {
         }
     }
 
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const factSales = _.get(monthlyPlan, ['data', 'factPrice']) && _.toNumber(_.get(monthlyPlan, ['data', 'factPrice']))
+    const planAmount = _.get(monthlyPlan, ['data', 'monthlyPlanAmount']) && _.toNumber(_.get(monthlyPlan, ['data', 'monthlyPlanAmount']))
+
     return (
         <div className={classes.wrapper}>
             {loading
@@ -436,7 +442,8 @@ const PlanDetails = enhance((props) => {
                             <div className={classes.header}>
                                 <div className={classes.info}>
                                     <span>Данные за</span>
-                                    <span style={{textTransform: 'capitalize'}}>{monthFormat(selectedMonth)} {selectedYear}г.</span>
+                                    <span
+                                        style={{textTransform: 'capitalize'}}>{monthFormat(selectedMonth)} {selectedYear}г.</span>
                                 </div>
                                 <div className={classes.agent}>
                                     <img src={Person} alt=""/>
@@ -468,8 +475,8 @@ const PlanDetails = enhance((props) => {
                                     <div>
                                         <Money style={achieveIcon.basic}/>
                                         <div>
-                                            <span>сумма от продаж</span>
-                                            <span><big>2 000 000</big> UZS</span>
+                                            <span>факт. продажи</span>
+                                            <span><big>{numberFormat(factSales)}</big> {primaryCurrency}</span>
                                         </div>
                                     </div>
                                     <div className={classes.slash}>
@@ -477,7 +484,9 @@ const PlanDetails = enhance((props) => {
                                     </div>
                                     <div>
                                         <span>план продаж</span>
-                                        <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}><big>2 000 000</big> UZS</a>
+                                        {planAmount
+                                            ? <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}><big>{numberFormat(planAmount)}</big> {primaryCurrency}</a>
+                                            : <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}>добавить</a>}
                                     </div>
                                 </div>
                             </div>

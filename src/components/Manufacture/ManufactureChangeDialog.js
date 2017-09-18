@@ -8,7 +8,6 @@ import {Field, reduxForm} from 'redux-form'
 import {ManufactureSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
-import validate from '../../helpers/validate'
 
 const enhance = compose(
     injectSheet({
@@ -106,7 +105,7 @@ const enhance = compose(
 
 const ManufactureChange = enhance((props) => {
     const {open, handleSubmit, loading, onClose, classes, error} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const onSubmit = handleSubmit(() => props.onSubmit())
 
     return (
         <Dialog
@@ -118,7 +117,7 @@ const ManufactureChange = enhance((props) => {
             bodyClassName={classes.popUp}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.titleContent}>
-                    <span>Изменение производителя</span>
+                    <span>Изменение производства</span>
                     <IconButton onTouchTap={onClose}>
                         <CloseIcon2 color="#666666"/>
                     </IconButton>

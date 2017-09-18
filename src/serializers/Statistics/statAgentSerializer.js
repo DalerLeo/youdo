@@ -2,23 +2,22 @@ import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../../helpers/serializer'
 
-export const listFilterSerializer = (data) => {
-    const {...defaultData} = data
-    const ordering = _.get(data, 'ordering')
+export const listFilterSerializer = (query) => {
+    const {...defaultData} = query
+    const ordering = _.get(query, 'ordering')
 
-    const firstDayOfMonth = moment().format('YYYY-MM-01')
-    const lastDay = moment().daysInMonth()
-    const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
+    const year = moment(_.get(query, 'date')).format('YYYY') || moment().format('YYYY')
+    const month = moment(_.get(query, 'date')).format('M') || moment().format('M')
 
     return {
+        month,
+        year,
         'search': _.get(defaultData, 'search'),
         'zone': _.get(defaultData, 'zone'),
         'division': _.get(defaultData, 'division'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
-        'ordering': ordering && orderingSnakeCase(ordering),
-        'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
-        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
+        'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
 

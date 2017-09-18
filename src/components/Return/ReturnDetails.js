@@ -189,7 +189,8 @@ const ReturnDetails = enhance((props) => {
         confirmDialog,
         type,
         getDocument,
-        handleCloseDetail
+        handleCloseDetail,
+        stat
     } = props
 
     const id = _.get(data, 'id')
@@ -231,7 +232,7 @@ const ReturnDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    {getDocument && <Tooltip position="bottom" text="Распечатать накладную">
+                    {getDocument && !stat && <Tooltip position="bottom" text="Распечатать накладную">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -240,7 +241,7 @@ const ReturnDetails = enhance((props) => {
                             <PrintIcon />
                         </IconButton>
                     </Tooltip>}
-                    {confirmDialog && <Tooltip position="bottom" text="Отменить">
+                    {confirmDialog && !stat && <Tooltip position="bottom" text="Отменить">
                         <IconButton
                             disabled={!(status === IN_PROGRESS || status === PENDING)}
                             iconStyle={iconStyle.icon}
@@ -287,7 +288,7 @@ const ReturnDetails = enhance((props) => {
                                 </li>
                                 {client && <li>
                                     <span>Клиент:</span>
-                                    <span>{_.get(client, 'name')}</span>
+                                    <span>{client}</span>
                                 </li>}
                                 {market && <li>
                                     <span>Магазин:</span>

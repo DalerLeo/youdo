@@ -1,21 +1,17 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
-import {Row, Col} from 'react-flexbox-grid'
 import toCamelCase from '../../helpers/toCamelCase'
 import getConfig from '../../helpers/getConfig'
 import {TextField, normalizeNumber} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
-import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
-import List from 'material-ui/svg-icons/action/list'
-import Info from 'material-ui/svg-icons/action/info-outline'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -108,9 +104,12 @@ const enhance = compose(
         flexInline: {
             extend: 'flex',
             borderBottom: 'none',
-            justifyContent: 'flex-start',
+            justifyContent: 'space-between',
             '& > div, & > span': {
-                marginRight: '10px'
+                marginRight: '10px',
+                '&:last-child': {
+                    margin: '0'
+                }
             }
         },
         list: {
@@ -174,22 +173,8 @@ const enhance = compose(
     reduxForm({
         form: 'PlanSalesForm',
         enableReinitialize: true
-    }),
-    withState('openMarkets', 'setOpenMarkets', false)
+    })
 )
-
-const actionBtnStyle = {
-    icon: {
-        color: '#12aaeb',
-        width: 22,
-        height: 22
-    },
-    button: {
-        width: 22,
-        height: 22,
-        padding: 0
-    }
-}
 
 const inputStyle = {
     hint: {
@@ -202,9 +187,8 @@ const inputStyle = {
 }
 
 const PlanSalesDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, openMarkets, setOpenMarkets} = props
+    const {open, loading, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const infoText = 'Рекомендованая сумма расчитана <br/> исходя из результатов продаж за <br/> последние 3 месяца'
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     return (
         <Dialog
@@ -212,7 +196,7 @@ const PlanSalesDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '360px'}}
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -227,45 +211,6 @@ const PlanSalesDialog = enhance((props) => {
                         <CircularProgress size={40} thickness={4}/>
                     </div>
                     <div className={classes.inContent} style={{minHeight: '120px'}}>
-                        <div className={classes.flex}>
-                            <div className={classes.info}>
-                                <div>Рекомендуемая сумма</div>
-                                {!openMarkets &&
-                                <Tooltip text={infoText} position="right">
-                                    <Info style={actionBtnStyle.icon} color="#999"/>
-                                </Tooltip>}
-                            </div>
-                            <div>
-                                <span>5 000 000 - 6 000 000 {primaryCurrency}</span>
-                                <IconButton
-                                    onTouchTap={() => { setOpenMarkets(!openMarkets) }}
-                                    disableTouchRipple={true}
-                                    iconStyle={actionBtnStyle.icon}
-                                    style={actionBtnStyle.button}
-                                    className={openMarkets && classes.rotateBtn}>
-                                    <List/>
-                                </IconButton>
-                            </div>
-                        </div>
-                        {openMarkets &&
-                        <div className={classes.list}>
-                            <Row className="dottedList">
-                                <Col xs={7}>Магазин</Col>
-                                <Col xs={5}>Сумма ({primaryCurrency})</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={7}>Наименование магазина</Col>
-                                <Col xs={5}>2 000 000 - 3 200 150</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={7}>Наименование магазина</Col>
-                                <Col xs={5}>2 000 000 - 3 200 150</Col>
-                            </Row>
-                            <Row className="dottedList">
-                                <Col xs={7}>Наименование магазина</Col>
-                                <Col xs={5}>2 000 000 - 3 200 150</Col>
-                            </Row>
-                        </div>}
                         <div className={classes.flexInline}>
                             <span>Сумма плана продаж</span>
                             <Field
@@ -278,7 +223,7 @@ const PlanSalesDialog = enhance((props) => {
                                 hintStyle={inputStyle.hint}
                                 inputStyle={inputStyle.input}
                             />
-                            <span>UZS</span>
+                            <span>{primaryCurrency}</span>
                         </div>
 
                     </div>

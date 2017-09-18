@@ -15,16 +15,13 @@ import StatSideMenu from '../StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-import {Link} from 'react-router'
-import sprintf from 'sprintf'
-import Tooltip from '../../ToolTip/index'
-import Person from '../../Images/person.png'
-import ReactHighcharts from 'react-highcharts'
 import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
 import CashboxDetails from './StatCashboxDetails'
 import getConfig from '../../../helpers/getConfig'
 
+const BANK = 1
+const NEGATIVE = -1
 export const STAT_CASHBOX_FILTER_KEY = {
     CASHBOX: 'cashbox',
     DIVISION: 'division',
@@ -53,8 +50,7 @@ const enhance = compose(
             padding: '20px 30px',
             '& > div:nth-child(2)': {
                 marginTop: '10px',
-                borderTop: '1px #efefef solid',
-                borderBottom: '1px #efefef solid'
+                borderTop: '1px #efefef solid'
             },
             '& .row': {
                 margin: '0 !important'
@@ -193,13 +189,11 @@ const enhance = compose(
             }
         },
         balances: {
-            display: 'flex',
-            padding: '20px 0',
-            borderTop: '1px #efefef solid',
-            borderBottom: '1px #efefef solid'
+            padding: '20px 0'
         },
         balanceItem: {
-            marginRight: '50px',
+            flexBasis: '25%',
+            maxWidth: '25%',
             '& span': {
                 color: '#666',
                 marginBottom: '5px'
@@ -224,6 +218,84 @@ const enhance = compose(
                 height: '50px !important',
                 color: '#999 !important'
             }
+        },
+        tableRow: {
+            '& td': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
+            },
+            '& td:nth-child(1)': {
+                textAlign: 'left'
+            },
+            '&:nth-child(even)': {
+                backgroundColor: '#f9f9f9'
+            }
+        },
+        leftTable: {
+            display: 'table',
+            marginLeft: '-30px',
+            width: '100%',
+            '& > div': {
+                '&:nth-child(even)': {
+                    backgroundColor: '#f9f9f9'
+                },
+                display: 'table-row',
+                height: '40px',
+                '&:nth-child(2)': {
+                    height: '39px'
+                },
+                '&:first-child': {
+                    backgroundColor: 'white',
+                    height: '41px',
+                    '& span': {
+
+                        padding: '10px 30px',
+                        borderTop: '1px #efefef solid',
+                        borderBottom: '1px #efefef solid'
+                    }
+                },
+                '& span': {
+                    display: 'table-cell',
+                    verticalAlign: 'middle',
+                    padding: '0 30px'
+                }
+            }
+        },
+        tableWrapper: {
+            display: 'flex',
+            margin: '0 -30px',
+            paddingLeft: '30px',
+            '& > div:first-child': {
+                zIndex: '20',
+                boxShadow: '5px 0 8px -3px #CCC',
+                width: '255px'
+            },
+            '& > div:last-child': {
+                width: 'calc(100% - 255px)',
+                overflowX: 'auto',
+                overflowY: 'hidden'
+            }
+        },
+        tableBody: {
+        },
+        mainTable: {
+            width: '100%',
+            minWidth: '1200px',
+            color: '#666',
+            borderCollapse: 'collapse',
+            '& tr, td': {
+                height: '40px'
+            },
+            '& td': {
+                padding: '0 20px',
+                minWidth: '140px'
+            }
+        },
+        title: {
+            fontWeight: '600',
+            '& tr, td': {
+                border: '1px #efefef solid'
+            }
         }
     }),
     reduxForm({
@@ -246,13 +318,12 @@ const StatCashboxGridList = enhance((props) => {
         handleSubmitFilterDialog
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-
     const listLoading = _.get(listData, 'listLoading')
     const openDetails = _.get(listData, 'openDetails')
     const startBalance = _.get(listData, ['sumData', 'startBalance'])
     const endBalance = _.get(listData, ['sumData', 'endBalance'])
     const income = _.get(listData, ['sumData', 'income'])
-    const expense = _.get(listData, ['sumData', 'expense'])
+    const expense = _.toNumber(_.get(listData, ['sumData', 'expenses'])) * NEGATIVE
 
     const iconStyle = {
         icon: {
@@ -266,137 +337,38 @@ const StatCashboxGridList = enhance((props) => {
             padding: 0
         }
     }
-    const list = _.map(_.get(listData, 'data'), (item) => {
+    const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const bank = 1
-        const name = _.get(item, 'name')
-        const currency = _.get(item, ['currency', 'name'])
-        const balance = numberFormat(_.get(item, 'balance'), currency)
+        const name = _.get(item, 'name') || 'No'
+        return (
+            <div key={id} style={{cursor: 'pointer'}} onClick={() => listData.handleOpenDetail(id)}><span>{name}</span></div>
+        )
+    })
+
+    const tableList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
         const cashierFirstName = _.get(item, ['cashier', 'firstName'])
         const cashierSecondName = _.get(item, ['cashier', 'secondName'])
         const cashier = cashierFirstName + ' ' + cashierSecondName
-        const type = _.toInteger(_.get(item, 'type')) === bank ? 'банковский счет' : 'наличные'
-        const ZERO = 0
-        const TEN = 10
-        const config = {
-            chart: {
-                type: 'area',
-                height: 100,
-                showAxes: false,
-                spacing: [ZERO, TEN, ZERO, TEN]
-            },
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            credits: {
-                enabled: false
-            },
-            yAxis: {
-                title: {
-                    text: '',
-                    style: {
-                        display: 'none'
-                    }
-                },
-                gridLineColor: '#fff',
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: 'transparent'
-                }],
-                labels: {
-                    enabled: false
-                },
-                lineWidth: 0,
-                minorGridLineWidth: 0,
-                lineColor: 'transparent',
-                minorTickLength: 0,
-                tickLength: 0
-            },
-            xAxis: {
-                lineWidth: 0,
-                minorGridLineWidth: 0,
-                lineColor: 'transparent',
-                minorTickLength: 0,
-                tickLength: 0,
-                labels: {
-                    enabled: false
-                }
-            },
-            plotOptions: {
-                series: {
-                    lineWidth: 0,
-                    pointPlacement: 'on'
-                },
-                area: {
-                    fillColor: '#bfebf7',
-                    lineColor: '#3aa8c6'
-                }
-            },
-            tooltip: {
-                shared: true,
-                valueSuffix: ' ' + currency,
-                backgroundColor: '#fff',
-                borderColor: '#ccc',
-                style: {
-                    color: '#333',
-                    fontFamily: 'Open Sans',
-                    fontSize: '11px'
-                },
-                borderRadius: 0,
-                borderWidth: 1,
-                enabled: true,
-                shadow: false,
-                useHTML: true,
-                crosshairs: false,
-                pointFormat: '{series.name}: <strong>{point.y}</strong>'
-            },
-            series: [{
-                marker: {
-                    enabled: false,
-                    symbol: 'circle',
-                    fillColor: '#3aa8c6',
-                    radius: 2
-                },
-                name: 'Баланс',
-                data: arr,
-                color: '#3aa8c6'
+        const type = _.toInteger(_.get(item, 'type')) === BANK ? 'банковский счет' : 'наличные'
+        const currency = _.get(item, ['currency', 'name'])
 
-            }]
-        }
+        const endBalance = numberFormat(_.get(item, 'endBalance'), primaryCurrency)
+        const startBalance = numberFormat(_.get(item, 'startBalance'), primaryCurrency)
+        const income = numberFormat(_.get(item, 'income'), primaryCurrency)
+        const expenses = numberFormat(_.get(item, 'expenses'), primaryCurrency)
 
         return (
-            <div className={classes.cashbox} key={id}>
-                <div className={classes.cashboxTitle}>
-                    <div>
-                        <Link to={{
-                            pathname: sprintf(ROUTES.STATISTICS_CASHBOX_ITEM_PATH, id),
-                            query: filter.getParams()
-                        }}>{name}</Link>
-                    </div>
-                    <div>{type}</div>
-                </div>
-                <div>
-                    <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
-                </div>
-                <div className={classes.cashboxFooter}>
-                    <div className={classes.cashboxBalance}>
-                        <div>Баланс</div>
-                        <div>{balance}</div>
-                    </div>
-                    <Tooltip position="left" text={cashier}>
-                        <div className={classes.avatar}>
-                            <img src={Person} alt=""/>
-                        </div>
-                    </Tooltip>
-                </div>
-            </div>
+            <tr key={id} className={classes.tableRow}>
+                <td>{cashier}</td>
+                <td>{type}</td>
+                <td>{currency}</td>
+                <td>{startBalance}</td>
+                <td>{income}</td>
+                <td>{expenses}</td>
+                <td>{endBalance}</td>
+
+            </tr>
         )
     })
 
@@ -446,12 +418,12 @@ const StatCashboxGridList = enhance((props) => {
                             ? <div className={classes.loader}>
                                  <CircularProgress size={40} thickness={4}/>
                               </div>
-                            : _.isEmpty(list)
+                            : _.isEmpty(tableList)
                                  ? <div className={classes.emptyQuery}>
                                      <div>По вашему запросу ничего не найдено</div>
                                    </div>
                                  : <div>
-                                     <div className={classes.balances}>
+                                     <Row className={classes.balances}>
                                          <div className={classes.balanceItem}>
                                              <span>Баланс на начало периода</span>
                                              <div>{numberFormat(startBalance, primaryCurrency)}</div>
@@ -461,17 +433,36 @@ const StatCashboxGridList = enhance((props) => {
                                              <div>{numberFormat(expense, primaryCurrency)}</div>
                                          </div>
                                          <div className={classes.balanceItem}>
-                                             <span>Доход за период</span>
+                                             <span>Приход за период</span>
                                              <div>{numberFormat(income, primaryCurrency)}</div>
                                          </div>
                                          <div className={classes.balanceItem}>
                                              <span>Баланс на конец периода</span>
                                              <div>{numberFormat(endBalance, primaryCurrency)}</div>
                                          </div>
-                                     </div>
-                                     <div className={classes.cashboxWrapper}>
-                                        {list}
-                                     </div>
+                                     </Row>
+                                        <div className={classes.tableWrapper}>
+                                            <div className={classes.leftTable}>
+                                                <div><span>Касса</span></div>
+                                                {tableLeft}
+                                            </div>
+                                            <div>
+                                                <table className={classes.mainTable}>
+                                                    <tbody>
+                                                    <tr className={classes.title}>
+                                                        <td>Кассир</td>
+                                                        <td>Тип</td>
+                                                        <td>Валюта</td>
+                                                        <td>Баланс на начало периода</td>
+                                                        <td>Расход за период</td>
+                                                        <td>Приход за период</td>
+                                                        <td>Баланс на конец периода</td>
+                                                    </tr>
+                                                    {tableList}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                  </div>}
                         </div>
 

@@ -236,7 +236,7 @@ const headerItems = [
     },
     {
         sorting: true,
-        name: 'reversed',
+        name: 'reserved',
         title: 'Забронированые',
         xs: 2
     }

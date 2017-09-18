@@ -10,7 +10,7 @@ import filterHelper from '../../helpers/filter'
 import * as API from '../../constants/api'
 import * as serializers from '../../serializers/Statistics/statCashboxSerializer'
 import getDocuments from '../../helpers/getDocument'
-
+import sprintf from 'sprintf'
 import {StatCashboxGridList} from '../../components/Statistics'
 import {STAT_CASHBOX_FILTER_KEY} from '../../components/Statistics/Cashbox/StatCashboxGridList'
 import {STAT_CASHBOX_DETAIL_FILTER_KEY} from '../../components/Statistics/Cashbox/StatCashboxDetails'
@@ -69,15 +69,6 @@ const enhance = compose(
         dispatch(statCashboxListFetchAction(filter))
         dispatch(statCashBoxSumDataFetchAction(filter))
     }),
-
-    withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['list', 'count']) !== _.get(nextProps, ['list', 'count'])
-    }, ({dispatch, filter, list}) => {
-        _.map(_.get(list, 'results'), (item) => {
-            dispatch(statCashBoxItemDataFetchAction(filter, _.get(item, 'id')))
-        })
-    }),
-
     withPropsOnChange((props, nextProps) => {
         const prevId = _.toInteger(_.get(props, ['params', 'cashboxId']))
         const nextId = _.toInteger(_.get(nextProps, ['params', 'cashboxId']))
@@ -129,6 +120,10 @@ const enhance = compose(
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STATISTICS_CASHBOX_URL, query: filter.getParams()})
         },
+        handleOpenDetail: props => (id) => {
+            const {filter} = props
+            hashHistory.push({pathname: sprintf(ROUTER.STATISTICS_CASHBOX_ITEM_PATH, id), query: filter.getParams()})
+        },
         handleGetCashBoxes: props => () => {
             const {list, filter, dispatch} = props
             _.map(_.get(list, 'results'), (item) => {
@@ -178,17 +173,18 @@ const StatCashboxList = enhance((props) => {
     let detailItem = []
 
     const listData = {
-        itemGraphLoading,
-        itemGraph,
         detailItem,
         sumData,
         sumLoading,
+        handleOpenDetail: props.handleOpenDetail,
         data: _.get(list, 'results'),
         listLoading,
         openDetails
     }
 
     const detailData = {
+        itemGraphLoading,
+        itemGraph: _.get(itemGraph, 'results'),
         sumItemData,
         sumItemDataLoading,
         id: detailId,

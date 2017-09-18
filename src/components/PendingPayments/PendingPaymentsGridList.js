@@ -24,13 +24,13 @@ const listHeader = [
         xs: 1
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'clientName',
         title: 'Клиент',
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'marketName',
         title: 'Магазин',
         xs: 2
@@ -42,7 +42,7 @@ const listHeader = [
         xs: 1
     },
     {
-        sorting: true,
+        sorting: false,
         name: 'paymentType',
         title: 'Тип опл.',
         xs: 1
@@ -62,7 +62,7 @@ const listHeader = [
         xs: 2
     },
     {
-        sorting: true,
+        sorting: false,
         xs: 1
     }
 ]

@@ -3,6 +3,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
@@ -19,7 +20,8 @@ import {
     planAgentsListFetchAction,
     planItemFetchAction,
     planZonesListFetchAction,
-    planMonthlySetAction
+    planMonthlySetAction,
+    agentMonthlyPlanAction
 } from '../../actions/plan'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -29,18 +31,21 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const usersList = _.get(state, ['users', 'list', 'data'])
-        const usersListLoading = _.get(state, ['users', 'list', 'loading'])
+        const usersList = _.get(state, ['plan', 'agentsList', 'data'])
+        const usersListLoading = _.get(state, ['plan', 'agentsList', 'loading'])
         const detail = _.get(state, ['users', 'item', 'data'])
         const detailLoading = _.get(state, ['users', 'item', 'loading'])
         const zones = _.get(state, ['zone', 'list', 'data'])
         const zonesLoading = _.get(state, ['zone', 'list', 'loading'])
         const stat = _.get(state, ['plan', 'statistics', 'data'])
         const statLoading = _.get(state, ['plan', 'statistics', 'loading'])
+        const plan = _.get(state, ['plan', 'agentPlan', 'data'])
+        const planLoading = _.get(state, ['plan', 'agentPlan', 'loading'])
         const monthlyPlanCreateLoading = _.get(state, ['plan', 'monthlyPlan', 'loading'])
         const createForm = _.get(state, ['form', 'PlanCreateForm', 'values'])
         const monthlyPlanForm = _.get(state, ['form', 'PlanSalesForm', 'values'])
         const selectedDate = _.get(query, DATE) || defaultDate
+        const selectedDay = _.get(query, 'day') || moment().format('D')
         const filter = filterHelper(usersList, pathname, query)
         return {
             query,
@@ -55,8 +60,11 @@ const enhance = compose(
             zonesLoading,
             createForm,
             selectedDate,
+            selectedDay,
             monthlyPlanForm,
             monthlyPlanCreateLoading,
+            plan,
+            planLoading,
             filter
         }
     }),
@@ -76,10 +84,15 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const agentId = _.get(nextProps, ['params', 'agentId'])
-        return agentId && _.get(props, ['params', 'agentId']) !== agentId
-    }, ({dispatch, params}) => {
+        const date = _.get(nextProps, ['query', 'date'])
+        const prevDate = _.get(props, ['query', 'date'])
+        return (agentId && _.get(props, ['params', 'agentId']) !== agentId) || (date !== prevDate)
+    }, ({dispatch, params, filter}) => {
         const agentId = _.toInteger(_.get(params, 'agentId'))
-        agentId && dispatch(planItemFetchAction(agentId))
+        if (agentId) {
+            dispatch(planItemFetchAction(agentId))
+            dispatch(agentMonthlyPlanAction(filter, agentId))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -97,13 +110,13 @@ const enhance = compose(
         },
 
         handleOpenAddPlan: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ADD_PLAN]: true})})
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {[ADD_PLAN]: true}})
         },
 
         handleCloseAddPlan: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ADD_PLAN]: false})})
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {[ADD_PLAN]: false}})
         },
 
         handleSubmitAddPlan: props => () => {
@@ -114,14 +127,15 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Зона успешно добавлена'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ADD_PLAN]: false})})
+                    hashHistory.push({pathname, query: {[ADD_PLAN]: false}})
                     dispatch(planAgentsListFetchAction(filter))
                 })
         },
 
         handleOpenPlanSales: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[OPEN_PLAN_SALES]: true})})
+            dispatch(reset('PlanSalesForm'))
         },
 
         handleClosePlanSales: props => () => {
@@ -141,6 +155,7 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[OPEN_PLAN_SALES]: false})})
                     dispatch(planAgentsListFetchAction(filter))
                     dispatch(planItemFetchAction(user))
+                    dispatch(agentMonthlyPlanAction(filter, user))
                 })
         },
 
@@ -156,6 +171,11 @@ const enhance = compose(
             const nextMonth = moment(selectedDate).add(ONE, 'month')
             const dateForURL = nextMonth.format('YYYY-MM')
             hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
+        handleChooseDay: props => (day) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({'day': day})})
         }
     })
 )
@@ -175,7 +195,10 @@ const PlanList = enhance((props) => {
         zones,
         zonesLoading,
         monthlyPlanCreateLoading,
-        currentDate
+        plan,
+        planLoading,
+        currentDate,
+        selectedDay
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
@@ -220,9 +243,16 @@ const PlanList = enhance((props) => {
     }
 
     const calendar = {
+        selectedDay,
         selectedDate: selectedDate,
+        handleChooseDay: props.handleChooseDay,
         handlePrevMonth: props.handlePrevMonth,
         handleNextMonth: props.handleNextMonth
+    }
+
+    const monthlyPlan = {
+        data: plan,
+        planLoading
     }
 
     return (
@@ -237,6 +267,7 @@ const PlanList = enhance((props) => {
                 groupId={groupId}
                 calendar={calendar}
                 detailData={detailData}
+                monthlyPlan={monthlyPlan}
             />
         </Layout>
     )

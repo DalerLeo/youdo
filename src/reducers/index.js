@@ -242,8 +242,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STAT_CASHBOX_LIST),
         update: createThunkReducer(actionTypes.STAT_CASHBOX_UPDATE),
         item: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM),
-        sumData: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM_SUM),
-        itemSumData: createThunkReducer(actionTypes.STAT_CASHBOX_SUM),
+        sumData: createThunkReducer(actionTypes.STAT_CASHBOX_SUM),
+        itemSumData: createThunkReducer(actionTypes.STAT_CASHBOX_ITEM_SUM),
         itemGraph: createThunkReducer(actionTypes.STAT_CASHBOX_DATA_ITEM)
     }),
     pendingPayments: combineReducers({
@@ -339,7 +339,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.CLIENT_BALANCE_CREATE),
         list: createThunkReducer(actionTypes.CLIENT_BALANCE_LIST),
         update: createThunkReducer(actionTypes.CLIENT_BALANCE_UPDATE),
-        item: createThunkReducer(actionTypes.CLIENT_BALANCE_ITEM)
+        item: createThunkReducer(actionTypes.CLIENT_BALANCE_ITEM),
+        updateAdmin: createThunkReducer(actionTypes.CLIENT_BALANCE_SUPER_USER)
     }),
     statRemainder: combineReducers({
         list: createThunkReducer(actionTypes.STAT_REMAINDER_LIST),
@@ -392,7 +393,9 @@ const rootReducer = combineReducers({
         listPrint: createThunkReducer(actionTypes.RETURN_PRINT)
     }),
     plan: combineReducers({
-        monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY)
+        monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY),
+        agentsList: createThunkReducer(actionTypes.PLAN_AGENT_LIST),
+        agentPlan: createThunkReducer(actionTypes.PLAN_AGENT_MONTHLY)
     }),
     join: combineReducers({
         joinMarkets: createThunkReducer(actionTypes.JOIN_MARKETS),

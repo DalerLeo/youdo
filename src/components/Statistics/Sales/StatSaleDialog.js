@@ -172,7 +172,8 @@ const StatSaleDialog = enhance((props) => {
                     <div className={classes.content}>
                         <OrderDetails
                             data={_.get(detailData, 'data')}
-                            loading={loading}/>
+                            loading={loading}
+                            stat={true}/>
                     </div>
                 </div>}
         </Dialog>

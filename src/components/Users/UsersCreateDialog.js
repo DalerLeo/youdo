@@ -11,9 +11,9 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import CloseIcon2 from '../CloseIcon2'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ImageUploadField, CheckBox, PositionSearchField} from '../ReduxForm'
+import {TextField, ImageUploadField, CheckBox, PositionSearchField, UserStockRadioButtonField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
-
+import getConfig from '../../helpers/getConfig'
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
@@ -110,6 +110,16 @@ const enhance = compose(
             background: '#efefef',
             height: '1px',
             margin: '25px -30px 10px'
+        },
+        radioStock: {
+            '& > div': {
+                display: 'flex',
+                width: '100%',
+                '& > div': {
+                    flexBasis: 'calc(100% / 3)',
+                    maxWidth: 'calc(100% / 3)'
+                }
+            }
         }
     })),
     reduxForm({
@@ -123,6 +133,7 @@ const UsersCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData, stockListData, marketTypeData} = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
+    const multiStock = getConfig('MULTISELECTSTOCK')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -210,24 +221,31 @@ const UsersCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </Col>
                         </Row>
-                        <div className={classes.subTitle} style={{marginTop: '15px'}}>Связанные склады</div>
+                        <div className={classes.subTitle} style={{marginTop: '15px'}}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
                         {(!loading) && _.get(stockListData, 'stockListLoading')
                         ? <div className={classes.groupLoader}>
                             <CircularProgress size={40} thickness={4}/>
                         </div>
-                        : <div className={classes.stocksCheckList}>
-                            {_.map(_.get(stockListData, 'data'), (item, index) => {
-                                const name = _.get(item, 'name')
-                                const id = _.get(item, 'id')
-                                return (
+                        : (multiStock) ? <div className={classes.stocksCheckList}>
+                                {_.map(_.get(stockListData, 'data'), (item, index) => {
+                                    const name = _.get(item, 'name')
+                                    const id = _.get(item, 'id')
+                                    return (
+                                        <Field
+                                            key={id}
+                                            name={'stocks[' + index + '][selected]'}
+                                            component={CheckBox}
+                                            label={name}/>
+                                    )
+                                })}
+                            </div>
+                                : <div className={classes.radioStock}>
                                     <Field
-                                        key={id}
-                                        name={'stocks[' + index + '][selected]'}
-                                        component={CheckBox}
-                                        label={name}/>
-                                )
-                            })}
-                        </div>}
+                                        name='radioStock'
+                                        stockList={_.get(stockListData, 'data')}
+                                        component={UserStockRadioButtonField}/>
+                                </div>
+                        }
                         <div className={classes.subTitle} style={{marginTop: '15px'}}>Поддерживаемый типа магазинов</div>
                         <Row>
                             {(!loading) && _.get(marketTypeData, 'marketTypeLoading') &&

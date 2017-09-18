@@ -97,7 +97,7 @@ const enhance = compose(
         const currencyRate = _.toInteger(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'currencyRate']))
         const customRate = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'customRate'])
         const amountValue = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'amount'])
-        const currency = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'cashbox', 'value', 'currency'])
+        const currency = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'cashbox', 'value', 'currency', 'name'])
 
         return {
             currencyRate,
@@ -197,7 +197,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     createdDate={(currencyRate === ORDERING_CURRENCY) && createdDate}
                                     component={PendingPaymentRadioButton}
                                 />
-                                {(currencyRate === INDIVIDUAL)
+                                {(currencyRate === INDIVIDUAL && _.get(currency, 'name') !== primaryCurrency)
                                     ? <div className={classes.customCurrency}>
                                         <Field
                                             component={TextField}

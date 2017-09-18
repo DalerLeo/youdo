@@ -40,7 +40,8 @@ import {
     orderItemReturnFetchAction,
     orderListPintFetchAction,
     orderReturnCancelAction,
-    orderProductMobileAction
+    orderProductMobileAction,
+    orderSetDiscountAction
 } from '../../actions/order'
 import {
     clientCreateAction
@@ -60,8 +61,6 @@ const enhance = compose(
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const createLoading = _.get(state, ['order', 'create', 'loading'])
         const createClientLoading = _.get(state, ['client', 'create', 'loading'])
-        const returnLoading = _.get(state, ['order', 'return', 'loading'])
-        const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
         const returnDialogLoading = _.get(state, ['order', 'returnList', 'loading'])
         const shortageLoading = _.get(state, ['order', 'create', 'loading'])
         const updateLoading = _.get(state, ['order', 'update', 'loading'])
@@ -72,8 +71,11 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'OrderFilterForm'])
         const createForm = _.get(state, ['form', 'OrderCreateForm'])
         const clientCreateForm = _.get(state, ['form', 'ClientCreateForm'])
+        const discountCreateForm = _.get(state, ['form', 'OrderSetDiscountForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
         const returnData = _.get(state, ['order', 'return', 'data', 'results'])
+        const returnLoading = _.get(state, ['order', 'return', 'loading'])
+        const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
@@ -89,7 +91,6 @@ const enhance = compose(
             detailLoading,
             createLoading,
             createClientLoading,
-            returnLoading,
             shortageLoading,
             updateLoading,
             filter,
@@ -100,11 +101,13 @@ const enhance = compose(
             returnForm,
             returnData,
             orderReturnList,
+            returnLoading,
             returnDataLoading,
             returnDialogLoading,
             products,
             editProducts,
-            userGroups
+            userGroups,
+            discountCreateForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -113,12 +116,13 @@ const enhance = compose(
         dispatch(orderListFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
-        const prevTransaction = _.get(props, ['location', 'query', 'openTransactionsDialog'])
-        const nextTransaction = _.get(nextProps, ['location', 'query', 'openTransactionsDialog'])
-        return prevTransaction !== nextTransaction && nextTransaction === 'true'
-    }, ({dispatch, params}) => {
+        const prevTransaction = toBoolean(_.get(props, ['location', 'query', 'openTransactionsDialog']))
+        const nextTransaction = toBoolean(_.get(nextProps, ['location', 'query', 'openTransactionsDialog']))
+        return prevTransaction !== nextTransaction && nextTransaction === true
+    }, ({dispatch, params, location}) => {
+        const openTransaction = toBoolean(_.get(location, ['query', 'openTransactionsDialog']))
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        if (orderId > ZERO) {
+        if (orderId > ZERO && openTransaction) {
             dispatch(orderTransactionFetchAction(orderId))
         }
     }),
@@ -128,9 +132,10 @@ const enhance = compose(
         const prevTab = _.get(props, ['location', 'query', 'tab'])
         const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
         return (prevOrderId !== nextOrderId || prevTab !== nextTab) && nextTab === 'return'
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, location}) => {
+        const returnTab = _.get(location, ['query', TAB])
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        if (orderId > ZERO) {
+        if (orderId > ZERO && returnTab === ORDER_TAB.ORDER_TAB_RETURN) {
             dispatch(orderItemReturnFetchAction(orderId))
         }
     }),
@@ -156,15 +161,19 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
+        const prevUpdate = toBoolean(_.get(props, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
         const nextUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
-        const prevId = _.toInteger(_.get(nextProps, ['params', 'orderId']))
-        const nextId = _.toInteger(_.get(nextProps, ['params', 'orderId']))
+        const detail = nextProps.detail
 
-        return (prevUpdate !== nextUpdate) || (prevId !== nextId)
-    }, ({dispatch, params}) => {
+        return (prevUpdate !== nextUpdate && nextUpdate === true && !_.isEmpty(detail))
+    }, ({dispatch, params, location, detail}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        dispatch(orderProductMobileAction(orderId))
+        const marketId = _.toInteger(_.get(detail, ['market', 'id']))
+        const openUpdate = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
+        if (orderId > ZERO && marketId > ZERO && openUpdate) {
+            const size = 100
+            dispatch(orderProductMobileAction(orderId, marketId, size))
+        }
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -245,6 +254,8 @@ const enhance = compose(
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
+            const onlyBonus = _.get(filterForm, ['values', 'onlyBonus']) || null
+            const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
                 [ORDER_FILTER_OPEN]: false,
@@ -256,6 +267,8 @@ const enhance = compose(
                 [ORDER_FILTER_KEY.SHOP]: shop,
                 [ORDER_FILTER_KEY.DIVISION]: division,
                 [ORDER_FILTER_KEY.DEPT]: dept,
+                [ORDER_FILTER_KEY.ONLY_BONUS]: onlyBonus,
+                [ORDER_FILTER_KEY.EXCLUDE]: exclude,
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
@@ -330,7 +343,7 @@ const enhance = compose(
                 })
                 .catch((error) => {
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
                     })
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
@@ -388,16 +401,12 @@ const enhance = compose(
                     })
                     dispatch(orderListFetchAction(filter))
                 }).catch((error) => {
-                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
-                        return <p key={index}>{item}</p>
-                    })
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
                     })
 
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
-                            {notEnough && <p>{notEnough}</p>}
                             {errorWhole}
                         </div>
                     }))
@@ -405,10 +414,8 @@ const enhance = compose(
         },
 
         handleOpenUpdateDialog: props => () => {
-            const {dispatch, location: {pathname}, filter, params} = props
-            const orderId = _.toInteger(_.get(params, 'orderId'))
+            const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})})
-            dispatch(orderProductMobileAction(orderId))
         },
 
         handleCloseUpdateDialog: props => () => {
@@ -432,7 +439,7 @@ const enhance = compose(
                     dispatch(orderListFetchAction(filter))
                 }).catch((error) => {
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
                     })
 
                     dispatch(openErrorAction({
@@ -474,16 +481,12 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[CLIENT_CREATE_DIALOG_OPEN]: false}))
                 }).catch((error) => {
-                    const notEnough = _.map(_.get(error, 'non_field_errors'), (item, index) => {
-                        return <p key={index}>{item}</p>
-                    })
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
                     })
 
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
-                            {notEnough && <p>{notEnough}</p>}
                             {errorWhole}
                         </div>
                     }))
@@ -506,6 +509,44 @@ const enhance = compose(
         handleRefreshList: props => () => {
             const {dispatch, filter} = props
             return dispatch(orderListFetchAction(filter))
+        },
+        handleSubmitDiscountDialog: props => (id) => {
+            const {dispatch, discountCreateForm} = props
+            return dispatch(orderSetDiscountAction(id, _.get(discountCreateForm, ['values', 'percent'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Скидка добавлена'}))
+                })
+                .then(() => {
+                    return dispatch(orderItemFetchAction(id))
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
+        },
+        handleSubmitSetZeroDiscountDialog: props => (id) => {
+            const {dispatch} = props
+            return dispatch(orderSetDiscountAction(id, ZERO))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Скидка отменена'}))
+                })
+                .then(() => {
+                    return dispatch(orderItemFetchAction(id))
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         }
     }),
 )
@@ -546,13 +587,23 @@ const OrderList = enhance((props) => {
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
     const openCancelOrderReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_ORDER_RETURN_DIALOG_OPEN]))
+
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
+    const dept = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DEPT))
+    const initiator = _.toInteger(filter.getParam(ORDER_FILTER_KEY.INITIATOR))
     const zone = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ZONE))
     const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STATUS))
+    const shop = _.toInteger(filter.getParam(ORDER_FILTER_KEY.SHOP))
+    const product = _.toInteger(filter.getParam(ORDER_FILTER_KEY.PRODUCT))
+    const division = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DIVISION))
+    const status = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STATUS))
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
     const deliveryToDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_TO_DATE)
+    const onlyBonus = filter.getParam(ORDER_FILTER_KEY.ONLY_BONUS)
+    const exclude = filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
+
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
 
@@ -706,6 +757,24 @@ const OrderList = enhance((props) => {
             orderStatus: {
                 value: orderStatus
             },
+            division: {
+                value: division
+            },
+            status: {
+                value: status
+            },
+            shop: {
+                value: shop
+            },
+            product: {
+                value: product
+            },
+            initiator: {
+                value: initiator
+            },
+            dept: {
+                value: dept
+            },
             zone: {
                 value: zone
             },
@@ -713,6 +782,8 @@ const OrderList = enhance((props) => {
                 deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
                 deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
             },
+            onlyBonus: onlyBonus,
+            exclude: exclude,
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')
@@ -743,6 +814,7 @@ const OrderList = enhance((props) => {
         id: detailId,
         data: detail || {},
         return: returnData || [],
+        returnLoading: returnDataLoading,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
@@ -799,6 +871,8 @@ const OrderList = enhance((props) => {
                 refreshAction={props.handleRefreshList}
                 cancelOrderReturnDialog={cancelOrderReturnDialog}
                 canChangeAnyPrice={canChangeAnyPrice}
+                handleSubmitDiscountDialog={props.handleSubmitDiscountDialog}
+                handleSubmitSetZeroDiscountDialog={props.handleSubmitSetZeroDiscountDialog}
             />
         </Layout>
     )

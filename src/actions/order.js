@@ -199,10 +199,25 @@ export const orderItemFetchAction = (id) => {
         payload
     }
 }
-
-export const orderProductMobileAction = (id) => {
+export const orderSetDiscountAction = (id, percent) => {
     const payload = axios()
-        .get(API.PRODUCT_MOBILE, {'params': {'order': id}})
+        .post(sprintf(API.ORDER_SET_DISCOUNT, id), {'discount_price': _.toNumber(percent)})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_SET_DISCOUNT,
+        payload
+    }
+}
+
+export const orderProductMobileAction = (orderId, marketId, size) => {
+    const payload = axios()
+        .get(API.PRODUCT_MOBILE, {'params': {'order': orderId, 'market': marketId, 'page_size': size}})
         .then((response) => {
             return _.get(response, 'data')
         })

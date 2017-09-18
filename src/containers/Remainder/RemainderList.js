@@ -11,7 +11,6 @@ import sprintf from 'sprintf'
 import {reset} from 'redux-form'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
-
 import {
     RemainderGridList,
     REMAINDER_TRANSFER_DIALOG_OPEN,

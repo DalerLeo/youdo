@@ -48,6 +48,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'UsersFilterForm'])
         const createForm = _.get(state, ['form', 'UsersCreateForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterExp = filterHelper()
 
         return {
             list,
@@ -64,7 +65,8 @@ const enhance = compose(
             stockList,
             stockListLoading,
             marketList,
-            marketListLoading
+            marketListLoading,
+            filterExp
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -86,12 +88,12 @@ const enhance = compose(
         const nextCreateDialog = _.get(nextProps, ['location', 'query', USERS_CREATE_DIALOG_OPEN])
         const prevUpdateDialog = _.get(props, ['location', 'query', USERS_UPDATE_DIALOG_OPEN])
         const nextUpdateDialog = _.get(nextProps, ['location', 'query', USERS_UPDATE_DIALOG_OPEN])
-        return ((prevCreateDialog !== nextCreateDialog) || (prevUpdateDialog !== nextUpdateDialog)) &&
-            (nextCreateDialog === 'true' || nextUpdateDialog === 'true') && props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
+        return (prevCreateDialog !== nextCreateDialog || prevUpdateDialog !== nextUpdateDialog) &&
+            (nextCreateDialog === 'true' || nextUpdateDialog === 'true') && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+    }, ({dispatch, filterExp}) => {
         dispatch(userGroupListFetchAction())
-        dispatch(stockListFetchAction(filter))
-        dispatch(marketTypeListFetchAction(filter))
+        dispatch(stockListFetchAction(filterExp))
+        dispatch(marketTypeListFetchAction(filterExp))
     }),
 
     withHandlers({
@@ -277,7 +279,6 @@ const UsersList = enhance((props) => {
         }
         return {id: obj.id, selected: false}
     })
-
     const isSelectedStocks = _.map(_.get(stockList, 'results'), (obj) => {
         const userSelectedStock = _.find(_.get(detail, 'stocks'), {'id': obj.id})
         if (!openCreateDialog && _.get(userSelectedStock, 'id') === obj.id) {
@@ -332,6 +333,7 @@ const UsersList = enhance((props) => {
                 secondName: _.get(detail, 'secondName'),
                 phoneNumber: _.get(detail, 'phoneNumber'),
                 groups: isSelectedGroups,
+                radioStock: _.get(detail, ['stocks', '0', 'id']),
                 stocks: isSelectedStocks,
                 types: isSelectedMarkets,
                 region: _.get(detail, 'region'),

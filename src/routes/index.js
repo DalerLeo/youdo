@@ -26,7 +26,13 @@ import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
 import {ClientList} from '../containers/Client'
-import {ManufactureList} from '../containers/Manufacture'
+import {
+    ManufactureProductList,
+    ManufacturePersonList,
+    ManufactureEquipmentList,
+    ManufactureShipmentList,
+    ManufactureWrapper
+} from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
 import {StatStock} from '../containers/StatStock'
 import {StatDebtors} from '../containers/StatDebtors'
@@ -45,6 +51,7 @@ import {RemainderList} from '../containers/Remainder'
 import {
     StatSalesList,
     StatAgentList,
+    StatReturnList,
     StatProductList,
     StatMarketList,
     StatFinanceList,
@@ -338,17 +345,6 @@ export default {
                 }
             ]
         },
-        // Manufacture
-        {
-            path: ROUTES.MANUFACTURE_LIST_URL,
-            component: userIsAdminChain(ManufactureList),
-            childRoutes: [
-                {
-                    path: ROUTES.MANUFACTURE_ITEM_URL,
-                    component: userIsAuth(ManufactureList)
-                }
-            ]
-        },
         // Pending Expenses
         {
             path: ROUTES.PENDING_EXPENSES_LIST_URL,
@@ -455,6 +451,71 @@ export default {
                 }
             ]
         },
+        // Manufact
+        {
+            path: ROUTES.MANUFACT_PERSON,
+            component: userIsAdminChain(ManufactureWrapper),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACT_PRODUCT,
+                    component: userIsAdminChain(ManufactureProductList)
+                },
+                {
+                    path: ROUTES.MANUFACT_PERSON,
+                    component: userIsAdminChain(ManufacturePersonList)
+                }
+            ]
+        },
+        // Manufacture
+        {
+            path: ROUTES.MANUFACTURE_LIST_URL,
+            component: userIsAdminChain(ManufactureProductList),
+            childRoutes: []
+        },
+        // Manufacture Product
+        {
+            path: ROUTES.MANUFACTURE_PRODUCT_LIST_URL,
+            component: userIsAdminChain(ManufactureProductList),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACTURE_PRODUCT_ITEM_URL,
+                    component: userIsAuth(ManufactureProductList)
+                }
+            ]
+        },
+        // Manufacture Person
+        {
+            path: ROUTES.MANUFACTURE_PERSON_LIST_URL,
+            component: userIsAdminChain(ManufacturePersonList),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACTURE_PERSON_ITEM_URL,
+                    component: userIsAuth(ManufacturePersonList)
+                }
+            ]
+        },
+        // Manufacture Equipment
+        {
+            path: ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL,
+            component: userIsAdminChain(ManufactureEquipmentList),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACTURE_EQUIPMENT_ITEM_URL,
+                    component: userIsAuth(ManufactureEquipmentList)
+                }
+            ]
+        },
+        // Manufacture Shipment
+        {
+            path: ROUTES.MANUFACTURE_SHIPMENT_LIST_URL,
+            component: userIsAdminChain(ManufactureShipmentList),
+            childRoutes: [
+                {
+                    path: ROUTES.MANUFACTURE_SHIPMENT_ITEM_URL,
+                    component: userIsAuth(ManufactureShipmentList)
+                }
+            ]
+        },
         // Statistics
         {
             path: ROUTES.STATISTICS_LIST_URL,
@@ -481,6 +542,17 @@ export default {
                 {
                     path: ROUTES.STATISTICS_AGENT_ITEM_URL,
                     component: userIsAuth(StatAgentList)
+                }
+            ]
+        },
+        // Statistics/return
+        {
+            path: ROUTES.STATISTICS_RETURN_URL,
+            component: userIsAdminChain(StatReturnList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_RETURN_ITEM_URL,
+                    component: userIsAuth(StatReturnList)
                 }
             ]
         },

@@ -13,10 +13,10 @@ import {
     StockSearchField,
     ClientBalanceReturnProductList,
     TextField,
-    DivisionSearchField,
     PaymentTypeSearchField,
     ClientBalanceReturnTotalSum
 } from '../ReduxForm'
+import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import toCamelCase from '../../helpers/toCamelCase'
 
 const validate = (data) => {
@@ -231,7 +231,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, name} = props
+    const {open, handleSubmit, onClose, classes, name, clientId} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -243,7 +243,7 @@ const SupplyCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>ВОЗВРАТ ОТ {name}</span>
+                <span>Возврат от {name}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -267,11 +267,12 @@ const SupplyCreateDialog = enhance((props) => {
                                 </div>
                                 <div className={classes.condition}>
                                     <Field
-                                        name="division"
+                                        name="market"
                                         style={{lineHeight: '20px', fontSize: '13px'}}
-                                        component={DivisionSearchField}
+                                        component={MarketSearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Подразделение"
+                                        label="Магазин"
+                                        clientId={clientId}
                                         fullWidth={true}/>
                                 </div>
                                 <div className={classes.condition}>
@@ -308,7 +309,7 @@ const SupplyCreateDialog = enhance((props) => {
                     <div className={classes.bottomButton}>
                     <div>Общая сумма возврата: <ClientBalanceReturnTotalSum/></div>
                         <FlatButton
-                            label="Оформить заказ"
+                            label="Оформить возврат"
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

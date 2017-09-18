@@ -54,3 +54,20 @@ export const permissionItemFetchAction = (id) => {
         payload
     }
 }
+
+export const setDateAction = (formValues, id) => {
+    const requestData = serializers.setDateSerializer(formValues)
+    const payload = axios()
+        .put(sprintf(API.ACCESS_ITEM, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ACCESS_ITEM,
+        payload
+    }
+}

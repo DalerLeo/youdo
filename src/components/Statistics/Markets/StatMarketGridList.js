@@ -8,7 +8,7 @@ import LinearProgress from 'material-ui/LinearProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, DivisionSearchField} from '../../ReduxForm/index'
+import {TextField, DivisionSearchField, AgentSearchField} from '../../ReduxForm'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from '../StatSideMenu'
 import LinearLoading from '../../LinearProgress/index'
@@ -28,6 +28,7 @@ import dateFormat from '../../../helpers/dateFormat'
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
     DIVISION: 'division',
+    AGENT: 'agent',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
@@ -343,7 +344,6 @@ const StatMarketGridList = enhance((props) => {
                 <div key={id}>
                     <Row>
                         <Col xs={3}>
-                            <img src="http://www.shop-script.su/images/internet-biznes/market-store-icon.jpg" alt=""/>
                             <span>{name}</span>
                         </Col>
                         <Col xs={3}>{clientName}</Col>
@@ -375,7 +375,6 @@ const StatMarketGridList = enhance((props) => {
         return (
             <Row key={id} className="dottedList">
                 <Col xs={3}>
-                    <img src="http://www.shop-script.su/images/internet-biznes/market-store-icon.jpg" alt=""/>
                     <span>{name}</span>
                 </Col>
                 <Col xs={3}>{clientName}</Col>
@@ -418,6 +417,13 @@ const StatMarketGridList = enhance((props) => {
                                     component={DivisionSearchField}
                                     className={classes.inputFieldCustom}
                                     label="Подразделение"
+                                    fullWidth={true}
+                                />
+                                <Field
+                                    name="agent"
+                                    component={AgentSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Агент"
                                     fullWidth={true}
                                 />
                                 <Field

@@ -202,6 +202,7 @@ const OrderCreateDialog = enhance((props) => {
         listLoading,
         isUpdate,
         handleCheckedForm,
+        handleCheckedDefect,
         stock
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -255,14 +256,23 @@ const OrderCreateDialog = enhance((props) => {
                                             <Col xs={3}>{name}</Col>
                                             <Col xs={2}>{type}</Col>
                                             <Col xs={2}>{amount} {measurement}</Col>
-                                            <Col xs={1} onTouchTap={() => { handleCheckedForm(index, _.get(item, 'amount'), disable) }}>
-                                                <Tooltip position="left" text='Без браков'>
-                                                    <Field
-                                                        key={id}
-                                                        name={'stocks[' + index + '][selected]'}
-                                                        component={CheckBox}/>
-                                                </Tooltip>
-                                            </Col>
+                                            {isUpdate
+                                                ? <Col xs={1} onTouchTap={() => { handleCheckedDefect(index, _.get(item, 'amount')) }}>
+                                                    <Tooltip position="left" text='Без браков'>
+                                                        <Field
+                                                            key={id}
+                                                            name={'stocks[' + index + '][selected]'}
+                                                            component={CheckBox}/>
+                                                    </Tooltip>
+                                                </Col>
+                                                : <Col xs={1} onTouchTap={() => { handleCheckedForm(index, _.get(item, 'amount'), disable) }}>
+                                                    <Tooltip position="left" text='Без браков'>
+                                                        <Field
+                                                            key={id}
+                                                            name={'stocks[' + index + '][selected]'}
+                                                            component={CheckBox}/>
+                                                    </Tooltip>
+                                                </Col>}
                                             <Col xs={2}>
                                                 <Field
                                                     name={'product[' + index + '][accepted]'}

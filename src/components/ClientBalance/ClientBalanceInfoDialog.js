@@ -11,11 +11,13 @@ import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
+import Edit from 'material-ui/svg-icons/image/edit'
 import Pagination from '../ReduxForm/Pagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import * as ROUTES from '../../constants/routes'
+import Tooltip from '../ToolTip'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
 
@@ -27,7 +29,8 @@ import {
     CANCEL_ORDER_RETURN,
     EXPENSE,
     FIRST_BALANCE,
-    ORDER
+    ORDER,
+    NONE_TYPE
 } from '../../constants/clientBalanceInfo'
 const enhance = compose(
     injectSheet({
@@ -121,8 +124,13 @@ const enhance = compose(
                 fontWeight: '600'
             },
             '& > .row': {
+                '&:hover > div:last-child': {
+                    opacity: '1'
+                },
                 margin: '0',
                 padding: '15px 0',
+                alignItems: 'center',
+                position: 'relative',
                 '& > div': {
                     padding: '0 0.5rem',
                     '& a': {
@@ -144,6 +152,18 @@ const enhance = compose(
             '& .row:last-child:after': {
                 display: 'none'
             }
+        },
+        dottedList: {
+            '&:hover > div:last-child': {
+                opacity: '1'
+            }
+        },
+        iconBtn: {
+            display: 'flex',
+            position: 'absolute',
+            right: '-15px',
+            opacity: '0',
+            transition: 'all 200ms ease-out'
         }
     })
 )
@@ -156,20 +176,19 @@ const iconStyle = {
         lineHeight: 'normal'
     },
     button: {
-        width: 48,
-        height: 48,
-        '& > div': {
-            lineHeight: 'none'
-        }
+        width: 38,
+        height: 38,
+        padding: 0
     }
 }
+const THREE = 3
 const ClientBalanceInfoDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType} = props
+    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem} = props
+    const isSuperUser = _.get(superUser, 'isSuperUser')
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const loading = _.get(detailData, 'detailLoading')
     const detailList = _.map(_.get(detailData, 'data'), (item, index) => {
-        const id = _.get(item, 'order') || _.get(item, 'transaction') || _.get(item, 'orderReturn')
         const createdDate = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:MM')
         const comment = _.get(item, 'comment') || 'Комментариев нет'
         const currency = _.get(item, ['currency', 'name'])
@@ -179,6 +198,12 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const internal = _.toNumber(_.get(item, 'internal'))
         const user = _.get(item, 'user') ? (_.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])) : 'Система'
         const type = _.get(item, 'type')
+        const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
+
+        const openEditDialog = (thisItem) => {
+            superUser.handleOpenSuperUserDialog(thisItem.id)
+            setItem(thisItem)
+        }
 
         return (
             <Row key={index} className='dottedList'>
@@ -187,10 +212,10 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 </div>
                 <div style={{flexBasis: '16%', maxWidth: '16%'}}>{createdDate}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
-                <div style={{flexBasis: '45%', maxWidth: '45%'}}>
-                    <div>Магазин: <span>{market}</span></div>
+                <div style={{flexBasis: '40%', maxWidth: '40%'}}>
+                    {market && <div>Магазин: <span>{market}</span></div>}
                     <div>Комментарии: <span>{comment}</span></div>
-                    <div>Тип: <span>{type === PAYMENT ? 'Оплата'
+                    {type && <div>Тип: <span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
                             : type === CANCEL_ORDER ? 'Отмена заказа'
                                 : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
@@ -202,14 +227,28 @@ const ClientBalanceInfoDialog = enhance((props) => {
                                             : type === ORDER_RETURN ? <Link to={{
                                                 pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                                                 query: {search: id}
-                                            }} target="_blank">Возврат заказа {id}</Link>
-                                                : type === FIRST_BALANCE ? 'Первый баланс' : null }</span>
-                    </div>
+                                            }} target="_blank">Возврат {id}</Link>
+                                                : type === FIRST_BALANCE ? 'Первый баланс'
+                                                    : type === NONE_TYPE ? 'Произвольный' : null }</span>
+                    </div>}
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>
                     <div>{currency !== currentCurrency ? numberFormat(internal, currentCurrency) + customRate : null} </div>
                 </div>
+                {(isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
+                    <div className={classes.iconBtn}>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                touch={true}
+                                onTouchTap={() => { openEditDialog(item) }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                    </div>}
             </Row>)
     })
 
@@ -255,8 +294,9 @@ const ClientBalanceInfoDialog = enhance((props) => {
                             </div>
                             <div style={{flexBasis: '16%', maxWidth: '16%'}}>Дата</div>
                             <div style={{flexBasis: '20%', maxWidth: '20%'}}>Кто</div>
-                            <div style={{flexBasis: '45%', maxWidth: '45%'}}>Описание</div>
+                            <div style={{flexBasis: '40%', maxWidth: '40%'}}>Описание</div>
                             <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Сумма</div>
+                            <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}/>
                         </Row>
 
                         {!_.isEmpty(_.get(detailData, 'data')) ? detailList

@@ -24,6 +24,7 @@ import Loyalty from 'material-ui/svg-icons/action/loyalty'
 import Van from 'material-ui/svg-icons/maps/local-shipping'
 import Money from 'material-ui/svg-icons/maps/local-atm'
 import ToolTip from '../ToolTip'
+import NotFound from '../Images/not-found.png'
 
 const minutePerHour = 60
 const current = (_.toInteger(moment().format('H')) * minutePerHour) + _.toInteger(moment().format('m'))
@@ -135,8 +136,9 @@ const enhance = compose(
             }
         },
         content: {
-            padding: '20px 30px',
+            padding: '20px 30px 0',
             overflowY: 'auto',
+            overflowX: 'hidden',
             borderTop: '1px #efefef solid'
         },
         inputFieldCustom: {
@@ -204,12 +206,22 @@ const enhance = compose(
         activeAgent: {
             extend: 'agent',
             background: '#f4f4f4'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '175px',
+            padding: '175px 40px 0px',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666'
         }
     }),
-    withState('sliderValue', 'setSliderValue', current)
+    withState('sliderValue', 'setSliderValue', current),
+    withState('searchQuery', 'setSearchQuery', '')
 )
 
 const TrackingWrapper = enhance((props) => {
+    const NOT_FOUND = -1
     const ZERO = 0
     const {
         classes,
@@ -227,7 +239,9 @@ const TrackingWrapper = enhance((props) => {
         calendar,
         shopDetails,
         sliderValue,
-        setSliderValue
+        setSliderValue,
+        searchQuery,
+        setSearchQuery
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -290,6 +304,14 @@ const TrackingWrapper = enhance((props) => {
     const today = moment().format('YYYY-MM-DD')
     const urlDate = _.get(filter.getParams(), 'date') || moment().format('YYYY-MM-DD')
 
+    const handleSearch = (event) => {
+        setSearchQuery(event.target.value.toLowerCase())
+    }
+    const filteredList = orderedData.filter((el) => {
+        const searchValue = el.agent.toLowerCase()
+        return searchValue.indexOf(searchQuery) !== NOT_FOUND
+    })
+
     const zoneInfoToggle = (
         <div className={classes.trackingInfo}>
             <div className={classes.wrapper}>
@@ -335,20 +357,20 @@ const TrackingWrapper = enhance((props) => {
                         const groupId = _.get(tabData, 'groupId')
                         const icon = _.get(item, 'icon')
                         return (
-                        <ToolTip position="bottom" text={name} key={group}>
-                            <IconButton
-                                disableTouchRipple={true}
-                                className={(group === groupId) ? classes.activeTab : ''}
-                                onTouchTap={() => { tabData.handleClickTab(group) }}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}>
-                                {icon}
-                            </IconButton>
-                        </ToolTip>
+                            <ToolTip position="bottom" text={name} key={group}>
+                                <IconButton
+                                    disableTouchRipple={true}
+                                    className={(group === groupId) ? classes.activeTab : ''}
+                                    onTouchTap={() => { tabData.handleClickTab(group) }}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}>
+                                    {icon}
+                                </IconButton>
+                            </ToolTip>
                         )
                     })}
                 </div>
-                <TrackingAgentSearch filter={filter}/>
+                <TrackingAgentSearch filter={filter} handleSearch={handleSearch}/>
                 <div className={classes.content}>
                     {listLoading
                         ? <div className={classes.loader}>
@@ -356,35 +378,38 @@ const TrackingWrapper = enhance((props) => {
                                 <CircularProgress size={40} thickness={4}/>
                             </div>
                         </div>
-                        : <div className={classes.activeAgents}>
-                            {_.map(orderedData, (item) => {
-                                const id = _.get(item, 'id')
-                                const agent = _.get(item, 'agent')
-                                const FIVE_MIN = 350000
-                                const dateNow = _.toInteger(moment().format('x'))
-                                const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
-                                const difference = dateNow - registeredDate
-                                let isOnline = false
-                                if (difference <= FIVE_MIN) {
-                                    isOnline = true
-                                }
-                                const lastSeen = moment(registeredDate).fromNow()
+                        : (!_.isEmpty(filteredList) ? <div className={classes.activeAgents}>
+                                {_.map(filteredList, (item) => {
+                                    const id = _.get(item, 'id')
+                                    const agent = _.get(item, 'agent')
+                                    const FIVE_MIN = 350000
+                                    const dateNow = _.toInteger(moment().format('x'))
+                                    const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
+                                    const difference = dateNow - registeredDate
+                                    let isOnline = false
+                                    if (difference <= FIVE_MIN) {
+                                        isOnline = true
+                                    }
+                                    const lastSeen = moment(registeredDate).fromNow()
 
-                                return (
-                                    <div key={id} className={(id === agentId) ? classes.activeAgent : classes.agent}>
-                                        <Link to={{
-                                            pathname: sprintf(ROUTES.TRACKING_ITEM_PATH, id),
-                                            query: filter.getParams()
-                                        }}>
-                                        </Link>
-                                        <Dot style={isOnline ? {color: '#81c784'} : {color: '#666'}}/>
-                                        <span>{agent}</span>
-                                        {!isOnline && <i>({lastSeen})</i>}
-                                    </div>
-                                )
-                            })
-                            }
-                        </div>}
+                                    return (
+                                        <div key={id} className={(id === agentId) ? classes.activeAgent : classes.agent}>
+                                            <Link to={{
+                                                pathname: sprintf(ROUTES.TRACKING_ITEM_PATH, id),
+                                                query: filter.getParams()
+                                            }}>
+                                            </Link>
+                                            <Dot style={isOnline ? {color: '#81c784'} : {color: '#666'}}/>
+                                            <span>{agent}</span>
+                                            {!isOnline && <i>({lastSeen})</i>}
+                                        </div>
+                                    )
+                                })
+                                }
+                            </div>
+                            : <div className={classes.emptyQuery}>
+                                <div>По вашему запросу сотрудников не найдено...</div>
+                            </div>)}
                 </div>
             </div>
             {openShopDetail &&

@@ -40,17 +40,8 @@ const enhance = compose(
             '& > div': {
                 width: 'auto',
                 border: 'none',
-                padding: '0',
-                maxHeight: '573px',
-                '& > div > div:last-child > div > div:first-child': {
-                    maxHeight: '465px',
-                    overflowY: 'auto',
-                    margin: '0 -30px',
-                    padding: '0 30px'
-                },
-                '& > div > div:last-child > div > div:last-child': {
-                    padding: '0'
-                }
+                overflow: 'hidden',
+                padding: '0'
             }
         },
         titleSummary: {
@@ -154,7 +145,8 @@ const PopoverDialog = enhance((props) => {
             contentStyle={loading ? {width: '500px'} : {width: '1000px', maxWidth: 'unset'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
-            {loading ? <div className={classes.loader}>
+            {loading
+                ? <div className={classes.loader}>
                     <CircularProgress/>
                 </div>
                 : <div className={classes.content}>

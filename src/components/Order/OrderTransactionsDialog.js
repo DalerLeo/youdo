@@ -12,7 +12,6 @@ import CloseIcon2 from '../CloseIcon2'
 import numberFormat from '../../helpers/numberFormat'
 import moment from 'moment'
 import noPayment from '../Images/noPayment.png'
-import dateFormat from '../../helpers/dateFormat'
 import getConfig from '../../helpers/getConfig'
 import NotFound from '../Images/not-found.png'
 
@@ -138,6 +137,9 @@ const OrderTransactionsDialog = enhance((props) => {
     const {open, loading, onClose, classes, paymentData} = props
     const orderId = _.get(paymentData, 'id')
     const data = _.get(paymentData, ['data', 'results'])
+    const dateTimeFormat = (date, defaultText) => {
+        return (date) ? moment(date).locale('ru').format('DD MMM YYYY, HH:mm') : defaultText
+    }
     return (
         <Dialog
             modal={true}
@@ -173,15 +175,15 @@ const OrderTransactionsDialog = enhance((props) => {
 
                                     const whoFirst = _.get(item, ['clientTransaction', 'user', 'firstName'])
                                     const whoSecond = _.get(item, ['clientTransaction', 'user', 'secondName'])
-                                    const who = whoFirst + ' ' + whoSecond
+                                    const who = _.get(item, 'clientTransaction') ? (whoFirst + ' ' + whoSecond) : 'Не указано'
                                     const currency = _.get(item, ['clientTransaction', 'currency', 'name'])
                                     const currentCurrency = getConfig('PRIMARY_CURRENCY')
                                     const cashbox = _.get(item, ['clientTransaction', 'transaction']) || 'Не принято'
                                     const type = _.toInteger(_.get(item, 'type'))
 
-                                    const payDate = dateFormat(_.get(item, ['clientTransaction', 'createdDate'])) + moment(_.get(item, ['clientTransaction', 'createdDate'])).format(' HH:MM')
-                                    const amount = _.toNumber(_.get(item, ['clientTransaction', 'amount']))
+                                    const payDate = _.get(item, 'clientTransaction') ? dateTimeFormat(_.get(item, ['clientTransaction', 'createdDate'])) : dateTimeFormat(_.get(item, 'createdDate'))
                                     const orderSum = numberFormat(_.get(item, 'amount'), currentCurrency)
+                                    const amount = type === BALANCE ? _.get(item, 'amount') : _.toNumber(_.get(item, ['clientTransaction', 'amount']))
                                     const internal = _.toNumber(_.get(item, ['clientTransaction', 'internal']))
                                     const pp = '(' + numberFormat(internal, currentCurrency) + ')'
 

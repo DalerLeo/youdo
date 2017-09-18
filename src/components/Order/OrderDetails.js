@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import sprintf from 'sprintf'
 import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
@@ -16,6 +16,7 @@ import RightSide from './OrderDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import PrintIcon from 'material-ui/svg-icons/action/print'
+import MoneyOffIcon from 'material-ui/svg-icons/editor/money-off'
 import ConfirmDialog from '../ConfirmDialog'
 import Tooltip from '../ToolTip'
 import moment from 'moment'
@@ -23,9 +24,11 @@ import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import StatRightSide from './OrderStatDetailsRightSide'
 import OrderCreateDialog from './OrderCreateDialog'
+import OrderSetDiscountDialog from './OrderSetDiscountDialog'
 
 const ZERO = 0
 
+const popupWidth = 210
 const enhance = compose(
     injectSheet({
         dottedList: {
@@ -91,6 +94,7 @@ const enhance = compose(
             zIndex: '1'
         },
         titleButtons: {
+            position: 'relative',
             display: 'flex',
             justifyContent: 'flex-end',
             zIndex: '3'
@@ -145,8 +149,34 @@ const enhance = compose(
                     top: '10px'
                 }
             }
+        },
+        discountPop: {
+            width: popupWidth + 'px',
+            position: 'absolute',
+            right: '55px',
+            top: '55px',
+            transformOrigin: '170px 0',
+            transition: 'all 200ms ease-out',
+            zIndex: '5'
+        },
+        arrow: {
+            top: -12,
+            right: 36,
+            position: 'absolute',
+            borderRight: '10px solid transparent',
+            borderBottom: '12px solid #fff',
+            borderLeft: '10px solid transparent',
+            zIndex: '2'
+        },
+        arrowShadow: {
+            extend: 'arrow',
+            top: -13,
+            filter: 'blur(1px)',
+            borderBottomColor: '#e0e0e0',
+            zIndex: '1'
         }
     }),
+    withState('openDiscountDialog', 'setOpenDiscountDialog', false)
 )
 
 const iconStyle = {
@@ -162,6 +192,7 @@ const iconStyle = {
     }
 }
 
+const hundred = 100
 const OrderDetails = enhance((props) => {
     const {classes,
         loading,
@@ -180,9 +211,13 @@ const OrderDetails = enhance((props) => {
         getDocument,
         returnData,
         handleCloseDetail,
-        canChangeAnyPrice
+        canChangeAnyPrice,
+        openDiscountDialog,
+        setOpenDiscountDialog,
+        handleSubmitDiscountDialog,
+        handleSubmitSetZeroDiscountDialog,
+        stat
     } = props
-
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
     const marketId = _.get(data, ['market', 'id']) || ZERO
@@ -207,11 +242,10 @@ const OrderDetails = enhance((props) => {
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const paymentType = _.get(data, 'paymentType')
     const totalBalance = _.get(data, 'totalBalance')
+    const productTotal = _.toNumber(_.get(data, 'totalPrice'))
+    const discountPrice = _.toNumber(_.get(data, 'discountPrice'))
+    const price = (discountPrice * hundred) / (productTotal + discountPrice)
 
-    let productTotal = _.toNumber(zero)
-    _.map(_.get(data, 'products'), (item) => {
-        productTotal += _.toNumber(_.get(item, 'totalPrice'))
-    })
     if (loading) {
         return (
             <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
@@ -230,6 +264,16 @@ const OrderDetails = enhance((props) => {
                 <div className={classes.titleLabel}>Заказ №{id}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
+                </div>
+                <div className={classes.discountPop} style={openDiscountDialog ? {transform: 'scale(1)'} : {transform: 'scale(0)'}}>
+                    <OrderSetDiscountDialog
+                        id={id}
+                        percent={price}
+                        handleSubmitSetZeroDiscountDialog={handleSubmitSetZeroDiscountDialog}
+                        setOpenDiscountDialog={setOpenDiscountDialog}
+                        onSubmit={handleSubmitDiscountDialog}/>
+                    <div className={classes.arrow}> </div>
+                    <div className={classes.arrowShadow}> </div>
                 </div>
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Добавить возврат">
@@ -260,6 +304,16 @@ const OrderDetails = enhance((props) => {
                             touch={true}
                             onTouchTap={updateDialog.handleOpenUpdateDialog}>
                             <Edit />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Скидка">
+                        <IconButton
+                            disabled={(status === CANCELED)}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { setOpenDiscountDialog(!openDiscountDialog) }}>
+                            <MoneyOffIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip position="bottom" text="Отменить">
@@ -327,7 +381,7 @@ const OrderDetails = enhance((props) => {
                                     <span>{(paymentType === '0') ? 'Наличными' : 'Перечислением'}</span>
                                 </li>
                                 <li>
-                                    <span>Стоимость товаров</span>
+                                    <span>Общая стоимость</span>
                                     <span>{numberFormat(productTotal, primaryCurrency)}</span>
                                 </li>
                                 <li>
@@ -410,7 +464,7 @@ const OrderDetails = enhance((props) => {
                 open={cancelOrderReturnDialog.openCancelOrderReturnDialog > ZERO}/>
             }
 
-            <OrderCreateDialog
+            {!stat && <OrderCreateDialog
                 isUpdate={true}
                 status={status}
                 canChangeAnyPrice={canChangeAnyPrice}
@@ -419,7 +473,8 @@ const OrderDetails = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
+            />}
+
         </div>
     )
 })
@@ -433,7 +488,7 @@ OrderDetails.propTypes = {
     }),
     data: PropTypes.object.isRequired,
     returnData: PropTypes.array,
-    loading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     returnDialog: PropTypes.shape({
         returnLoading: PropTypes.bool,
         openReturnDialog: PropTypes.bool,

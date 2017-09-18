@@ -316,8 +316,8 @@ const ManufactureShowBom = enhance((props) => {
 })
 
 ManufactureShowBom.propTypes = {
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
+    open: PropTypes.bool,
+    onClose: PropTypes.func,
     onSubmit: PropTypes.func,
     loading: PropTypes.bool
 }

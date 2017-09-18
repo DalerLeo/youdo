@@ -103,7 +103,7 @@ const TransactionSendDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 component={CashboxTypeSearchField}
                                 cashbox={cashbox}
-                                label="Касса получатель аыыав"
+                                label="Касса получатель"
                                 fullWidth={true}/>
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
                                 {cashbox && <Field

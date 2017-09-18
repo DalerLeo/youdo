@@ -3,12 +3,13 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
-import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Add from 'material-ui/svg-icons/content/add'
+import Tooltip from '../ToolTip'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -255,12 +256,11 @@ const ShopDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'name'])
-    const firstName = _.get(data, ['createdBy', 'firstName'])
-    const secondName = _.get(data, ['createdBy', 'secondName'])
-    let createdBy = firstName + ' ' + secondName
-    if (!firstName && !secondName) {
-        createdBy = 'Неизвестно'
-    }
+    const createdBy = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName']) || 'Неизвестно'
+    const createdDate = _.get(data, 'createdDate') ? moment(_.get(data, 'createdDate')).format('YY:MM:DD') : 'Неизвестно'
+    const changedDate = _.get(data, 'modifiedDate') ? moment(_.get(data, 'modifiedDate')).format('YY:MM:DD') : 'Неизвестно'
+    const changedBy = _.get(data, 'changedBy') ? _.get(data, ['changedBy', 'firstName']) + ' ' + _.get(data, ['changedBy', 'secondName'])
+        : 'Неизвестно'
     const shopType = _.get(data, ['marketType', 'name'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
@@ -377,12 +377,18 @@ const ShopDetails = enhance((props) => {
                     <ul className={classes.details}>
                         <li>Клиент</li>
                         <li>Создал</li>
+                        <li>Дата создания</li>
+                        <li>Изменил</li>
+                        <li>Изменил</li>
                         <li>Тип заведения</li>
                         <li>Зона</li>
                     </ul>
                     <ul className={classes.details}>
                         <li>{client}</li>
                         <li>{createdBy}</li>
+                        <li>{createdDate}</li>
+                        <li>{changedBy}</li>
+                        <li>{changedDate}</li>
                         <li>{shopType}</li>
                         <li>{!zone ? <span className="redFont">Не определена</span> : zone}</li>
                     </ul>

@@ -153,7 +153,6 @@ const OrderPrint = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             {_.map(_.get(listPrintData, 'data'), (item) => {
-                let totalAmount = Number('0')
                 const id = _.get(item, 'id')
                 const marketName = _.get(item, ['market', 'name'])
                 const marketAddress = _.get(item, ['market', 'address'])
@@ -168,6 +167,9 @@ const OrderPrint = enhance((props) => {
                 const dealType = dealTypeFormat(_.get(item, 'dealType'))
                 const currentCurrency = getConfig('PRIMARY_CURRENCY')
                 const firstMeasure = _.get(item, ['products', '0', 'product', 'measurement', 'name'])
+                const totalAmount = _.sumBy(_.get(item, 'products'), (o) => {
+                    return _.toNumber(_.get(o, 'amount'))
+                })
 
                 return (
                     <div key={id} className="printItem">
@@ -227,7 +229,6 @@ const OrderPrint = enhance((props) => {
                                 const isBonus = _.get(product, ['isBonus'])
                                 const price = numberFormat(_.get(product, 'price'))
                                 const amount = numberFormat(_.get(product, 'amount'), measurment)
-                                totalAmount += Number(_.get(product, 'amount'))
                                 if (formattedAmount) {
                                     formattedAmount = (firstMeasure === measurment)
                                 }
