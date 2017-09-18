@@ -179,9 +179,6 @@ const PlanAddCalendar = enhance((props) => {
                                     <div key={index} className={classes.weekDayDisabled}>{formattedDay}</div>
                                 )
                             }
-                            if (currentMonth === outputMonth) {
-                                console.warn(formattedDay)
-                            }
                             return (
                                 <div
                                     key={index}
