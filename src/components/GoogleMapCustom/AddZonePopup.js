@@ -8,7 +8,6 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import FlatButton from 'material-ui/FlatButton'
 import {TextField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
-import toBoolean from '../../helpers/toBoolean'
 import injectSheet from 'react-jss'
 import {compose, withHandlers} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
@@ -109,7 +108,6 @@ const enhance = compose(
 )
 const AddZonePopup = enhance((props) => {
     const {
-        filter,
         classes,
         onClose,
         handleSubmit,
@@ -120,8 +118,6 @@ const AddZonePopup = enhance((props) => {
         isDrawing
     } = props
     const submitZone = handleSubmit(() => props.onSubmit(data()).catch(validate))
-    const isDraw = toBoolean(_.get(filter.getParams(), 'draw'))
-    console.warn(isDrawing)
     return (
         <div>
             <Paper zDepth={1} className={classes.addZoneWrapper}>

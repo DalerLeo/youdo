@@ -116,7 +116,7 @@ const enhance = compose(
 )
 
 const ConfirmDialog = enhance((props) => {
-    const {open, onClose, classes, type, message, onSubmit, loading, deleteZone} = props
+    const {open, onClose, classes, type, message, onSubmit, loading} = props
     const typesList = {
         delete: {
             name: 'Подтверждение удаления', submitName: 'Удалить', text: 'Вы уверены что хотите удалить эти данные?'
@@ -167,7 +167,6 @@ const ConfirmDialog = enhance((props) => {
                         primary={true}
                         onTouchTap={() => {
                             onSubmit()
-
                         }}
                     />
                 </div>

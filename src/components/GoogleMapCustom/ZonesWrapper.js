@@ -330,11 +330,6 @@ const ZonesWrapper = enhance((props) => {
         isOpenConfirm = true
     }
 
-    let isOpenDeleteZone = false
-    if (_.get(deleteZone, 'openDeleteZone') > ZERO) {
-        isOpenDeleteZone = true
-    }
-
     const iconButton = (
         <IconButton
             iconStyle={iconStyle.icon}

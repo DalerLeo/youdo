@@ -1,4 +1,6 @@
-/* eslint:disable */
+/* eslint no-undef: 0 */
+/* eslint no-new: 0 */
+/* eslint no-unused-vars: 0 */
 
 import React from 'react'
 import Script from 'react-load-script'
@@ -175,9 +177,7 @@ export default class GoogleCustomMap extends React.Component {
     createOverlays (meanLat, meanLng, title) {
         this.overlayView = new google.maps.OverlayView()
         this.overlayView.setMap(this.map)
-        console.warn('aaaaabbbbbb')
         this.overlayView.onAdd = () => {
-            console.warn('ccccccccc')
             let containerElement = document.createElement('div')
             containerElement.style.borderStyle = 'none'
             containerElement.style.borderWidth = '0px'
@@ -186,10 +186,8 @@ export default class GoogleCustomMap extends React.Component {
             return containerElement
         }
         this.overlayView.draw = () => {
-            console.warn('aaaaaaaaaaa')
             let overlayEl = this.overlayView
             let mapPanes = overlayEl.getPanes()
-            console.warn(mapPanes)
             let mapCanvasProjection = overlayEl.getProjection()
             const bounds = new google.maps.LatLngBounds(
                 new google.maps.LatLng(meanLat, meanLng))
@@ -201,11 +199,10 @@ export default class GoogleCustomMap extends React.Component {
             div.innerHTML = title
             let mapPaneName = 'overlayLayer'
             mapPanes[mapPaneName].appendChild(div)
-            console.warn(div)
         }
 
         this.overlayView.onRemove = () => {
-            console.warn('ddddd')
+            this.overlayView.setMap(null)
         }
     }
 
