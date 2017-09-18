@@ -125,14 +125,21 @@ const PlanAddCalendar = enhance((props) => {
     const DAYS_PER_WEEK = 7
     const ONE = 1
 
+    // .. const daysInMonth = moment(selectedMonth).daysInMonth()
+    // .. const firstDayWeek = moment(moment(selectedMonth).format('YYYY-MM-01')).isoWeekday()
+
     let calendarDays = []
     for (let week = startWeek; week <= endWeek; week++) {
         calendarDays.push({
             week: week,
-            days: new Array(DAYS_PER_WEEK).fill(ONE).map((n, i) => moment().week(week).startOf('week').clone().add(n + i, 'day'))
+            days: new Array(DAYS_PER_WEEK).fill(ONE).map((n, i) => {
+                return moment().week(week).startOf('week').clone().add(n + i, 'day')
+            })
         })
     }
-
+    // .. for (let j = 0; j < firstDayWeek; j++) {
+    // ..    console.warn(j)
+    // }
     return (
         <div className={classes.dateBlock}>
             <div className={classes.titleDate}>
