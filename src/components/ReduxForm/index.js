@@ -29,6 +29,7 @@ import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
 import PaymentTypeSearchField from './PaymentTypeSearchField'
 import StockTypeSearchField from './Stock/StockTypeSearchField'
 import CashboxSearchField from './Cashbox/CashboxSearchField'
+import CashboxByCurrencySearchField from './Cashbox/CashboxByCurrencySearchField'
 import CashboxTypeSearchField from './Cashbox/CashboxTypeSearchField'
 import DeliveryTypeSearchField from './DeliveryTypeSearchField'
 import ManufactureSearchField from './Manufacture/ManufactureSearchField'
@@ -118,6 +119,7 @@ export {
     StockTypeSearchField,
     CashboxSearchField,
     CashboxTypeSearchField,
+    CashboxByCurrencySearchField,
     CashboxCustomField,
     CashboxCashCustomField,
     CashboxBankCustomField,
