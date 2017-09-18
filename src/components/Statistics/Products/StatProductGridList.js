@@ -16,6 +16,10 @@ import NotFound from '../../Images/not-found.png'
 import StatProductFilterForm from './StatProductFilterForm'
 import GridListHeader from '../../GridList/GridListHeader/index'
 import Tooltip from '../../ToolTip'
+import {reduxForm, Field} from 'redux-form'
+import {TextField} from '../../ReduxForm/index'
+import IconButton from 'material-ui/IconButton'
+import Search from 'material-ui/svg-icons/action/search'
 
 const enhance = compose(
     injectSheet({
@@ -104,7 +108,31 @@ const enhance = compose(
                 height: '50px !important',
                 color: '#999 !important'
             }
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        form: {
+            display: 'flex',
+            alignItems: 'center',
+            width: '30%'
         }
+    }),
+    reduxForm({
+        form: 'StatProductForm',
+        enableReinitialize: true
     }),
 )
 const listHeader = [
@@ -148,9 +176,24 @@ const StatProductGridList = enhance((props) => {
         filter,
         handleSubmitFilterDialog,
         getDocument,
-        filterForm
+        filterForm,
+        handleSubmit,
+        searchSubmit
     } = props
 
+    const iconStyle = {
+        icon: {
+            color: '#5d6474',
+            width: 22,
+            height: 22
+        },
+        button: {
+            minWidth: 40,
+            width: 40,
+            height: 40,
+            padding: 0
+        }
+    }
     const listLoading = _.get(listData, 'listLoading')
 
     const list = _.map(_.get(listData, 'data'), (item) => {
@@ -190,7 +233,24 @@ const StatProductGridList = enhance((props) => {
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
                         <StatProductFilterForm onSubmit={handleSubmitFilterDialog} getDocument={getDocument} initialValues={filterForm.initialValues}/>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <form className={classes.form} onSubmit={handleSubmit(searchSubmit)}>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="search"
+                                    component={TextField}
+                                    label="Поиск"
+                                    fullWidth={true}/>
+                                <IconButton
+                                    className={classes.searchButton}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    type="submit">
+                                    <Search/>
+                                </IconButton>
+                            </form>
                         <Pagination filter={filter}/>
+                        </div>
                         {listLoading
                         ? <div className={classes.loader}>
                             <CircularProgress size={40} thickness={4} />

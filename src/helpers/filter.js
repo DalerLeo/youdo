@@ -204,8 +204,8 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openSetDiscountDialog: null,
             openSuperUser: null,
             popType: null,
-            openStockSupplyDialog: null
-
+            openStockSupplyDialog: null,
+            openStatReturnDialog: null
         }))
     }
 

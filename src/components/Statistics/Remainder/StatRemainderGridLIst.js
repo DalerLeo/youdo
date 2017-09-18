@@ -60,6 +60,7 @@ const enhance = compose(
             }
         },
         tableWrapper: {
+            borderTop: '1px solid #efefef',
             height: 'calc(100% - 118px)',
             '& .row': {
                 '&:after': {
@@ -193,6 +194,11 @@ const enhance = compose(
                 height: '50px !important',
                 color: '#999 !important'
             }
+        },
+        searchForm: {
+            display: 'flex',
+            alignItems: 'center',
+            width: '30%'
         }
     }),
     reduxForm({
@@ -315,12 +321,6 @@ const StatRemainderGridList = enhance((props) => {
                                     component={ProductTypeChildSearchField}
                                     label="Подкатегория"
                                     fullWidth={true}/>}
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="search"
-                                    component={TextField}
-                                    label="Поиск"
-                                    fullWidth={true}/>
                                 <IconButton
                                     className={classes.searchButton}
                                     iconStyle={iconStyle.icon}
@@ -343,8 +343,24 @@ const StatRemainderGridList = enhance((props) => {
                                 <div>По вашему запросу ничего не найдено</div>
                             </div>
                             : <div>
-                                <Pagination filter={filter}/>
-
+                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                    <form onSubmit={handleSubmit(onSubmit)} className={classes.searchForm}>
+                                        <Field
+                                            className={classes.inputFieldCustom}
+                                            name="search"
+                                            component={TextField}
+                                            label="Поиск"
+                                            fullWidth={true}/>
+                                        <IconButton
+                                            className={classes.searchButton}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            type="submit">
+                                            <Search/>
+                                        </IconButton>
+                                    </form>
+                                    <Pagination filter={filter}/>
+                                </div>
                                 <div className={classes.tableWrapper}>
                                 {headers}
                                 {list}
