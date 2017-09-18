@@ -5,8 +5,6 @@ const BIND_AGENT = 'openBindAgent'
 const TOGGLE_INFO = 'openInfo'
 const CONFIRM_DIALOG = 'unbindAgent'
 const DELETE_ZONE = 'deleteZone'
-const DRAW = 'draw'
-const ZONE_ID = 'zoneId'
 
 export {
     ADD_ZONE,
@@ -15,7 +13,5 @@ export {
     TOGGLE_INFO,
     BIND_AGENT,
     CONFIRM_DIALOG,
-    ZonesWrapper,
-    DRAW,
-    ZONE_ID
+    ZonesWrapper
 }
