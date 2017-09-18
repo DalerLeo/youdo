@@ -129,10 +129,11 @@ const PlanAddCalendar = enhance((props) => {
     for (let week = startWeek; week <= endWeek; week++) {
         calendarDays.push({
             week: week,
-            days: new Array(DAYS_PER_WEEK).fill(ONE).map((n, i) => moment().week(week).startOf('week').clone().add(n + i, 'day'))
+            days: new Array(DAYS_PER_WEEK).fill(ONE).map((n, i) => {
+                return moment().week(week).startOf('week').clone().add(n + i, 'day')
+            })
         })
     }
-
     return (
         <div className={classes.dateBlock}>
             <div className={classes.titleDate}>
@@ -177,6 +178,9 @@ const PlanAddCalendar = enhance((props) => {
                                 return (
                                     <div key={index} className={classes.weekDayDisabled}>{formattedDay}</div>
                                 )
+                            }
+                            if (currentMonth === outputMonth) {
+                                console.warn(formattedDay)
                             }
                             return (
                                 <div
