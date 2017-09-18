@@ -10,7 +10,16 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {ClientSearchField, MarketSearchField, UsersSearchField, TextField, ProductSearchField, ReturnStatusSearchField, ReturnTypeSearchField} from '../ReduxForm'
+import {
+    ClientSearchField,
+    MarketSearchField,
+    UsersSearchField,
+    TextField,
+    ProductSearchField,
+    ReturnStatusSearchField,
+    ReturnTypeSearchField,
+    DivisionSearchField
+} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -26,7 +35,8 @@ export const RETURN_FILTER_KEY = {
     CODE: 'code',
     PRODUCT: 'product',
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    TO_DATE: 'toDate',
+    DIVISION: 'division'
 }
 
 const enhance = compose(
@@ -145,7 +155,7 @@ const enhance = compose(
 )
 
 const ReturnFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -185,10 +195,11 @@ const ReturnFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="order" component={TextField} label="№ Заказа"/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Продукт"/>
+                        <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>
                         <Field className={classes.inputFieldCustom} name="code" component={TextField} label="Код"/>
                         <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusSearchField} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="type" component={ReturnTypeSearchField} label="Тип"/>
