@@ -25,6 +25,7 @@ import {
 } from '../../actions/return'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -135,9 +136,9 @@ const enhance = compose(
             const fromDate = _.get(filterForm, ['values', 'data', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const order = _.get(filterForm, ['values', 'order', 'value']) || null
+            const order = _.get(filterForm, ['values', 'order']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const status = _.get(filterForm, ['values', 'status', 'value']) || null
+            const status = _.get(filterForm, ['values', 'status', 'value']) === ZERO ? '0' : _.get(filterForm, ['values', 'status', 'value']) || null
             const market = _.get(filterForm, ['values', 'market', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
