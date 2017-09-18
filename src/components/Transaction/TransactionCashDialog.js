@@ -192,8 +192,12 @@ const TransactionCashDialog = enhance((props) => {
                         <Col xs={2}>{order}</Col>
                         <Col xs={3}>
                             <div>{numberFormat(amount, currency)}</div>
-                            <div>{currency !== primaryCurrency && customRate ? '(internal ' + numberFormat(customRate, primaryCurrency) + ')'
-                                : (!customRate ? '(internal ' + numberFormat((amount / internal), primaryCurrency) + ')' : null) }</div>
+                            <div>{currency !== primaryCurrency
+                                ? customRate
+                                    ? '(внутренний ' + numberFormat(customRate, primaryCurrency) + ')'
+                                    : '(внутренний ' + numberFormat((amount / internal), primaryCurrency) + ')'
+                                : null }</div>
+
                         </Col>
                     </Row>
 

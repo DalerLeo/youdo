@@ -3,7 +3,6 @@ import {orderingSnakeCase} from '../../helpers/serializer'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 
 const ZERO = 0
-const ONE = 1
 const MINUS_ONE = -1
 
 export const createIncomeSerializer = (data, cashboxId) => {
@@ -59,8 +58,7 @@ export const listFilterSerializer = (data, cashbox) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const newCashbox = (cashbox && cashbox > ZERO) ? cashbox : null
-    const payType = _.get(defaultData, 'type')
-    const type = (payType) ? (_.toNumber(payType) === ONE) ? 'out' : 'in' : null
+    const type = _.get(defaultData, 'type')
     return {
         'division': _.get(defaultData, 'division'),
         'created_date_0': _.get(defaultData, 'fromDate'),

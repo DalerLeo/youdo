@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
+import {Link} from 'react-router'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import Tooltip from '../ToolTip'
@@ -12,6 +13,7 @@ import TransactionFilterForm from './TransactionFilterForm'
 import TransactionCreateDialog from './TransactionCreateDialog'
 import TransactionSendDialog from './TransactionSendDialog'
 import TransactionCashDialog from './TransactionCashDialog'
+import TransactionInfoDialog from './TransactionInfoDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -27,6 +29,12 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
+import sprintf from 'sprintf'
+import {
+    ORDER,
+    INCOME_FROM_AGENT,
+    formattedType
+} from '../../constants/transactionTypes'
 
 const enhance = compose(
     injectSheet({
@@ -124,6 +132,11 @@ const enhance = compose(
             '& > div': {
                 padding: '0 5px'
             }
+        },
+        clickable: {
+            cursor: 'pointer',
+            color: '#00C0EF',
+            fontWeight: '500'
         }
     }),
 )
@@ -146,7 +159,8 @@ const TransactionGridList = enhance((props) => {
         detailData,
         cashBoxDialog,
         classes,
-        paymentData
+        paymentData,
+        transactionInfoDialog
     } = props
 
     const transactionFilterDialog = (
@@ -210,13 +224,14 @@ const TransactionGridList = enhance((props) => {
         const type = _.get(item, 'amount') || 'N/A'
         const cashbox = _.get(item, 'cashbox') || 'N/A'
         const user = _.get(item, 'user')
+        const order = _.get(item, 'order')
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name') : null
         const clientName = _.get(item, ['client', 'name']) || 'Не указан'
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
-
+        const transType = _.get(item, ['type'])
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />
@@ -232,6 +247,17 @@ const TransactionGridList = enhance((props) => {
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
                     {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div>
                         : ((!_.get(item, 'expanseCategory') && !_.get(item, 'client') && user) ? 'Оплата с ' + _.get(user, 'firstName') + ' ' + _.get(user, 'secondName') : null)}
+                    {transType &&
+                    <div><span style={{fontWeight: '600'}}>Тип:</span> {transType === ORDER
+                                    ? <Link to={{
+                                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
+                                        query: {search: order}
+                                    }} target="_blank"><span className={classes.clickable}> {formattedType[transType]}</span></Link>
+                                    : (transType === INCOME_FROM_AGENT)
+                                        ? <span className={classes.clickable} onClick={() => { transactionInfoDialog.handleOpenDialog(id) }}> {formattedType[transType]}</span>
+                                        : <span> {formattedType[transType]}</span>}
+
+                    </div>}
                     <div>{comment}</div>
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{createdDate}</div>
@@ -435,6 +461,12 @@ const TransactionGridList = enhance((props) => {
                         cashBoxDialog={cashBoxDialog}
                         acceptCashDialog={acceptCashDialog}
                     />
+                    <TransactionInfoDialog
+                        open={transactionInfoDialog.open}
+                        onClose={transactionInfoDialog.handleCloseDialog}
+                        data={transactionInfoDialog.data}
+                        loading={transactionInfoDialog.loading}
+                    />
                 </div>
             </div>
         </Container>
@@ -508,6 +540,12 @@ TransactionGridList.propTypes = {
         handleOpenCashDialog: PropTypes.func.isRequired,
         handleCloseCashDialog: PropTypes.func.isRequired,
         handleSubmitCashDialog: PropTypes.func.isRequired
+    }).isRequired,
+    transactionInfoDialog: PropTypes.shape({
+        data: PropTypes.array,
+        open: PropTypes.number.isRequired,
+        handleOpenDialog: PropTypes.func.isRequired,
+        handleCloseDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
