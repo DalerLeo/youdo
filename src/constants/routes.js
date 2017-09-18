@@ -295,3 +295,8 @@ export const PERMISSION = 'permission'
 export const PERMISSION_LIST_URL = `/${PERMISSION}`
 export const PERMISSION_ITEM_URL = `/${PERMISSION}/:itemId`
 export const PERMISSION_ITEM_PATH = `/${PERMISSION}/%d`
+
+export const GOOGLE_CUSTOM = 'googleMap'
+export const GOOGLE_CUSTOM_LIST_URL = `/${GOOGLE_CUSTOM}`
+export const GOOGLE_CUSTOM_ITEM_URL = `/${GOOGLE_CUSTOM}/:itemId`
+export const GOOGLE_CUSTOM_ITEM_PATH = `/${GOOGLE_CUSTOM}/%d`

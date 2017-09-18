@@ -461,7 +461,7 @@ const OrderListProductField = enhance((props) => {
                             stripedRows={false}>
                             {_.map(products, (item, index) => {
                                 const product = _.get(item, ['product', 'value', 'name'])
-                                const itemMeasurement = _.get(item, 'measurement') || ''
+                                const itemMeasurement = _.get(item, 'measurement') || _.get(item, ['product', 'value', 'measurement', 'name'])
                                 const cost = _.toNumber(_.get(item, 'cost'))
                                 const amount = _.toNumber(_.get(item, 'amount'))
                                 const isEditable = _.get(item, 'customPrice')

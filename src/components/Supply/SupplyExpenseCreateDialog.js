@@ -12,7 +12,7 @@ import CloseIcon2 from '../CloseIcon2'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CurrencySearchField, CheckBox, normalizeNumber} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
-import ProductSearchField from '../ReduxForm/Product/ProductSearchField'
+import SupplyProductsSearchField from '../ReduxForm/Supply/SupplyProductsSearchField'
 import {connect} from 'react-redux'
 
 export const SUPPLY_EXPENSE_CREATE_DIALOG_OPEN = 'openSupplyExpenseCreateDialog'
@@ -113,7 +113,7 @@ const ExpenseCreateDialog = enhance((props) => {
                             {isChecked && <Field
                                 name="product"
                                 label="Наименование товара"
-                                component={ProductSearchField}
+                                component={SupplyProductsSearchField}
                                 className={classes.inputFieldCustom}
                                 fullWidth={true}
                             />}

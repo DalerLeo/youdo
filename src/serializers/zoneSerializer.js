@@ -22,6 +22,33 @@ export const updateSerializer = (data) => {
     }
 }
 
+export const createCustomSerializer = (title, points) => {
+    const firstCoordinate = _.first(points)
+    let cordinates = points
+    cordinates.push(firstCoordinate)
+    return {
+        title,
+        'coordinates': {
+            'type': 'Polygon',
+            'coordinates': [cordinates]
+        }
+    }
+}
+
+export const updateCustomSerializer = (title, points) => {
+    const firstCoordinate = _.first(points)
+    let cordinates = points
+    cordinates.push(firstCoordinate)
+
+    return {
+        title,
+        'coordinates': {
+            'type': 'Polygon',
+            'coordinates': [cordinates]
+        }
+    }
+}
+
 export const bindAgentSerializer = (data) => {
     const agent = _.get(data, ['user', 'value'])
 

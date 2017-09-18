@@ -71,6 +71,7 @@ import {ActivityList} from '../containers/Activity'
 import {DivisionList} from '../containers/Division'
 import {JoinList} from '../containers/Join'
 import {PermissionList} from '../containers/Permission'
+import {GoogleMapCustom} from '../containers/GoogleMapCustom'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -733,6 +734,17 @@ export default {
                 {
                     path: ROUTES.PERMISSION_ITEM_URL,
                     component: userIsAuth(PermissionList)
+                }
+            ]
+        },
+        // Maps
+        {
+            path: ROUTES.GOOGLE_CUSTOM_LIST_URL,
+            component: userIsAuth(GoogleMapCustom),
+            childRoutes: [
+                {
+                    path: ROUTES.GOOGLE_CUSTOM_ITEM_URL,
+                    component: userIsAuth(GoogleMapCustom)
                 }
             ]
         },

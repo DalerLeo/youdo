@@ -139,6 +139,7 @@ const enhance = compose(
 const OrderPrint = enhance((props) => {
     const {classes, printDialog, listPrintData} = props
     const loading = _.get(listPrintData, 'listPrintLoading')
+    let formattedAmount = true
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -166,6 +167,10 @@ const OrderPrint = enhance((props) => {
                 const primaryCurrency = getConfig('PRIMARY_CURRENCY')
                 const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
                 const type = _.toInteger(_.get(item, 'type'))
+                const firstMeasure = _.get(item, ['returnedProducts', '0', 'product', 'measurement', 'name'])
+                const totalAmount = _.sumBy(_.get(item, 'returnedProducts'), (o) => {
+                    return _.toNumber(_.get(o, 'amount'))
+                })
 
                 return (
                     <div key={id} className="printItem">
@@ -233,6 +238,9 @@ const OrderPrint = enhance((props) => {
                                 const price = _.toNumber(_.get(product, 'price'))
                                 const amount = _.toNumber(_.get(product, 'amount'))
                                 const totalProductPrice = numberFormat(price * amount)
+                                if (formattedAmount) {
+                                    formattedAmount = (firstMeasure === measurement)
+                                }
                                 return (
                                     <Row key={productId}>
                                         <Col xs={1}>{index + ONE}</Col>
@@ -248,7 +256,7 @@ const OrderPrint = enhance((props) => {
                                 <Col xs={1}></Col>
                                 <Col xs={1}></Col>
                                 <Col xs={4}></Col>
-                                <Col xs={2}></Col>
+                                <Col xs={2}>{formattedAmount && 'Итого: ' + numberFormat(totalAmount, firstMeasure)}</Col>
                                 <Col xs={2}></Col>
                                 <Col xs={2}>Итого: {totalPrice}</Col>
                             </Row>

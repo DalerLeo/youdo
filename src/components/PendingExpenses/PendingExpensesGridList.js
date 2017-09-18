@@ -139,14 +139,14 @@ const PendingExpensesGridList = enhance((props) => {
                 filterDialog={pendingExpensesFilterDialog}
             />
 
-            <PendingExpensesCreateDialog
+            {detailData.data && <PendingExpensesCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 detailData={detailData}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
+            />}
         </Container>
     )
 })
