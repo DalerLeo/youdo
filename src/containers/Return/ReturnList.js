@@ -141,6 +141,7 @@ const enhance = compose(
             const market = _.get(filterForm, ['values', 'market', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const code = _.get(filterForm, ['values', 'code']) || null
 
             filter.filterBy({
@@ -152,6 +153,7 @@ const enhance = compose(
                 [RETURN_FILTER_KEY.INITIATOR]: initiator,
                 [RETURN_FILTER_KEY.MARKET]: market,
                 [RETURN_FILTER_KEY.PRODUCT]: product,
+                [RETURN_FILTER_KEY.DIVISION]: division,
                 [RETURN_FILTER_KEY.CODE]: code,
                 [RETURN_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [RETURN_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
@@ -221,6 +223,7 @@ const ReturnList = enhance((props) => {
     const openCancelDialog = _.toInteger(_.get(location, ['query', CANCEL_RETURN_DIALOG_OPEN]))
     const client = _.toInteger(filter.getParam(RETURN_FILTER_KEY.CLIENT))
     const zone = _.toInteger(filter.getParam(RETURN_FILTER_KEY.ZONE))
+    const division = _.toInteger(filter.getParam(RETURN_FILTER_KEY.DIVISION))
     const returnStatus = _.toInteger(filter.getParam(RETURN_FILTER_KEY.STATUS))
     const fromDate = filter.getParam(RETURN_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_FROM_DATE)
@@ -256,6 +259,9 @@ const ReturnList = enhance((props) => {
             },
             zone: {
                 value: zone
+            },
+            division: {
+                value: division
             },
             deliveryDate: {
                 deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
