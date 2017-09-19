@@ -32,12 +32,22 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const clientId = _.get(data, ['client', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
+    if (showClients) {
+        return {
+            amount: amount,
+            comment,
+            'cashbox': cashboxId,
+            'expanse_category': objectId,
+            'client': clientId,
+            'custom_rate': customRate,
+            'division': division && division
+        }
+    }
     return {
         amount: amount,
         comment,
         'cashbox': cashboxId,
         'expanse_category': objectId,
-        'client': showClients ? clientId : null,
         'custom_rate': customRate,
         'division': division && division
     }

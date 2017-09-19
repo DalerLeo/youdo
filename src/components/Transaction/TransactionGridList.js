@@ -129,8 +129,9 @@ const enhance = compose(
             opacity: '0.4'
         },
         rows: {
+            padding: '5px 0',
             '& > div': {
-                padding: '0 5px'
+                padding: '0 8px !important'
             }
         },
         clickable: {
@@ -186,7 +187,7 @@ const TransactionGridList = enhance((props) => {
     const listHeader = [
         {
             sorting: true,
-            name: 'id',
+            name: '№',
             title: 'Id',
             width: '10%'
         },
@@ -393,6 +394,7 @@ const TransactionGridList = enhance((props) => {
                     <GridList
                         filter={filter}
                         withoutRow={true}
+                        flexibleRow={true}
                         list={list}
                         detail={transactionDetail}
                         filterDialog={transactionFilterDialog}

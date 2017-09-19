@@ -303,7 +303,7 @@ const enhance = compose(
 
             return dispatch(supplyExpenseCreateAction(_.get(createSupplyExpenseForm, ['values']), id))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Successful saved'}))
+                    return dispatch(openSnackbarAction({message: 'Расход добавлен'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: false})})

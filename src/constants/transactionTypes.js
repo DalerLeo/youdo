@@ -8,7 +8,7 @@ export const OUTCOME_TO_CLIENT = 7
 export const INCOME_FROM_AGENT = 8
 export const OUTCOME_FOR_SUPPLY_EXPANSE = 9
 export const formattedType = {
-    1: 'Перевод с касси',
+    1: 'Перевод с кассы',
     2: 'Перевод на кассу',
     3: 'Оплата заказа',
     4: 'Приход',
