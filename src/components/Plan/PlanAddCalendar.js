@@ -54,9 +54,6 @@ const enhance = compose(
             justifyContent: 'space-between',
             marginBottom: '5px'
         },
-        weekDays: {
-            extend: 'week'
-        },
         weekItem: {
             background: '#eaeaea',
             color: '#666',
@@ -71,10 +68,19 @@ const enhance = compose(
             background: '#8de2b3',
             color: '#fff'
         },
+        days: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between'
+        },
         weekDay: {
             extend: 'weekItem',
             cursor: 'pointer',
             background: '#fff'
+        },
+        weekDayEmty: {
+            height: '32px',
+            width: '32px'
         },
         weekDayActive: {
             extend: 'weekDay',
@@ -83,6 +89,11 @@ const enhance = compose(
             cursor: 'default',
             color: '#fff',
             fontWeight: '600'
+        },
+        today: {
+            extend: 'weekDayActive',
+            cursor: 'pointer',
+            background: '#ccc'
         },
         weekDayDisabled: {
             extend: 'weekDay',
@@ -113,33 +124,51 @@ const PlanAddCalendar = enhance((props) => {
     const monthFormat = (date, defaultText) => {
         return (date) ? moment(date).locale('ru').format('MMMM') : defaultText
     }
-    const selectedDate = _.get(calendar, 'selectedDate')
-    const selectedDay = _.toInteger(_.get(calendar, 'selectedDay'))
+    const selectedDay = _.get(calendar, 'selectedDay')
     const selectedMonth = moment(_.get(calendar, 'selectedDate'))
     const selectedYear = moment(_.get(calendar, 'selectedDate')).format('YYYY')
 
     // Calendar
 
-    const startWeek = moment(selectedDate).startOf('month').week()
-    const endWeek = moment(selectedDate).endOf('month').week()
+    const TEN = 10
     const DAYS_PER_WEEK = 7
     const ONE = 1
 
-    // .. const daysInMonth = moment(selectedMonth).daysInMonth()
-    // .. const firstDayWeek = moment(moment(selectedMonth).format('YYYY-MM-01')).isoWeekday()
+    const daysInMonth = moment(selectedMonth).daysInMonth()
+    const firstDayWeek = moment(moment(selectedMonth).format('YYYY-MM-01')).isoWeekday()
+    const lastDayWeek = moment(moment(selectedMonth).format('YYYY-MM-' + daysInMonth)).isoWeekday()
+    const selectedWeek = moment(moment(selectedMonth).format('YYYY-MM-' + selectedDay)).isoWeekday()
 
     let calendarDays = []
-    for (let week = startWeek; week <= endWeek; week++) {
-        calendarDays.push({
-            week: week,
-            days: new Array(DAYS_PER_WEEK).fill(ONE).map((n, i) => {
-                return moment().week(week).startOf('week').clone().add(n + i, 'day')
-            })
-        })
+    if (firstDayWeek !== ONE) {
+        for (let i = 1; i < firstDayWeek; i++) {
+            calendarDays.push({isEmpty: true})
+        }
+    } else {
+        for (let i = 1; i < DAYS_PER_WEEK; i++) {
+            calendarDays.push({isEmpty: true})
+        }
     }
-    // .. for (let j = 0; j < firstDayWeek; j++) {
-    // ..    console.warn(j)
-    // }
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dayItem = i < TEN ? '0' + i : i
+        calendarDays.push({day: dayItem})
+    }
+    if (lastDayWeek !== DAYS_PER_WEEK) {
+        for (let i = lastDayWeek; i < DAYS_PER_WEEK; i++) {
+            calendarDays.push({isEmpty: true})
+        }
+    }
+
+    const weekNames = [
+        {id: 1, name: 'Пн'},
+        {id: 2, name: 'Вт'},
+        {id: 3, name: 'Ср'},
+        {id: 4, name: 'Чт'},
+        {id: 5, name: 'Пт'},
+        {id: 6, name: 'Сб'},
+        {id: 7, name: 'Вс'}
+    ]
+
     return (
         <div className={classes.dateBlock}>
             <div className={classes.titleDate}>
@@ -164,39 +193,37 @@ const PlanAddCalendar = enhance((props) => {
                 </nav>
             </div>
             <div className={classes.week}>
-                <div className={classes.weekItemActive}>Пн</div>
-                <div className={classes.weekItem}>Вт</div>
-                <div className={classes.weekItem}>Ср</div>
-                <div className={classes.weekItem}>Чт</div>
-                <div className={classes.weekItem}>Пт</div>
-                <div className={classes.weekItem}>Сб</div>
-                <div className={classes.weekItem}>Вс</div>
+                {_.map(weekNames, (w) => {
+                    const weekId = _.get(w, 'id')
+                    const weekName = _.get(w, 'name')
+                    return (
+                        <div key={weekId} className={(selectedWeek === weekId) ? classes.weekItemActive : classes.weekItem}>{weekName}</div>
+                    )
+                })}
             </div>
-            {_.map(calendarDays, (week) => {
-                const days = _.get(week, 'days')
-                return (
-                    <div key={week.week} className={classes.weekDays}>
-                        {_.map(days, (day, index) => {
-                            const currentMonth = selectedMonth.format('MM')
-                            const outputMonth = moment(day).format('MM')
-                            const formattedDay = _.toInteger(moment(day).format('D'))
-                            if (currentMonth !== outputMonth) {
-                                return (
-                                    <div key={index} className={classes.weekDayDisabled}>{formattedDay}</div>
-                                )
-                            }
-                            return (
-                                <div
-                                    key={index}
-                                    onClick={() => { calendar.handleChooseDay(formattedDay) }}
-                                    className={(selectedDay === formattedDay) ? classes.weekDayActive : classes.weekDay}>
-                                    {formattedDay}
-                                </div>
-                            )
-                        })}
-                    </div>
-                )
-            })}
+            <div className={classes.days}>
+                {_.map(calendarDays, (d, i) => {
+                    const day = _.get(d, 'day')
+                    const parsedDay = _.parseInt(day)
+                    const parsedSelectedDay = _.parseInt(selectedDay)
+                    const isEmpty = _.get(d, 'isEmpty')
+                    if (isEmpty) {
+                        return (<div key={i} className={classes.weekDayEmty}> </div>)
+                    } else if (parsedDay === parsedSelectedDay) {
+                        return (
+                            <div key={i} className={classes.weekDayActive}>{parsedDay}</div>
+                        )
+                    }
+                    return (
+                        <div
+                            key={i}
+                            onClick={() => { calendar.handleChooseDay(day) }}
+                            className={classes.weekDay}>
+                            {parsedDay}
+                        </div>
+                    )
+                })}
+            </div>
         </div>
     )
 })
