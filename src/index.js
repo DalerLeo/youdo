@@ -50,7 +50,7 @@ const muiTheme = getMuiTheme({
         fontSize: 13,
         fontWeight: 400
     },
-    reisedButton: {
+    raisedButton: {
         fontSize: 13,
         fontWeight: 400
     },

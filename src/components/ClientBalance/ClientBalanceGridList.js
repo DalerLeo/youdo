@@ -26,6 +26,7 @@ import SearchIcon from 'material-ui/svg-icons/action/search'
 
 import {TextField} from '../ReduxForm/index'
 import Pagination from '../GridList/GridListNavPagination'
+
 let amountValues = []
 let head = []
 const DIVISION = {
@@ -97,9 +98,16 @@ const enhance = compose(
                 backgroundColor: '#f4f4f4'
             }
         },
+        tableWrapper: {
+            display: 'flex',
+            marginLeft: '-30px',
+            paddingLeft: '30px'
+        },
         leftTable: {
             display: 'table',
-            width: '100%',
+            zIndex: '4',
+            width: '25%',
+            boxShadow: '5px 0 8px -3px #ccc',
             '& > div': {
                 '&:nth-child(even)': {
                     backgroundColor: '#f4f4f4'
@@ -124,27 +132,24 @@ const enhance = compose(
                 }
             }
         },
-        tableWrapper: {
-            display: 'flex',
-            marginLeft: '-30px',
-            paddingLeft: '30px',
-            '& > div:first-child': {
-                zIndex: '4',
-                flexBasis: '25%',
-                maxWidth: '25%',
-                boxShadow: '5px 0 8px -3px #CCC'
-            },
-            '& > div:nth-child(2)': {
-                flexBasis: '63%',
-                maxWidth: '63%',
-                overflowX: 'auto',
-                overflowY: 'hidden'
-            },
-            '& > div:nth-child(3)': {
-                flexBasis: '12%',
-                maxWidth: '12%'
-
-            }
+        mainTableWrapper: {
+            width: 'calc(75% - 152px)',
+            overflowX: 'auto',
+            overflowY: 'hidden'
+        },
+        rightTable: {
+            extend: 'leftTable',
+            boxSizing: 'content-box',
+            boxShadow: 'none',
+            borderLeft: '1px #efefef solid',
+            borderRight: '1px #efefef solid',
+            width: '148px'
+        },
+        buttonsWrapper: {
+            padding: '0 30px',
+            display: 'flex !important',
+            justifyContent: 'flex-end',
+            alignItems: 'center'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -172,6 +177,9 @@ const enhance = compose(
             '& td': {
                 padding: '0 20px',
                 minWidth: '80px'
+            },
+            '& tr > td:last-child': {
+                borderRight: 'none'
             }
         },
         title: {
@@ -193,7 +201,6 @@ const enhance = compose(
         enableReinitialize: true
     }),
     withState('currentItem', 'setItem', null)
-
 )
 
 const searchIconStyle = {
@@ -215,7 +222,7 @@ const iconStyle = {
     button: {
         width: 30,
         height: 30,
-        padding: 0
+        padding: 4
     }
 }
 
@@ -255,14 +262,15 @@ const ClientBalanceGridList = enhance((props) => {
         </div>
     )
     const buttons = (
-        <div className={classes.leftTable}>
+        <div className={classes.rightTable}>
             <div><span> </span></div>
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
                 return (
-                    <div key={id} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <div key={id} className={classes.buttonsWrapper}>
                         <Tooltip position="bottom" text="Возврат с клиента">
                             <IconButton
+                                disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
@@ -274,6 +282,7 @@ const ClientBalanceGridList = enhance((props) => {
                         </Tooltip>
                         <Tooltip position="bottom" text="Списать">
                             <IconButton
+                                disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
@@ -285,6 +294,7 @@ const ClientBalanceGridList = enhance((props) => {
                         </Tooltip>
                         <Tooltip position="bottom" text="Добавить">
                             <IconButton
+                                disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}
@@ -329,12 +339,19 @@ const ClientBalanceGridList = enhance((props) => {
                     <tr key={id} className={classes.tableRow}>
                         <td>{orderNo}</td>
                         {_.map(amountValues, (val, index) => {
-                            const amount = _.get(val, 'amount') || '0'
+                            const amount = _.toNumber(_.get(val, 'amount'))
+                            if (amount !== ZERO) {
+                                return (
+                                    <td key={index} style={{cursor: 'pointer'}} onClick={() => {
+                                        infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type'))
+                                    }}>
+                                        <span className={(amount > ZERO) ? classes.green : (amount < ZERO) && classes.red}>{amount} {primaryCurrency}</span>
+                                    </td>
+                                )
+                            }
                             return (
-                                <td key={index} style={{cursor: 'pointer'}} onClick={() => {
-                                    infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type'))
-                                }}>
-                                    <span className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : {}}>{amount} {primaryCurrency}</span>
+                                <td key={index}>
+                                    <span>{amount} {primaryCurrency}</span>
                                 </td>
                             )
                         })}
@@ -347,7 +364,7 @@ const ClientBalanceGridList = enhance((props) => {
     const lists = (
         <div className={classes.tableWrapper}>
             {clients}
-            <div>
+            <div className={classes.mainTableWrapper}>
                 {tableList}
             </div>
             {buttons}
@@ -414,21 +431,24 @@ const ClientBalanceGridList = enhance((props) => {
                 <Col xs={2} className={classes.balance}>
                     <span onClick={() => {
                         infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA)
-                    }} className={cosmeticsBalance > ZERO ? classes.green : (cosmeticsBalance < ZERO ? classes.red : classes.black)}>
+                    }}
+                          className={cosmeticsBalance > ZERO ? classes.green : (cosmeticsBalance < ZERO ? classes.red : classes.black)}>
                         {numberFormat(cosmeticsBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2} className={classes.balance}>
                     <span onClick={() => {
                         infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'cash')
-                    }} className={shampooBalance > ZERO ? classes.green : (shampooBalance < ZERO ? classes.red : classes.black)}>
+                    }}
+                          className={shampooBalance > ZERO ? classes.green : (shampooBalance < ZERO ? classes.red : classes.black)}>
                         {numberFormat(shampooBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2} className={classes.balance}>
                     <span onClick={() => {
                         infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'bank')
-                    }} className={shampooBank > ZERO ? classes.green : (shampooBank < ZERO ? classes.red : classes.black)}>
+                    }}
+                          className={shampooBank > ZERO ? classes.green : (shampooBank < ZERO ? classes.red : classes.black)}>
                         {numberFormat(shampooBank, currentCurrency)}
                     </span>
                 </Col>
