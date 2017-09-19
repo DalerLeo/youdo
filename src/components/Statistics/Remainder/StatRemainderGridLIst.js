@@ -21,6 +21,7 @@ import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
 import getConfig from '../../../helpers/getConfig'
 import Tooltip from '../../ToolTip/index'
+import OK from 'material-ui/svg-icons/action/done'
 
 export const STAT_REMAINDER_FILTER_KEY = {
     STOCK: 'stock',
@@ -119,7 +120,8 @@ const enhance = compose(
                 position: 'relative',
                 marginRight: '40px',
                 '&:last-child': {
-                    margin: '0'
+                    margin: '0',
+                    width: '25px !important'
                 },
                 '&:after': {
                     content: '""',
@@ -321,13 +323,15 @@ const StatRemainderGridList = enhance((props) => {
                                     component={ProductTypeChildSearchField}
                                     label="Подкатегория"
                                     fullWidth={true}/>}
-                                <IconButton
-                                    className={classes.searchButton}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    type="submit">
-                                    <Search/>
-                                </IconButton>
+                                <Tooltip position="bottom" text="Применить">
+                                    <IconButton
+                                        className={classes.searchButton}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        type="submit">
+                                        <OK color="rgb(88, 190, 217)"/>
+                                    </IconButton>
+                                </Tooltip>
                             </div>
                             <a className={classes.excel}
                                onClick = {getDocument.handleGetDocument}>

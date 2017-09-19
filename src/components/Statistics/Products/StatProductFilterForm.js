@@ -8,7 +8,7 @@ import {reduxForm, Field} from 'redux-form'
 import {connect} from 'react-redux'
 import {ProductTypeChildSearchField, ProductTypeParentSearchField} from '../../ReduxForm/index'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import Search from 'material-ui/svg-icons/action/done'
+import OK from 'material-ui/svg-icons/action/done'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 
@@ -155,7 +155,7 @@ const StatProductFilterForm = enhance((props) => {
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
                         type="submit">
-                        <Search/>
+                        <OK/>
                     </IconButton>
                 </ToolTip>
             </div>
