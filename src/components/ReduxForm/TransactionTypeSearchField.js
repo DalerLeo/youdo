@@ -1,10 +1,29 @@
 import _ from 'lodash'
 import React from 'react'
 import SearchField from './Basic/SearchField'
+import {
+    ORDER,
+    INCOME_FROM_AGENT,
+    formattedType,
+    INCOME,
+    OUTCOME_FOR_SUPPLY_EXPANSE,
+    OUTCOME,
+    OUTCOME_TO_CLIENT,
+    TO_TRANSFER,
+    FROM_TRANSFER,
+    INCOME_TO_CLIENT
+} from '../../constants/transactionTypes'
 
 const Items = [
-    {id: 1, name: 'расход'},
-    {id: 2, name: 'доход'}
+    {id: FROM_TRANSFER, name: formattedType[FROM_TRANSFER]},
+    {id: TO_TRANSFER, name: formattedType[TO_TRANSFER]},
+    {id: ORDER, name: formattedType[ORDER]},
+    {id: INCOME, name: formattedType[INCOME]},
+    {id: OUTCOME, name: formattedType[OUTCOME]},
+    {id: INCOME_TO_CLIENT, name: formattedType[INCOME_TO_CLIENT]},
+    {id: OUTCOME_TO_CLIENT, name: formattedType[OUTCOME_TO_CLIENT]},
+    {id: INCOME_FROM_AGENT, name: formattedType[INCOME_FROM_AGENT]},
+    {id: OUTCOME_FOR_SUPPLY_EXPANSE, name: formattedType[OUTCOME_FOR_SUPPLY_EXPANSE]}
 ]
 
 const getOptions = (search) => {

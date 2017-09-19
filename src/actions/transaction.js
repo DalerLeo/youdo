@@ -191,3 +191,19 @@ export const transactionItemFetchAction = (id) => {
         payload
     }
 }
+
+export const transactionInfoFetchAction = (id) => {
+    const payload = axios()
+        .get(API.CLIENT_TRANSACTION_LIST, {params: {transaction: id, 'page_size': 100}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.TRANSACTION_INFO,
+        payload
+    }
+}

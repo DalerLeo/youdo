@@ -22,7 +22,8 @@ import {
     TRANSACTION_CASH_DIALOG_OPEN,
     TRANSACTION_ACCEPT_DIALOG_OPEN,
     TransactionGridList,
-    TRANSACTION_ACCEPT_CASH_DETAIL_OPEN
+    TRANSACTION_ACCEPT_CASH_DETAIL_OPEN,
+    TRANSACTION_INFO_OPEN
 } from '../../components/Transaction'
 import {
     transactionCreateExpenseAction,
@@ -35,7 +36,8 @@ import {
     transactionItemFetchAction,
     acceptClientTransactionAction,
     acceptCashListFetchAction,
-    pendingTransactionFetchAction
+    pendingTransactionFetchAction,
+    transactionInfoFetchAction
 } from '../../actions/transaction'
 import {
     cashboxListFetchAction
@@ -56,6 +58,8 @@ const enhance = compose(
         const cashboxList = _.get(state, ['cashbox', 'list', 'data'])
         const cashboxListLoading = _.get(state, ['cashbox', 'list', 'loading'])
         const listLoading = _.get(state, ['transaction', 'list', 'loading'])
+        const transactionInfo = _.get(state, ['transaction', 'info', 'data'])
+        const transactionInfoLoading = _.get(state, ['transaction', 'info', 'loading'])
         const filterForm = _.get(state, ['form', 'TransactionFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const acceptForm = _.get(state, ['form', 'AcceptClientTransactionForm'])
@@ -84,7 +88,9 @@ const enhance = compose(
             cashboxId,
             createForm,
             payment,
-            acceptForm
+            acceptForm,
+            transactionInfo,
+            transactionInfoLoading
         }
     }),
 
@@ -101,6 +107,14 @@ const enhance = compose(
     }, ({dispatch, location}) => {
         const nextCashList = toBoolean(_.get(location, ['query', TRANSACTION_CASH_DIALOG_OPEN]))
         nextCashList && dispatch(acceptCashListFetchAction())
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const prevInfoList = _.toInteger(_.get(props, ['location', 'query', TRANSACTION_INFO_OPEN]))
+        const nextInfoList = _.toInteger(_.get(nextProps, ['location', 'query', TRANSACTION_INFO_OPEN]))
+        return prevInfoList !== nextInfoList && nextInfoList
+    }, ({dispatch, location}) => {
+        const nextInfoList = _.toInteger(_.get(location, ['query', TRANSACTION_INFO_OPEN]))
+        nextInfoList && dispatch(transactionInfoFetchAction(nextInfoList))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -425,6 +439,14 @@ const enhance = compose(
         handleCloseAcceptCashDetail: props => () => {
             const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]: false})})
+        },
+        handleCloseTransactionInfoDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_INFO_OPEN]: false})})
+        },
+        handleOpenTransactionInfoDialog: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_INFO_OPEN]: id})})
         }
 
     })
@@ -448,7 +470,9 @@ const TransactionList = enhance((props) => {
         layout,
         params,
         payment,
-        paymentLoading
+        paymentLoading,
+        transactionInfoLoading,
+        transactionInfo
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))
@@ -461,6 +485,7 @@ const TransactionList = enhance((props) => {
     const openCashDialog = toBoolean(_.get(location, ['query', TRANSACTION_CASH_DIALOG_OPEN]))
     const openAcceptCashDetail = (_.get(location, ['query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
     const openCashBoxDialog = toBoolean(_.get(location, ['query', TRANSACTION_ACCEPT_DIALOG_OPEN]))
+    const openTransactionInfo = _.toInteger(_.get(location, ['query', TRANSACTION_INFO_OPEN]))
 
     const categoryExpense = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
     const type = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
@@ -629,12 +654,19 @@ const TransactionList = enhance((props) => {
         handleSubmitCashBoxDialog: props.handleSubmitCashBoxDialog
     }
     const paymentData = {
-        data: _.get(payment, 'results'),
+        data: _.get(payment, 'results') || {},
         paymentLoading,
         currentCashBoxDetails,
         currencyId
     }
 
+    const transactionInfoDialog = {
+        loading: transactionInfoLoading,
+        data: _.get(transactionInfo, 'results') || [],
+        open: openTransactionInfo,
+        handleOpenDialog: props.handleOpenTransactionInfoDialog,
+        handleCloseDialog: props.handleCloseTransactionInfoDialog
+    }
     return (
         <Layout {...layout}>
             <TransactionGridList
@@ -653,6 +685,7 @@ const TransactionList = enhance((props) => {
                 paymentData={paymentData}
                 cashBoxDialog={cashBoxDialog}
                 acceptCashDialog={acceptCashDialog}
+                transactionInfoDialog={transactionInfoDialog}
             />
         </Layout>
     )
