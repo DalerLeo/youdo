@@ -242,19 +242,18 @@ const TransactionGridList = enhance((props) => {
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
                 <div style={{flexBasis: '22%', maxWidth: '24%'}}>
                     {client}
-                    {!showCashbox ? <div><span className={classes.label}>Клиент: </span>{clientName}</div> : null}
+                    {!showCashbox ? <div>{clientName}</div> : null}
                 </div>
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
-                    {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div>
-                        : ((!_.get(item, 'expanseCategory') && !_.get(item, 'client') && user) ? 'Оплата с ' + _.get(user, 'firstName') + ' ' + _.get(user, 'secondName') : null)}
+                    {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : ''}
                     {transType &&
                     <div><span style={{fontWeight: '600'}}>Тип:</span> {transType === ORDER
                                     ? <Link to={{
                                         pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
                                         query: {search: order}
-                                    }} target="_blank"><span className={classes.clickable}> {formattedType[transType]}</span></Link>
+                                    }} target="_blank"><span className={classes.clickable}> Оплата заказа № {order}</span></Link>
                                     : (transType === INCOME_FROM_AGENT)
-                                        ? <span className={classes.clickable} onClick={() => { transactionInfoDialog.handleOpenDialog(id) }}> {formattedType[transType]}</span>
+                                        ? <span className={classes.clickable} onClick={() => { transactionInfoDialog.handleOpenDialog(id) }}> {'Приемка наличных с  ' + _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')}</span>
                                         : <span> {formattedType[transType]}</span>}
 
                     </div>}

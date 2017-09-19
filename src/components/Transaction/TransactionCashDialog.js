@@ -194,8 +194,8 @@ const TransactionCashDialog = enhance((props) => {
                             <div>{numberFormat(amount, currency)}</div>
                             <div>{currency !== primaryCurrency
                                 ? customRate
-                                    ? '(внутренний ' + numberFormat(customRate, primaryCurrency) + ')'
-                                    : '(внутренний ' + numberFormat((amount / internal), primaryCurrency) + ')'
+                                    ? '( Курс  ' + numberFormat(customRate) + ')'
+                                    : '( Курс  ' + numberFormat((amount / internal)) + ')'
                                 : null }</div>
 
                         </Col>
