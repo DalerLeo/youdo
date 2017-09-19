@@ -71,6 +71,7 @@ import OrderTransferTypeSearchField from './OrderTransferTypeSearchFiled'
 import StockHistoryTypeSearchField from '../ReduxForm/StockHistoryTypeSearchField'
 import AgentSearchField from '../ReduxForm/AgentSearchField'
 import UserStockRadioButtonField from './UserStockRadioButtonField'
+import PermissionTimeSearchField from './PermissionTimeSearchField'
 
 export {
     AgentSearchField,
@@ -145,5 +146,6 @@ export {
     ChipField,
     CustomChipField,
     OrderTransferTypeSearchField,
-    UserStockRadioButtonField
+    UserStockRadioButtonField,
+    PermissionTimeSearchField
 }

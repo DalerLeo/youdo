@@ -220,7 +220,7 @@ const listHeader = [
     },
     {
         sorting: true,
-        name: 'salesSum',
+        name: 'salesIncome',
         title: 'Стоимость'
     },
     {
