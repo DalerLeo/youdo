@@ -59,7 +59,6 @@ export const pendingTransactionFetchAction = (user, currency, filter) => {
     const page = filter && _.get(filter.getParams(), 'dPage')
     const params = {
         transaction: 0,
-        type: '1',
         user: user,
         currency: currency,
         'page': page
@@ -140,6 +139,38 @@ export const transactionUpdateExpenseAction = (id, formValues, cashboxId) => {
 
     return {
         type: actionTypes.TRANSACTION_UPDATE,
+        payload
+    }
+}
+export const transactionEditPaymentAction = (formValues, clientId, transId) => {
+    const requestData = serializers.updateTransactionSerializer(formValues, clientId)
+    const payload = axios()
+        .put(sprintf(API.CLIENT_BALANCE_SUPER_USER, transId), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.CLIENT_BALANCE_SUPER_USER,
+        payload
+    }
+}
+export const transactionDetelePaymentAction = (id, formValues, cashboxId) => {
+    const requestData = serializers.createExpenseSerializer(formValues, cashboxId)
+    const payload = axios()
+        .delete(sprintf(API.TRANSACTION_PAYMENT_DELETE, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.TRANSACTION_PAYMENT_DELETE,
         payload
     }
 }

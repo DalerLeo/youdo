@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
+import getConfig from '../../helpers/getConfig'
 
 const ZERO = 0
 const MINUS_ONE = -1
@@ -18,6 +19,25 @@ export const createIncomeSerializer = (data, cashboxId) => {
         'client': clientId,
         'custom_rate': customRate,
         'division': division && division
+    }
+}
+const TWO = 2
+
+export const updateTransactionSerializer = (data, client) => {
+    const amount = numberWithoutSpaces(_.get(data, 'amount'))
+    const newAmount = amount > ZERO ? amount : amount * MINUS_ONE
+    const comment = _.get(data, 'comment')
+    const currency = getConfig('PRIMARY_CURRENCY_ID')
+    const division = _.get(data, ['division', 'value'])
+    const paymentType = _.get(data, ['paymentType', 'value'])
+    return {
+        'amount': newAmount,
+        'comment': comment,
+        client,
+        currency,
+        division,
+        type: 1,
+        payment_type: paymentType === TWO ? ZERO : paymentType
     }
 }
 
