@@ -373,7 +373,8 @@ const rootReducer = combineReducers({
         reportImage: createThunkReducer(actionTypes.ACTIVITY_REPORT_SHOW_IMAGE),
         returnList: createThunkReducer(actionTypes.ACTIVITY_ORDER_RETURN_LIST),
         paymentList: createThunkReducer(actionTypes.ACTIVITY_PAYMENT_LIST),
-        deliveryList: createThunkReducer(actionTypes.ACTIVITY_DELIVERY_LIST)
+        deliveryList: createThunkReducer(actionTypes.ACTIVITY_DELIVERY_LIST),
+        summary: createThunkReducer(actionTypes.ACTIVITY_SUMMARY)
     }),
     statProductMove: combineReducers({
         list: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_LIST),

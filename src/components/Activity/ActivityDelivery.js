@@ -109,14 +109,17 @@ const dateFormat = (date, defaultText) => {
 }
 
 const ActivityDelivery = enhance((props) => {
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const {
         deliverylistData,
-        classes
+        classes,
+        summary,
+        summaryLoading
     } = props
     const deliverylistLoading = _.get(deliverylistData, 'deliveryListLoading')
+    const summaryCount = _.get(summary, 'count')
     const deliveryList = _.map(_.get(deliverylistData, 'data'), (item) => {
         const id = _.get(item, ['order', 'id'])
-        const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const amount = numberFormat(_.get(item, ['order', 'totalPrice']), currentCurrency)
         const name = _.get(item, ['order', 'user', 'firstName']) + ' ' + _.get(item, ['order', 'user', 'secondName'])
         const market = _.get(item, ['order', 'market', 'name'])
@@ -135,7 +138,7 @@ const ActivityDelivery = enhance((props) => {
 
     if (_.isEmpty(deliveryList)) {
         return false
-    } else if (deliverylistLoading) {
+    } else if (deliverylistLoading || summaryLoading) {
         return (
             <div className={classes.loader}>
                 <CircularProgress size={40} thickness={4}/>
@@ -145,7 +148,9 @@ const ActivityDelivery = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Доставки</div>
+            <div className={classes.blockTitle}>
+                <div>Доставки ({summaryCount})</div>
+            </div>
             <div className={classes.blockItems}>
                 {deliveryList}
             </div>

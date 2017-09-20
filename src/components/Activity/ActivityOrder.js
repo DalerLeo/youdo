@@ -9,6 +9,8 @@ import getConfig from '../../helpers/getConfig'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
+import Info from 'material-ui/svg-icons/action/info-outline'
+import Tooltip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -29,12 +31,17 @@ const enhance = compose(
         },
         blockTitle: {
             padding: '15px 0',
-            height: '90px',
-            fontWeight: 'bold'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginRight: '10px',
+            '& strong': {
+                fontWeight: 'bold'
+            }
         },
         blockItems: {
             overflowY: 'auto',
-            height: 'calc(100% - 120px)',
+            height: 'calc(100% - 80px)',
             paddingRight: '10px'
         },
         tube: {
@@ -55,10 +62,6 @@ const enhance = compose(
         tubeTime: {
             fontSize: '10px',
             color: '#999'
-        },
-        info: {
-            fontWeight: '400',
-            padding: '5px 0'
         },
         status: {
             borderRadius: '2px',
@@ -124,10 +127,16 @@ const ActivityOrder = enhance((props) => {
     const {
         orderlistData,
         classes,
-        orderDetails
+        orderDetails,
+        summary,
+        summaryLoading
     } = props
 
     const orderlistLoading = _.get(orderlistData, 'orderListLoading')
+    const countSummary = _.get(summary, 'count')
+    const cashSummary = numberFormat(_.get(summary, 'cash'), currentCurrency)
+    const bankSummary = numberFormat(_.get(summary, 'bank'), currentCurrency)
+    const tooltipText = '<div>Сумма (нал): ' + cashSummary + '</div> <div>Сумма (пер): ' + bankSummary + '</div>'
     const orderList = _.map(_.get(orderlistData, 'data'), (item) => {
         const id = _.get(item, ['order', 'id'])
         const name = _.get(item, ['order', 'user', 'firstName']) + ' ' + _.get(item, ['order', 'user', 'secondName'])
@@ -151,7 +160,7 @@ const ActivityOrder = enhance((props) => {
 
     if (_.isEmpty(orderList)) {
         return false
-    } else if (orderlistLoading) {
+    } else if (orderlistLoading || summaryLoading) {
         return (
             <div className={classes.loader}>
                 <CircularProgress size={40} thickness={4}/>
@@ -162,11 +171,10 @@ const ActivityOrder = enhance((props) => {
     return (
         <div className={classes.block}>
             <div className={classes.blockTitle}>
-                <div>Cделки (43)</div>
-                <div className={classes.info}>
-                    <div>Сумма (нал): <strong>23 475 USD</strong></div>
-                    <div>Сумма (пер): <strong>12 231 USD</strong></div>
-                </div>
+                <strong>Cделки ({countSummary})</strong>
+                <Tooltip position="left" text={tooltipText}>
+                    <Info color="#666"/>
+                </Tooltip>
             </div>
             <div className={classes.blockItems}>
                 {orderList}
