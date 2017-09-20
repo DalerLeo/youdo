@@ -6,7 +6,8 @@ const errorStyle = {
     textAlign: 'left'
 }
 
-const TimeField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
+const TimeField = ({classes, input, sheet, label, meta: {error}, ...defaultProps}) => {
+    input.value = input.value || {}
     return (
         <div className={classes.wrapper}>
             <div>
