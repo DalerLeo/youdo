@@ -66,7 +66,7 @@ const ManufactureWrapper = enhance((props) => {
     }
 
     return (
-        <div style={{paddingTop: '20px', margin: '0 -28px', height: '100vh', display: 'flex'}}>
+        <div style={{paddingTop: '20px', margin: '0 -28px', height: 'calc(100vh - 28px)', display: 'flex'}}>
             <ManufacturesList listData={listData} detailData={detailData} detailId={detailId} handleClick={clickDetail}/>
             <div style={{width: 'calc(100% - 280px)', marginTop: '-20px', padding: '20px 30px', overflowY: 'auto'}}>
             {children}

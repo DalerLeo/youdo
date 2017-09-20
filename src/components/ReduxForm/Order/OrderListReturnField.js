@@ -106,7 +106,10 @@ const enhance = compose(
             marginTop: '5px',
             backgroundColor: '#f1f5f8',
             position: 'relative',
-            zIndex: '2'
+            zIndex: '2',
+            '& > div > div > div': {
+                overflow: 'hidden'
+            }
         },
         inputFieldCustom: {
             fontSize: '13px !important',

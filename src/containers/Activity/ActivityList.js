@@ -15,7 +15,8 @@ import {
     activityReturnListFetchAction,
     activityPaymentListFetchAction,
     activityDeliveryListFetchAction,
-    activityReportShowImageAction
+    activityReportShowImageAction,
+    activitySummaryListFetchAction
 } from '../../actions/activity'
 
 const ZERO = 0
@@ -41,6 +42,8 @@ const enhance = compose(
         const paymentListLoading = _.get(state, ['activity', 'paymentList', 'loading'])
         const deliveryList = _.get(state, ['activity', 'deliveryList', 'data'])
         const deliveryListLoading = _.get(state, ['activity', 'deliveryList', 'loading'])
+        const summaryList = _.get(state, ['activity', 'summary', 'data'])
+        const summaryListLoading = _.get(state, ['activity', 'summary', 'loading'])
         const orderItem = _.get(state, ['activity', 'orderItem', 'data'])
         const orderItemLoading = _.get(state, ['activity', 'orderItem', 'loading'])
         const createForm = _.get(state, ['form', 'ActivityCreateForm', 'values'])
@@ -66,6 +69,8 @@ const enhance = compose(
             paymentListLoading,
             deliveryList,
             deliveryListLoading,
+            summaryList,
+            summaryListLoading,
             createForm,
             curDate
         }
@@ -82,6 +87,7 @@ const enhance = compose(
         dispatch(activityReturnListFetchAction(filter))
         dispatch(activityPaymentListFetchAction(filter))
         dispatch(activityDeliveryListFetchAction(filter))
+        dispatch(activitySummaryListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -168,6 +174,8 @@ const ActivityList = enhance((props) => {
         paymentListLoading,
         deliveryList,
         deliveryListLoading,
+        summaryList,
+        summaryListLoading,
         location,
         layout
     } = props
@@ -195,6 +203,11 @@ const ActivityList = enhance((props) => {
         openReportImage,
         handleOpenReportImage: props.handleOpenReportImage,
         handleCloseReportImage: props.handleCloseReportImage
+    }
+
+    const summaryData = {
+        data: summaryList,
+        summaryListLoading
     }
 
     const orderlistData = {
@@ -238,6 +251,7 @@ const ActivityList = enhance((props) => {
         <Layout {...layout}>
             <ActivityWrapper
                 filter={filter}
+                summaryData={summaryData}
                 orderlistData={orderlistData}
                 orderDetails={orderDetails}
                 visitlistData={visitlistData}

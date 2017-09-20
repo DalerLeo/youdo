@@ -146,6 +146,7 @@ const ZERO = 0
 const TransactionGridList = enhance((props) => {
     const {
         filter,
+        filterItem,
         createExpenseDialog,
         createIncomeDialog,
         updateExpenseDialog,
@@ -387,7 +388,7 @@ const TransactionGridList = enhance((props) => {
                                     наличные</a>
 
                                 {_.get(cashboxData, 'cashboxId') === AllCashboxId &&
-                                <Tooltip position="bottom" text="Пожалуйста выберите кассу">
+                                <Tooltip position="bottom" text="Пожалуйста, выберите кассу">
                                     <div className={classes.actionButtons}>
                                         <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
                                         <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+
@@ -475,6 +476,7 @@ const TransactionGridList = enhance((props) => {
                     />}
 
                     <TransactionCashDialog
+                        filterItem={filterItem}
                         open={acceptCashDialog.open}
                         onClose={acceptCashDialog.handleCloseCashDialog}
                         paymentData={paymentData}
