@@ -45,7 +45,7 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'PlanCreateForm', 'values'])
         const monthlyPlanForm = _.get(state, ['form', 'PlanSalesForm', 'values'])
         const selectedDate = _.get(query, DATE) || defaultDate
-        const selectedDay = _.get(query, 'day') || moment().format('D')
+        const selectedDay = _.get(query, 'day') || moment().format('DD')
         const filter = filterHelper(usersList, pathname, query)
         return {
             query,

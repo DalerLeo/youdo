@@ -136,8 +136,8 @@ const enhance = compose(
         },
         clickable: {
             cursor: 'pointer',
-            color: '#00C0EF',
-            fontWeight: '500'
+            color: '#12aaeb !important',
+            fontWeight: '600'
         }
     }),
 )
@@ -230,12 +230,13 @@ const TransactionGridList = enhance((props) => {
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name') : null
-        const clientName = _.get(item, ['client', 'name']) || 'Не указан'
+        const clientName = _.get(item, ['client', 'name'])
+        const clientId = _.get(item, ['client', 'id'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
         const transType = _.get(item, ['type'])
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
+                <MoreVertIcon/>
             </IconButton>
         )
         return (
@@ -243,22 +244,35 @@ const TransactionGridList = enhance((props) => {
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
                 <div style={{flexBasis: '22%', maxWidth: '24%'}}>
                     {client}
-                    {!showCashbox ? <div>{clientName}</div> : null}
+                    {!showCashbox ? <div>{clientName || 'Не указан'}</div> : null}
                 </div>
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
-                    {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : ''}
+                    {expanseCategory
+                        ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : ''}
                     {transType &&
-                    <div><span style={{fontWeight: '600'}}>Тип:</span> {transType === ORDER
-                                    ? <Link to={{
-                                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
-                                        query: {search: order}
-                                    }} target="_blank"><span className={classes.clickable}> Оплата заказа № {order}</span></Link>
-                                    : (transType === INCOME_FROM_AGENT)
-                                        ? <span className={classes.clickable} onClick={() => { transactionInfoDialog.handleOpenDialog(id) }}> {'Приемка наличных с  ' + _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')}</span>
-                                        : <span> {formattedType[transType]}</span>}
+                    <div>
+                        <span style={{fontWeight: '600'}}>Тип:</span> {transType === ORDER
+                        ? <Link to={{
+                            pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
+                            query: {search: order}
+                        }} target="_blank"><span className={classes.clickable}> Оплата заказа № {order}</span></Link>
+                        : (transType === INCOME_FROM_AGENT)
+                            ? <span className={classes.clickable}
+                                    onClick={() => { transactionInfoDialog.handleOpenDialog(id) }}> {'Приемка наличных с  ' + _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')}</span>
+                            : <span> {formattedType[transType]} {clientName &&
+                                <Link
+                                    target="_blank"
+                                    className={classes.clickable}
+                                    to={{
+                                        pathname: ROUTES.CLIENT_BALANCE_LIST_URL,
+                                        query: {search: clientId}
+                                    }}>
+                                    {clientName}
+                                </Link>}
+                                </span>}
 
                     </div>}
-                    <div>{comment}</div>
+                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{createdDate}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}
@@ -274,7 +288,7 @@ const TransactionGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Изменить"
                             disabled={true}
-                            leftIcon={<Edit />}
+                            leftIcon={<Edit/>}
                             onTouchTap={() => {
                                 updateExpenseDialog.handleOpenUpdateDialog(id, _.get(item, 'amount'))
                             }}
@@ -282,7 +296,7 @@ const TransactionGridList = enhance((props) => {
                         <MenuItem
                             primaryText="Удалить "
                             disabled={true}
-                            leftIcon={<DeleteIcon />}
+                            leftIcon={<DeleteIcon/>}
                             onTouchTap={() => {
                                 confirmDialog.handleOpenConfirmDialog(id)
                             }}
@@ -304,7 +318,7 @@ const TransactionGridList = enhance((props) => {
         return (
             <div key={id} className={classes.list} onClick={() => {
                 cashboxData.handleClickCashbox(id)
-            } }
+            }}
                  style={isActive ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                 <div>
                     <div className={classes.title}>{name}</div>
@@ -348,7 +362,7 @@ const TransactionGridList = enhance((props) => {
                             <div className={classes.list}
                                  onClick={() => {
                                      cashboxData.handleClickCashbox(AllCashboxId)
-                                 } }
+                                 }}
                                  style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                                 <div className={classes.title}>
                                     Общий объем
@@ -369,23 +383,29 @@ const TransactionGridList = enhance((props) => {
                         <div className={classes.outerTitle}>{cashboxName}</div>
                         <div className={classes.outerTitle}>
                             <div className={classes.buttons}>
-                                <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>
+                                <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять
+                                    наличные</a>
 
-                                { _.get(cashboxData, 'cashboxId') === AllCashboxId &&
-                                    <Tooltip position="bottom" text="Пожалуйста выберите кассу">
-                                        <div className={classes.actionButtons}>
+                                {_.get(cashboxData, 'cashboxId') === AllCashboxId &&
+                                <Tooltip position="bottom" text="Пожалуйста выберите кассу">
+                                    <div className={classes.actionButtons}>
                                         <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
-                                        <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
-                                        <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
-                                        </div>
-                                    </Tooltip>
-                                }
-                                { _.get(cashboxData, 'cashboxId') !== AllCashboxId &&
-                                    <div>
-                                        <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
-                                        <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
-                                        <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
+                                        <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+
+                                            Доход</a>
+                                        <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>-
+                                            Расход</a>
                                     </div>
+                                </Tooltip>
+                                }
+                                {_.get(cashboxData, 'cashboxId') !== AllCashboxId &&
+                                <div>
+                                    <a onClick={createSendDialog.handleOpenDialog}
+                                       className={classes.btnSend}>Перевод</a>
+                                    <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+
+                                        Доход</a>
+                                    <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>-
+                                        Расход</a>
+                                </div>
                                 }
                             </div>
                         </div>
