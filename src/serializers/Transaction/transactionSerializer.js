@@ -84,4 +84,3 @@ export const listFilterSerializer = (data, cashbox) => {
         'expanse_category': _.get(data, 'categoryExpense')
     }
 }
-

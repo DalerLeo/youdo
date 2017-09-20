@@ -14,6 +14,7 @@ import AcceptClientTransactionDialog from './AcceptClientTransactionDialog'
 import PaymentIcon from 'material-ui/svg-icons/action/payment'
 import Tooltip from '../ToolTip'
 import getConfig from '../../helpers/getConfig'
+import Pagination from '../ReduxForm/Pagination'
 
 const enhance = compose(
     injectSheet({
@@ -116,6 +117,9 @@ const enhance = compose(
             margin: '0 -30px',
             padding: '0 30px',
             boxSizing: 'content-box',
+            '& > div:first-child': {
+                height: '50px'
+            },
             '& .row': {
                 margin: '0',
                 '&:first-child': {
@@ -152,6 +156,11 @@ const enhance = compose(
             cursor: 'pointer',
             zIndex: '1'
         },
+        pagination: {
+            position: 'absolute',
+            width: '170px',
+            left: 'calc(50% - 85px)'
+        },
         noData: {
             textAlign: 'center',
             padding: '20px'
@@ -165,6 +174,7 @@ const enhance = compose(
 const TransactionCashDialog = enhance((props) => {
     const {
         open,
+        filterItem,
         loading,
         onClose,
         classes,
@@ -246,6 +256,9 @@ const TransactionCashDialog = enhance((props) => {
                                                 onClick={() => {
                                                     acceptCashDialog.handleCloseAcceptCashDetail()
                                                 }}>
+                                            </div>
+                                            <div className={classes.pagination}>
+                                                <Pagination filter={filterItem}/>
                                             </div>
                                             <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
                                             <Col xs={1}>

@@ -146,6 +146,7 @@ const ZERO = 0
 const TransactionGridList = enhance((props) => {
     const {
         filter,
+        filterItem,
         createExpenseDialog,
         createIncomeDialog,
         updateExpenseDialog,
@@ -475,6 +476,7 @@ const TransactionGridList = enhance((props) => {
                     />}
 
                     <TransactionCashDialog
+                        filterItem={filterItem}
                         open={acceptCashDialog.open}
                         onClose={acceptCashDialog.handleCloseCashDialog}
                         paymentData={paymentData}
