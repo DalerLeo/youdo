@@ -144,5 +144,4 @@ SetDateDialog.propTypes = {
     onSubmit: PropTypes.func.isRequired
 }
 
-
 export default SetDateDialog
