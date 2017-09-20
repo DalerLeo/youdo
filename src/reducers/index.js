@@ -331,6 +331,9 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.STOCK_RECEIVE_CREATE),
         barcodeList: createThunkReducer(actionTypes.STOCK_BARCODE_LIST)
     }),
+    stockReceiveContent: combineReducers({
+        list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST)
+    }),
     statistics: combineReducers({
         list: createThunkReducer(actionTypes.REMAINDER_LIST),
         item: createThunkReducer(actionTypes.REMAINDER_ITEM)

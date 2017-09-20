@@ -5,6 +5,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import moment from 'moment'
 import {compose} from 'recompose'
+import StockReceiveTabList from '../../components/StockReceive/StockReceiveTabList'
 import StockReceiveDetails from './StockReceiveDetails'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
@@ -199,6 +200,7 @@ const StockTabReceive = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
+            <StockReceiveTabList/>
             <GridList
                 filter={filter}
                 filterDialog={stockReceiveFilterDialog}

@@ -3,13 +3,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import GridList from '../GridList'
-import TabTransferFilterForm from './TabTransferFilterForm'
+import StockTransferFilterForm from './StockTransferFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
 import Details from './StockTransferDetails'
 import ConfirmDialog from '../ConfirmDialog'
-import StockReceiveTabList from '../../components/StockReceive/StockReceiveTabList'
 
 const ZERO = 0
 
@@ -78,14 +77,14 @@ const StockTabTransfer = enhance((props) => {
         filterDialog,
         listData,
         detailData,
-        handleCloseDetail,
+        detailDialog,
         confirmDialog,
         classes,
         printDialog
     } = props
 
     const usersFilterDialog = (
-        <TabTransferFilterForm
+        <StockTransferFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
@@ -97,15 +96,15 @@ const StockTabTransfer = enhance((props) => {
         <Details
             detailData={detailData || {}}
             key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
-            handleCloseDetail={handleCloseDetail}
-            loading={_.get(detailData, 'transferDetailLoading')}
+            handleCloseDetail={detailDialog.handleCloseDetail}
+            loading={_.get(detailData, 'loading')}
             printDialog={printDialog}
             confirmDialog={confirmDialog}
             confirm={true}
         />
 
     )
-    const historyList = _.map(_.get(listData, 'data'), (item) => {
+    const stockTransferList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const dateRequest = moment(_.get(item, 'dateRequest')).format('DD.MM.YYYY')
         const dateDelivery = moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY')
@@ -118,7 +117,7 @@ const StockTabTransfer = enhance((props) => {
                 key={id + '_' + stockId} style={{position: 'relative', cursor: 'pointer'}}
                 onClick={() => { listData.handleOpenDetail(id, stockId) }}>
                 <div className={classes.closeDetail}
-                     onClick={handleCloseDetail}>
+                     onClick={detailDialog.handleCloseDetail}>
                 </div>
                 <Col xs={2} >{id}</Col>
                 <Col xs={2}>{dateRequest}</Col>
@@ -131,13 +130,12 @@ const StockTabTransfer = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: historyList,
-        loading: _.get(listData, 'transferListLoading')
+        list: stockTransferList,
+        loading: _.get(listData, 'loading')
     }
 
     return (
         <div className={classes.wrapper}>
-            <StockReceiveTabList/>
             <GridList
                 filter={filter}
                 list={list}

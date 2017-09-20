@@ -245,6 +245,12 @@ export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`
 export const STOCK_RECEIVE_ITEM_URL = `${STOCK_RECEIVE_LIST_URL}/:stockReceiveId`
 export const STOCK_RECEIVE_ITEM_PATH = `/${STOCK_RECEIVE}/%d`
 
+export const STOCK_RECEIVE_TAB = 'stockReceive/receive'
+export const STOCK_RECEIVE_TAB_URL = 'stockReceive/:tab'
+export const STOCK_RECEIVE_TAB_LIST_URL = `/${STOCK_RECEIVE_TAB}`
+export const STOCK_RECEIVE_TAB_ITEM_URL = `${STOCK_RECEIVE_TAB_LIST_URL}/:stockReceiveId`
+export const STOCK_RECEIVE_TAB_ITEM_PATH = `/${STOCK_RECEIVE_TAB}/%d`
+
 export const CLIENT_BALANCE = 'clientBalance'
 export const CLIENT_BALANCE_LIST_URL = `/${CLIENT_BALANCE}`
 export const CLIENT_BALANCE_ITEM_URL = `${CLIENT_BALANCE_LIST_URL}/:clientBalanceId`

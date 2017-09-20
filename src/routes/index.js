@@ -65,7 +65,7 @@ import {
     StatReportList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
-import {StockReceiveList} from '../containers/StockReceive'
+import {StockReceiveList, StockReceiveContent} from '../containers/StockReceive'
 import {PlanList} from '../containers/Plan'
 import {ActivityList} from '../containers/Activity'
 import {DivisionList} from '../containers/Division'
@@ -615,6 +615,17 @@ export default {
                 {
                     path: ROUTES.STOCK_RECEIVE_ITEM_URL,
                     component: userIsAuth(StockReceiveList)
+                }
+            ]
+        },
+        // Stock Receive Tab Transfer
+        {
+            path: ROUTES.STOCK_RECEIVE_TAB_LIST_URL,
+            component: userIsAdminChain(StockReceiveContent),
+            childRoutes: [
+                {
+                    path: ROUTES.STOCK_RECEIVE_ITEM_URL,
+                    component: userIsAuth(StockReceiveContent)
                 }
             ]
         },

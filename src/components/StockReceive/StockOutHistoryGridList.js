@@ -15,7 +15,6 @@ import StockSupplyDialog from '../StockReceive/StockSupplyDialog'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import InfoDialog from '../Statistics/Sales/StatSaleDialog'
 import PopoverDialog from './PopoverDialog'
-import StockReceiveTabList from '../../components/StockReceive/StockReceiveTabList'
 
 const ZERO = 0
 const listHeader = [
@@ -85,7 +84,7 @@ const enhance = compose(
     })
 )
 
-const StockTabHistory = enhance((props) => {
+const StockOutHistoryGridList = enhance((props) => {
     const {
         filter,
         filterDialog,
@@ -128,10 +127,10 @@ const StockTabHistory = enhance((props) => {
                 <Col xs={3}>{date}</Col>
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{genericType} {_.get(item, ['generic', 'type']) === 'order transfer product'
-                        ? <span className={classes.infoDialog} onClick={() => {
-                            historyDialog.handleOpenHistoryDialog(parent)
-                        }}>{parent}</span>
-                        : (_.get(item, ['generic', 'type']) === 'order return accept' || _.get(item, ['generic', 'type']) === 'order_return'
+                    ? <span className={classes.infoDialog} onClick={() => {
+                        historyDialog.handleOpenHistoryDialog(parent)
+                    }}>{parent}</span>
+                    : (_.get(item, ['generic', 'type']) === 'order return accept' || _.get(item, ['generic', 'type']) === 'order_return'
                         ? <span className={classes.infoDialog} onClick={() => {
                             returnDialog.handleOpenStockReturnDialog(parent)
                         }}>{parent}</span>
@@ -156,7 +155,6 @@ const StockTabHistory = enhance((props) => {
     }
     return (
         <div className={classes.wrapper}>
-            <StockReceiveTabList/>
             <GridList
                 filter={filter}
                 list={list}
@@ -192,7 +190,7 @@ const StockTabHistory = enhance((props) => {
     )
 })
 
-StockTabHistory.propTypes = {
+StockOutHistoryGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     filterDialog: PropTypes.shape({
@@ -210,4 +208,4 @@ StockTabHistory.propTypes = {
     }).isRequired
 }
 
-export default StockTabHistory
+export default StockOutHistoryGridList
