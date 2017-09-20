@@ -11,6 +11,7 @@ const TRANSACTION_CASH_DIALOG_OPEN = 'openAcceptCashDialog'
 const TRANSACTION_ACCEPT_DIALOG_OPEN = 'openAcceptTransactionDialog'
 const TRANSACTION_ACCEPT_CASH_DETAIL_OPEN = 'openAcceptCashDetail'
 const TRANSACTION_INFO_OPEN = 'openTransactionInfo'
+const TRANSACTION_EDIT_PRICE_OPEN = 'openTransactionEditPrice'
 
 export {
 
@@ -26,5 +27,6 @@ export {
     TRANSACTION_ACCEPT_DIALOG_OPEN,
     TransactionGridList,
     TRANSACTION_ACCEPT_CASH_DETAIL_OPEN,
-    TRANSACTION_INFO_OPEN
+    TRANSACTION_INFO_OPEN,
+    TRANSACTION_EDIT_PRICE_OPEN
 }

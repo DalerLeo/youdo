@@ -23,7 +23,8 @@ import {
     TRANSACTION_ACCEPT_DIALOG_OPEN,
     TransactionGridList,
     TRANSACTION_ACCEPT_CASH_DETAIL_OPEN,
-    TRANSACTION_INFO_OPEN
+    TRANSACTION_INFO_OPEN,
+    TRANSACTION_EDIT_PRICE_OPEN
 } from '../../components/Transaction'
 import {
     transactionCreateExpenseAction,
@@ -37,7 +38,8 @@ import {
     acceptClientTransactionAction,
     acceptCashListFetchAction,
     pendingTransactionFetchAction,
-    transactionInfoFetchAction
+    transactionInfoFetchAction,
+    transactionEditPaymentAction
 } from '../../actions/transaction'
 import {
     cashboxListFetchAction
@@ -63,12 +65,14 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'TransactionFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const acceptForm = _.get(state, ['form', 'AcceptClientTransactionForm'])
+        const updateForm = _.get(state, ['form', 'ClientBalanceUpdateForm'])
         const payment = _.get(state, ['cashbox', 'pending', 'data'])
         const acceptCashData = _.get(state, ['transaction', 'acceptCash', 'data'])
         const acceptCashLoading = _.get(state, ['transaction', 'acceptCash', 'loading'])
         const paymentLoading = _.get(state, ['cashbox', 'pending', 'loading'])
         const filterCashbox = filterHelper(cashboxList, pathname, query)
         const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
+        const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
 
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(payment, pathname, query, {'page': 'dPage'})
@@ -93,7 +97,9 @@ const enhance = compose(
             payment,
             acceptForm,
             transactionInfo,
-            transactionInfoLoading
+            transactionInfoLoading,
+            isSuperUser,
+            updateForm
         }
     }),
 
@@ -421,7 +427,8 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_DIALOG_OPEN]: false})})
                 }).catch((error) => {
                     const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') &&
+                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
                     })
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
@@ -453,6 +460,45 @@ const enhance = compose(
         handleOpenTransactionInfoDialog: props => (id) => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_INFO_OPEN]: id})})
+        },
+        handleOpenSuperUserDialog: props => (id) => {
+            const {filter, location: {pathname}, params} = props
+            console.warn(params)
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: id})
+            })
+        },
+        handleCloseSuperUserDialog: props => (id) => {
+            const {dispatch, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false})})
+            dispatch(reset('ClientBalanceCreateForm'))
+        },
+        handleSubmitSuperUserDialog: props => (id) => {
+            const {dispatch, updateForm, filter, location: {pathname, query}} = props
+            const transId = _.toInteger(_.get(query, TRANSACTION_EDIT_PRICE_OPEN))
+
+            return dispatch(transactionEditPaymentAction(_.get(updateForm, 'values'), id, transId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({
+                        pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false})
+                    })
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index}
+                                  style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) &&
+                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         }
 
     })
@@ -479,7 +525,8 @@ const TransactionList = enhance((props) => {
         payment,
         paymentLoading,
         transactionInfoLoading,
-        transactionInfo
+        transactionInfo,
+        isSuperUser
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))
@@ -493,7 +540,7 @@ const TransactionList = enhance((props) => {
     const openAcceptCashDetail = (_.get(location, ['query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
     const openCashBoxDialog = toBoolean(_.get(location, ['query', TRANSACTION_ACCEPT_DIALOG_OPEN]))
     const openTransactionInfo = _.toInteger(_.get(location, ['query', TRANSACTION_INFO_OPEN]))
-
+    const openSuperUser = _.toInteger(_.get(location, ['query', TRANSACTION_EDIT_PRICE_OPEN])) > ZERO
     const categoryExpense = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
     const type = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
@@ -674,6 +721,15 @@ const TransactionList = enhance((props) => {
         handleOpenDialog: props.handleOpenTransactionInfoDialog,
         handleCloseDialog: props.handleCloseTransactionInfoDialog
     }
+
+    const superUser = {
+        isSuperUser,
+        open: openSuperUser,
+        handleOpenSuperUserDialog: props.handleOpenSuperUserDialog,
+        handleCloseSuperUserDialog: props.handleCloseSuperUserDialog,
+        handleSubmitSuperUserDialog: props.handleSubmitSuperUserDialog
+    }
+
     return (
         <Layout {...layout}>
             <TransactionGridList
@@ -694,6 +750,7 @@ const TransactionList = enhance((props) => {
                 cashBoxDialog={cashBoxDialog}
                 acceptCashDialog={acceptCashDialog}
                 transactionInfoDialog={transactionInfoDialog}
+                superUser={superUser}
             />
         </Layout>
     )

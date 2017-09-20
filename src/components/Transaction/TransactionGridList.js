@@ -162,7 +162,8 @@ const TransactionGridList = enhance((props) => {
         cashBoxDialog,
         classes,
         paymentData,
-        transactionInfoDialog
+        transactionInfoDialog,
+        superUser
     } = props
 
     const transactionFilterDialog = (
@@ -483,6 +484,7 @@ const TransactionGridList = enhance((props) => {
                         loading={acceptCashDialog.loading}
                         cashBoxDialog={cashBoxDialog}
                         acceptCashDialog={acceptCashDialog}
+                        superUser={superUser}
                     />
                     <TransactionInfoDialog
                         open={transactionInfoDialog.open}

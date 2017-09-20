@@ -167,7 +167,6 @@ const PermissionGridList = enhance((props) => {
             <SetDateDialog
                 initialValues={setDateDialog.initialValues}
                 open={_.toInteger(setDateDialog.open) > ZERO ? true : toBoolean(setDateDialog.open)}
-                loading={setDateDialog.loading}
                 onClose={setDateDialog.handleCloseSetDateDialog}
                 onSubmit={setDateDialog.handleSubmitSetDateDialog}
             />

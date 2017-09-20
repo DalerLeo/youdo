@@ -88,19 +88,3 @@ export const pricesItemFetchAction = (id) => {
         payload: payload
     }
 }
-
-export const pricesMarketTypeFetchAction = () => {
-    const payload = axios()
-        .get(API.MARKET_TYPE_LIST)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.MARKET_TYPE_LIST,
-        payload
-    }
-}

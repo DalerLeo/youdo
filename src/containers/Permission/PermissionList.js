@@ -100,7 +100,7 @@ const PermissionList = enhance((props) => {
         layout
     } = props
 
-    const openSetDateDialog = _.get(location, ['query', SET_DATE_DIALOG_DATE])
+    const openSetDateDialog = _.toInteger(_.get(location, ['query', SET_DATE_DIALOG_DATE]))
 
     const listData = {
         data: _.get(list, 'results'),

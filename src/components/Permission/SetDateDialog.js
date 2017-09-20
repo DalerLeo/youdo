@@ -139,15 +139,9 @@ const SetDateDialog = enhance((props) => {
 })
 
 SetDateDialog.propTypes = {
-    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
-}
-
-SetDateDialog.defaultProps = {
-    isUpdate: false
+    onSubmit: PropTypes.func.isRequired
 }
 
 export default SetDateDialog

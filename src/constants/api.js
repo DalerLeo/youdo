@@ -90,6 +90,7 @@ export const TRANSACTION_LIST = `/${TRANSACTION}/`
 export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
 export const TRANSACTION_SEND = 'finance/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
+export const TRANSACTION_PAYMENT_DELETE = 'sales/client_transaction/%d/cancel/'
 
 export const CLIENT_TRANSACTION = 'sales/client_transaction'
 export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
