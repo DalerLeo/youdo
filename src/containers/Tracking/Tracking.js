@@ -113,11 +113,11 @@ const enhance = compose(
 
     withHandlers({
         handleClickTab: props => (id) => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, selectedDate} = props
             if (_.toInteger(id)) {
                 hashHistory.push({pathname, query: filter.getParams({[USER_GROUP]: id})})
             } else {
-                hashHistory.push({pathname, query: ''})
+                hashHistory.push({pathname, query: {[DATE]: selectedDate}})
             }
         },
 

@@ -55,12 +55,14 @@ export const transactionCreateExpenseAction = (formValues, cashboxId) => {
     }
 }
 
-export const pendingTransactionFetchAction = (user, currency) => {
+export const pendingTransactionFetchAction = (user, currency, filter) => {
+    const page = filter && _.get(filter.getParams(), 'dPage')
     const params = {
         transaction: 0,
-        type: 'in',
+        type: '1',
         user: user,
-        currency: currency
+        currency: currency,
+        'page': page
     }
 
     const payload = axios()

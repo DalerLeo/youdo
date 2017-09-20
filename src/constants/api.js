@@ -386,6 +386,7 @@ export const POSITION_RATE = `/${POSITION}/%d/permissions/`
 export const POSITION_PERMISSION = 'main/group/gcrud'
 
 export const ACTIVITY = 'market/plan_tasks'
+export const ACTIVITY_SUMMARY = `${ACTIVITY}/sum/`
 export const ACTIVITY_ORDER_LIST = `${ACTIVITY}/`
 export const ACTIVITY_ORDER_ITEM = `${ORDER}/%d`
 export const ACTIVITY_VISIT_LIST = `/${ACTIVITY}/`

@@ -110,10 +110,13 @@ const ActivityReport = enhance((props) => {
     const {
         reportlistData,
         reportImageData,
-        classes
+        classes,
+        summary,
+        summaryLoading
     } = props
 
     const reportlistLoading = _.get(reportlistData, 'reportListLoading')
+    const summaryCount = _.get(summary, 'count')
     const reportList = _.map(_.get(reportlistData, 'data'), (item) => {
         const id = _.get(item, ['report', 'id'])
         const market = _.get(item, ['report', 'market', 'name'])
@@ -146,7 +149,7 @@ const ActivityReport = enhance((props) => {
 
     if (_.isEmpty(reportList)) {
         return false
-    } else if (reportlistLoading) {
+    } else if (reportlistLoading || summaryLoading) {
         return (
             <div className={classes.loader}>
                 <CircularProgress size={40} thickness={4}/>
@@ -156,7 +159,7 @@ const ActivityReport = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Отчеты</div>
+            <div className={classes.blockTitle}>Отчеты ({summaryCount})</div>
             <div className={classes.blockItems}>
                 {reportList}
             </div>

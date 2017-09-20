@@ -64,7 +64,7 @@ const ExpenseCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '460px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>Добавление расхода</span>

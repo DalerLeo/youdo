@@ -72,8 +72,16 @@ const enhance = compose(
     })
 )
 
+const VISIT = 1
+const ORDER = 2
+const REPORT = 3
+const ORDER_RETURN = 4
+const PAYMENT = 5
+const DELIVERY = 6
+
 const ActivityWrapper = enhance((props) => {
     const {
+        summaryData,
         orderlistData,
         classes,
         orderDetails,
@@ -108,22 +116,33 @@ const ActivityWrapper = enhance((props) => {
         <div className={classes.tubeWrapper}>
             <div className={classes.horizontal}>
                 <ActivityOrder
+                    summary={_.get(summaryData, ['data', ORDER])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     orderlistData={orderlistData}
                     orderDetails={orderDetails}/>
                 <ActivityVisit
+                    summary={_.get(summaryData, ['data', VISIT])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     visitlistData={visitlistData}/>
                 <ActivityReport
+                    summary={_.get(summaryData, ['data', REPORT])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     reportImageData={reportImageData}
                     reportlistData={reportlistData}/>
                 <ActivityReturn
+                    summary={_.get(summaryData, ['data', ORDER_RETURN])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     returnListData={returnlistData}/>
                 <ActivityPayment
+                    summary={_.get(summaryData, ['data', PAYMENT])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     paymentlistData={paymentlistData}/>
                 <ActivityDelivery
+                    summary={_.get(summaryData, ['data', DELIVERY])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     deliverylistData={deliverylistData}/>
             </div>
-            <Paper className={classes.horizontalScroll}>
-            </Paper>
+            <Paper className={classes.horizontalScroll} zDepth={1}> </Paper>
         </div>
     )
 
