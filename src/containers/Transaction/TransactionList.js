@@ -462,7 +462,7 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_INFO_OPEN]: id})})
         },
         handleOpenSuperUserDialog: props => (id) => {
-            const {filter, location: {pathname}, params} = props
+            const {filter, location: {pathname}} = props
             hashHistory.push({
                 pathname,
                 query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: id})
