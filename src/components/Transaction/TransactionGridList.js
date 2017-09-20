@@ -388,7 +388,7 @@ const TransactionGridList = enhance((props) => {
                                     наличные</a>
 
                                 {_.get(cashboxData, 'cashboxId') === AllCashboxId &&
-                                <Tooltip position="bottom" text="Пожалуйста выберите кассу">
+                                <Tooltip position="bottom" text="Пожалуйста, выберите кассу">
                                     <div className={classes.actionButtons}>
                                         <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
                                         <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+

@@ -59,7 +59,7 @@ export const pendingTransactionFetchAction = (user, currency, filter) => {
     const page = filter && _.get(filter.getParams(), 'dPage')
     const params = {
         transaction: 0,
-        type: 'in',
+        type: '1',
         user: user,
         currency: currency,
         'page': page
