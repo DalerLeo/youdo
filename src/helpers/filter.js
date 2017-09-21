@@ -207,7 +207,8 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openStockSupplyDialog: null,
             openStatReturnDialog: null,
             openTransactionInfo: null,
-            openTransactionEditPrice: null
+            openTransactionEditPrice: null,
+            deleteTransaction: null
         }))
     }
 

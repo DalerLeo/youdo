@@ -100,6 +100,8 @@ const enhance = compose(
         },
         tableWrapper: {
             display: 'flex',
+            overflow: 'hidden',
+            marginBottom: '100px',
             marginLeft: '-30px',
             paddingLeft: '30px'
         },
@@ -289,7 +291,7 @@ const ClientBalanceGridList = enhance((props) => {
                                 onTouchTap={() => {
                                     createDialog.handleOpenCreateDialog(id)
                                 }}>
-                                <Cancel color='#f44336'/>
+                                <Cancel color='#ff584b'/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip position="bottom" text="Добавить">
@@ -473,7 +475,7 @@ const ClientBalanceGridList = enhance((props) => {
                                 onTouchTap={() => {
                                     createDialog.handleOpenCreateDialog(id)
                                 }}>
-                                <Cancel color='#f44336'/>
+                                <Cancel color='#ff584b'/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip position="bottom" text="Добавить">
@@ -577,6 +579,7 @@ const ClientBalanceGridList = enhance((props) => {
             />
             {isSuperUser && <ClientBalanceUpdateDialog
                 initialValues={initialValues}
+                currentItem={currentItem}
                 open={superUser.open}
                 loading={superUser.loading}
                 onClose={superUser.handleCloseSuperUserDialog}

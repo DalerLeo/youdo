@@ -46,8 +46,9 @@ const enhance = compose(
 )
 
 const TransactionUpdatePriceDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, client, addDialog} = props
+    const {classes, open, onClose, handleSubmit, loading, client, addDialog, currentItem} = props
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(client, 'id')))
+    const user = _.get(currentItem, ['user', 'firstName']) + ' ' + _.get(currentItem, ['user', 'secondName'])
     return (
         <Dialog
             modal={true}
@@ -57,7 +58,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{addDialog ? 'Добавить даход клиенту' : 'Добавить расход клиенту'}</span>
+                <span>{addDialog ? 'Добавить доход клиенту' : 'Добавить расход клиенту'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -68,6 +69,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
                 </div>
                 : <div className={classes.bodyContent}>
                     <div style={{padding: '10px 30px'}}>Клиент: <strong>{_.get(client, 'name')}</strong></div>
+                    {!_.isNull(currentItem) && <div style={{padding: '0 30px 15px'}}>Агент: <strong>{user}</strong></div>}
                     <form onSubmit={onSubmit} className={classes.form}>
                         <div className={classes.inContent} style={{minHeight: '100px'}}>
                             <div style={{width: '100%'}}>

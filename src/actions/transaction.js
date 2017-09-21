@@ -60,6 +60,7 @@ export const pendingTransactionFetchAction = (user, currency, filter) => {
     const params = {
         transaction: 0,
         user: user,
+        type: 1,
         currency: currency,
         'page': page
     }
@@ -122,6 +123,22 @@ export const transactionDeleteAction = (id) => {
 
     return {
         type: actionTypes.TRANSACTION_DELETE,
+        payload
+    }
+}
+
+export const deleteTransactionAction = (id) => {
+    const payload = axios()
+        .post(sprintf(API.TRANSACTION_PAYMENT_DELETE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.TRANSACTION_PAYMENT_DELETE,
         payload
     }
 }
