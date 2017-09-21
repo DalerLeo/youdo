@@ -408,6 +408,7 @@ const TransactionCashDialog = enhance((props) => {
                 open={superUser.open}
                 loading={superUser.loading}
                 initialValues={initialValues}
+                currentItem={currentItem}
                 onClose={superUser.handleCloseSuperUserDialog}
                 onSubmit={superUser.handleSubmitSuperUserDialog}
                 client={_.get(currentItem, ['client'])}

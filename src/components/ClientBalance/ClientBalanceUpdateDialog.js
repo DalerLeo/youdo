@@ -46,7 +46,8 @@ const enhance = compose(
 )
 
 const ClientBalanceUpdateDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, name, addDialog} = props
+    const {classes, open, onClose, handleSubmit, loading, name, addDialog, currentItem} = props
+    const user = _.get(currentItem, ['user', 'firstName']) + ' ' + _.get(currentItem, ['user', 'secondName'])
 
     const onSubmit = handleSubmit(() => props.onSubmit())
     return (
@@ -69,6 +70,7 @@ const ClientBalanceUpdateDialog = enhance((props) => {
                 </div>
                 : <div className={classes.bodyContent}>
                     <div style={{padding: '10px 30px'}}>Клиент: <strong>{name}</strong></div>
+                    {!_.isNull(currentItem) && <div style={{padding: '0 30px 15px'}}>Агент: <strong>{user}</strong></div>}
                     <form onSubmit={onSubmit} className={classes.form}>
                         <div className={classes.inContent} style={{minHeight: '100px'}}>
                             <div style={{width: '100%'}}>
