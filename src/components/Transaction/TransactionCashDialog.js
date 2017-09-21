@@ -8,6 +8,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
+import ConfirmDialog from '../ConfirmDialog'
 import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import AcceptClientTransactionDialog from './AcceptClientTransactionDialog'
@@ -19,6 +20,7 @@ import TransactionUpdatePriceDialog from './TransactionUpdatePriceDialog'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Delete from 'material-ui/svg-icons/action/delete-forever'
 import dateFormat from '../../helpers/dateFormat'
+import moment from 'moment'
 
 const enhance = compose(
     injectSheet({
@@ -209,9 +211,22 @@ const TransactionCashDialog = enhance((props) => {
         setItem,
         currentItem
     } = props
+    const ZERO = 0
+    const TWO = 2
     const openEditDialog = (thisItem) => {
         superUser.handleOpenSuperUserDialog(thisItem.id)
         setItem(thisItem)
+    }
+    const initialValues = {
+        amount: _.get(currentItem, 'amount'),
+        comment: _.get(currentItem, 'comment'),
+        division: {
+            text: _.get(currentItem, ['division', 'name']),
+            value: _.get(currentItem, ['division', 'id'])
+        },
+        paymentType: {
+            value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? TWO : _.toInteger(_.get(currentItem, 'paymentType'))
+        }
     }
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const isSuperUser = _.get(superUser, 'isSuperUser')
@@ -222,19 +237,19 @@ const TransactionCashDialog = enhance((props) => {
                 const marketName = _.get(item, ['market', 'name'])
                 const currency = _.get(item, ['currency', 'name'])
                 const division = _.get(item, ['division', 'name'])
-                const order = _.get(item, ['order'])
+                const order = _.get(item, ['order']) ? '№' + _.get(item, ['order']) : '-'
                 const customRate = _.get(item, ['customRate'])
-                const createdDate = dateFormat(_.get(item, ['createdDate']))
+                const createdDate = dateFormat(_.get(item, ['createdDate'])) + ' ' + moment(_.get(item, ['createdDate'])).format('HH:mm')
                 const internal = _.toNumber(_.get(item, 'internal'))
                 const amount = _.toNumber(_.get(item, 'amount'))
                 return (
                     <Row key={_.get(item, 'id')} className={classes.detailsRow}>
-                        <Col xs={3}>{clientName}</Col>
+                        <Col xs={2}>{clientName}</Col>
                         <Col xs={2}>{marketName}</Col>
                         <Col xs={2}>{division}</Col>
-                        <Col xs={1}>№ {order}</Col>
+                        <Col xs={1}>{order}</Col>
                         <Col xs={2}>{createdDate}</Col>
-                        <Col xs={1} style={{textAlign: 'right'}}>
+                        <Col xs={2} style={{textAlign: 'right'}}>
                             <div>{numberFormat(amount, currency)}</div>
                             <div>{currency !== primaryCurrency
                                 ? customRate
@@ -245,7 +260,7 @@ const TransactionCashDialog = enhance((props) => {
                         </Col>
                         <Col xs={1}>
                             {
-                            <div style={{display: 'flex', alignItems: 'center'}}>
+                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
                                 <Tooltip position="bottom" text="Изменить">
                                     <IconButton
                                         iconStyle={iconStyle.icon}
@@ -262,7 +277,10 @@ const TransactionCashDialog = enhance((props) => {
                                         style={iconStyle.button}
                                         disableTouchRipple={true}
                                         touch={true}
-                                        onTouchTap={() => { openEditDialog(item) }}>
+                                        onTouchTap={() => {
+                                            superUser.handleOpenDeleteTransaction(item.id)
+                                            setItem(item.id)
+                                        }}>
                                         <Delete />
                                     </IconButton>
                                 </Tooltip>
@@ -277,7 +295,7 @@ const TransactionCashDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '300px'} : {width: '900px', maxWidth: 'unset'}}
+            contentStyle={loading ? {width: '300px'} : {width: '1000px', maxWidth: 'none'}}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
@@ -296,7 +314,7 @@ const TransactionCashDialog = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={10}>Агент</Col>
+                            <Col xs={9}>Агент</Col>
                             <Col xs={2}>Сумма</Col>
                         </Row>
                         {_.map(_.get(acceptCashDialog, ['data']), (item, index) => {
@@ -319,9 +337,9 @@ const TransactionCashDialog = enhance((props) => {
                                             <div className={classes.pagination}>
                                                 <Pagination filter={filterItem}/>
                                             </div>
-                                            <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
+                                            <Col xs={5} style={{textAlign: 'right', paddingRight: '0'}}>{amount}</Col>
                                             <Col xs={1}>
-                                                <div style={{marginRight: '-4px'}}>
+                                                <div style={{paddingLeft: '7px'}}>
                                                     <Tooltip position="bottom" text="Оплатить">
                                                         <IconButton
                                                             onTouchTap={() => {
@@ -335,12 +353,12 @@ const TransactionCashDialog = enhance((props) => {
                                         </Row>
                                         <div>
                                             <Row className={classes.detailsRow}>
-                                                <Col xs={3}>Клиент</Col>
+                                                <Col xs={2}>Клиент</Col>
                                                 <Col xs={2}>Магазин</Col>
                                                 <Col xs={2}>Подразделение</Col>
-                                                <Col xs={1}>Заказа</Col>
+                                                <Col xs={1}>Заказ</Col>
                                                 <Col xs={2}>Дата</Col>
-                                                <Col xs={1} style={{textAlign: 'right'}}>Сумма</Col>
+                                                <Col xs={2} style={{textAlign: 'right'}}>Сумма</Col>
                                                 <Col xs={1}> </Col>
                                             </Row>
                                             {detailRow}
@@ -389,10 +407,17 @@ const TransactionCashDialog = enhance((props) => {
             {isSuperUser && <TransactionUpdatePriceDialog
                 open={superUser.open}
                 loading={superUser.loading}
+                initialValues={initialValues}
                 onClose={superUser.handleCloseSuperUserDialog}
                 onSubmit={superUser.handleSubmitSuperUserDialog}
                 client={_.get(currentItem, ['client'])}
-
+            />}
+            {isSuperUser && <ConfirmDialog
+                open={superUser.openDelete}
+                type={'delete'}
+                onSubmit={superUser.handleSubmitDeleteTransaction}
+                onClose={superUser.handleCloseDeleteTransaction}
+                message={'Транзакция №' + currentItem}
             />}
 
         </Dialog>
