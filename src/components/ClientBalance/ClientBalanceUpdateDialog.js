@@ -46,7 +46,7 @@ const enhance = compose(
 )
 
 const ClientBalanceUpdateDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, name, addDialog} = props
+    const {classes, open, onClose, handleSubmit, loading, name} = props
 
     const onSubmit = handleSubmit(() => props.onSubmit())
     return (
@@ -58,7 +58,7 @@ const ClientBalanceUpdateDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{addDialog ? 'Добавить даход клиенту' : 'Добавить расход клиенту'}</span>
+                <span>Изменение баланса клиента</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>

@@ -238,7 +238,7 @@ const TransactionCashDialog = enhance((props) => {
             : _.map(_.get(paymentData, 'data'), (item) => {
                 const id = _.get(item, 'id')
                 const clientName = _.get(item, ['client', 'name'])
-                const marketName = _.get(item, ['market', 'name'])
+                const marketName = _.get(item, ['market', 'name']) || '-'
                 const currency = _.get(item, ['currency', 'name'])
                 const division = _.get(item, ['division', 'name'])
                 const order = _.get(item, ['order']) ? '№' + _.get(item, ['order']) : '-'
@@ -254,7 +254,7 @@ const TransactionCashDialog = enhance((props) => {
                         <Col xs={2}>{division}</Col>
                         <Col xs={1}>{order}</Col>
                         <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
-                        <Col xs={2} style={{textAlign: 'right'}}>
+                        <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>
                             <div>{numberFormat(amount, currency)}</div>
                             <div>{currency !== primaryCurrency
                                 ? customRate
@@ -300,7 +300,7 @@ const TransactionCashDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '300px'} : {width: '1000px', maxWidth: 'none'}}
+            contentStyle={{width: '1000px', maxWidth: 'none'}}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
@@ -364,7 +364,7 @@ const TransactionCashDialog = enhance((props) => {
                                                 <Col xs={2}>Подразделение</Col>
                                                 <Col xs={1}>Заказ</Col>
                                                 <Col xs={1}>Дата</Col>
-                                                <Col xs={2} style={{textAlign: 'right'}}>Сумма</Col>
+                                                <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>Сумма</Col>
                                                 <Col xs={1}> </Col>
                                             </Row>
                                             {detailRow}

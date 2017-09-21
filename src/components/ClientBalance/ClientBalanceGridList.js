@@ -503,9 +503,10 @@ const ClientBalanceGridList = enhance((props) => {
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
     const clientName = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog'))})
+    const TWO = 2
     const initialValues = {
         paymentType: {
-            value: _.get(currentItem, 'paymentType')
+            value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? TWO : _.toInteger(_.get(currentItem, 'paymentType'))
         },
         amount: _.get(currentItem, 'amount'),
         division: {
@@ -580,8 +581,9 @@ const ClientBalanceGridList = enhance((props) => {
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 name={_.get(client, 'name')}
             />
-            {isSuperUser && <ClientBalanceUpdateDialog
+            {isSuperUser && !_.isNull(currentItem) && <ClientBalanceUpdateDialog
                 initialValues={initialValues}
+                isUpdate={true}
                 open={superUser.open}
                 loading={superUser.loading}
                 onClose={superUser.handleCloseSuperUserDialog}
