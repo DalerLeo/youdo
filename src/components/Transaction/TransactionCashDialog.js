@@ -226,6 +226,9 @@ const TransactionCashDialog = enhance((props) => {
         },
         paymentType: {
             value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? TWO : _.toInteger(_.get(currentItem, 'paymentType'))
+        },
+        user: {
+            value: _.get(currentItem, ['user', 'id'])
         }
     }
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -233,6 +236,7 @@ const TransactionCashDialog = enhance((props) => {
     const detailRow = (
         _.get(paymentData, 'paymentLoading') ? <LinearProgress/>
             : _.map(_.get(paymentData, 'data'), (item) => {
+                const id = _.get(item, 'id')
                 const clientName = _.get(item, ['client', 'name'])
                 const marketName = _.get(item, ['market', 'name'])
                 const currency = _.get(item, ['currency', 'name'])
@@ -243,12 +247,13 @@ const TransactionCashDialog = enhance((props) => {
                 const internal = _.toNumber(_.get(item, 'internal'))
                 const amount = _.toNumber(_.get(item, 'amount'))
                 return (
-                    <Row key={_.get(item, 'id')} className={classes.detailsRow}>
+                    <Row key={id} className={classes.detailsRow}>
+                        <Col xs={1}>{id}</Col>
                         <Col xs={2}>{clientName}</Col>
                         <Col xs={2}>{marketName}</Col>
                         <Col xs={2}>{division}</Col>
                         <Col xs={1}>{order}</Col>
-                        <Col xs={2}>{createdDate}</Col>
+                        <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
                         <Col xs={2} style={{textAlign: 'right'}}>
                             <div>{numberFormat(amount, currency)}</div>
                             <div>{currency !== primaryCurrency
@@ -278,8 +283,8 @@ const TransactionCashDialog = enhance((props) => {
                                         disableTouchRipple={true}
                                         touch={true}
                                         onTouchTap={() => {
-                                            superUser.handleOpenDeleteTransaction(item.id)
-                                            setItem(item.id)
+                                            superUser.handleOpenDeleteTransaction(id)
+                                            setItem(id)
                                         }}>
                                         <Delete />
                                     </IconButton>
@@ -353,11 +358,12 @@ const TransactionCashDialog = enhance((props) => {
                                         </Row>
                                         <div>
                                             <Row className={classes.detailsRow}>
+                                                <Col xs={1}>№</Col>
                                                 <Col xs={2}>Клиент</Col>
                                                 <Col xs={2}>Магазин</Col>
                                                 <Col xs={2}>Подразделение</Col>
                                                 <Col xs={1}>Заказ</Col>
-                                                <Col xs={2}>Дата</Col>
+                                                <Col xs={1}>Дата</Col>
                                                 <Col xs={2} style={{textAlign: 'right'}}>Сумма</Col>
                                                 <Col xs={1}> </Col>
                                             </Row>
@@ -408,7 +414,6 @@ const TransactionCashDialog = enhance((props) => {
                 open={superUser.open}
                 loading={superUser.loading}
                 initialValues={initialValues}
-                currentItem={currentItem}
                 onClose={superUser.handleCloseSuperUserDialog}
                 onSubmit={superUser.handleSubmitSuperUserDialog}
                 client={_.get(currentItem, ['client'])}

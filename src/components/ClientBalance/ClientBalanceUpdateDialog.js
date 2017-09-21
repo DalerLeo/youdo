@@ -12,7 +12,7 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import CircularProgress from 'material-ui/CircularProgress'
-import {DivisionSearchField, PaymentTypeSearchField} from '../ReduxForm'
+import {DivisionSearchField, PaymentTypeSearchField, UsersSearchField} from '../ReduxForm'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -46,8 +46,7 @@ const enhance = compose(
 )
 
 const ClientBalanceUpdateDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, name, addDialog, currentItem} = props
-    const user = _.get(currentItem, ['user', 'firstName']) + ' ' + _.get(currentItem, ['user', 'secondName'])
+    const {classes, open, onClose, handleSubmit, loading, name, addDialog} = props
 
     const onSubmit = handleSubmit(() => props.onSubmit())
     return (
@@ -70,10 +69,15 @@ const ClientBalanceUpdateDialog = enhance((props) => {
                 </div>
                 : <div className={classes.bodyContent}>
                     <div style={{padding: '10px 30px'}}>Клиент: <strong>{name}</strong></div>
-                    {!_.isNull(currentItem) && <div style={{padding: '0 30px 15px'}}>Агент: <strong>{user}</strong></div>}
                     <form onSubmit={onSubmit} className={classes.form}>
                         <div className={classes.inContent} style={{minHeight: '100px'}}>
                             <div style={{width: '100%'}}>
+                                <Field
+                                    name="user"
+                                    component={UsersSearchField}
+                                    label="Пользователь"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
                                 <Field
                                     name="paymentType"
                                     component={PaymentTypeSearchField}

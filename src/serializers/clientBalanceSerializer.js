@@ -89,6 +89,7 @@ export const updateTransactionSerializer = (data, client) => {
     const comment = _.get(data, 'comment')
     const currency = getConfig('PRIMARY_CURRENCY_ID')
     const division = _.get(data, ['division', 'value'])
+    const user = _.get(data, ['user', 'value'])
     const paymentType = _.get(data, ['paymentType', 'value'])
 
     return {
@@ -97,6 +98,7 @@ export const updateTransactionSerializer = (data, client) => {
         client,
         currency,
         division,
+        user,
         type: 9,
         payment_type: paymentType === TWO ? ZERO : paymentType
     }

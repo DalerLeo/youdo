@@ -29,6 +29,7 @@ export const updateTransactionSerializer = (data, client) => {
     const comment = _.get(data, 'comment')
     const currency = getConfig('PRIMARY_CURRENCY_ID')
     const division = _.get(data, ['division', 'value'])
+    const user = _.get(data, ['user', 'value'])
     const paymentType = _.get(data, ['paymentType', 'value'])
     return {
         'amount': newAmount,
@@ -36,6 +37,7 @@ export const updateTransactionSerializer = (data, client) => {
         client,
         currency,
         division,
+        user,
         type: 1,
         payment_type: paymentType === TWO ? ZERO : paymentType
     }
@@ -77,6 +79,16 @@ export const createSendSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
     const toCashbox = _.get(data, ['categoryId', 'value'])
     const comment = _.get(data, 'comment')
+    const customRate = _.get(data, 'custom_rate')
+    if (customRate) {
+        return {
+            amount: numberWithoutSpaces(amount),
+            'from_cashbox': cashboxId,
+            'to_cashbox': toCashbox,
+            'custom_rate': numberWithoutSpaces(customRate),
+            comment
+        }
+    }
     return {
         amount: numberWithoutSpaces(amount),
         'from_cashbox': cashboxId,

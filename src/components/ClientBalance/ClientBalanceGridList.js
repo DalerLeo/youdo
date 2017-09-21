@@ -511,7 +511,10 @@ const ClientBalanceGridList = enhance((props) => {
         division: {
             value: _.get(currentItem, ['division', 'id'])
         },
-        comment: _.get(currentItem, 'comment')
+        comment: _.get(currentItem, 'comment'),
+        user: {
+            value: _.get(currentItem, ['user', 'id'])
+        }
     }
 
     const navigation = (
@@ -579,7 +582,6 @@ const ClientBalanceGridList = enhance((props) => {
             />
             {isSuperUser && <ClientBalanceUpdateDialog
                 initialValues={initialValues}
-                currentItem={currentItem}
                 open={superUser.open}
                 loading={superUser.loading}
                 onClose={superUser.handleCloseSuperUserDialog}
