@@ -391,7 +391,7 @@ const StatSalesGridList = enhance((props) => {
 
             return (
                 <Row key={id} className="dottedList">
-                    <Col xs={1}>{id}</Col>
+                    <Col xs={1}><a onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>{id}</a></Col>
                     <Col xs={2}>{createdDate}</Col>
                     <Col xs={3}>{marketName}</Col>
                     <Col xs={2}>

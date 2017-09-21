@@ -18,6 +18,8 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
+import {formattedType} from '../../../constants/transactionTypes'
+
 export const STAT_FINANCE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
@@ -59,16 +61,14 @@ const enhance = compose(
                     bottom: '-1px'
                 },
                 '& > div': {
-                    display: 'flex',
-                    height: '50px',
-                    alignItems: 'center',
                     '&:last-child': {
-                        justifyContent: 'flex-end'
+                        textAlign: 'right'
                     }
                 }
             },
             '& .dottedList': {
-                padding: '0',
+                padding: '5px 0',
+                minHeight: '50px',
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
@@ -349,8 +349,8 @@ const StatFinanceGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={2}>№ заказа</Col>
-            <Col xs={3}>Дата</Col>
-            <Col xs={4}>Описания</Col>
+            <Col xs={2}>Дата</Col>
+            <Col xs={5}>Описание</Col>
             <Col xs={3}>Сумма</Col>
         </Row>
     )
@@ -360,12 +360,18 @@ const StatFinanceGridList = enhance((props) => {
         const date = dateFormat(_.get(item, 'createdDate'))
         const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
         const comment = _.get(item, 'comment')
+        const transType = _.get(item, 'type')
+        const user = _.get(item, 'user')
+        const type = formattedType[transType]
         return (
             <Row key={id} className="dottedList">
                 <Col xs={2}>{id}</Col>
-                <Col xs={3}>{date}</Col>
-                <Col xs={4}>{comment}</Col>
-                <Col xs={3} style={{justifyContent: 'flex-end'}}>{amount}</Col>
+                <Col xs={2}>{date}</Col>
+                <Col xs={5}>
+                    <div><strong>Тип:</strong> {type} {!_.isNull(user) && <strong>{user.firstName} {user.secondName}</strong>}</div>
+                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
+                </Col>
+                <Col xs={3} style={{textAlign: 'right'}}>{amount}</Col>
             </Row>
         )
     })

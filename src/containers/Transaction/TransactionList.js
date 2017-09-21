@@ -191,6 +191,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[DELETE_TRANSACTION]: false})})
                     dispatch(pendingTransactionFetchAction(user, currency, filterItem))
+                    dispatch(acceptCashListFetchAction())
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .catch(() => {
@@ -514,7 +515,10 @@ const enhance = compose(
                     hashHistory.push({
                         pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false})
                     })
-                    return dispatch(pendingTransactionFetchAction(user, currency, filterItem))
+                })
+                .then(() => {
+                    dispatch(pendingTransactionFetchAction(user, currency, filterItem))
+                    dispatch(acceptCashListFetchAction())
                 })
                 .catch((error) => {
                     const errorWhole = _.map(error, (item, index) => {
