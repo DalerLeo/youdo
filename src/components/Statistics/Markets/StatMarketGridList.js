@@ -17,7 +17,6 @@ import CircularProgress from 'material-ui/CircularProgress'
 import List from 'material-ui/svg-icons/action/list'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../../GridList/GridListNavPagination/index'
-import StatMarketDialog from './StatMarketDialog'
 import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
 import ReactHighcharts from 'react-highcharts'
@@ -209,8 +208,6 @@ const StatMarketGridList = enhance((props) => {
         detailData,
         classes,
         filter,
-        filterItem,
-        statMarketDialog,
         handleSubmitFilterDialog,
         getDocument
     } = props
@@ -333,7 +330,7 @@ const StatMarketGridList = enhance((props) => {
         </Row>
     )
 
-    const list = _.map(_.get(listData, 'data'), (item) => {
+    const list = _.map(_.get(listData, 'data'), (item, index) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const income = _.toNumber(_.get(item, 'income'))
@@ -343,7 +340,7 @@ const StatMarketGridList = enhance((props) => {
 
         if (id === _.get(detailData, 'id')) {
             return (
-                <div key={id}>
+                <div key={index}>
                     <Row>
                         <Col xs={3}>
                             <span>{name}</span>
@@ -370,7 +367,7 @@ const StatMarketGridList = enhance((props) => {
         }
 
         return (
-            <Row key={id} className="dottedList">
+            <Row key={index} className="dottedList">
                 <Col xs={3}>
                     <span>{name}</span>
                 </Col>
@@ -471,13 +468,6 @@ const StatMarketGridList = enhance((props) => {
     return (
         <Container>
             {page}
-            <StatMarketDialog
-                loading={detailData.detailLoading}
-                detailData={detailData}
-                open={statMarketDialog.openStatMarketDialog}
-                onClose={statMarketDialog.handleCloseStatMarketDialog}
-                filterItem={filterItem}
-            />
         </Container>
     )
 })

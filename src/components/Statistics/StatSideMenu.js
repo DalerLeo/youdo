@@ -50,7 +50,7 @@ const StatSideMenu = enhance((props) => {
             url: ROUTES.STATISTICS_SALES_URL,
             childs: [
                 {name: 'Агенты', url: ROUTES.STATISTICS_AGENT_URL},
-                {name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL + '?pageSize=25'},
+                {name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL, query: {pageSize: 25}},
                 {name: 'Магазины', url: ROUTES.STATISTICS_MARKET_URL},
                 {name: 'Возврат', url: ROUTES.STATISTICS_RETURN_URL}
             ]
@@ -69,7 +69,7 @@ const StatSideMenu = enhance((props) => {
         {
             section: 'Склад',
             childs: [
-                {name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL + '?pageSize=25'},
+                {name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL, query: {pageSize: 25}},
                 {name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL}
             ]
         },
@@ -85,11 +85,11 @@ const StatSideMenu = enhance((props) => {
             {_.map(statMenus, (item, index) => {
                 return (
                     <ul key={index}>
-                        <Link to={item.url} className={(item.url === currentUrl) && classes.active}>{item.section}</Link>
+                        <Link to={{pathname: item.url, query: item.query}} className={(item.url === currentUrl) && classes.active}>{item.section}</Link>
                         {_.map(item.childs, (object, i) => {
                             return (
                                 <li key={i}>
-                                     <Link to={object.url}>
+                                     <Link to={{pathname: object.url, query: object.query}}>
                                          <span className={object.url === currentUrl ? classes.active : classes.simple}>
                                              {object.name}
                                          </span>
