@@ -4,36 +4,27 @@ import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
-import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import sprintf from 'sprintf'
 import moment from 'moment'
-import {change} from 'redux-form'
+import {OrderPrint} from '../../components/Order'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
-    STOCK_RECEIVE_CREATE_DIALOG_OPEN,
-    STOCK_RECEIVE_UPDATE_DIALOG_OPEN,
     HISTORY_FILTER_OPEN,
     HISTORY_FILTER_KEY,
     STOCK_RETURN_DIALOG_OPEN,
     STOCK_SUPPLY_DIALOG_OPEN,
     SROCK_POPVER_DIALOG_OPEN,
     TAB,
-    STOCK_CONFIRM_DIALOG_OPEN,
     TAB_TRANSFER_FILTER_KEY
 } from '../../components/StockReceive'
 import {
     stockReceiveListFetchAction,
-    stockReceiveCreateAction,
+    stockReceiveItemFetchAction,
     stockHistoryListFetchAction,
     stockTransferListFetchAction,
+    stockTransferItemFetchAction,
     stockReceiveOrderItemFetchAction,
-    stockTransferItemAcceptAction,
-    stockReceiveItemConfirmAction,
-    stockReceiveItemReturnAction,
-    stockReceiveDeliveryConfirmAction,
-    stockReceiveUpdateAction,
     historyOrderItemFetchAction
 } from '../../actions/stockReceive'
 import {
@@ -42,31 +33,52 @@ import {
 } from '../../actions/order'
 import {returnItemFetchAction} from '../../actions/return'
 import {supplyItemFetchAction} from '../../actions/supply'
-import {openSnackbarAction} from '../../actions/snackbar'
-import {openErrorAction} from '../../actions/error'
-import StockTabHistory from '../../components/StockReceive/StockTabHistory'
 
-const TYPE = 'openType'
 const POP_TYPE = 'popType'
 const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const list = _.get(state, ['stockReceive', 'history', 'data'])
-        const detail = _.get(state, ['order', 'item', 'data'])
-        const detailLoading = _.get(state, ['order', 'item', 'loading'])
-        const listLoading = _.get(state, ['stockReceive', 'history', 'loading'])
-        const filterForm = _.get(state, ['form', 'HistoryFilterForm'])
-        const filter = filterHelper(list, pathname, query)
+        const historyList = _.get(state, ['stockReceive', 'history', 'data'])
+        const historyOrderDetail = _.get(state, ['order', 'item', 'data'])
+        const historyOrderLoading = _.get(state, ['order', 'item', 'loading'])
+        const historyListLoading = _.get(state, ['stockReceive', 'history', 'loading'])
+        const printList = _.get(state, ['stockReceive', 'print', 'data'])
+        const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
+        const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
+        const filter = filterHelper(historyList, pathname, query)
+        const returnDialogData = _.get(state, ['return', 'item', 'data'])
+        const returnDialogDataLoading = _.get(state, ['return', 'item', 'loading'])
+        const supplyDialogData = _.get(state, ['supply', 'item', 'data'])
+        const supplyDialogDataLoading = _.get(state, ['supply', 'item', 'loading'])
+        const stockTransferDialogData = _.get(state, ['stockReceive', 'stockTransfer', 'data'])
+        const stockTransferDialogDataLoading = _.get(state, ['stockReceive', 'stockTransfer', 'loading'])
+        const stockDeliveryReturnDialogData = _.get(state, ['stockReceive', 'transferItem', 'data'])
+        const stockDeliveryReturnDialogDataLoading = _.get(state, ['stockReceive', 'transferItem', 'loading'])
+        const supplyDialogFilter = filterHelper(supplyDialogData, pathname, query, {
+            'page': 'dPage',
+            'pageSize': 'dPageSize'
+        })
 
         return {
-            list,
-            listLoading,
-            detail,
-            detailLoading,
+            historyList,
+            historyListLoading,
             filter,
-            filterForm
+            printList,
+            printLoading,
+            historyFilterForm,
+            historyOrderLoading,
+            historyOrderDetail,
+            returnDialogData,
+            returnDialogDataLoading,
+            supplyDialogData,
+            supplyDialogDataLoading,
+            supplyDialogFilter,
+            stockTransferDialogData,
+            stockTransferDialogDataLoading,
+            stockDeliveryReturnDialogData,
+            stockDeliveryReturnDialogDataLoading
         }
     }),
 
@@ -74,17 +86,44 @@ const enhance = compose(
         const prevTab = _.get(props, ['location', 'query', 'tab']) || 'receive'
         const nextTab = _.get(nextProps, ['location', 'query', 'tab']) || 'receive'
         return (props.filter.filterRequest() !== nextProps.filter.filterRequest()) || (prevTab !== nextTab)
-    }, ({dispatch, filter}) => {
-        dispatch(stockHistoryListFetchAction(filter))
+    }, ({dispatch, filter, location}) => {
+        const currentTab = _.get(location, ['query', 'tab']) || 'receive'
+        if (currentTab === 'receive') {
+            dispatch(stockReceiveListFetchAction(filter))
+        } else if (currentTab === 'transfer' || currentTab === 'stock_transfer') {
+            dispatch(stockTransferListFetchAction(filter))
+        } else if (currentTab === 'outHistory') {
+            dispatch(stockHistoryListFetchAction(filter))
+        } else if (currentTab === 'transferHistory') {
+            const history = true
+            dispatch(stockTransferListFetchAction(filter, history))
+        } else if (currentTab === 'receiveHistory') {
+            const history = true
+            dispatch(stockReceiveListFetchAction(filter, history))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
         const prevId = _.toInteger(_.get(props, ['params', 'stockReceiveId']))
         const nextId = _.toInteger(_.get(nextProps, ['params', 'stockReceiveId']))
         return prevId !== nextId
-    }, ({dispatch, params}) => {
+    }, ({dispatch, params, location}) => {
+        const currentTab = _.get(location, ['query', 'tab']) || 'receive'
+        const stockReceiveType = _.get(location, ['query', 'openType'])
         const stockReceiveId = _.toInteger(_.get(params, 'stockReceiveId'))
-        dispatch(stockReceiveOrderItemFetchAction(stockReceiveId))
+        if (stockReceiveId > ZERO && (currentTab === 'receive' || currentTab === 'receiveHistory')) {
+            if (stockReceiveType === 'supply') {
+                dispatch(stockReceiveItemFetchAction(stockReceiveId))
+            } else if (stockReceiveType === 'transfer') {
+                dispatch(stockReceiveOrderItemFetchAction(stockReceiveId))
+            } else if (stockReceiveType === 'order_return') {
+                dispatch(orderReturnListAction(stockReceiveId))
+            } else if (stockReceiveType === 'delivery_return') {
+                dispatch(stockTransferItemFetchAction(stockReceiveId))
+            }
+        } else if ((currentTab === 'transfer' || currentTab === 'transferHistory') && stockReceiveId > ZERO) {
+            dispatch(stockTransferItemFetchAction(stockReceiveId))
+        }
     }),
     withPropsOnChange((props, nextProps) => {
         const nextDialog = _.get(nextProps, ['location', 'query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
@@ -97,9 +136,41 @@ const enhance = compose(
             (prevReturnDialog !== nextReturnDialog && nextReturnDialog !== 'false') ||
             (prevSupplyDialog !== nextSupplyDialog && nextSupplyDialog !== 'false')
     }, ({dispatch, location}) => {
+        const popoverDialog = _.get(location, ['query', SROCK_POPVER_DIALOG_OPEN])
         const dialog = _.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
-        dispatch(historyOrderItemFetchAction(_.toNumber(dialog)))
+        const returnDialog = _.get(location, ['query', STOCK_RETURN_DIALOG_OPEN])
+        const stockDialog = _.get(location, ['query', STOCK_SUPPLY_DIALOG_OPEN])
+        if (dialog !== 'false' && dialog && !popoverDialog) {
+            dispatch(historyOrderItemFetchAction(_.toNumber(dialog)))
+        } else if (returnDialog !== 'false' && returnDialog) {
+            dispatch(returnItemFetchAction(_.toNumber(returnDialog)))
+        } else if (stockDialog !== 'false' && stockDialog) {
+            dispatch(supplyItemFetchAction(_.toNumber(stockDialog)))
+        }
     }),
+    withPropsOnChange((props, nextProps) => {
+        const nextPopoverDialog = _.get(nextProps, ['location', 'query', SROCK_POPVER_DIALOG_OPEN])
+        const prevPopoverDialog = _.get(props, ['location', 'query', SROCK_POPVER_DIALOG_OPEN])
+        return prevPopoverDialog !== nextPopoverDialog && nextPopoverDialog !== 'false'
+    }, ({dispatch, location}) => {
+        const dialog = _.toNumber(_.get(location, ['query', SROCK_POPVER_DIALOG_OPEN]))
+        const open = _.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
+        const popoverType = (_.get(location, ['query', POP_TYPE]))
+        if (dialog !== 'false' && dialog) {
+            if (popoverType === 'transfer') {
+                dispatch(stockReceiveOrderItemFetchAction(dialog))
+            } else if (popoverType === 'stock_transfer' || open) {
+                dispatch(stockReceiveOrderItemFetchAction(dialog))
+            } else if (popoverType === 'order_return') {
+                dispatch(orderReturnListAction(dialog))
+            } else if (popoverType === 'delivery_return') {
+                dispatch(stockTransferItemFetchAction(dialog))
+            }
+        }
+    }),
+
+    withState('openPrint', 'setOpenPrint', false),
+    withState('popoverType', 'setType', ''),
 
     withHandlers({
         handleOpenPrintDialog: props => (id) => {
@@ -179,173 +250,6 @@ const enhance = compose(
 
             })
         },
-        handleOpenConfirmDialog: props => (status) => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: status})})
-        },
-
-        handleCloseConfirmDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
-        },
-        handleSubmitOrderReturnDialog: props => () => {
-            const {dispatch, filter, location: {pathname}, params} = props
-            const id = _.toInteger(_.get(params, 'stockReceiveId'))
-            return dispatch(stockReceiveItemReturnAction(id))
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
-                    dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
-                })
-        },
-        handleSubmitTransferAcceptDialog: props => () => {
-            const {dispatch, filter, location: {pathname, query}, params} = props
-            const id = _.toInteger(_.get(params, 'stockReceiveId'))
-            const stockId = Number(_.get(query, TYPE))
-            return dispatch(stockTransferItemAcceptAction(id, stockId))
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
-                    dispatch(stockTransferListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: '',
-                        arrMessage: error
-                    }))
-                })
-        },
-        handleSubmitReceiveConfirmDialog: props => () => {
-            const {dispatch, filter, location: {pathname, query}, params} = props
-            const id = _.toInteger(_.get(params, 'stockReceiveId'))
-            const status = _.get(query, STOCK_CONFIRM_DIALOG_OPEN)
-
-            return dispatch(stockReceiveItemConfirmAction(id, status))
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
-                    dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
-                })
-        },
-        handleSubmitReceiveDeliveryConfirmDialog: props => () => {
-            const {dispatch, filter, location: {pathname}, params} = props
-            const id = _.toInteger(_.get(params, 'stockReceiveId'))
-            return dispatch(stockReceiveDeliveryConfirmAction(id, 'accept'))
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
-                    dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
-                })
-        },
-        handleOpenCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseCreateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, params, detail} = props
-            const formValues = _.get(createForm, ['values'])
-            const supplyId = _.toInteger(_.get(params, 'stockReceiveId'))
-
-            return dispatch(stockReceiveCreateAction(formValues, supplyId, detail))
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: false})})
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    dispatch(stockReceiveListFetchAction(filter))
-                })
-                .catch((error) => {
-                    const comment = _.map(error, (item, index) => {
-                        return (
-                            <div key={index}>
-                                <p>{_.get(item, 'amount')}</p>
-                                {_.get(item, 'amount or defect_amount') ||
-                                <p>{_.get(item, 'amount or defect_amount')}</p>}
-                            </div>
-                        )
-                    })
-                    return dispatch(openErrorAction({message: comment}))
-                })
-        },
-        handleOpenUpdateDialog: props => () => {
-            const {filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, params, detail} = props
-            const formValues = _.get(createForm, ['values'])
-            const supplyId = _.toInteger(_.get(params, 'stockReceiveId'))
-            const history = true
-            return dispatch(stockReceiveUpdateAction(formValues, supplyId, detail))
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: false})})
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    dispatch(stockReceiveListFetchAction(filter, history))
-                })
-                .catch((error) => {
-                    const comment = _.map(error, (item) => {
-                        return (<p>{_.get(item, 'amount')}</p>)
-                    })
-                    return dispatch(openErrorAction({message: comment}))
-                })
-        },
-        handleCloseDetail: props => () => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: ROUTER.STOCK_RECEIVE_LIST_URL,
-                query: filter.getParams({[STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false})
-            })
-        },
-        handleOpenDetail: props => (id, type, typeOrg) => {
-            const {filter, location: {pathname}} = props
-            if (typeOrg === 'transfer') {
-                hashHistory.push({
-                    pathname,
-                    query: filter.getParams({
-                        [TYPE]: type,
-                        [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: id,
-                        [SROCK_POPVER_DIALOG_OPEN]: id
-                    })
-                })
-            } else {
-                hashHistory.push({
-                    pathname: sprintf(ROUTER.STOCK_RECEIVE_ITEM_PATH, id),
-                    query: filter.getParams({
-                        [TYPE]: type,
-                        [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false,
-                        [SROCK_POPVER_DIALOG_OPEN]: false
-                    })
-                })
-            }
-        },
-        handleCheckedForm: props => (index, value, selected) => {
-            const {dispatch} = props
-            const val = !selected ? value : ''
-            const form = 'StockReceiveCreateForm'
-            dispatch(change(form, 'product[' + index + '][accepted]', val))
-        },
-        handleCheckedDefect: props => (index, value) => {
-            const {dispatch} = props
-            const zero = 0
-            const val = _.toNumber(value)
-            const form = 'StockReceiveCreateForm'
-            dispatch(change(form, 'product[' + index + '][accepted]', val))
-            dispatch(change(form, 'product[' + index + '][defected]', zero))
-        },
         handleOpenHistoryDialog: props => (id) => {
             const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: id})})
@@ -390,15 +294,27 @@ const enhance = compose(
     })
 )
 
-const StockOutHistory = enhance((props) => {
+const StockOutHistoryList = enhance((props) => {
     const {
-        list,
-        listLoading,
+        historyList,
+        historyListLoading,
         location,
         filter,
         layout,
-        detail,
-        detailLoading
+        openPrint,
+        printList,
+        printLoading,
+        historyOrderDetail,
+        historyOrderLoading,
+        returnDialogData,
+        returnDialogDataLoading,
+        supplyDialogData,
+        supplyDialogDataLoading,
+        supplyDialogFilter,
+        stockTransferDialogData,
+        stockTransferDialogDataLoading,
+        stockDeliveryReturnDialogData,
+        stockDeliveryReturnDialogDataLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
@@ -421,14 +337,18 @@ const StockOutHistory = enhance((props) => {
         handleOpenHistoryDialog: props.handleOpenHistoryDialog,
         handleCloseHistoryDialog: props.handleCloseHistoryDialog
     }
-    const listData = {
-        listLoading,
-        detailLoading,
-        data: _.get(list, 'results'),
+    const historyData = {
+        historyListLoading,
+        historyOrderLoading,
+        data: _.get(historyList, 'results'),
         detailData: {
-            data: detail || {},
+            data: historyOrderDetail || {},
             id: openHistoryInfoDialog
         }
+    }
+    const orderData = {
+        data: printList,
+        printLoading
     }
 
     const filterDialog = {
@@ -462,6 +382,12 @@ const StockOutHistory = enhance((props) => {
         handleSubmitTabReceiveFilterDialog: props.handleSubmitTabReceiveFilterDialog
     }
 
+    const printDialog = {
+        openPrint,
+        handleOpenPrintDialog: props.handleOpenPrintDialog,
+        handleClosePrintDialog: props.handleClosePrintDialog
+    }
+
     const returnDialog = {
         data: returnDialogData,
         open: returnDialogDataOpen,
@@ -489,11 +415,20 @@ const StockOutHistory = enhance((props) => {
         onClose: props.handleClosePopoverDialog
     }
 
+    if (openPrint) {
+        document.getElementById('wrapper').style.height = 'auto'
+
+        return <OrderPrint
+            printDialog={printDialog}
+            listPrintData={orderData}/>
+    }
+    document.getElementById('wrapper').style.height = '100%'
+
     return (
         <Layout {...layout}>
-            <StockTabHistory
+            <TabHistory
                 filter={filter}
-                listData={listData}
+                listData={historyData}
                 filterDialog={filterDialog}
                 historyDialog={historyDialog}
                 returnDialog={returnDialog}
@@ -503,4 +438,4 @@ const StockOutHistory = enhance((props) => {
     )
 })
 
-export default StockOutHistory
+export default StockOutHistoryList

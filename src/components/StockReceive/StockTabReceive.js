@@ -207,37 +207,37 @@ const StockTabReceive = enhance((props) => {
                 list={list}
                 detail={receiveDetails}/>
 
-            {/*<ConfirmDialog*/}
-                {/*type={confirmDialog.openConfirmDialog === CANCEL ? 'cancel' : 'submit' }*/}
-                {/*message={'Запрос № ' + _.get(detailData, 'id')}*/}
-                {/*onClose={confirmDialog.handleCloseConfirmDialog}*/}
-                {/*onSubmit={confirmDialog.openConfirmDialog === RETURN*/}
-                            {/*? confirmDialog.handleSubmitOrderReturnDialog*/}
-                                {/*: (confirmDialog.openConfirmDialog === DELIVERY)*/}
-                                    {/*? confirmDialog.handleSubmitReceiveDeliveryConfirmDialog*/}
-                                        {/*: confirmDialog.handleSubmitReceiveConfirmDialog}*/}
-                {/*open={confirmDialog.openConfirmDialog > ZERO}*/}
-            {/*/>*/}
-            {/*<CreateDialog*/}
-                {/*loading={createDialog.createLoading}*/}
-                {/*open={createDialog.openCreateDialog}*/}
-                {/*detailProducts={createDialog.detailProducts}*/}
-                {/*listLoading={createDialog.detailLoading}*/}
-                {/*onClose={createDialog.handleCloseCreateDialog}*/}
-                {/*onSubmit={createDialog.handleSubmitCreateDialog}*/}
-                {/*handleCheckedForm={handleCheckedForm}*/}
-            {/*/>*/}
-            {/*<CreateDialog*/}
-                {/*loading={updateDialog.updateLoading}*/}
-                {/*open={updateDialog.openUpdateDialog}*/}
-                {/*detailProducts={updateDialog.detailProducts}*/}
-                {/*listLoading={updateDialog.detailLoading}*/}
-                {/*onClose={updateDialog.handleCloseUpdateDialog}*/}
-                {/*onSubmit={updateDialog.handleSubmitUpdateDialog}*/}
-                {/*isUpdate={true}*/}
-                {/*initialValues={updateDialog.initialValues}*/}
-                {/*handleCheckedDefect={handleCheckedDefect}*/}
-            {/*/>*/}
+            <ConfirmDialog
+                type={confirmDialog.openConfirmDialog === CANCEL ? 'cancel' : 'submit' }
+                message={'Запрос № ' + _.get(detailData, 'id')}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.openConfirmDialog === RETURN
+                            ? confirmDialog.handleSubmitOrderReturnDialog
+                                : (confirmDialog.openConfirmDialog === DELIVERY)
+                                    ? confirmDialog.handleSubmitReceiveDeliveryConfirmDialog
+                                        : confirmDialog.handleSubmitReceiveConfirmDialog}
+                open={confirmDialog.openConfirmDialog > ZERO}
+            />
+            <CreateDialog
+                loading={createDialog.createLoading}
+                open={createDialog.openCreateDialog}
+                detailProducts={createDialog.detailProducts}
+                listLoading={createDialog.detailLoading}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
+                handleCheckedForm={handleCheckedForm}
+            />
+            <CreateDialog
+                loading={updateDialog.updateLoading}
+                open={updateDialog.openUpdateDialog}
+                detailProducts={updateDialog.detailProducts}
+                listLoading={updateDialog.detailLoading}
+                onClose={updateDialog.handleCloseUpdateDialog}
+                onSubmit={updateDialog.handleSubmitUpdateDialog}
+                isUpdate={true}
+                initialValues={updateDialog.initialValues}
+                handleCheckedDefect={handleCheckedDefect}
+            />
         </div>
     )
 })
