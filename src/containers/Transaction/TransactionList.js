@@ -80,6 +80,7 @@ const enhance = compose(
         const filterItem = filterHelper(payment, pathname, query, {'page': 'dPage'})
         return {
             list,
+            query,
             cashboxList,
             cashboxListLoading,
             listLoading,
@@ -139,8 +140,7 @@ const enhance = compose(
         cashDetails && dispatch(pendingTransactionFetchAction(user, currency, filterItem))
     }),
     withPropsOnChange((props, nextProps) => {
-        return ((props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) &&
-            !(props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())) ||
+        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() && _.isNil(nextProps.query.dPage || nextProps.query.dPageSize || props.query.dPage || props.query.dPageSize)) ||
             (_.get(props, ['location', 'query', 'cashboxId']) !== _.get(nextProps, ['location', 'query', 'cashboxId']))
     }, ({dispatch, filter, location}) => {
         const cashboxId = _.get(location, ['query', 'cashboxId'])

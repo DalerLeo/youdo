@@ -351,13 +351,13 @@ const StatProductGridList = enhance((props) => {
                                                     <td colSpan={2}>Фактическая продажа</td>
                                                 </tr>
                                                 <tr className={classes.subTitle}>
-                                                    {_.map(listHeader, (header) => {
+                                                    {_.map(listHeader, (header, index) => {
                                                         const sortingType = filter.getSortingType(header.name)
                                                         const icon = _.isNil(sortingType) ? null : sortingType ? <ArrowUpIcon className={classes.icon}/> : <ArrowDownIcon className={classes.icon}/>
                                                         if (!header.sorting) {
                                                             return <td>{header.title}</td>
                                                         }
-                                                        return <td style={{cursor: 'pointer'}} onClick={ () => ordering(filter, header.name)}>{header.title}{icon}</td>
+                                                        return <td key={index} style={{cursor: 'pointer'}} onClick={ () => ordering(filter, header.name)}>{header.title}{icon}</td>
                                                     })}
                                                 </tr>
                                                 {tableList}
