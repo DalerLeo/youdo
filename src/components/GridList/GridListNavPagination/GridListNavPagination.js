@@ -1,7 +1,8 @@
+import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {hashHistory} from 'react-router'
-import {compose, withHandlers} from 'recompose'
+import {compose, withHandlers, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import SelectField from 'material-ui/SelectField'
@@ -52,6 +53,16 @@ const enhance = compose(
             }
         }
     }),
+    lifecycle({
+        componentWillMount () {
+            const defaultPageSize = _.get(this, ['props', 'defaultPageSize'])
+            const filter = _.get(this, ['props', 'filter'])
+            // if (defaultPageSize) {
+            //     hashHistory.push(filter.createURL({'pageSize': defaultPageSize}))
+            //     storageHelper.setPageSize(defaultPageSize)
+            // }
+        }
+    }),
     withHandlers({
         onChange: props => (event, index, value) => {
             const {filter} = props
@@ -76,6 +87,7 @@ const GridListNavPagination = enhance(({classes, onChange, filter, customPaginat
                     underlineStyle={{border: '0px solid'}}
                     onChange={onChange}>
                     <MenuItem value={10} primaryText="10" innerDivStyle={{fontSize: 13}}/>
+                    <MenuItem value={25} primaryText="25" innerDivStyle={{fontSize: 13}}/>
                     <MenuItem value={50} primaryText="50" innerDivStyle={{fontSize: 13}}/>
                     <MenuItem value={100} primaryText="100" innerDivStyle={{fontSize: 13}}/>
                 </SelectField>

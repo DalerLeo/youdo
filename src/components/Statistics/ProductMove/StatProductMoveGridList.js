@@ -30,7 +30,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             display: 'flex',
             alignItems: 'center',
@@ -471,7 +471,7 @@ const StatProductMoveGridList = enhance((props) => {
                                                     <td rowSpan={2}>Код товара</td>
                                                     <td colSpan={2}>Остаток на начало периода</td>
                                                     <td colSpan={2}>Поступивший товара за период</td>
-                                                    <td colSpan={2}>Возврать</td>
+                                                    <td colSpan={2}>Возврат</td>
                                                     <td colSpan={2}>Выданный товара за период</td>
                                                     <td colSpan={2}>Остаток на конец</td>
                                                 </tr>

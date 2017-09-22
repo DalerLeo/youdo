@@ -40,7 +40,7 @@ const enhance = compose(
         },
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             justifyContent: 'center',
             alignItems: 'center',
@@ -279,7 +279,7 @@ const StatRemainderGridList = enhance((props) => {
                 <Col xs={2}>{productType}</Col>
                 <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', whiteSpace: 'nowrap'}}>
                     <Tooltip position="top" text="Всего / Забронировано / Брак">
-                        {balance} / <span style={{color: '#90a4ae'}}> {reserved} </span> / <span style={{color: '#e57373'}}> {defects} </span>
+                        {balance} / <span style={{color: '#90a4ae', margin: '0 3px'}}> {reserved} </span> / <span style={{color: '#e57373', margin: '0 3px'}}> {defects} </span>
                     </Tooltip>
                 </Col>
                 <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{available}</Col>

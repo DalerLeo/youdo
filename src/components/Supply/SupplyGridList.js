@@ -298,8 +298,9 @@ const SupplyGridList = enhance((props) => {
 
             {(detailData.data && isAdmin && (detailStatus === IN_PROGRESS || detailStatus === COMPLETED)) ? <ConfirmDialog
                 type="cancel"
-                message={'Склад уже принял поставку. Отмена данной поставки приведет списанию товаров из' +
-                    ' склада. НЕ РЕКОМЕНДУЕТСЯ ОТМЕНА!'}
+                message={'Склад уже принял данную поставку. Отмена приведет к списанию товаров из' +
+                    ' склада. ОТМЕНА НЕ РЕКОМЕНДУЕТСЯ!'}
+                warning={true}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
