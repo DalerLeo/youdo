@@ -18,7 +18,8 @@ import {
     zoneStatisticsFetchAction,
     zoneItemFetchAction,
     zoneBindAgentAction,
-    zoneUnbindAgentAction
+    zoneUnbindAgentAction,
+    shopListFetchAction
 } from '../../actions/zones'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ZERO = 0
@@ -32,6 +33,8 @@ const enhance = compose(
         const updateLoading = _.get(state, ['zone', 'update', 'loading'])
         const detail = _.get(state, ['zone', 'item', 'data'])
         const detailLoading = _.get(state, ['zone', 'item', 'loading'])
+        const shopList = _.get(state, ['shop', 'list', 'data'])
+        const shopListLoading = _.get(state, ['shop', 'list', 'loading'])
         const stat = _.get(state, ['zone', 'statistics', 'data'])
         const statLoading = _.get(state, ['zone', 'statistics', 'loading'])
         const createForm = _.get(state, ['form', 'ZoneCreateForm', 'values'])
@@ -49,6 +52,8 @@ const enhance = compose(
             statLoading,
             detail,
             detailLoading,
+            shopList,
+            shopListLoading,
             createForm,
             zoneBindForm,
             bindAgentLoading,
@@ -70,6 +75,7 @@ const enhance = compose(
         const zoneId = _.toInteger(_.get(params, 'zoneId'))
         if (zoneId > ZERO) {
             dispatch(zoneItemFetchAction(zoneId))
+            dispatch(shopListFetchAction(zoneId))
         }
     }),
 
@@ -242,7 +248,9 @@ const Zones = enhance((props) => {
         statLoading,
         detail,
         detailLoading,
-        bindAgentLoading
+        bindAgentLoading,
+        shopList,
+        shopListLoading,
     } = props
 
     const openAddZone = toBoolean(_.get(location, ['query', ADD_ZONE]))
@@ -323,7 +331,11 @@ const Zones = enhance((props) => {
         id: detailId,
         data: detail,
         detailLoading,
-        zoneId
+        zoneId,
+        shop: {
+            data: _.get(shopList, 'results'),
+            shopListLoading
+        }
     }
 
     const toggle = {

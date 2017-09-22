@@ -22,6 +22,7 @@ import {CurrencyList} from '../containers/Currency'
 import {PositionList} from '../containers/Position'
 import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
+import {GoogleMapCustom} from '../containers/GoogleMapCustom'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
@@ -396,6 +397,15 @@ export default {
             childRoutes: [{
                 path: ROUTES.STAT_CASHBOX_ITEM_URL,
                 component: userIsAuth(StatCashbox)
+            }]
+        },
+        // ZONES
+        {
+            path: ROUTES.ZONES_LIST_URL,
+            component: userIsAdminChain(GoogleMapCustom),
+            childRoutes: [{
+                path: ROUTES.ZONES_ITEM_URL,
+                component: userIsAuth(GoogleMapCustom)
             }]
         },
         // TRACKING

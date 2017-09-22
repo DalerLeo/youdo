@@ -310,16 +310,17 @@ const ZoneDetails = enhance((props) => {
                 <div className={classes.stores}>
                     <div className="dottedList">
                         <span>Магазины в зоне</span>
-                        <a>+ добавить</a>
                     </div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
+
+                    {_.map(_.get(detailData, ['shop', 'data']), (item) => {
+                        const shopId = _.get(item, 'id')
+                        const shopName = _.get(item, 'name')
+                        return (
+                            <Link key={shopId} target="_blank" to={{pathname: sprintf(ROUTES.SHOP_ITEM_PATH, shopId), query: {search: shopId}}}>
+                                <div className="dottedList">{shopName}</div>
+                            </Link>
+                        )
+                    })}
                 </div>
             </div>
         </div>
