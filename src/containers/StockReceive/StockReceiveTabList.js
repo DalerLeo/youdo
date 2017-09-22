@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {hashHistory} from 'react-router'
-import * as ROUTES from '../../constants/routes'
+import * as ROUTER from '../../constants/routes'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -99,10 +99,32 @@ const enhance = compose(
     }),
     withHandlers({
         handleTabChange: props => (tab) => {
-            hashHistory.push({
-                pathname: 'stockReceive/' + tab,
-                query: {}
-            })
+            if (tab === 'receive') {
+                hashHistory.push({
+                    pathname: ROUTER.STOCK_RECEIVE_LIST_URL,
+                    query: {}
+                })
+            } else if (tab === 'transfer') {
+                hashHistory.push({
+                    pathname: ROUTER.STOCK_TRANSFER_LIST_URL,
+                    query: {}
+                })
+            } else if (tab === 'outHistory') {
+                hashHistory.push({
+                    pathname: ROUTER.STOCK_OUT_HISTORY_LIST_URL,
+                    query: {}
+                })
+            } else if (tab === 'transferHistory') {
+                hashHistory.push({
+                    pathname: ROUTER.STOCK_TRANSFER_HISTORY_LIST_URL,
+                    query: {}
+                })
+            } else if (tab === 'receiveHistory') {
+                hashHistory.push({
+                    pathname: ROUTER.STOCK_RECEIVE_HISTORY_LIST_URL,
+                    query: {}
+                })
+            }
         }
     })
 )
@@ -131,7 +153,7 @@ const StockReceiveTabList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.STOCK_RECEIVE_LIST_URL}/>
+            <SubMenu url={ROUTER.STOCK_RECEIVE_LIST_URL}/>
             {tabList}
         </Container>
     )

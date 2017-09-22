@@ -1,9 +1,7 @@
 import StockReceiveList from './StockReceiveList'
-import StockTransfer from './StockTransfer'
-import StockReceiveContent from './StockReceiveContent'
+import StockReceiveContent from './StockReceiveContentList'
 
 export {
     StockReceiveList,
-    StockTransfer,
     StockReceiveContent
 }

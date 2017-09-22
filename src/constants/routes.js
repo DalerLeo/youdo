@@ -245,8 +245,28 @@ export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`
 export const STOCK_RECEIVE_ITEM_URL = `${STOCK_RECEIVE_LIST_URL}/:stockReceiveId`
 export const STOCK_RECEIVE_ITEM_PATH = `/${STOCK_RECEIVE}/%d`
 
-export const STOCK_RECEIVE_TAB = 'stockReceive/receive'
-export const STOCK_RECEIVE_TAB_URL = 'stockReceive/:tab'
+export const STOCK_RECEIVE_HISTORY = 'stockReceiveHistory'
+export const STOCK_RECEIVE_HISTORY_LIST_URL = `/${STOCK_RECEIVE_HISTORY}`
+export const STOCK_RECEIVE_HISTORY_ITEM_URL = `${STOCK_RECEIVE_HISTORY_LIST_URL}/:stockReceiveHistoryId`
+export const STOCK_RECEIVE_HISTORY_ITEM_PATH = `/${STOCK_RECEIVE_HISTORY}/%d`
+
+export const STOCK_TRANSFER = 'stockReceiveHistory'
+export const STOCK_TRANSFER_LIST_URL = `/${STOCK_TRANSFER}`
+export const STOCK_TRANSFER_ITEM_URL = `${STOCK_TRANSFER_LIST_URL}/:stockTransferId`
+export const STOCK_TRANSFER_ITEM_PATH = `/${STOCK_TRANSFER}/%d`
+
+export const STOCK_TRANSFER_HISTORY = 'stockReceiveHistory'
+export const STOCK_TRANSFER_HISTORY_LIST_URL = `/${STOCK_TRANSFER_HISTORY}`
+export const STOCK_TRANSFER_HISTORY_ITEM_URL = `${STOCK_TRANSFER_HISTORY_LIST_URL}/:stockTransferHistoryId`
+export const STOCK_TRANSFER_HISTORY_ITEM_PATH = `/${STOCK_TRANSFER_HISTORY}/%d`
+
+export const STOCK_OUT_HISTORY = 'stockReceiveHistory'
+export const STOCK_OUT_HISTORY_LIST_URL = `/${STOCK_OUT_HISTORY}`
+export const STOCK_OUT_HISTORY_ITEM_URL = `${STOCK_OUT_HISTORY_LIST_URL}/:stockTransferHistoryId`
+export const STOCK_OUT_HISTORY_ITEM_PATH = `/${STOCK_OUT_HISTORY}/%d`
+
+export const STOCK_RECEIVE_TAB = 'stockReceivereceive'
+export const STOCK_RECEIVE_TAB_URL = 'stockReceivereceive'
 export const STOCK_RECEIVE_TAB_LIST_URL = `/${STOCK_RECEIVE_TAB}`
 export const STOCK_RECEIVE_TAB_ITEM_URL = `${STOCK_RECEIVE_TAB_LIST_URL}/:stockReceiveId`
 export const STOCK_RECEIVE_TAB_ITEM_PATH = `/${STOCK_RECEIVE_TAB}/%d`
