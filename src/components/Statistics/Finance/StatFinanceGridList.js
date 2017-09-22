@@ -195,6 +195,9 @@ const enhance = compose(
         },
         secondarySummary: {
             margin: '10px 0',
+            '& span': {
+                display: 'block'
+            },
             '& > div:nth-child(even)': {
                 fontSize: '16px'
             }
@@ -424,10 +427,9 @@ const StatFinanceGridList = enhance((props) => {
                                         <div className={classes.summaryValue}>5 000 000 {primaryCurrency}</div>
                                     </div>
                                     <div className={classes.secondarySummary}>
-                                        <div className={classes.summaryTitle}>Доход</div>
+                                        <span className={classes.summaryTitle}>Доход</span>
                                         <div className={classes.summaryValue}>{numberFormat(sumIn)} {primaryCurrency}</div>
-
-                                        <div className={classes.summaryTitle}>Расход</div>
+                                        <span className={classes.summaryTitle}>Расход</span>
                                         <div className={classes.summaryValue}>{numberFormat(sumOut)} {primaryCurrency}</div>
                                     </div>
                                 </Col>
