@@ -185,7 +185,8 @@ const enhance = compose(
                 flexBasis: '25%',
                 maxWidth: '25%',
                 '& div': {
-                    fontSize: '24px',
+                    fontSize: '17px',
+                    marginTop: '2px',
                     fontWeight: '600'
                 }
             }
