@@ -4,7 +4,6 @@ import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
-import LinearProgress from 'material-ui/LinearProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
@@ -36,7 +35,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             margin: '0 !important',
             background: '#fff',
             alignItems: 'center',
@@ -216,6 +215,7 @@ const StatMarketGridList = enhance((props) => {
         getDocument
     } = props
 
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
     const graphLoading = _.get(detailData, ['graphLoading'])
     const sumData = _.get(listData, ['sumData', 'income'])
@@ -286,7 +286,7 @@ const StatMarketGridList = enhance((props) => {
         },
         tooltip: {
             shared: true,
-            valueSuffix: ' ' + getConfig('PRIMARY_CURRENCY'),
+            valueSuffix: ' ' + primaryCurrency,
             backgroundColor: '#363636',
             style: {
                 color: '#fff'
@@ -326,18 +326,20 @@ const StatMarketGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={3}>Магазины</Col>
-            <Col xs={3}>Клиент</Col>
-            <Col xs={3}>Продажи</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
+            <Col xs={2}>Клиенты</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Продажи</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Возвраты</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Фактически</Col>
         </Row>
     )
 
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const percent = _.get(item, 'percent')
+        const income = _.toNumber(_.get(item, 'income'))
+        const actual = _.toNumber(_.get(item, 'actualSales'))
+        const returns = _.toNumber(_.get(item, 'orderReturns'))
         const clientName = _.get(item, 'clientName')
-        const income = numberFormat(_.get(item, 'income'), getConfig('PRIMARY_CURRENCY'))
 
         if (id === _.get(detailData, 'id')) {
             return (
@@ -346,15 +348,10 @@ const StatMarketGridList = enhance((props) => {
                         <Col xs={3}>
                             <span>{name}</span>
                         </Col>
-                        <Col xs={3}>{clientName}</Col>
-                        <Col xs={3}>
-                            <LinearProgress
-                                color="#58bed9"
-                                mode="determinate"
-                                value={percent}
-                                style={{backgroundColor: '#fff', height: '10px'}}/>
-                        </Col>
-                        <Col xs={2} style={{justifyContent: 'flex-end'}}>{income}</Col>
+                        <Col xs={2}>{clientName}</Col>
+                        <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(income, primaryCurrency)}</Col>
+                        <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returns, primaryCurrency)}</Col>
+                        <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(actual, primaryCurrency)}</Col>
                         <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
                             <IconButton
                                 onTouchTap={() => { detailData.handleCloseDetail() }}>
@@ -377,15 +374,10 @@ const StatMarketGridList = enhance((props) => {
                 <Col xs={3}>
                     <span>{name}</span>
                 </Col>
-                <Col xs={3}>{clientName}</Col>
-                <Col xs={3}>
-                    <LinearProgress
-                        color="#58bed9"
-                        mode="determinate"
-                        value={percent}
-                        style={{backgroundColor: '#fff', height: '10px'}}/>
-                </Col>
-                <Col xs={2} style={{justifyContent: 'flex-end'}}>{income}</Col>
+                <Col xs={2}>{clientName}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(income, primaryCurrency)}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returns, primaryCurrency)}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(actual, primaryCurrency)}</Col>
                 <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
                     <IconButton
                         onTouchTap={() => { detailData.handleOpenDetail(id) }}>
@@ -458,7 +450,7 @@ const StatMarketGridList = enhance((props) => {
                                 : <div>
                                     <div className={classes.summary}>Сумма от продаж
                                         <div>
-                                            {numberFormat(sumData, getConfig('PRIMARY_CURRENCY'))}
+                                            {numberFormat(sumData, primaryCurrency)}
                                         </div>
                                     </div>
                                     <div className={classes.pagination}>

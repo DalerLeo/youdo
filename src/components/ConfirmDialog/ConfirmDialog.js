@@ -42,7 +42,8 @@ const enhance = compose(
             minHeight: '184px',
             overflow: 'auto',
             padding: '0 30px',
-            color: '#333'
+            color: '#333',
+            position: 'relative'
         },
         bodyContent: {
             width: '100%'
@@ -80,7 +81,6 @@ const enhance = compose(
             '& span': {
                 fontSize: '13px !important',
                 fontWeight: '600 !important',
-                color: '#129fdd',
                 verticalAlign: 'inherit !important'
             }
         },
@@ -95,6 +95,20 @@ const enhance = compose(
             padding: '20px 30px',
             margin: '0 -30px',
             width: '100%'
+        },
+        warningBackground: {
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            textAlign: 'center',
+            position: 'absolute',
+            background: '#fef5f5',
+            color: '#f44336',
+            padding: '20px 30px',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0'
         },
         confirm: {
             padding: '20px 0'
@@ -116,7 +130,7 @@ const enhance = compose(
 )
 
 const ConfirmDialog = enhance((props) => {
-    const {open, onClose, classes, type, message, onSubmit, loading} = props
+    const {open, onClose, classes, type, message, onSubmit, loading, warning} = props
     const typesList = {
         delete: {
             name: 'Подтверждение удаления', submitName: 'Удалить', text: 'Вы уверены что хотите удалить эти данные?'
@@ -152,10 +166,10 @@ const ConfirmDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4}/>
                     </div>}
-                    <div className={classes.confirm}>
+                    {!warning && <div className={classes.confirm}>
                         {text}
-                    </div>
-                    {message && <div className={classes.background}>
+                    </div>}
+                    {message && <div className={warning ? classes.warningBackground : classes.background}>
                         {message}
                     </div>}
                 </div>
@@ -163,7 +177,7 @@ const ConfirmDialog = enhance((props) => {
                     <FlatButton
                         className={classes.actionButton}
                         label={buttonLabel}
-                        labelStyle={{fontSize: '13px'}}
+                        labelStyle={warning ? {color: '#f44336'} : {color: '#129fdd'}}
                         primary={true}
                         onTouchTap={onSubmit}
                     />

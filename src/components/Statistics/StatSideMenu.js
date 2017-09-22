@@ -50,7 +50,7 @@ const StatSideMenu = enhance((props) => {
             url: ROUTES.STATISTICS_SALES_URL,
             childs: [
                 {name: 'Агенты', url: ROUTES.STATISTICS_AGENT_URL},
-                {name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL},
+                {name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL + '?pageSize=25'},
                 {name: 'Магазины', url: ROUTES.STATISTICS_MARKET_URL},
                 {name: 'Возврат', url: ROUTES.STATISTICS_RETURN_URL}
             ]
@@ -68,9 +68,8 @@ const StatSideMenu = enhance((props) => {
         },
         {
             section: 'Склад',
-            url: ROUTES.STATISTICS_REMAINDER_URL,
             childs: [
-                {name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL},
+                {name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL + '?pageSize=25'},
                 {name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL}
             ]
         },

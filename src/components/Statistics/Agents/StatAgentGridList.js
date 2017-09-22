@@ -22,7 +22,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',

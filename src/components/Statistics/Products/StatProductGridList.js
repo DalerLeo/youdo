@@ -25,7 +25,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -153,6 +153,7 @@ const enhance = compose(
         tableWrapper: {
             display: 'flex',
             margin: '0 -30px',
+            overflow: 'hidden',
             paddingLeft: '30px',
             '& > div:first-child': {
                 zIndex: '20',
@@ -298,7 +299,6 @@ const StatProductGridList = enhance((props) => {
                 <td>{returnPrice}</td>
                 <td>{actualSalesCount}</td>
                 <td>{actualSalesPrice}</td>
-
             </tr>
         )
     })

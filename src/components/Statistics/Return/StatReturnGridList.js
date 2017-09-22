@@ -46,7 +46,7 @@ const enhance = compose(
         },
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             justifyContent: 'center',
             alignItems: 'center',

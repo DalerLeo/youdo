@@ -225,7 +225,7 @@ const TransactionGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
         const type = _.get(item, 'amount') || 'N/A'
-        const cashbox = _.get(item, 'cashbox') || 'N/A'
+        const cashbox = _.get(item, ['cashbox', 'id']) || 'N/A'
         const user = _.get(item, 'user')
         const order = _.get(item, 'order')
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
