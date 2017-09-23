@@ -62,7 +62,8 @@ import {
     StatRemainderList,
     StatCashboxList,
     StatProductMoveList,
-    StatReportList
+    StatReportList,
+    StatClientIncomeList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveList} from '../containers/StockReceive'
@@ -605,6 +606,12 @@ export default {
         {
             path: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL,
             component: userIsAdminChain(StatOutcomeCategoryList),
+            childRoutes: []
+        },
+        // Statistics/ client income
+        {
+            path: ROUTES.STATISTICS_CLIENT_INCOME_URL,
+            component: userIsAdminChain(StatClientIncomeList),
             childRoutes: []
         },
         // Stock Receive Transfer

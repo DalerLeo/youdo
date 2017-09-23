@@ -346,6 +346,11 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STAT_REMAINDER_LIST),
         item: createThunkReducer(actionTypes.STAT_REMAINDER_ITEM)
     }),
+    statClientIncome: combineReducers({
+        dataIn: createThunkReducer(actionTypes.STAT_CLIENT_INCOME_IN),
+        dataOut: createThunkReducer(actionTypes.STAT_CLIENT_INCOME_OUT),
+        list: createThunkReducer(actionTypes.STAT_CLIENT_INCOME_LIST)
+    }),
     position: combineReducers({
         create: createThunkReducer(actionTypes.POSITION_CREATE),
         list: createThunkReducer(actionTypes.POSITION_LIST),

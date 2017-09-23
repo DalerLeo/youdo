@@ -9,7 +9,7 @@ import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import {DivisionSearchField, TextField} from '../../ReduxForm/index'
+import {DivisionSearchField, TextField, ClientSearchField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
@@ -18,15 +18,30 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {formattedType} from '../../../constants/transactionTypes'
 import CircularProgress from 'material-ui/CircularProgress'
+import moment from 'moment'
+import {Link} from 'react-router'
+import sprintf from 'sprintf'
 
-export const STAT_FINANCE_FILTER_KEY = {
+export const CLIENT_INCOME_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     SEARCH: 'search',
-    DIVISION: 'division'
+    DIVISION: 'division',
+    CLIENT: 'client'
 }
+
+import {
+    PAYMENT,
+    CANCEL,
+    ORDER_RETURN,
+    CANCEL_ORDER,
+    CANCEL_ORDER_RETURN,
+    EXPENSE,
+    FIRST_BALANCE,
+    ORDER,
+    NONE_TYPE
+} from '../../../constants/clientBalanceInfo'
 
 const NEGATIVE = -1
 
@@ -86,6 +101,9 @@ const enhance = compose(
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
+                },
+                '& a': {
+                    fontWeight: '600'
                 }
             },
             '& .personImage': {
@@ -198,7 +216,7 @@ const enhance = compose(
             color: '#666'
         },
         summaryValue: {
-            fontSize: '20px',
+            fontSize: '22px',
             fontWeight: '600'
         },
         mainSummary: {
@@ -223,12 +241,12 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatFinanceFilterForm',
+        form: 'ClientIncomeFilterForm',
         enableReinitialize: true
     }),
 )
 
-const StatFinanceGridList = enhance((props) => {
+const ClientIncomeGridList = enhance((props) => {
     const {
         graphData,
         classes,
@@ -240,19 +258,21 @@ const StatFinanceGridList = enhance((props) => {
 
     const loading = _.get(listData, 'listLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    let sumIn = 0
-    const valueIn = _.map(_.get(graphData, 'dataIn'), (item) => {
-        sumIn += _.toInteger(_.get(item, 'amount'))
-        return _.toInteger(_.get(item, 'amount'))
+    const sumIn = _.sumBy(_.get(graphData, 'dataIn'), (item) => {
+        return _.toNumber(_.get(item, 'amount'))
     })
     const valueInName = _.map(_.get(graphData, 'dataIn'), (item) => {
         return dateFormat(_.get(item, 'date'))
     })
 
-    let sumOut = 0
+    const sumOut = _.sumBy(_.get(graphData, 'dataOut'), (item) => {
+        return _.toNumber(_.get(item, 'amount')) * NEGATIVE
+    })
+    const valueIn = _.map(_.get(graphData, 'dataIn'), (item) => {
+        return _.toNumber(_.get(item, 'amount'))
+    })
     const valueOut = _.map(_.get(graphData, 'dataOut'), (item) => {
-        sumOut += _.toInteger(_.get(item, 'amount')) * NEGATIVE
-        return _.toInteger(_.get(item, 'amount')) * NEGATIVE
+        return _.toNumber(_.get(item, 'amount')) * NEGATIVE
     })
     const config = {
         chart: {
@@ -331,7 +351,7 @@ const StatFinanceGridList = enhance((props) => {
             },
             name: 'Доход',
             data: valueIn,
-            color: '#6cc6de'
+            color: '#81c784'
 
         },
         {
@@ -367,31 +387,50 @@ const StatFinanceGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={2}>№ заказа</Col>
-            <Col xs={2}>Дата</Col>
-            <Col xs={5}>Описание</Col>
-            <Col xs={3}>Сумма</Col>
+            <Col xs={1}>№</Col>
+            <Col xs={3}>Дата</Col>
+            <Col xs={3}>Пользователь</Col>
+            <Col xs={3}>Описание</Col>
+            <Col xs={2}>Сумма</Col>
         </Row>
     )
 
-    const list = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const date = dateFormat(_.get(item, 'createdDate'))
-        const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
-        const comment = _.get(item, 'comment')
-        const transType = _.get(item, 'type')
+    const ZERO = 0
+    const THREE = 3
+    const list = _.map(_.get(listData, 'data'), (item, index) => {
+        const transId = _.get(item, 'id')
         const user = _.get(item, 'user')
-        const type = formattedType[transType]
+        const comment = _.get(item, 'comment')
+        const userName = !_.isNull(user) ? user.firstName + ' ' + user.secondName : 'Не известно'
+        const date = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:mm')
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const type = _.get(item, 'type')
+        const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
         return (
-            <Row key={id} className="dottedList">
-                <Col xs={2}>{id}</Col>
-                <Col xs={2}>{date}</Col>
-                <Col xs={5}>
-                    <div><strong>Тип:</strong> {type} {!_.isNull(user) &&
-                    <strong>{user.firstName} {user.secondName}</strong>}</div>
+            <Row key={index} className="dottedList">
+                <Col xs={1}>{transId}</Col>
+                <Col xs={3}>{date}</Col>
+                <Col xs={3}>{userName}</Col>
+                <Col xs={3}>
+                    {type && <div><strong>Тип:</strong> <span>{type === PAYMENT ? 'Оплата'
+                        : type === CANCEL ? 'Отмена'
+                            : type === CANCEL_ORDER ? 'Отмена заказа №' + id
+                                : type === CANCEL_ORDER_RETURN ? 'Отмена возврата №' + id
+                                    : type === ORDER ? <Link to={{
+                                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                                        query: {search: id}
+                                    }} target="_blank">Заказ {id}</Link>
+                                        : type === EXPENSE ? 'Расход'
+                                            : type === ORDER_RETURN ? <Link to={{
+                                                pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
+                                                query: {search: id}
+                                            }} target="_blank">Возврат {id}</Link>
+                                                : type === FIRST_BALANCE ? 'Первый баланс'
+                                                    : type === NONE_TYPE ? 'Произвольный' : null }</span>
+                    </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
-                <Col xs={3} style={{textAlign: 'right'}}>{amount}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}><span className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>{numberFormat(amount, primaryCurrency)}</span></Col>
             </Row>
         )
     })
@@ -400,7 +439,7 @@ const StatFinanceGridList = enhance((props) => {
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_FINANCE_URL}/>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_CLIENT_INCOME_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
@@ -424,6 +463,12 @@ const StatFinanceGridList = enhance((props) => {
                                             label="Подразделение"
                                             fullWidth={true}/>
                                         <Field
+                                            name="client"
+                                            component={ClientSearchField}
+                                            className={classes.inputFieldCustom}
+                                            label="Клиент"
+                                            fullWidth={true}/>
+                                        <Field
                                             className={classes.inputFieldCustom}
                                             name="search"
                                             component={TextField}
@@ -444,18 +489,12 @@ const StatFinanceGridList = enhance((props) => {
                                 </form>
                                 <Row className={classes.diagram}>
                                     <Col xs={3} className={classes.salesSummary}>
-                                        <div className={classes.mainSummary}>
-                                            <div className={classes.summaryTitle}>Прибыль за период</div>
-                                            <div className={classes.summaryValue}>5 000 000 {primaryCurrency}</div>
-                                        </div>
                                         <div className={classes.secondarySummary}>
-                                            <span className={classes.summaryTitle}>Доход</span>
-                                            <div
-                                                className={classes.summaryValue + ' ' + classes.green}>{numberFormat(sumIn)} {primaryCurrency}</div>
-                                            <div style={{margin: '5px 0'}}> </div>
-                                            <span className={classes.summaryTitle}>Расход</span>
-                                            <div
-                                                className={classes.summaryValue + ' ' + classes.red}>{numberFormat(sumOut)} {primaryCurrency}</div>
+                                            <span className={classes.summaryTitle}>Приход за период</span>
+                                            <div className={classes.summaryValue} style={{color: '#81c784 '}}>{numberFormat(sumIn)} {primaryCurrency}</div>
+                                            <div style={{margin: '10px 0'}}> </div>
+                                            <span className={classes.summaryTitle}>Расход за период</span>
+                                            <div className={classes.summaryValue} style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
                                         </div>
                                     </Col>
                                     <Col xs={9} className={classes.chart}>
@@ -463,7 +502,7 @@ const StatFinanceGridList = enhance((props) => {
                                     </Col>
                                 </Row>
                                 <div className={classes.pagination}>
-                                    <div><b>История заказов</b></div>
+                                    <div><b>История транзакции</b></div>
                                     <Pagination filter={filter}/>
                                 </div>
                                 <div className={classes.tableWrapper}>
@@ -484,10 +523,10 @@ const StatFinanceGridList = enhance((props) => {
     )
 })
 
-StatFinanceGridList.propTypes = {
+ClientIncomeGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object
 }
 
-export default StatFinanceGridList
+export default ClientIncomeGridList
