@@ -22,7 +22,7 @@ import {CurrencyList} from '../containers/Currency'
 import {PositionList} from '../containers/Position'
 import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
-import {GoogleMapCustom} from '../containers/GoogleMapCustom'
+import {ZonesList} from '../containers/Zones'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
@@ -402,10 +402,10 @@ export default {
         // ZONES
         {
             path: ROUTES.ZONES_LIST_URL,
-            component: userIsAdminChain(GoogleMapCustom),
+            component: userIsAdminChain(ZonesList),
             childRoutes: [{
                 path: ROUTES.ZONES_ITEM_URL,
-                component: userIsAuth(GoogleMapCustom)
+                component: userIsAuth(ZonesList)
             }]
         },
         // TRACKING

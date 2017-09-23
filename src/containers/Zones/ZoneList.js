@@ -7,8 +7,7 @@ import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import ZonesWrapper from '../../components/GoogleMapCustom/ZonesWrapper'
-import {ADD_ZONE, UPDATE_ZONE, DELETE_ZONE, TOGGLE_INFO, BIND_AGENT, CONFIRM_DIALOG, DRAW, ZONE_ID} from '../../components/Zones'
+import {ZonesWrapper, ADD_ZONE, UPDATE_ZONE, DELETE_ZONE, TOGGLE_INFO, BIND_AGENT, CONFIRM_DIALOG, ZONE_ID} from '../../components/Zones'
 import {
     zoneCustomCreateAction,
     zoneCustomUpdateAction,
@@ -222,14 +221,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[BIND_AGENT]: false})})
                     dispatch(zoneItemFetchAction(zoneId))
                 })
-        },
-        handleOpenDraw: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[DRAW]: true})})
-        },
-        handleCloseDraw: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[DRAW]: false})})
         }
     })
 )
@@ -250,13 +241,12 @@ const Zones = enhance((props) => {
         detailLoading,
         bindAgentLoading,
         shopList,
-        shopListLoading,
+        shopListLoading
     } = props
 
     const openAddZone = toBoolean(_.get(location, ['query', ADD_ZONE]))
     const openUpdateZone = toBoolean(_.get(location, ['query', UPDATE_ZONE]))
     const openBindAgent = toBoolean(_.get(location, ['query', BIND_AGENT]))
-    const openDraw = toBoolean(_.get(location, ['query', DRAW]))
     const zoneId = _.toNumber(_.get(location, ['query', ZONE_ID]))
     const openDeleteZone = _.toInteger(_.get(location, ['query', DELETE_ZONE]) || ZERO) > ZERO
     const openToggle = toBoolean(_.get(location, ['query', TOGGLE_INFO]))
@@ -270,11 +260,6 @@ const Zones = enhance((props) => {
         handleOpenAddZone: props.handleOpenAddZone,
         handleCloseAddZone: props.handleCloseAddZone,
         handleSubmitAddZone: props.handleSubmitAddZone
-    }
-    const draw = {
-        openDraw,
-        handleOpenDraw: props.handleOpenDraw,
-        handleCloseDraw: props.handleCloseDraw
     }
 
     const updateZone = {
@@ -333,6 +318,7 @@ const Zones = enhance((props) => {
         detailLoading,
         zoneId,
         shop: {
+            marketsCount: _.get(shopList, 'count'),
             data: _.get(shopList, 'results'),
             shopListLoading
         }
@@ -347,7 +333,6 @@ const Zones = enhance((props) => {
     return (
         <Layout {...layout}>
             <ZonesWrapper
-                draw={draw}
                 filter={filter}
                 listData={listData}
                 statData={statData}
@@ -364,4 +349,3 @@ const Zones = enhance((props) => {
 })
 
 export default Zones
-
