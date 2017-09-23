@@ -47,8 +47,6 @@ const enhance = compose(
             WebkitTransition: 'all 500ms ease',
             padding: '20px 30px',
             display: 'flex',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             flexDirection: 'column',
             height: '100%',
             '& > div:nth-child(3)': {
@@ -141,7 +139,7 @@ const enhance = compose(
         rightPanel: {
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
-            overflow: 'hidden'
+            overflowY: 'auto'
         },
         searchButton: {
             marginLeft: '-10px !important',
@@ -187,7 +185,8 @@ const enhance = compose(
                 flexBasis: '25%',
                 maxWidth: '25%',
                 '& div': {
-                    fontSize: '24px',
+                    fontSize: '17px',
+                    marginTop: '2px',
                     fontWeight: '600'
                 }
             }

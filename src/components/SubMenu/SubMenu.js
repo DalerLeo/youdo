@@ -65,7 +65,7 @@ const SubMenu = enhance((props) => {
 
     const items = _.map(parent.childs, (item, index) => {
         return (
-            <Link to={item.url} key={index}>
+            <Link to={{pathname: item.url, query: item.query}} key={index}>
                 <span className={item.url === url ? classes.active : classes.item}> {item.name}</span>
             </Link>
         )
