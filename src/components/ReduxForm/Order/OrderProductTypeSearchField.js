@@ -4,6 +4,7 @@ import SearchFieldCustom from '../Basic/ParentSearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
+import _ from 'lodash'
 
 const getOptions = (search) => {
     return axios().get(`${PATH.PRODUCT_TYPE_LIST}?page_size=100000&search=${search || ''}`)
