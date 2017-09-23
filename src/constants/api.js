@@ -399,7 +399,7 @@ export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
 
 export const STAT_PRODUCT_MOVE_LIST = 'stats/stock/products/'
 export const STAT_PRODUCT_MOVE_SUM = 'stats/stock/sum/'
-export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/agents/export/'
+export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/stock/products/export/'
 
 export const STAT_REPORT_LIST = 'stats/general/'
 export const STAT_REPORT_ITEM = 'sales/order/'
