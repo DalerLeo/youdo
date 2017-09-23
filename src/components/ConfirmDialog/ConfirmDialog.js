@@ -139,7 +139,7 @@ const ConfirmDialog = enhance((props) => {
             name: 'Подтверждение отмены', submitName: 'Подтвердить', text: 'Вы уверены что хотите отменить эти данные?'
         },
         submit: {
-            name: 'Выполнить', submitName: 'Да', text: 'Вы уверены что хотите подтвердить?'
+            name: 'Выполнить', submitName: 'Да', text: 'Подтверждение запроса'
         }
     }
     const title = _.get(typesList, [type, 'name'])

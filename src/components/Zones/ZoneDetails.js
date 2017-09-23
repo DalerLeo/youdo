@@ -93,11 +93,7 @@ const enhance = compose(
         },
         zoneInfoTitle: {
             extend: 'zonesInfoTitle',
-            padding: '20px 0',
-            justifyContent: 'space-between',
-            '& > div': {
-                marginRight: '0'
-            }
+            padding: '20px 0'
         },
         zoneInfoNameTitle: {
             background: '#fff',
@@ -280,11 +276,7 @@ const ZoneDetails = enhance((props) => {
                     </div>
                     <div>
                         <big>{!_.isEmpty(agentsCount) ? agentsCount.length : '0'}</big>
-                        <span>закреплено <br/> агентов</span>
-                    </div>
-                    <div>
-                        <big>2</big>
-                        <span>закреплено <br/> инкассаторов</span>
+                        <span>закреплено <br/> персонал</span>
                     </div>
                 </div>
                 <div className={classes.personal}>
