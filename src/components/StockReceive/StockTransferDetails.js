@@ -156,6 +156,7 @@ const StockTransferDetails = enhance((props) => {
     const detailType = _.toInteger(_.get(detailData, 'type'))
     const tooltipText = 'Подтвердить Запрос № ' + id
     if (detailLoading) {
+        console.log('men shu yerdaman')
         return (
             <div className={classes.loader}>
                 <CircularProgress size={40} thickness={4} />

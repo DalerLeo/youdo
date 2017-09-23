@@ -240,7 +240,7 @@ export const STATISTICS_CASHBOX_URL = `${STATISTICS}/cashbox`
 export const STATISTICS_CASHBOX_ITEM_URL = `/${STATISTICS_CASHBOX_URL}/:cashboxId`
 export const STATISTICS_CASHBOX_ITEM_PATH = `/${STATISTICS_CASHBOX_URL}/%d`
 
-export const STOCK_RECEIVE = 'stockReceive'
+export const STOCK_RECEIVE = 'stockReceives'
 export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`
 export const STOCK_RECEIVE_ITEM_URL = `${STOCK_RECEIVE_LIST_URL}/:stockReceiveId`
 export const STOCK_RECEIVE_ITEM_PATH = `/${STOCK_RECEIVE}/%d`
@@ -260,7 +260,7 @@ export const STOCK_TRANSFER_HISTORY_LIST_URL = `/${STOCK_TRANSFER_HISTORY}`
 export const STOCK_TRANSFER_HISTORY_ITEM_URL = `${STOCK_TRANSFER_HISTORY_LIST_URL}/:stockTransferHistoryId`
 export const STOCK_TRANSFER_HISTORY_ITEM_PATH = `/${STOCK_TRANSFER_HISTORY}/%d`
 
-export const STOCK_OUT_HISTORY = 'stockReceiveHistory'
+export const STOCK_OUT_HISTORY = 'stockOutHistory'
 export const STOCK_OUT_HISTORY_LIST_URL = `/${STOCK_OUT_HISTORY}`
 export const STOCK_OUT_HISTORY_ITEM_URL = `${STOCK_OUT_HISTORY_LIST_URL}/:stockOutHistoryId`
 export const STOCK_OUT_HISTORY_ITEM_PATH = `/${STOCK_OUT_HISTORY}/%d`

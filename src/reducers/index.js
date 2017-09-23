@@ -332,22 +332,22 @@ const rootReducer = combineReducers({
         barcodeList: createThunkReducer(actionTypes.STOCK_BARCODE_LIST)
     }),
     stockReceiveContent: combineReducers({
-        list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST)
+        list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
+        item: createThunkReducer(actionTypes.STOCK_RECEIVE_ITEM)
     }),
     stockReceiveHistory: combineReducers({
         list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST)
     }),
     stockTransfer: combineReducers({
-        list: createThunkReducer(actionTypes.REMAINDER_LIST),
-        item: createThunkReducer(actionTypes.REMAINDER_ITEM),
+        list: createThunkReducer(actionTypes.STOCK_TRANSFER_LIST),
+        item: createThunkReducer(actionTypes.STOCK_TRANSFER_ITEM)
     }),
     stockTransferHistory: combineReducers({
         list: createThunkReducer(actionTypes.REMAINDER_LIST),
-        item: createThunkReducer(actionTypes.REMAINDER_ITEM),
+        item: createThunkReducer(actionTypes.REMAINDER_ITEM)
     }),
     stockOutHistory: combineReducers({
-        list: createThunkReducer(actionTypes.REMAINDER_LIST),
-        item: createThunkReducer(actionTypes.REMAINDER_ITEM),
+        list: createThunkReducer(actionTypes.STOCK_HISTORY_LIST)
     }),
     statistics: combineReducers({
         list: createThunkReducer(actionTypes.REMAINDER_LIST),

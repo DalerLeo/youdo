@@ -3,46 +3,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {hashHistory} from 'react-router'
 import * as ROUTER from '../../constants/routes'
-import Container from '../Container'
-import SubMenu from '../SubMenu'
+import Container from '../../components/Container'
+import SubMenu from '../../components/SubMenu'
 import injectSheet from 'react-jss'
-import {compose, withHandlers} from 'recompose'
+import {compose, withHandlers, withState} from 'recompose'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/stockReceiveTab'
 
 const enhance = compose(
     injectSheet({
-        loader: {
-            position: 'absolute',
-            background: '#fff',
-            top: '0',
-            left: '0',
-            width: '100%',
-            minHeight: '400px',
-            alignItems: 'center',
-            zIndex: '999',
-            justifyContent: 'center',
-            display: 'flex'
-        },
-        list: {
-            marginBottom: '5px',
-            '& > a': {
-                color: 'inherit'
-            }
-        },
-        semibold: {
-            fontWeight: '600',
-            cursor: 'pointer'
-        },
-        wrapper: {
-            padding: '15px 30px',
-            '& .row': {
-                alignItems: 'center'
-            }
-        },
-        tabWrapper: {
-            position: 'relative'
-        },
         tabs: {
             marginBottom: '0',
             width: '100%',
@@ -70,56 +39,32 @@ const enhance = compose(
                 textTransform: 'initial',
                 height: '52px !important'
             }
-        },
-        headers: {
-            color: '#666',
-            padding: '15px 30px',
-            '& .row': {
-                alignItems: 'center'
-            }
-        },
-        actionButton: {
-            background: '#12aaeb',
-            borderRadius: '2px',
-            color: '#fff',
-            padding: '5px 20px'
-        },
-        success: {
-            color: '#81c784'
-        },
-        begin: {
-            color: '#f0ad4e'
-        },
-        error: {
-            color: '#e57373'
-        },
-        waiting: {
-            color: '#64b5f6'
         }
     }),
+    withState('tab', 'setTab', 'receive'),
     withHandlers({
         handleTabChange: props => (tab) => {
-            if (tab === 'receive') {
+            if (tab === 'stockReceive') {
                 hashHistory.push({
                     pathname: ROUTER.STOCK_RECEIVE_LIST_URL,
                     query: {}
                 })
-            } else if (tab === 'transfer') {
+            } else if (tab === 'stockTransfer') {
                 hashHistory.push({
                     pathname: ROUTER.STOCK_TRANSFER_LIST_URL,
                     query: {}
                 })
-            } else if (tab === 'outHistory') {
+            } else if (tab === 'stockOutHistory') {
                 hashHistory.push({
                     pathname: ROUTER.STOCK_OUT_HISTORY_LIST_URL,
                     query: {}
                 })
-            } else if (tab === 'transferHistory') {
+            } else if (tab === 'stockTransferHistory') {
                 hashHistory.push({
                     pathname: ROUTER.STOCK_TRANSFER_HISTORY_LIST_URL,
                     query: {}
                 })
-            } else if (tab === 'receiveHistory') {
+            } else if (tab === 'stockReceiveHistory') {
                 hashHistory.push({
                     pathname: ROUTER.STOCK_RECEIVE_HISTORY_LIST_URL,
                     query: {}
@@ -130,9 +75,8 @@ const enhance = compose(
 )
 
 const StockReceiveTabList = enhance((props) => {
-    const {
-        classes
-    } = props
+    const {classes, currentTab} = props
+
     const handleTabChange = props.handleTabChange
     const tabList = (
         <div className={classes.tabWrapper}>
@@ -140,7 +84,8 @@ const StockReceiveTabList = enhance((props) => {
                 inkBarStyle={{backgroundColor: '#12aaeb', height: '3px'}}
                 tabItemContainerStyle={{backgroundColor: '#fff', color: '#333'}}
                 className={classes.tabs}
-                onChange={(value) => handleTabChange(value)}>
+                value={currentTab}
+                onChange={(value) => { handleTabChange(value) }}>
                 <Tab label="Приемка" value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
                 <Tab label="Передача" value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
                 <Tab label="Движение товаров" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>

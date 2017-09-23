@@ -9,6 +9,8 @@ import {compose, withState} from 'recompose'
 import moment from 'moment'
 import Details from './StockTabTransferHistoryDetails'
 import TransferDetail from './StockTabTransferHistoryTransferDetails'
+import * as TAB from '../../constants/stockReceiveTab'
+import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 
 const listHeader = [
     {
@@ -150,10 +152,11 @@ const StockTabTransferHistory = enhance((props) => {
     }
     return (
         <div className={classes.wrapper}>
+            <StockReceiveTabList currentTab={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
             <GridList
                 filter={filter}
                 list={list}
-                detail={(_.get(popoverDialog, ['data', 'id']).isNumber() || transferType === 'transfer') ? historyTransferDetail : historyDetail}
+                detail={(_.get(popoverDialog, ['data', 'id']) || transferType === 'transfer') ? historyTransferDetail : historyDetail}
                 filterDialog={usersFilterDialog}
             />
         </div>

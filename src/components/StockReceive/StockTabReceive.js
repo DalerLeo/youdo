@@ -5,13 +5,14 @@ import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import moment from 'moment'
 import {compose} from 'recompose'
-import StockReceiveTabList from '../../components/StockReceive/StockReceiveTabList'
+import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 import StockReceiveDetails from './StockReceiveDetails'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
 import CreateDialog from './StockReceiveCreateDialog'
 import TabTransferFilterForm from './TabTransferFilterForm'
 import GridList from '../GridList'
+import * as TAB from '../../constants/stockReceiveTab'
 
 const ZERO = 0
 const RETURN = 3
@@ -141,7 +142,7 @@ const StockTabReceive = enhance((props) => {
         filterDialog,
         history,
         handleCheckedForm,
-        handleCheckedDefect
+        handleCheckedDefect,
     } = props
     const listLoading = _.get(listData, 'listLoading')
     const stockReceiveFilterDialog = (
@@ -164,11 +165,12 @@ const StockTabReceive = enhance((props) => {
     />
     )
 
+    console.log(listData)
     const stockReceiveList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const orderId = _.get(item, 'orderId')
-        const by = _.get(item, ['by'])
-        const type = _.get(item, ['type'])
+        const by = _.get(item, 'by')
+        const type = _.get(item, 'type')
         const formattedType = stockTypeFormat(type)
         const date = _.get(item, 'date') ? moment(_.get(item, 'date')).format('DD.MM.YYYY') : 'Не указана'
         const stockName = _.get(item, ['stock', 'name'])
@@ -200,7 +202,7 @@ const StockTabReceive = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <StockReceiveTabList/>
+            <StockReceiveTabList currentTab={history ? TAB.STOCK_RECEIVE_TAB_HISTORY : TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
             <GridList
                 filter={filter}
                 filterDialog={stockReceiveFilterDialog}
