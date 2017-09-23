@@ -22,10 +22,6 @@ import Paper from 'material-ui/Paper'
 import CashPayment from '../CashPayment'
 import BankPayment from '../BankPayment'
 import CircularProgress from 'material-ui/CircularProgress'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Edit from 'material-ui/svg-icons/image/edit'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
@@ -128,10 +124,16 @@ const enhance = compose(
             pointerEvents: 'none',
             opacity: '0.4'
         },
+        deleteBtn: {
+            opacity: '0'
+        },
         rows: {
             padding: '5px 0',
             '& > div': {
                 padding: '0 8px !important'
+            },
+            '&:hover button': {
+                opacity: '1 !important'
             }
         },
         clickable: {
@@ -219,6 +221,18 @@ const TransactionGridList = enhance((props) => {
             width: '15%'
         }
     ]
+    const iconStyle = {
+        button: {
+            width: 44,
+            height: 44,
+            padding: 3
+        },
+        icon: {
+            color: '#666',
+            width: 22,
+            height: 22
+        }
+    }
 
     const transactionList = _.map(_.get(listData, 'data'), (item) => {
         const zero = 0
@@ -236,11 +250,7 @@ const TransactionGridList = enhance((props) => {
         const clientId = _.get(item, ['client', 'id'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
         const transType = _.get(item, ['type'])
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon/>
-            </IconButton>
-        )
+
         return (
             <Row key={id} className={classes.rows}>
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
@@ -282,28 +292,13 @@ const TransactionGridList = enhance((props) => {
                     {amount} {currentCurrency}
                 </div>
                 <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        menuItemStyle={{fontSize: '13px'}}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            disabled={true}
-                            leftIcon={<Edit/>}
-                            onTouchTap={() => {
-                                updateExpenseDialog.handleOpenUpdateDialog(id, _.get(item, 'amount'))
-                            }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            disabled={true}
-                            leftIcon={<DeleteIcon/>}
-                            onTouchTap={() => {
-                                confirmDialog.handleOpenConfirmDialog(id)
-                            }}
-                        />
-                    </IconMenu>
+                    <IconButton
+                        className={classes.deleteBtn}
+                        style={iconStyle.button}
+                        iconStyle={iconStyle.icon}
+                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                        <DeleteIcon/>
+                    </IconButton>
                 </div>
             </Row>
         )
@@ -468,9 +463,9 @@ const TransactionGridList = enhance((props) => {
                         onSubmit={createSendDialog.handleSubmitDialog}
                     />
 
-                    {detailData.data && <ConfirmDialog
+                    {detailData.id && <ConfirmDialog
                         type="delete"
-                        message={_.get(detailData, ['data', 'comment'])}
+                        message={'Транзакция №' + _.get(detailData, 'id')}
                         onClose={confirmDialog.handleCloseConfirmDialog}
                         onSubmit={confirmDialog.handleExpenseConfirmDialog}
                         open={confirmDialog.open}
