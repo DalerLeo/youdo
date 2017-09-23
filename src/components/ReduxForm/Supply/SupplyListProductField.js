@@ -139,7 +139,6 @@ const enhance = compose(
                 alignSelf: 'center'
             },
             '& > div > div > div:first-child': {
-                overflow: 'hidden'
             }
         }
     }),

@@ -2,26 +2,9 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose, withPropsOnChange, withReducer, withHandlers} from 'recompose'
+import {compose, withHandlers} from 'recompose'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
-const DELAY_FOR_TYPE_ATTACK = 300
-
-const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
-    dispatch({loading: true})
-    getOptions(state.text)
-        .then((data) => {
-            return _.map(data, (item) => {
-                return {
-                    text: getText(item),
-                    value: getValue(item)
-                }
-            })
-        })
-        .then((data) => {
-            dispatch({dataSource: data, loading: false})
-        })
-}
 
 const enhance = compose(
     injectSheet({
@@ -44,9 +27,6 @@ const enhance = compose(
             top: '20px'
         },
         select: {
-            '& .Select-menu': {
-                background: '#fff'
-            },
             '& .Select-menu-outer': {
                 overflowY: 'unset',
                 zIndex: '6',
@@ -55,51 +35,46 @@ const enhance = compose(
             '& .Select-control': {
                 borderRadius: '0px',
                 border: '0',
-                borderBottom: '1px solid #e8e8e8'
+                borderBottom: '1px solid #e8e8e8',
+                backgroundColor: 'unset'
             }
         }
     }),
 
-    withReducer('state', 'dispatch', (state, action) => {
-        return {...state, ...action}
-    }, {dataSource: [], text: '', loading: false}),
-
     withHandlers({
+        handleInputValue: props => (value) => {
+            const {dispatch, input} = props
+            input.onChange(value)
+            dispatch({selectedVal: _.get(value, 'value')})
+        },
         valueRenderer: props => (option) => {
             const {meta: {error}} = props
             if (error) {
-                return <span style={{color: 'red'}}>{option.text}</span>
+                return <span style={{color: 'red'}}>{option.label}</span>
             }
-            return option.text
+            return option.label
         }
     }),
-    withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
-    }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
 )
 
 const SearchField = enhance((props) => {
     const {
         classes,
         label,
-        state,
-        dispatch,
-        valueRenderer,
-        input
+        input,
+        valueRenderer
     } = props
     return (
         <div className={classes.wrapper}>
-            <Select
+            <Select.Async
                 className={classes.select}
-                options={state.dataSource}
-                value={input.value.value || null}
-                onInputChange={text => dispatch({text: text})}
-                onChange={value => input.onChange(value)}
+                loadOptions={props.getOptions}
+                value={input.value || null}
+                onChange={val => input.onChange(val)}
                 placeholder={label}
                 noResultsText={'Не найдено'}
-                isLoading={state.loading}
                 valueRenderer={valueRenderer}
-                labelKey={'text'}
+                loadingPlaceholder="Загрузка..."
             />
         </div>
     )
@@ -118,8 +93,6 @@ SearchField.defaultGetValue = (value) => {
 }
 
 SearchField.propTypes = {
-    getText: PropTypes.func.isRequired,
-    getValue: PropTypes.func.isRequired,
     getOptions: PropTypes.func.isRequired
 }
 
