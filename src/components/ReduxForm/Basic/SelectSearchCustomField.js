@@ -8,9 +8,9 @@ import 'react-select/dist/react-select.css'
 
 const DELAY_FOR_TYPE_ATTACK = 300
 
-const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
+const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
     dispatch({loading: true})
-
+    input.onChange(null)
     getOptions(state.text)
         .then((data) => {
             return _.map(data, (item) => {
@@ -26,12 +26,19 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
 }
 
 const fetchItem = (props, selectedItem) => {
-    const {getItem, input} = props
+    const {getItem, input, dispatch} = props
+    dispatch({loading: true})
     const id = _.get(selectedItem, 'value')
-    id && getItem(id)
-        .then(data => {
-            input.onChange({value: data, id: _.get(data, 'id')})
-        })
+    if (id) {
+        getItem(id)
+            .then(data => {
+                input.onChange({value: data})
+                dispatch({loading: false})
+            })
+    } else {
+        input.onChange(null)
+        dispatch({loading: false})
+    }
 }
 
 const enhance = compose(
@@ -91,6 +98,7 @@ const SearchFieldCustom = enhance((props) => {
         classes,
         input,
         label,
+        getValue,
         state,
         dispatch
     } = props
@@ -100,7 +108,7 @@ const SearchFieldCustom = enhance((props) => {
                 <Select
                     className={classes.select}
                     options={state.dataSource}
-                    value={_.get(input, ['value', 'id'])}
+                    value={getValue(_.get(input, ['value', 'value']))}
                     onInputChange={text => dispatch({text: text})}
                     onChange={value => fetchItem(props, value)}
                     placeholder={label}
