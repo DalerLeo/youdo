@@ -29,7 +29,7 @@ const enhance = compose(
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['statCashbox', 'item', 'data'])
-        const detailLoading = _.get(state, ['cashbox', 'item', 'loading'])
+        const detailLoading = _.get(state, ['statCashbox', 'item', 'loading'])
         const list = _.get(state, ['statCashbox', 'list', 'data'])
         const listLoading = _.get(state, ['statCashbox', 'list', 'loading'])
         const sumData = _.get(state, ['statCashbox', 'sumData', 'data'])
@@ -39,11 +39,11 @@ const enhance = compose(
         const itemGraph = _.get(state, ['statCashbox', 'itemGraph', 'data'])
         const itemGraphLoading = _.get(state, ['statCashbox', 'itemGraph', 'loading'])
         const filterForm = _.get(state, ['form', 'StatCashboxFilterForm'])
-        const detailFilterForm = _.get(state, ['form', 'StatCashboxFilterForm'])
+        const detailFilterForm = _.get(state, ['form', 'StatCashboxDetailFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterDetail = filterHelper(detail, pathname, query)
         const transactionsList = _.get(state, ['transaction', 'list', 'data'])
         const transactionsLoading = _.get(state, ['transaction', 'list', 'loading'])
+        const filterDetail = filterHelper(transactionsList, pathname, query)
         return {
             list,
             listLoading,
@@ -68,6 +68,12 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(statCashboxListFetchAction(filter))
         dispatch(statCashBoxSumDataFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return props.transactionsList && props.filterDetail.filterRequest() !== nextProps.filterDetail.filterRequest()
+    }, ({dispatch, filterDetail, params}) => {
+        const id = _.toInteger(_.get(params, 'cashboxId'))
+        dispatch(transactionListFetchAction(filterDetail, id))
     }),
     withPropsOnChange((props, nextProps) => {
         const prevId = _.toInteger(_.get(props, ['params', 'cashboxId']))
@@ -101,15 +107,14 @@ const enhance = compose(
 
             })
         },
-        handleSubmitDetailFilterDialog: props => (event) => {
-            event.preventDefault()
-            const {filter, filterForm} = props
+        handleSubmitDetailFilterDialog: props => () => {
+            const {filterDetail, detailFilterForm} = props
 
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const division = _.get(detailFilterForm, ['values', 'division', 'value']) || null
+            const fromDate = _.get(detailFilterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(detailFilterForm, ['values', 'date', 'toDate']) || null
 
-            filter.filterBy({
+            filterDetail.filterBy({
                 [STAT_CASHBOX_DETAIL_FILTER_KEY.DIVISION]: division,
                 [STAT_CASHBOX_DETAIL_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_CASHBOX_DETAIL_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
@@ -117,8 +122,7 @@ const enhance = compose(
             })
         },
         handleCloseDetail: props => () => {
-            const {filter} = props
-            hashHistory.push({pathname: ROUTER.STATISTICS_CASHBOX_URL, query: filter.getParams()})
+            hashHistory.push({pathname: ROUTER.STATISTICS_CASHBOX_URL, query: ''})
         },
         handleOpenDetail: props => (id) => {
             const {filter} = props
@@ -149,6 +153,7 @@ const StatCashboxList = enhance((props) => {
         detail,
         detailLoading,
         filter,
+        filterDetail,
         layout,
         transactionsList,
         transactionsLoading,
@@ -206,17 +211,27 @@ const StatCashboxList = enhance((props) => {
             }
         }
     }
+    const detailFilterForm = {
+        initialValues: {
+            date: {
+                fromDate: moment(firstDayOfMonth),
+                toDate: moment(lastDayOfMonth)
+            }
+        }
+    }
 
     return (
         <Layout {...layout}>
             <StatCashboxGridList
                 filter={filter}
+                filterDetail={filterDetail}
                 listData={listData}
                 detailData={detailData}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 getDocument={getDocument}
                 initialValues={filterForm.initialValues}
                 filterForm={filterForm}
+                detailFilterForm={detailFilterForm}
                 getCashBoxByOne={props.handleGetDataItem}
                 handleGetCashBoxes={handleGetCashBoxes}
             />

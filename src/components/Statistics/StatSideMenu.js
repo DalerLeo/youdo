@@ -91,15 +91,18 @@ const StatSideMenu = enhance((props) => {
             {_.map(statMenus, (item, index) => {
                 return (
                     <ul key={index}>
-                        <Link to={{pathname: item.url, query: item.query}} className={(item.url === currentUrl) && classes.active}>{item.section}</Link>
+                        {item.url
+                            ? <Link to={{pathname: item.url, query: item.query}} className={(item.url === currentUrl) && classes.active}>{item.section}</Link>
+                            : <span>{item.section}</span>}
                         {_.map(item.childs, (object, i) => {
                             return (
                                 <li key={i}>
-                                     <Link to={{pathname: object.url, query: object.query}}>
+                                    {object.url ? <Link to={{pathname: object.url, query: object.query}}>
                                          <span className={object.url === currentUrl ? classes.active : classes.simple}>
                                              {object.name}
                                          </span>
                                      </Link>
+                                    : <span>{object.name}</span>}
                                 </li>
                             )
                         })}
