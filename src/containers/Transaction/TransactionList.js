@@ -161,8 +161,9 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_DELETE_DIALOG_OPEN]: false})})
         },
         handleExpenseConfirmDialog: props => () => {
-            const {dispatch, detail, filter, location: {pathname}, cashboxId} = props
-            dispatch(transactionDeleteAction(detail.id))
+            const {dispatch, filter, location: {pathname}, cashboxId, params} = props
+            const transId = _.toInteger(_.get(params, 'transactionId'))
+            dispatch(transactionDeleteAction(transId))
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_DELETE_DIALOG_OPEN]: false})})
                     dispatch(transactionListFetchAction(filter, cashboxId))

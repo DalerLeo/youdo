@@ -254,6 +254,9 @@ export const STAT_CASHBOX_ITEM = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DATA_ITEM = 'stats/cashbox/%d/'
 
+export const STAT_CLIENT_INCOME = 'stats/client_transactions'
+export const STAT_CLIENT_INCOME_LIST = `/${STAT_CLIENT_INCOME}/`
+
 export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`

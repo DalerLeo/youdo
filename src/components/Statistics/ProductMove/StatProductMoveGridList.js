@@ -60,6 +60,7 @@ const enhance = compose(
         tableWrapper: {
             display: 'flex',
             margin: '0 -30px',
+            overflow: 'hidden',
             paddingLeft: '30px',
             '& > div:first-child': {
                 zIndex: '20',

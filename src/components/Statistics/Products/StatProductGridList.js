@@ -293,10 +293,13 @@ const StatProductGridList = enhance((props) => {
         return (
             <tr key={id} className={classes.tableRow}>
                 <td>{type}</td>
+
                 <td>{salesCount}</td>
                 <td>{salesPrice}</td>
-                <td>{returnCount}</td>
+
                 <td>{returnPrice}</td>
+                <td>{returnCount}</td>
+
                 <td>{actualSalesCount}</td>
                 <td>{actualSalesPrice}</td>
             </tr>

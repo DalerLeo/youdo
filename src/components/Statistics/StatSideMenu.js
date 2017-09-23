@@ -61,16 +61,22 @@ const StatSideMenu = enhance((props) => {
             childs: [
                 {name: 'Доход', url: ROUTES.STATISTICS_INCOME_URL},
                 {name: 'Расход', url: ROUTES.STATISTICS_OUTCOME_URL},
-                {name: 'Задолжники', url: ROUTES.STATISTICS_DEBTORS_URL},
                 {name: 'Расходы по категориям', url: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL},
                 {name: 'Кассы', url: ROUTES.STATISTICS_CASHBOX_URL}
+            ]
+        },
+        {
+            section: 'Клиенты',
+            childs: [
+                {name: 'Приход от клиента', url: ROUTES.STATISTICS_CLIENT_INCOME_URL},
+                {name: 'Задолжники', url: ROUTES.STATISTICS_DEBTORS_URL}
             ]
         },
         {
             section: 'Склад',
             childs: [
                 {name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL, query: {pageSize: 25}},
-                {name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL}
+                {name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL, query: {pageSize: 25}}
             ]
         },
         {
@@ -85,15 +91,18 @@ const StatSideMenu = enhance((props) => {
             {_.map(statMenus, (item, index) => {
                 return (
                     <ul key={index}>
-                        <Link to={{pathname: item.url, query: item.query}} className={(item.url === currentUrl) && classes.active}>{item.section}</Link>
+                        {item.url
+                            ? <Link to={{pathname: item.url, query: item.query}} className={(item.url === currentUrl) && classes.active}>{item.section}</Link>
+                            : <span>{item.section}</span>}
                         {_.map(item.childs, (object, i) => {
                             return (
                                 <li key={i}>
-                                     <Link to={{pathname: object.url, query: object.query}}>
+                                    {object.url ? <Link to={{pathname: object.url, query: object.query}}>
                                          <span className={object.url === currentUrl ? classes.active : classes.simple}>
                                              {object.name}
                                          </span>
                                      </Link>
+                                    : <span>{object.name}</span>}
                                 </li>
                             )
                         })}

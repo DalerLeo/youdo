@@ -179,3 +179,18 @@ export const zoneCustomUpdateAction = (id, title, points) => {
         payload
     }
 }
+
+export const shopListFetchAction = (zoneId) => {
+    const payload = axios()
+        .get(API.SHOP_LIST, {params: {border: zoneId}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.SHOP_LIST,
+        payload
+    }
+}

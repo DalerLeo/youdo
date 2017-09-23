@@ -22,6 +22,7 @@ import {CurrencyList} from '../containers/Currency'
 import {PositionList} from '../containers/Position'
 import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
+import {ZonesList} from '../containers/Zones'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
@@ -61,7 +62,8 @@ import {
     StatRemainderList,
     StatCashboxList,
     StatProductMoveList,
-    StatReportList
+    StatReportList,
+    StatClientIncomeList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveList} from '../containers/StockReceive'
@@ -398,6 +400,15 @@ export default {
                 component: userIsAuth(StatCashbox)
             }]
         },
+        // ZONES
+        {
+            path: ROUTES.ZONES_LIST_URL,
+            component: userIsAdminChain(ZonesList),
+            childRoutes: [{
+                path: ROUTES.ZONES_ITEM_URL,
+                component: userIsAuth(ZonesList)
+            }]
+        },
         // TRACKING
         {
             path: ROUTES.TRACKING_LIST_URL,
@@ -595,6 +606,12 @@ export default {
         {
             path: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL,
             component: userIsAdminChain(StatOutcomeCategoryList),
+            childRoutes: []
+        },
+        // Statistics/ client income
+        {
+            path: ROUTES.STATISTICS_CLIENT_INCOME_URL,
+            component: userIsAdminChain(StatClientIncomeList),
             childRoutes: []
         },
         // Stock Receive Transfer
