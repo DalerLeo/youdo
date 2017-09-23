@@ -35,18 +35,14 @@ const enhance = compose(
             '& .Select-control': {
                 borderRadius: '0px',
                 border: '0',
-                borderBottom: '1px solid #e8e8e8',
+                paddingBottom: '1px',
+                borderBottom: '1px solid rgb(224, 224, 224)',
                 backgroundColor: 'unset'
             }
         }
     }),
 
     withHandlers({
-        handleInputValue: props => (value) => {
-            const {dispatch, input} = props
-            input.onChange(value)
-            dispatch({selectedVal: _.get(value, 'value')})
-        },
         valueRenderer: props => (option) => {
             const {meta: {error}} = props
             if (error) {
@@ -54,7 +50,7 @@ const enhance = compose(
             }
             return option.label
         }
-    }),
+    })
 )
 
 const SearchField = enhance((props) => {

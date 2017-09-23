@@ -85,8 +85,12 @@ const SearchField = enhance((props) => {
         state,
         dispatch,
         valueRenderer,
-        input
+        input,
+        getItem,
+        withDetails
     } = props
+
+    withDetails && input.value && getItem(_.get(input, ['value', 'value']))
     return (
         <div className={classes.wrapper}>
             <Select
