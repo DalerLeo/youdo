@@ -56,21 +56,21 @@ export const stockReceiveListFetchAction = (filter, history) => {
     }
 }
 
-export const stockReceiveItemFetchAction = (id) => {
-    const payload = axios()
-        .get(sprintf(API.STOCK_RECEIVE_ITEM, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STOCK_RECEIVE_ITEM,
-        payload
-    }
-}
+// export const stockReceiveItemFetchAction = (id) => {
+//     const payload = axios()
+//         .get(sprintf(API.STOCK_RECEIVE_ITEM, id))
+//         .then((response) => {
+//             return _.get(response, 'data')
+//         })
+//         .catch((error) => {
+//             return Promise.reject(_.get(error, ['response', 'data']))
+//         })
+//
+//     return {
+//         type: actionTypes.STOCK_RECEIVE_ITEM,
+//         payload
+//     }
+// }
 
 export const stockHistoryListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
@@ -136,7 +136,21 @@ export const stockTransferItemFetchAction = (id) => {
         payload
     }
 }
+export const stockTransferOrderItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.STOCK_RECEIVE_ORDER_ITEM, id), {'params': {'view': true}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
 
+    return {
+        type: actionTypes.STOCK_TRANSFER_ITEM,
+        payload
+    }
+}
 //
 // export const stockTransferItemFetchAction = (id) => {
 //     const payload = axios()
@@ -234,3 +248,66 @@ export const historyOrderItemFetchAction = (id) => {
     }
 }
 
+export const stockReceiveHistoryItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.STOCK_RECEIVE_ITEM, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_HISTORY_ITEM,
+        payload
+    }
+}
+
+export const stockReceiveHistoryOrderItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.STOCK_RECEIVE_ORDER_ITEM, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_HISTORY_ITEM,
+        payload
+    }
+}
+
+export const stockReceiveHistoryReturnItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.ORDER_RETURN_LIST, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_HISTORY_ITEM,
+        payload
+    }
+}
+
+export const stockReceiveHistroyTransferItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.STOCK_TRANSFER_ITEM, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_HISTORY_ITEM,
+        payload
+    }
+}

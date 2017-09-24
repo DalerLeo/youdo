@@ -66,6 +66,7 @@ const enhance = compose(
                         : _.get(state, ['stockReceive', 'item', 'loading'])
         const createLoading = _.get(state, ['stockReceive', 'create', 'loading'])
         const createForm = _.get(state, ['form', 'StockReceiveCreateForm'])
+        const filterForm = _.get(state, ['form', 'TabTransferFilterForm'])
         const printList = _.get(state, ['stockReceive', 'print', 'data'])
         const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
@@ -81,6 +82,7 @@ const enhance = compose(
             filter,
             createForm,
             isDefect,
+            filterForm,
             printList,
             printLoading
         }
@@ -113,7 +115,6 @@ const enhance = compose(
     }),
 
     withState('openPrint', 'setOpenPrint', false),
-    withState('popoverType', 'setType', ''),
 
     withHandlers({
         handleOpenPrintDialog: props => (id) => {
@@ -145,37 +146,15 @@ const enhance = compose(
             const currentTab = _.get(query, 'tab') || 'receive'
             hashHistory.push({pathname, query: {[TAB]: currentTab}})
         },
-        handleSubmitFilterDialog: props => () => {
-            const {filter, historyFilterForm} = props
-            const stock = _.get(historyFilterForm, ['values', 'stock', 'value']) || null
-            const type = _.get(historyFilterForm, ['values', 'type', 'value']) || null
-            const status = _.get(historyFilterForm, ['values', 'status', 'value']) || null
-            const product = _.get(historyFilterForm, ['values', 'product', 'value']) || null
-            const fromDate = _.get(historyFilterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(historyFilterForm, ['values', 'date', 'toDate']) || null
-            const typeChild = _.get(historyFilterForm, ['values', 'typeChild', 'value']) || null
-
-            filter.filterBy({
-                [HISTORY_FILTER_OPEN]: false,
-                [HISTORY_FILTER_KEY.STOCK]: stock,
-                [HISTORY_FILTER_KEY.TYPE]: type,
-                [HISTORY_FILTER_KEY.STATUS]: status,
-                [HISTORY_FILTER_KEY.PRODUCT]: product,
-                [HISTORY_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
-                [HISTORY_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
-
-            })
-        },
 
         handleSubmitTabReceiveFilterDialog: props => () => {
-            const {filter, tabTransferFilterForm} = props
-            const stock = _.get(tabTransferFilterForm, ['values', 'stock', 'value']) || null
-            const type = _.get(tabTransferFilterForm, ['values', 'type', 'value']) || null
-            const fromDate = _.get(tabTransferFilterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(tabTransferFilterForm, ['values', 'date', 'toDate']) || null
-            const acceptanceFromData = _.get(tabTransferFilterForm, ['values', 'acceptanceDate', 'fromDate']) || null
-            const acceptanceToDate = _.get(tabTransferFilterForm, ['values', 'acceptanceDate', 'toDate']) || null
+            const {filter, filterForm} = props
+            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const acceptanceFromData = _.get(filterForm, ['values', 'acceptanceDate', 'fromDate']) || null
+            const acceptanceToDate = _.get(filterForm, ['values', 'acceptanceDate', 'toDate']) || null
             filter.filterBy({
                 [HISTORY_FILTER_OPEN]: false,
                 [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,

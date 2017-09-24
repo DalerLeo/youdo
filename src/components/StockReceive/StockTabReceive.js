@@ -21,7 +21,6 @@ const DELIVERY = 4
 const enhance = compose(
     injectSheet({
         wrapper: {
-            marginTop: '20px',
             '& .row > div > svg': {
                 position: 'relative',
                 width: '16px !important',
@@ -165,7 +164,6 @@ const StockTabReceive = enhance((props) => {
     />
     )
 
-    console.log(listData)
     const stockReceiveList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const orderId = _.get(item, 'orderId')

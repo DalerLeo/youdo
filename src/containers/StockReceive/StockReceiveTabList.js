@@ -13,7 +13,7 @@ import * as TAB from '../../constants/stockReceiveTab'
 const enhance = compose(
     injectSheet({
         tabs: {
-            marginBottom: '0',
+            marginBottom: '20px',
             width: '100%',
             '& > div': {
                 boxSizing: 'content-box',
@@ -79,21 +79,18 @@ const StockReceiveTabList = enhance((props) => {
 
     const handleTabChange = props.handleTabChange
     const tabList = (
-        <div className={classes.tabWrapper}>
-            <Tabs
-                inkBarStyle={{backgroundColor: '#12aaeb', height: '3px'}}
-                tabItemContainerStyle={{backgroundColor: '#fff', color: '#333'}}
-                className={classes.tabs}
-                value={currentTab}
-                onChange={(value) => { handleTabChange(value) }}>
-                <Tab label="Приемка" value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
-                <Tab label="Передача" value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
-                <Tab label="Движение товаров" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
-                <Tab label="История Приемки" value={TAB.STOCK_RECEIVE_TAB_HISTORY}/>
-                <Tab label="История Передачи" value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
-            </Tabs>
-
-        </div>
+        <Tabs
+            inkBarStyle={{backgroundColor: '#12aaeb', height: '3px'}}
+            tabItemContainerStyle={{backgroundColor: '#fff', color: '#333'}}
+            className={classes.tabs}
+            value={currentTab}
+            onChange={(value) => { handleTabChange(value) }}>
+            <Tab label="Приемка" value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
+            <Tab label="Передача" value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
+            <Tab label="Движение товаров" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
+            <Tab label="История Приемки" value={TAB.STOCK_RECEIVE_TAB_HISTORY}/>
+            <Tab label="История Передачи" value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
+        </Tabs>
     )
 
     return (

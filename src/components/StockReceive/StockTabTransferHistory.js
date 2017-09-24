@@ -65,7 +65,6 @@ const enhance = compose(
             display: 'flex'
         },
         wrapper: {
-            marginTop: '20px',
             '& .row > div > svg': {
                 position: 'relative',
                 width: '16px !important',
@@ -100,13 +99,12 @@ const StockTabTransferHistory = enhance((props) => {
             transfer={true}
         />
     )
-
     const historyDetail = (
         <Details
             detailData={detailData || {}}
             key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
             handleCloseDetail={handleCloseDetail}
-            loading={_.get(detailData, 'transferDetailLoading')}
+            loading={_.get(detailData, 'detailLoading')}
             handleOpenPrint={printDialog.handleOpenPrintDialog}
             confirm={false}/>
     )

@@ -66,7 +66,6 @@ const enhance = compose(
             display: 'flex'
         },
         wrapper: {
-            marginTop: '20px',
             '& .row > div > svg': {
                 position: 'relative',
                 width: '16px !important',
