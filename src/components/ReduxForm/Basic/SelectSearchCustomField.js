@@ -2,13 +2,15 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose, withPropsOnChange, withReducer, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withReducer} from 'recompose'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
+
 const DELAY_FOR_TYPE_ATTACK = 300
 
-const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
+const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
     dispatch({loading: true})
+    input.onChange(null)
     getOptions(state.text)
         .then((data) => {
             return _.map(data, (item) => {
@@ -21,6 +23,22 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
         .then((data) => {
             dispatch({dataSource: data, loading: false})
         })
+}
+
+const fetchItem = (props, selectedItem) => {
+    const {getItem, input, dispatch} = props
+    dispatch({loading: true})
+    const id = _.get(selectedItem, 'value')
+    if (id) {
+        getItem(id)
+            .then(data => {
+                input.onChange({value: data})
+                dispatch({loading: false})
+            })
+    } else {
+        input.onChange(null)
+        dispatch({loading: false})
+    }
 }
 
 const enhance = compose(
@@ -55,7 +73,10 @@ const enhance = compose(
             '& .Select-control': {
                 borderRadius: '0px',
                 border: '0',
-                borderBottom: '1px solid #e8e8e8'
+                paddingBottom: '1px',
+                borderBottom: '1px solid rgb(224, 224, 224)',
+                backgroundColor: 'unset'
+
             }
         }
     }),
@@ -64,67 +85,59 @@ const enhance = compose(
         return {...state, ...action}
     }, {dataSource: [], text: '', loading: false}),
 
-    withHandlers({
-        valueRenderer: props => (option) => {
-            const {meta: {error}} = props
-            if (error) {
-                return <span style={{color: 'red'}}>{option.text}</span>
-            }
-            return option.text
-        }
-    }),
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
-    }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) ||
+            _.get(props, ['parent']) !== _.get(nextProps, ['parent'])
+    }, (props) => {
+        _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
+    })
 )
 
-const SearchField = enhance((props) => {
+const SearchFieldCustom = enhance((props) => {
     const {
         classes,
-        label,
-        state,
-        dispatch,
-        valueRenderer,
         input,
-        getItem,
-        withDetails
+        label,
+        getValue,
+        state,
+        dispatch
     } = props
-
-    withDetails && input.value && getItem(_.get(input, ['value', 'value']))
     return (
         <div className={classes.wrapper}>
-            <Select
-                className={classes.select}
-                options={state.dataSource}
-                value={input.value.value || null}
-                onInputChange={text => dispatch({text: text})}
-                onChange={value => input.onChange(value)}
-                placeholder={label}
-                noResultsText={'Не найдено'}
-                isLoading={state.loading}
-                valueRenderer={valueRenderer}
-                labelKey={'text'}
-            />
+            <div className={classes.wrapper}>
+                <Select
+                    className={classes.select}
+                    options={state.dataSource}
+                    value={getValue(_.get(input, ['value', 'value']))}
+                    onInputChange={text => dispatch({text: text})}
+                    onChange={value => fetchItem(props, value)}
+                    placeholder={label}
+                    noResultsText={'Не найдено'}
+                    isLoading={state.loading}
+                    labelKey={'text'}
+                />
+            </div>
         </div>
     )
 })
 
-SearchField.defaultGetText = (text) => {
+SearchFieldCustom.defaultGetText = (text) => {
     return (obj) => {
         return _.get(obj, text)
     }
 }
 
-SearchField.defaultGetValue = (value) => {
+SearchFieldCustom.defaultGetValue = (value) => {
     return (obj) => {
         return _.get(obj, value)
     }
 }
 
-SearchField.propTypes = {
+SearchFieldCustom.propTypes = {
     getText: PropTypes.func.isRequired,
     getValue: PropTypes.func.isRequired,
-    getOptions: PropTypes.func.isRequired
+    getOptions: PropTypes.func.isRequired,
+    getItem: PropTypes.func.isRequired
 }
 
-export default SearchField
+export default SearchFieldCustom

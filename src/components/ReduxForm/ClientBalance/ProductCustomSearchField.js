@@ -2,7 +2,7 @@ import sprintf from 'sprintf'
 import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
-import SearchFieldCustom from '../Basic/SearchFieldCustom'
+import SearchFieldCustom from '../Basic/SelectSearchCustomField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -26,7 +26,7 @@ const setMeasurementAction = (data, loading) => {
 
 const getItem = (id, dispatch) => {
     dispatch(setMeasurementAction(null, true))
-    return axios().get(sprintf(PATH.PRODUCT_MOBILE_ITEM, _.get(id, 'id')))
+    return axios().get(sprintf(PATH.PRODUCT_MOBILE_ITEM, id))
         .then(({data}) => {
             dispatch(setMeasurementAction(_.get(data, ['measurement', 'name']), false))
             return Promise.resolve(toCamelCase(data))
@@ -52,7 +52,7 @@ const ProductCustomSearchField = enhance((props) => {
     return (
         <SearchFieldCustom
             getValue={(value) => {
-                return value
+                return _.get(value, 'id')
             }}
             getText={(value) => {
                 return _.get(value, ['name'])
@@ -62,7 +62,7 @@ const ProductCustomSearchField = enhance((props) => {
             getItemText={(value) => {
                 return _.get(value, ['name'])
             }}
-            type={type}
+            parent={type}
             {...defaultProps}
         />
     )

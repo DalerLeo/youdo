@@ -46,6 +46,7 @@ const ProviderSearchField = connect()((props) => {
             getOptions={getOptions}
             getItem={test}
             getItemText={SearchField.defaultGetText('name')}
+            withDetails={true}
             {...props}
         />
     )

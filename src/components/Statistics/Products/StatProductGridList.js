@@ -105,7 +105,8 @@ const enhance = compose(
         form: {
             display: 'flex',
             alignItems: 'center',
-            width: '30%'
+            width: '30%',
+            position: 'relative'
         },
         tableRow: {
             '& td:nth-child(odd)': {
