@@ -5,10 +5,10 @@ import {Row, Col} from 'react-flexbox-grid'
 import GridList from '../GridList'
 import TabTransferFilterForm from './TabTransferFilterForm'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import moment from 'moment'
 import Details from './StockTabTransferHistoryDetails'
-import TransferDetail from './StockTabTransferHistoryTransferDetails'
+import StockReceiveDetails from './StockReceiveDetails'
 import * as TAB from '../../constants/stockReceiveTab'
 import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 
@@ -74,7 +74,6 @@ const enhance = compose(
             }
         }
     }),
-    withState('transferType', 'setTransferType', '')
 )
 
 const StockTabTransferHistory = enhance((props) => {
@@ -86,8 +85,6 @@ const StockTabTransferHistory = enhance((props) => {
         handleCloseDetail,
         classes,
         printDialog,
-        popoverDialog,
-        setTransferType,
         transferType
     } = props
 
@@ -109,11 +106,13 @@ const StockTabTransferHistory = enhance((props) => {
             confirm={false}/>
     )
     const historyTransferDetail = (
-        <TransferDetail
-            key={_.get(popoverDialog, ['data', 'id']) + '_transfer'}
-            loading={_.get(popoverDialog, 'loading')}
-            onClose={handleCloseDetail}
-            detailData={popoverDialog}
+        <StockReceiveDetails
+            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
+            handleCloseDetail={handleCloseDetail}
+            detailData={detailData}
+            loading={_.get(detailData, 'detailLoading')}
+            history={false}
+            popover={true}
         />)
 
     const historyList = _.map(_.get(listData, 'data'), (item) => {
@@ -127,12 +126,9 @@ const StockTabTransferHistory = enhance((props) => {
         const stockName = _.get(item, ['stock', 'name'])
         return (
             <Row
-                key={transferType === 'transfer' ? id + '_transfer' : id + '_' + stockId}
+                key={id + '_' + stockId}
                 style={{position: 'relative', cursor: 'pointer'}}
-                onClick={() => {
-                    listData.handleOpenDetail(id, stockId, typeOrg)
-                    setTransferType(typeOrg)
-                }}>
+                onClick={() => { listData.handleOpenDetail(id, stockId, typeOrg) }}>
                 <Col xs={2} >{id}</Col>
                 <Col xs={2}>{dateRequest}</Col>
                 <Col xs={2}>{stockName}</Col>
@@ -146,7 +142,7 @@ const StockTabTransferHistory = enhance((props) => {
     const list = {
         header: listHeader,
         list: historyList,
-        loading: _.get(listData, 'transferListLoading')
+        loading: _.get(listData, 'listLoading')
     }
     return (
         <div className={classes.wrapper}>
@@ -154,7 +150,7 @@ const StockTabTransferHistory = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={(_.get(popoverDialog, ['data', 'id']) || transferType === 'transfer') ? historyTransferDetail : historyDetail}
+                detail={transferType === 'transfer' ? historyTransferDetail : historyDetail}
                 filterDialog={usersFilterDialog}
             />
         </div>

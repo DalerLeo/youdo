@@ -1,4 +1,4 @@
-import StockReceiveList from './StockReceiveContentList'
+import StockReceiveList from './StockReceiveList'
 import StockReceiveHistoryList from './StockReceiveHistoryList'
 import StockTransferList from './StockTransferList'
 import StockTransferHistoryList from './StockTransferHistoryList'

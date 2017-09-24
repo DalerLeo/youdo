@@ -19,10 +19,7 @@ import {
     TAB_TRANSFER_FILTER_KEY
 } from '../../components/StockReceive'
 import {
-    stockReceiveListFetchAction,
-    stockReceiveItemFetchAction,
     stockHistoryListFetchAction,
-    stockTransferListFetchAction,
     stockTransferItemFetchAction,
     stockReceiveOrderItemFetchAction,
     historyOrderItemFetchAction
@@ -36,7 +33,6 @@ import {supplyItemFetchAction} from '../../actions/supply'
 import TabHistory from '../../components/StockReceive/StockTabHistory'
 
 const POP_TYPE = 'popType'
-const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -53,8 +49,8 @@ const enhance = compose(
         const returnDialogDataLoading = _.get(state, ['return', 'item', 'loading'])
         const supplyDialogData = _.get(state, ['supply', 'item', 'data'])
         const supplyDialogDataLoading = _.get(state, ['supply', 'item', 'loading'])
-        const stockTransferDialogData = _.get(state, ['stockReceive', 'stockTransfer', 'data'])
-        const stockTransferDialogDataLoading = _.get(state, ['stockReceive', 'stockTransfer', 'loading'])
+        const stockTransferDialogData = _.get(state, ['stockReceive', 'item', 'data'])
+        const stockTransferDialogDataLoading = _.get(state, ['stockReceive', 'item', 'loading'])
         const stockDeliveryReturnDialogData = _.get(state, ['stockReceive', 'transferItem', 'data'])
         const stockDeliveryReturnDialogDataLoading = _.get(state, ['stockReceive', 'transferItem', 'loading'])
         const supplyDialogFilter = filterHelper(supplyDialogData, pathname, query, {

@@ -142,9 +142,7 @@ const StockTransferOrgDetails = enhance((props) => {
                         handleCloseDetail={onClose}
                         detailData={detailData}
                         loading={_.get(detailData, 'loading')}
-                        history={false}
-                        popover={true}
-                    />
+                        history={false}/>
                 </div>
 })
 

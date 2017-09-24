@@ -9,7 +9,6 @@ import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabLi
 import StockReceiveDetails from './StockReceiveDetails'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
-import CreateDialog from './StockReceiveCreateDialog'
 import TabTransferFilterForm from './TabTransferFilterForm'
 import GridList from '../GridList'
 import * as TAB from '../../constants/stockReceiveTab'
@@ -135,13 +134,9 @@ const StockTabReceive = enhance((props) => {
         filter,
         classes,
         confirmDialog,
-        updateDialog,
         handleCloseDetail,
-        createDialog,
         filterDialog,
-        history,
-        handleCheckedForm,
-        handleCheckedDefect,
+        history
     } = props
     const listLoading = _.get(listData, 'listLoading')
     const stockReceiveFilterDialog = (
@@ -158,9 +153,7 @@ const StockTabReceive = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             confirmDialog={confirmDialog}
             handleCloseDetail={handleCloseDetail}
-            createDialog={createDialog}
             history={history}
-            updateDialog={updateDialog}
     />
     )
 
@@ -218,26 +211,6 @@ const StockTabReceive = enhance((props) => {
                                         : confirmDialog.handleSubmitReceiveConfirmDialog}
                 open={confirmDialog.openConfirmDialog > ZERO}
             />
-            <CreateDialog
-                loading={createDialog.createLoading}
-                open={createDialog.openCreateDialog}
-                detailProducts={createDialog.detailProducts}
-                listLoading={createDialog.detailLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-                handleCheckedForm={handleCheckedForm}
-            />
-            <CreateDialog
-                loading={updateDialog.updateLoading}
-                open={updateDialog.openUpdateDialog}
-                detailProducts={updateDialog.detailProducts}
-                listLoading={updateDialog.detailLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                handleCheckedDefect={handleCheckedDefect}
-            />
         </div>
     )
 })
@@ -253,15 +226,6 @@ StockTabReceive.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSubmitReceiveConfirmDialog: PropTypes.func.isRequired,
         handleSubmitOrderReturnDialog: PropTypes.func.isRequired
-    }).isRequired,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        detailProducts: PropTypes.object,
-        detailLoading: PropTypes.bool,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
