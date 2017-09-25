@@ -233,7 +233,7 @@ const iconStyle = {
     }
 }
 
-const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, ...defaultProps}) => {
+const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, ...defaultProps}) => {
     const currency = getConfig('PRIMARY_CURRENCY')
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
@@ -242,13 +242,13 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
-                    <FlatButton
+                    {!isUpdate && <FlatButton
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}
                         labelStyle={{fontSize: '13px'}}
                         className={classes.span}
                         onTouchTap={() => dispatch({open: !state.open})}
-                    />
+                    />}
                 </div>
                 {state.open && <Row className={classes.background}>
                     <Col xs={3}>
@@ -345,7 +345,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                                         </TableRowColumn>
                                         <TableRowColumn>
                                             <TextField
-                                                label={amount}
+                                                hintText={amount}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}
                                                 {..._.get(defaultProps, 'editAmount')}
@@ -353,7 +353,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                                         </TableRowColumn>
                                         <TableRowColumn>
                                             <TextField
-                                                label={cost}
+                                                hintText={cost}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}
                                                 {..._.get(defaultProps, 'editCost')}
