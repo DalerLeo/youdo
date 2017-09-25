@@ -41,6 +41,8 @@ const enhance = compose(
         const listLoading = _.get(state, ['return', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'ReturnFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const updateForm = _.get(state, ['form', 'OrderReturnForm']) || _.get(state, ['form', 'ClientBalanceReturnForm'])
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
 
         return {
             list,
@@ -51,7 +53,9 @@ const enhance = compose(
             detailLoading,
             updateLoading,
             filter,
-            filterForm
+            filterForm,
+            updateForm,
+            isAdmin
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -220,16 +224,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
                     dispatch(returnListFetchAction(filter))
-                }).catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
-
-                    dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
-                    }))
                 })
         },
 
@@ -257,7 +251,8 @@ const ReturnList = enhance((props) => {
         openPrint,
         params,
         listPrint,
-        listPrintLoading
+        listPrintLoading,
+        isAdmin
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', RETURN_FILTER_OPEN]))
@@ -338,22 +333,46 @@ const ReturnList = enhance((props) => {
         handleCloseDetail: props.handleCloseDetail
     }
 
+    const CLIENT_RETURN = 2
+    const type = _.toInteger(_.get(detail, 'type'))
+
     const forUpdateProducts = _.map(_.get(detail, 'returnedProducts'), (item) => {
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const price = _.toNumber(_.get(item, 'price'))
+        if (type === CLIENT_RETURN) {
+            return {
+                amount,
+                cost: price,
+                measurement: _.get(item, ['product', 'measurement', 'name']),
+                product: {
+                    value: {
+                        id: _.get(item, 'id'),
+                        price: _.get(item, 'price'),
+                        name: _.get(item, ['product', 'name']),
+                        measurement: {
+                            id: _.get(item, ['product', 'measurement', 'id']),
+                            name: _.get(item, ['product', 'measurement', 'name'])
+                        }
+                    }
+                }
+            }
+        }
         return {
-            amount: _.get(item, 'amount'),
-            cost: _.get(item, 'price'),
+            amount,
             product: {
                 value: {
-                    id: _.get(item, 'id'),
+                    id: _.get(item, 'orderProduct'),
+                    price,
                     name: _.get(item, ['product', 'name']),
-                    measurement: {
-                        id: _.get(item, ['product', 'measurement', 'id']),
-                        name: _.get(item, ['product', 'measurement', 'name'])
+                    product: {
+                        measurement: {
+                            id: _.get(item, ['product', 'measurement', 'id']),
+                            name: _.get(item, ['product', 'measurement', 'name'])
+                        }
                     }
                 },
                 text: _.get(item, ['product', 'name'])
             }
-
         }
     })
 
@@ -361,10 +380,19 @@ const ReturnList = enhance((props) => {
         initialValues: (() => {
             if (!detail) {
                 return {}
+            } else if (type === CLIENT_RETURN) {
+                return {
+                    stock: {value: _.get(detail, ['stock', 'id'])},
+                    market: {value: _.get(detail, ['market', 'id'])},
+                    comment: _.get(detail, 'comment'),
+                    products: forUpdateProducts
+                }
             }
 
             return {
-                'returned_products': forUpdateProducts
+                stock: {value: _.get(detail, ['stock', 'id'])},
+                comment: _.get(detail, 'comment'),
+                products: forUpdateProducts
             }
         })(),
         updateLoading,
@@ -404,6 +432,7 @@ const ReturnList = enhance((props) => {
                 products={products}
                 printDialog={printDialog}
                 cancelReturnDialog={cancelReturnDialog}
+                isAdmin={isAdmin}
             />
         </Layout>
     )

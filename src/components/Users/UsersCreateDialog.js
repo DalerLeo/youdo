@@ -112,9 +112,11 @@ const enhance = compose(
             margin: '25px -30px 10px'
         },
         radioStock: {
+            margin: '5px 0',
             '& > div': {
                 display: 'flex',
                 width: '100%',
+                flexWrap: 'wrap',
                 '& > div': {
                     flexBasis: 'calc(100% / 3)',
                     maxWidth: 'calc(100% / 3)'

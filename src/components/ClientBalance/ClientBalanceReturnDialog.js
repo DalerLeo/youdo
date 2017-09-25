@@ -231,7 +231,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, name, clientId} = props
+    const {open, handleSubmit, onClose, classes, name, clientId, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -299,6 +299,7 @@ const SupplyCreateDialog = enhance((props) => {
                             </div>
                             <div className={classes.rightOrderPart}>
                                 <Fields
+                                    isUpdate={isUpdate}
                                     names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost', 'type']}
                                     component={ClientBalanceReturnProductList}
                                 />

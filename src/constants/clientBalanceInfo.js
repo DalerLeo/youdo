@@ -7,3 +7,14 @@ export const CANCEL = 6
 export const CANCEL_ORDER = 7
 export const CANCEL_ORDER_RETURN = 8
 export const NONE_TYPE = 9
+export const formattedType = {
+    1: 'Оплата',
+    2: 'Первоначальный баланс',
+    3: 'Возврат заказа',
+    4: 'Заказ',
+    5: 'Расход',
+    6: 'Отмена',
+    7: 'Отмена заказа',
+    8: 'Отмена возврата заказа',
+    9: 'Произвольный'
+}
