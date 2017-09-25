@@ -234,9 +234,10 @@ const OrderReturnDialog = enhance((props) => {
                             </div>
                             <div className={classes.rightOrderPart}>
                                 <Fields
-                                    names={['returned_products', 'product', 'amount', 'cost', 'editAmount']}
+                                    names={['products', 'product', 'amount', 'cost', 'editAmount']}
                                     component={OrderListReturnField}
                                     orderData={orderData}
+                                    isUpdate={isUpdate}
                                 />
                             </div>
                         </div>

@@ -192,7 +192,8 @@ const ReturnDetails = enhance((props) => {
         type,
         getDocument,
         handleCloseDetail,
-        stat
+        stat,
+        isAdmin
     } = props
 
     const id = _.get(data, 'id')
@@ -243,6 +244,15 @@ const ReturnDetails = enhance((props) => {
                             <PrintIcon />
                         </IconButton>
                     </Tooltip>}
+                    {isAdmin && <Tooltip position="bottom" text="Изменить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                            <Edit />
+                        </IconButton>
+                    </Tooltip>}
                     {confirmDialog && !stat && <Tooltip position="bottom" text="Отменить">
                         <IconButton
                             disabled={!(status === IN_PROGRESS || status === PENDING)}
@@ -253,15 +263,6 @@ const ReturnDetails = enhance((props) => {
                             <Delete />
                         </IconButton>
                     </Tooltip>}
-                    <Tooltip position="bottom" text="Отменить">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
-                            <Edit />
-                        </IconButton>
-                    </Tooltip>
                 </div>
             </div>
             <div className={classes.content}>

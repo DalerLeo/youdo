@@ -109,18 +109,22 @@ const SetDateDialog = enhance((props) => {
                                 fullWidth={true}/>
                             {(status === ON_TIME || status === OFF_TIME) &&
                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                <Field
-                                    name="fromTime"
-                                    component={TimeField}
-                                    className={classes.inputFieldTime}
-                                    label="Начало"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="toTime"
-                                    component={TimeField}
-                                    className={classes.inputFieldTime}
-                                    label="Конец"
-                                    fullWidth={true}/>
+                                <div style={{width: '48%'}}>
+                                    <Field
+                                        name="fromTime"
+                                        component={TimeField}
+                                        className={classes.inputFieldTime}
+                                        label="Начало"
+                                        fullWidth={true}/>
+                                </div>
+                                <div style={{width: '48%'}}>
+                                    <Field
+                                        name="toTime"
+                                        component={TimeField}
+                                        className={classes.inputFieldTime}
+                                        label="Конец"
+                                        fullWidth={true}/>
+                                </div>
                             </div>}
                         </div>
                     </div>

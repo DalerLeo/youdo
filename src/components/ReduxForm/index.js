@@ -72,6 +72,7 @@ import StockHistoryTypeSearchField from '../ReduxForm/StockHistoryTypeSearchFiel
 import UserStockRadioButtonField from './UserStockRadioButtonField'
 import PermissionTimeSearchField from './PermissionTimeSearchField'
 import AgentSearchField from './AgentSearchField'
+import ClientTransactionTypeSearchField from './ClientTransactionTypeSearchField'
 
 export {
     StockHistoryTypeSearchField,
@@ -147,5 +148,6 @@ export {
     OrderTransferTypeSearchField,
     UserStockRadioButtonField,
     PermissionTimeSearchField,
-    AgentSearchField
+    AgentSearchField,
+    ClientTransactionTypeSearchField
 }
