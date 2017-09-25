@@ -26,7 +26,7 @@ const Items = [
     {id: OUTCOME_FOR_SUPPLY_EXPANSE, name: formattedType[OUTCOME_FOR_SUPPLY_EXPANSE]}
 ]
 
-const getOptions = (search) => {
+const getOptions = () => {
     return Promise.resolve(Items)
 }
 
