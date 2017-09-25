@@ -56,6 +56,19 @@ const enhance = compose(
                 borderRadius: '0px',
                 border: '0',
                 borderBottom: '1px solid #e8e8e8'
+            },
+            '& .Select-placeholder': {
+                color: 'rgba(0,0,0, 0.3)',
+                padding: '0'
+            },
+            '& .Select-arrow-zone': {
+                paddingRight: '0'
+            },
+            '& .Select-value': {
+                paddingLeft: '0 !important'
+            },
+            '& .Select-input': {
+                paddingLeft: '0'
             }
         }
     }),

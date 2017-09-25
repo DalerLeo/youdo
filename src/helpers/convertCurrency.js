@@ -12,9 +12,6 @@ export const convertCurrency = (amount, rate) => {
     return (numberFormat(_.toNumber(numberWithoutSpaces(amount)) * _.toNumber(numberWithoutSpaces(rate))))
 }
 
-export const converToUZS = (amount, rate) => {
-    if (!primaryIsUSD) {
-        return (numberFormat(_.toNumber(numberWithoutSpaces(amount)) / _.toNumber(numberWithoutSpaces(rate))))
-    }
-    return (numberFormat(_.toNumber(numberWithoutSpaces(amount)) * _.toNumber(numberWithoutSpaces(rate))))
+export const convertTransfer = (amount, rate) => {
+    return (numberFormat(_.toNumber(numberWithoutSpaces(amount)) * _.toNumber(rate)))
 }

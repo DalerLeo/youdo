@@ -6,6 +6,7 @@ import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import Delete from 'material-ui/svg-icons/action/delete'
+import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import IconButton from 'material-ui/IconButton'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import ConfirmDialog from '../ConfirmDialog'
@@ -187,6 +188,7 @@ const ReturnDetails = enhance((props) => {
         data,
         cancelReturnDialog,
         confirmDialog,
+        updateDialog,
         type,
         getDocument,
         handleCloseDetail,
@@ -251,6 +253,15 @@ const ReturnDetails = enhance((props) => {
                             <Delete />
                         </IconButton>
                     </Tooltip>}
+                    <Tooltip position="bottom" text="Отменить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                            <Edit />
+                        </IconButton>
+                    </Tooltip>
                 </div>
             </div>
             <div className={classes.content}>

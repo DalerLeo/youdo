@@ -1,6 +1,10 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
+export const updateSerializer = (data) => {
+    return data
+}
+
 export const listFilterSerializer = (data, id) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
