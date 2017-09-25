@@ -70,3 +70,20 @@ export const returnItemFetchAction = (id) => {
     }
 }
 
+export const returnUpdateAction = (id, formValues) => {
+    const requestData = serializers.updateSerializer(formValues)
+    const payload = axios()
+        .put(sprintf(API.RETURN_ITEM, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.RETURN_UPDATE,
+        payload
+    }
+}
+

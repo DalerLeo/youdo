@@ -14,6 +14,7 @@ import {
     RETURN_FILTER_KEY,
     RETURN_FILTER_OPEN,
     CANCEL_RETURN_DIALOG_OPEN,
+    RETURN_UPDATE_DIALOG_OPEN,
     ReturnGridList,
     ReturnPrint
 } from '../../components/Return'
@@ -21,7 +22,8 @@ import {
     returnListFetchAction,
     returnItemFetchAction,
     returnListPrintFetchAction,
-    returnCancelAction
+    returnCancelAction,
+    returnUpdateAction
 } from '../../actions/return'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -194,6 +196,43 @@ const enhance = compose(
                 })
         },
 
+        handleOpenUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitUpdateDialog: props => () => {
+            const {dispatch, updateForm, filter, location: {pathname}} = props
+            const returnId = _.toInteger(_.get(props, ['params', 'returnId']))
+
+            return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values'])))
+                .then(() => {
+                    return dispatch(returnItemFetchAction(returnId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
+                    dispatch(returnListFetchAction(filter))
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
+        },
+
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.RETURN_LIST_URL, query: filter.getParams()})
@@ -210,6 +249,7 @@ const ReturnList = enhance((props) => {
         returnData,
         returnReturnList,
         detailLoading,
+        updateLoading,
         returnDataLoading,
         filter,
         layout,
@@ -222,6 +262,7 @@ const ReturnList = enhance((props) => {
 
     const openFilterDialog = toBoolean(_.get(location, ['query', RETURN_FILTER_OPEN]))
     const openCancelDialog = _.toInteger(_.get(location, ['query', CANCEL_RETURN_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', RETURN_UPDATE_DIALOG_OPEN]))
     const client = _.toInteger(filter.getParam(RETURN_FILTER_KEY.CLIENT))
     const zone = _.toInteger(filter.getParam(RETURN_FILTER_KEY.ZONE))
     const division = _.toInteger(filter.getParam(RETURN_FILTER_KEY.DIVISION))
@@ -297,6 +338,42 @@ const ReturnList = enhance((props) => {
         handleCloseDetail: props.handleCloseDetail
     }
 
+    const forUpdateProducts = _.map(_.get(detail, 'returnedProducts'), (item) => {
+        return {
+            amount: _.get(item, 'amount'),
+            cost: _.get(item, 'price'),
+            product: {
+                value: {
+                    id: _.get(item, 'id'),
+                    name: _.get(item, ['product', 'name']),
+                    measurement: {
+                        id: _.get(item, ['product', 'measurement', 'id']),
+                        name: _.get(item, ['product', 'measurement', 'name'])
+                    }
+                },
+                text: _.get(item, ['product', 'name'])
+            }
+
+        }
+    })
+
+    const updateDialog = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            }
+
+            return {
+                'returned_products': forUpdateProducts
+            }
+        })(),
+        updateLoading,
+        openUpdateDialog,
+        handleOpenUpdateDialog: props.handleOpenUpdateDialog,
+        handleCloseUpdateDialog: props.handleCloseUpdateDialog,
+        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
+    }
+
     const printDialog = {
         openPrint,
         handleOpenPrintDialog: props.handleOpenPrintDialog,
@@ -321,6 +398,7 @@ const ReturnList = enhance((props) => {
                 returnListData={returnReturnList}
                 getDocument={getDocument}
                 confirmDialog={confirmDialog}
+                updateDialog={updateDialog}
                 returnDataLoading={returnDataLoading}
                 filterDialog={filterDialog}
                 products={products}

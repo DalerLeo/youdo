@@ -52,8 +52,8 @@ const enhance = compose(
         table: {
             marginTop: '20px',
             overflowY: 'auto',
-            overflowX: 'hiddent',
-            maxHeight: '270px'
+            overflowX: 'hidden',
+            maxHeight: '510px'
         },
         tableTitle: {
             fontWeight: '600',

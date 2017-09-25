@@ -20,6 +20,7 @@ import InProcess from 'material-ui/svg-icons/action/cached'
 import DoneIcon from 'material-ui/svg-icons/action/done-all'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import dateFormat from '../../helpers/dateTimeFormat'
+import ReturnUpdateDialog from '../Order/OrderReturnDialog'
 
 const listHeader = [
     {
@@ -121,6 +122,7 @@ const OrderGridList = enhance((props) => {
         detailData,
         classes,
         printDialog,
+        updateDialog,
         cancelReturnDialog
     } = props
 
@@ -148,6 +150,7 @@ const OrderGridList = enhance((props) => {
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             getDocument={getDocument}
+            updateDialog={updateDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
@@ -246,6 +249,15 @@ const OrderGridList = enhance((props) => {
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
+            />}
+            {detailData.data && <ReturnUpdateDialog
+                isUpdate={true}
+                orderData={_.get(detailData, 'data')}
+                initialValues={updateDialog.initialValues}
+                loading={updateDialog.updateLoading}
+                open={updateDialog.openUpdateDialog}
+                onClose={updateDialog.handleCloseUpdateDialog}
+                onSubmit={updateDialog.handleSubmitUpdateDialog}
             />}
         </Container>
     )
