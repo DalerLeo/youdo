@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import moment from 'moment'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
@@ -257,8 +258,8 @@ const ShopDetails = enhance((props) => {
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'name'])
     const createdBy = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName']) || 'Неизвестно'
-    const createdDate = _.get(data, 'createdDate') ? moment(_.get(data, 'createdDate')).format('YY:MM:DD') : 'Неизвестно'
-    const changedDate = _.get(data, 'modifiedDate') ? moment(_.get(data, 'modifiedDate')).format('YY:MM:DD') : 'Неизвестно'
+    const createdDate = _.get(data, 'createdDate') ? dateTimeFormat(_.get(data, 'createdDate')) : 'Неизвестно'
+    const changedDate = _.get(data, 'modifiedDate') ? dateTimeFormat(_.get(data, 'modifiedDate')) : 'Неизвестно'
     const changedBy = _.get(data, 'changedBy') ? _.get(data, ['changedBy', 'firstName']) + ' ' + _.get(data, ['changedBy', 'secondName'])
         : 'Неизвестно'
     const shopType = _.get(data, ['marketType', 'name'])
@@ -378,7 +379,7 @@ const ShopDetails = enhance((props) => {
                         <li>Клиент</li>
                         <li>Создал</li>
                         <li>Дата создания</li>
-                        <li>Изменил</li>
+                        <li>Дата изменения</li>
                         <li>Изменил</li>
                         <li>Тип заведения</li>
                         <li>Зона</li>
@@ -387,8 +388,8 @@ const ShopDetails = enhance((props) => {
                         <li>{client}</li>
                         <li>{createdBy}</li>
                         <li>{createdDate}</li>
-                        <li>{changedBy}</li>
                         <li>{changedDate}</li>
+                        <li>{changedBy}</li>
                         <li>{shopType}</li>
                         <li>{!zone ? <span className="redFont">Не определена</span> : zone}</li>
                     </ul>
